@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "871c5b2ae05293a5bcc61502febac3112683e487941ae243a2941c117a5a8aaf",
+  "catalogue_version": "cfe8552fe3903d1dd1655c4065df1ddbcc89f5bbd7d70e2974360c2255c26816",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3750,
-  "implemented_total": 3759,
-  "token_definitions": 169,
+  "implemented_standard_cards": 3794,
+  "implemented_total": 3803,
+  "token_definitions": 171,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
   "omen_definitions": 13,
@@ -55,8 +55,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 144,
-      "complete": 115
+      "gated": 100,
+      "complete": 159
     },
     "fdn": {
       "total": 427,
@@ -1253,8 +1253,8 @@
     {
       "name": "All-Fates Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/all_fates_stalker.rs",
       "set": "eoe"
     },
@@ -1301,8 +1301,8 @@
     {
       "name": "Alpharael, Dreaming Acolyte",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/alpharael_dreaming_acolyte.rs",
       "set": "eoe"
     },
@@ -1629,8 +1629,8 @@
     {
       "name": "Anticausal Vestige",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/anticausal_vestige.rs",
       "set": "eoe"
     },
@@ -2197,8 +2197,8 @@
     {
       "name": "Astelli Reclaimer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/astelli_reclaimer.rs",
       "set": "eoe"
     },
@@ -2389,8 +2389,8 @@
     {
       "name": "Auxiliary Boosters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/auxiliary_boosters.rs",
       "set": "eoe"
     },
@@ -8069,8 +8069,8 @@
     {
       "name": "Dawnstrike Vanguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/dawnstrike_vanguard.rs",
       "set": "eoe"
     },
@@ -9141,8 +9141,8 @@
     {
       "name": "Dockworker Drone",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/dockworker_drone.rs",
       "set": "eoe"
     },
@@ -9693,8 +9693,8 @@
     {
       "name": "Drill Too Deep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/drill_too_deep.rs",
       "set": "eoe"
     },
@@ -9773,8 +9773,8 @@
     {
       "name": "Dual-Sun Technique",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/dual_sun_technique.rs",
       "set": "eoe"
     },
@@ -9957,8 +9957,8 @@
     {
       "name": "Dyadrine, Synthesis Amalgam",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/dyadrine_synthesis_amalgam.rs",
       "set": "eoe"
     },
@@ -10685,8 +10685,8 @@
     {
       "name": "Emergency Eject",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/emergency_eject.rs",
       "set": "eoe"
     },
@@ -13597,8 +13597,8 @@
     {
       "name": "Galvanizing Sawship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/galvanizing_sawship.rs",
       "set": "eoe"
     },
@@ -17501,8 +17501,8 @@
     {
       "name": "Infinite Guideline Station",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/infinite_guideline_station.rs",
       "set": "eoe"
     },
@@ -17741,8 +17741,8 @@
     {
       "name": "Interceptor Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/interceptor_mechan.rs",
       "set": "eoe"
     },
@@ -17901,8 +17901,8 @@
     {
       "name": "Invasive Maneuvers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/invasive_maneuvers.rs",
       "set": "eoe"
     },
@@ -18805,24 +18805,24 @@
     {
       "name": "Kav Landseeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/kav_landseeker.rs",
       "set": "eoe"
     },
     {
       "name": "Kavaron Harrier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/kavaron_harrier.rs",
       "set": "eoe"
     },
     {
       "name": "Kavaron Skywarden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/kavaron_skywarden.rs",
       "set": "eoe"
     },
@@ -20333,8 +20333,8 @@
     {
       "name": "Lithobraking",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/lithobraking.rs",
       "set": "eoe"
     },
@@ -21901,8 +21901,8 @@
     {
       "name": "Memorial Vault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/memorial_vault.rs",
       "set": "eoe"
     },
@@ -22621,8 +22621,8 @@
     {
       "name": "Mm'menon, the Right Hand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/mm_menon_the_right_hand.rs",
       "set": "eoe"
     },
@@ -22949,8 +22949,8 @@
     {
       "name": "Moonlit Meditation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/moonlit_meditation.rs",
       "set": "eoe"
     },
@@ -23133,8 +23133,8 @@
     {
       "name": "Mouth of the Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/mouth_of_the_storm.rs",
       "set": "eoe"
     },
@@ -23445,8 +23445,8 @@
     {
       "name": "Nanoform Sentinel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/nanoform_sentinel.rs",
       "set": "eoe"
     },
@@ -24453,8 +24453,8 @@
     {
       "name": "Orbital Plunge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/orbital_plunge.rs",
       "set": "eoe"
     },
@@ -24485,8 +24485,8 @@
     {
       "name": "Oreplate Pangolin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/oreplate_pangolin.rs",
       "set": "eoe"
     },
@@ -24637,8 +24637,8 @@
     {
       "name": "Ouroboroid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/ouroboroid.rs",
       "set": "eoe"
     },
@@ -25525,8 +25525,8 @@
     {
       "name": "Pinnacle Emissary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/pinnacle_emissary.rs",
       "set": "eoe"
     },
@@ -25653,8 +25653,8 @@
     {
       "name": "Plasma Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/plasma_bolt.rs",
       "set": "eoe"
     },
@@ -25861,8 +25861,8 @@
     {
       "name": "Possibility Technician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/possibility_technician.rs",
       "set": "eoe"
     },
@@ -26397,8 +26397,8 @@
     {
       "name": "Pull Through the Weft",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/pull_through_the_weft.rs",
       "set": "eoe"
     },
@@ -28981,8 +28981,8 @@
     {
       "name": "Roving Actuator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/roving_actuator.rs",
       "set": "eoe"
     },
@@ -30037,8 +30037,8 @@
     {
       "name": "Scour for Scrap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/scour_for_scrap.rs",
       "set": "eoe"
     },
@@ -30333,8 +30333,8 @@
     {
       "name": "Seedship Impact",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/seedship_impact.rs",
       "set": "eoe"
     },
@@ -30445,8 +30445,8 @@
     {
       "name": "Selfcraft Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/selfcraft_mechan.rs",
       "set": "eoe"
     },
@@ -31461,8 +31461,8 @@
     {
       "name": "Skystinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/skystinger.rs",
       "set": "eoe"
     },
@@ -31525,8 +31525,8 @@
     {
       "name": "Sledge-Class Seedship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/sledge_class_seedship.rs",
       "set": "eoe"
     },
@@ -32133,8 +32133,8 @@
     {
       "name": "Specimen Freighter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/specimen_freighter.rs",
       "set": "eoe"
     },
@@ -32989,8 +32989,8 @@
     {
       "name": "Starfield Vocalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/starfield_vocalist.rs",
       "set": "eoe"
     },
@@ -33125,8 +33125,8 @@
     {
       "name": "Starwinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/starwinder.rs",
       "set": "eoe"
     },
@@ -33149,8 +33149,8 @@
     {
       "name": "Station Monitor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/station_monitor.rs",
       "set": "eoe"
     },
@@ -33229,8 +33229,8 @@
     {
       "name": "Steelswarm Operator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/steelswarm_operator.rs",
       "set": "eoe"
     },
@@ -34893,8 +34893,8 @@
     {
       "name": "Tapestry Warden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/tapestry_warden.rs",
       "set": "eoe"
     },
@@ -35333,8 +35333,8 @@
     {
       "name": "Terrasymbiosis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/terrasymbiosis.rs",
       "set": "eoe"
     },

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "646d5275c5dd4b12859ac211a50b8bb62a5847655b1ced6a84c6e0d8db016e84"
   },
-  "physical_metadata_sha256": "9302ae05cea4e73d7f59656e2a2a7d44d1324d43cfb15fbe3e672ae08beb2d1e"
+  "physical_metadata_sha256": "9302ae05cea4e73d7f59656e2a2a7d44d1324d43cfb15fbe3e672ae08beb2d1e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarbreachWhale.java",
+  "java_sha256": "579bc327bd3b0cd05977438e7422da247968feaa8a3bd8a7c91a29618f69d2c6",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs"
 }

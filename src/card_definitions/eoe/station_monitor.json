@@ -3,10 +3,13 @@
   "catalogue_id": 4119,
   "oracle_id": "94e8791b-e72f-4aed-b761-826779337168",
   "facts_sha256": "081caedaecc41d2563b07ae8829288de36768a1b69466a0c3e8787e74201c00f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e506ebfc5ce8e2369fcfa0a26c6ad31070a4322c49a0213a463ef083e242ac45"
   },
-  "physical_metadata_sha256": "8ce851b1f15b54237fd30721833437d5fbe44b20ebd186901074c3497b6ffdfb"
+  "physical_metadata_sha256": "8ce851b1f15b54237fd30721833437d5fbe44b20ebd186901074c3497b6ffdfb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StationMonitor.java",
+  "java_sha256": "c0afd24cf40d756a2a293f7d56fc18caa619a3e0a4896b1111e37d6f65323a6b"
 }

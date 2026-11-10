@@ -1,16 +1,13 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
+    effect: Effect::Creature(1, 1),
     enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+        plus_one: 1,
+        ..CardRules::EMPTY.enters
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: one(TargetRule::creature_you_control()),
+        program: &[Instruction::PutSourceCountersOnTargets],
+    }],
     ..CardRules::EMPTY
 };

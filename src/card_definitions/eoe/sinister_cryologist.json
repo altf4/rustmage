@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c35f4266298815b6412c53166c777feed5ce74ae1b1ce6ec9f0c4723592985c"
   },
-  "physical_metadata_sha256": "46869f6d7b99d0154c3339b393e6e3f74ba136b70636014bcd2b3ebe31303975"
+  "physical_metadata_sha256": "46869f6d7b99d0154c3339b393e6e3f74ba136b70636014bcd2b3ebe31303975",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SinisterCryologist.java",
+  "java_sha256": "86e914fa39f6398a3a9d7549d005b4b45d15a4753d170906f092ceed98867376",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs"
 }

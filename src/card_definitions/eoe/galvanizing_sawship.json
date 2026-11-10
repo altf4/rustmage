@@ -3,10 +3,30 @@
   "catalogue_id": 1675,
   "oracle_id": "dfe8f77a-cc26-438b-92ae-2ca7a91f813b",
   "facts_sha256": "116143b83020ba3ea295b5ece9b66d3a6770f5c956d7eed68565a7d13b8962db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5eb8755a71bb9ffaab899606a95a9827d52e36dae4d5bc7657d8b1eb4491237a"
   },
-  "physical_metadata_sha256": "069656896902c7bb11bd9627fa759127eed6fa09b9015a24922d4e97e7bc7cbf"
+  "physical_metadata_sha256": "069656896902c7bb11bd9627fa759127eed6fa09b9015a24922d4e97e7bc7cbf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GalvanizingSawship.java",
+  "java_sha256": "a9137209fe57cb7a59e4bb599ba3acba559865d53a3806ea0407e4d283ce27d3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    }
+  ]
 }

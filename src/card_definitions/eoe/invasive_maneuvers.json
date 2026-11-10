@@ -3,10 +3,30 @@
   "catalogue_id": 2213,
   "oracle_id": "4c376349-1a50-4215-8a40-f702da81eb7b",
   "facts_sha256": "c5ab5e9e421a3f7cde4dda683e8766b1c9d82022ce451ff1f4c51c869ce1fd91",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "338aa7493c4f6ea62ffd7afa892faac9b521dd359b13206d64f1f5e039c594a7"
   },
-  "physical_metadata_sha256": "df9117b617d6a708c6767e480b7aa39f386d73c726148b9d3433977df10c2ca0"
+  "physical_metadata_sha256": "df9117b617d6a708c6767e480b7aa39f386d73c726148b9d3433977df10c2ca0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InvasiveManeuvers.java",
+  "java_sha256": "4f1ea8727e20e5f5be136baf9b705faa572a6934fcc031f9c92a2ae6d6a89613",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

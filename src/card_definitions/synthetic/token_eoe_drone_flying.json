@@ -1,0 +1,23 @@
+{
+  "name": "@token/eoe-drone-flying",
+  "catalogue_id": 5537,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "f68cc04bbc779f0b46ee954068248e195bff32ad024f15aa6a2b606718ca4d92",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DroneFlyingToken.java",
+  "java_sha256": "fffc012b26518e42321e3472616b12ebd4b8b58eadb8d2d5eb49323ff40d1900",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CanBlockOnlyFlyingAbility.java",
+      "sha256": "87823f56d6bf407f68e320a5a06c155e80f2a6fbd86725fdf83f1fb6367e00cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
+}

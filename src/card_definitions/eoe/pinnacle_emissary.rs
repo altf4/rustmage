@@ -1,16 +1,33 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const BLUE: ManaCost = ManaCost {
+    colored: [0, 1, 0, 0, 0, 0],
+    generic: 0,
+};
+const RED: ManaCost = ManaCost {
+    colored: [0, 0, 0, 1, 0, 0],
+    generic: 0,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(3, 3),
+    extras: &CardExtras {
+        warp: Some(&WarpSpec {
+            alternatives: &[BLUE, RED],
+            ..WarpSpec::fixed(BLUE)
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SpellCast {
+            relation: CastRelation::You,
+            filter: CastFilter::Artifact,
+            ordinal: None,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokens {
+            token: Card(5537),
+            amount: 1,
+            tapped: false,
+        }],
+    }],
     ..CardRules::EMPTY
 };

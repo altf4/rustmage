@@ -3,10 +3,30 @@
   "catalogue_id": 1197,
   "oracle_id": "89ec0f03-47d0-4657-8987-95e680404f24",
   "facts_sha256": "6d457021ca5e81889172d1fc6aa1d8fd57a7d5fc259c583d1cf525aaa6053724",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "231a20dfc7d46a9d79de3d9e38e5855427d658abb7f5b4dc97f45dd461f87b33"
   },
-  "physical_metadata_sha256": "cb357c635a3133b00e6e8df2c633717b6260183174339e43019157e0d54d1eb5"
+  "physical_metadata_sha256": "cb357c635a3133b00e6e8df2c633717b6260183174339e43019157e0d54d1eb5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DualSunTechnique.java",
+  "java_sha256": "617f4a38ffa47c5607504261c3e989f1ba351ee582b5ca63c42ed69c3df497b1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }

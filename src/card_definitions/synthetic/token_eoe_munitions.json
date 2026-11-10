@@ -1,0 +1,23 @@
+{
+  "name": "@token/eoe-munitions",
+  "catalogue_id": 5538,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "989bd2a4da56335e48d31e0047b947ffa421d103c1e7648fe59699a8bebc9806",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MunitionsToken.java",
+  "java_sha256": "968c739875b8f75c59c51dfeaa5a2a3fed53c61ead4ca16c4a9d6e16ff5a886c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
+}

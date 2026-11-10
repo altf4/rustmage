@@ -8,5 +8,15 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b08cac1e3dfdc8ff8d824e97e1952523205d1c08a54354277862fc6f6ff15167"
   },
-  "physical_metadata_sha256": "e9490ab117ad028ae97c492431db52c7fead43a89cfda6fe8ba9fe4ba7c466b8"
+  "physical_metadata_sha256": "e9490ab117ad028ae97c492431db52c7fead43a89cfda6fe8ba9fe4ba7c466b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeyondTheQuiet.java",
+  "java_sha256": "25372de65b3fa4b23f5ff10f1ab802ef13e5cb009727774bc06560d9dcb793e8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileAllEffect.java",
+      "sha256": "3aa575d5497720be60ff820b7d74aef2208b8d375d5e273dabf739460bb19017"
+    }
+  ]
 }

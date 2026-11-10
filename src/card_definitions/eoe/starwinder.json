@@ -3,10 +3,31 @@
   "catalogue_id": 4116,
   "oracle_id": "face2dc0-37ba-4efe-b900-b5521567c943",
   "facts_sha256": "6873c553b391452360a9eebc8528623325c49d151acec6085c03de8bf9e0b52f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66dd13ca71a4ef442cf1b6b7472de73f940e6f6acd5617ce0658585453d693cb"
   },
-  "physical_metadata_sha256": "a859bc4e0b774e5344561944e159077a90b285c13c9cb11f7c9667971f03aefd"
+  "physical_metadata_sha256": "a859bc4e0b774e5344561944e159077a90b285c13c9cb11f7c9667971f03aefd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Starwinder.java",
+  "java_sha256": "c62ad2d05662473912988bcf217ea05fd4ae970c2886a79abf0256894d53d381",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs"
 }

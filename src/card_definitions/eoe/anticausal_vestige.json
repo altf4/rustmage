@@ -3,10 +3,45 @@
   "catalogue_id": 179,
   "oracle_id": "aceea999-90ab-472c-86a7-48af1542cbcf",
   "facts_sha256": "de742c80c938a945af76357afae6573920cafd849c881d75c817e56a713103d0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2f937f524c217e34b3d7e96a46f759a106d848d179119a43426a87cfee25536e"
   },
-  "physical_metadata_sha256": "2c8e4e7acae06429cabb15d43cbbca1a6af56f06098b585c0c66159a07b7d20f"
+  "physical_metadata_sha256": "2c8e4e7acae06429cabb15d43cbbca1a6af56f06098b585c0c66159a07b7d20f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnticausalVestige.java",
+  "java_sha256": "91a01aa8f49bb0251157834c29d1330ac0709975e27abd307b0032e4a9f2ad78",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/LandsYouControlHint.java",
+      "sha256": "0d426836c0b651641885b7eda5ea89a55a831428ea003df44497a81ae2f608d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ]
 }

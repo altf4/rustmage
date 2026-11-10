@@ -3,10 +3,35 @@
   "catalogue_id": 984,
   "oracle_id": "69892dc7-4087-447c-a41c-99cf3d5c0c12",
   "facts_sha256": "c37a82fffda73f4c916f11dbc5063e95a6aa9c3f15d3d4091ac471264ea61e24",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3c92515c048eaf16049b7d824c0d0f2ce407afc328a4f634bfd3feecada2585c"
   },
-  "physical_metadata_sha256": "d9ecaae3cebd9f2583a963cc09e652c2294299f3c39193e9e49dad9e95a2dd30"
+  "physical_metadata_sha256": "d9ecaae3cebd9f2583a963cc09e652c2294299f3c39193e9e49dad9e95a2dd30",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DawnstrikeVanguard.java",
+  "java_sha256": "7159dc76142b02d2ad46069e0a76511b98b5db953e6f1ee0830172a42a606e4c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/TwoTappedCreaturesCondition.java",
+      "sha256": "01c33c1fe6523f9218b6ee24709cf76b97d313a7424be79ffc59e5fb1ab61ff5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

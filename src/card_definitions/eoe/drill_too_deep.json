@@ -3,10 +3,35 @@
   "catalogue_id": 1187,
   "oracle_id": "0413e0e4-c8f8-44c3-a749-c799766bc8cd",
   "facts_sha256": "2ddeaeb296d90481923f7926a21cdbf5b8d6902df52969cb883f1b597a7fd32b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44c3680f89fd0388a881d0870ccbb46587bfa5b79eed11dfa30c866272d65211"
   },
-  "physical_metadata_sha256": "653a371c55eb743948c0b5305c8041ac677cbd44fa60c7af10fcf86938f9cfda"
+  "physical_metadata_sha256": "653a371c55eb743948c0b5305c8041ac677cbd44fa60c7af10fcf86938f9cfda",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DrillTooDeep.java",
+  "java_sha256": "a341c0fe292484537d2560fb4a4d7ef998dad4c78880a5624312698a7169447e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ]
 }

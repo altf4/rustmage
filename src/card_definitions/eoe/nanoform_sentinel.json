@@ -3,10 +3,26 @@
   "catalogue_id": 2906,
   "oracle_id": "07155470-c5ab-41ae-ade3-bdc06d357379",
   "facts_sha256": "591e648ba99d981f3746ca7d560434364f81d0188c70faa6cd113348b0a4d9ff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "81d4e84e9c70d6b9618f2c054eb6cdf315d765fb3131440691aab88ad7c04442"
   },
-  "physical_metadata_sha256": "d71f8324a2b5fa4e9d9b5e413ba8c2ddaba09ff200904e0de31dd7376ae3e17b"
+  "physical_metadata_sha256": "d71f8324a2b5fa4e9d9b5e413ba8c2ddaba09ff200904e0de31dd7376ae3e17b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NanoformSentinel.java",
+  "java_sha256": "f0f10b53e2aded449755dd846d2f452ae9439d70f3f979346affb0a86dd9e5a9",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs"
 }

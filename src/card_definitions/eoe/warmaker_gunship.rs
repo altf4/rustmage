@@ -16,7 +16,7 @@ const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
             own_turn: false,
             kind: CounterKind::Charge,
             minimum: 6,
-            form: SourceCreatureForm::ArtifactCreature,
+            form: SourceCreatureForm::AddCreature,
             subtypes: &[],
             keywords: Keywords::FLYING,
         },

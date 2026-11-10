@@ -3,10 +3,35 @@
   "catalogue_id": 3182,
   "oracle_id": "ac5258c1-5b46-4892-a445-bfd56875f039",
   "facts_sha256": "0dd3e319262681be0726f15c1c2c34c9e5ba247a89e5fe12fca6623612a93130",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c5ee9b5d9e5fa7c11c78abf5ffab96ac2796a651a6b7795aa8f1c6abf214284f"
   },
-  "physical_metadata_sha256": "dfbc16f089e41587211b8df71b124441ce7783cd09370ab32ae6743657dd54b0"
+  "physical_metadata_sha256": "dfbc16f089e41587211b8df71b124441ce7783cd09370ab32ae6743657dd54b0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PlasmaBolt.java",
+  "java_sha256": "e7d895a701b4211a64d61385906d092e36c1c9b9be94a37c7f02daf5aeb5068e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    }
+  ]
 }

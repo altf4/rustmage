@@ -3,10 +3,41 @@
   "catalogue_id": 3781,
   "oracle_id": "4ba4cb4b-f421-4abd-8fcf-a01174447790",
   "facts_sha256": "984c171e8d5a5fc8d4d08d565e943fa5222ed705b07b96a2b325f04e9fd3cb00",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ebe78e044000e77f06ce2733f09ba7ec5ac824215e9a072cf1430abc4a2d3ddb"
   },
-  "physical_metadata_sha256": "37be4f09d595f5e4b58da70a7d4833071e69080a44af8c40eaf3511bda35e7ac"
+  "physical_metadata_sha256": "37be4f09d595f5e4b58da70a7d4833071e69080a44af8c40eaf3511bda35e7ac",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SelfcraftMechan.java",
+  "java_sha256": "33fcbe0ccae127e18feef6816b14e562f20cf528b5bef61a536906ca8e3a62c2",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs"
 }

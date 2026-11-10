@@ -3,10 +3,13 @@
   "catalogue_id": 4337,
   "oracle_id": "981138d0-bf61-406a-85be-68cc5e58796c",
   "facts_sha256": "41bf98742fba246e6e39fe9e114a9403426f81b1d440dd218b1a22cf0d0d3589",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3641851fa6968b97d9b97c2460fd4c150d1298149b01a52f7b75e5fc522b391d"
   },
-  "physical_metadata_sha256": "e8e9a38c72a0a9deb3c5d3d8a239af188e989343612167a7dab34c8a20d2c309"
+  "physical_metadata_sha256": "e8e9a38c72a0a9deb3c5d3d8a239af188e989343612167a7dab34c8a20d2c309",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TapestryWarden.java",
+  "java_sha256": "a136b43c0b7eb52bd985e3f1f4c53dab92b3a8a2cfa8bd7645b1efa3b28a38a8"
 }

@@ -5542,7 +5542,9 @@
     17,
     5,
     0,
-    4
+    4,
+    0,
+    0
   ],
   "aliases": [
     [
@@ -6420,6 +6422,14 @@
     [
       "@token/ee8947c14ff09bb603572d23",
       5327
+    ],
+    [
+      "@token/eoe-drone-flying",
+      5537
+    ],
+    [
+      "@token/eoe-munitions",
+      5538
     ],
     [
       "@token/f0440bab236040f5d7ef7f9f",
@@ -29636,6 +29646,18 @@
       "name": "Horror Token",
       "subtypes": "Horror",
       "colors": 4
+    },
+    {
+      "factory_identity": "@token/eoe-drone-flying",
+      "name": "Drone Token",
+      "subtypes": "Drone",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/eoe-munitions",
+      "name": "Munitions",
+      "subtypes": "",
+      "colors": 0
     }
   ],
   "emblems": [
@@ -65240,11 +65262,11 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
         0,
         0,
-        0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -188778,6 +188800,62 @@
       "standard_legal": false,
       "legendary": false,
       "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5537,
+      "module": "card_5537",
+      "path": "synthetic/token_eoe_drone_flying.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/eoe-drone-flying",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Drone",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5538,
+      "module": "card_5538",
+      "path": "synthetic/token_eoe_munitions.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/eoe-munitions",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
       "basic": false,
       "mana_color": null,
       "colored": [

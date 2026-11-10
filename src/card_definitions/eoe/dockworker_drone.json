@@ -3,10 +3,35 @@
   "catalogue_id": 1118,
   "oracle_id": "aa704b26-729a-4d0f-b92d-56aadb1e20b9",
   "facts_sha256": "bdb46fbd86dd6f26aa9fde7b458f3fe04b4112be111c53bef5c4e66288cd6334",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23536ab464bc509ff7860ea5915a0a2507ece314b43ad081670e3cf616c8c2fb"
   },
-  "physical_metadata_sha256": "ee1b3e93218917c87e99949abad5dcac9754f1e00d51c37e27c0dfe8a8245d3e"
+  "physical_metadata_sha256": "ee1b3e93218917c87e99949abad5dcac9754f1e00d51c37e27c0dfe8a8245d3e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DockworkerDrone.java",
+  "java_sha256": "3f6fe18d645e2806d50bd1874f87d916c7e9159b9a7758d4d4dd591e699b564a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutSourceCountersOnTargetEffect.java",
+      "sha256": "320385417b879d53dfe01e4d3f58413732c5830ce57f6160001b43b9a7b69ac3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }
