@@ -104,7 +104,10 @@ fn power_threshold_uses_live_power_on_resolution_and_supports_owned_choices() {
         }
         assert_eq!(g.object_view(grows).power, 11);
         assert_eq!(
-            g.legal_actions(),
+            g.legal_actions()
+                .into_iter()
+                .filter(|action| *action != Action::Concede)
+                .collect::<Vec<_>>(),
             (0..=10)
                 .map(|value| Action::ChoosePowerThreshold { value })
                 .collect::<Vec<_>>()
@@ -166,7 +169,10 @@ fn the_number_is_chosen_as_the_permanent_enters_and_observes_only_committed_oppo
         act(&mut g, Action::Pass);
         assert_ne!(g.object_view(observer).zone, Zone::Battlefield);
         assert_eq!(
-            g.legal_actions(),
+            g.legal_actions()
+                .into_iter()
+                .filter(|action| *action != Action::Concede)
+                .collect::<Vec<_>>(),
             (1..=10).map(choose_number).collect::<Vec<_>>()
         );
         reject(&mut g, choose_number(0));

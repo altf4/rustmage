@@ -205,12 +205,7 @@ fn simultaneous_legendary_creature_entry_offers_an_owned_choice_and_paid_equip()
     for player in [Player::P0, Player::P1] {
         let mut parent = scenario(player);
         let source = put(&mut parent, player, SOURCE_NAME, Zone::Graveyard);
-        let legendary = put(
-            &mut parent,
-            player,
-            "Bristly Bill, Spine Sower",
-            Zone::Graveyard,
-        );
+        let legendary = put(&mut parent, player, "Fynn, the Fangbearer", Zone::Graveyard);
         let bear = put(&mut parent, player, "Grizzly Bears", Zone::Graveyard);
         let opposing_bear = put(
             &mut parent,
@@ -332,7 +327,7 @@ fn older_grants_are_removed_later_grants_work_and_copies_use_the_base_definition
     let bear = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let first_provider = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
     let next_provider = put(&mut game, player, "Swiftfoot Boots", Zone::Hand);
-    let legendary = put(&mut game, player, "Bristly Bill, Spine Sower", Zone::Hand);
+    let legendary = put(&mut game, player, "Fynn, the Fangbearer", Zone::Hand);
     let copy = put(&mut game, player, "Think Twice", Zone::Hand);
     let blank = put(&mut game, player, "Opt", Zone::Hand);
     let blink = put(&mut game, player, "Unsummon", Zone::Hand);
@@ -407,7 +402,7 @@ fn an_old_trigger_cannot_offer_the_transformation_after_its_source_blinks() {
     let player = Player::P0;
     let mut game = scenario(player);
     let source = put(&mut game, player, SOURCE_NAME, Zone::Battlefield);
-    let legendary = put(&mut game, player, "Bristly Bill, Spine Sower", Zone::Hand);
+    let legendary = put(&mut game, player, "Fynn, the Fangbearer", Zone::Hand);
     let blink = put(&mut game, player, "Unsummon", Zone::Hand);
     let exact_source = game.object_ref(source);
     cast(&mut game, legendary, None);

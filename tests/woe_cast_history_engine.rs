@@ -83,8 +83,8 @@ fn prepare_shrink(
 ) -> CardId {
     let spell = put(game, player, SHRINK_SPELL, Zone::Hand);
     act(game, Action::AnnounceCast { card: spell });
-    act(game, Action::ChooseX { value });
     act(game, Action::ChooseBargain { sacrifice });
+    act(game, Action::ChooseX { value });
     act(
         game,
         Action::ChooseTarget {

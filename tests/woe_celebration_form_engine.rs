@@ -78,7 +78,7 @@ const BLANK: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
         &[Instruction::RemoveAbilities {
-            subject: Subject::Target,
+            subject: Subject::Targets,
             duration: AnimationDuration::EndOfTurn,
         }],
     ),

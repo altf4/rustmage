@@ -196,7 +196,7 @@ fn late_output_scales_the_chosen_type_from_the_departed_land_and_keeps_its_quali
     let multiplier = spawn(&mut game, player, provider(), Zone::Battlefield);
     let forest = put(&mut game, player, "Forest", Zone::Battlefield);
     let murder = put(&mut game, player, "Murder", Zone::Hand);
-    let bat = put(&mut game, player, "Deep-Cavern Bat", Zone::Hand);
+    let bat = put(&mut game, player, "Barrow Naughty", Zone::Hand);
     let victim = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
     game.state.players[player.index()].mana = ZERO;
     let announce_murder = Action::AnnounceCast { card: murder };
