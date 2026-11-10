@@ -3,10 +3,35 @@
   "catalogue_id": 3243,
   "oracle_id": "9c6a6332-37f0-4d7d-a86f-478cf0eeec91",
   "facts_sha256": "c5e4a7d45321dd7d43be43c5b4eca023b017c652d19830c164638f9e8b397b74",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ddecbe70926011e0841a65f3056781c60cb306e53f221bc08c907c029edce5cd"
   },
-  "physical_metadata_sha256": "2df368526ab045a7eff7a8f3050a7a1a3b3d6c0a3a9d9cb54298df08a0db5994"
+  "physical_metadata_sha256": "2df368526ab045a7eff7a8f3050a7a1a3b3d6c0a3a9d9cb54298df08a0db5994",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrisonBreak.java",
+  "java_sha256": "40420f91b2bb09e08d5449de6842685946e426ec2ffe5af4d72cf0431e087ed7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

@@ -3,10 +3,30 @@
   "catalogue_id": 4287,
   "oracle_id": "10c8cf3b-2530-49e7-b38e-95cdaae8a6e7",
   "facts_sha256": "708112bd04f53b8a4369307ce6a5f986dcb162d50b8c1f4aa340d84931e9a6ff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1ed948d35b2426ec8bee0de64761eab6be1100033715a6a1485784320281c8e"
   },
-  "physical_metadata_sha256": "a5416db91c914a08693b9495e381252c2e93bb81b02f480cac4579104df2b329"
+  "physical_metadata_sha256": "a5416db91c914a08693b9495e381252c2e93bb81b02f480cac4579104df2b329",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SwarmBeingOfBees.java",
+  "java_sha256": "8beee97cf52812923158da65743d5b8dde142c41b5803a0870a7965e67bd4239",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    }
+  ]
 }

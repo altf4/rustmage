@@ -1,17 +1,21 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(5, 4),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::Upkeep,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::Discard(PlayerSet::Controller, 1),
+            Instruction::CreateTokens {
+                token: Card(5302),
+                amount: 1,
+                tapped: false,
+            },
+        ],
+    }],
     extras: &CardExtras {
         cost_alternatives: &[
             ManaCost {
@@ -23,6 +27,14 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 generic: 1,
             },
         ],
+        mayhem_cost: Some(ManaCost {
+            colored: [0, 0, 0, 1, 0, 0],
+            generic: 2,
+        }),
+        mayhem_cost_alternatives: &[ManaCost {
+            colored: [0, 0, 1, 0, 0, 0],
+            generic: 2,
+        }],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY
