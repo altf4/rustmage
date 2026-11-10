@@ -6960,6 +6960,22 @@ impl FundingState<'_> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn current_counter_cost_payable(&self, announcement: &Announcement) -> bool {
+        let goal = self.funding_goal(announcement);
+        let requirement = announcement
+            .counter_cost_spec()
+            .and_then(|cost| cost.kind.counter_requirement())
+            .expect("distributed counter cost");
+        let selected = announcement.creature_counter_cost.as_deref();
+        // A selectable prefix can depend on future mana abilities. Only
+        // keep selecting now if the complete payment fits the live inventory.
+        FundingState::from_game(self, &goal).counter_payment_possible(
+            &goal,
+            requirement,
+            selected.map_or(&[], Vec::as_slice),
+        )
+    }
+
     pub(super) fn optional_counter_cost_mana(&self, announcement: &Announcement) -> bool {
         if announcement.cast_costs.is_some()
             || !matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })

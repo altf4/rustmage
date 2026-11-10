@@ -508,7 +508,7 @@ impl Game {
         let a = self.state.announcing.as_ref().unwrap();
         if a.cast_costs.is_some()
             || a.counter_cost_spec().is_none()
-            || self.visit_distributed_counter_cost(&mut |_| true)
+            || self.current_counter_cost_payable(a)
         {
             return;
         }

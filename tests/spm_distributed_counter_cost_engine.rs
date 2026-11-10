@@ -171,22 +171,36 @@ fn mana_window_can_create_the_missing_counter_on_a_noncreature_artifact() {
     let source = put(&mut game, player, "Solemn Simulacrum", Zone::Battlefield);
     let artifact = put(&mut game, player, "Swiftfoot Boots", Zone::Battlefield);
     game.add_counter(artifact, CounterKind::PlusOne, 1);
+    let object = game.object_ref(artifact);
     assert!(!game.is_creature(artifact));
     act(&mut game, draw_activation(source));
+    reject(&mut game, remove(object));
     // The fixed mana activation has a real additional counter-placement cost.
-    choose(&mut game, |action| {
-        matches!(action,
-            Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. } if *card == artifact
-        )
-    });
+    let (index, mana) = game
+        .legal_actions()
+        .into_iter()
+        .enumerate()
+        .find(|(_, action)| {
+            matches!(action,
+                Action::ActivateMana { card, .. } | Action::AnnounceMana { card, .. } if *card == artifact
+            )
+        })
+        .expect("counter-producing mana action is reachable before payment");
+    let mut raw = game.clone();
+    act(&mut raw, mana);
+    game.apply_index(player, game.revision(), index).unwrap();
+    assert_eq!(raw.snapshot(), game.snapshot());
     if game.state.mana_announcement_stack.is_some() {
         pay(&mut game);
     }
     assert_eq!(game.counter_count(artifact, CounterKind::PlusOne), 2);
     assert!(game.object_view(artifact).tapped);
     pay(&mut game);
-    let object = game.object_ref(artifact);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseCastCost { .. })
+    });
     act(&mut game, remove(object));
+    assert_eq!(game.counter_count(artifact, CounterKind::PlusOne), 2);
     act(&mut game, remove(object));
     assert_eq!(game.counter_count(artifact, CounterKind::PlusOne), 0);
     settle(&mut game);
