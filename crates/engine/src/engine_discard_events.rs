@@ -14,6 +14,10 @@ pub struct DiscardTriggerView {
 pub(super) enum DiscardAfter {
     Recruit(Player, Card),
     LoseLife(Player, i128),
+    LoseLifeUnlessDiscarded {
+        players: [bool; 2],
+        amount: u16,
+    },
     DrawActual {
         players: [bool; 2],
         bonus: u16,
@@ -165,11 +169,14 @@ impl Game {
                 .collect();
             let mut moves = Vec::new();
             let mut context = context;
-            for (before, plan, ()) in self.plan_zone_batch(frozen) {
+            for (before, mut plan, ()) in self.plan_zone_batch(frozen) {
                 let mut movement = self.entry_move(before.id, plan.destination, false);
                 if plan.shuffle == Some(zone_replacements::ZoneShuffle::Reveal) {
                     context.shuffles.push(before.reference);
+                    plan.shuffle = None;
                 }
+                // The batch already chose all zone replacements before entry.
+                movement.zone_plan = Some(plan);
                 movement.controller = before.owner;
                 movement.before = before;
                 moves.push(movement);
@@ -481,6 +488,15 @@ impl Game {
                 self.draw_many(player, u128::from(amount))
             }
             Some(DiscardAfter::LoseLife(player, amount)) => self.lose_life(player, amount),
+            Some(DiscardAfter::LoseLifeUnlessDiscarded { players, amount }) => {
+                self.lose_life_simultaneously(std::array::from_fn(|i| {
+                    if players[i] && counts[i] == 0 {
+                        i128::from(amount)
+                    } else {
+                        0
+                    }
+                }));
+            }
             Some(DiscardAfter::ConniveCounters(object, amount, placed_by))
                 if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>
             {
@@ -495,6 +511,19 @@ impl Game {
             _ => {}
         }
     }
+    pub(super) fn optional_effect_discards(&self) -> Option<[Option<bool>; 2]> {
+        if !matches!(self.state.pending, Pending::EffectDiscard { .. }) {
+            return None;
+        }
+        let r = self.state.resolving.as_ref()?;
+        let Some(DiscardAfter::LoseLifeUnlessDiscarded { players, .. }) = &r.discard_after else {
+            return None;
+        };
+        Some(std::array::from_fn(|i| {
+            (players[i] && r.discards[i] == 0).then(|| !r.selected_discards[i].is_empty())
+        }))
+    }
+
     fn queue_discard_trigger(
         &mut self,
         source: &ObjectView,

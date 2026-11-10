@@ -2054,6 +2054,9 @@ pub enum Instruction {
     RevealTopDrawIfArtifact,
     RevealTopMoveIfPermanent,
     RevealTopToHandLoseManaValue,
+    /// Both legal targets reveal their top cards, lose life from the other
+    /// reveal, and take the exact revealed cards into their hands.
+    RevealTargetTopsToHandLoseOtherManaValue,
     ExileSourceReturnTransformed {
         counter: CounterKind,
     },
@@ -4278,6 +4281,12 @@ pub enum Instruction {
     Discard(PlayerSet, u16),
     /// Mandatory private discard, saving the total actual moves as MovedCount.
     DiscardRememberCount {
+        players: PlayerSet,
+        amount: u16,
+    },
+    /// Each affected player chooses whether to discard a card. Resolve the
+    /// discards together before players who did not discard lose life.
+    MayDiscardOrLoseLife {
         players: PlayerSet,
         amount: u16,
     },

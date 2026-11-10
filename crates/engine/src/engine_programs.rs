@@ -281,6 +281,16 @@ impl Game {
         self.life_lost_event(player, amount);
     }
 
+    pub(super) fn lose_life_simultaneously(&mut self, amounts: [i128; 2]) {
+        let order = [self.state.active, self.state.active.other()];
+        for player in order {
+            self.lose_life_unobserved(player, amounts[player.index()]);
+        }
+        for player in order {
+            self.life_lost_event(player, amounts[player.index()]);
+        }
+    }
+
     /// Pay a life cost, as distinct from an instruction that causes life loss.
     pub(super) fn pay_life(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
@@ -3709,8 +3719,8 @@ impl Game {
             if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
                 return;
             }
-            // Mandatory discards are chosen privately by their player, APNAP when
-            // multiple players must discard. Hand exhaustion completes that part.
+            // Each player chooses their discards privately in APNAP order.
+            // Hand exhaustion completes that player's choices.
             for player in [self.state.active, self.state.active.other()] {
                 let remaining = self.state.resolving.as_ref().unwrap().discards[player.index()];
                 if remaining > 0 {
@@ -7969,6 +7979,9 @@ impl Game {
                 Instruction::RevealTopToHandLoseManaValue => {
                     self.reveal_top_to_hand_lose_mana_value(&item)
                 }
+                Instruction::RevealTargetTopsToHandLoseOtherManaValue => {
+                    self.reveal_target_tops_to_hand_lose_other_mana_value(&item)
+                }
                 Instruction::ExileSourceReturnTransformed { counter } => {
                     self.exile_source_return_transformed(&item, counter)
                 }
@@ -8999,6 +9012,19 @@ impl Game {
                         item.controller,
                         i128::try_from(lost).capacity("life drain result exhausted"),
                     );
+                }
+                Instruction::MayDiscardOrLoseLife { players, amount } => {
+                    let mut affected = [false; 2];
+                    for player in self.program_players(players, &item) {
+                        affected[player.index()] = true;
+                    }
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards = affected.map(usize::from);
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::LoseLifeUnlessDiscarded {
+                            players: affected,
+                            amount,
+                        });
                 }
                 Instruction::DiscardRandom(set, amount) => {
                     let players: Vec<_> = self.program_players(set, &item).collect();

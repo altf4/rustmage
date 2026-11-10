@@ -4036,6 +4036,10 @@ pub struct Observation {
     pub resolution_payment: Option<resolution_mana::ResolutionPaymentView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
+    /// Whether each player has chosen to discard in an optional APNAP batch.
+    /// Only that player's information set includes the chosen card's identity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional_effect_discards: Option<[Option<bool>; 2]>,
     pub attackers: Vec<CardId>,
     pub attack_declarations: Vec<AttackDeclaration>,
     pub blocking: Vec<CardId>,
@@ -5660,6 +5664,11 @@ impl Game {
                 }
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
+                if self.optional_effect_discards().is_some()
+                    && emit(Action::ChooseOptional { accept: false })
+                {
+                    return true;
+                }
                 for (i, obj) in s.objects.iter().enumerate() {
                     if obj.owner == actor && obj.zone == Zone::Hand && obj.is_card() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
@@ -8947,6 +8956,12 @@ impl Game {
                 if matches!(self.state.pending, Pending::Replacement { .. }) =>
             {
                 self.choose_optional_token_replacement(accept);
+            }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::EffectDiscard { .. }) =>
+            {
+                self.state.resolving.as_mut().unwrap().discards[actor.index()] = 0;
+                self.run_program();
             }
             Action::ChooseOptional { accept: false }
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) =>
@@ -12456,6 +12471,7 @@ impl Game {
                     })
             }),
             waiting_triggers: s.ordering_triggers.clone(),
+            optional_effect_discards: self.optional_effect_discards(),
             effect_discards: s
                 .resolving
                 .as_ref()
