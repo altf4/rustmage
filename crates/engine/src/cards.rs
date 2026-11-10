@@ -1818,6 +1818,31 @@ pub struct BattlefieldFilter {
     pub max_mana: u32,
 }
 
+/// One clause of a controlled permanent group. Every listed quality must match.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ControlledPermanentFilter {
+    pub all_kinds: u16,
+    pub legendary: bool,
+    pub subtype: Option<&'static str>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ControlledPermanentFilter {
+    pub const ANY: Self = Self {
+        all_kinds: 0,
+        legendary: false,
+        subtype: None,
+    };
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PermanentGroupCounters {
+    Add { kind: CounterKind, amount: u32 },
+    DoubleEachKind,
+}
+
 /// Exile up to the entrant's chosen X own graveyard cards before its entry counters.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -3990,6 +4015,11 @@ pub enum Instruction {
         filters: &'static [BattlefieldFilter],
         kind: CounterKind,
         amount: u32,
+    },
+    /// Apply one simultaneous counter event to the union of the live clauses.
+    ChangeControlledPermanentGroupCounters {
+        filters: &'static [ControlledPermanentFilter],
+        effect: PermanentGroupCounters,
     },
     DoubleCounters,
     /// Add exactly one of every currently present kind to a permanent or player.

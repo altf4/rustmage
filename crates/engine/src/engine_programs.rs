@@ -10158,6 +10158,13 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::ChangeControlledPermanentGroupCounters { filters, effect } => {
+                    self.change_controlled_permanent_group_counters(
+                        item.controller,
+                        filters,
+                        effect,
+                    );
+                }
                 Instruction::DoubleCounterKind { subject, kind } => {
                     let changes = self
                         .keyword_subjects(&item, subject)
