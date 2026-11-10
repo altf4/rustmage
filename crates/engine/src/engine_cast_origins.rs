@@ -650,6 +650,36 @@ impl Game {
         self.state.pending = Pending::ResolutionCasts { player };
         true
     }
+    pub(super) fn offer_exiled_search_result_free_cast(
+        &mut self,
+        player: Player,
+        maximum: u64,
+    ) -> bool {
+        let Some(object) = self.exiled_search_result() else {
+            return false;
+        };
+        // Keep the choice private even when every face fails the restriction.
+        // The surrounding program moves the exact uncast card after the offer.
+        self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
+            uncast_to_hand: false,
+            siege_transformed: false,
+            paid: None,
+            casts_remaining: Some(1),
+            pending_cast: None,
+            remaining_mana_value: Some(maximum),
+            alternative_cost: None,
+            maximum_mana_value: None,
+            origin: Zone::Exile,
+            exile_on_graveyard: false,
+            allow_lands: false,
+            player,
+            remaining: vec![object],
+        }));
+        self.state.pending = Pending::ResolutionCasts { player };
+        true
+    }
+
     pub(super) fn offer_hand_free_cast(
         &mut self,
         player: Player,

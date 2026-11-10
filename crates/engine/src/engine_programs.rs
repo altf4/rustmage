@@ -8098,6 +8098,16 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().search_result =
                         Some(Box::new(search::SearchResult::default()));
                 }
+                Instruction::CastExiledSearchResultFreeUpTo(maximum) => {
+                    if self.offer_exiled_search_result_free_cast(item.controller, maximum) {
+                        return;
+                    }
+                }
+                Instruction::PutExiledSearchResultInHand => {
+                    if let Some(object) = self.exiled_search_result() {
+                        self.move_object(object.card, Zone::Hand);
+                    }
+                }
                 Instruction::IfSearchPutInHand { skip } => {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     if !resolution

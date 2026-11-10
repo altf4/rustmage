@@ -1216,6 +1216,8 @@ pub enum SearchDestination {
     LinkedExile,
     /// Exile the found cards and allow their controller to cast them free this turn.
     ExileFreeThisTurn,
+    /// Exile the found cards face down with private look access for the searcher.
+    ExileFaceDown,
     Graveyard,
     /// Shuffle, then put the selected cards on top (last selected uppermost).
     Top,
@@ -3593,6 +3595,10 @@ pub enum Instruction {
     SearchHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
+    /// May immediately cast one spell from the exact exiled search result.
+    CastExiledSearchResultFreeUpTo(u64),
+    /// Put the exact search result into its owner's hand if still exiled.
+    PutExiledSearchResultInHand,
     IfSearchPutInHand {
         skip: usize,
     },
