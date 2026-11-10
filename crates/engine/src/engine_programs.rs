@@ -3955,6 +3955,7 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::FightForExcess { .. }
                     | Instruction::GroupPowerDamage { .. }
+                    | Instruction::GroupsPowerDamage { .. }
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
                     | Instruction::MayAttachAnyControlledEquipment { .. }
@@ -7645,7 +7646,10 @@ impl Game {
                     self.fight_for_excess(&item, source, recipient);
                 }
                 Instruction::GroupPowerDamage { source, recipient } => {
-                    self.group_power_damage(&item, source, recipient);
+                    self.group_power_damage(&item, std::slice::from_ref(&source), recipient);
+                }
+                Instruction::GroupsPowerDamage { sources, recipient } => {
+                    self.group_power_damage(&item, sources, recipient);
                 }
                 Instruction::LoyaltyDamage { source, recipient } => {
                     self.planeswalker_loyalty_damage(&item, source, recipient);

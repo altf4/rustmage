@@ -1472,6 +1472,8 @@ pub enum EffectChoiceKind {
     },
     /// One controlled Equipment attached to this exact activated source.
     SacrificeAttachedEquipment,
+    /// One controlled permanent attached to this exact source and matching the cost filter.
+    SacrificeAttachedPermanent,
     /// Non-targeted return payment for Sneak, after blockers are declared.
     ReturnUnblockedAttacker,
     /// Return a tapped creature you control to its owner's hand.
@@ -1514,6 +1516,13 @@ pub(crate) struct CounterCostRequirement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
+    pub(crate) fn is_attached_sacrifice(self) -> bool {
+        matches!(
+            self,
+            Self::SacrificeAttachedEquipment | Self::SacrificeAttachedPermanent
+        )
+    }
+
     pub(crate) fn any_number_selection(self) -> bool {
         matches!(
             self,
@@ -1636,7 +1645,7 @@ impl AdditionalCost {
                 _ => {}
             }
         }
-        if self.kind == EffectChoiceKind::SacrificeAttachedEquipment && zone == Zone::Battlefield {
+        if self.kind.is_attached_sacrifice() && zone == Zone::Battlefield {
             self.kind = EffectChoiceKind::Sacrifice;
         }
         if matches!(self.kind, EffectChoiceKind::DiscardOrLife(_)) && zone == Zone::Hand {
@@ -3484,6 +3493,11 @@ pub enum Instruction {
         source: u16,
         recipient: u16,
     },
+    /// All still-legal creatures across these groups deal power damage in one event.
+    GroupsPowerDamage {
+        sources: &'static [u16],
+        recipient: u16,
+    },
     CreaturePowerDamageAny {
         source: u16,
         recipient: u16,
@@ -4719,6 +4733,7 @@ pub enum StatValue {
     SourceModified,
     ControlledModifiedCreatures,
     SourceEquipmentCount,
+    SourceAuraOrEquipmentCount,
     LegendaryCreaturesYouControl,
     MulticoloredPermanentsYouControl,
     /// Exclude the exact source incarnation from the current controlled creatures.

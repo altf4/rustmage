@@ -199,9 +199,7 @@ impl Game {
             return chosen_cost_creature_matches(world, actor, object);
         }
         let o = world.object(object.card);
-        if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
-            && o.attached_to != Some(source)
-        {
+        if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
             return false;
         }
         if !projected
@@ -247,6 +245,7 @@ impl Game {
                 | EffectChoiceKind::SacrificeDifferentNames(_)
                 | EffectChoiceKind::SacrificePermanents(_)
                 | EffectChoiceKind::SacrificeAttachedEquipment
+                | EffectChoiceKind::SacrificeAttachedPermanent
         ) && world.sacrifice_prohibited(object.card)
         {
             return false;
@@ -1408,6 +1407,7 @@ impl Game {
             | EffectChoiceKind::ExileCraftNonlands(_)
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
                 let event = self.move_object(object.card, Zone::Exile);

@@ -602,7 +602,7 @@ fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
                 return o.generation == reference.generation && o.zone == Zone::Battlefield;
             }
             o.generation == reference.generation
-                && (spec.kind.payment_kind() != EffectChoiceKind::SacrificeAttachedEquipment
+                && (!spec.kind.is_attached_sacrifice()
                     || goal
                         .source
                         .as_ref()
@@ -1366,6 +1366,7 @@ impl<'g> FundingState<'g> {
                                 | EffectChoiceKind::SacrificeDifferentNames(_)
                                 | EffectChoiceKind::SacrificePermanents(_)
                                 | EffectChoiceKind::SacrificeAttachedEquipment
+                                | EffectChoiceKind::SacrificeAttachedPermanent
                         ) || !self.sacrifice_prohibited(r.card))
                         && (spec.kind.payment_kind() != EffectChoiceKind::DiscardLegendary
                             || ability_world::CharacteristicWorld::legendary(self, r.card))
@@ -1430,6 +1431,7 @@ impl<'g> FundingState<'g> {
                         | EffectChoiceKind::SacrificeDifferentNames(_)
                         | EffectChoiceKind::SacrificePermanents(_)
                         | EffectChoiceKind::SacrificeAttachedEquipment
+                        | EffectChoiceKind::SacrificeAttachedPermanent
                 ) || !self.sacrifice_prohibited(r.card))
                     && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
                         || self.game.ninjutsu_attacker(goal.actor, r)

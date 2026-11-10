@@ -281,7 +281,7 @@ impl Game {
                     graveyard_left,
                 ) == 0,
             ),
-            StatValue::SourceEquipmentCount => {
+            StatValue::SourceEquipmentCount | StatValue::SourceAuraOrEquipmentCount => {
                 if !objects().any(|(id, object)| {
                     id == source.card
                         && object.generation == source.generation
@@ -291,9 +291,12 @@ impl Game {
                 }
                 objects()
                     .filter(|(id, object)| {
-                        object.zone == Zone::Battlefield
-                            && object.attached_to == Some(source)
-                            && subtypes(*id).has(object.card, "Equipment")
+                        object.zone == Zone::Battlefield && object.attached_to == Some(source) && {
+                            let types = subtypes(*id);
+                            types.has(object.card, "Equipment")
+                                || value == StatValue::SourceAuraOrEquipmentCount
+                                    && types.has(object.card, "Aura")
+                        }
                     })
                     .count() as i128
             }

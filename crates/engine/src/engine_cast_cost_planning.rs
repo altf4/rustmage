@@ -290,6 +290,7 @@ impl FundingState<'_> {
             | EffectChoiceKind::SacrificeOrDiscard { .. } => battlefield > 0 || hand > 0,
             EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
             EffectChoiceKind::SacrificeRange { minimum: n }
@@ -619,9 +620,7 @@ impl FundingState<'_> {
             return additional_costs::chosen_cost_creature_matches(self, self.actor, r);
         }
         let o = self.object(r.card);
-        if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
-            && o.attached_to != Some(source)
-        {
+        if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
             return false;
         }
         let craft = matches!(
@@ -651,6 +650,7 @@ impl FundingState<'_> {
                     | EffectChoiceKind::SacrificeDifferentNames(_)
                     | EffectChoiceKind::SacrificePermanents(_)
                     | EffectChoiceKind::SacrificeAttachedEquipment
+                    | EffectChoiceKind::SacrificeAttachedPermanent
             ) || !self.sacrifice_prohibited(r.card))
             && (spec.kind.payment_kind() != EffectChoiceKind::ReturnUnblockedAttacker
                 || (self.game.ninjutsu_attacker(self.actor, r) && self.attacking(r.card)))
@@ -1769,6 +1769,7 @@ impl FundingState<'_> {
             | EffectChoiceKind::ChooseControlledOrWarpedCreature
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
