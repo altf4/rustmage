@@ -124,6 +124,12 @@ fn modified_choices_count_and_departures_use_the_creature_controller_and_actual_
 
         let destroy = put(&mut game, player, "Day of Judgment", Zone::Hand);
         cast(&mut game, destroy, None);
+        pass_pair(&mut game);
+        for _ in 0..2 {
+            choose(&mut game, |action| {
+                matches!(action, Action::PutTrigger { .. })
+            });
+        }
         settle(&mut game);
         assert_eq!(game.object_view(observer).zone, Zone::Graveyard);
         assert_eq!(game.state.players[player.index()].life, 26);
@@ -157,9 +163,14 @@ fn both_spells_and_triggered_abilities_remain_targets_while_countering_is_prohib
             let shock = put(&mut game, player, "Shock", Zone::Hand);
             cast(&mut game, shock, Some(Target::Player(player.other())));
         }
-        let stack_id = game.state.stack.last().unwrap().id;
+        let victim = game.state.stack.last().unwrap();
+        let target = if ability {
+            Target::Stack(victim.id)
+        } else {
+            Target::Spell(victim.source.unwrap().id)
+        };
         let counter = put(&mut game, player, "Opt", Zone::Hand);
-        cast(&mut game, counter, Some(Target::Stack(stack_id)));
+        cast(&mut game, counter, Some(target));
 
         let mut removed = game.clone();
         let bounce = put(&mut removed, player, "Unsummon", Zone::Hand);
