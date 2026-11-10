@@ -155,3 +155,43 @@ fn combat_red_survives_once_and_retention_tracks_current_control_and_abilities()
     departed.clear_step_mana(false, true);
     assert_eq!(departed.state.players[player.index()].mana, [0; 6]);
 }
+
+#[test]
+fn retained_ventmaw_red_loses_its_original_turn_deadline() {
+    let _rules = fixture_rules::activate(&[(card("Hill Giant"), &RETAIN_RED)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = [0; 6];
+    let provider = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let ventmaw = put(&mut game, player, "Savage Ventmaw", Zone::Battlefield);
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: ventmaw });
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 3, 3, 0]);
+    let lot = game.observe(player).mana_lots.pop().unwrap();
+    assert_eq!(lot.retention, ManaRetention::Turn);
+
+    let turn = game.state.turn;
+    for _ in 0..24 {
+        if game.state.turn != turn {
+            break;
+        }
+        match game.state.pending {
+            Pending::Blockers => act(&mut game, Action::FinishBlockers),
+            Pending::Priority => act(&mut game, Action::Pass),
+            ref pending => panic!("unexpected pending combat decision {pending:?}"),
+        }
+    }
+    assert_eq!(game.state.turn, turn + 1);
+    assert_eq!(game.state.step, Step::Upkeep);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 3, 0, 0]);
+    assert!(game.observe(player).mana_lots.is_empty());
+
+    game.move_object(provider, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].mana[3], 3);
+    pass_pair(&mut game);
+    assert_eq!(game.state.step, Step::Draw);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+}

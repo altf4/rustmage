@@ -818,14 +818,15 @@ impl Game {
             let mut keep = [0; 6];
             if let Some(state) = self.state.mana_lots.as_mut() {
                 let mut lost_copy_sources = Vec::new();
+                let mut expired_durations = Vec::new();
                 state.pools[actor.index()].retain_mut(|lot| {
                     if (lot.quality.retention == ManaRetention::Turn && keep_turn)
                         || (lot.quality.retention == ManaRetention::Combat && keep_combat)
                     {
                         return true;
                     }
-                    // A mixed lot keeps only its retained colors. Its original
-                    // quality still applies if the surviving mana is spent later.
+                    // A mixed lot keeps only its retained colors and retains
+                    // its restrictions and spending effects.
                     let mut lost_mana = false;
                     for (color, amount) in lot.amounts.iter_mut().enumerate() {
                         if colors & (1 << color) == 0 {
@@ -836,8 +837,23 @@ impl Game {
                     if lost_mana && let Some(source) = lot.quality.copy_source {
                         lost_copy_sources.push(source.object);
                     }
+                    if lot.amounts != [0; 6] && lot.quality.retention != ManaRetention::Step {
+                        // The live color rule saved this mana, but its own
+                        // turn/combat retention deadline has already passed.
+                        expired_durations.push(Lot {
+                            quality: Quality {
+                                retention: ManaRetention::Step,
+                                ..lot.quality
+                            },
+                            amounts: lot.amounts,
+                        });
+                        return false;
+                    }
                     lot.amounts != [0; 6]
                 });
+                for lot in expired_durations {
+                    add_lot(&mut state.pools[actor.index()], lot.quality, lot.amounts);
+                }
                 for source in lost_copy_sources {
                     state.retain_inert_copy_source(source);
                 }
