@@ -60,7 +60,7 @@ const LOSS_DISCOUNT: CardRules = CardRules {
     activated: &[discount_ability(&[
         Instruction::ReduceColoredSpellCostsThisTurn {
             colors: BLACK_RED,
-            amount: AmountValue::Stat(StatValue::LifeLostThisTurn),
+            amount: AmountValue::LifeLostThisTurn,
         },
     ])],
     ..CardRules::EMPTY
@@ -70,7 +70,7 @@ const GAIN_DISCOUNT: CardRules = CardRules {
     activated: &[discount_ability(&[
         Instruction::ReduceColoredSpellCostsThisTurn {
             colors: WHITE_BLUE,
-            amount: AmountValue::Stat(StatValue::LifeGainedThisTurn),
+            amount: AmountValue::LifeGainedThisTurn,
         },
     ])],
     ..CardRules::EMPTY

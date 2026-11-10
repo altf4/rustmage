@@ -801,6 +801,7 @@ impl Game {
             AmountValue::LifeGainedThisTurn => {
                 self.state.players[owner.index()].life_gained_this_turn
             }
+            AmountValue::LifeLostThisTurn => self.state.players[owner.index()].life_lost_this_turn,
             AmountValue::Divided { value, divisor } => {
                 self.amount_value(*value, source, owner) / u128::from(divisor.get())
             }

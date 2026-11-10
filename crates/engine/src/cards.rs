@@ -4521,6 +4521,8 @@ pub enum AmountValue {
     MilledCreatures,
     Stat(StatValue),
     LifeGainedThisTurn,
+    /// Gross life actually lost by the controller this turn, including life payments.
+    LifeLostThisTurn,
     LifeEventAmount,
     CardsDiscardedThisTurn,
     /// Actual cards in this packet's one completed simultaneous discard event.
