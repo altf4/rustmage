@@ -256,6 +256,7 @@ fn exact_donors_grant_independent_uses_in_layer_order_to_the_recipient() {
     act(&mut game, target(receiver));
     resolve_top(&mut game);
     let first_exile = game.object_ref(first_donor);
+    assert!(borrowed_activations::has_shared_links(&game));
     let first_use = grow(receiver, first_exile);
     reject(&mut game, grow(other, first_exile));
     assert!(game.legal_actions().contains(&first_use));
@@ -273,6 +274,8 @@ fn exact_donors_grant_independent_uses_in_layer_order_to_the_recipient() {
     let mut lost_donor = game.clone();
     lost_donor.move_object(first_donor, Zone::Graveyard);
     lost_donor.move_object(first_donor, Zone::Exile);
+    assert_eq!(lost_donor.state.borrowed_links, game.state.borrowed_links);
+    assert!(!borrowed_activations::has_shared_links(&lost_donor));
     reject(&mut lost_donor, first_use.clone());
 
     let mut layered = game.clone();

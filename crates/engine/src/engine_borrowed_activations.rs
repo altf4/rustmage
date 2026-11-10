@@ -97,10 +97,18 @@ pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) 
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn has_shared_links(game: &Game) -> bool {
-    game.state
-        .borrowed_links
-        .as_ref()
-        .is_some_and(|links| links.iter().any(|link| link.shared))
+    game.state.borrowed_links.as_ref().is_some_and(|links| {
+        links.iter().any(|link| {
+            link.shared
+                && game
+                    .state
+                    .objects
+                    .get(link.exiled.card as usize)
+                    .is_some_and(|object| {
+                        object.zone == Zone::Exile && object.generation == link.exiled.generation
+                    })
+        })
+    })
 }
 
 fn source_ids<W: CharacteristicWorld + ?Sized>(world: &W, include_graveyard: bool) -> Vec<CardId> {
