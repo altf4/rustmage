@@ -240,12 +240,31 @@ fn spm_complete_games_exercise_actual_rules_and_replay() {
                     }
                     _ => {}
                 }
-                if !proved && !matches!(action, Action::Pass | Action::Keep) && actions.len() > 1 {
-                    proved = prove_branch(&game, actor, &actions, *index);
+                let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    if !proved
+                        && !matches!(action, Action::Pass | Action::Keep)
+                        && actions.len() > 1
+                    {
+                        proved = prove_branch(&game, actor, &actions, *index);
+                    }
+                    game.apply(actor, action.clone()).unwrap();
+                }));
+                if let Err(panic) = result {
+                    let failure = serde_json::json!({
+                        "config": config,
+                        "actions": trace,
+                        "actor": actor,
+                        "failing_action": action,
+                    });
+                    let path = evidence.join(format!("{label}-failure.json"));
+                    std::fs::write(&path, serde_json::to_vec_pretty(&failure).unwrap()).unwrap();
+                    eprintln!(
+                        "{label} decision {}: {action:?}, trace {}",
+                        trace.len(),
+                        path.display()
+                    );
+                    std::panic::resume_unwind(panic);
                 }
-                game.apply(actor, action.clone()).unwrap_or_else(|error| {
-                    panic!("{label} at decision {} {action:?}: {error:?}", trace.len())
-                });
                 trace.push((actor, action.clone()));
             }
             std::fs::write(
