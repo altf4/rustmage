@@ -5538,7 +5538,9 @@ impl Game {
                     .creature_counter_cost_requirement()
                     .is_some()
                 {
-                    return self.visit_creature_counter_cost(&mut emit);
+                    return self.visit_creature_counter_cost(&mut emit)
+                        || self.optional_counter_cost_mana(s.announcing.as_ref().unwrap())
+                            && emit(Action::BeginOrderedCosts);
                 }
                 for (id, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(id as CardId);

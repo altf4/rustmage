@@ -492,6 +492,27 @@ impl Game {
         }
         false
     }
+    pub(super) fn open_counter_cost_mana_if_needed(&mut self) {
+        let Pending::AdditionalCost { player } = self.state.pending else {
+            return;
+        };
+        let a = self.state.announcing.as_ref().unwrap();
+        if a.cast_costs.is_some()
+            || a.creature_counter_cost_requirement().is_none()
+            || self.visit_creature_counter_cost(&mut |_| true)
+        {
+            return;
+        }
+        self.open_counter_cost_mana(player);
+    }
+    pub(super) fn open_counter_cost_mana(&mut self, player: Player) {
+        // Mana abilities may produce a missing counter or return its bearer.
+        // Open a mana window before selecting the ordered counter payment.
+        let a = self.state.announcing.as_mut().unwrap();
+        a.add_cast_cost_clause(CastCostClause::Mana);
+        a.add_cast_cost_clause(CastCostClause::Additional);
+        self.state.pending = Pending::PayCosts { player };
+    }
     pub(super) fn choose_creature_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
         let a = self.state.announcing.as_mut().unwrap();
         let requirement = a.creature_counter_cost_requirement().unwrap();
@@ -505,6 +526,8 @@ impl Game {
                 player: a.item.controller,
             };
             self.resume_cast_cost_selection();
+        } else {
+            self.open_counter_cost_mana_if_needed();
         }
     }
     pub(super) fn controlled_combat_damage_triggers(&mut self, events: &[DamageEvent]) {

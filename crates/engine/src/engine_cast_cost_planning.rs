@@ -1415,7 +1415,7 @@ impl FundingState<'_> {
         // remove a candidate from this exact positive-power upper sum.
         true
     }
-    fn only_tap_mana(a: &ActivatedAbility) -> bool {
+    pub(super) fn only_tap_mana(a: &ActivatedAbility) -> bool {
         let c = a.cost;
         a.origin == ActivationOrigin::Battlefield
             && c.tap

@@ -5,7 +5,11 @@ mod support;
 
 use common::*;
 use rustmage as _;
-use rustmage_core::{cards::*, engine::*};
+use rustmage_core::{
+    cards::authored::{CardExtras, CardRules},
+    cards::*,
+    engine::*,
+};
 use support::*;
 
 fn counter_cost(game: &Game, card: CardId) -> Action {
@@ -106,10 +110,12 @@ fn reroute_systems_can_protect_an_artifact_or_damage_a_still_tapped_creature() {
     spell_mode(&mut protection, spell, 0, artifact);
     settle(&mut protection);
     assert_eq!(protection.object_view(artifact).zone, Zone::Battlefield);
-    assert!(protection
-        .object_view(artifact)
-        .keywords
-        .contains(Keywords::INDESTRUCTIBLE));
+    assert!(
+        protection
+            .object_view(artifact)
+            .keywords
+            .contains(Keywords::INDESTRUCTIBLE)
+    );
 
     spell_mode(&mut game, spell, 1, bear);
     let mut untapped = game.clone();
@@ -297,23 +303,27 @@ fn squires_lightblade_flashes_in_and_its_first_strike_outlasts_reequipping() {
         trigger_target(&mut game, first);
         settle(&mut game);
         assert_eq!(stats(&game, first), (3, 2));
-        assert!(game
-            .object_view(first)
-            .keywords
-            .contains(Keywords::FIRST_STRIKE));
+        assert!(
+            game.object_view(first)
+                .keywords
+                .contains(Keywords::FIRST_STRIKE)
+        );
         if active == player {
             activate(&mut game, blade, 0, Some(second));
             settle(&mut game);
             assert_eq!(stats(&game, first), (2, 2));
             assert_eq!(stats(&game, second), (3, 2));
-            assert!(game
-                .object_view(first)
-                .keywords
-                .contains(Keywords::FIRST_STRIKE));
-            assert!(!game
-                .object_view(second)
-                .keywords
-                .contains(Keywords::FIRST_STRIKE));
+            assert!(
+                game.object_view(first)
+                    .keywords
+                    .contains(Keywords::FIRST_STRIKE)
+            );
+            assert!(
+                !game
+                    .object_view(second)
+                    .keywords
+                    .contains(Keywords::FIRST_STRIKE)
+            );
         }
     }
 }
@@ -338,10 +348,12 @@ fn starfield_shepherd_warps_and_reveals_either_a_basic_plains_or_a_small_creatur
         act(&mut branch, Action::ChooseSearch { card });
         act(&mut branch, Action::FinishSearch);
         assert_eq!(branch.object_view(card).zone, Zone::Hand);
-        assert!(branch
-            .object_view(shepherd)
-            .keywords
-            .contains(Keywords::FLYING));
+        assert!(
+            branch
+                .object_view(shepherd)
+                .keywords
+                .contains(Keywords::FLYING)
+        );
         end_step(&mut branch);
         settle(&mut branch);
         assert_eq!(branch.object_view(shepherd).zone, Zone::Exile);
@@ -444,6 +456,153 @@ fn sunstar_chaplain_gives_a_counter_then_pays_that_counter_as_a_separate_cost() 
     assert!(!game.object_view(artifact).tapped);
     settle(&mut game);
     assert!(game.object_view(artifact).tapped);
+}
+
+const COUNTER_MANA_CREATURE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 0, 0, 2,
+        ]))],
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        activation_put_counters: &[(0, CounterKind::PlusOne, 1)],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn sunstar_counter_funding_prunes_land_taps_but_keeps_mana_that_adds_counters() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let chaplain = put(&mut game, player, "Sunstar Chaplain", Zone::Battlefield);
+    let enemy = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    game.state.players[player.index()].mana = [0; 6];
+    game.add_counter(enemy, CounterKind::PlusOne, 1);
+    let activation = Action::AnnounceActivate {
+        card: chaplain,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    let mut lands = game.clone();
+    for _ in 0..24 {
+        put(&mut lands, player, "Plains", Zone::Battlefield);
+    }
+    assert!(!lands.legal_actions().contains(&activation));
+    reject(&mut lands, activation.clone());
+    let own = put(&mut lands, player, "Bear Cub", Zone::Battlefield);
+    lands.add_counter(own, CounterKind::PlusOne, 1);
+    activate(&mut lands, chaplain, 0, Some(enemy));
+    let foreign = counter_cost(&lands, enemy);
+    assert!(!lands.legal_actions().contains(&foreign));
+    reject(&mut lands, foreign);
+    let own_payment = counter_cost(&lands, own);
+    act(&mut lands, own_payment);
+
+    let _fixture = fixture_rules::activate(&[(Card::GrizzlyBears, &COUNTER_MANA_CREATURE)]);
+    let donor = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    act(&mut game, activation);
+    act(&mut game, choose_target(enemy));
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, .. } if *card == donor),
+    );
+    assert_eq!(game.counter_count(donor, CounterKind::PlusOne), 1);
+    pay(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseCastCost { .. })
+    });
+    let payment = counter_cost(&game, donor);
+    act(&mut game, payment);
+    settle(&mut game);
+    assert_eq!(game.counter_count(donor, CounterKind::PlusOne), 0);
+    assert_eq!(game.counter_count(enemy, CounterKind::PlusOne), 1);
+    assert!(game.object_view(enemy).tapped);
+}
+
+#[test]
+fn sunstar_can_pay_an_existing_counter_or_one_returned_during_mana_payment() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let chaplain = put(&mut game, player, "Sunstar Chaplain", Zone::Battlefield);
+    let existing = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let enemy = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let ring = put(&mut game, player, "Lotus Ring", Zone::Battlefield);
+    let mascot = put(&mut game, player, "District Mascot", Zone::Hand);
+    let stalker = put(&mut game, player, "All-Fates Stalker", Zone::Hand);
+    game.add_counter(existing, CounterKind::PlusOne, 1);
+    cast(&mut game, mascot, None);
+    settle(&mut game);
+    assert_eq!(game.counter_count(mascot, CounterKind::PlusOne), 1);
+    cast(&mut game, stalker, None);
+    pass_pair(&mut game);
+    trigger_target(&mut game, mascot);
+    settle(&mut game);
+    let exiled = game.object_ref(mascot);
+    assert_eq!(game.object_view(mascot).zone, Zone::Exile);
+    game.state.objects[stalker as usize].summoning_sick = false;
+    activate(&mut game, ring, 0, Some(stalker));
+    settle(&mut game);
+    game.state.players[player.index()].mana = [0; 6];
+
+    activate(&mut game, chaplain, 0, Some(enemy));
+    let grantor = game.object_ref(ring);
+    let sacrifice = Action::TapGrantedMana {
+        card: stalker,
+        grantor,
+        production: [0, 0, 0, 0, 3, 0],
+    };
+    let current_payment = counter_cost(&game, existing);
+    let mut existing_branch = game.clone();
+    act(&mut existing_branch, current_payment.clone());
+    act(&mut existing_branch, sacrifice.clone());
+    pay(&mut existing_branch);
+    settle(&mut existing_branch);
+    assert_eq!(
+        existing_branch.counter_count(existing, CounterKind::PlusOne),
+        0
+    );
+    assert_eq!(
+        existing_branch.counter_count(mascot, CounterKind::PlusOne),
+        1
+    );
+
+    act(&mut game, Action::BeginOrderedCosts);
+    act(&mut game, sacrifice);
+    assert_eq!(game.object_view(stalker).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(mascot).zone, Zone::Battlefield);
+    assert_ne!(game.object_ref(mascot), exiled);
+    assert_eq!(game.counter_count(mascot, CounterKind::PlusOne), 1);
+    pay(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseCastCost { .. })
+    });
+    reject(
+        &mut game,
+        Action::ChooseCreatureCounterCost {
+            object: exiled,
+            counter: CounterKind::PlusOne,
+        },
+    );
+    assert!(game.legal_actions().contains(&current_payment));
+    let returned_payment = counter_cost(&game, mascot);
+    act(&mut game, returned_payment);
+    settle(&mut game);
+    assert_eq!(game.counter_count(existing, CounterKind::PlusOne), 1);
+    assert_eq!(game.object_view(mascot).zone, Zone::Graveyard);
+    assert!(game.object_view(enemy).tapped);
 }
 
 #[test]

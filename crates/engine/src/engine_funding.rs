@@ -6669,6 +6669,103 @@ impl FundingState<'_> {
             .sum::<u128>();
         available.saturating_sub(reserved) >= u128::from(amount) - selected.len() as u128
     }
+    /// A mana window consisting only of taps and mana production cannot
+    /// increase the number of counters on permanents the payer controls.
+    fn fixed_creature_counter_deficit(
+        &self,
+        requirement: (u16, Option<CounterKind>),
+        selected: &[(ObjectRef, CounterKind)],
+    ) -> bool {
+        let (amount, kind) = requirement;
+        let state = &self.game.state;
+        let upper = state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.zone == Zone::Battlefield && object.controller == self.actor
+            })
+            .map(|(id, _)| {
+                // Include noncreatures in case tapping changes a type layer.
+                let counters = self.counter_amounts(id as CardId);
+                kind.map_or_else(|| counters.total(), |kind| u128::from(counters.get(kind)))
+            })
+            .sum::<u128>();
+        let invalid_selection = selected.iter().any(|(reference, _)| {
+            let object = self.object(reference.card);
+            self.reference(reference.card) != *reference
+                || object.zone != Zone::Battlefield
+                || object.controller != self.actor
+        });
+        (upper < u128::from(amount) || invalid_selection) && self.fixed_counter_cost_inventory()
+    }
+
+    fn fixed_counter_cost_inventory(&self) -> bool {
+        let state = &self.game.state;
+        if self.continuation.is_some()
+            || self.entry_projection.is_some()
+            || self.controls().is_some()
+            || state.temporary_controls.is_some()
+            // A live linked source cannot leave through any route audited below.
+            || state.exile_links.iter().any(|link| {
+                self.reference(link.source.card) != link.source
+                    || self.object(link.source.card).zone != Zone::Battlefield
+            })
+            || state.borrowed_links.is_some()
+            || state.borrowed_slots.is_some()
+            || state.graveyard_borrowing.is_some()
+            || state.activation_observers.is_some()
+            || state.temporary_abilities.is_some()
+            || state.self_granted_abilities.is_some()
+            || !self.fixed_copy_recipes()
+            || self
+                .roles()
+                .is_some_and(|roles| !roles.source_linked_effects.is_empty())
+        {
+            return false;
+        }
+        for object in &state.objects {
+            let card = object.card;
+            // Include dormant definitions that could become available after
+            // another source taps. Sacrifice grants and borrowed slots can
+            // introduce effects outside the tap-only proof.
+            if object.zone == Zone::Command
+                || object.zone == Zone::Battlefield
+                    && (card.borrows_activations()
+                        || card.controls_attached()
+                        || card.static_ability_groups().iter().any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    StaticAbilityFragment::AttachmentSacrificeMana(_)
+                                )
+                            })
+                        }))
+            {
+                return false;
+            }
+            let payer_controls = match object.zone {
+                Zone::Battlefield => object.controller == self.actor,
+                Zone::Hand | Zone::Graveyard => object.owner == self.actor,
+                _ => false,
+            };
+            if payer_controls
+                && card
+                    .activations()
+                    .iter()
+                    .enumerate()
+                    .any(|(index, ability)| {
+                        ability.source_zone() == object.zone
+                            && ability.mana_production().is_some()
+                            && (!Self::only_tap_mana(ability)
+                                || card.activation_put_counter(index as u16).is_some())
+                    })
+            {
+                return false;
+            }
+        }
+        true
+    }
     fn fund_creature_counter_cost(
         &self,
         goal: &FundingGoal,
@@ -6733,6 +6830,16 @@ impl FundingState<'_> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn optional_counter_cost_mana(&self, announcement: &Announcement) -> bool {
+        if announcement.cast_costs.is_some()
+            || !matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
+        {
+            return false;
+        }
+        let goal = self.funding_goal(announcement);
+        goal.requires_mana() && !FundingState::from_game(self, &goal).fixed_counter_cost_inventory()
+    }
+
     pub(super) fn creature_counter_fundable(
         &self,
         goal: FundingGoal,
@@ -6791,28 +6898,8 @@ impl Game {
         let mut world = FundingState::from_game_with_convoke(self, &goal, true);
         world.convoke = false;
         world.set_purpose(purpose);
-        let adds = self.state.objects.iter().any(|o| {
-            o.card.activations().iter().enumerate().any(|(index, a)| {
-                a.mana_production().is_some()
-                    && o.card.activation_put_counter(index as u16).is_some()
-            })
-        });
-        if !adds {
-            let upper = self
-                .state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(_, o)| o.zone == Zone::Battlefield)
-                .map(|(id, _)| {
-                    let counts = self.counter_amounts(id as CardId);
-                    required_kind
-                        .map_or_else(|| counts.total(), |kind| u128::from(counts.get(kind)))
-                })
-                .sum::<u128>();
-            if upper < u128::from(amount) {
-                return false;
-            }
+        if world.fixed_creature_counter_deficit(requirement, selected) {
+            return false;
         }
         world.fund_creature_counter_cost(&goal, requirement, selected, &mut HashSet::new())
     }

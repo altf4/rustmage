@@ -2989,6 +2989,7 @@ impl Game {
                     player: announcement.item.controller,
                 }
             };
+            self.open_counter_cost_mana_if_needed();
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();
