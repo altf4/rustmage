@@ -5,6 +5,10 @@ use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+#[path = "spm_cards_b/admitted_creatures.rs"]
+mod admitted_creatures;
+#[path = "spm_cards_b/admitted_mana_and_library.rs"]
+mod admitted_mana_and_library;
 #[path = "spm_cards_b/events_and_types.rs"]
 mod events_and_types;
 #[path = "spm_cards_b/faces_and_combat.rs"]
