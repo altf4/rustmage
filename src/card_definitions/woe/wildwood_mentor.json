@@ -3,10 +3,56 @@
   "catalogue_id": 5069,
   "oracle_id": "f4e61b03-e6c8-4751-9720-b91fdecd57da",
   "facts_sha256": "bf8c005448f170a487482f2c1ddf31758624633957369ad23582bc8d15af9f53",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7290949e35a0fc75dad3d6bdba51ae63ce6e6a6387f813ba1a4a046521e8af11"
   },
-  "physical_metadata_sha256": "c7da8edb7327ba21992f69f223dc55d71bbf5dedc4335324405370b2f4b60009"
+  "physical_metadata_sha256": "c7da8edb7327ba21992f69f223dc55d71bbf5dedc4335324405370b2f4b60009",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WildwoodMentor.java",
+  "java_sha256": "9df85cd03a52dbd5d4247d95948c0030f38764912d0482837c034ab6c168e871",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

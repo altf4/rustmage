@@ -962,3 +962,244 @@ fn werefox_bodyguard_can_flash_and_returns_its_exact_card_to_the_owner() {
     assert_ne!(game.object_ref(bearer), exiled);
     assert_eq!(game.state.players[player.index()].life, 22);
 }
+
+#[test]
+fn talion_chooses_as_it_enters_and_matches_opposing_casts_once() {
+    let number = |value| Action::ChooseEntryValue {
+        value: EntryChoiceValue::Number(value),
+    };
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let talion = candidate(&mut game, player, "Talion, the Kindly Lord", Zone::Hand);
+        cast(&mut game, talion, None);
+        pass_pair(&mut game);
+        assert_ne!(game.object_view(talion).zone, Zone::Battlefield);
+        assert_eq!(
+            game.legal_actions()
+                .into_iter()
+                .filter(|action| matches!(action, Action::ChooseEntryValue { .. }))
+                .collect::<Vec<_>>(),
+            (1..=10).map(number).collect::<Vec<_>>()
+        );
+        reject(&mut game, number(0));
+        reject(&mut game, number(11));
+        let mut two = game.clone();
+        act(&mut two, number(2));
+        act(&mut game, number(3));
+        assert_eq!(stats(&game, talion), (3, 4));
+        assert!(game.object_view(talion).keywords.contains(Keywords::FLYING));
+        assert_eq!(
+            game.object_view(talion).entry_choice,
+            Some(EntryChoiceValue::Number(3))
+        );
+
+        let own = put(&mut two, player, "Bear Cub", Zone::Hand);
+        cast(&mut two, own, None);
+        settle(&mut two);
+        assert_eq!(two.state.players[opponent.index()].life, 20);
+        assert_eq!(two.state.players[player.index()].cards_drawn_this_turn, 0);
+        two.state.active = opponent;
+        two.state.priority = opponent;
+        let matching_all_three = put(&mut two, opponent, "Bear Cub", Zone::Hand);
+        cast(&mut two, matching_all_three, None);
+        settle(&mut two);
+        assert_eq!(two.state.players[opponent.index()].life, 18);
+        assert_eq!(two.state.players[player.index()].cards_drawn_this_turn, 1);
+
+        game.state.active = opponent;
+        game.state.priority = opponent;
+        for (name, matches) in [
+            ("Bear Cub", false),
+            ("Stingblade Assassin", true),
+            ("Barrow Naughty", true),
+            ("Quick Study", true),
+        ] {
+            let before = game.state.players[opponent.index()].life;
+            let drawn = game.state.players[player.index()].cards_drawn_this_turn;
+            let spell = put(&mut game, opponent, name, Zone::Hand);
+            cast(&mut game, spell, None);
+            settle(&mut game);
+            assert_eq!(
+                game.state.players[opponent.index()].life,
+                before - if matches { 2 } else { 0 },
+                "{name}"
+            );
+            assert_eq!(
+                game.state.players[player.index()].cards_drawn_this_turn,
+                drawn + u64::from(matches),
+                "{name}"
+            );
+        }
+    }
+}
+
+#[test]
+fn talions_messenger_loots_once_and_targets_a_faerie_after_the_discard() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let messenger = candidate(&mut game, player, "Talion's Messenger", Zone::Hand);
+    let discard = put(&mut game, player, "Island", Zone::Hand);
+    let first = put(&mut game, player, "Barrow Naughty", Zone::Battlefield);
+    let second = put(&mut game, player, "Faerie Dreamthief", Zone::Battlefield);
+    let nonfaerie = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let foreign = put(
+        &mut game,
+        player.other(),
+        "Faerie Dreamthief",
+        Zone::Battlefield,
+    );
+    cast(&mut game, messenger, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, messenger), (1, 3));
+    assert!(game
+        .object_view(messenger)
+        .keywords
+        .contains(Keywords::FLYING));
+    begin_attackers(&mut game);
+    let mut ground = game.clone();
+    act(&mut ground, Action::Attack { card: nonfaerie });
+    act(&mut ground, Action::FinishAttackers);
+    assert!(ground.state.stack.is_empty());
+    assert_eq!(
+        ground.state.players[player.index()].cards_drawn_this_turn,
+        0
+    );
+
+    for card in [first, second] {
+        act(&mut game, Action::Attack { card });
+    }
+    act(&mut game, Action::FinishAttackers);
+    assert_eq!(game.state.stack.len(), 1);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    assert_eq!(game.counter_count(messenger, CounterKind::PlusOne), 0);
+    reject(&mut game, target(messenger));
+    act(&mut game, Action::Discard { card: discard });
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    reject(&mut game, target(nonfaerie));
+    reject(&mut game, target(foreign));
+    act(&mut game, target(messenger));
+    settle(&mut game);
+    assert_eq!(game.counter_count(messenger, CounterKind::PlusOne), 1);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn goose_mother_enters_with_x_and_rounds_food_up_then_offers_a_paid_draw() {
+    let player = Player::P0;
+    for (x, expected_food) in [(0, 0), (2, 1), (3, 2)] {
+        let mut game = scenario(player);
+        let mother = candidate(&mut game, player, "The Goose Mother", Zone::Hand);
+        act(&mut game, Action::AnnounceCast { card: mother });
+        act(&mut game, Action::ChooseX { value: x });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 1, x],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, mother), (2 + i128::from(x), 2 + i128::from(x)));
+        assert_eq!(
+            game.counter_count(mother, CounterKind::PlusOne),
+            u64::from(x)
+        );
+        assert!(game.object_view(mother).keywords.contains(Keywords::FLYING));
+        let food = game
+            .observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.has_subtype("Food")
+            })
+            .map(|object| game.object_ref(object.id))
+            .collect::<Vec<_>>();
+        assert_eq!(food.len(), expected_food);
+        if x != 3 {
+            continue;
+        }
+
+        game.state.objects[mother as usize].summoning_sick = false;
+        begin_attackers(&mut game);
+        act(&mut game, Action::Attack { card: mother });
+        act(&mut game, Action::FinishAttackers);
+        pass_pair(&mut game);
+        let invalid = game.object_ref(mother);
+        reject(&mut game, Action::Sacrifice { object: invalid });
+        let mut decline = game.clone();
+        act(&mut decline, Action::DeclineEffectPayment);
+        settle(&mut decline);
+        assert_eq!(
+            decline.state.players[player.index()].cards_drawn_this_turn,
+            0
+        );
+        assert_eq!(decline.object_view(food[0].card).zone, Zone::Battlefield);
+
+        act(&mut game, Action::Sacrifice { object: food[0] });
+        settle(&mut game);
+        assert_ne!(game.object_view(food[0].card).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(food[1].card).zone, Zone::Battlefield);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    }
+}
+
+#[test]
+fn wildwood_mentor_counts_each_token_and_boosts_with_its_departure_power() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let mentor = candidate(&mut game, player, "Wildwood Mentor", Zone::Hand);
+    let dinner = put(&mut game, player, "Devouring Sugarmaw", Zone::Hand);
+    let attacker = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let idle = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+    let removal = put(&mut game, opponent, "Murder", Zone::Hand);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let swamps = [0; 3].map(|_| put(&mut game, opponent, "Swamp", Zone::Battlefield));
+    cast(&mut game, mentor, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, mentor), (1, 1));
+    act(&mut game, Action::AnnounceAdventure { card: dinner });
+    pay(&mut game);
+    pass_pair(&mut game);
+    for _ in 0..2 {
+        if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+            choose(&mut game, |action| {
+                matches!(action, Action::PutTrigger { .. })
+            });
+        }
+    }
+    assert_eq!(game.state.stack.len(), 2);
+    settle(&mut game);
+    assert_eq!(game.counter_count(mentor, CounterKind::PlusOne), 2);
+
+    game.state.objects[mentor as usize].summoning_sick = false;
+    begin_attackers(&mut game);
+    for card in [mentor, attacker] {
+        act(&mut game, Action::Attack { card });
+    }
+    act(&mut game, Action::FinishAttackers);
+    reject(&mut game, target(mentor));
+    reject(&mut game, target(idle));
+    act(&mut game, target(attacker));
+    let mut unchanged = game.clone();
+    settle(&mut unchanged);
+    assert_eq!(stats(&unchanged, attacker), (5, 5));
+
+    act(&mut game, Action::TapMana { card: forest });
+    cast(&mut game, growth, Some(Target::Card(mentor)));
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, mentor), (6, 6));
+    act(&mut game, Action::Pass);
+    for card in swamps {
+        act(&mut game, Action::TapMana { card });
+    }
+    cast(&mut game, removal, Some(Target::Card(mentor)));
+    settle(&mut game);
+    assert_eq!(game.object_view(mentor).zone, Zone::Graveyard);
+    assert_eq!(stats(&game, attacker), (8, 8));
+}
