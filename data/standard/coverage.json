@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b5f0dadeff2e613c5860d91c40509ec95b2d90118265d5d9d912e237df314ccd",
+  "catalogue_version": "73697c9176ee7307b322f339e99c1b6788b4a6941e325543a381f70ab90c4b2e",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4077,
-  "implemented_total": 4088,
+  "implemented_standard_cards": 4086,
+  "implemented_total": 4097,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 212,
-      "gated": 46
+      "complete": 221,
+      "gated": 37
     },
     "znr": {
       "total": 1,
@@ -13475,8 +13475,8 @@
     {
       "name": "Gadwick's First Duel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gadwick_s_first_duel.rs",
       "set": "woe"
     },
@@ -14707,8 +14707,8 @@
     {
       "name": "Goddric, Cloaked Reveler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/goddric_cloaked_reveler.rs",
       "set": "woe"
     },
@@ -17347,8 +17347,8 @@
     {
       "name": "Imodane, the Pyrohammer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/imodane_the_pyrohammer.rs",
       "set": "woe"
     },
@@ -18459,8 +18459,8 @@
     {
       "name": "Johann, Apprentice Sorcerer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/johann_apprentice_sorcerer.rs",
       "set": "woe"
     },
@@ -20107,8 +20107,8 @@
     {
       "name": "Lich-Knights' Conquest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/lich_knights_conquest.rs",
       "set": "woe"
     },
@@ -33435,8 +33435,8 @@
     {
       "name": "Stockpiling Celebrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/stockpiling_celebrant.rs",
       "set": "woe"
     },
@@ -37331,16 +37331,16 @@
     {
       "name": "Totentanz, Swarm Piper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/totentanz_swarm_piper.rs",
       "set": "woe"
     },
     {
       "name": "Tough Cookie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tough_cookie.rs",
       "set": "woe"
     },
@@ -38011,8 +38011,8 @@
     {
       "name": "Twisted Fealty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/twisted_fealty.rs",
       "set": "woe"
     },

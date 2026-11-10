@@ -1203,3 +1203,332 @@ fn wildwood_mentor_counts_each_token_and_boosts_with_its_departure_power() {
     assert_eq!(game.object_view(mentor).zone, Zone::Graveyard);
     assert_eq!(stats(&game, attacker), (8, 8));
 }
+
+#[test]
+fn stockpiling_celebrant_returns_another_nonland_then_scries_privately() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let celebrant = candidate(&mut game, player, "Stockpiling Celebrant", Zone::Hand);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    let before = game.state.players[player.index()].library.clone();
+    let top = *before.last().unwrap();
+    let next = before[before.len() - 2];
+
+    let mut no_target = game.clone();
+    cast(&mut no_target, celebrant, None);
+    settle(&mut no_target);
+    assert_eq!(stats(&no_target, celebrant), (3, 2));
+    assert_eq!(no_target.state.players[player.index()].library, before);
+
+    let stolen = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let exact = game.object_ref(stolen);
+    game.change_controller(exact, player);
+    cast(&mut game, celebrant, None);
+    pass_pair(&mut game);
+    for invalid in [celebrant, land, foreign] {
+        reject(&mut game, target(invalid));
+    }
+    act(&mut game, target(stolen));
+
+    let mut stale = game.clone();
+    act(&mut stale, Action::Pass);
+    cast(&mut stale, bounce, Some(Target::Card(stolen)));
+    settle(&mut stale);
+    assert_eq!(stale.state.players[player.index()].library, before);
+
+    pass_pair(&mut game);
+    let mut decline = game.clone();
+    act(&mut decline, Action::ChooseOptional { accept: false });
+    settle(&mut decline);
+    assert_eq!(decline.object_view(stolen).zone, Zone::Battlefield);
+    assert_eq!(decline.state.players[player.index()].library, before);
+
+    act(&mut game, Action::ChooseOptional { accept: true });
+    assert_eq!(game.object_view(stolen).zone, Zone::Hand);
+    assert_eq!(game.object_view(stolen).owner, opponent);
+    assert!(game.observe(player).library_choice.is_some());
+    assert!(game.observe(opponent).library_choice.is_none());
+    for (card, destination) in [
+        (top, LibraryDestination::Bottom),
+        (next, LibraryDestination::Top),
+    ] {
+        act(&mut game, Action::ArrangeLibrary { card, destination });
+    }
+    settle(&mut game);
+    assert_eq!(game.top_library_card(player), Some(next));
+    assert_eq!(
+        game.state.players[player.index()].library.first(),
+        Some(&top)
+    );
+}
+
+fn pass_to_later_main(game: &mut Game, player: Player) {
+    let turn = game.state.turn;
+    for _ in 0..48 {
+        if game.state.turn > turn && game.state.active == player && game.state.step == Step::Main1 {
+            return;
+        }
+        let action = match game.state.pending {
+            Pending::Attackers => Action::FinishAttackers,
+            Pending::Blockers => Action::FinishBlockers,
+            Pending::Priority => Action::Pass,
+            _ => panic!("unexpected pending state {:?}", game.state.pending),
+        };
+        act(game, action);
+    }
+    panic!("later main phase did not arrive");
+}
+
+#[test]
+fn twisted_fealty_has_independent_theft_and_wicked_role_targets() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let spell = candidate(&mut game, player, "Twisted Fealty", Zone::Hand);
+    let stolen = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let other = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    game.state.objects[stolen as usize].tapped = true;
+    game.add_counter(stolen, CounterKind::Stun, 1);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, target(stolen));
+    let mut no_role = game.clone();
+    act(&mut no_role, Action::FinishTargets);
+    pay(&mut no_role);
+    settle(&mut no_role);
+    assert_eq!(no_role.object_view(stolen).controller, player);
+    assert_eq!(stats(&no_role, stolen), (2, 2));
+
+    let mut only_role = game.clone();
+    act(&mut only_role, target(other));
+    pay(&mut only_role);
+    act(&mut only_role, Action::Pass);
+    cast(&mut only_role, bounce, Some(Target::Card(stolen)));
+    settle(&mut only_role);
+    assert_eq!(only_role.object_view(stolen).zone, Zone::Hand);
+    assert_eq!(only_role.object_view(other).controller, opponent);
+    assert_eq!(stats(&only_role, other), (3, 3));
+    assert!(!only_role
+        .object_view(other)
+        .keywords
+        .contains(Keywords::HASTE));
+
+    act(&mut game, target(stolen));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(stolen).controller, player);
+    assert!(game.object_view(stolen).tapped);
+    assert_eq!(game.counter_count(stolen, CounterKind::Stun), 0);
+    assert!(game.object_view(stolen).keywords.contains(Keywords::HASTE));
+    assert_eq!(stats(&game, stolen), (3, 3));
+    let exact = game.object_ref(stolen);
+    assert!(game.observe(player).objects.iter().any(|object| {
+        object.zone == Zone::Battlefield
+            && object.controller == player
+            && object.card == Card::from_catalogue_id(5248)
+            && object.attached_to == Some(exact)
+    }));
+    pass_to_later_main(&mut game, opponent);
+    assert_eq!(game.object_view(stolen).controller, opponent);
+    assert!(!game.object_view(stolen).keywords.contains(Keywords::HASTE));
+    assert_eq!(stats(&game, stolen), (3, 3));
+}
+
+#[test]
+fn tough_cookie_animates_an_owned_noncreature_artifact_and_has_its_own_food_ability() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let cookie = candidate(&mut game, player, "Tough Cookie", Zone::Hand);
+    let foreign = put(&mut game, opponent, "Candy Trail", Zone::Battlefield);
+    let lands = [0; 2].map(|_| put(&mut game, player, "Forest", Zone::Battlefield));
+    let activation = |card, ability| Action::AnnounceActivate {
+        card,
+        ability,
+        counter_payment: Counters::default(),
+    };
+    cast(&mut game, cookie, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, cookie), (2, 2));
+    assert_eq!(game.object_view(cookie).kinds & 17, 17);
+    assert!(game.object_view(cookie).has_subtype("Food"));
+    let food = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && object.is_token()
+                && object.has_subtype("Food")
+        })
+        .unwrap()
+        .id;
+    assert_eq!(game.object_view(food).kinds & 17, 16);
+    assert!(!game.legal_actions().iter().any(|action| matches!(
+        action,
+        Action::Activate { card, ability: 1, .. } | Action::AnnounceActivate { card, ability: 1, .. } if *card == cookie
+    )));
+
+    act(&mut game, activation(cookie, 0));
+    reject(&mut game, target(cookie));
+    reject(&mut game, target(foreign));
+    act(&mut game, target(food));
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 0, 0, 0, 1, 2],
+        },
+    );
+    settle(&mut game);
+    assert_eq!(stats(&game, food), (4, 4));
+    assert_eq!(game.object_view(food).kinds & 17, 17);
+    assert!(game.object_view(food).has_subtype("Food"));
+    assert!(!game.legal_actions().iter().any(|action| matches!(
+        action,
+        Action::Activate { card, .. } | Action::AnnounceActivate { card, .. } if *card == food
+    )));
+
+    pass_to_later_main(&mut game, player);
+    assert_eq!(game.object_view(food).kinds & 17, 16);
+    for card in lands {
+        act(&mut game, Action::TapMana { card });
+    }
+    choose(&mut game, |action| {
+        matches!(
+            action,
+            Action::Activate { card, ability: 1, .. } | Action::AnnounceActivate { card, ability: 1, .. } if *card == cookie
+        )
+    });
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    assert_eq!(game.object_view(cookie).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 23);
+    assert_eq!(game.object_view(food).zone, Zone::Battlefield);
+}
+
+#[test]
+fn totentanz_counts_self_and_nontoken_deaths_and_gives_attacking_rats_deathtouch() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let piper = candidate(&mut game, player, "Totentanz, Swarm Piper", Zone::Hand);
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let lands = [0; 2].map(|_| put(&mut game, player, "Swamp", Zone::Battlefield));
+    let song = put(&mut game, player, "Song of Totentanz", Zone::Hand);
+    let day = put(&mut game, player, "Day of Judgment", Zone::Hand);
+    let rite = put(&mut game, player, "Rite of Replication", Zone::Hand);
+    let murder = put(&mut game, player, "Murder", Zone::Hand);
+    let rats = |game: &Game| {
+        game.observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.has_subtype("Rat")
+            })
+            .collect::<Vec<_>>()
+    };
+    let order = |game: &mut Game| {
+        for _ in 0..2 {
+            if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+                choose(game, |action| matches!(action, Action::PutTrigger { .. }));
+            }
+        }
+    };
+    cast(&mut game, piper, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, piper), (2, 3));
+    act(&mut game, Action::AnnounceCast { card: song });
+    act(&mut game, Action::ChooseX { value: 2 });
+    pay(&mut game);
+    settle(&mut game);
+    let before = rats(&game);
+    assert_eq!(before.len(), 2);
+
+    let mut swept = game.clone();
+    cast(&mut swept, day, None);
+    pass_pair(&mut swept);
+    order(&mut swept);
+    assert_eq!(swept.state.stack.len(), 2);
+    settle(&mut swept);
+    assert_eq!(swept.object_view(piper).zone, Zone::Graveyard);
+    let after = rats(&swept);
+    assert_eq!(after.len(), 2);
+    assert!(after.iter().all(|rat| {
+        rat.power == 1
+            && rat.toughness == 1
+            && rat.keywords.contains(Keywords::CANT_BLOCK)
+            && before.iter().all(|old| old.reference != rat.reference)
+    }));
+
+    let mut copied = game.clone();
+    act(&mut copied, Action::AnnounceCast { card: rite });
+    act(&mut copied, Action::ChooseKicker { pay: false });
+    act(&mut copied, target(piper));
+    pay(&mut copied);
+    pass_pair(&mut copied);
+    let token = copied
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield
+                && object.is_token()
+                && object.name == "Totentanz, Swarm Piper"
+        })
+        .unwrap()
+        .reference;
+    act(&mut copied, Action::KeepLegend { object: token });
+    order(&mut copied);
+    settle(&mut copied);
+    let rat_count = rats(&copied).len();
+    cast(&mut copied, murder, Some(Target::Card(token.card)));
+    settle(&mut copied);
+    assert_eq!(rats(&copied).len(), rat_count + 1);
+
+    let announce = Action::AnnounceActivate {
+        card: piper,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject(&mut game, announce.clone());
+    begin_attackers(&mut game);
+    act(&mut game, Action::Attack { card: before[0].id });
+    act(&mut game, Action::Attack { card: own });
+    act(&mut game, Action::FinishAttackers);
+    for card in lands {
+        act(&mut game, Action::TapMana { card });
+    }
+    act(&mut game, announce);
+    reject(&mut game, target(before[1].id));
+    reject(&mut game, target(own));
+    act(&mut game, target(before[0].id));
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game
+        .object_view(before[0].id)
+        .keywords
+        .contains(Keywords::DEATHTOUCH));
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::Block {
+            blocker: foreign,
+            attacker: before[0].id,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(foreign).zone, Zone::Graveyard);
+    assert_eq!(rats(&game).len(), 1);
+}
