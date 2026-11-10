@@ -121,6 +121,7 @@ fn repeated_and_split_selections_pay_exact_artifacts_without_targets() {
             generation: vehicle_ref.generation + 1,
         }),
     );
+    let mut single_counter_first = game.clone();
     act(&mut game, remove(equipment_ref));
     assert_eq!(game.counter_count(equipment, CounterKind::PlusOne), 2);
 
@@ -151,6 +152,15 @@ fn repeated_and_split_selections_pay_exact_artifacts_without_targets() {
         game.apply_index(player, revision, index),
         Err(Error::StaleRevision)
     );
+    act(&mut single_counter_first, remove(vehicle_ref));
+    reject(&mut single_counter_first, remove(vehicle_ref));
+    act(&mut single_counter_first, remove(equipment_ref));
+    pay(&mut single_counter_first);
+    assert_eq!(
+        single_counter_first.counter_count(vehicle, CounterKind::PlusOne),
+        0
+    );
+
     act(&mut game, remove(vehicle_ref));
     pay(&mut game);
     assert_eq!(game.counter_count(equipment, CounterKind::PlusOne), 1);

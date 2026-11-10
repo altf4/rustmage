@@ -6821,12 +6821,21 @@ impl FundingState<'_> {
                 kind.map_or_else(|| counters.total(), |kind| u128::from(counters.get(kind)))
             })
             .sum::<u128>();
-        let invalid_selection = selected.iter().any(|(reference, _)| {
-            let object = self.object(reference.card);
-            self.reference(reference.card) != *reference
-                || object.zone != Zone::Battlefield
-                || object.controller != self.actor
-        });
+        // A tap-only window cannot replenish an overdrawn exact bearer.
+        let invalid_selection = selected
+            .iter()
+            .enumerate()
+            .any(|(index, &(reference, kind))| {
+                let object = self.object(reference.card);
+                let previous = selected[..index]
+                    .iter()
+                    .filter(|&&choice| choice == (reference, kind))
+                    .count();
+                self.reference(reference.card) != reference
+                    || object.zone != Zone::Battlefield
+                    || object.controller != self.actor
+                    || previous as u64 >= self.counter_amounts(reference.card).get(kind)
+            });
         (upper < u128::from(amount) || invalid_selection) && self.fixed_counter_cost_inventory()
     }
 
