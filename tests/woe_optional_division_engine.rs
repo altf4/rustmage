@@ -49,26 +49,7 @@ fn fixed_optional_division_keeps_empty_and_invalid_target_packets_distinct() {
         let mut empty = scenario(player);
         let source = put(&mut empty, player, "Frolicking Familiar", Zone::Hand);
         act(&mut empty, Action::AnnounceAdventure { card: source });
-        let actions = empty.legal_actions();
-        assert!(
-            !actions
-                .iter()
-                .any(|action| matches!(action, Action::ChooseTarget { .. }))
-        );
-        let finish = actions
-            .iter()
-            .position(|action| *action == Action::FinishTargets)
-            .unwrap();
-        let checkpoint = empty.snapshot();
-        let mut indexed = empty.clone();
-        act(&mut empty, Action::FinishTargets);
-        indexed
-            .apply_index(player, indexed.revision(), finish)
-            .unwrap();
-        assert_eq!(empty.snapshot(), indexed.snapshot());
-        indexed.restore(&checkpoint).unwrap();
-        act(&mut indexed, Action::FinishTargets);
-        assert_eq!(empty.snapshot(), indexed.snapshot());
+        assert_eq!(empty.state.pending, Pending::PayCosts { player });
         red_payment(&mut empty);
         assert!(empty.state.stack.last().unwrap().targets.is_empty());
         settle(&mut empty);
@@ -87,6 +68,31 @@ fn fixed_optional_division_keeps_empty_and_invalid_target_packets_distinct() {
         let bounce_first = put(&mut game, player, "Unsummon", Zone::Hand);
         let bounce_second = put(&mut game, player, "Unsummon", Zone::Hand);
         act(&mut game, Action::AnnounceAdventure { card: source });
+        assert_eq!(game.state.pending, Pending::Targets { player });
+        let actions = game.legal_actions();
+        assert!(actions.contains(&target(first)));
+        let finish = actions
+            .iter()
+            .position(|action| *action == Action::FinishTargets)
+            .unwrap();
+        let checkpoint = game.snapshot();
+        let mut declined = game.clone();
+        let mut indexed = game.clone();
+        act(&mut declined, Action::FinishTargets);
+        indexed
+            .apply_index(player, game.revision(), finish)
+            .unwrap();
+        assert_eq!(declined.snapshot(), indexed.snapshot());
+        indexed.restore(&checkpoint).unwrap();
+        act(&mut indexed, Action::FinishTargets);
+        assert_eq!(declined.snapshot(), indexed.snapshot());
+        red_payment(&mut declined);
+        assert!(declined.state.stack.last().unwrap().targets.is_empty());
+        settle(&mut declined);
+        assert_eq!(declined.object_view(source).zone, Zone::Exile);
+        assert_eq!(declined.counter_count(first, CounterKind::PlusOne), 0);
+        assert_eq!(declined.counter_count(second, CounterKind::PlusOne), 0);
+
         reject(&mut game, target(foreign));
         act(&mut game, target(first));
         act(&mut game, target(second));
@@ -118,6 +124,7 @@ fn fixed_optional_division_keeps_empty_and_invalid_target_packets_distinct() {
 fn groves_bounty_accepts_zero_targets_with_paid_positive_x() {
     let player = Player::P0;
     let mut game = scenario(player);
+    let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let otter = put(
         &mut game,
         player,
@@ -126,6 +133,8 @@ fn groves_bounty_accepts_zero_targets_with_paid_positive_x() {
     );
     act(&mut game, Action::AnnounceAdventure { card: otter });
     act(&mut game, Action::ChooseX { value: 2 });
+    assert_eq!(game.state.pending, Pending::Targets { player });
+    assert!(game.legal_actions().contains(&target(recipient)));
     act(&mut game, Action::FinishTargets);
     act(
         &mut game,
@@ -138,6 +147,7 @@ fn groves_bounty_accepts_zero_targets_with_paid_positive_x() {
     assert!(spell.targets.is_empty());
     settle(&mut game);
     assert_eq!(game.object_view(otter).zone, Zone::Exile);
+    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 0);
 }
 
 #[test]
