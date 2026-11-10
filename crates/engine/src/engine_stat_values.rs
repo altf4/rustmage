@@ -393,18 +393,43 @@ impl Game {
                         })
                 })
                 .count() as i128,
-            StatValue::SourceModified => i128::from(
-                objects()
-                    .find(|(id, o)| *id == source.card && o.generation == source.generation)
-                    .is_some_and(|(_, o)| {
-                        Self::object_modified_with(
-                            source,
-                            o,
-                            has_counters(source.card),
-                            objects().map(|(_, o)| o),
-                        )
-                    }),
-            ),
+            StatValue::SourceModified | StatValue::ControlledModifiedCreatures => {
+                let modified = |id, object: &Object| {
+                    Self::object_modified_with(
+                        ObjectRef {
+                            card: id,
+                            generation: object.generation,
+                        },
+                        has_counters(id),
+                        objects(),
+                        |id, attachment| {
+                            let kind = kinds(id, attachment);
+                            (kind & 16 != 0 && subtypes(id).has(attachment.card, "Equipment"))
+                                || (kind & 32 != 0
+                                    && attachment.controller == object.controller
+                                    && subtypes(id).has(attachment.card, "Aura"))
+                        },
+                    )
+                };
+                let modified_creature = |id, object: &Object| {
+                    object.zone == Zone::Battlefield
+                        && kinds(id, object) & 1 != 0
+                        && modified(id, object)
+                };
+                if value == StatValue::SourceModified {
+                    i128::from(objects().any(|(id, object)| {
+                        id == source.card
+                            && object.generation == source.generation
+                            && modified_creature(id, object)
+                    }))
+                } else {
+                    objects()
+                        .filter(|&(id, object)| {
+                            object.controller == owner && modified_creature(id, object)
+                        })
+                        .count() as i128
+                }
+            }
             StatValue::Tokens(filter) => objects()
                 .filter(|&(id, o)| {
                     o.is_token()

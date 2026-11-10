@@ -81,14 +81,6 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     && object.attached_to == Some(self.reference(id))
             })
     }
-    fn is_modified(&self, id: CardId) -> bool {
-        Game::object_modified_with(
-            self.reference(id),
-            self.object(id),
-            self.counter_amounts(id).has_any(),
-            self.attachment_sources().iter().map(|&id| self.object(id)),
-        )
-    }
     fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         self.game.stat_value_in_world(self, value, source, owner)
     }
@@ -1181,6 +1173,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         } else {
             self.layered_stats(id)
         };
+        let kinds = self.current_kinds(id);
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
             additional_creature_death_triggers:
@@ -1189,7 +1182,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
-            kinds: self.current_kinds(id),
+            kinds,
             colors: CharacteristicWorld::colors(self, id),
             effective_legendary: {
                 let intrinsic = self
@@ -1231,7 +1224,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .game()
                 .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
-            modified: self.is_modified(id),
+            modified: kinds & 1 != 0 && self.has_modification(id),
             attacking: CharacteristicWorld::attacking(self, id),
             power: stats.power,
             toughness: stats.toughness,

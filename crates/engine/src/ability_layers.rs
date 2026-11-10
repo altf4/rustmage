@@ -301,6 +301,8 @@ pub enum StaticAbilityFragment {
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
+    /// A rule restriction on explicit counters, independent of stack target legality.
+    StackItemsCannotBeCountered,
     /// Each instance grants a distinct optional paired-tap copy cost.
     NoncreatureConspire,
     ConvokeCreatureSpells,

@@ -7,33 +7,18 @@ impl Game {
         self.draw_many_interruptible(player, amount);
     }
 
-    pub(super) fn is_modified(&self, id: CardId) -> bool {
-        Self::object_modified_with(
-            self.object_ref(id),
-            &self.state.objects[id as usize],
-            self.counter_amounts(id).has_any(),
-            self.state
-                .attachment_sources
-                .iter()
-                .map(|&id| &self.state.objects[id as usize]),
-        )
-    }
-
     pub(super) fn object_modified_with<'a>(
         source: ObjectRef,
-        object: &Object,
         has_counters: bool,
-        attachments: impl Iterator<Item = &'a Object>,
+        mut attachments: impl Iterator<Item = (CardId, &'a Object)>,
+        qualifies: impl Fn(CardId, &Object) -> bool,
     ) -> bool {
-        object.zone == Zone::Battlefield
-            && (has_counters
-                || attachments.into_iter().any(|attachment| {
-                    attachment.zone == Zone::Battlefield
-                        && attachment.attached_to == Some(source)
-                        && (attachment.card.equipment().is_some()
-                            || (attachment.card.aura().is_some()
-                                && attachment.controller == object.controller))
-                }))
+        has_counters
+            || attachments.any(|(id, attachment)| {
+                attachment.zone == Zone::Battlefield
+                    && attachment.attached_to == Some(source)
+                    && qualifies(id, attachment)
+            })
     }
 
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
@@ -61,7 +46,7 @@ impl Game {
             battlefield: object.zone == Zone::Battlefield,
             counter: self.counter_amounts(id).has_any(),
             plus_one: object.counters.plus_one > 0,
-            modified: self.is_modified(id),
+            modified: creature && ability_world::CharacteristicWorld::has_modification(self, id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),
         }
     }

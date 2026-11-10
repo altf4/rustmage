@@ -408,6 +408,8 @@ pub enum TargetPredicate {
     Permanent,
     /// A live Equipment is attached to this exact battlefield object.
     Equipped,
+    /// The current creature has a counter, Equipment, or its controller's Aura.
+    Modified,
     Attacking,
     /// This exact permanent was declared as an attacker earlier this turn.
     AttackedThisTurn,
@@ -4304,6 +4306,7 @@ pub enum StatValue {
     SourceClassLevelAtLeast(u8),
     ArtifactEnteredThisTurn,
     SourceModified,
+    ControlledModifiedCreatures,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
     MulticoloredPermanentsYouControl,
@@ -5587,6 +5590,8 @@ pub struct DepartureRule {
     /// Actual destinations after replacement effects. Empty allows all destinations.
     pub destinations: &'static [Zone],
     pub nontoken: bool,
+    /// Only a creature that was modified before the departure event.
+    pub modified: bool,
     pub counters: DepartureCounters,
     pub minimum_power: Option<i32>,
 }
@@ -5598,6 +5603,7 @@ impl DepartureRule {
         subject: DepartureSubject::Any,
         destinations: &[],
         nontoken: false,
+        modified: false,
         counters: DepartureCounters::Unrestricted,
         minimum_power: None,
     };

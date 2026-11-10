@@ -62,6 +62,7 @@ impl DepartureRule {
             && counters_match
             && (self.destinations.is_empty() || self.destinations.contains(&event.destination))
             && (!self.nontoken || !before.is_token())
+            && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
             && self
                 .minimum_power

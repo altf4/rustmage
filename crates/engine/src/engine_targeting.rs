@@ -2097,6 +2097,9 @@ impl Game {
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
                     TargetPredicate::Equipped => world.equipped(id),
+                    TargetPredicate::Modified => {
+                        world.kinds(id) & 1 != 0 && world.has_modification(id)
+                    }
                     TargetPredicate::Attacking => world.attacking(id),
                     TargetPredicate::AttackedThisTurn => {
                         self.state.attacked_this_turn.contains(&self.object_ref(id))

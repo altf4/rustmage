@@ -1448,6 +1448,21 @@ pub(super) trait CharacteristicWorld {
                 .iter()
                 .any(|&source| self.equipment_attached_to(source, self.reference(id)))
     }
+    fn has_modification(&self, id: CardId) -> bool {
+        let object = self.object(id);
+        object.zone == Zone::Battlefield
+            && Game::object_modified_with(
+                self.reference(id),
+                self.counter_amounts(id).has_any(),
+                self.attachment_sources()
+                    .iter()
+                    .map(|&id| (id, self.object(id))),
+                |id, attachment| {
+                    self.is_equipment(id)
+                        || (attachment.controller == object.controller && self.is_aura(id))
+                },
+            )
+    }
     fn attached(&self, source: ObjectRef, recipient: CardId) -> bool {
         self.attachment_link(source, self.reference(recipient))
             && self.kinds(source.card) & 1 == 0
