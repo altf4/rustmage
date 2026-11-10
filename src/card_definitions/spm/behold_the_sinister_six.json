@@ -3,10 +3,30 @@
   "catalogue_id": 374,
   "oracle_id": "6fa27f8a-bade-460f-853a-abc1c05c946a",
   "facts_sha256": "76f99b4fc6c1f05234893afba1d6239eef212d03279faf0994b1e5ae94cf517f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "89a3b9a1cbe303a4afee6a4e861a32d17fb0474f359893d8c37c867319a4bf0c"
   },
-  "physical_metadata_sha256": "896338b976e784df50c3247dacb3e3292882f34b93dd82bf6a3b99b76973dec4"
+  "physical_metadata_sha256": "896338b976e784df50c3247dacb3e3292882f34b93dd82bf6a3b99b76973dec4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeholdTheSinisterSix.java",
+  "java_sha256": "49ea8434ec59daf37a9a799d7df4c7120452a0e5a1c793ad9a12427016fda52a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

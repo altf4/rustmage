@@ -3,10 +3,60 @@
   "catalogue_id": 197,
   "oracle_id": "28d500ea-720f-4332-891e-404fb03acb5c",
   "facts_sha256": "2c94591f3667e582a3eb88a6d905acb8923bde1e4484f562db80036d49857bcb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9d6d5d268b28e3143ec33d573464c1c1394e4ed08bac4229ba1fc1ea1267765"
   },
-  "physical_metadata_sha256": "d93085fe75b059f8bd728d689541e8d3e8b28376a14ba2164da20b762e1d83dc"
+  "physical_metadata_sha256": "d93085fe75b059f8bd728d689541e8d3e8b28376a14ba2164da20b762e1d83dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArachnePsionicWeaver.java",
+  "java_sha256": "cb0e8188b859f1da7bf5f0c23e3953621c8fcb906b27a0a9e3779ecb420cf94d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotNonTargetEffect.java",
+      "sha256": "81398a179b9a5f2fbfda118b6137df5c1772361d3f0b57dfde1a8284c44b331e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCardTypeEffect.java",
+      "sha256": "aa4407066a9839623f6dd7bb7093c8893d2afdd362334f5c84f977510dd9cfc4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookAtTargetPlayerHandEffect.java",
+      "sha256": "8a01bac4009188c9713f159867321fc18841797f9d3ba8fca6e89922f05d6003"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostIncreasingAllEffect.java",
+      "sha256": "48923c7e162dba7605f3f088e839b9953d298c88b06150147562094c01445cb8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WebSlingingAbility.java",
+      "sha256": "ce50bf4d1434e907fef1b9532df30264f178206a6d531e5951a4994e19a53957"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }

@@ -1,16 +1,46 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+const BONUS: EquipmentSpec = EquipmentSpec {
+    stats: Stats {
+        power: 4,
+        toughness: 4,
     },
-    entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+};
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::OtherFilteredEntersYou(
+            EntryPredicate::CreatureManaValueAtLeast(5),
+        ),
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::May { skip: 1 },
+            Instruction::AttachSourceToEntering,
+        ],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            generic: 5,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: one(TargetRule::creature_you_control()),
+        program: &[Instruction::AttachSource],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Modify,
+        fragments: &[StaticAbilityFragment::AttachmentStats(BONUS.stats)],
+    }],
+    extras: &CardExtras {
+        equipment: Some(BONUS),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

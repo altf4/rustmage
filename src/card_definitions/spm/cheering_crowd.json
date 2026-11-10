@@ -3,10 +3,45 @@
   "catalogue_id": 733,
   "oracle_id": "e11839d5-99fe-4cc8-802e-be669ad274ee",
   "facts_sha256": "6746a6f695af2cae379c2dcc22637e8a5e377e8e7fc64b28d09411ff3c180c7b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d4e29e5ce703dd5d20cf2678ce2254f3e9fb9ad391c6f9536f25c7c304b2b64f"
   },
-  "physical_metadata_sha256": "33b0ef2282dba1398b78557df82cac891b945c7c4a6a9a70adf1e3703bf2a13c"
+  "physical_metadata_sha256": "33b0ef2282dba1398b78557df82cac891b945c7c4a6a9a70adf1e3703bf2a13c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CheeringCrowd.java",
+  "java_sha256": "450f81a001d7da65984456d83898bf0d36df5840df4ac83a4935555850ff5e00",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PutCountersSourceCost.java",
+      "sha256": "6ee6f6dcdd9c90ead2c8eed813fc89ed3236b8e6b8c3d1686fe0d23e8aff96da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

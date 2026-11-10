@@ -3,10 +3,50 @@
   "catalogue_id": 1120,
   "oracle_id": "2fecfbef-e521-4025-94ea-451c9abde3de",
   "facts_sha256": "8b998c205169f39e078283dc0873fefe3749f3a57895c3a914ac56e162685f8e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98bb33dad5bf4233b2d49f4d465a6557b86622e52dd0ae6e3bc63d1f29652694"
   },
-  "physical_metadata_sha256": "34cfa9311cd30ad43018e2816873eaaaf71c4fd00b15320758f2cf0e6992f5f7"
+  "physical_metadata_sha256": "34cfa9311cd30ad43018e2816873eaaaf71c4fd00b15320758f2cf0e6992f5f7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DoctorOctopusMasterPlanner.java",
+  "java_sha256": "d7e08b3a9186310e6ecf3dd00c5e0b5b9a363fc8d4af3c95f50914cf53405f01",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CardsInHandCondition.java",
+      "sha256": "f800994982a02a45f1ab09d9fc85d88a5159699bc87b73781d03b1c738411c25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardsEqualToDifferenceEffect.java",
+      "sha256": "9658545a5c034cb3a1c67f037a94d78193b800a1076e565e4e8ebba2547bf93a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

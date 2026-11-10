@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9f8f05cb0d7b35cbc9e9c7bb6096be08c58a661956f7e045b23acf8a0e209f85"
   },
-  "physical_metadata_sha256": "df097205aacf8c3312f5d99e249c43bcc4f4cc4c01dd543521bc7bf0a661054e"
+  "physical_metadata_sha256": "df097205aacf8c3312f5d99e249c43bcc4f4cc4c01dd543521bc7bf0a661054e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CosmicSpiderMan.java",
+  "java_sha256": "feec5217ee82a9fb0c7254e6f4793495834bb4e8c8c58fa9f273d82ab1524ae2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    }
+  ]
 }
