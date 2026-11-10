@@ -293,6 +293,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
+                            | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)

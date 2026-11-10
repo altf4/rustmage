@@ -12740,7 +12740,7 @@ impl Game {
             })
             + s.announcing
                 .as_ref()
-                .and_then(|a| a.power_up_costs.as_ref())
+                .and_then(|a| a.activation_reductions.as_ref())
                 .map_or(0, |r| r.bytes())
             + s.announcing.as_ref().map_or(0, |a| {
                 a.counter_payment.owned_bytes()

@@ -33,6 +33,14 @@ pub struct StaticAbilityGroup {
     pub fragments: &'static [StaticAbilityFragment],
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ActivationReductionAmount {
+    Fixed(u32),
+    /// Sample this discount provider's live power before the cost is locked.
+    ProviderPower,
+}
+
 /// Qualifications belong to the ability's actual permanent source, not the
 /// immutable card which supplied a granted program.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -89,6 +97,12 @@ pub enum StaticAbilityFragment {
     /// Generic reduction for exhaust abilities of other controlled permanents.
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
+    /// Reduce mana for activations of matching battlefield permanents you control.
+    ControlledActivationReduction {
+        kinds: u16,
+        amount: ActivationReductionAmount,
+        leave_one_mana: bool,
+    },
     ControlledLandTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,

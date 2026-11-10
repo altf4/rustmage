@@ -3,9 +3,10 @@
 pub mod ability_layers;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub use ability_layers::{
-    AbilityLayer, AdditionalTriggerScope, AnimationCreatureTypes, AnimationDuration, AnimationSpec,
-    AttachedCharacteristics, CreatureSubtypeGrant, LandManaRecipients, PermanentForm,
-    SourceCreatureForm, StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
+    AbilityLayer, ActivationReductionAmount, AdditionalTriggerScope, AnimationCreatureTypes,
+    AnimationDuration, AnimationSpec, AttachedCharacteristics, CreatureSubtypeGrant,
+    LandManaRecipients, PermanentForm, SourceCreatureForm, StaticAbilityFragment,
+    StaticAbilityGroup, UntapRestriction,
 };
 
 #[doc(hidden)]

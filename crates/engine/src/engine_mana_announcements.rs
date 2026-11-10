@@ -135,7 +135,7 @@ impl Game {
                                 + conspire::bytes(&a.conspire)
                                 + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
                                 + a.convoke.as_ref().map_or(0, |v| v.bytes())
-                                + a.power_up_costs.as_ref().map_or(0, |v| v.bytes())
+                                + a.activation_reductions.as_ref().map_or(0, |v| v.bytes())
                                 + a.evidence.as_ref().map_or(0, |v| v.bytes())
                                 + a.forage.as_ref().map_or(0, |v| v.bytes())
                                 + a.additional_group.as_ref().map_or(0, |v| {

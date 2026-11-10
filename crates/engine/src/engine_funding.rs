@@ -534,21 +534,16 @@ fn visit_funding_payments(
 fn funding_cost_payments(
     pool: [u128; 6],
     cost: ActivationCost,
-    discount: u32,
+    discounts: power_up::ActivationDiscounts,
     increase: u32,
-    reductions: Option<&power_up::PowerUpCosts>,
+    reductions: Option<&power_up::ActivationCostReductions>,
     mut emit: impl FnMut([u64; 6], Option<ManaCost>),
 ) {
     let mut seen = std::collections::HashSet::new();
-    const ZERO: ManaCost = ManaCost {
-        colored: [0; 6],
-        generic: 0,
-    };
     for base in cost.mana_options() {
-        for &reduction in
-            reductions.map_or(std::slice::from_ref(&ZERO), |r| r.reductions.as_slice())
-        {
-            let Some(equivalent) = power_up::reduce(base, reduction, discount, u64::from(increase))
+        for &reduction in power_up::ActivationCostReductions::options(reductions) {
+            let Some(equivalent) =
+                power_up::reduce(base, reduction, discounts, u64::from(increase))
             else {
                 continue;
             };
@@ -1113,6 +1108,7 @@ impl<'g> FundingState<'g> {
                                 group.fragments.iter().any(|fragment| matches!(
                                     fragment,
                                     StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
+                                        | StaticAbilityFragment::ControlledActivationReduction { .. }
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
@@ -1998,7 +1994,11 @@ impl<'g> FundingState<'g> {
                     funding_cost_payments(
                         mana_lots::available(self.mana, &self.lots, purpose),
                         ActivationCost::ZERO,
-                        0,
+                        if increase == 0 {
+                            power_up::ActivationDiscounts::default()
+                        } else {
+                            self.controlled_activation_discounts(entry.id)
+                        },
                         increase,
                         None,
                         |payment, deferred| {
@@ -2088,7 +2088,11 @@ impl<'g> FundingState<'g> {
                     funding_cost_payments(
                         mana_lots::available(self.mana, &self.lots, purpose),
                         ActivationCost::ZERO,
-                        0,
+                        if increase == 0 {
+                            power_up::ActivationDiscounts::default()
+                        } else {
+                            self.controlled_activation_discounts(entry.id)
+                        },
                         increase,
                         None,
                         |payment, deferred| {

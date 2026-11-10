@@ -33,7 +33,7 @@ pub(super) struct Announcement {
     pub activation_generic_increase: u32,
     /// Only explicit alternative choices allocate this cold pre-reduction receipt.
     pub activation_choice: Option<Box<ActivationCostChoice>>,
-    pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
+    pub activation_reductions: Option<Box<power_up::ActivationCostReductions>>,
     pub free_hand_permission: Option<Box<ObjectRef>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
     pub origin_counter_cost: Option<u16>,
@@ -623,31 +623,30 @@ impl Announcement {
                 )
             })
             .flat_map(move |(cost, route, evoked)| {
-                const ZERO: [ManaCost; 1] = [ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                }];
-                self.power_up_costs
-                    .as_deref()
-                    .map_or(&ZERO[..], |r| r.reductions.as_slice())
+                let reductions = self.activation_reductions.as_deref();
+                let discounts = power_up::ActivationDiscounts {
+                    ordinary: u64::from(self.activation_discount)
+                        + reductions.map_or(0, |costs| costs.extra_ordinary),
+                    leave_one: reductions.map_or(0, |costs| costs.leave_one),
+                };
+                power_up::ActivationCostReductions::options(reductions)
                     .iter()
                     .filter_map(move |&reduction| {
-                        power_up::reduce_wide(
+                        power_up::reduce(
                             cost,
                             reduction,
-                            u64::from(self.activation_discount)
-                                + match self.item.kind {
-                                    StackKind::ActivatedAbility { ability } => {
-                                        5 * u64::from(
-                                            self.item
-                                                .source
-                                                .expect("activation source")
-                                                .card
-                                                .activation_target_color_discount(ability),
-                                        )
-                                    }
-                                    _ => 0,
-                                },
+                            discounts.with_ordinary(match self.item.kind {
+                                StackKind::ActivatedAbility { ability } => {
+                                    5 * u64::from(
+                                        self.item
+                                            .source
+                                            .expect("activation source")
+                                            .card
+                                            .activation_target_color_discount(ability),
+                                    )
+                                }
+                                _ => 0,
+                            }),
                             u64::from(self.activation_generic_increase)
                                 + if route == ActivationCostRoute::Printed {
                                     u64::from(self.item.x.unwrap_or(0))
@@ -2705,12 +2704,13 @@ impl Game {
             return false;
         }
         assert!(self.state.announcing.is_none());
+        let (activation_discount, activation_reductions) = self.capture_activation_discounts(&item);
         self.state.announcing = Some(Announcement {
             behold_required: false,
             equip_zero_available: false,
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
-            activation_discount: self.item_activation_discount(&item),
+            activation_discount,
             activation_generic_increase: item
                 .source
                 .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
@@ -2721,7 +2721,7 @@ impl Game {
                 }),
             activation_choice: None,
             mana_output: None,
-            power_up_costs: self.item_power_up_costs(&item),
+            activation_reductions,
             free_hand_permission: None,
             origin_counter_cost: None,
             origin_additional_cost: None,
@@ -2939,13 +2939,14 @@ impl Game {
         let casualty = self.casualty_declarations(&item);
         let conspire = self.conspire_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
+        let (activation_discount, activation_reductions) = self.capture_activation_discounts(&item);
         Announcement {
             behold_required: self.behold_timing_required(&item),
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
-            activation_discount: self.item_activation_discount(&item),
+            activation_discount,
             activation_generic_increase: item
                 .source
                 .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
@@ -2956,7 +2957,7 @@ impl Game {
                 }),
             activation_choice: None,
             mana_output,
-            power_up_costs: self.item_power_up_costs(&item),
+            activation_reductions,
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost: None,

@@ -20,12 +20,22 @@ pub(super) struct UseRow {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<UseRow>>;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub(super) struct PowerUpCosts {
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct ActivationCostReductions {
+    /// Entry-turn Power-up mana reductions, if any.
     pub reductions: Vec<ManaCost>,
+    /// The capped part of the provisional discount before the total is locked.
+    pub leave_one: u64,
+    /// Amount that exceeds the ordinary inline discount field.
+    pub extra_ordinary: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl PowerUpCosts {
+impl ActivationCostReductions {
+    pub(super) fn options(context: Option<&Self>) -> &[ManaCost] {
+        context
+            .filter(|costs| !costs.reductions.is_empty())
+            .map_or(&[ManaCost::ZERO], |costs| costs.reductions.as_slice())
+    }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>() + self.reductions.len() * std::mem::size_of::<ManaCost>()
     }
@@ -36,32 +46,44 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
         std::mem::size_of::<Vec<UseRow>>() + r.len() * std::mem::size_of::<UseRow>()
     })
 }
-/// Apply generic and typed reductions after X is included (CR118.7, 702.193b).
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
+pub(super) struct ActivationDiscounts {
+    pub ordinary: u64,
+    pub leave_one: u64,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ActivationDiscounts {
+    pub(super) fn with_ordinary(self, amount: u64) -> Self {
+        Self {
+            ordinary: self.ordinary.saturating_add(amount),
+            ..self
+        }
+    }
+}
+
+/// Apply generic and typed reductions after X and increases (CR118.7, 601.2f).
 /// Excess typed reduction pays generic, but never another mana type.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn reduce(
     base: ManaCost,
     reduction: ManaCost,
-    generic: u32,
-    x: u64,
-) -> Option<ManaCost> {
-    reduce_wide(base, reduction, u64::from(generic), x)
-}
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn reduce_wide(
-    base: ManaCost,
-    reduction: ManaCost,
-    generic: u64,
-    x: u64,
+    discounts: ActivationDiscounts,
+    x_and_increases: u64,
 ) -> Option<ManaCost> {
     let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(reduction.colored[i]));
     let excess = (0..6)
         .map(|i| u64::from(reduction.colored[i].saturating_sub(base.colored[i])))
         .sum::<u64>();
-    let raw = u64::from(base.generic).checked_add(x)?;
-    let reduction = excess
+    let raw = u64::from(base.generic).checked_add(x_and_increases)?;
+    // Apply the capped effects first. The remaining mana can be removed by
+    // independent reductions. An unchanged colored symbol already meets the floor.
+    let minimum_generic = u64::from(base.colored == [0; 6]);
+    let capped = discounts.leave_one.min(raw.saturating_sub(minimum_generic));
+    let reduction = capped
+        .saturating_add(excess)
         .saturating_add(u64::from(reduction.generic))
-        .saturating_add(generic);
+        .saturating_add(discounts.ordinary);
     Some(ManaCost {
         colored,
         generic: u32::try_from(raw.saturating_sub(reduction)).ok()?,
@@ -71,10 +93,10 @@ pub(super) fn reduce_wide(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct ActivationManaCosts {
     bases: crate::cards::mana_symbols::ManaOptions,
-    power_up: Option<Box<PowerUpCosts>>,
+    power_up: Option<Box<ActivationCostReductions>>,
     base: Option<ManaCost>,
     reduction_index: usize,
-    generic_discount: u64,
+    discounts: ActivationDiscounts,
     generic_increase: u32,
     x: u64,
 }
@@ -87,23 +109,16 @@ impl Iterator for ActivationManaCosts {
                 self.base = Some(self.bases.next()?);
                 self.reduction_index = 0;
             }
-            const ZERO: [ManaCost; 1] = [ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            }];
-            let reductions = self
-                .power_up
-                .as_deref()
-                .map_or(&ZERO[..], |r| r.reductions.as_slice());
+            let reductions = ActivationCostReductions::options(self.power_up.as_deref());
             let Some(&reduction) = reductions.get(self.reduction_index) else {
                 self.base = None;
                 continue;
             };
             self.reduction_index += 1;
-            if let Some(cost) = reduce_wide(
+            if let Some(cost) = reduce(
                 self.base.unwrap(),
                 reduction,
-                self.generic_discount,
+                self.discounts,
                 self.x + u64::from(self.generic_increase),
             ) {
                 return Some(cost);
@@ -183,17 +198,30 @@ impl Game {
         object: ObjectRef,
         definition: Card,
         ability: u16,
-    ) -> Option<Box<PowerUpCosts>> {
+    ) -> Option<Box<ActivationCostReductions>> {
         ability_world::CharacteristicWorld::activation_power_up_costs(
             self, object, definition, ability,
         )
     }
-    pub(super) fn item_power_up_costs(&self, item: &SpellView) -> Option<Box<PowerUpCosts>> {
+    pub(super) fn capture_activation_discounts(
+        &self,
+        item: &SpellView,
+    ) -> (u32, Option<Box<ActivationCostReductions>>) {
         let StackKind::ActivatedAbility { ability } = item.kind else {
-            return None;
+            return (0, None);
         };
-        let source = item.source?;
-        self.power_up_costs(source.object, source.card, ability)
+        let Some(source) = item.source else {
+            return (0, None);
+        };
+        let discounts = self.item_activation_discount(item);
+        let mut context = self.power_up_costs(source.object, source.card, ability);
+        if discounts.leave_one != 0 || discounts.ordinary > u64::from(u32::MAX) {
+            let context = context.get_or_insert_with(Box::default);
+            context.leave_one = discounts.leave_one;
+            context.extra_ordinary = discounts.ordinary.saturating_sub(u64::from(u32::MAX));
+        }
+        let ordinary = u32::try_from(discounts.ordinary).unwrap_or(u32::MAX);
+        (ordinary, context)
     }
     pub(super) fn activation_mana_costs(
         &self,
@@ -210,11 +238,9 @@ impl Game {
             // A target is still to be chosen. Keep every raw choice that might
             // fit after its color reduction; target-aware funding recomputes
             // the exact total from the raw choice before accepting any target.
-            generic_discount: u64::from(
-                self.activation_generic_discount(source, definition, ability),
-            ) + 5 * u64::from(
-                definition.activation_target_color_discount(ability),
-            ),
+            discounts: self
+                .activation_generic_discount(source, definition, ability)
+                .with_ordinary(5 * u64::from(definition.activation_target_color_discount(ability))),
             generic_increase: ability_world::CharacteristicWorld::named_activation_generic_increase(
                 self, source,
             ),

@@ -227,17 +227,20 @@ impl Game {
         source: CardId,
         definition: Card,
         ability: u16,
-    ) -> u32 {
+    ) -> power_up::ActivationDiscounts {
         ability_world::CharacteristicWorld::activation_generic_discount(
             self, source, definition, ability,
         )
     }
-    pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
-        match item.kind {
-            StackKind::ActivatedAbility { ability } => item.source.map_or(0, |source| {
+    pub(super) fn item_activation_discount(
+        &self,
+        item: &SpellView,
+    ) -> power_up::ActivationDiscounts {
+        match (item.kind, item.source) {
+            (StackKind::ActivatedAbility { ability }, Some(source)) => {
                 self.activation_generic_discount(source.id, source.card, ability)
-            }),
-            _ => 0,
+            }
+            _ => power_up::ActivationDiscounts::default(),
         }
     }
     pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {

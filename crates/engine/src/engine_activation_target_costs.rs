@@ -31,7 +31,7 @@ impl Game {
             let discount = self.item_activation_discount(&a.item);
             let a = self.state.announcing.as_mut().unwrap();
             a.activation_generic_increase = increase;
-            a.activation_discount = discount;
+            a.activation_discount = u32::try_from(discount.ordinary).unwrap_or(u32::MAX);
             a.total_cost = Some(total);
             return;
         }
@@ -54,7 +54,7 @@ impl Game {
         let total = self.selected_activation_target_cost(&a.item, base);
         let a = self.state.announcing.as_mut().unwrap();
         a.activation_generic_increase = increase;
-        a.activation_discount = discount;
+        a.activation_discount = u32::try_from(discount.ordinary).unwrap_or(u32::MAX);
         a.total_cost = Some(total);
     }
 
@@ -64,21 +64,21 @@ impl Game {
         };
         let source = a.item.source.expect("activation source");
         let choice = a.raw_activation_choice();
-        let discount = u64::from(self.item_activation_discount(&a.item)).saturating_add(
-            self.activation_target_discount(
-                a.item.controller,
-                source.object,
-                source.card,
-                ability,
-                target,
-            ),
-        );
+        let discount =
+            self.item_activation_discount(&a.item)
+                .with_ordinary(self.activation_target_discount(
+                    a.item.controller,
+                    source.object,
+                    source.card,
+                    ability,
+                    target,
+                ));
         let x = if choice.route == ActivationCostRoute::Printed {
             u64::from(a.item.x.unwrap_or(0)) * u64::from(source.card.activation_x_symbols(ability))
         } else {
             0
         };
-        power_up::reduce_wide(
+        power_up::reduce(
             choice.base,
             choice.reduction,
             discount,
