@@ -521,10 +521,12 @@ impl Game {
                             continue;
                         }
                         let mut done = false;
+                        let payment_cost =
+                            cast_origins::activation_payment_cost(self, actor, source, total);
                         payments(
                             self.state.players[actor.index()].mana,
-                            total.colored,
-                            total.generic,
+                            payment_cost.colored,
+                            payment_cost.generic,
                             |payment| {
                                 if !done && seen.insert(payment) {
                                     done = emit(Action::Activate {
@@ -562,10 +564,12 @@ impl Game {
                 ) {
                     continue;
                 }
+                let payment_cost =
+                    cast_origins::activation_payment_cost(self, actor, source, total);
                 payments(
                     self.state.players[actor.index()].mana,
-                    total.colored,
-                    total.generic,
+                    payment_cost.colored,
+                    payment_cost.generic,
                     |payment| {
                         if !done {
                             done = emit(Action::Activate {

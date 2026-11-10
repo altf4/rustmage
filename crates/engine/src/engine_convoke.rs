@@ -146,8 +146,12 @@ pub(super) fn payable_in<W: ability_world::CharacteristicWorld + ?Sized>(
     generic: u32,
     masks: &[u64; 32],
 ) -> bool {
-    if !cast_origins::spends_any_type(world, player, purpose) {
+    let any_type = cast_origins::spends_any_type(world, player, purpose);
+    if !any_type && !cast_origins::spends_any_color(world, player, purpose) {
         return payable(pool, required, generic, masks);
+    }
+    if !any_type && pool[5] < u128::from(required[5]) {
+        return false;
     }
     let mana = pool.into_iter().fold(0u128, u128::saturating_add);
     let mut subset = *masks;

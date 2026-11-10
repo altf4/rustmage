@@ -3000,9 +3000,10 @@ impl<'g> FundingState<'g> {
         };
         let parent_goal = parent.map(|(parent, _)| self.game.funding_goal(&parent.announcement));
         let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
-        funding_payments(pool, goal.required, goal.generic, |payment| {
+        funding_payments(pool, adjusted.required, adjusted.generic, |payment| {
             if forced_payment.is_some_and(|forced| concrete_payment(payment) != forced) {
                 return;
             }

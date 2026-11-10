@@ -537,6 +537,7 @@ fn funding_cost_payments(
     discounts: power_up::ActivationDiscounts,
     increase: u32,
     reductions: Option<&power_up::ActivationCostReductions>,
+    payment_cost: impl Fn(ManaCost) -> ManaCost,
     mut emit: impl FnMut([u64; 6], Option<ManaCost>),
 ) {
     let mut seen = std::collections::HashSet::new();
@@ -547,11 +548,14 @@ fn funding_cost_payments(
                     .into_iter()
                     .flatten()
             {
-                if !payable(pool, equivalent.colored, equivalent.generic) {
+                let adjusted = payment_cost(equivalent);
+                if !payable(pool, adjusted.colored, adjusted.generic) {
+                    // A deferred activation locks its symbols, but spending
+                    // permissions are evaluated again in the world that pays.
                     emit([0; 6], Some(equivalent));
                     continue;
                 }
-                funding_payments(pool, equivalent.colored, equivalent.generic, |payment| {
+                funding_payments(pool, adjusted.colored, adjusted.generic, |payment| {
                     if (cost.alternatives.is_empty() && reductions.is_none())
                         || seen.insert(payment)
                     {
@@ -1107,7 +1111,7 @@ impl<'g> FundingState<'g> {
                         && (retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
-                            } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
+                            } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
                             || object.card.is_attachment_source()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
@@ -2009,6 +2013,7 @@ impl<'g> FundingState<'g> {
                         },
                         increase,
                         None,
+                        |cost| cost,
                         |payment, deferred| {
                             if deferred_only.is_some_and(|only| only != deferred.is_some()) {
                                 return;
@@ -2103,6 +2108,7 @@ impl<'g> FundingState<'g> {
                         },
                         increase,
                         None,
+                        |cost| cost,
                         |payment, deferred| {
                             if deferred_only.is_some_and(|only| only != deferred.is_some()) {
                                 return;
@@ -2309,6 +2315,7 @@ impl<'g> FundingState<'g> {
                             cast_from_exile: false,
                             spend_any_mana: false,
                             linked_mana_source: None,
+                            activation_object: Some(self.reference(entry.id)),
                             equip: ability.is_equip(),
                             kinds: self.kinds(entry),
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
@@ -2342,6 +2349,14 @@ impl<'g> FundingState<'g> {
                                 index,
                             )
                             .as_deref(),
+                            |cost| {
+                                cast_origins::activation_payment_cost(
+                                    self,
+                                    goal.actor,
+                                    self.reference(entry.id),
+                                    cost,
+                                )
+                            },
                             |payment, deferred| {
                                 if deferred_only.is_some_and(|only| only != deferred.is_some()) {
                                     return;
@@ -4023,6 +4038,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
+                                        | StaticAbilityFragment::SpendAnyColorForCreatureActivations
                                 )
                             })
                 })
@@ -4208,6 +4224,15 @@ impl<'g> FundingState<'g> {
                         .card
                         .has_cast_origin_abilities()
                 }))
+        {
+            return true;
+        }
+        if matches!(self.purpose, mana_lots::Purpose::Activation(_))
+            && goal.required[..5] != [0; 5]
+            && self
+                .static_sources()
+                .iter()
+                .any(|&id| self.object(id).card.has_activation_mana_flexibility())
         {
             return true;
         }
@@ -4646,9 +4671,10 @@ impl<'g> FundingState<'g> {
         child.continuation_memo = None;
         child.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
             let purpose = world.payment_purpose(&goal);
+            let adjusted = cast_origins::payment_goal(world, &goal, purpose);
             let pool = mana_lots::available(world.mana, &world.lots, purpose);
             let mut found = false;
-            funding_payments(pool, goal.required, goal.generic, |payment| {
+            funding_payments(pool, adjusted.required, adjusted.generic, |payment| {
                 if found {
                     return;
                 }

@@ -463,6 +463,7 @@ impl Game {
             || self.state.objects[id as usize].card.has_creature_count_free_hand_cast()
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()
+            || self.state.objects[id as usize].card.has_activation_mana_flexibility()
             || self.state.objects[id as usize]
                 .card
                 .has_own_turn_free_hand_cast()

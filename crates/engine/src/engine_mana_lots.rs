@@ -351,6 +351,8 @@ pub(super) struct Source {
     pub cast_from_exile: bool,
     pub spend_any_mana: bool,
     pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
+    /// The live rules object for an activation's spending permissions.
+    pub activation_object: Option<ObjectRef>,
     pub equip: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -373,6 +375,7 @@ impl Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: Some(world.reference(id)),
             equip: false,
         }
     }
@@ -390,6 +393,7 @@ impl Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: None,
             equip: false,
         }
     }
@@ -407,6 +411,7 @@ impl From<DamageFacts> for Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: None,
             equip: false,
         }
     }

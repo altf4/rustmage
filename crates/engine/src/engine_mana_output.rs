@@ -465,6 +465,7 @@ impl Game {
         }
         self.suspend_mana_announcement();
         let mut a = self.payment_announcement(item, counters, Some(production), None);
+        let source = a.item.source.expect("activation source").object;
         let total = (0..a.cost_options().count())
             .find_map(|slot| {
                 a.select_cost(slot);
@@ -472,6 +473,12 @@ impl Game {
                     .into_iter()
                     .flatten()
                     .find(|cost| {
+                        let cost = cast_origins::activation_payment_cost(
+                            self,
+                            a.item.controller,
+                            source,
+                            *cost,
+                        );
                         payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
                             && payment.into_iter().map(u64::from).sum::<u64>()
                                 == cost.colored.into_iter().map(u64::from).sum::<u64>()

@@ -220,6 +220,8 @@ pub enum StaticAbilityFragment {
         entry_counter: CounterKind,
     },
     SpendAnyManaForCreatures,
+    /// Actual mana can meet WUBRG requirements of controlled creatures' activations.
+    SpendAnyColorForCreatureActivations,
     SpellImprovise(CastFilter),
     /// Controlled matching spells have delve while this provider's rule is available.
     SpellDelve(CastFilter),

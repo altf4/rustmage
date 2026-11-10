@@ -807,6 +807,12 @@ impl Game {
                     let mut done = false;
                     let mut seen = std::collections::HashSet::new();
                     for cost in self.activation_mana_costs(card, object.card, index as u16, 0) {
+                        let cost = cast_origins::activation_payment_cost(
+                            self,
+                            actor,
+                            self.object_ref(card),
+                            cost,
+                        );
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,

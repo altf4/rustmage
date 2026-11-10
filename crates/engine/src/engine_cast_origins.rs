@@ -7,6 +7,16 @@ fn is_false(value: &bool) -> bool {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Card {
+    pub(super) fn has_activation_mana_flexibility(self) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::SpendAnyColorForCreatureActivations
+                )
+            })
+        })
+    }
     pub(super) fn has_cast_origin_abilities(self) -> bool {
         self.static_ability_groups().iter().any(|g| {
             g.fragments.iter().any(|f| {
@@ -176,6 +186,55 @@ pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
                 matches!(f, StaticAbilityFragment::ForeignStashPlay)
             }))
 }
+fn activation_spends_any_color<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    source: ObjectRef,
+) -> bool {
+    let object = world.object(source.card);
+    object.zone == Zone::Battlefield
+        && object.controller == player
+        && world.reference(source.card) == source
+        && has_fragment(world, player, |f| {
+            matches!(
+                f,
+                StaticAbilityFragment::SpendAnyColorForCreatureActivations
+            )
+        })
+        && world.kinds(source.card) & 1 != 0
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn spends_any_color<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    purpose: mana_lots::Purpose,
+) -> bool {
+    matches!(purpose, mana_lots::Purpose::Activation(source) if source.activation_object.is_some_and(|source| {
+        activation_spends_any_color(world, player, source)
+    }))
+}
+fn substitute_mana(mut required: Mana, mut generic: u32, symbols: usize) -> (Mana, u32) {
+    for amount in &mut required[..symbols] {
+        generic = generic
+            .checked_add(std::mem::take(amount))
+            .capacity("mana substitution cost exhausted");
+    }
+    (required, generic)
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn activation_payment_cost<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    source: ObjectRef,
+    cost: ManaCost,
+) -> ManaCost {
+    if cost.colored[..5] != [0; 5] && activation_spends_any_color(world, player, source) {
+        let (colored, generic) = substitute_mana(cost.colored, cost.generic, 5);
+        ManaCost { colored, generic }
+    } else {
+        cost
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn payment_requirements<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -185,13 +244,9 @@ pub(super) fn payment_requirements<W: ability_world::CharacteristicWorld + ?Size
     generic: u32,
 ) -> (Mana, u32) {
     if spends_any_type(world, player, purpose) {
-        (
-            [0; 6],
-            required
-                .into_iter()
-                .try_fold(generic, u32::checked_add)
-                .capacity("mana substitution cost exhausted"),
-        )
+        substitute_mana(required, generic, 6)
+    } else if required[..5] != [0; 5] && spends_any_color(world, player, purpose) {
+        substitute_mana(required, generic, 5)
     } else {
         (required, generic)
     }
