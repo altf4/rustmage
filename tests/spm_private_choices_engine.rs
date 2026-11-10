@@ -70,7 +70,7 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
         assert_eq!(game.object_view(source).zone, Zone::Stack);
         let look = game
             .observe(player)
-            .entry_choice
+            .entry_value
             .unwrap()
             .opponent_hand
             .unwrap();
@@ -80,7 +80,7 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
         );
         assert!(
             game.observe(opponent)
-                .entry_choice
+                .entry_value
                 .unwrap()
                 .opponent_hand
                 .is_none()
@@ -120,7 +120,7 @@ fn private_hand_peek_branches_into_public_exact_source_choices_and_taxes_both_se
         assert_eq!(raw.snapshot(), indexed.snapshot());
         for seat in [player, opponent] {
             let observation = raw.observe(seat);
-            assert!(observation.entry_choice.is_none());
+            assert!(observation.entry_value.is_none());
             assert_eq!(
                 observation
                     .objects
