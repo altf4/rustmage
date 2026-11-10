@@ -1,4 +1,5 @@
 use super::*;
+use rustmage_core::cards::authored::CardRules;
 
 fn produce(game: &mut Game, card: CardId, mana: Mana) {
     choose(game, |action| {
@@ -142,6 +143,27 @@ fn morbius_exiles_itself_to_take_one_private_card_and_order_the_bottom() {
 
 #[test]
 fn multiversal_passage_chooses_its_land_type_before_payment_for_untapped_entry() {
+    const REMOVE_ABILITIES: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                zone: TargetZone::Battlefield,
+                kinds: 2,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            })),
+            &[Instruction::RemoveAbilities {
+                subject: Subject::Targets,
+                duration: AnimationDuration::Permanent,
+            }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _rules =
+        fixture_rules::activate(&[(Card::from_name("Unsummon").unwrap(), &REMOVE_ABILITIES)]);
     let player = Player::P0;
     let mut game = scenario(player);
     let land = put(&mut game, player, "Multiversal Passage", Zone::Hand);
@@ -170,8 +192,45 @@ fn multiversal_passage_chooses_its_land_type_before_payment_for_untapped_entry()
     assert!(game.has_subtype(land, "Island"));
     assert_eq!(game.state.players[player.index()].life, 18);
     game.state.players[player.index()].mana = [0; 6];
-    act(&mut game, Action::TapMana { card: land });
-    assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 0, 0, 0]);
+    let blue = [0, 1, 0, 0, 0, 0];
+    let mana = Action::TapGrantedMana {
+        card: land,
+        grantor: game.object_ref(land),
+        production: blue,
+    };
+    let spell = put(&mut game, player, "Spectral Sailor", Zone::Hand);
+    let announce = Action::AnnounceCast { card: spell };
+
+    let mut direct = game.clone();
+    act(&mut direct, mana.clone());
+    assert_eq!(direct.state.players[player.index()].mana, blue);
+    reject(&mut direct, mana.clone());
+
+    let mut blanked = game.clone();
+    blanked.state.players[player.index()].mana = blue;
+    let removal = put(&mut blanked, player, "Unsummon", Zone::Hand);
+    cast(&mut blanked, removal, Some(Target::Card(land)));
+    settle(&mut blanked);
+    assert!(blanked.has_subtype(land, "Island"));
+    assert!(!blanked.object_view(land).tapped);
+    reject(&mut blanked, mana.clone());
+    reject(&mut blanked, announce.clone());
+
+    act(&mut game, announce);
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| action == &mana)
+        .expect("chosen Island can fund the spell");
+    let mut raw = game.clone();
+    act(&mut raw, mana);
+    game.apply_index(player, game.revision(), index).unwrap();
+    assert_eq!(game.snapshot(), raw.snapshot());
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(land).tapped);
+    assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
 }
 
 #[test]
