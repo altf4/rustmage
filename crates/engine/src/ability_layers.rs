@@ -330,6 +330,8 @@ pub enum StaticAbilityFragment {
     CombatDamageCantBePrevented,
     /// This exact permanent keeps marked damage as the cleanup step removes other damage.
     RetainDamageDuringCleanup,
+    /// This ability's controller keeps mana of the specified color at boundaries.
+    RetainManaColor(ChoiceColor),
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),

@@ -357,6 +357,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::DamageCantBePrevented
                             | crate::cards::StaticAbilityFragment::CombatDamageCantBePrevented
                             | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
+                            | crate::cards::StaticAbilityFragment::RetainManaColor(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
