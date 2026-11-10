@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e00f42e477bcd751bfcf6de5818a59227d4d4716e433e54029d8b2af7a8fcdb2"
   },
-  "physical_metadata_sha256": "ee508506591e4c2096338cda799fe48bd921043d9ea221e2f06ab9f631fa87ca"
+  "physical_metadata_sha256": "ee508506591e4c2096338cda799fe48bd921043d9ea221e2f06ab9f631fa87ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BreakTheSpell.java",
+  "java_sha256": "d28fc541eb3147639e8aba951faa409c66ddffaae48802f289ca3db8cb2805d7",
+  "rules_tests": "tests/woe_cards_a_d.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+      "sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+    }
+  ]
 }
