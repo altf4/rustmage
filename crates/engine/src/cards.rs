@@ -1239,6 +1239,8 @@ pub enum CostAction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum DelayedTargetEvent {
     DiesOnce,
+    /// An exact battlefield incarnation leaves, with no turn deadline.
+    LeavesBattlefieldOnce,
     /// Exact watched permanent enters a graveyard under this packet's controller.
     GraveyardUnderControllerOnce,
     CombatDamageToPlayer,
@@ -4106,6 +4108,14 @@ pub enum Instruction {
     /// Every creature must attack if able, preferring a player other than
     /// this effect's controller, until that controller's next turn.
     RequireAllAttacksUntilNextTurn,
+    /// Create the replacement-aware group, then register one departure clause
+    /// if the exact original source is still on the battlefield.
+    CreateTokensWithSourceDeparture {
+        token: Card,
+        amount: AmountValue,
+        ability: u16,
+    },
+    ExileDelayedCreatedTokens,
     /// Actual created tokens must attack only the current combat if able.
     CreateTokensAttackThisCombat {
         token: Card,

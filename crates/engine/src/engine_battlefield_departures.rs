@@ -199,6 +199,10 @@ impl Game {
                         amount: AmountValue::DepartureCounterCount(_),
                         ..
                     }
+                    | Instruction::CreateTokensWithSourceDeparture {
+                        amount: AmountValue::DepartureCounterCount(_),
+                        ..
+                    }
             )
         }) {
             EventObjectFacts::DeathCounters(event.before.counters.clone())

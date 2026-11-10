@@ -127,6 +127,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {

@@ -374,7 +374,7 @@ impl Game {
         if let Some(rows) = &self.state.delayed_target_events {
             for row in rows
                 .iter()
-                .filter(|row| row.expires_turn == self.state.turn)
+                .filter(|row| row.expires_turn.is_none_or(|turn| turn == self.state.turn))
             {
                 objects.push(row.subject);
                 packet_objects(&row.packet, &mut objects, &mut stack_objects);

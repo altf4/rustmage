@@ -8415,6 +8415,28 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::CreateTokensWithSourceDeparture {
+                    token,
+                    amount,
+                    ability,
+                } => {
+                    let amount = self.item_amount(amount, &item);
+                    if amount == 0 {
+                        self.register_created_token_departure(&item, ability, Vec::new());
+                    } else {
+                        self.stage_token_creation(
+                            item.controller,
+                            token,
+                            amount,
+                            false,
+                            replacements::TokenCompletion::SourceDeparture {
+                                item: Box::new(item),
+                                ability,
+                            },
+                        );
+                    }
+                }
+                Instruction::ExileDelayedCreatedTokens => self.exile_delayed_created_tokens(&item),
                 Instruction::CreateTokensScaled {
                     token,
                     amount,

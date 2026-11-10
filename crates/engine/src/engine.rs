@@ -10530,7 +10530,7 @@ impl Game {
     fn begin_turn(&mut self) {
         // This-turn delayed abilities still observe cleanup SBAs and any
         // priority cycles those actions create (CR 514.3a).
-        self.state.delayed_target_events = None;
+        self.expire_turn_delayed_target_events();
         self.state.delayed_attack_this_turn = None;
         self.begin_combat_rules_turn();
         self.expire_manifest_deaths();

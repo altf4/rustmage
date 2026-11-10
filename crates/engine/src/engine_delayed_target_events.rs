@@ -8,7 +8,8 @@ use crate::cards::DelayedTargetEvent;
 pub struct DelayedTargetTriggerView {
     pub subject: ObjectRef,
     pub event: DelayedTargetEvent,
-    pub expires_turn: u32,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
     pub packet: SpellView,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -19,19 +20,7 @@ impl Game {
         event: DelayedTargetEvent,
         ability: u16,
     ) {
-        let definition = item.trigger_definition();
-        let trigger = &definition.triggers()[usize::from(ability)];
-        let condition = match event {
-            DelayedTargetEvent::ControlLostWhileAttached => {
-                TriggerCondition::DelayedTargetControlLostWhileAttached
-            }
-            _ => TriggerCondition::DelayedTargetEvent,
-        };
-        assert_eq!(trigger.condition, condition);
-        assert!(
-            !trigger.targets.has_targets(),
-            "delayed target template must be untargeted"
-        );
+        Self::check_delayed_target_template(item, event, ability);
         let mut subjects = Vec::new();
         for &bound in &item.targets {
             if let Target::Card(id) = bound.target
@@ -45,31 +34,110 @@ impl Game {
             }
         }
         for subject in subjects {
-            let mut packet = item.clone();
-            packet.id = self.next_stack_id();
-            packet.kind = StackKind::TriggeredAbility { ability };
-            packet.targets.clear();
-            packet.clear_initiating_event_references();
+            let mut packet = self.delayed_target_packet(item, ability);
             packet.refer_objects([subject]);
-            packet.target_type_slots = None;
-            packet.mode = None;
-            packet.cast = None;
-            packet.related_stack = None;
-            packet.is_copy = false;
-            packet.additional_triggers = 0;
             self.state
                 .delayed_target_events
                 .get_or_insert_default()
                 .push(DelayedTargetTriggerView {
                     subject,
                     event,
-                    expires_turn: self.state.turn,
+                    expires_turn: (event != DelayedTargetEvent::LeavesBattlefieldOnce)
+                        .then_some(self.state.turn),
                     packet,
                 });
         }
     }
+    fn check_delayed_target_template(item: &SpellView, event: DelayedTargetEvent, ability: u16) {
+        let definition = item.trigger_definition();
+        let trigger = &definition.triggers()[usize::from(ability)];
+        let condition = match event {
+            DelayedTargetEvent::ControlLostWhileAttached => {
+                TriggerCondition::DelayedTargetControlLostWhileAttached
+            }
+            _ => TriggerCondition::DelayedTargetEvent,
+        };
+        assert_eq!(trigger.condition, condition);
+        assert!(
+            !trigger.targets.has_targets(),
+            "delayed target template must be untargeted"
+        );
+    }
+
+    fn delayed_target_packet(&mut self, item: &SpellView, ability: u16) -> SpellView {
+        let mut packet = item.clone();
+        packet.id = self.next_stack_id();
+        packet.kind = StackKind::TriggeredAbility { ability };
+        packet.targets.clear();
+        packet.clear_initiating_event_references();
+        packet.target_type_slots = None;
+        packet.mode = None;
+        packet.cast = None;
+        packet.related_stack = None;
+        packet.is_copy = false;
+        packet.additional_triggers = 0;
+        packet
+    }
+
+    pub(super) fn register_created_token_departure(
+        &mut self,
+        item: &SpellView,
+        ability: u16,
+        created: Vec<ObjectRef>,
+    ) {
+        let Some(source) = item.source else { return };
+        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
+            return;
+        }
+        let event = DelayedTargetEvent::LeavesBattlefieldOnce;
+        Self::check_delayed_target_template(item, event, ability);
+        let mut packet = self.delayed_target_packet(item, ability);
+        // Keep the exact created objects distinct from the later source move.
+        packet.set_reflexive_action_objects(created);
+        self.state
+            .delayed_target_events
+            .get_or_insert_default()
+            .push(DelayedTargetTriggerView {
+                subject: source.object,
+                event,
+                expires_turn: None,
+                packet,
+            });
+    }
+
+    pub(super) fn exile_delayed_created_tokens(&mut self, item: &SpellView) {
+        let ids: Vec<_> = item
+            .reflexive_action_objects()
+            .filter(|object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == *object
+            })
+            .map(|object| object.card)
+            .collect();
+        if !ids.is_empty() {
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
+        }
+    }
+
+    pub(super) fn expire_turn_delayed_target_events(&mut self) {
+        if let Some(rows) = &mut self.state.delayed_target_events {
+            rows.retain(|row| row.expires_turn.is_none());
+            if rows.is_empty() {
+                self.state.delayed_target_events = None;
+            }
+        }
+    }
+
     pub(super) fn delayed_target_departure(&mut self, event: &ZoneChange) {
         if !event.moved || event.before.zone != Zone::Battlefield {
+            return;
+        }
+        if !self
+            .state
+            .delayed_target_events
+            .as_ref()
+            .is_some_and(|rows| rows.iter().any(|row| row.subject == event.before.reference))
+        {
             return;
         }
         let Some(rows) = self.state.delayed_target_events.take() else {
@@ -78,7 +146,7 @@ impl Game {
         let dies = event.destination == Zone::Graveyard;
         let mut retained = Vec::new();
         for row in *rows {
-            if row.expires_turn != self.state.turn {
+            if row.expires_turn.is_some_and(|turn| turn != self.state.turn) {
                 continue;
             }
             if row.subject != event.before.reference {
@@ -86,6 +154,7 @@ impl Game {
                 continue;
             }
             let matches = match row.event {
+                DelayedTargetEvent::LeavesBattlefieldOnce => true,
                 DelayedTargetEvent::DiesOnce => dies,
                 DelayedTargetEvent::GraveyardUnderControllerOnce => {
                     event.destination == Zone::Graveyard
@@ -132,7 +201,7 @@ impl Game {
             .filter(|row| {
                 let loss = (row.subject, row.packet.controller);
                 row.event == DelayedTargetEvent::ControlLostWhileAttached
-                    && row.expires_turn == self.state.turn
+                    && row.expires_turn == Some(self.state.turn)
                     && losses.contains(&loss)
                     && attached_before.contains(&loss)
             })
@@ -164,7 +233,7 @@ impl Game {
             .iter()
             .filter(|row| {
                 row.event == DelayedTargetEvent::CombatDamageToPlayer
-                    && row.expires_turn == self.state.turn
+                    && row.expires_turn == Some(self.state.turn)
             })
             .flat_map(|row| {
                 hits.iter()

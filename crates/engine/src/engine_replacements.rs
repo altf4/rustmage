@@ -300,6 +300,10 @@ pub(super) enum TokenCompletion {
         item: Box<SpellView>,
         ability: u16,
     },
+    SourceDeparture {
+        item: Box<SpellView>,
+        ability: u16,
+    },
     JobAttach(ObjectRef),
     OptionalAttachSource(ObjectRef),
     /// Creation precedes attachment; an absent/illegal recipient leaves tokens intact.
@@ -317,7 +321,8 @@ impl TokenCompletion {
         match self {
             Self::TemporaryCopy(item)
             | Self::Reflexive { item, .. }
-            | Self::ReflexiveCreated { item, .. } => visit(item),
+            | Self::ReflexiveCreated { item, .. }
+            | Self::SourceDeparture { item, .. } => visit(item),
             Self::TemporaryTokens(context) => visit(&mut context.item),
             Self::RoleReflexive(context) => visit(&mut context.item),
             _ => (),
@@ -335,7 +340,8 @@ impl TokenCompletion {
             }
             TokenCompletion::TemporaryCopy(item)
             | TokenCompletion::Reflexive { item, .. }
-            | TokenCompletion::ReflexiveCreated { item, .. } => {
+            | TokenCompletion::ReflexiveCreated { item, .. }
+            | TokenCompletion::SourceDeparture { item, .. } => {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             }
             TokenCompletion::RoleReflexive(c) => {
@@ -3562,6 +3568,7 @@ impl Game {
                                         | TokenCompletion::Keywords { .. }
                                         | TokenCompletion::Reflexive { .. }
                                         | TokenCompletion::ReflexiveCreated { .. }
+                                        | TokenCompletion::SourceDeparture { .. }
                                 );
                                 let created = match &batch.completion {
                                     TokenCompletion::RoleAttach(recipient) => self
@@ -3646,6 +3653,10 @@ impl Game {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == *object
             })
             .collect();
+        if let TokenCompletion::SourceDeparture { item, ability } = completion {
+            self.register_created_token_departure(&item, ability, created);
+            return;
+        }
         if let TokenCompletion::CopiedSagaLore { maximum } = completion {
             if !created.is_empty() {
                 state.work.push_front(Work::CopiedSagaLore {

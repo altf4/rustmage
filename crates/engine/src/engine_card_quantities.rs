@@ -109,6 +109,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
