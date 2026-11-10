@@ -17,7 +17,7 @@ const COPY_FROM_OUTSIDE: CardRules = CardRules {
         }),
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::MayOncePerTurn { skip: 2 },
+            Instruction::MayCopyOncePerTurn { skip: 2 },
             Instruction::RecordOncePerTurn,
             Instruction::CopyCapturedSpellModified {
                 retarget: true,
@@ -93,6 +93,36 @@ fn declining_copy_preserves_the_use_and_only_the_permanent_copy_gets_haste() {
             .intrinsic_keywords()
             .contains(Keywords::HASTE)
     );
+}
+
+#[test]
+fn an_uncopiable_cast_has_no_optional_payment_and_leaves_the_next_cast_copyable() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &COPY_FROM_OUTSIDE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let target = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, target, None);
+    let sparks = put(&mut game, player, "Choreographed Sparks", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(sparks), false);
+    act(&mut game, Action::AnnounceExile { card: sparks });
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    choose(&mut game, |a| matches!(a, Action::ChooseTarget { .. }));
+    pay(&mut game);
+    assert_eq!(game.state.stack.len(), 3);
+    pass_pair(&mut game);
+    assert_eq!(game.state.pending, Pending::Priority);
+    assert_eq!(game.state.stack.len(), 2);
+    settle(&mut game);
+
+    let later = put(&mut game, player, "Grizzly Bears", Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(later), false);
+    act(&mut game, Action::AnnounceExile { card: later });
+    pay(&mut game);
+    pass_pair(&mut game);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    assert!(game.state.stack.iter().any(|item| item.is_copy));
+    settle(&mut game);
 }
 
 #[test]

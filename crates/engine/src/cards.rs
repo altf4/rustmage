@@ -4305,6 +4305,10 @@ pub enum Instruction {
     MayOncePerTurn {
         skip: usize,
     },
+    /// Offer the optional copy cost only when the captured spell can be copied.
+    MayCopyOncePerTurn {
+        skip: usize,
+    },
     RecordOncePerTurn,
     MemoryVessel,
     ExileAndBorrowActivatedAbilities,

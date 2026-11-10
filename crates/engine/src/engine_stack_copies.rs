@@ -877,33 +877,35 @@ impl Game {
     ) -> bool {
         self.copy_captured_spell_modified(item, retarget, CapturedSpellModification::None)
     }
+    pub(super) fn captured_copy_template<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> Option<&'a SpellView> {
+        let event = item.copy_event.as_ref().filter(|event| event.amount > 0)?;
+        let template = self
+            .state
+            .stack
+            .iter()
+            .find(|spell| spell.id == event.spell.id)
+            .unwrap_or(&event.spell);
+        (!template
+            .source
+            .expect("object-backed spell or trigger")
+            .card
+            .spell_cannot_be_copied())
+        .then_some(template)
+    }
+
     pub(super) fn copy_captured_spell_modified(
         &mut self,
         item: &SpellView,
         retarget: bool,
         modification: CapturedSpellModification,
     ) -> bool {
-        let Some(event) = &item.copy_event else {
+        let Some(template) = self.captured_copy_template(item).cloned() else {
             return false;
         };
-        if event.amount == 0 {
-            return false;
-        }
-        let template = self
-            .state
-            .stack
-            .iter()
-            .find(|s| s.id == event.spell.id)
-            .cloned()
-            .unwrap_or_else(|| event.spell.clone());
-        if template
-            .source
-            .expect("object-backed spell or trigger")
-            .card
-            .spell_cannot_be_copied()
-        {
-            return false;
-        }
+        let event = item.copy_event.as_ref().unwrap();
         let mut copy = self.allocate_spell_copy(&template, item.controller);
         let copy_source = copy.source.expect("allocated spell copy has a source");
         let keywords = match modification {

@@ -1510,7 +1510,7 @@ impl Game {
         }
         if matches!(
             definition.triggers()[index].program.first(),
-            Some(Instruction::MayOncePerTurn { .. })
+            Some(Instruction::MayOncePerTurn { .. } | Instruction::MayCopyOncePerTurn { .. })
         ) && self.state.triggered_this_turn.contains(&TriggerUse {
             source: source.reference,
             ability: u16::try_from(index).expect("ability index"),
@@ -8786,10 +8786,12 @@ impl Game {
                 }
                 Instruction::MemoryVessel => self.resolve_memory_vessel(&item),
                 Instruction::RecordOncePerTurn => self.record_optional_ability_use(&item),
-                Instruction::MayOncePerTurn { skip } => {
+                Instruction::MayOncePerTurn { skip } | Instruction::MayCopyOncePerTurn { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
-                    if self.optional_ability_used(&item) {
+                    let unavailable = matches!(instruction, Instruction::MayCopyOncePerTurn { .. })
+                        && self.captured_copy_template(&item).is_none();
+                    if unavailable || self.optional_ability_used(&item) {
                         self.state.resolving.as_mut().unwrap().pc = skip_to;
                     } else {
                         self.state.pending = Pending::EffectOptional {
