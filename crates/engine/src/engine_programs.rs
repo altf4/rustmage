@@ -2225,6 +2225,7 @@ impl Game {
                                         )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                        | Instruction::LoseLife(PlayerSet::CastingPlayer, _)
                                         | Instruction::CreateTokensFor {
                                             players: PlayerSet::CastingPlayer,
                                             ..

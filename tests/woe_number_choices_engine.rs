@@ -34,10 +34,18 @@ const OBSERVER: CardRules = CardRules {
         },
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::LoseLife(PlayerSet::Opponent, 2),
+            Instruction::LoseLife(PlayerSet::CastingPlayer, 2),
             Instruction::Draw(PlayerSet::Controller, 1),
         ],
     }],
+    ..CardRules::EMPTY
+};
+
+const COPY_TRIGGER: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
+        &[Instruction::CopyTargetAbility { group: 0 }],
+    ),
     ..CardRules::EMPTY
 };
 
@@ -159,7 +167,12 @@ fn choose_number(number: u16) -> Action {
 #[test]
 fn the_number_is_chosen_as_the_permanent_enters_and_observes_only_committed_opposing_casts() {
     let opt = Card::from_name("Opt").unwrap();
-    let _scope = fixture_rules::activate(&[(Card::HillGiant, &OBSERVER), (opt, &X_SPELL)]);
+    let copy = Card::from_name("Giant Growth").unwrap();
+    let _scope = fixture_rules::activate(&[
+        (Card::HillGiant, &OBSERVER),
+        (opt, &X_SPELL),
+        (copy, &COPY_TRIGGER),
+    ]);
     for player in [Player::P0, Player::P1] {
         let mut g = scenario(player);
         let other = player.other();
@@ -199,6 +212,15 @@ fn the_number_is_chosen_as_the_permanent_enters_and_observes_only_committed_oppo
         act(&mut g, Action::ChooseX { value: 2 });
         assert_eq!(g.state.players[other.index()].life, 20);
         pay(&mut g);
+        let trigger = g.state.stack.last().unwrap().id;
+        let mut copied = g.clone();
+        let fork = put(&mut copied, other, "Giant Growth", Zone::Hand);
+        cast(&mut copied, fork, Some(Target::Stack(trigger)));
+        settle(&mut copied);
+        assert_eq!(copied.state.players[player.index()].life, 20);
+        assert_eq!(copied.state.players[other.index()].life, 16);
+        assert_eq!(copied.state.players[other.index()].cards_drawn_this_turn, 1);
+
         settle(&mut g);
         assert_eq!(g.state.players[other.index()].life, 18);
 

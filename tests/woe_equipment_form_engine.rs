@@ -352,6 +352,25 @@ fn older_grants_are_removed_later_grants_work_and_copies_use_the_base_definition
     assert_eq!(game.state.players[player.index()].mana[4], green + 1);
     equip(&mut game, exact_source, bear);
     assert_eq!(stats(&game, bear), (5, 5));
+    // The attachment link has not been removed by the next SBA pass yet.
+    let mut animated = game.clone();
+    animated.change_object_form(
+        exact_source,
+        AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((2, 2)),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        characteristic_layers::AnimationTypeMode::AddCreature,
+    );
+    assert!(animated.object_view(source).is_creature());
+    assert_eq!(
+        animated.object_view(source).attached_to,
+        Some(animated.object_ref(bear))
+    );
+    assert_eq!(stats(&animated, bear), (2, 2));
 
     cast(&mut game, copy, Some(Target::Card(source)));
     settle(&mut game);

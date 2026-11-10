@@ -235,6 +235,8 @@ impl<W: CharacteristicWorld + ?Sized> characteristic_query::CharacteristicQuery<
                 continue;
             };
             if self.attachment_link(row.recipient, target)
+                && self.kinds(row.recipient.card) & 1 == 0
+                && self.is_equipment(row.recipient.card)
                 && self.kinds(id) & 1 != 0
                 && row
                     .expires_turn

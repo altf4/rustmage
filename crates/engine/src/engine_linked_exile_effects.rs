@@ -102,7 +102,7 @@ impl Game {
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
                 self.link_exile_to_ability(source, item.source_ability_origin, event.after);
-                if creature_reflexive.is_some() && event.was_card {
+                if creature_reflexive.is_some() && event.was_card && event.before.is_creature() {
                     self.remember_borrowed_exile(item, event.after, true);
                 }
             }

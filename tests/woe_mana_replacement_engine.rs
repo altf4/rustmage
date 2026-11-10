@@ -65,6 +65,15 @@ const LATE_LAND: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const RED_GREEN: Mana = [0, 0, 0, 1, 1, 0];
+const COMBINED_LAND: CardRules = CardRules {
+    effect: Effect::Land,
+    activated: &[ActivatedAbility {
+        program: &[Instruction::AddMana(ManaProduction::Fixed(RED_GREEN))],
+        ..TAP
+    }],
+    ..CardRules::EMPTY
+};
 const SPLIT_LAND: CardRules = CardRules {
     effect: Effect::Land,
     activated: &[ActivatedAbility {
@@ -90,6 +99,51 @@ fn start_late_mana(card: CardId) -> Action {
         payment: ZERO,
         production: ZERO,
     }
+}
+
+#[test]
+fn projected_payment_respects_capacity_of_replaced_and_trigger_mana_together() {
+    let bonus = Card::from_name("Swiftfoot Boots").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (provider(), &MULTIPLIER),
+        (bonus, &TRIGGER_BONUS),
+        (Card::Forest, &COMBINED_LAND),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    spawn(&mut game, player, provider(), Zone::Battlefield);
+    spawn(&mut game, player, bonus, Zone::Battlefield);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, u32::MAX - 3, 0];
+    let announce = Action::AnnounceCast { card: shock };
+    reject(&mut game, announce.clone());
+
+    game.state.players[player.index()].mana[4] -= 1;
+    act(&mut game, announce);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    act(
+        &mut game,
+        Action::ActivateMana {
+            card: forest,
+            ability: 0,
+            counter_payment: Counters::default(),
+            payment: ZERO,
+            production: RED_GREEN,
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(
+        game.state.players[player.index()].mana,
+        [0, 0, 0, 2, u32::MAX, 0]
+    );
+    assert_eq!(game.state.players[player.other().index()].life, 18);
 }
 
 #[test]

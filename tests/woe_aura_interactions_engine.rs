@@ -148,6 +148,12 @@ fn two_friendly_target_groups_share_one_damage_batch_and_are_revalidated() {
         act(&mut g, target(opponent));
         pay(&mut g);
 
+        let mut shielded = g.clone();
+        shielded.add_counter(opponent, CounterKind::Shield, 1);
+        settle(&mut shielded);
+        assert_eq!(shielded.object_view(opponent).damage, 0);
+        assert_eq!(shielded.counter_count(opponent, CounterKind::Shield), 0);
+
         let mut partial = g.clone();
         act(&mut partial, Action::Pass);
         let disenchant = put(&mut partial, other, "Disenchant", Zone::Hand);

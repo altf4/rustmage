@@ -2654,8 +2654,9 @@ impl<'g> FundingState<'g> {
             let (bonus, tap_source) = next.apply(step, false);
             let receipt = bonus.with_event_effects(&next, self.actor, tap_source);
             if let Some(production) = next.singleton_output(step, receipt)
-                && let Some(replaced) = next.replaced_mana_output(receipt, production)
+                && let Some(replaced) = receipt.replace_production(production)
                 && let Some(bonus) = receipt.singleton(production)
+                && next.completed_mana_fits(replaced, bonus)
             {
                 next.add_funding_output(step, bonus, replaced);
                 return emit(&next);

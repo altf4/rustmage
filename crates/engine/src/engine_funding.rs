@@ -2836,15 +2836,15 @@ impl<'g> FundingState<'g> {
                 .capacity("mana representation exhausted");
         }
     }
-    fn replaced_mana_output(&self, receipt: ManaTapBonus, production: Mana) -> Option<Mana> {
-        let replaced = receipt.replace_production(production)?;
-        (replaced == production
-            || self
-                .mana
-                .into_iter()
-                .zip(replaced)
-                .all(|(held, added)| held <= u128::from(u32::MAX - added)))
-        .then_some(replaced)
+    fn completed_mana_fits(&self, production: Mana, tap_bonus: Mana) -> bool {
+        self.mana
+            .into_iter()
+            .zip(production)
+            .zip(tap_bonus)
+            .all(|((held, base), bonus)| {
+                held.checked_add(u128::from(base) + u128::from(bonus))
+                    .is_some_and(|total| total <= u128::from(u32::MAX))
+            })
     }
     /// The ordinary fixed path adds to the already owned cost world directly.
     /// Dynamic choices keep a separate branch for every distinct concrete result.
@@ -2876,10 +2876,13 @@ impl<'g> FundingState<'g> {
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let mut finish = |production| {
-            let Some(replaced) = self.replaced_mana_output(tap_bonus, production) else {
+            let Some(replaced) = tap_bonus.replace_production(production) else {
                 return false;
             };
             tap_bonus.visit(production, |bonus| {
+                if !self.completed_mana_fits(replaced, bonus) {
+                    return false;
+                }
                 let mut next = self.clone();
                 next.add_funding_output(step, bonus, replaced);
                 emit(&next)
@@ -7386,10 +7389,13 @@ impl FundingState<'_> {
             if selected.is_some_and(|chosen| chosen != production) {
                 return false;
             }
-            let Some(replaced) = self.replaced_mana_output(bonus, production) else {
+            let Some(replaced) = bonus.replace_production(production) else {
                 return false;
             };
             bonus.visit(production, |bonus| {
+                if !self.completed_mana_fits(replaced, bonus) {
+                    return false;
+                }
                 let mut next = self.clone();
                 next.add_completed_mana(replaced, quality, bonus);
                 if let Some(output) = &a.mana_output {
