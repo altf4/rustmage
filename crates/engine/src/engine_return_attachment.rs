@@ -477,6 +477,7 @@ impl Game {
                     CastRelation::Any,
                     ability,
                     Some(equipment),
+                    None,
                 );
             }
         }

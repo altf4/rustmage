@@ -1531,6 +1531,7 @@ impl Game {
                     CastRelation::Any,
                     ability,
                     recipients,
+                    None,
                 ),
                 EntryCleanup::Token(cleanup) => {
                     self.register_delayed_token_cleanup(

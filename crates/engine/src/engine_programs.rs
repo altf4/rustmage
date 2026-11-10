@@ -4056,7 +4056,10 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(&item),
+                Instruction::ReturnLinkedExileToHand => self.return_linked_exile(&item, Zone::Hand),
+                Instruction::ReturnLinkedExileToBattlefield => {
+                    self.return_linked_exile(&item, Zone::Battlefield);
+                }
                 Instruction::ExileTargetLibraryLinked(amount) => {
                     self.exile_target_library_linked(&item, amount)
                 }
@@ -5419,8 +5422,16 @@ impl Game {
                     step,
                     relation,
                     ability,
+                }
+                | Instruction::ScheduleStepThisTurn {
+                    step,
+                    relation,
+                    ability,
                 } => {
-                    self.schedule_delayed_step(&item, step, relation, ability, None);
+                    let expires_turn =
+                        matches!(instruction, Instruction::ScheduleStepThisTurn { .. })
+                            .then_some(self.state.turn);
+                    self.schedule_delayed_step(&item, step, relation, ability, None, expires_turn);
                 }
                 Instruction::PreventTargetActivationsWhileTapped => {
                     self.prevent_target_activations_until_untapped(&item);

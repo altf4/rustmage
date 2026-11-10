@@ -1859,6 +1859,7 @@ impl Game {
                     CastRelation::Any,
                     context.ability,
                     objects,
+                    None,
                 );
             }
         }

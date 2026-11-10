@@ -10650,6 +10650,8 @@ impl Game {
         if let Some(data) = &mut self.state.linked_choices {
             data.free_cast_uses.clear();
             data.free_cast_approvals.clear();
+            data.delayed_steps
+                .retain(|row| row.expires_turn.is_none_or(|turn| turn == self.state.turn));
         }
         self.prune_modal_history();
         self.state.entered_this_turn = None;

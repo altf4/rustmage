@@ -2208,6 +2208,8 @@ pub enum Instruction {
     RememberOwnSacrifice,
     RecoverAnotherPermanent,
     ReturnLinkedExileToHand,
+    /// Return every exact still-exiled permanent card under its owner's control.
+    ReturnLinkedExileToBattlefield,
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
     ExileAllTargetsLinkedToSource,
@@ -2309,6 +2311,12 @@ pub enum Instruction {
     },
     /// Schedule one independent triggered program for the next matching step.
     ScheduleStep {
+        step: TriggerStep,
+        relation: CastRelation,
+        ability: u16,
+    },
+    /// Schedule a one-shot step trigger which cannot carry into a later turn.
+    ScheduleStepThisTurn {
         step: TriggerStep,
         relation: CastRelation,
         ability: u16,
