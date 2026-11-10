@@ -1912,3 +1912,438 @@ fn rowan_freezes_gross_life_loss_for_black_and_red_spell_faces_until_cleanup() {
         assert!(discounts(&game).is_empty());
     }
 }
+
+fn restless_mana(card: CardId, color: usize) -> Action {
+    let mut production = [0; 6];
+    production[color] = 1;
+    Action::ActivateMana {
+        card,
+        ability: 0,
+        payment: [0; 6],
+        counter_payment: Counters::default(),
+        production,
+    }
+}
+
+fn animate_restless_land(game: &mut Game, card: CardId, payment: Mana) {
+    act(
+        game,
+        Action::Activate {
+            card,
+            ability: 1,
+            target: None,
+            payment,
+            counter_payment: Counters::default(),
+        },
+    );
+    settle(game);
+}
+
+#[test]
+fn restless_lands_enter_tapped_make_both_colors_and_keep_land_type_while_animated() {
+    for player in [Player::P0, Player::P1] {
+        for (name, colors, payment, body, subtype, keywords) in [
+            (
+                "Restless Bivouac",
+                [0, 3],
+                [1, 0, 0, 1, 0, 1],
+                (2, 2),
+                "Ox",
+                Keywords::NONE,
+            ),
+            (
+                "Restless Cottage",
+                [2, 4],
+                [0, 0, 1, 0, 1, 2],
+                (4, 4),
+                "Horror",
+                Keywords::NONE,
+            ),
+            (
+                "Restless Fortress",
+                [0, 2],
+                [1, 0, 1, 0, 0, 2],
+                (1, 4),
+                "Nightmare",
+                Keywords::NONE,
+            ),
+            (
+                "Restless Spire",
+                [1, 3],
+                [0, 1, 0, 1, 0, 0],
+                (2, 1),
+                "Elemental",
+                Keywords::FIRST_STRIKE,
+            ),
+            (
+                "Restless Vinestalk",
+                [1, 4],
+                [0, 1, 0, 0, 1, 3],
+                (5, 5),
+                "Plant",
+                Keywords::TRAMPLE,
+            ),
+        ] {
+            let mut ready = scenario(player);
+            let land = spawn(&mut ready, player, named(name), Zone::Hand);
+            act(&mut ready, Action::PlayLand { card: land });
+            let entered = ready.object_view(land);
+            assert_eq!(entered.zone, Zone::Battlefield, "{name}");
+            assert!(entered.tapped && !entered.is_creature(), "{name}");
+            assert_eq!(entered.colors, 0, "{name}");
+            reject(&mut ready, restless_mana(land, colors[0]));
+            finish_turn(&mut ready);
+            finish_turn(&mut ready);
+            enter_main_phase(&mut ready);
+            assert!(!ready.object_view(land).tapped, "{name}");
+
+            let mut animated = ready.clone();
+            animated.state.players[player.index()].mana = payment;
+            animate_restless_land(&mut animated, land, payment);
+            assert_eq!(
+                animated.state.players[player.index()].mana,
+                [0; 6],
+                "{name}"
+            );
+            let view = animated.object_view(land);
+            assert_eq!(view.reference, entered.reference, "{name}");
+            assert_eq!(view.kinds & 3, 3, "{name}");
+            assert_eq!(view.colors, (1 << colors[0]) | (1 << colors[1]), "{name}");
+            assert_eq!((view.power, view.toughness), body, "{name}");
+            assert!(view.has_subtype(subtype), "{name}");
+            assert_eq!(view.keywords, keywords, "{name}");
+
+            for branch in [&ready, &animated] {
+                for color in colors {
+                    let mut tapped = branch.clone();
+                    let mut expected = tapped.state.players[player.index()].mana;
+                    expected[color] += 1;
+                    reject(&mut tapped, restless_mana(land, 5));
+                    act(&mut tapped, restless_mana(land, color));
+                    assert!(tapped.object_view(land).tapped, "{name}");
+                    assert_eq!(
+                        tapped.state.players[player.index()].mana,
+                        expected,
+                        "{name}"
+                    );
+                    reject(&mut tapped, restless_mana(land, color));
+                }
+            }
+
+            finish_turn(&mut animated);
+            let reverted = animated.object_view(land);
+            assert_eq!(reverted.kinds & 3, 2, "{name}");
+            assert_eq!(reverted.colors, 0, "{name}");
+            assert!(!reverted.has_subtype(subtype), "{name}");
+            assert_eq!(reverted.keywords, Keywords::NONE, "{name}");
+        }
+    }
+}
+
+#[test]
+fn restless_bivouac_counters_itself_or_another_controlled_creature_only_when_it_can_attack() {
+    for player in [Player::P0, Player::P1] {
+        let mut fresh = scenario(player);
+        let land_card = named("Restless Bivouac");
+        let land = spawn(&mut fresh, player, land_card, Zone::Hand);
+        let ambush = put(&mut fresh, player, "Leaping Ambush", Zone::Hand);
+        let payment = [1, 0, 0, 1, 0, 1];
+        act(&mut fresh, Action::PlayLand { card: land });
+        animate_restless_land(&mut fresh, land, payment);
+        cast(&mut fresh, ambush, Some(Target::Card(land)));
+        settle(&mut fresh);
+        assert!(!fresh.object_view(land).tapped);
+        reject(&mut fresh, restless_mana(land, 0));
+        fresh.begin_step(Step::BeginCombat);
+        pass_pair(&mut fresh);
+        reject(&mut fresh, Action::Attack { card: land });
+
+        let mut game = scenario(player);
+        let land = spawn(&mut game, player, land_card, Zone::Battlefield);
+        let ally = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let enemy = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        animate_restless_land(&mut game, land, payment);
+        attack(&mut game, land);
+        let target = |card| Action::ChooseTarget {
+            target: Target::Card(card),
+        };
+        reject(&mut game, Action::FinishTargets);
+        reject(&mut game, target(enemy));
+        let mut other_target = game.clone();
+        act(&mut other_target, target(ally));
+        settle(&mut other_target);
+        assert_eq!(stats(&other_target, ally), (3, 3));
+
+        act(&mut game, target(land));
+        settle(&mut game);
+        assert_eq!(stats(&game, land), (3, 3));
+        finish_turn(&mut game);
+        assert!(!game.object_view(land).is_creature());
+        assert_eq!(game.counter_count(land, CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
+fn restless_cottage_creates_food_with_zero_targets_but_an_illegal_chosen_target_stops_it() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let land = spawn(
+            &mut game,
+            player,
+            named("Restless Cottage"),
+            Zone::Battlefield,
+        );
+        let own = put(&mut game, player, "Forest", Zone::Graveyard);
+        let foreign = put(&mut game, other, "Shock", Zone::Graveyard);
+        let lantern = put(&mut game, other, "Soul-Guide Lantern", Zone::Battlefield);
+        animate_restless_land(&mut game, land, [0, 0, 1, 0, 1, 2]);
+        attack(&mut game, land);
+
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishTargets);
+        settle(&mut zero);
+        assert_eq!(tokens(&zero, player, FOOD).len(), 1);
+        assert_eq!(zero.object_view(own).zone, Zone::Graveyard);
+        assert_eq!(zero.object_view(foreign).zone, Zone::Graveyard);
+
+        for card in [own, foreign] {
+            let mut chosen = game.clone();
+            act(
+                &mut chosen,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+            if card == own {
+                let mut stale = chosen.clone();
+                act(&mut stale, Action::Pass);
+                act(
+                    &mut stale,
+                    Action::Activate {
+                        card: lantern,
+                        ability: 0,
+                        target: None,
+                        payment: [0; 6],
+                        counter_payment: Counters::default(),
+                    },
+                );
+                settle(&mut stale);
+                assert_eq!(stale.object_view(own).zone, Zone::Exile);
+                assert!(tokens(&stale, player, FOOD).is_empty());
+            }
+            settle(&mut chosen);
+            assert_eq!(chosen.object_view(card).zone, Zone::Exile);
+            assert_eq!(tokens(&chosen, player, FOOD).len(), 1);
+        }
+    }
+}
+
+#[test]
+fn restless_fortress_drains_the_defending_player_even_after_its_land_is_bounced() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let land = spawn(
+            &mut game,
+            player,
+            named("Restless Fortress"),
+            Zone::Battlefield,
+        );
+        let walker = put(
+            &mut game,
+            other,
+            "Kaito, Cunning Infiltrator",
+            Zone::Battlefield,
+        );
+        game.add_counter(walker, CounterKind::Loyalty, 3);
+        let siege = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+        let battle = game.object_ref(siege);
+        let mut recipe = CopyRecipe::new(named("Goblin Piker"));
+        recipe.overrides = Some(CopyOverrides {
+            kinds: Some(BATTLE_KIND),
+            ..CopyOverrides::NONE
+        });
+        game.apply_temporary_copy(battle, recipe, CopyDeadline::EndOfTurn);
+        game.add_counter(siege, CounterKind::Defense, 5);
+        game.set_battle_protector(battle, other);
+        let bounce = put(&mut game, other, "Unsummon", Zone::Hand);
+        let island = put(&mut game, other, "Island", Zone::Battlefield);
+        animate_restless_land(&mut game, land, [1, 0, 1, 0, 0, 2]);
+
+        for declaration in [
+            Action::Attack { card: land },
+            Action::AttackPlaneswalker {
+                card: land,
+                defender: game.object_ref(walker),
+            },
+            Action::AttackBattle {
+                card: land,
+                defender: battle,
+            },
+        ] {
+            let mut branch = game.clone();
+            branch.begin_step(Step::BeginCombat);
+            pass_pair(&mut branch);
+            act(&mut branch, declaration);
+            act(&mut branch, Action::FinishAttackers);
+            assert_eq!(branch.state.stack.len(), 1);
+            act(&mut branch, Action::Pass);
+            act(&mut branch, Action::TapMana { card: island });
+            cast(&mut branch, bounce, Some(Target::Card(land)));
+            settle(&mut branch);
+            assert_eq!(branch.object_view(land).zone, Zone::Hand);
+            assert_eq!(branch.state.players[player.index()].life, 22);
+            assert_eq!(branch.state.players[other.index()].life, 18);
+        }
+    }
+}
+
+#[test]
+fn restless_spire_scries_when_it_attacks_and_its_own_animation_follows_live_control() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let land_card = named("Restless Spire");
+        let payment = [0, 1, 0, 1, 0, 0];
+        let mut attacking = scenario(player);
+        let land = spawn(&mut attacking, player, land_card, Zone::Battlefield);
+        let blocker = put(&mut attacking, other, "Bear Cub", Zone::Battlefield);
+        let brave = put(&mut attacking, player, "Brave the Wilds", Zone::Hand);
+        let offering = spawn(&mut attacking, player, FOOD, Zone::Battlefield);
+        let mut externally_animated = attacking.clone();
+        act(
+            &mut externally_animated,
+            Action::AnnounceCast { card: brave },
+        );
+        let sacrifice = Some(externally_animated.object_ref(offering));
+        act(
+            &mut externally_animated,
+            Action::ChooseBargain { sacrifice },
+        );
+        act(
+            &mut externally_animated,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        pay(&mut externally_animated);
+        pass_pair(&mut externally_animated);
+        act(&mut externally_animated, Action::FinishSearch);
+        settle(&mut externally_animated);
+        assert!(
+            !externally_animated
+                .object_view(land)
+                .keywords
+                .contains(Keywords::FIRST_STRIKE)
+        );
+        attack(&mut externally_animated, land);
+        pass_pair(&mut externally_animated);
+        bottom_scried_card(&mut externally_animated, player);
+
+        animate_restless_land(&mut attacking, land, payment);
+        attack(&mut attacking, land);
+        pass_pair(&mut attacking);
+        bottom_scried_card(&mut attacking, player);
+        pass_pair(&mut attacking);
+        act(
+            &mut attacking,
+            Action::Block {
+                blocker,
+                attacker: land,
+            },
+        );
+        act(&mut attacking, Action::FinishBlockers);
+        pass_pair(&mut attacking);
+        assert_eq!(attacking.state.step, Step::FirstStrikeDamage);
+        assert_eq!(attacking.object_view(blocker).zone, Zone::Graveyard);
+        assert_eq!(attacking.object_view(land).zone, Zone::Battlefield);
+
+        let mut defending = scenario(other);
+        let land = spawn(&mut defending, player, land_card, Zone::Battlefield);
+        let attacker = put(&mut defending, other, "Bear Cub", Zone::Battlefield);
+        let theft = put(&mut defending, other, "Goatnap", Zone::Hand);
+        let island = put(&mut defending, player, "Island", Zone::Battlefield);
+        let mountain = put(&mut defending, player, "Mountain", Zone::Battlefield);
+        let mut stolen = defending.clone();
+        act(&mut stolen, Action::Pass);
+        animate_restless_land(&mut stolen, land, payment);
+        assert!(
+            !stolen
+                .object_view(land)
+                .keywords
+                .contains(Keywords::FIRST_STRIKE)
+        );
+        cast(&mut stolen, theft, Some(Target::Card(land)));
+        settle(&mut stolen);
+        assert_eq!(stolen.object_view(land).controller, other);
+        assert!(
+            stolen
+                .object_view(land)
+                .keywords
+                .contains(Keywords::FIRST_STRIKE)
+        );
+
+        attack(&mut defending, attacker);
+        act(&mut defending, Action::Pass);
+        for card in [island, mountain] {
+            act(&mut defending, Action::TapMana { card });
+        }
+        animate_restless_land(&mut defending, land, payment);
+        pass_pair(&mut defending);
+        act(
+            &mut defending,
+            Action::Block {
+                blocker: land,
+                attacker,
+            },
+        );
+        act(&mut defending, Action::FinishBlockers);
+        pass_pair(&mut defending);
+        assert_eq!(defending.state.step, Step::CombatDamage);
+        assert_eq!(defending.object_view(attacker).zone, Zone::Graveyard);
+        assert_eq!(defending.object_view(land).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn restless_vinestalk_optionally_sets_another_creatures_base_under_counters_and_growth() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let land = spawn(
+            &mut game,
+            player,
+            named("Restless Vinestalk"),
+            Zone::Battlefield,
+        );
+        let target = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+        game.add_counter(target, CounterKind::PlusOne, 1);
+        cast(&mut game, growth, Some(Target::Card(target)));
+        settle(&mut game);
+        animate_restless_land(&mut game, land, [0, 1, 0, 0, 1, 3]);
+        attack(&mut game, land);
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(land),
+            },
+        );
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishTargets);
+        settle(&mut zero);
+        assert_eq!(stats(&zero, target), (6, 6));
+
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, target), (7, 7));
+        assert_eq!(stats(&game, land), (5, 5));
+        assert!(game.object_view(land).keywords.contains(Keywords::TRAMPLE));
+        finish_turn(&mut game);
+        assert_eq!(stats(&game, target), (3, 3));
+    }
+}
