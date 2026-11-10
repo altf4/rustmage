@@ -140,17 +140,27 @@ fn solo_attacker_uses_all_live_counters_or_its_exact_departure_total() {
     put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let attacker = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     game.add_counter(attacker, CounterKind::Charge, 1);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let island = put(&mut game, player, "Island", Zone::Battlefield);
     game.begin_step(Step::BeginCombat);
     pass_pair(&mut game);
     act(&mut game, Action::Attack { card: attacker });
     act(&mut game, Action::FinishAttackers);
 
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, .. } if *card == forest),
+    );
     let counter = put(&mut game, player, "Snakeskin Veil", Zone::Hand);
     cast(&mut game, counter, Some(Target::Card(attacker)));
     pass_pair(&mut game);
     assert_eq!(game.counter_count(attacker, CounterKind::PlusOne), 1);
 
     let mut departed = game.clone();
+    choose(
+        &mut departed,
+        |action| matches!(action, Action::ActivateMana { card, .. } if *card == island),
+    );
     let bounce = put(&mut departed, player, "Unsummon", Zone::Hand);
     cast(&mut departed, bounce, Some(Target::Card(attacker)));
     pass_pair(&mut departed);
