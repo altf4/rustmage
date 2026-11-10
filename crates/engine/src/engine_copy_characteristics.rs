@@ -40,6 +40,20 @@ impl Game {
                     },
                 )
             }
+            Subject::Entering => {
+                let object = item.entering_object?;
+                if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+                    return Some(self.copiable_recipe(object));
+                }
+                let event = item
+                    .event_object
+                    .as_ref()
+                    .filter(|event| event.object == object)?;
+                match event.facts {
+                    EventObjectFacts::Copiable(recipe) => Some(recipe),
+                    _ => None,
+                }
+            }
             Subject::Targets => item.targets.iter().find_map(|bound| {
                 if self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target

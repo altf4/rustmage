@@ -451,21 +451,56 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
+        let program = self
+            .state
+            .pending_triggers
+            .last()
+            .unwrap()
+            .trigger_definition()
+            .triggers()[index]
+            .program;
+        let copy_dealer = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::CreateNonlegendaryCopyTokens {
+                    subject: Subject::Entering,
+                    ..
+                } | Instruction::CreateLegendaryCopyTokens {
+                    subject: Subject::Entering,
+                    ..
+                }
+            )
+        });
+        let recipe = event
+            .dealer
+            .filter(|dealer| {
+                copy_dealer
+                    && self.on_battlefield(dealer.card)
+                    && self.object_ref(dealer.card) == *dealer
+            })
+            .map(|dealer| (dealer, self.copiable_recipe(dealer)));
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        let retain_dealer_controller = packet.trigger_definition().triggers()[index]
-            .program
-            .iter()
-            .any(|instruction| {
-                matches!(
-                    instruction,
-                    Instruction::ExileLibraryTopFaceDownPlay {
-                        beneficiary: PlayerSet::EventPlayer,
-                        ..
-                    }
-                )
-            });
+        let retain_dealer_controller = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::ExileLibraryTopFaceDownPlay {
+                    beneficiary: PlayerSet::EventPlayer,
+                    ..
+                }
+            )
+        });
         packet.damage_event = Some(event);
         packet.refer_objects(semantic_dealers);
+        if let Some((dealer, recipe)) = recipe {
+            packet.entering_object = Some(dealer);
+            packet.set_event_object(EventObjectView {
+                object: dealer,
+                facts: EventObjectFacts::Copiable(recipe),
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+        }
         if retain_dealer_controller {
             packet.event_player = dealer_controller;
         }

@@ -71,6 +71,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
                 | Instruction::BlinkUntilEndStep { .. }
+                | Instruction::BlinkExiledTargetsUntilEndStep
                 | Instruction::ReturnToBattlefield
                 | Instruction::ReturnToBattlefieldWithRole { .. }
                 | Instruction::ReturnToBattlefieldTapped

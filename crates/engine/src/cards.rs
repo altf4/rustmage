@@ -1929,6 +1929,7 @@ pub enum TurnCallbackEvent {
     NoncreatureCast,
     CreatureEntry,
     ControlledCreatureCombatDamagePlayerOrPlaneswalker,
+    NamedCreatureCombatDamagePlayer(crate::CardName),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2223,6 +2224,9 @@ pub enum Instruction {
         ability: u16,
         once: bool,
     },
+    ScheduleNamedCombatDamageTrigger {
+        ability: u16,
+    },
     AttackWithoutDefenderThisTurn,
     CombatAndMainAfterCurrentMain(u16),
     ScheduleAttackTriggerThisTurn {
@@ -2259,6 +2263,8 @@ pub enum Instruction {
     ExileSmallReturnUntilEndStep,
     BlinkAttacking,
     BlinkGroupTappedUntilEndStep,
+    /// Return only cards that actually entered exile, under their owners' control.
+    BlinkExiledTargetsUntilEndStep,
     PreventPlayerDamageUntilNextTurn,
     /// Prevent damage to creatures the resolving effect's controller controls this turn.
     PreventControlledCreatureDamageThisTurn,
@@ -2870,6 +2876,7 @@ pub enum Instruction {
     /// Exile the controller's top card and allow ordinary plays while they
     /// retain continuous control of this exact source.
     ExileTopPlayWhileSourceControlled,
+    ExileTopPlayUntilSourceExilesAnother,
     /// Grant the exact face-up exiled top card while the beneficiary controls
     /// a permanent of this subtype.
     ExileTopPlayWhileControlSubtype(&'static str),
@@ -3112,6 +3119,8 @@ pub enum Instruction {
     ExileEventGraveyardCard,
     /// Put the physical cards from this source's actual death on their owner's library bottom.
     PutDepartedSourceOnLibraryBottom,
+    /// Attempt to pay the exact death-card cost before returning linked exiles.
+    BottomDepartedSourceAndReturnLinkedExile,
     /// Return the exact death-event card tapped under its owner’s control.
     ReturnEventCardToBattlefieldTapped,
     /// Return the exact death-event card tapped under this resolving ability's controller.
@@ -4293,6 +4302,9 @@ pub enum Instruction {
         skip: usize,
     },
     /// Ask whether to draw, unless a current rule prohibits drawing.
+    MayExileTop {
+        skip: usize,
+    },
     MayDraw {
         skip: usize,
     },

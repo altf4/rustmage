@@ -42,6 +42,8 @@ pub enum ExilePlayExpiry {
     EndOfNextTurn,
     StartOfNextTurn(Player),
     StartOfNextEndStep(Player),
+    /// Replaced by the same player's next actual exile with this exact source.
+    UntilSourceExilesAnother(ObjectRef),
     /// Active in turns with a positive lore placement by the granted player on the source.
     SourceLoreTurns,
 }
@@ -336,6 +338,21 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn exile_top_play_until_source_exiles_another(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let (Some(source), Some(card)) = (item.source, self.top_library_card(player)) else {
+            return;
+        };
+        let event = self.move_object(card, Zone::Exile);
+        if event.moved && event.destination == Zone::Exile {
+            let expiry = ExilePlayExpiry::UntilSourceExilesAnother(source.object);
+            self.state
+                .exile_permissions
+                .retain(|row| row.player != player || row.expiry != expiry);
+            self.grant_exile_play_permission_with_expiry(player, event.after, None, expiry);
+        }
     }
 
     pub(super) fn exile_top_play_while_source_controlled(&mut self, item: &SpellView) {

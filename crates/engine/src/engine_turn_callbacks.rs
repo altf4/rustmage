@@ -19,11 +19,21 @@ impl Game {
         }
     }
     pub(super) fn combat_turn_callback_events(&mut self, events: &[DamageEvent]) {
-        if !self.state.combat_rules.as_ref().is_some_and(|rules| {
-            rules.turn_callbacks.iter().any(|row| {
-                row.event == TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker
-            })
-        }) {
+        let Some(rules) = &self.state.combat_rules else {
+            return;
+        };
+        let mut controlled = false;
+        let mut named = false;
+        for row in &rules.turn_callbacks {
+            match row.event {
+                TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker => {
+                    controlled = true;
+                }
+                TurnCallbackEvent::NamedCreatureCombatDamagePlayer(_) => named = true,
+                _ => {}
+            }
+        }
+        if !controlled && !named {
             return;
         }
         let hits: std::collections::BTreeSet<_> = events
@@ -43,12 +53,21 @@ impl Game {
                 )
             })
             .collect();
-        for (controller, object, _) in hits {
-            self.queue_turn_callbacks(
-                TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker,
-                controller,
-                Some(object),
-            );
+        for (controller, object, recipient) in hits {
+            let name = (named
+                && matches!(recipient, Target::Player(_))
+                && self.on_battlefield(object.card)
+                && self.object_ref(object.card) == object)
+                .then(|| self.object_name(object.card));
+            self.queue_matching_turn_callbacks(Some(object), |row| match row.event {
+                TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker => {
+                    row.item.controller == controller
+                }
+                TurnCallbackEvent::NamedCreatureCombatDamagePlayer(chosen) => {
+                    name.is_some_and(|name| chosen.matches(name))
+                }
+                _ => false,
+            });
         }
     }
     pub(super) fn schedule_turn_callback(
@@ -87,12 +106,21 @@ impl Game {
         actor: Player,
         object: Option<ObjectRef>,
     ) {
+        self.queue_matching_turn_callbacks(object, |row| {
+            row.event == event && row.item.controller == actor
+        });
+    }
+    fn queue_matching_turn_callbacks(
+        &mut self,
+        object: Option<ObjectRef>,
+        mut matches: impl FnMut(&TurnCallbackView) -> bool,
+    ) {
         let Some(rules) = self.state.combat_rules.as_mut() else {
             return;
         };
         let mut ready = Vec::new();
         rules.turn_callbacks.retain(|row| {
-            if row.event != event || row.item.controller != actor {
+            if !matches(row) {
                 return true;
             }
             ready.push(row.item.clone());

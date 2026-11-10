@@ -459,14 +459,12 @@ impl Game {
         self.stage_entries(moves, None);
         true
     }
-    pub(super) fn blink_until_end_step(&mut self, item: &SpellView, under_owner: bool) {
-        self.blink_group_until_end_step(item, under_owner, false);
-    }
     pub(super) fn blink_group_until_end_step(
         &mut self,
         item: &SpellView,
         under_owner: bool,
         tapped: bool,
+        actual_exile_only: bool,
     ) {
         let ids: Vec<_> = item
             .targets
@@ -485,10 +483,9 @@ impl Game {
             .iter()
             .filter(|event| {
                 event.moved
-                    && matches!(
-                        event.destination,
-                        Zone::Exile | Zone::Graveyard | Zone::Command
-                    )
+                    && (event.destination == Zone::Exile
+                        || (!actual_exile_only
+                            && matches!(event.destination, Zone::Graveyard | Zone::Command)))
                     && !event.before.is_token()
             })
             .flat_map(|event| {

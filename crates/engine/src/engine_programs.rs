@@ -1,6 +1,6 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
-use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment};
+use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment, TurnCallbackEvent};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -4040,6 +4040,16 @@ impl Game {
                     ability,
                     once,
                 } => self.schedule_turn_callback(&item, event, ability, once),
+                Instruction::ScheduleNamedCombatDamageTrigger { ability } => {
+                    if let Some(name) = resolution.chosen_card_name {
+                        self.schedule_turn_callback(
+                            &item,
+                            TurnCallbackEvent::NamedCreatureCombatDamagePlayer(name),
+                            ability,
+                            false,
+                        );
+                    }
+                }
                 Instruction::AttackWithoutDefenderThisTurn => {
                     self.allow_source_attack_without_defender(&item)
                 }
@@ -5196,7 +5206,10 @@ impl Game {
                     self.exile_small_return_until_end_step(&item);
                 }
                 Instruction::BlinkGroupTappedUntilEndStep => {
-                    self.blink_group_until_end_step(&item, true, true)
+                    self.blink_group_until_end_step(&item, true, true, false)
+                }
+                Instruction::BlinkExiledTargetsUntilEndStep => {
+                    self.blink_group_until_end_step(&item, true, false, true)
                 }
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
@@ -5208,7 +5221,7 @@ impl Game {
                     self.double_damage_to_damaged_player_until_next_turn(&item)
                 }
                 Instruction::BlinkUntilEndStep { under_owner } => {
-                    self.blink_until_end_step(&item, under_owner)
+                    self.blink_group_until_end_step(&item, under_owner, false, false)
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
@@ -5222,7 +5235,12 @@ impl Game {
                     }
                 }
                 Instruction::PutDepartedSourceOnLibraryBottom => {
-                    self.put_departed_source_on_library_bottom(&item)
+                    self.put_departed_source_on_library_bottom(&item);
+                }
+                Instruction::BottomDepartedSourceAndReturnLinkedExile => {
+                    if self.put_departed_source_on_library_bottom(&item) {
+                        self.return_linked_exile(&item);
+                    }
                 }
                 Instruction::ReturnEventCardToBattlefieldTapped
                 | Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
@@ -8054,6 +8072,9 @@ impl Game {
                 Instruction::ExileTopPlayOnSourceLoreTurns => {
                     self.exile_top_play_on_source_lore_turns(&item);
                 }
+                Instruction::ExileTopPlayUntilSourceExilesAnother => {
+                    self.exile_top_play_until_source_exiles_another(&item);
+                }
                 Instruction::ExileTopPlayWhileSourceControlled => {
                     self.exile_top_play_while_source_controlled(&item);
                 }
@@ -8765,11 +8786,19 @@ impl Game {
                     }
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
-                Instruction::May { skip } | Instruction::MayDraw { skip } => {
+                Instruction::May { skip }
+                | Instruction::MayDraw { skip }
+                | Instruction::MayExileTop { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
-                    if matches!(instruction, Instruction::MayDraw { .. }) && self.draws_prohibited()
-                    {
+                    let available = match instruction {
+                        Instruction::MayDraw { .. } => !self.draws_prohibited(),
+                        Instruction::MayExileTop { .. } => {
+                            self.top_library_card(item.controller).is_some()
+                        }
+                        _ => true,
+                    };
+                    if !available {
                         self.state.resolving.as_mut().unwrap().pc = skip_to;
                         continue;
                     }
