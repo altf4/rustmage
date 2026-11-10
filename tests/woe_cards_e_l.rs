@@ -2091,6 +2091,7 @@ fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() 
         let spare_aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
         let walker = put(&mut game, player, "Ajani, Caller of the Pride", Zone::Hand);
         let remove = put(&mut game, opponent, "Disenchant", Zone::Hand);
+        let plains = [0; 2].map(|_| put(&mut game, opponent, "Plains", Zone::Battlefield));
         announce(&mut game, eriette, &[]);
         settle(&mut game);
         for (spell, target) in [(aura, constrained), (spare_aura, friend)] {
@@ -2119,6 +2120,9 @@ fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() 
         assert_eq!(game.state.stack.last().unwrap().source.unwrap().id, eriette);
         let mut reduced = game.clone();
         act(&mut reduced, Action::Pass);
+        for card in plains {
+            act(&mut reduced, Action::TapMana { card });
+        }
         cast(&mut reduced, remove, Some(Target::Card(spare_aura)));
         settle(&mut reduced);
         assert_eq!(reduced.state.players[player.index()].life, 21);
@@ -2142,7 +2146,16 @@ fn eriette_restricts_attacks_and_counts_live_controlled_auras_at_the_end_step() 
                 defender,
             },
         );
-        act(&mut game, Action::Attack { card: free });
+        assert!(game
+            .legal_actions()
+            .contains(&Action::Attack { card: free }));
+        act(
+            &mut game,
+            Action::AttackPlaneswalker {
+                card: free,
+                defender,
+            },
+        );
         act(&mut game, Action::FinishAttackers);
     }
 }
