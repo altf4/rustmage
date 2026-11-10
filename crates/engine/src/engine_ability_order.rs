@@ -40,6 +40,8 @@ pub(super) struct LayerSixObject {
     /// mask; interchangeable counters of a kind enter as one grant row.
     pub decayed_instances: usize,
     pub granted_decayed_instances: usize,
+    pub riot_instances: usize,
+    pub granted_riot_instances: usize,
     pub grants: Vec<GrantedAbilityKey>,
     /// Independently acquired self-owned static/activated ability instances.
     pub self_grants: Vec<u64>,
@@ -60,12 +62,24 @@ impl LayerSixObject {
                 .checked_add(1)
                 .capacity("acquired Decayed ability instance count exhausted");
         }
+        if keywords.contains(Keywords::RIOT) {
+            self.riot_instances = self
+                .riot_instances
+                .checked_add(1)
+                .capacity("Riot ability instance count exhausted");
+            self.granted_riot_instances = self
+                .granted_riot_instances
+                .checked_add(1)
+                .capacity("acquired Riot ability instance count exhausted");
+        }
     }
     fn clear_keywords(&mut self) {
         self.keywords = Keywords::NONE;
         self.granted_keywords = Keywords::NONE;
         self.decayed_instances = 0;
         self.granted_decayed_instances = 0;
+        self.riot_instances = 0;
+        self.granted_riot_instances = 0;
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -235,6 +249,7 @@ pub(super) fn apply_layer_six(
                 object.printed = false;
                 object.keywords = object.granted_keywords;
                 object.decayed_instances = object.granted_decayed_instances;
+                object.riot_instances = object.granted_riot_instances;
                 object.mana.retain(|ability| !ability.subtype_derived);
             }
         }
@@ -272,6 +287,10 @@ pub(super) fn apply_layer_six(
                     if keywords.contains(Keywords::DECAYED) {
                         object.decayed_instances = 0;
                         object.granted_decayed_instances = 0;
+                    }
+                    if keywords.contains(Keywords::RIOT) {
+                        object.riot_instances = 0;
+                        object.granted_riot_instances = 0;
                     }
                 }
                 LayerSixAction::RemoveSubtypeMana => {

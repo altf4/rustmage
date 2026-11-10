@@ -75,6 +75,7 @@ impl Game {
             let card = group.token;
             group.amount != 0
                 && (self.has_entry_counter_replacements(card)
+                    || self.may_enter_with_riot(card)
                     || card.enters_counters().total() != 0
                     || !card.entry_counter_rules().is_empty()
                     || card.x_complement_entry_counters().is_some()

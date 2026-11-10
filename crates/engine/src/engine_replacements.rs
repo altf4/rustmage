@@ -677,7 +677,7 @@ pub(super) fn entry_power_sensitive<W: super::ability_world::CharacteristicWorld
         })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn global_counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
+pub(super) fn global_counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     kinds: u16,
 ) -> bool {

@@ -407,6 +407,23 @@ impl FundingState<'_> {
         })
         .flatten()
     }
+    pub(super) fn preview_entry_riot(&self, movement: &entries::EntryMove) -> Option<riot::Preparation> {
+        self.with_entry_preview(&movement.replacement_preview(), |world| {
+            let id = movement.before.id;
+            let remaining = characteristic_query::CharacteristicQuery::in_world(world)
+                .riot_instances(id);
+            riot::Preparation {
+                remaining,
+                // Like other entry counters, use the entrant's projected kinds
+                // and the existing battlefield's global prohibitions.
+                can_add_counter: remaining != 0
+                    && !replacements::global_counters_prohibited(self, world.kinds(id)),
+                haste: false,
+            }
+        })
+        .filter(|offer| offer.remaining != 0)
+    }
+
     fn with_entry_preview<T>(
         &self,
         movement: &entries::EntryMove,
@@ -1150,7 +1167,10 @@ impl FundingState<'_> {
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let Some(m) = moves.get(at) else {
-            return self.visit_entry_counter_rows(moves, actual, emit);
+            if actual.is_some_and(|batch| batch.entry_bonuses_ready) {
+                return self.visit_entry_counter_rows(moves, actual, emit);
+            }
+            return self.visit_entry_riot(moves, 0, riot::grants_riot(self), actual, emit);
         };
         if m.skipped || m.destination != Zone::Battlefield {
             return self.visit_entry_values(moves, at + 1, actual, emit);
@@ -1294,6 +1314,43 @@ impl FundingState<'_> {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
+    fn visit_entry_riot(
+        &self,
+        mut moves: Vec<entries::EntryMove>,
+        from: usize,
+        grant_possible: bool,
+        actual: Option<&entries::EntryBatch>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        for index in from..moves.len() {
+            let movement = &mut moves[index];
+            if movement.skipped || movement.destination != Zone::Battlefield {
+                continue;
+            }
+            let offer = movement.riot.or_else(|| {
+                riot::potential(movement, grant_possible)
+                    .then(|| self.preview_entry_riot(movement))
+                    .flatten()
+            });
+            let Some(offer) = offer.filter(|offer| offer.remaining != 0) else {
+                continue;
+            };
+            movement.riot = Some(offer);
+            if !offer.can_add_counter {
+                movement.apply_riot(0, offer.remaining);
+                continue;
+            }
+            // The order of identical Riot choices changes neither the final
+            // counter quantity nor whether the exact entrant gains haste.
+            return (0..=offer.remaining).any(|counters| {
+                let mut next = moves.clone();
+                next[index].apply_riot(counters, offer.remaining - counters);
+                self.visit_entry_riot(next, index + 1, grant_possible, actual, emit)
+            });
+        }
+        self.visit_entry_counter_rows(moves, actual, emit)
+    }
+
     fn visit_entry_counter_rows(
         &self,
         mut moves: Vec<entries::EntryMove>,
@@ -1889,6 +1946,16 @@ impl FundingState<'_> {
             }
         }
         for m in &moves {
+            if !m.skipped && m.destination == Zone::Battlefield && m.has_riot_haste() {
+                let recipient = next.reference(m.before.id);
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .roles
+                    .grant_riot_haste(recipient);
+            }
+        }
+        for m in &moves {
             if !m.skipped
                 && m.destination == Zone::Battlefield
                 && let Some((origin, keywords)) = m.keywords_after
@@ -2175,6 +2242,7 @@ impl Game {
                 | Action::FinishEntryExile
                 | Action::ChooseEntryDevour { .. }
                 | Action::FinishEntryDevour
+                | Action::ChooseEntryRiot { .. }
                 | Action::ChooseEntryBehold { .. }
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
@@ -2304,6 +2372,10 @@ impl Game {
                     .exile_preparation
                     .get_or_insert_default()
                     .selection_closed = true;
+            }
+            Some(Action::ChooseEntryRiot { counter }) => {
+                let index = batch.current_riot().unwrap();
+                batch.moves[index].apply_riot(usize::from(*counter), usize::from(!*counter));
             }
             Some(Action::ChooseEntryDevour { object }) => {
                 let index = self.current_entry_devour_index().unwrap();

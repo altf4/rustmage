@@ -3258,6 +3258,7 @@ impl Game {
                             || source.card.entry_exile_counters().is_some()
                             || source.card.devour().is_some()
                             || self.has_entry_counter_replacements(source.card)
+                            || self.may_enter_with_riot(source.card)
                             || source.card.kind_mask() & crate::cards::BATTLE_KIND != 0
                         {
                             let mut movement = self.entry_move(

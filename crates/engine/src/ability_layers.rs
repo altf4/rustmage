@@ -288,6 +288,8 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Each other controlled permanent of this subtype has an instance of Riot.
+    GrantRiotToOtherControlledSubtype(&'static str),
     /// Live layer-six grant; virtual taps and control/subtype changes requalify recipients.
     ControlledUntappedSubtypeKeywords {
         subtype: &'static str,

@@ -57,6 +57,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .decayed_instances
         }
     }
+    pub(super) fn riot_instances(&self, id: CardId) -> usize {
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[id as usize].riot_instances
+        } else {
+            ability_evaluation::evaluate_abilities(self.world)
+                .result
+                .objects[id as usize]
+                .riot_instances
+        }
+    }
     pub(super) fn object_ref(&self, id: CardId) -> ObjectRef {
         self.reference(id)
     }
@@ -682,6 +692,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .has(CharacteristicWorld::definition(self, id), subtype) =>
                         {
                             keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
+                            if target.controller == object.controller
+                                && id != source
+                                && CharacteristicWorld::subtypes(self, id)
+                                    .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(Keywords::RIOT)
                         }
                         StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                             if target.controller == object.controller

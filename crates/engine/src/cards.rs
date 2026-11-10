@@ -6677,6 +6677,8 @@ impl Keywords {
     pub const PROTECTION_OPPONENTS: Self = Self(1u64 << 46);
     /// Hexproof qualified by any color the protected object currently has.
     pub const HEXPROOF_OWN_COLORS: Self = Self(1u64 << 47);
+    /// Independent replacements that offer a +1/+1 counter or permanent haste.
+    pub const RIOT: Self = Self(1u64 << 48);
     const HEXPROOF_COLOR_SHIFT: u32 = 40;
     pub const fn hexproof_from_color(color: ChoiceColor) -> Self {
         Self(1u64 << (Self::HEXPROOF_COLOR_SHIFT + color.index() as u32))

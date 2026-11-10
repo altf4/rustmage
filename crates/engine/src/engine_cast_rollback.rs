@@ -224,6 +224,7 @@ impl Game {
                         | Action::FinishEntryExile
                         | Action::ChooseEntryDevour { .. }
                         | Action::FinishEntryDevour
+                        | Action::ChooseEntryRiot { .. }
                         | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }

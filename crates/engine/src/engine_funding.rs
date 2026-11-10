@@ -429,6 +429,7 @@ struct EntryFundingKey {
     lands_entered: [u64; 2],
     battle_protectors: Vec<(ObjectRef, usize)>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
+    riot_haste: Vec<(ObjectRef, u64)>,
     consumed: Vec<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1117,6 +1118,7 @@ impl<'g> FundingState<'g> {
                                 group.fragments.iter().any(|fragment| matches!(
                                     fragment,
                                     StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
+                                        | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
@@ -1539,6 +1541,14 @@ impl<'g> FundingState<'g> {
                                 ) =>
                             {
                                 keywords = keywords.union(grant)
+                            }
+                            crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
+                                if target.object.controller == source.object.controller
+                                    && target.id != source.id
+                                    && ability_world::CharacteristicWorld::subtypes(self, target.id)
+                                        .has(ability_world::CharacteristicWorld::definition(self, target.id), subtype) =>
+                            {
+                                keywords = keywords.union(Keywords::RIOT)
                             }
                             crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                                 if target.object.controller == source.object.controller
@@ -3092,6 +3102,11 @@ impl<'g> FundingState<'g> {
                     .map(|(object, player)| (*object, player.index()))
                     .collect(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
+                riot_haste: p.roles.keyword_effects.iter().filter_map(|row| {
+                    (row.origin == KeywordEffectOrigin::Riot
+                        && self.reference(row.recipient.card) == row.recipient)
+                        .then_some((row.recipient, row.timestamp))
+                }).collect(),
                 consumed: p.consumed.clone(),
             }),
             self_grant_uses: self.self_grant_uses.clone(),
@@ -4613,6 +4628,19 @@ impl Game {
         };
         FundingState::from_game(self, &goal)
             .entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+    }
+    pub(super) fn preview_entry_riot(
+        &self,
+        movement: &entries::EntryMove,
+    ) -> Option<riot::Preparation> {
+        let goal = FundingGoal {
+            actor: movement.controller,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        FundingState::from_game(self, &goal).preview_entry_riot(movement)
     }
     pub(super) fn ghost_entry_preview(&self, movement: &entries::EntryMove) -> Option<ObjectView> {
         let goal = FundingGoal {

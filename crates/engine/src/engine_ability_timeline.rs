@@ -27,6 +27,7 @@ pub enum KeywordEffectOrigin {
         controller: Player,
     },
     Suspected,
+    Riot,
     Counter {
         kind: CounterKind,
     },
@@ -103,6 +104,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
                             | StaticAbilityFragment::AttachmentAttackingKeywords(..)

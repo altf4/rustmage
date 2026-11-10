@@ -53,6 +53,10 @@ pub use entry_exiles::EntryExileChoiceView;
 pub mod entry_devour;
 pub use entry_devour::EntryDevourChoiceView;
 #[doc(hidden)]
+#[path = "engine_riot.rs"]
+pub mod riot;
+pub use riot::EntryRiotChoiceView;
+#[doc(hidden)]
 #[path = "engine_entry_copies.rs"]
 pub mod entry_copies;
 pub use entry_copies::EntryCopyChoiceView;
@@ -988,6 +992,7 @@ define_actions! {
     FinishEntryExile,
     ChooseEntryDevour { object: ObjectRef },
     FinishEntryDevour,
+    ChooseEntryRiot { counter: bool },
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
@@ -2817,6 +2822,9 @@ enum Pending {
     EntryDevour {
         player: Player,
     },
+    EntryRiot {
+        player: Player,
+    },
     EntryValue {
         player: Player,
     },
@@ -4002,6 +4010,8 @@ pub struct Observation {
     pub entry_exile: Option<EntryExileChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_devour: Option<EntryDevourChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_riot: Option<EntryRiotChoiceView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -4525,6 +4535,7 @@ impl Game {
             | Pending::EntryCopy { player }
             | Pending::EntryExile { player }
             | Pending::EntryDevour { player }
+            | Pending::EntryRiot { player }
             | Pending::LandCardName { player }
             | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
@@ -5232,6 +5243,13 @@ impl Game {
             Pending::LinkedChoice { .. } => {
                 if self.visit_linked_choices(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryRiot { .. } => {
+                for counter in [true, false] {
+                    if emit(Action::ChooseEntryRiot { counter }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryDevour { .. } => {
@@ -7390,6 +7408,7 @@ impl Game {
             Action::FinishEntryExile => self.finish_entry_exile(),
             Action::ChooseEntryDevour { object } => self.choose_entry_devour(object),
             Action::FinishEntryDevour => self.finish_entry_devour(),
+            Action::ChooseEntryRiot { counter } => self.choose_entry_riot(counter),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -7521,6 +7540,7 @@ impl Game {
                     .entry_choice()
                     .is_some()
                     || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
+                    || self.may_enter_with_riot(self.state.objects[card as usize].card)
                 {
                     // A land play is public even while its pre-entry choice is pending.
                     let reference = self.object_ref(card);
@@ -11852,6 +11872,8 @@ impl Game {
                 Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryExile { .. } => "entry_exile",
                 Pending::EntryDevour { .. } => "entry_devour",
+                Pending::EntryRiot { .. } if self.entry_riot_view(viewer).is_none() => "entry_choice",
+                Pending::EntryRiot { .. } => "entry_riot",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
@@ -11966,6 +11988,7 @@ impl Game {
             entry_copy: self.entry_copy_view(viewer),
             entry_exile: self.entry_exile_view(viewer),
             entry_devour: self.entry_devour_view(viewer),
+            entry_riot: self.entry_riot_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),

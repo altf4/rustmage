@@ -506,6 +506,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::FinishEntryExile => 0,
             Action::ChooseEntryDevour { .. } => -1,
             Action::FinishEntryDevour => 0,
+            Action::ChooseEntryRiot { counter } => i128::from(*counter),
             Action::ChooseEntryCopy { object } => {
                 // Copying an unchanged as-entry copier grants a fresh choice.
                 // Prefer a completed blueprint and decline copy-only loops.

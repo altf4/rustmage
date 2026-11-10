@@ -8,6 +8,7 @@ use crate::cards::StaticAbilityFragment;
 pub(super) struct EntryMove {
     pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
     pub devour_preparation: Option<Box<entry_devour::Preparation>>,
+    pub riot: Option<riot::Preparation>,
     pub copy_preparation: Option<Box<entry_copies::Preparation>>,
     pub delayed_return_exile: Option<Box<SpellView>>,
     pub choice: Option<EntryChoiceValue>,
@@ -167,6 +168,7 @@ pub(super) struct EntryBatch {
     /// Allocated only for events with competing untapped-entry replacements.
     pub tap_events: Vec<EntryTapEvent>,
     pub tap_next: usize,
+    pub riot: Option<Box<riot::ChoiceOrder>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryMove {
@@ -270,6 +272,7 @@ impl EntryMove {
         EntryMove {
             exile_preparation: None,
             devour_preparation: None,
+            riot: None,
             copy_preparation: None,
             delayed_return_exile: None,
             choice: None,
@@ -385,6 +388,10 @@ impl EntryBatch {
                 * std::mem::size_of::<CastPaymentEvent>()
             + self.moves.iter().filter(|m| m.gift.is_some()).count()
                 * std::mem::size_of::<GiftContext>()
+            + self.riot.as_ref().map_or(0, |riot| {
+                std::mem::size_of::<riot::ChoiceOrder>()
+                    + riot.order.len() * std::mem::size_of::<usize>()
+            })
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
             + self.timestamp_order.len() * std::mem::size_of::<usize>()
@@ -617,6 +624,7 @@ impl Game {
             resume_entry: None,
             tap_events: Vec::new(),
             tap_next: 0,
+            riot: None,
         };
         if batch.moves.iter().any(|m| {
             entry_copies::needs_copy(m)
@@ -738,12 +746,25 @@ impl Game {
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
+        let riot_grant = riot::grants_riot(self);
+        let mut riot_order: Vec<_> = moves
+            .iter()
+            .enumerate()
+            .filter_map(|(i, movement)| riot::potential(movement, riot_grant).then_some(i))
+            .collect();
+        if !riot_order.is_empty() {
+            riot_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
+            batch.riot = Some(Box::new(riot::ChoiceOrder {
+                order: riot_order,
+                next: 0,
+            }));
+        }
         batch.moves = moves;
         batch.choices = choices;
         batch.counter_order = counter_order;
         batch.tap_events = tap_events;
         batch.copying = false;
-        if batch.choices.is_empty() {
+        if batch.choices.is_empty() && batch.riot.is_none() {
             self.add_entry_counter_bonuses(&mut batch.moves);
             batch.entry_bonuses_ready = true;
             Self::rebuild_entry_counter_order(&mut batch, self.state.active);
@@ -773,6 +794,7 @@ impl Game {
         if batch.atomic_cost.is_none()
             && batch.resume.is_none()
             && batch.choices.is_empty()
+            && batch.riot.is_none()
             && !batch
                 .moves
                 .iter()
@@ -1058,6 +1080,7 @@ impl Game {
         let mut life_results = Vec::new();
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
+        let mut riot_haste = Vec::new();
         let mut ability_results = Vec::new();
         let mut return_ability_results = Vec::new();
         let mut skeleton_results = Vec::new();
@@ -1265,6 +1288,9 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield && movement.has_riot_haste() {
+                    riot_haste.push(event.after);
+                }
                 if event.destination == Zone::Battlefield
                     && let Some((source, keywords)) = movement.keywords_after
                 {
@@ -1463,6 +1489,13 @@ impl Game {
             self.state.roles.get_or_insert_default().animations.push(
                 characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
             );
+        }
+        // Riot haste exists on arrival and has its own timestamp and exact recipient.
+        for recipient in riot_haste {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .grant_riot_haste(recipient);
         }
         self.refresh_controllers_after(Some(control_watch));
         for (entrant, controller, exile) in copy_exile_results {
@@ -1705,6 +1738,9 @@ impl Game {
                     batch.moves[index].skipped = true;
                 }
                 batch.next += 1;
+            }
+            if self.advance_entry_riot() {
+                return true;
             }
             if !self.state.entry_batch.as_ref().unwrap().entry_bonuses_ready {
                 let mut batch = self.state.entry_batch.take().unwrap();
