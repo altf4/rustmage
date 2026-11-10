@@ -3,7 +3,7 @@
   "catalogue_id": 5564,
   "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
   "facts_sha256": "a7da49797dcf35b8fa3a40c6ad217523c7fdd4d88115169d3aedca5e5a84991d",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
     "index": 1,
@@ -12,5 +12,28 @@
   "physical_metadata_sha256": "dbc89dd145cd360cc96b238302cff14fb5b91768906e3fdef9f65d1a1b1d2ad8",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfKnowledge.java",
-  "java_sha256": "cf63251c6ddde1e2f3319ef55b767dfd5acc90d90ef7b4aa304340ac58fed5da"
+  "java_sha256": "cf63251c6ddde1e2f3319ef55b767dfd5acc90d90ef7b4aa304340ac58fed5da",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/AdditionalTriggerControlledETBReplacementEffect.java",
+      "sha256": "4eebbdcd8285402e49bb45b73e09912c92d12dc481053227cd9b534abb451c5e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetActivatedOrTriggeredAbility.java",
+      "sha256": "1d83aa0018d3a33d04dfba3966f177e2e60e6a807c28bf6ac49832bad5d3bcdd"
+    }
+  ]
 }

@@ -3,7 +3,7 @@
   "catalogue_id": 4905,
   "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
   "facts_sha256": "3596b0986430d213b7651d9199b7bd36e0d03b01a16b2e9ed246a57219f1ae43",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "90363c7a36224e6a79add1e148c744b21b92e0dfa4e54221fc0610a00cb4f2d7"
@@ -13,5 +13,36 @@
     "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
     "index": 0,
     "sha256": "6f21a3052b908e2d0c1981bb61d2ecc845c24a319e2aefcafc23397069eab490"
-  }
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfCourage.java",
+  "java_sha256": "df454bea03f835c5d3ae0697cc47f518a9f047a48ca554a498df70ca34aa059e",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SourceDealsNoncombatDamageToOpponentTriggeredAbility.java",
+      "sha256": "8dc471db3b8122ed908c233d118f7f85ef8a5899408d15ab5364f4691f9099b9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    }
+  ]
 }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "230aaf073ddd8d4d50820b5dac9d12032b44678f4dd85735e85cfb173fcad46c",
+  "catalogue_version": "881ec71b9571d7dd6ce1f821120aaa890918f8d8bffaccb3b6e7b8a2159791a8",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4091,
-  "implemented_total": 4102,
+  "implemented_standard_cards": 4105,
+  "implemented_total": 4117,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -140,8 +140,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 17,
-      "gated": 7
+      "complete": 18,
+      "gated": 6
     },
     "sos": {
       "total": 264,
@@ -153,8 +153,7 @@
     },
     "tdc": {
       "total": 15,
-      "complete": 14,
-      "gated": 1
+      "complete": 15
     },
     "tdm": {
       "total": 264,
@@ -183,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 226,
-      "gated": 32
+      "complete": 238,
+      "gated": 20
     },
     "znr": {
       "total": 1,
@@ -11419,8 +11418,8 @@
     {
       "name": "Expel the Interlopers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/expel_the_interlopers.rs",
       "set": "tdc"
     },
@@ -11843,8 +11842,8 @@
     {
       "name": "Faunsbane Troll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faunsbane_troll.rs",
       "set": "woe"
     },
@@ -12155,8 +12154,8 @@
     {
       "name": "Feral Encounter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/feral_encounter.rs",
       "set": "woe"
     },
@@ -14571,8 +14570,8 @@
     {
       "name": "Gnawing Crescendo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gnawing_crescendo.rs",
       "set": "woe"
     },
@@ -26675,8 +26674,8 @@
     {
       "name": "Questing Druid // Seek the Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/questing_druid_seek_the_beast.rs",
       "set": "woe"
     },
@@ -27499,8 +27498,8 @@
     {
       "name": "Realm-Scorcher Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/realm_scorcher_hellkite.rs",
       "set": "woe"
     },
@@ -28219,8 +28218,8 @@
     {
       "name": "Return from the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/return_from_the_wilds.rs",
       "set": "woe"
     },
@@ -28939,8 +28938,8 @@
     {
       "name": "Rotisserie Elemental",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rotisserie_elemental.rs",
       "set": "woe"
     },
@@ -37715,8 +37714,8 @@
     {
       "name": "Troyan, Gutsy Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/troyan_gutsy_explorer.rs",
       "set": "soc"
     },
@@ -38691,8 +38690,8 @@
     {
       "name": "Up the Beanstalk",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/up_the_beanstalk.rs",
       "set": "woe"
     },
@@ -39435,40 +39434,40 @@
     {
       "name": "Virtue of Courage // Embereth Blaze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_courage_embereth_blaze.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Knowledge // Vantress Visions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_knowledge_vantress_visions.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Loyalty // Ardenvale Fealty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_loyalty_ardenvale_fealty.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Persistence // Locthwain Scorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_persistence_locthwain_scorn.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Strength // Garenbrig Growth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_strength_garenbrig_growth.rs",
       "set": "woe"
     },
