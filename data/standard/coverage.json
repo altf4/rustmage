@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b816150a571a7953f02549184f547fbe659a48c62c573d93a92a078953310197",
+  "catalogue_version": "1fe0339987c9b771593f89a74a3c9d27ef307c057ac7939eb807829bd23f662d",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4106,
-  "implemented_total": 4118,
+  "implemented_standard_cards": 4108,
+  "implemented_total": 4120,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -140,8 +140,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 18,
-      "gated": 6
+      "complete": 19,
+      "gated": 5
     },
     "sos": {
       "total": 264,
@@ -182,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 239,
-      "gated": 19
+      "complete": 240,
+      "gated": 18
     },
     "znr": {
       "total": 1,
@@ -11034,8 +11034,8 @@
     {
       "name": "Eriette of the Charmed Apple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/eriette_of_the_charmed_apple.rs",
       "set": "soc"
     },
@@ -14898,8 +14898,8 @@
     {
       "name": "Graceful Takedown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/graceful_takedown.rs",
       "set": "woe"
     },

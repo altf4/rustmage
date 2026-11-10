@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 4),
     keywords: Keywords::VIGILANCE,
+    activated: &[ActivatedAbility {
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        once_per_turn: false,
+        sorcery: true,
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReduceColoredSpellCostsThisTurn {
+            colors: (1 << ChoiceColor::White.index()) | (1 << ChoiceColor::Blue.index()),
+            amount: AmountValue::LifeGainedThisTurn,
+        }],
+    }],
     ..CardRules::EMPTY
 };

@@ -2020,3 +2020,465 @@ fn virtue_of_strength_returns_a_land_or_creature_and_triples_only_its_basic_tap_
         [0, 0, 0, 0, 1, 0]
     );
 }
+
+#[test]
+fn specter_of_mortality_exiles_own_creature_cards_then_triggers_a_separate_shrink() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let specter = candidate(&mut game, player, "Specter of Mortality", Zone::Hand);
+    let friend = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let first = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    let second = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Graveyard);
+    cast(&mut game, specter, None);
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, specter), (3, 3));
+    assert!(
+        game.object_view(specter)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    pass_pair(&mut game);
+
+    let select = |game: &Game, card| Action::SelectResolutionExile {
+        object: game.object_ref(card),
+    };
+    for card in [land, foreign] {
+        let action = select(&game, card);
+        reject(&mut game, action);
+    }
+    let mut decline = game.clone();
+    act(&mut decline, Action::FinishEffectChoice);
+    settle(&mut decline);
+    assert_eq!(decline.object_view(first).zone, Zone::Graveyard);
+    assert_eq!(stats(&decline, friend), (3, 3));
+
+    let first_action = select(&game, first);
+    let second_action = select(&game, second);
+    act(&mut game, first_action.clone());
+    reject(&mut game, first_action);
+    let mut one = game.clone();
+    act(&mut one, Action::FinishEffectChoice);
+    settle(&mut one);
+    assert_eq!(stats(&one, friend), (2, 2));
+    assert_eq!(stats(&one, enemy), (1, 1));
+    assert_eq!(one.object_view(second).zone, Zone::Graveyard);
+
+    act(&mut game, second_action);
+    act(&mut game, Action::FinishEffectChoice);
+    assert_eq!(game.object_view(first).zone, Zone::Exile);
+    assert_eq!(game.object_view(second).zone, Zone::Exile);
+    assert_eq!(stats(&game, enemy), (2, 2));
+    assert_eq!(game.state.stack.len(), 1);
+    settle(&mut game);
+    assert_eq!(stats(&game, specter), (3, 3));
+    assert_eq!(stats(&game, friend), (1, 1));
+    assert_eq!(game.object_view(enemy).zone, Zone::Graveyard);
+    pass_to_later_main(&mut game, opponent);
+    assert_eq!(stats(&game, friend), (3, 3));
+}
+
+fn activate_only(game: &mut Game, card: CardId, ability: u16) {
+    choose(game, |action| match action {
+        Action::Activate {
+            card: source,
+            ability: index,
+            ..
+        }
+        | Action::AnnounceActivate {
+            card: source,
+            ability: index,
+            ..
+        } => *source == card && *index == ability,
+        _ => false,
+    });
+}
+
+#[test]
+fn syr_ginger_reacts_to_own_other_artifacts_and_gains_its_last_power() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let ginger = candidate(&mut game, player, "Syr Ginger, the Meal Ender", Zone::Hand);
+    let own = put(&mut game, player, "Candy Trail", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Candy Trail", Zone::Battlefield);
+    let own_walker = put(
+        &mut game,
+        player,
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    let first = put(&mut game, player, "Disenchant", Zone::Hand);
+    let second = put(&mut game, player, "Disenchant", Zone::Hand);
+    game.add_counter(own_walker, CounterKind::Loyalty, 4);
+    cast(&mut game, ginger, None);
+    settle(&mut game);
+    let keywords = Keywords::TRAMPLE
+        .union(Keywords::HEXPROOF)
+        .union(Keywords::HASTE);
+    let view = game.object_view(ginger);
+    assert_eq!(view.kinds & 17, 17);
+    assert!(view.has_subtype("Food") && view.has_subtype("Knight"));
+    assert_eq!((view.power, view.toughness), (3, 1));
+    for keyword in [Keywords::TRAMPLE, Keywords::HEXPROOF, Keywords::HASTE] {
+        assert!(!view.keywords.contains(keyword));
+    }
+
+    let walker = put(
+        &mut game,
+        opponent,
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    game.add_counter(walker, CounterKind::Loyalty, 4);
+    assert!(game.object_view(ginger).keywords.contains(keywords));
+    let mut gone = game.clone();
+    let down = put(&mut gone, player, "Hero's Downfall", Zone::Hand);
+    cast(&mut gone, down, Some(Target::Card(walker)));
+    settle(&mut gone);
+    for keyword in [Keywords::TRAMPLE, Keywords::HEXPROOF, Keywords::HASTE] {
+        assert!(!gone.object_view(ginger).keywords.contains(keyword));
+    }
+
+    cast(&mut game, first, Some(Target::Card(foreign)));
+    settle(&mut game);
+    assert_eq!(game.counter_count(ginger, CounterKind::PlusOne), 0);
+    cast(&mut game, second, Some(Target::Card(own)));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(own).zone, Zone::Graveyard);
+    assert_eq!(game.counter_count(ginger, CounterKind::PlusOne), 0);
+    complete_scry_one(&mut game, player);
+    settle(&mut game);
+    assert_eq!(stats(&game, ginger), (4, 2));
+
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    let mut negative = game.clone();
+    negative.state.objects[ginger as usize].growth.power = -6;
+    for (branch, gained) in [(&mut game, 4), (&mut negative, 0)] {
+        activate_only(branch, ginger, 0);
+        if matches!(branch.state.pending, Pending::PayCosts { .. }) {
+            pay(branch);
+        }
+        assert_eq!(branch.state.players[player.index()].mana, [0; 6]);
+        assert_eq!(branch.object_view(ginger).zone, Zone::Graveyard);
+        assert_eq!(branch.state.players[player.index()].life, 20);
+        settle(branch);
+        assert_eq!(branch.state.players[player.index()].life, 20 + gained);
+    }
+}
+
+#[test]
+fn the_irencrag_produces_colorless_and_can_become_persistent_everflame() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let irencrag = candidate(&mut game, player, "The Irencrag", Zone::Hand);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let fynn = put(&mut game, player, "Fynn, the Fangbearer", Zone::Hand);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let tap = Action::ActivateMana {
+        card: irencrag,
+        ability: 0,
+        counter_payment: Counters::default(),
+        payment: [0; 6],
+        production: [0, 0, 0, 0, 0, 1],
+    };
+    cast(&mut game, irencrag, None);
+    settle(&mut game);
+    let exact = game.object_ref(irencrag);
+    let mut mana = game.clone();
+    let before = mana.state.players[player.index()].mana[5];
+    act(&mut mana, tap.clone());
+    assert!(mana.object_view(irencrag).tapped);
+    assert_eq!(mana.state.players[player.index()].mana[5], before + 1);
+
+    cast(&mut game, bear, None);
+    settle(&mut game);
+    cast(&mut game, fynn, None);
+    pass_pair(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    pass_pair(&mut game);
+    let mut decline = game.clone();
+    act(&mut decline, Action::ChooseOptional { accept: false });
+    settle(&mut decline);
+    assert_eq!(decline.object_view(irencrag).name(), "The Irencrag");
+    assert!(decline.legal_actions().contains(&tap));
+
+    act(&mut game, Action::ChooseOptional { accept: true });
+    let equipment = game.object_view(irencrag);
+    assert_eq!(equipment.reference, exact);
+    assert_eq!(equipment.name(), "Everflame, Heroes' Legacy");
+    assert!(equipment.is_legendary() && equipment.has_subtype("Equipment"));
+    assert_eq!(equipment.kinds, 16);
+    assert_eq!(game.object_mana_value(irencrag), 2);
+    reject(&mut game, tap.clone());
+
+    let grant = game
+        .observe(player)
+        .self_granted_abilities
+        .unwrap()
+        .into_iter()
+        .find(|row| row.recipient == exact)
+        .unwrap();
+    let equip = Action::AnnounceSelfGrantedAbility {
+        source: exact,
+        grant_timestamp: grant.timestamp,
+        counter_payment: Counters::default(),
+    };
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    reject(&mut game, equip.clone());
+    game.state.players[player.index()].mana[5] = 3;
+    act(&mut game, equip);
+    reject(&mut game, target(foreign));
+    act(&mut game, target(bear));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(
+        game.object_view(irencrag).attached_to,
+        Some(game.object_ref(bear))
+    );
+    assert_eq!(stats(&game, bear), (5, 5));
+
+    pass_to_later_main(&mut game, player);
+    assert_eq!(
+        game.object_view(irencrag).name(),
+        "Everflame, Heroes' Legacy"
+    );
+    assert_eq!(stats(&game, bear), (5, 5));
+    reject(&mut game, tap);
+    let troyan = put(&mut game, player, "Troyan, Gutsy Explorer", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 1, 1];
+    cast(&mut game, troyan, None);
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(irencrag).name(),
+        "Everflame, Heroes' Legacy"
+    );
+}
+
+#[test]
+fn three_bowls_spends_each_mode_once_and_sacrifices_on_resolution() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let porridge = candidate(&mut game, player, "Three Bowls of Porridge", Zone::Hand);
+    let creature = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let lands = [0; 2].map(|_| put(&mut game, player, "Swamp", Zone::Battlefield));
+    let plains = [0; 2].map(|_| put(&mut game, opponent, "Plains", Zone::Battlefield));
+    let disenchant = put(&mut game, opponent, "Disenchant", Zone::Hand);
+    cast(&mut game, porridge, None);
+    settle(&mut game);
+    let view = game.object_view(porridge);
+    assert!(view.has_subtype("Food") && view.kinds == 16);
+    let announce = Action::AnnounceActivate {
+        card: porridge,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    reject(
+        &mut game,
+        Action::AnnounceActivate {
+            card: porridge,
+            ability: 1,
+            counter_payment: Counters::default(),
+        },
+    );
+    for mode in 0..3 {
+        if mode != 0 {
+            pass_to_later_main(&mut game, player);
+            for card in lands {
+                act(&mut game, Action::TapMana { card });
+            }
+        }
+        let before: u32 = game.state.players[player.index()].mana.iter().sum();
+        act(&mut game, announce.clone());
+        for spent in 0..mode {
+            reject(&mut game, Action::ChooseMode { mode: spent });
+        }
+        act(&mut game, Action::ChooseMode { mode });
+        if mode < 2 {
+            reject(&mut game, target(porridge));
+            act(&mut game, target(creature));
+        }
+        pay(&mut game);
+        assert!(game.object_view(porridge).tapped);
+        assert_eq!(game.object_view(porridge).zone, Zone::Battlefield);
+        let after: u32 = game.state.players[player.index()].mana.iter().sum();
+        assert_eq!(before - after, 2);
+        if mode == 2 {
+            let mut gone = game.clone();
+            act(&mut gone, Action::Pass);
+            for card in plains {
+                act(&mut gone, Action::TapMana { card });
+            }
+            cast(&mut gone, disenchant, Some(Target::Card(porridge)));
+            settle(&mut gone);
+            assert_eq!(gone.object_view(porridge).zone, Zone::Graveyard);
+            assert_eq!(gone.state.players[player.index()].life, 23);
+        }
+        settle(&mut game);
+        match mode {
+            0 => assert_eq!(game.object_view(creature).damage, 2),
+            1 => assert!(game.object_view(creature).tapped),
+            2 => {
+                assert_eq!(game.object_view(porridge).zone, Zone::Graveyard);
+                assert_eq!(game.state.players[player.index()].life, 23);
+            }
+            _ => unreachable!(),
+        }
+    }
+}
+
+#[test]
+fn will_freezes_gross_life_gained_and_discounts_white_and_blue_only_this_turn() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let will = candidate(&mut game, player, "Will, Scion of Peace", Zone::Battlefield);
+    let glutton = put(&mut game, player, "Hamlet Glutton", Zone::Hand);
+    let strike = put(&mut game, opponent, "Lightning Strike", Zone::Hand);
+    let guard = put(&mut game, player, "Werefox Bodyguard", Zone::Battlefield);
+    assert!(
+        game.object_view(will)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
+    act(&mut game, Action::AnnounceCast { card: glutton });
+    act(&mut game, Action::ChooseBargain { sacrifice: None });
+    pay(&mut game);
+    reject(
+        &mut game,
+        Action::AnnounceActivate {
+            card: will,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 23);
+    act(&mut game, Action::Pass);
+    cast(&mut game, strike, Some(Target::Player(player)));
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 20);
+    activate_only(&mut game, will, 0);
+    assert!(game.object_view(will).tapped);
+    settle(&mut game);
+
+    sacrifice_bodyguard(&mut game, guard, player);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 22);
+    let blue = put(&mut game, player, "Virtue of Knowledge", Zone::Hand);
+    let white = put(&mut game, player, "Virtue of Loyalty", Zone::Hand);
+    let red = put(&mut game, player, "Virtue of Courage", Zone::Hand);
+    game.state.players[player.index()].mana = [1, 1, 0, 2, 0, 0];
+    reject(&mut game, Action::AnnounceCast { card: white });
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
+    reject(&mut game, Action::AnnounceCast { card: blue });
+    game.state.players[player.index()].mana = [0, 0, 0, 2, 0, 0];
+    reject(&mut game, Action::AnnounceCast { card: red });
+
+    game.state.players[player.index()].mana = [2, 1, 0, 0, 0, 1];
+    act(&mut game, Action::AnnounceCast { card: blue });
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [0, 1, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(game.state.stack.last().unwrap().mana_value(), 5);
+    assert_eq!(game.state.players[player.index()].mana, [2, 0, 0, 0, 0, 0]);
+    settle(&mut game);
+    cast(&mut game, white, None);
+    assert_eq!(game.state.stack.last().unwrap().mana_value(), 5);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    settle(&mut game);
+
+    pass_to_later_main(&mut game, player);
+    let again = put(&mut game, player, "Virtue of Knowledge", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
+    reject(&mut game, Action::AnnounceCast { card: again });
+}
+
+#[test]
+fn yenna_requires_unique_owned_enchantments_and_continues_only_after_an_aura_copy() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let yenna = candidate(
+        &mut game,
+        player,
+        "Yenna, Redtooth Regent",
+        Zone::Battlefield,
+    );
+    let bearer = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+    let legendary = put(&mut game, player, "The Sibsig Ceremony", Zone::Battlefield);
+    let duplicate = put(&mut game, player, "Virtue of Strength", Zone::Battlefield);
+    put(&mut game, player, "Virtue of Strength", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Virtue of Loyalty", Zone::Battlefield);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Card(bearer)));
+    settle(&mut game);
+    assert_eq!(stats(&game, bearer), (4, 4));
+    assert_eq!(stats(&game, yenna), (4, 4));
+    assert!(game.object_view(legendary).is_legendary());
+
+    let announce = Action::AnnounceActivate {
+        card: yenna,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    act(&mut game, announce);
+    for invalid in [yenna, duplicate, foreign] {
+        reject(&mut game, target(invalid));
+    }
+    let mut non_aura = game.clone();
+    act(&mut non_aura, target(legendary));
+    pay(&mut non_aura);
+    settle(&mut non_aura);
+    assert!(non_aura.object_view(yenna).tapped);
+    assert!(non_aura.observe(player).objects.iter().any(|object| {
+        object.zone == Zone::Battlefield
+            && object.name() == "The Sibsig Ceremony"
+            && object.is_token()
+            && !object.is_legendary()
+    }));
+
+    act(&mut game, target(aura));
+    pay(&mut game);
+    let mut gone = game.clone();
+    act(&mut gone, Action::Pass);
+    cast(&mut gone, bounce, Some(Target::Card(yenna)));
+    pass_pair(&mut gone);
+    for branch in [&mut game, &mut gone] {
+        pass_pair(branch);
+        let attached = branch.object_ref(bearer);
+        act(branch, Action::ChooseAuraAttachment { object: attached });
+        assert!(branch.observe(player).objects.iter().any(|object| {
+            object.zone == Zone::Battlefield
+                && object.name() == "Bestial Bloodline"
+                && object.is_token()
+                && object.attached_to == Some(attached)
+        }));
+        assert_eq!(stats(branch, bearer), (6, 6));
+        assert_eq!(branch.state.pending, Pending::EffectLibrary { player });
+        assert!(branch.observe(opponent).library_choice.is_none());
+        let library = &branch.state.players[player.index()].library;
+        let top = *library.last().unwrap();
+        let next = library[library.len() - 2];
+        for (card, destination) in [
+            (top, LibraryDestination::Bottom),
+            (next, LibraryDestination::Top),
+        ] {
+            act(branch, Action::ArrangeLibrary { card, destination });
+        }
+        settle(branch);
+        assert_eq!(branch.top_library_card(player), Some(next));
+    }
+    assert!(!game.object_view(yenna).tapped);
+    assert_eq!(gone.object_view(yenna).zone, Zone::Hand);
+}
