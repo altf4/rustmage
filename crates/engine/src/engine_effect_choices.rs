@@ -371,6 +371,21 @@ impl Game {
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
+        ) {
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                    self,
+                    object.card,
+                );
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::ExileGraveyard {
             if ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card) {
                 return false;
@@ -2396,6 +2411,29 @@ impl Game {
                 .expect("validated sacrifice selections");
             self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
         }
+    }
+
+    pub(super) fn finish_reflexive_graveyard_exile(&mut self, ability: u16) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let ids: Vec<_> = choice.selected[player.index()]
+            .iter()
+            .map(|object| object.card)
+            .collect();
+        if ids.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        let item = self.state.resolving.as_ref().unwrap().item.clone();
+        self.queue_reflexive_objects(
+            &item,
+            ability,
+            events.iter().filter_map(|event| {
+                (event.moved && event.destination == Zone::Exile).then_some(event.after)
+            }),
+        );
     }
 
     pub(super) fn finish_lore_counter_selection(&mut self) {

@@ -420,6 +420,10 @@ impl Game {
             AmountValue::DiscardEventAmount => item
                 .discard_event
                 .map_or(0, |event| u128::from(event.amount)),
+            AmountValue::ReflexiveSubjectCount => item
+                .reflexive_subject
+                .as_ref()
+                .map_or(0, |row| 1 + row.additional_objects.len() as u128),
             AmountValue::MovedCount | AmountValue::RememberedCount => u128::from(
                 self.state
                     .resolving

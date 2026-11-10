@@ -785,6 +785,7 @@ impl Game {
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
+            | AmountValue::ReflexiveSubjectCount
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount

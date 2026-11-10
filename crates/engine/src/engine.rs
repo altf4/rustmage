@@ -5570,7 +5570,8 @@ impl Game {
                             | EffectChoiceKind::CoverUpGraveyardCard
                             | EffectChoiceKind::CoverUpSearch { .. }
                             | EffectChoiceKind::NamedSearch { .. }
-                            | EffectChoiceKind::CopyExiledTriggerCreature => {
+                            | EffectChoiceKind::CopyExiledTriggerCreature
+                            | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. } => {
                                 Action::SelectResolutionExile { object }
                             }
                             EffectChoiceKind::HandPlot { .. } | EffectChoiceKind::ExileFromHand => {
@@ -8848,6 +8849,9 @@ impl Game {
                         self.finish_lore_counter_selection();
                     }
                     EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    EffectChoiceKind::ExileGraveyardCreaturesReflexive { ability } => {
+                        self.finish_reflexive_graveyard_exile(ability);
+                    }
                     _ => unreachable!("explicitly finished resolution selection"),
                 }
                 self.run_program();

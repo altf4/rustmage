@@ -1350,6 +1350,10 @@ pub enum EffectChoiceKind {
     /// Sacrifice one controlled permanent of greatest mana value among matching kinds.
     SacrificeGreatestManaValue,
     ExileGraveyard,
+    /// Optionally exile any positive number of your creature cards as one resolution cost.
+    ExileGraveyardCreaturesReflexive {
+        ability: u16,
+    },
     /// Craft material: an artifact you control or an artifact card in your graveyard.
     ExileControlledOrGraveyard,
     /// Craft with at least this many nonlands that have activated abilities.
@@ -1526,7 +1530,9 @@ impl EffectChoiceKind {
     pub(crate) fn any_number_selection(self) -> bool {
         matches!(
             self,
-            Self::RemoveLoreForSourceCounters(_) | Self::SacrificeSelection
+            Self::RemoveLoreForSourceCounters(_)
+                | Self::SacrificeSelection
+                | Self::ExileGraveyardCreaturesReflexive { .. }
         )
     }
     pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {
@@ -4649,6 +4655,8 @@ pub enum AmountValue {
     CardsDiscardedThisTurn,
     /// Actual cards in this packet's one completed simultaneous discard event.
     DiscardEventAmount,
+    /// Count the exact objects retained by this reflexive trigger, even if they moved again.
+    ReflexiveSubjectCount,
     /// Actual result of the preceding remembered zone-move instruction.
     MovedCount,
     /// The value saved by RememberCount. Other count-producing instructions replace it.

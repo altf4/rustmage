@@ -1367,6 +1367,7 @@ impl Game {
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
+            | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileSourceAndNamed { .. }
