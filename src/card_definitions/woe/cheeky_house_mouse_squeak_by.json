@@ -3,7 +3,7 @@
   "catalogue_id": 731,
   "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
   "facts_sha256": "5cf77e7909242b25cfdfc319d80cb3b92f476eb236c038a7d2be9bc242f5ff1a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0210159ec3b87f59b99e6ec9495a8da4e85d859216a6b82a96764f63490a79cf"
@@ -34,5 +34,6 @@
       "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
       "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
     }
-  ]
+  ],
+  "has_rules_abilities": false
 }

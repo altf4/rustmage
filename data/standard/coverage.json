@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "7782facfac347fcf448b7e334f2234893c25c58becc673372c6bbb91dab746ca",
+  "catalogue_version": "b04b0e407b31feab6cef2fbd3724f23437f021e61ebf0daecd1bbe62176dfdb3",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4011,
-  "implemented_total": 4020,
+  "implemented_standard_cards": 4020,
+  "implemented_total": 4029,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 149,
-      "gated": 109
+      "complete": 158,
+      "gated": 100
     },
     "znr": {
       "total": 1,
@@ -4515,8 +4515,8 @@
     {
       "name": "Break the Spell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/break_the_spell.rs",
       "set": "woe"
     },
@@ -5971,8 +5971,8 @@
     {
       "name": "Charging Hooligan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/charging_hooligan.rs",
       "set": "woe"
     },
@@ -6043,8 +6043,8 @@
     {
       "name": "Cheeky House-Mouse // Squeak By",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cheeky_house_mouse_squeak_by.rs",
       "set": "woe"
     },
@@ -6939,8 +6939,8 @@
     {
       "name": "Cooped Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cooped_up.rs",
       "set": "woe"
     },
@@ -10347,8 +10347,8 @@
     {
       "name": "Eerie Interference",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/eerie_interference.rs",
       "set": "woe"
     },
@@ -11619,8 +11619,8 @@
     {
       "name": "Faerie Slumber Party",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faerie_slumber_party.rs",
       "set": "woe"
     },
@@ -12027,8 +12027,8 @@
     {
       "name": "Feed the Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/feed_the_cauldron.rs",
       "set": "woe"
     },
@@ -12651,8 +12651,8 @@
     {
       "name": "Flick a Coin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/flick_a_coin.rs",
       "set": "woe"
     },
@@ -12859,8 +12859,8 @@
     {
       "name": "Food Fight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/food_fight.rs",
       "set": "woe"
     },
