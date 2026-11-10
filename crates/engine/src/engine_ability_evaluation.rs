@@ -485,6 +485,19 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        || world.game().state.self_granted_abilities.as_ref().is_some_and(|rows| {
+            rows.iter().any(|grant| {
+                if grant.kind != SelfGrantedAbilityKind::OwnTurnFirstStrike {
+                    return false;
+                }
+                let game = world.game();
+                let recipient = world.object(grant.recipient.card);
+                recipient.zone == Zone::Battlefield
+                    && recipient.controller == game.state.active
+                    && world.reference(grant.recipient.card) == grant.recipient
+                    && grant.expires_turn.is_none_or(|turn| turn == game.state.turn)
+            })
+        })
         || world.static_sources().iter().any(|&id| {
             let source = world.object(id);
             (source.zone == Zone::Battlefield
@@ -931,7 +944,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
     }
     if let Some(grants) = &game.state.self_granted_abilities {
         for grant in grants.iter() {
-            if world.object(grant.recipient.card).zone == Zone::Battlefield
+            let recipient = world.object(grant.recipient.card);
+            if recipient.zone == Zone::Battlefield
                 && world.reference(grant.recipient.card) == grant.recipient
                 && grant
                     .expires_turn
@@ -944,6 +958,20 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     recipients: vec![grant.recipient.card],
                     action: LayerSixAction::GrantSelf(grant.timestamp),
                 });
+                if grant.kind == SelfGrantedAbilityKind::OwnTurnFirstStrike
+                    && recipient.controller == game.state.active
+                {
+                    effects.push(LayerSixEffect {
+                        provider: None,
+                        started_earlier: false,
+                        timestamp: grant.effect_timestamp.expect("self-granted static effect"),
+                        recipients: vec![grant.recipient.card],
+                        action: LayerSixAction::SelfGrantedKeywords {
+                            acquisition: grant.timestamp,
+                            keywords: Keywords::FIRST_STRIKE,
+                        },
+                    });
+                }
             }
         }
     }

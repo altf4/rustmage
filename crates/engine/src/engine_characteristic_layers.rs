@@ -655,15 +655,13 @@ impl Game {
         item: &SpellView,
         spec: AnimationSpec,
         colors: u8,
-    ) {
-        if let Some(source) = item.source {
-            self.change_object_form_colored(
-                source.object,
-                spec,
-                AnimationTypeMode::AddCreature,
-                Some(colors),
-            );
-        }
+    ) -> Option<AnimationView> {
+        self.change_object_form_colored(
+            item.source?.object,
+            spec,
+            AnimationTypeMode::AddCreature,
+            Some(colors),
+        )
     }
     pub(super) fn change_source_form(
         &mut self,
@@ -764,7 +762,7 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        self.change_object_form_colored(object, spec, type_mode, None);
+        let _ = self.change_object_form_colored(object, spec, type_mode, None);
     }
     fn change_object_form_colored(
         &mut self,
@@ -772,9 +770,9 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
         colors: Option<u8>,
-    ) {
+    ) -> Option<AnimationView> {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
-            return;
+            return None;
         }
         let timestamp = self.next_role_timestamp();
         let row = AnimationView {
@@ -813,12 +811,13 @@ impl Game {
             .get_or_insert_with(Default::default)
             .animations
             .push(row);
+        Some(row)
     }
     pub(super) fn choose_source_color_and_hexproof(&mut self, color: crate::cards::ChoiceColor) {
         let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source) else {
             return;
         };
-        self.change_object_form_colored(
+        let _ = self.change_object_form_colored(
             source.object,
             AnimationSpec {
                 artifact: false,
@@ -848,7 +847,7 @@ impl Game {
             duration: AnimationDuration::EndOfTurn,
         };
         for id in self.keyword_subjects(item, Subject::Targets) {
-            self.change_object_form_colored(
+            let _ = self.change_object_form_colored(
                 self.object_ref(id),
                 spec,
                 AnimationTypeMode::PreserveCardTypes,

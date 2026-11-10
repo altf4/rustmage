@@ -3516,6 +3516,12 @@ pub enum Instruction {
     SurveilOneReturnNoncreatureNonland,
     AnimateSource(AnimationSpec),
     AnimateSourceColored(AnimationSpec, u8),
+    /// Animate and give the same incarnation a separate ability for that duration.
+    AnimateSourceColoredWithAbility {
+        spec: &'static AnimationSpec,
+        colors: u8,
+        kind: crate::engine::SelfGrantedAbilityKind,
+    },
     AnimateSourceWithAbilityIfNoncreature {
         spec: AnimationSpec,
         kind: crate::engine::SelfGrantedAbilityKind,

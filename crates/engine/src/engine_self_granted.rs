@@ -13,6 +13,8 @@ pub enum SelfGrantedAbilityKind {
     ControllerArtifactBonus,
     /// Source-independent granted attack requirement while this exact permanent remains.
     AttacksEachCombat,
+    /// This permanent has first strike on its current controller's turn.
+    OwnTurnFirstStrike,
     /// A real immutable activated template, independently acquired per grant.
     Activated { ability: u16 },
 }

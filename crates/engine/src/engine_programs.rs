@@ -7729,7 +7729,18 @@ impl Game {
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
                 Instruction::AnimateSourceColored(spec, colors) => {
-                    self.animate_source_colored(&item, spec, colors)
+                    let _ = self.animate_source_colored(&item, spec, colors);
+                }
+                Instruction::AnimateSourceColoredWithAbility { spec, colors, kind } => {
+                    if let Some(form) = self.animate_source_colored(&item, *spec, colors) {
+                        self.grant_recipient_ability(
+                            form.object,
+                            item.trigger_definition(),
+                            kind,
+                            form.timestamp,
+                            form.expires_turn,
+                        );
+                    }
                 }
                 Instruction::AnimateSourceWithAbilityIfNoncreature { spec, kind } => {
                     self.animate_source_with_ability_if_noncreature(&item, spec, kind)

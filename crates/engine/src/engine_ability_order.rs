@@ -98,6 +98,11 @@ pub(super) enum LayerSixAction {
     /// Losing the land card type removes its subtype-derived abilities only.
     RemoveSubtypeMana,
     GrantSelf(u64),
+    /// Apply the effect of an acquired static ability that is still present.
+    SelfGrantedKeywords {
+        acquisition: u64,
+        keywords: Keywords,
+    },
     RemoveAndGrant(Vec<LayerSixGrant>),
     /// CR305.7 removes rules-text/copiable abilities, but not grants from other effects.
     RemovePrintedAndGrant(Vec<LayerSixGrant>),
@@ -304,6 +309,14 @@ pub(super) fn apply_layer_six(
                     object.mana.clear();
                 }
                 LayerSixAction::GrantSelf(timestamp) => object.self_grants.push(*timestamp),
+                LayerSixAction::SelfGrantedKeywords {
+                    acquisition,
+                    keywords,
+                } => {
+                    if object.self_grants.contains(acquisition) {
+                        object.grant_keywords(*keywords);
+                    }
+                }
                 LayerSixAction::Grant {
                     keywords,
                     abilities,
