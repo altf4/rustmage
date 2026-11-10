@@ -8818,7 +8818,8 @@ impl Game {
                     resolution.discards[actor.index()] -= 1;
                     resolution.selected_discards[actor.index()].push(card);
                     if let Some(discard_events::DiscardAfter::LoseLifeForDeclinedDiscard {
-                        paid, ..
+                        paid,
+                        ..
                     }) = &mut resolution.discard_after
                     {
                         // CR 118.11–12: a legal payment remains paid when its

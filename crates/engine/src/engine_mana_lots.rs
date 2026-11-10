@@ -9,7 +9,8 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const CREATURE_KIND: u16 = 1;
 use crate::cards::{
-    CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus, StaticAbilityFragment,
+    CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus,
+    StaticAbilityFragment,
 };
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -790,7 +791,12 @@ impl Game {
     }
     fn retained_mana_colors(&self) -> [u8; 2] {
         let mut colors = [0; 2];
-        if self.state.players.iter().all(|player| player.mana == [0; 6]) {
+        if self
+            .state
+            .players
+            .iter()
+            .all(|player| player.mana == [0; 6])
+        {
             return colors;
         }
         for &id in &self.state.static_sources {
