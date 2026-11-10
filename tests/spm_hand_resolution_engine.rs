@@ -384,7 +384,7 @@ fn free_artifact_cast_locks_x_to_zero_and_requires_printed_additional_cost() {
     act(&mut game, pay_donor);
     pay(&mut game);
     let spell = game.state.stack.last().unwrap();
-    assert_eq!(spell.x, Some(0));
+    assert_eq!(spell.mana_value(), 0);
     assert_eq!(spell.cast.unwrap().method, CastMethod::Free);
     assert_eq!(game.object_view(donor).zone, Zone::Graveyard);
     finish_offer(&mut game);
