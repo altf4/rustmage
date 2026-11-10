@@ -1333,13 +1333,25 @@ fn beseech_the_mirror_keeps_uncast_cards_private_and_casts_one_eligible_face() {
     assert!(game.observe(opponent).search_choice.is_none());
     reject(&mut game, Action::FinishSearch);
 
+    let mut opponent_offer = None;
     for card in [four, dragon, untargetable, land] {
         let mut declined = game.clone();
         let rng = declined.state.rng;
         choose_searched_card(&mut declined, card);
         assert_ne!(declined.state.rng, rng);
         hidden(&declined, card, Zone::Exile);
-        assert!(declined.observe(opponent).resolution_free_casts.is_none());
+        let observed = declined.observe(opponent);
+        let offer = observed.resolution_free_casts.as_ref().unwrap();
+        assert_eq!(offer.player, player);
+        assert_eq!(offer.origin, Zone::Exile);
+        assert!(offer.remaining.is_empty());
+        assert!(offer.paid.is_none());
+        let redacted = serde_json::to_value(observed).unwrap();
+        if let Some(expected) = &opponent_offer {
+            assert_eq!(&redacted, expected);
+        } else {
+            opponent_offer = Some(redacted);
+        }
         let free = Action::CastExiledDuringResolution {
             object: declined.object_ref(card),
             face: CastFace::Normal,
