@@ -746,7 +746,7 @@ fn wall_crawl_counts_its_new_spider_and_only_defenders_are_barred_from_blocking_
     let defender = put(
         &mut game,
         player.other(),
-        "Wall of Blossoms",
+        "Sanctuary Wall",
         Zone::Battlefield,
     );
     let ordinary = put(
