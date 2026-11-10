@@ -253,11 +253,13 @@ fn eriettes_whisper_keeps_the_opponents_discard_when_its_role_target_leaves() {
         }
         pass_pair(&mut branch);
         assert_eq!(branch.actor(), Some(opponent));
+        act(&mut branch, Action::Discard { card: discards[0] });
+        assert_eq!(branch.object_view(discards[0]).zone, Zone::Hand);
+        act(&mut branch, Action::Discard { card: discards[1] });
+        settle(&mut branch);
         for card in discards {
-            act(&mut branch, Action::Discard { card });
             assert_eq!(branch.object_view(card).zone, Zone::Graveyard);
         }
-        settle(&mut branch);
         let roles = tokens(&branch, player, "Role");
         if stale {
             assert_eq!(branch.object_view(creature).zone, Zone::Hand);
@@ -340,4 +342,351 @@ fn veteran_and_guard_change_replace_one_role_and_knight_of_doves_observes_the_gr
                 .contains(Keywords::TRAMPLE)
         );
     }
+}
+
+fn cast_adventure(game: &mut Game, card: CardId, recipient: Option<Target>) {
+    act(game, Action::AnnounceAdventure { card });
+    if let Some(target) = recipient {
+        act(game, Action::ChooseTarget { target });
+    }
+    pay(game);
+}
+
+fn finish_turn(game: &mut Game) {
+    let turn = game.state.turn;
+    for _ in 0..32 {
+        if game.state.turn != turn {
+            return;
+        }
+        let action = match &game.state.pending {
+            Pending::Attackers => Action::FinishAttackers,
+            Pending::Blockers => Action::FinishBlockers,
+            Pending::Priority => Action::Pass,
+            pending => panic!("unexpected turn choice {pending:?}"),
+        };
+        act(game, action);
+    }
+    panic!("turn did not finish");
+}
+
+#[test]
+fn puny_snack_and_bakery_raid_produce_food_for_the_scavengers_turn_limit() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let hunter = put(
+        &mut game,
+        player,
+        "Gingerbread Hunter // Puny Snack",
+        Zone::Hand,
+    );
+    let scavenger = put(
+        &mut game,
+        player,
+        "Hollow Scavenger // Bakery Raid",
+        Zone::Hand,
+    );
+    let foe = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+
+    cast_adventure(&mut game, hunter, Some(Target::Card(foe)));
+    settle(&mut game);
+    assert_eq!(stats(&game, foe), (8, 8));
+    assert!(tokens(&game, player, "Food").is_empty());
+    cast_adventurer(&mut game, hunter);
+    assert_eq!(stats(&game, hunter), (5, 5));
+    let hunter_food = tokens(&game, player, "Food").pop().unwrap();
+    cast_adventure(&mut game, scavenger, None);
+    settle(&mut game);
+    let food = tokens(&game, player, "Food");
+    assert_eq!(food.len(), 2);
+    let bakery_food = food
+        .into_iter()
+        .find(|food| food.id != hunter_food.id)
+        .unwrap();
+    cast_adventurer(&mut game, scavenger);
+
+    let pump = activate(scavenger, 0);
+    act(&mut game, pump.clone());
+    let wrong = game.object_ref(bow);
+    reject(&mut game, Action::ChooseAdditionalCost { object: wrong });
+    act(
+        &mut game,
+        Action::ChooseAdditionalCost {
+            object: hunter_food.reference,
+        },
+    );
+    assert_eq!(game.mana_payment_domain().unwrap().generic, 1);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, scavenger), (5, 4));
+    assert_eq!(
+        tokens(&game, player, "Food")[0].reference,
+        bakery_food.reference
+    );
+    reject(&mut game, pump.clone());
+
+    finish_turn(&mut game);
+    assert_eq!(game.state.active, opponent);
+    assert_eq!(stats(&game, scavenger), (3, 2));
+    assert_eq!(stats(&game, foe), (10, 10));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::TapMana { card: forest });
+    act(&mut game, pump);
+    act(
+        &mut game,
+        Action::ChooseAdditionalCost {
+            object: bakery_food.reference,
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, scavenger), (5, 4));
+    assert!(tokens(&game, player, "Food").is_empty());
+}
+
+#[test]
+fn thats_mine_creates_a_treasure_and_grabby_giant_draws_with_artifact_or_land() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let giant = put(&mut game, player, "Grabby Giant // That's Mine", Zone::Hand);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Forest", Zone::Battlefield);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let draw = put(&mut game, player, "Opt", Zone::Library);
+    cast_adventure(&mut game, giant, None);
+    settle(&mut game);
+    let treasures = tokens(&game, player, "Treasure");
+    assert_eq!(treasures.len(), 1);
+    let treasure = treasures[0].reference;
+    cast_adventurer(&mut game, giant);
+    assert!(game.object_view(giant).keywords.contains(Keywords::REACH));
+    act(&mut game, activate(giant, 0));
+    for card in [foreign, bear] {
+        let object = game.object_ref(card);
+        reject(&mut game, Action::ChooseAdditionalCost { object });
+    }
+    for object in [treasure, game.object_ref(land)] {
+        let mut branch = game.clone();
+        act(&mut branch, Action::ChooseAdditionalCost { object });
+        let domain = branch.mana_payment_domain().unwrap();
+        assert_eq!(domain.required, [0, 0, 0, 1, 0, 0]);
+        assert_eq!(domain.generic, 2);
+        pay(&mut branch);
+        assert_ne!(branch.object_view(object.card).zone, Zone::Battlefield);
+        assert_eq!(branch.object_view(draw).zone, Zone::Library);
+        settle(&mut branch);
+        assert_eq!(branch.object_view(draw).zone, Zone::Hand);
+    }
+}
+
+#[test]
+fn galvanic_giant_uses_the_cast_mana_value_and_storm_reading_draws_before_discards() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let giant = put(
+        &mut game,
+        player,
+        "Galvanic Giant // Storm Reading",
+        Zone::Hand,
+    );
+    let reading = put(
+        &mut game,
+        player,
+        "Galvanic Giant // Storm Reading",
+        Zone::Hand,
+    );
+    let foe = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let another = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let low = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let five = put(&mut game, player, "Serra Angel", Zone::Hand);
+    let drawn = ["Forest", "Island", "Opt", "Shock"]
+        .map(|name| put(&mut game, player, name, Zone::Library));
+    cast(&mut game, giant, None);
+    settle(&mut game);
+    cast(&mut game, low, None);
+    settle(&mut game);
+    assert!(!game.object_view(foe).tapped);
+    assert_eq!(game.counter_count(foe, CounterKind::Stun), 0);
+
+    cast(&mut game, five, None);
+    reject(&mut game, target(own));
+    act(&mut game, target(foe));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(five).zone, Zone::Stack);
+    assert!(game.object_view(foe).tapped);
+    assert_eq!(game.counter_count(foe, CounterKind::Stun), 1);
+    settle(&mut game);
+
+    cast_adventure(&mut game, reading, None);
+    act(&mut game, target(another));
+    pass_pair(&mut game);
+    assert!(game.object_view(another).tapped);
+    assert_eq!(game.counter_count(another, CounterKind::Stun), 1);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 4);
+    for card in drawn {
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+    }
+    act(&mut game, Action::Discard { card: drawn[0] });
+    assert_eq!(game.object_view(drawn[0]).zone, Zone::Hand);
+    act(&mut game, Action::Discard { card: drawn[1] });
+    settle(&mut game);
+    for card in [drawn[0], drawn[1]] {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    assert_eq!(game.hand_count(player), 2);
+    assert_eq!(game.object_view(reading).zone, Zone::Exile);
+}
+
+#[test]
+fn stoke_genius_discards_the_whole_old_hand_then_draws_two_and_discounts_hearth() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let hearth = put(
+        &mut game,
+        player,
+        "Hearth Elemental // Stoke Genius",
+        Zone::Hand,
+    );
+    let old =
+        ["Opt", "Divination", "Bear Cub"].map(|name| put(&mut game, player, name, Zone::Hand));
+    let new = ["Island", "Forest"].map(|name| put(&mut game, player, name, Zone::Library));
+    cast_adventure(&mut game, hearth, None);
+    settle(&mut game);
+    for card in old {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    for card in new {
+        assert_eq!(game.object_view(card).zone, Zone::Hand);
+    }
+    assert_eq!(game.hand_count(player), 2);
+    assert_eq!(game.object_view(hearth).zone, Zone::Exile);
+    act(&mut game, Action::AnnounceExile { card: hearth });
+    assert_eq!(game.mana_payment_domain().unwrap().generic, 3);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, hearth), (4, 5));
+}
+
+#[test]
+fn frolicking_familiar_grows_for_both_spell_kinds_after_its_paid_adventure() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let familiar = put(
+        &mut game,
+        player,
+        "Frolicking Familiar // Blow Off Steam",
+        Zone::Hand,
+    );
+    let creature = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let instant = put(&mut game, player, "Shock", Zone::Hand);
+    let sorcery = put(&mut game, player, "Divination", Zone::Hand);
+    cast_adventure(&mut game, familiar, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    cast_adventurer(&mut game, familiar);
+    assert!(
+        game.object_view(familiar)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    cast(&mut game, creature, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, familiar), (2, 2));
+
+    cast(&mut game, instant, Some(Target::Player(opponent)));
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, familiar), (3, 3));
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    settle(&mut game);
+    cast(&mut game, sorcery, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, familiar), (4, 4));
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, familiar), (2, 2));
+}
+
+#[test]
+fn recruiter_hastes_trained_knights_and_trufflesnout_distinguishes_an_attack_alone() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let boar = put(
+        &mut game,
+        player,
+        "Intrepid Trufflesnout // Go Hog Wild",
+        Zone::Hand,
+    );
+    let recruiter = put(
+        &mut game,
+        player,
+        "Imodane's Recruiter // Train Troops",
+        Zone::Hand,
+    );
+    let bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let late = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    cast_adventure(&mut game, boar, Some(Target::Card(bear)));
+    settle(&mut game);
+    assert_eq!(stats(&game, bear), (4, 4));
+    cast_adventurer(&mut game, boar);
+    cast_adventure(&mut game, recruiter, None);
+    settle(&mut game);
+    let knights = tokens(&game, player, "Knight");
+    assert_eq!(knights.len(), 2);
+    for knight in &knights {
+        assert_eq!(
+            (knight.power, knight.toughness, knight.colors),
+            (2, 2, 0b00001)
+        );
+        assert!(knight.keywords.contains(Keywords::VIGILANCE));
+    }
+    cast_adventurer(&mut game, recruiter);
+    for (card, expected) in [
+        (boar, (4, 1)),
+        (bear, (5, 4)),
+        (recruiter, (3, 2)),
+        (knights[0].id, (3, 2)),
+        (knights[1].id, (3, 2)),
+    ] {
+        assert_eq!(stats(&game, card), expected);
+        assert!(game.object_view(card).keywords.contains(Keywords::HASTE));
+    }
+    assert_eq!(stats(&game, enemy), (2, 2));
+    cast(&mut game, late, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, late), (2, 2));
+    assert!(!game.object_view(late).keywords.contains(Keywords::HASTE));
+
+    reach_attackers(&mut game);
+    act(&mut game, Action::Attack { card: boar });
+    let mut group = game.clone();
+    act(
+        &mut group,
+        Action::Attack {
+            card: knights[0].id,
+        },
+    );
+    act(&mut group, Action::FinishAttackers);
+    settle(&mut group);
+    assert!(tokens(&group, player, "Food").is_empty());
+    assert!(!group.object_view(knights[0].id).tapped);
+
+    act(&mut game, Action::FinishAttackers);
+    settle(&mut game);
+    assert_eq!(tokens(&game, player, "Food").len(), 1);
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, bear), (2, 2));
+    assert!(
+        !game
+            .object_view(knights[0].id)
+            .keywords
+            .contains(Keywords::HASTE)
+    );
 }
