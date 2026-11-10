@@ -1,19 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Oracle and pinned XMage evidence are recorded in the paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 6),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfAttacks,
         targets: TargetPlan::Single(TargetSpec::NONE),
-        program: &[Instruction::GrantCreatures {
-            filter: CreatureFilter {
+        program: &[Instruction::GrantOtherPermanentGroupKeywords {
+            filters: &[BattlefieldFilter {
+                kinds: 0,
                 relation: 0,
-                other: true,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
                 subtype: Some("Villain"),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
-            },
+                max_mana: u32::MAX,
+            }],
             keywords: Keywords::FLYING,
         }],
     }],

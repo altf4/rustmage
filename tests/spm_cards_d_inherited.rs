@@ -327,13 +327,69 @@ fn vulture_lifts_only_other_controlled_villains_on_attack() {
     let ally = put(&mut game, player, "Common Crook", Zone::Battlefield);
     let enemy = put(&mut game, player.other(), "Common Crook", Zone::Battlefield);
     let nonvillain = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let core = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
+    let flyer = put(
+        &mut game,
+        player.other(),
+        "Healer's Hawk",
+        Zone::Battlefield,
+    );
+    let forests: Vec<_> = (0..4)
+        .map(|_| put(&mut game, player, "Forest", Zone::Battlefield))
+        .collect();
     assert!(game.keywords(vulture).contains(Keywords::FLYING));
     assert!(!game.keywords(ally).contains(Keywords::FLYING));
+    assert!(game.has_subtype(core, "Villain"));
+    assert!(!game.is_creature(core));
+    assert!(!game.keywords(core).contains(Keywords::FLYING));
+
     declare(&mut game, vulture);
     settle(&mut game);
     assert!(game.keywords(ally).contains(Keywords::FLYING));
     assert!(!game.keywords(enemy).contains(Keywords::FLYING));
     assert!(!game.keywords(nonvillain).contains(Keywords::FLYING));
+    assert!(!game.is_creature(core));
+    assert!(game.keywords(core).contains(Keywords::FLYING));
+
+    for card in forests {
+        act(&mut game, Action::TapMana { card });
+    }
+    activate(&mut game, core, 1, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert!(game.is_creature(core));
+    assert!(game.keywords(core).contains(Keywords::FLYING));
+
+    // The first combat's resolved grant still applies during another combat.
+    let turn = game.state.turn;
+    game.add_combat();
+    for _ in 0..16 {
+        let action = match &game.state.pending {
+            Pending::Attackers => break,
+            Pending::Blockers => Action::FinishBlockers,
+            Pending::Priority => Action::Pass,
+            pending => panic!("unexpected decision before the next combat: {pending:?}"),
+        };
+        act(&mut game, action);
+    }
+    assert_eq!(game.state.turn, turn);
+    act(&mut game, Action::Attack { card: core });
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::Block {
+            blocker: enemy,
+            attacker: core,
+        },
+    );
+    act(
+        &mut game,
+        Action::Block {
+            blocker: flyer,
+            attacker: core,
+        },
+    );
 }
 
 #[test]
