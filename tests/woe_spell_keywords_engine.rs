@@ -50,7 +50,7 @@ fn a_live_provider_grants_actual_spell_and_copy_damage_lifelink() {
         assert_eq!(removed.state.players[player.index()].life, 20);
         assert_eq!(removed.state.players[other.index()].life, 18);
 
-        cast(&mut g, copy, Some(Target::Card(shock)));
+        cast(&mut g, copy, Some(Target::Spell(shock)));
         settle(&mut g);
         assert_eq!(g.state.players[player.index()].life, 24);
         assert_eq!(g.state.players[other.index()].life, 16);
