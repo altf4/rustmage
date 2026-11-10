@@ -29,6 +29,12 @@ pub(super) struct CostContext {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CostContext {
+    pub(super) fn needs_web_return(&self) -> bool {
+        self.clauses
+            .iter()
+            .any(|row| !row.paid && matches!(row.clause, CastCostClause::WebSlingingReturn(_)))
+    }
+
     fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
         let c = a.cast_costs.as_ref()?;
         let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
@@ -116,9 +122,9 @@ impl FundingState<'_> {
     pub(super) fn mana_window_open(&self, goal: &FundingGoal) -> bool {
         goal.requires_mana() && self.cast_costs.as_ref().is_none_or(|c| !c.mana_closed)
     }
-    /// An ordered mana row has the same fixed requirement as the funding
-    /// goal when the only other unpaid costs reveal existing witnesses.
-    pub(super) fn only_mana_and_reveals(&self, goal: &FundingGoal) -> bool {
+    /// Keep a fixed mana requirement when other unpaid rows only reveal a
+    /// witness or return a creature after finding a Web-slinging witness.
+    pub(super) fn only_mana_reveals_and_web_return(&self, goal: &FundingGoal) -> bool {
         self.cast_costs.as_ref().is_none_or(|c| {
             c.mana
                 == Some(ManaCost {
@@ -132,7 +138,9 @@ impl FundingState<'_> {
                     .iter()
                     .filter(|row| !row.paid)
                     .all(|row| match row.clause {
-                        CastCostClause::Mana | CastCostClause::Behold(_) => true,
+                        CastCostClause::Mana
+                        | CastCostClause::Behold(_)
+                        | CastCostClause::WebSlingingReturn(_) => true,
                         CastCostClause::Additional => c.additional.is_some_and(|spec| {
                             matches!(
                                 spec.kind.payment_kind(),
@@ -240,8 +248,14 @@ impl FundingState<'_> {
                 | CastCostClause::Casualty(_)
                 | CastCostClause::Conspire(_)
                 | CastCostClause::Harmonize(_) => {}
-                CastCostClause::SneakReturn(_) if !row.paid => return false,
-                CastCostClause::Behold(_) | CastCostClause::SneakReturn(_) => {}
+                CastCostClause::SneakReturn(_) | CastCostClause::WebSlingingReturn(_)
+                    if !row.paid =>
+                {
+                    return false;
+                }
+                CastCostClause::Behold(_)
+                | CastCostClause::SneakReturn(_)
+                | CastCostClause::WebSlingingReturn(_) => {}
             }
         }
         let mut hand = 0usize;
@@ -294,6 +308,7 @@ impl FundingState<'_> {
                 n == 0 || potential_graveyard > 0
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
+            EffectChoiceKind::RemovePermanentCounters { .. } => battlefield > 0,
             EffectChoiceKind::RemoveCreatureCounter(_) => battlefield > 0,
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Food) => battlefield > 0,
@@ -407,6 +422,7 @@ impl FundingState<'_> {
                                 | CostReduction(..)
                                 | TargetCostReduction(..)
                                 | OpponentNoncreatureSpellTax(_)
+                                | ChosenCardTypeSpellTax(_)
                                 | AdditionalTriggers { .. }
                                 | AttachedChosenColor
                                 | BasicLandTapManaBonus(_)
@@ -1084,7 +1100,10 @@ impl FundingState<'_> {
             }
             match c.clauses[index].clause {
                 CastCostClause::OriginCounters(amount) => {
-                    if self.complete_counter_cost(c, &later, &rest, (amount, None)) {
+                    let requirement = EffectChoiceKind::RemoveCreatureCounters(amount)
+                        .counter_requirement()
+                        .unwrap();
+                    if self.complete_counter_cost(c, &later, &rest, requirement) {
                         return true;
                     }
                 }
@@ -1185,6 +1204,20 @@ impl FundingState<'_> {
                             && self.cost_departures(&[object], Zone::Hand, &mut |world| {
                                 world.complete_cost_rows(&later, &rest)
                             })
+                        {
+                            return true;
+                        }
+                    }
+                }
+                CastCostClause::WebSlingingReturn(selected) => {
+                    for resource in &self.resources {
+                        let object = self.reference(resource.id);
+                        if selected.is_none_or(|wanted| wanted == object)
+                            && self.cost_object(web_slinging::RETURN_COST, object, c.source)
+                            && (rest.is_empty()
+                                || self.cost_departures(&[object], Zone::Hand, &mut |world| {
+                                    world.complete_cost_rows(&later, &rest)
+                                }))
                         {
                             return true;
                         }
@@ -1706,8 +1739,9 @@ impl FundingState<'_> {
                 destination = Zone::Exile;
             }
             EffectChoiceKind::RemoveCreatureCounters(_)
-            | EffectChoiceKind::RemoveCreatureCounter(_) => {
-                counters = spec.kind.creature_counter_requirement();
+            | EffectChoiceKind::RemoveCreatureCounter(_)
+            | EffectChoiceKind::RemovePermanentCounters { .. } => {
+                counters = spec.kind.counter_requirement();
             }
             EffectChoiceKind::BeholdMany(n)
             | EffectChoiceKind::SacrificeDifferentNames(n)
@@ -1906,13 +1940,17 @@ impl FundingState<'_> {
         c: &CostContext,
         later: &CostContext,
         remaining: &[usize],
-        requirement: (u16, Option<CounterKind>),
+        requirement: CounterCostRequirement,
     ) -> bool {
-        let (amount, required_kind) = requirement;
+        let CounterCostRequirement {
+            amount,
+            kind: required_kind,
+            bearer_kinds,
+        } = requirement;
         let mut next = self.clone();
         for &(r, kind) in &c.counters {
             if required_kind.is_some_and(|expected| expected != kind)
-                || !next.remove_creature_counter(r, kind)
+                || !next.remove_cost_counter(r, kind, bearer_kinds)
             {
                 return false;
             }
@@ -1931,25 +1969,28 @@ impl FundingState<'_> {
             remaining: &[usize],
             first: usize,
             source_reservation: (ObjectRef, &Counters),
-            required_kind: Option<CounterKind>,
+            requirement: CounterCostRequirement,
         ) -> bool {
             let (source, reservation) = source_reservation;
             if left == 0 {
                 return w.complete_cost_rows(later, remaining);
             }
             for (index, resource) in w.resources.iter().enumerate().skip(first) {
-                if resource.object.zone != Zone::Battlefield
-                    || resource.object.controller != w.actor
-                    || CharacteristicWorld::kinds(w, resource.id) & 1 == 0
-                {
+                let object = w.reference(resource.id);
+                if !additional_costs::counter_cost_bearer(
+                    w,
+                    w.actor,
+                    object,
+                    requirement.bearer_kinds,
+                ) {
                     continue;
                 }
                 for kind in CounterKind::ALL {
-                    if required_kind.is_some_and(|expected| expected != kind) {
+                    if requirement.kind.is_some_and(|expected| expected != kind) {
                         continue;
                     }
                     let mut next = w.clone();
-                    if !next.remove_creature_counter(w.reference(resource.id), kind) {
+                    if !next.remove_cost_counter(object, kind, requirement.bearer_kinds) {
                         continue;
                     }
                     if !reservation.is_empty()
@@ -1965,7 +2006,7 @@ impl FundingState<'_> {
                         remaining,
                         index,
                         source_reservation,
-                        required_kind,
+                        requirement,
                     ) {
                         return true;
                     }
@@ -1980,19 +2021,19 @@ impl FundingState<'_> {
             remaining,
             0,
             (c.source, &c.source_counter_reservation),
-            required_kind,
+            requirement,
         )
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Before an announcement exists, explore every legal order of the craft
-    /// source, material and mana costs after completing mana abilities.
-    pub(in crate::engine) fn preview_ordered_craft(
+    /// Complete mana abilities before testing the orders of the remaining costs.
+    pub(in crate::engine) fn preview_ordered_activation_cost(
         &self,
         goal: FundingGoal,
         spec: AdditionalCost,
+        craft: bool,
     ) -> bool {
         let Some((source, _, _, _, _)) = goal.source.as_ref() else {
             return false;
@@ -2008,17 +2049,14 @@ impl Game {
             source: *source,
             source_tap_reserved: goal.reserves_source_tap(*source),
             source_counter_reservation: Counters::default(),
-            clauses: [
-                CastCostClause::Mana,
-                CastCostClause::CraftSource,
-                CastCostClause::Additional,
-            ]
-            .into_iter()
-            .map(|clause| CastCostRow {
-                clause,
-                paid: false,
-            })
-            .collect(),
+            clauses: std::iter::once(CastCostClause::Mana)
+                .chain(craft.then_some(CastCostClause::CraftSource))
+                .chain(std::iter::once(CastCostClause::Additional))
+                .map(|clause| CastCostRow {
+                    clause,
+                    paid: false,
+                })
+                .collect(),
             active: None,
             casualty: Vec::new(),
             conspire: Vec::new(),
@@ -2142,6 +2180,27 @@ impl Game {
             let active = usize::from(costs.active.unwrap());
             costs.clauses[active].clause = CastCostClause::SneakReturn(Some(object));
             if choice.cost_completion() && emit(Action::PaySneakReturn { object }) {
+                return true;
+            }
+        }
+        false
+    }
+    pub(in crate::engine) fn visit_web_slinging_return_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let announcement = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(announcement);
+        for (id, permanent) in self.state.objects.iter().enumerate() {
+            if permanent.zone != Zone::Battlefield || !permanent.tapped {
+                continue;
+            }
+            let object = self.object_ref(id as CardId);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_mut().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            costs.clauses[active].clause = CastCostClause::WebSlingingReturn(Some(object));
+            if choice.cost_completion() && emit(Action::PayWebSlingingReturn { object }) {
                 return true;
             }
         }

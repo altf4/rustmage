@@ -3,10 +3,45 @@
   "catalogue_id": 4043,
   "oracle_id": "d21d7557-9702-46c1-8277-42a3442084c2",
   "facts_sha256": "1bcb1cb45f6218fb09cf68a6517a676b02dec083f09445c9556f02a42caa1335",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c60c203637d7ac89954684c69b8840488f17987c6ff4044c4918985450f17576"
   },
-  "physical_metadata_sha256": "461aa1cdecfde973f7f38419d5ebfe1ab01ce6fc8be415b1afea8e68c2b1e69e"
+  "physical_metadata_sha256": "461aa1cdecfde973f7f38419d5ebfe1ab01ce6fc8be415b1afea8e68c2b1e69e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpidersManHeroicHorde.java",
+  "java_sha256": "3a5d4889fbbd4ca2f2313110f60752ecc683d81022a359231033caf3d0b93212",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/WebSlingingCondition.java",
+      "sha256": "5e23a2216c1a472efaaa2c6f8e170c95d466475a9641117ccd92ab324a27233d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WebSlingingAbility.java",
+      "sha256": "ce50bf4d1434e907fef1b9532df30264f178206a6d531e5951a4994e19a53957"
+    }
+  ]
 }

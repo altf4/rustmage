@@ -3,10 +3,25 @@
   "catalogue_id": 2150,
   "oracle_id": "7be47440-b627-411e-a28f-d5a92e5e2fb7",
   "facts_sha256": "d9916e5615a0986889c2265614e9c1fc128801f495140244f0cc31d935d49ada",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "41a10cf6d68fbba18c3a3bb8945fde59f35e2d1689c625ed1dd61f6cec732b59"
   },
-  "physical_metadata_sha256": "87dbd777c2f0dc190c20bb5683096cb11e2a8b31ca52f9ac94ed186b1426e4b8"
+  "physical_metadata_sha256": "87dbd777c2f0dc190c20bb5683096cb11e2a8b31ca52f9ac94ed186b1426e4b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImpostorSyndrome.java",
+  "java_sha256": "9c3df727fceee90f08ebeada469e3180717d61ed2b66cfec9a7972154b3b0c6e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    }
+  ]
 }

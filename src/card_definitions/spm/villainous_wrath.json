@@ -3,10 +3,35 @@
   "catalogue_id": 4895,
   "oracle_id": "1c7c1867-20cb-4035-bb2a-42760edf0a55",
   "facts_sha256": "2d92229a196a75ae58ccdc2051cb0477ad12b510ab867e11e4c0ea97d116f50f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "663e169f7d48573fc8d0b46d601eb9d24dacab59037dfddd6a38d8432614bfa1"
   },
-  "physical_metadata_sha256": "55d5bdccf56ff22b0c0d38da0c1d7c24eeb840efb9e994bf6bd6a566c0b75b06"
+  "physical_metadata_sha256": "55d5bdccf56ff22b0c0d38da0c1d7c24eeb840efb9e994bf6bd6a566c0b75b06",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VillainousWrath.java",
+  "java_sha256": "e740574aa90faed02d9ed5374cd3b5b4ccbe2b8eebfec5156f58fe093dfedad1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ]
 }

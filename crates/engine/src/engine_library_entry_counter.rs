@@ -62,7 +62,7 @@ impl Game {
 
     pub(super) fn library_entry_counter_choice(&self, item: &SpellView) -> Option<bool> {
         let cast = item.cast?;
-        if cast.method == CastMethod::Disguise {
+        if matches!(cast.method, CastMethod::Disguise | CastMethod::LibraryLife) {
             return None;
         }
         let counter = self.state.linked_choices.as_ref()?.library_entry_counter?;
@@ -78,7 +78,7 @@ impl Game {
 
     pub(super) fn needs_library_entry_counter_choice(&self, item: &SpellView) -> bool {
         item.cast.is_some_and(|cast| {
-            cast.method != CastMethod::Disguise
+            !matches!(cast.method, CastMethod::Disguise | CastMethod::LibraryLife)
                 && self
                     .state
                     .linked_choices

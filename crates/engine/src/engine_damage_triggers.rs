@@ -7,33 +7,18 @@ impl Game {
         self.draw_many_interruptible(player, amount);
     }
 
-    pub(super) fn is_modified(&self, id: CardId) -> bool {
-        Self::object_modified_with(
-            self.object_ref(id),
-            &self.state.objects[id as usize],
-            self.counter_amounts(id).has_any(),
-            self.state
-                .attachment_sources
-                .iter()
-                .map(|&id| &self.state.objects[id as usize]),
-        )
-    }
-
     pub(super) fn object_modified_with<'a>(
         source: ObjectRef,
-        object: &Object,
         has_counters: bool,
-        attachments: impl Iterator<Item = &'a Object>,
+        mut attachments: impl Iterator<Item = (CardId, &'a Object)>,
+        qualifies: impl Fn(CardId, &Object) -> bool,
     ) -> bool {
-        object.zone == Zone::Battlefield
-            && (has_counters
-                || attachments.into_iter().any(|attachment| {
-                    attachment.zone == Zone::Battlefield
-                        && attachment.attached_to == Some(source)
-                        && (attachment.card.equipment().is_some()
-                            || (attachment.card.aura().is_some()
-                                && attachment.controller == object.controller))
-                }))
+        has_counters
+            || attachments.any(|(id, attachment)| {
+                attachment.zone == Zone::Battlefield
+                    && attachment.attached_to == Some(source)
+                    && qualifies(id, attachment)
+            })
     }
 
     pub(super) fn damage_facts(&self, id: CardId) -> DamageFacts {
@@ -61,7 +46,7 @@ impl Game {
             battlefield: object.zone == Zone::Battlefield,
             counter: self.counter_amounts(id).has_any(),
             plus_one: object.counters.plus_one > 0,
-            modified: self.is_modified(id),
+            modified: creature && ability_world::CharacteristicWorld::has_modification(self, id),
             attacking: self.state.attackers.iter().any(|a| a.card == id),
         }
     }
@@ -126,29 +111,67 @@ impl Game {
         if self.state.damage_sources.is_empty() {
             return;
         }
-        let mut hits = std::collections::BTreeMap::<ObjectRef, u128>::new();
+        let mut hits = std::collections::BTreeMap::<
+            ObjectRef,
+            (u128, std::collections::BTreeSet<ObjectRef>),
+        >::new();
         for event in events {
             let reference = event.source.reference;
             if event.amount <= 0
                 || !self.on_battlefield(reference.card)
                 || self.object_ref(reference.card) != reference
-                || !self.state.objects[reference.card as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|ability| ability.condition.event() == TriggerCondition::SourceDealtDamage)
             {
                 continue;
             }
-            let total = hits.entry(reference).or_default();
-            *total = total
-                .checked_add(event.amount as u128)
-                .capacity("damage dealt amount exhausted");
+            let abilities = self.state.objects[reference.card as usize].card.triggers();
+            let wants_total = abilities
+                .iter()
+                .any(|ability| ability.condition.minimum_dealt_damage().is_some());
+            let wants_recipients = abilities.iter().any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
+                )
+            });
+            if !wants_total && !wants_recipients {
+                continue;
+            }
+            let (total, recipients) = hits.entry(reference).or_default();
+            if wants_total {
+                *total = total
+                    .checked_add(event.amount as u128)
+                    .capacity("damage dealt amount exhausted");
+            }
+            if wants_recipients
+                && let Target::Card(id) = event.target
+                && self.on_battlefield(id)
+                && self.is_creature(id)
+            {
+                recipients.insert(self.object_ref(id));
+            }
         }
-        for (reference, amount) in hits {
+        for (reference, (amount, recipients)) in hits {
             let source = self.object_view(reference.card);
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::SourceDealtDamage
+                if let TriggerCondition::SourceDealtDamageToCreatureSubtype(subtype) =
+                    ability.condition.event()
+                {
+                    for &recipient in &recipients {
+                        if self.has_subtype(recipient.card, subtype)
+                            && self.queue_trigger(&source, index)
+                        {
+                            self.state
+                                .pending_triggers
+                                .last_mut()
+                                .unwrap()
+                                .refer_objects([recipient]);
+                        }
+                    }
+                }
+                if ability
+                    .condition
+                    .minimum_dealt_damage()
+                    .is_some_and(|minimum| amount >= minimum)
                     && self.queue_trigger(&source, index)
                 {
                     self.state
@@ -428,21 +451,56 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
+        let program = self
+            .state
+            .pending_triggers
+            .last()
+            .unwrap()
+            .trigger_definition()
+            .triggers()[index]
+            .program;
+        let copy_dealer = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::CreateNonlegendaryCopyTokens {
+                    subject: Subject::Entering,
+                    ..
+                } | Instruction::CreateLegendaryCopyTokens {
+                    subject: Subject::Entering,
+                    ..
+                }
+            )
+        });
+        let recipe = event
+            .dealer
+            .filter(|dealer| {
+                copy_dealer
+                    && self.on_battlefield(dealer.card)
+                    && self.object_ref(dealer.card) == *dealer
+            })
+            .map(|dealer| (dealer, self.copiable_recipe(dealer)));
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        let retain_dealer_controller = packet.trigger_definition().triggers()[index]
-            .program
-            .iter()
-            .any(|instruction| {
-                matches!(
-                    instruction,
-                    Instruction::ExileLibraryTopFaceDownPlay {
-                        beneficiary: PlayerSet::EventPlayer,
-                        ..
-                    }
-                )
-            });
+        let retain_dealer_controller = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::ExileLibraryTopFaceDownPlay {
+                    beneficiary: PlayerSet::EventPlayer,
+                    ..
+                }
+            )
+        });
         packet.damage_event = Some(event);
         packet.refer_objects(semantic_dealers);
+        if let Some((dealer, recipe)) = recipe {
+            packet.entering_object = Some(dealer);
+            packet.set_event_object(EventObjectView {
+                object: dealer,
+                facts: EventObjectFacts::Copiable(recipe),
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+        }
         if retain_dealer_controller {
             packet.event_player = dealer_controller;
         }

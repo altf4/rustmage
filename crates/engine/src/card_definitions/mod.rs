@@ -39,6 +39,23 @@ impl CardRules {
         static_groups: &[],
     };
     pub const fn checked_effect(&self) -> Effect {
+        if let Some(copy) = self.extras.entry_copy_options {
+            assert!(
+                self.extras.entry_copy.is_some(),
+                "copy options need an entry copy"
+            );
+            if let EntryCopySource::GraveyardCreature { exile_trigger } = copy.source {
+                let slot = exile_trigger as usize;
+                assert!(
+                    slot < self.triggers.len(),
+                    "graveyard copy needs a linked trigger slot"
+                );
+                assert!(
+                    matches!(self.triggers[slot].condition, TriggerCondition::Reflexive),
+                    "graveyard copy needs a reflexive trigger"
+                );
+            }
+        }
         let mode_count = match self.extras.entry_choice {
             Some(EntryChoiceKind::NamedModes(names)) => {
                 assert!(!names.is_empty(), "named entry modes cannot be empty");
@@ -356,6 +373,7 @@ pub struct CardExtras {
     /// (trigger slot, named-mode index), checked only at the triggering event.
     pub entry_mode_triggers: &'static [(u16, u16)],
     pub entry_copy: Option<EntryCopySpec>,
+    pub entry_copy_options: Option<&'static EntryCopyOptions>,
     /// Copiable keyword exceptions added by this as-entry copy replacement.
     pub entry_copy_keywords: Keywords,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
@@ -381,11 +399,14 @@ pub struct CardExtras {
     pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
     pub sneak_costs: &'static [ManaCost],
+    pub web_slinging_cost: Option<ManaCost>,
     /// Graveyard alternative with an optional power-based creature tap.
     pub harmonize_cost: Option<ManaCost>,
     /// Variable symbols in the printed harmonize alternative (independent of the mana cost).
     pub harmonize_x_symbols: u8,
     pub mayhem_cost: Option<ManaCost>,
+    pub mayhem_cost_alternatives: &'static [ManaCost],
+    pub mayhem_land: bool,
     pub vehicle_stats: Option<Stats>,
     pub replacement_effects: &'static [ReplacementSpec],
     pub attached_subtype: Option<&'static str>,
@@ -493,6 +514,7 @@ impl CardExtras {
         entry_choice: None,
         entry_mode_triggers: &[],
         entry_copy: None,
+        entry_copy_options: None,
         entry_copy_keywords: Keywords::NONE,
         entry_exile_counters: None,
         devour: None,
@@ -517,9 +539,12 @@ impl CardExtras {
         disguise_cost: None,
         sneak_cost: None,
         sneak_costs: &[],
+        web_slinging_cost: None,
         harmonize_cost: None,
         harmonize_x_symbols: 0,
         mayhem_cost: None,
+        mayhem_cost_alternatives: &[],
+        mayhem_land: false,
         vehicle_stats: None,
         replacement_effects: &[],
         attached_subtype: None,

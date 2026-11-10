@@ -3,10 +3,30 @@
   "catalogue_id": 1276,
   "oracle_id": "e9222f89-e495-4502-bb0c-f5e802686b01",
   "facts_sha256": "92a0d9a6c11bf15798ed83c2208fc7cb5041bccbebbe351e78d96eaa8b19d4f2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7815e83e29569b9dc9313b58dd48ba15cd68f218e33041b389f307b7337e05cf"
   },
-  "physical_metadata_sha256": "0d9cb6de35c1e2abcd501095d4ef5706a3359599703405172a71a0a34f451432"
+  "physical_metadata_sha256": "0d9cb6de35c1e2abcd501095d4ef5706a3359599703405172a71a0a34f451432",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElectrosBolt.java",
+  "java_sha256": "f85f8daffeb300e064460d8463c2b129f46bd06dff97171d178f367beb9e05c1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

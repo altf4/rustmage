@@ -3,10 +3,40 @@
   "catalogue_id": 4051,
   "oracle_id": "daca1d5e-349d-4e8a-abc7-427dab43fb0c",
   "facts_sha256": "f57ba57c852c46160711e1f8c2aa64846ba9c19bb3d6d4383ca5c8ba39dfd51b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ff0f0c87784427799e20801e55a049025214eca57422dfe8b9a14c94ed8260fd"
   },
-  "physical_metadata_sha256": "29c7d3fd90c2141751e336f3773ef0b6ba8cd2437b01bc1d41231b2ca26b92ff"
+  "physical_metadata_sha256": "29c7d3fd90c2141751e336f3773ef0b6ba8cd2437b01bc1d41231b2ca26b92ff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpinneretAndSpiderling.java",
+  "java_sha256": "adb2521bc68952f29f22270e8b19764122088d10b3a9ee313dc36912dbf700cd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageSourceTriggeredAbility.java",
+      "sha256": "ba04667ea4fdc38e7cf38bb39144db6f12d638a959d9e15c36241b7c547d4739"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

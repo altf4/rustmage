@@ -1,6 +1,7 @@
 //! Selective CR733.1 reversal of completed, frozen mana events.
 //! These cold actual-event reconstructions never participate in funding search.
 use super::*;
+use additional_costs::ManaCostObjects;
 use cast_rollback::CastRollback;
 use std::collections::VecDeque;
 use zone_replacements::{ZoneMoveCompletion, ZoneShuffle};
@@ -27,7 +28,7 @@ pub(super) enum ManaEventKind {
         item: Box<SpellView>,
         payment: Mana,
         counters: Counters,
-        additional: Option<(AdditionalCost, ObjectRef)>,
+        additional: Option<(AdditionalCost, ManaCostObjects)>,
     },
 }
 /// The actual result of one payment, before any later payment changes the library.
@@ -109,8 +110,21 @@ impl ManaEvent {
                 .sum::<usize>()
             + self.allocations.len() * std::mem::size_of::<(CardId, u64)>()
             + match &self.kind {
-                ManaEventKind::Activated { item, counters, .. } => {
-                    std::mem::size_of::<SpellView>() + item.owned_bytes() + counters.owned_bytes()
+                ManaEventKind::Activated {
+                    item,
+                    counters,
+                    additional,
+                    ..
+                } => {
+                    std::mem::size_of::<SpellView>()
+                        + item.owned_bytes()
+                        + counters.owned_bytes()
+                        + match additional {
+                            Some((_, ManaCostObjects::Group(group))) => {
+                                group.len() * std::mem::size_of::<ObjectRef>()
+                            }
+                            _ => 0,
+                        }
                 }
                 _ => 0,
             }
@@ -459,24 +473,22 @@ impl Game {
                 {
                     return false;
                 }
-                if let Some((spec, external)) = additional {
+                if let Some((spec, selection)) = additional {
+                    let objects = selection.objects();
                     let kind = spec.kind.payment_kind();
-                    let zone = match kind {
-                        EffectChoiceKind::Sacrifice | EffectChoiceKind::TapPermanents(1) => {
-                            Zone::Battlefield
-                        }
-                        EffectChoiceKind::ExileGraveyard => Zone::Graveyard,
+                    let amount = match kind {
+                        EffectChoiceKind::Sacrifice | EffectChoiceKind::ExileGraveyard => 1,
+                        EffectChoiceKind::TapPermanents(amount) => amount as usize,
                         _ => return false,
                     };
-                    let Some(object) = self.state.objects.get(external.card as usize) else {
-                        return false;
-                    };
-                    if self.object_ref(external.card) != *external
-                        || object.zone != zone
-                        || (kind == EffectChoiceKind::TapPermanents(1)
-                            && cost.tap
-                            && *external == source)
-                        || !self.additional_candidate(*spec, event.actor, source, *external)
+                    if objects.len() != amount
+                        || objects.iter().enumerate().any(|(index, &object)| {
+                            objects[..index].contains(&object)
+                                || (matches!(kind, EffectChoiceKind::TapPermanents(_))
+                                    && cost.tap
+                                    && object == source)
+                                || !self.additional_candidate(*spec, event.actor, source, object)
+                        })
                     {
                         return false;
                     }
@@ -524,14 +536,19 @@ impl Game {
                 // separate tap cost are paid before those source costs. The
                 // replay hooks apply the frozen replacement/entry/trigger
                 // receipts for the real operation.
-                let sacrifice = additional.is_some_and(|(spec, _)| {
+                let sacrifice = additional.as_ref().is_some_and(|(spec, _)| {
                     spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
                 });
-                if !sacrifice && let Some((spec, external)) = additional {
-                    if spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1) {
-                        self.tap_objects(&[external.card]);
+                if !sacrifice && let Some((spec, selection)) = additional {
+                    if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
+                        let cards = selection
+                            .objects()
+                            .iter()
+                            .map(|object| object.card)
+                            .collect::<Vec<_>>();
+                        self.tap_objects(&cards);
                     } else {
-                        self.move_object(external.card, Zone::Exile);
+                        self.move_object(selection.objects()[0].card, Zone::Exile);
                     }
                 }
                 let mut item = (**item).clone();
@@ -541,8 +558,8 @@ impl Game {
                 {
                     return false;
                 }
-                if sacrifice && let Some((_, external)) = additional {
-                    self.sacrifice_batch(&[(event.actor, external.card)]);
+                if sacrifice && let Some((_, selection)) = additional {
+                    self.sacrifice_batch(&[(event.actor, selection.objects()[0].card)]);
                 }
                 self.commit_activation_use(&item);
             }

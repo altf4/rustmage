@@ -356,23 +356,12 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
 }
 
-/// An exact, still-live permanent/card selected for a mana activation cost.
+/// Exact permanent/card selections for a projected mana activation cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 struct ExternalManaCost {
-    resource: usize,
-    object: ObjectRef,
+    selection: additional_costs::ManaCostObjects,
     kind: EffectChoiceKind,
-}
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl ExternalManaCost {
-    fn destination(self) -> Zone {
-        match self.kind.payment_kind() {
-            EffectChoiceKind::Sacrifice => Zone::Graveyard,
-            EffectChoiceKind::ExileGraveyard => Zone::Exile,
-            _ => unreachable!("unsupported selected mana cost"),
-        }
-    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -429,6 +418,7 @@ struct EntryFundingKey {
     lands_entered: [u64; 2],
     battle_protectors: Vec<(ObjectRef, usize)>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
+    riot_haste: Vec<(ObjectRef, u64)>,
     consumed: Vec<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -971,6 +961,12 @@ impl<'g> FundingState<'g> {
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
         // mana sources, so virtual sacrifices invalidate later guarded moves.
+        let retain_permanent_counter_bearers =
+            goal.source.as_ref().is_some_and(|(_, index, _, card, _)| {
+                card.activation(*index).cost.additional.is_some_and(|cost| {
+                    matches!(cost.kind, EffectChoiceKind::RemovePermanentCounters { .. })
+                })
+            });
         let mut subtypes = Vec::new();
         let mut graveyard_mana_cost = false;
         let mut sacrifice_mana_cost = false;
@@ -1105,7 +1101,7 @@ impl<'g> FundingState<'g> {
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
-                        && (color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
+                        && (retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
@@ -1117,6 +1113,7 @@ impl<'g> FundingState<'g> {
                                 group.fragments.iter().any(|fragment| matches!(
                                     fragment,
                                     StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
+                                        | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
                             || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
@@ -1270,12 +1267,8 @@ impl<'g> FundingState<'g> {
             && !a.additional_paid
             && a.additional_cost().is_some_and(|s| {
                 evidence::threshold(s).is_some()
-                    || matches!(
-                        s.kind,
-                        EffectChoiceKind::ExileGraveyardSymbols { .. }
-                            | EffectChoiceKind::RemoveCreatureCounters(_)
-                            | EffectChoiceKind::RemoveCreatureCounter(_)
-                    )
+                    || matches!(s.kind, EffectChoiceKind::ExileGraveyardSymbols { .. })
+                    || s.kind.counter_requirement().is_some()
             })
         {
             // Preserve exact additional-cost witnesses while nested mana
@@ -1539,6 +1532,14 @@ impl<'g> FundingState<'g> {
                                 ) =>
                             {
                                 keywords = keywords.union(grant)
+                            }
+                            crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
+                                if target.object.controller == source.object.controller
+                                    && target.id != source.id
+                                    && ability_world::CharacteristicWorld::subtypes(self, target.id)
+                                        .has(ability_world::CharacteristicWorld::definition(self, target.id), subtype) =>
+                            {
+                                keywords = keywords.union(Keywords::RIOT)
                             }
                             crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                                 if target.object.controller == source.object.controller
@@ -1840,7 +1841,7 @@ impl<'g> FundingState<'g> {
     ) -> bool {
         let mut announced = Vec::new();
         for step in self.action_moves(goal) {
-            let external_action = step.external.map(|_| self.action(&step));
+            let external_action = step.external.as_ref().map(|_| self.action(&step));
             if external_action
                 .as_ref()
                 .is_some_and(|action| announced.contains(action))
@@ -1859,6 +1860,66 @@ impl<'g> FundingState<'g> {
             }
         }
         false
+    }
+    fn visit_tap_mana_cost_groups(
+        &self,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        prefix: &[ObjectRef],
+        excluded: impl Fn(ObjectRef) -> bool,
+        emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+    ) -> bool {
+        let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() else {
+            unreachable!("mana tap group requires a tap cost")
+        };
+        let amount = amount as usize;
+        let eligible = |object| !excluded(object) && self.cost_object(spec, object, source);
+        if amount == 0
+            || prefix.len() > amount
+            || prefix
+                .iter()
+                .enumerate()
+                .any(|(index, &object)| prefix[..index].contains(&object) || !eligible(object))
+        {
+            return false;
+        }
+        if prefix.len() == amount {
+            return emit(prefix);
+        }
+        let candidates = self
+            .resources
+            .iter()
+            .map(|resource| self.reference(resource.id))
+            .filter(|object| !prefix.contains(object) && eligible(*object))
+            .collect::<Vec<_>>();
+        fn visit_groups(
+            group: &mut Vec<ObjectRef>,
+            candidates: &[ObjectRef],
+            left: usize,
+            emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+        ) -> bool {
+            if left == 0 {
+                return emit(group);
+            }
+            let Some(last) = candidates.len().checked_sub(left) else {
+                return false;
+            };
+            for (index, &object) in candidates.iter().enumerate().take(last + 1) {
+                group.push(object);
+                let done = visit_groups(group, &candidates[index + 1..], left - 1, emit);
+                group.pop();
+                if done {
+                    return true;
+                }
+            }
+            false
+        }
+        visit_groups(
+            &mut prefix.to_vec(),
+            &candidates,
+            amount - prefix.len(),
+            emit,
+        )
     }
     fn mana_moves(
         &self,
@@ -2174,31 +2235,47 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 let external = if let Some(spec) = ability.cost.additional {
-                    if !matches!(
-                        spec.kind.payment_kind(),
-                        EffectChoiceKind::ExileGraveyard
-                            | EffectChoiceKind::Sacrifice
-                            | EffectChoiceKind::TapPermanents(1)
-                    ) {
-                        continue;
-                    }
-                    let eligible: Vec<_> = self.resources.iter().enumerate()
-                        .filter(|(_, r)| {
-                            let object = self.reference(r.id);
-                            self.cost_object(spec, object, self.reference(entry.id))
-                                // A permanent cannot pay two distinct departure costs.
-                                && (!(ability.cost.sacrifice || ability.cost.exile_self) || r.id != entry.id)
-                                // Separate tap costs require distinct untapped
-                                // objects, including the enclosing ability's source.
-                                && (!matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                                    || (!goal.reserves_source_tap(object)
-                                        && (!ability.cost.tap || r.id != entry.id)))
-                        })
-                        .map(|(resource, r)| ExternalManaCost {
-                            resource,
-                            object: self.reference(r.id),
-                            kind: spec.kind,
-                        }).collect();
+                    use additional_costs::ManaCostObjects;
+                    let source = self.reference(entry.id);
+                    let departs = ability.cost.sacrifice || ability.cost.exile_self;
+                    let eligible = match spec.kind.payment_kind() {
+                        EffectChoiceKind::TapPermanents(_) => {
+                            let mut eligible = Vec::new();
+                            self.visit_tap_mana_cost_groups(
+                                spec,
+                                source,
+                                &[],
+                                |object| {
+                                    goal.reserves_source_tap(object)
+                                        || (ability.cost.tap || departs) && source == object
+                                },
+                                &mut |objects| {
+                                    eligible.push(ExternalManaCost {
+                                        selection: ManaCostObjects::from_slice(objects),
+                                        kind: spec.kind,
+                                    });
+                                    false
+                                },
+                            );
+                            eligible
+                        }
+                        EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Sacrifice => {
+                            self.resources
+                                .iter()
+                                .filter_map(|resource| {
+                                    let object = self.reference(resource.id);
+                                    // A permanent cannot pay two separate departure costs.
+                                    ((!departs || object != source)
+                                        && self.cost_object(spec, object, source))
+                                    .then_some(ExternalManaCost {
+                                        selection: ManaCostObjects::One(object),
+                                        kind: spec.kind,
+                                    })
+                                })
+                                .collect()
+                        }
+                        _ => continue,
+                    };
                     if eligible.is_empty() {
                         continue;
                     }
@@ -2297,9 +2374,9 @@ impl<'g> FundingState<'g> {
                                                     },
                                                 };
                                                 if let Some(eligible) = &external {
-                                                    for &external in eligible {
+                                                    for external in eligible {
                                                         moves.push(FundingMove {
-                                                            external: Some(external),
+                                                            external: Some(external.clone()),
                                                             ..step.clone()
                                                         });
                                                     }
@@ -3092,6 +3169,16 @@ impl<'g> FundingState<'g> {
                     .map(|(object, player)| (*object, player.index()))
                     .collect(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
+                riot_haste: p
+                    .roles
+                    .keyword_effects
+                    .iter()
+                    .filter_map(|row| {
+                        (row.origin == KeywordEffectOrigin::Riot
+                            && self.reference(row.recipient.card) == row.recipient)
+                            .then_some((row.recipient, row.timestamp))
+                    })
+                    .collect(),
                 consumed: p.consumed.clone(),
             }),
             self_grant_uses: self.self_grant_uses.clone(),
@@ -3548,17 +3635,25 @@ impl<'g> FundingState<'g> {
     fn fixed_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
         use crate::cards::{ManaRestriction, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
+        let convoke = self.convoke_available();
+        let needs_web_return = self
+            .cast_costs
+            .as_deref()
+            .is_some_and(CostContext::needs_web_return);
         if !matches!(
             purpose,
             mana_lots::Purpose::Activation(_) | mana_lots::Purpose::Spell(_)
         ) || goal.reserve.is_some()
             || self.continuation.is_some()
-            || !self.only_mana_and_reveals(goal)
+            || !self.only_mana_reveals_and_web_return(goal)
             || self.entry_projection.is_some()
             || self.cost_group.is_some()
             || !self.sacrifice_group.is_empty()
             || self.required_face_up.is_some()
-            || self.has_contributions()
+            || self.improvise_available()
+            || self.delve_available()
+            || self.waterbend != 0
+            || (convoke && self.cast_costs.is_some())
             || !self.game.state.exile_links.is_empty()
             || self.game.state.borrowed_links.is_some()
             || self.game.state.graveyard_borrowing.is_some()
@@ -3599,7 +3694,26 @@ impl<'g> FundingState<'g> {
         // Plain creatures need not be mana resources. Count every exact owned
         // untapped body, including sick creatures and the source itself: other
         // filters and reservations can only shrink this generous witness pool.
+        let count_untapped_creatures = || {
+            self.game
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, _)| {
+                    let id = *id as CardId;
+                    let object = self.object(id);
+                    object.zone == Zone::Battlefield
+                        && object.controller == goal.actor
+                        && !object.tapped
+                        && ability_world::CharacteristicWorld::kinds(self, id) & 1 != 0
+                })
+                .count()
+        };
         let mut creature_tap_upper = None;
+        let mut group_minimum = usize::MAX;
+        let mut group_colors = [0u128; 6];
+        let mut group_quantity = 0u128;
         for (id, _) in self.game.state.objects.iter().enumerate() {
             let id = id as CardId;
             let object = self.object(id);
@@ -3609,8 +3723,13 @@ impl<'g> FundingState<'g> {
             if object.zone != Zone::Battlefield {
                 continue;
             }
+            let web_creature = needs_web_return
+                && object.controller == goal.actor
+                && ability_world::CharacteristicWorld::kinds(self, id) & 1 != 0;
+            if web_creature && object.tapped {
+                return false;
+            }
             if object.card.borrows_activations()
-                || object.card.has_cast_origin_abilities()
                 || object.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         match fragment {
@@ -3620,12 +3739,19 @@ impl<'g> FundingState<'g> {
                             StaticAbilityFragment::IntrinsicKeywords(_)
                             | StaticAbilityFragment::Changeling
                             | StaticAbilityFragment::AttachmentStats(_)
+                            | StaticAbilityFragment::AttachmentTrigger(_)
+                            | StaticAbilityFragment::OpponentEntryTapped(..)
+                            | StaticAbilityFragment::ColoredLegendaryWebSlinging(_)
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::AdditionalLandPlays(_)
                             | StaticAbilityFragment::StaticModifier(..)
                             | StaticAbilityFragment::ScalingModifier(..)
-                            | StaticAbilityFragment::ControlledCreatureScaling { .. } => false,
+                            | StaticAbilityFragment::ControlledCreatureScaling { .. }
+                            | StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword {
+                                ..
+                            }
+                            | StaticAbilityFragment::ChosenBasicLandType => false,
                             StaticAbilityFragment::AttachmentManaBonus(_) => {
                                 !self.attached_to_opposing_permanent(id)
                             }
@@ -3640,18 +3766,20 @@ impl<'g> FundingState<'g> {
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(
                                 ManaProduction::Tagged { quality, .. },
                             ) => {
-                                !matches!(
-                                    quality.restriction,
-                                    ManaRestriction::CastFromExile
-                                        | ManaRestriction::CastFromNonhand
-                                        | ManaRestriction::ArtifactSpell
-                                        | ManaRestriction::InstantSorcery
-                                        | ManaRestriction::NoncreatureSpell
-                                        | ManaRestriction::PlaneswalkerSpell
-                                        | ManaRestriction::SpellSubtype(_)
-                                        | ManaRestriction::ChosenCreatureSpell
-                                ) || mana_lots::Quality::capture(self, id, **quality)
-                                    .eligible(purpose)
+                                needs_web_return
+                                    || !matches!(
+                                        quality.restriction,
+                                        ManaRestriction::CastFromExile
+                                            | ManaRestriction::CastFromNonhand
+                                            | ManaRestriction::ArtifactSpell
+                                            | ManaRestriction::InstantSorcery
+                                            | ManaRestriction::NoncreatureSpell
+                                            | ManaRestriction::PlaneswalkerSpell
+                                            | ManaRestriction::SpellSubtype(_)
+                                            | ManaRestriction::ChosenCreatureSpell
+                                    )
+                                    || mana_lots::Quality::capture(self, id, **quality)
+                                        .eligible(purpose)
                             }
                             _ => true,
                         }
@@ -3681,20 +3809,30 @@ impl<'g> FundingState<'g> {
                     }
                 }
             }
+            if web_creature && tap_quantity > 0 {
+                return false;
+            }
             for (index, ability) in object.card.activations().iter().enumerate() {
                 let Some(production) = ability.mana_production() else {
                     continue;
                 };
                 let cost = ability.cost;
+                let group_taps = cost.additional.and_then(|spec| {
+                    let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() else {
+                        return None;
+                    };
+                    (amount != 0 && spec.filter.kinds == 1).then_some(amount as usize)
+                });
                 if !matches!(ability.program, [Instruction::AddMana(_)])
                     || object.card.activation_put_counter(index as u16).is_some()
                     || ability.source_zone() != Zone::Battlefield
-                    || !cost.tap
+                    || (!cost.tap && group_taps.is_none())
                     || cost.sacrifice
                     || cost.exile_self
                     || cost.discard
                     || cost.life != 0
                     || cost.remove.is_some()
+                    || cost.loyalty.is_some()
                     || cost.additional.is_some_and(|spec| {
                         !matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                     })
@@ -3739,40 +3877,34 @@ impl<'g> FundingState<'g> {
                 // The route audit above uses all printed templates. In
                 // this fixed world a removed printed ability cannot return.
                 if object.controller != goal.actor
-                    || object.tapped
+                    || (cost.tap && object.tapped)
                     || !ability_world::CharacteristicWorld::printed_abilities_available(self, id)
                 {
                     continue;
+                }
+                if needs_web_return && (web_creature || cost.additional.is_some()) {
+                    // Even mana ineligible for this spell can tap a creature.
+                    return false;
                 }
                 if let ManaProduction::Tagged { quality, .. } = production
                     && !mana_lots::Quality::capture(self, id, *quality).eligible(purpose)
                 {
                     continue;
                 }
-                if let Some(spec) = cost.additional
-                    && let EffectChoiceKind::TapPermanents(amount) = spec.kind
-                    && spec.filter.kinds == 1
-                    && *creature_tap_upper.get_or_insert_with(|| {
-                        self.game
-                            .state
-                            .objects
-                            .iter()
-                            .enumerate()
-                            .filter(|(id, _)| {
-                                let object = self.object(*id as CardId);
-                                object.zone == Zone::Battlefield
-                                    && object.controller == goal.actor
-                                    && !object.tapped
-                                    && ability_world::CharacteristicWorld::kinds(
-                                        self,
-                                        *id as CardId,
-                                    ) & 1
-                                        != 0
-                            })
-                            .count()
-                    }) < amount as usize
-                {
-                    continue;
+                if let Some(group_taps) = group_taps {
+                    if *creature_tap_upper.get_or_insert_with(count_untapped_creatures) < group_taps
+                    {
+                        continue;
+                    }
+                    if !cost.tap {
+                        // Copies and different abilities draw from one tap pool.
+                        group_minimum = group_minimum.min(group_taps);
+                        group_quantity = group_quantity.max(amount);
+                        for (bound, amount) in group_colors.iter_mut().zip(colors) {
+                            *bound = (*bound).max(amount);
+                        }
+                        continue;
+                    }
                 }
                 // Every admitted mana cost taps without a departure or
                 // conversion. It can neither re-enter nor untap a source.
@@ -3785,6 +3917,34 @@ impl<'g> FundingState<'g> {
                 *bound = bound.saturating_add(amount);
             }
             quantity = quantity.saturating_add(tap_quantity);
+        }
+        // These fixed routes can tap only noncreatures, and the pending
+        // return cannot itself make its missing creature tapped.
+        if needs_web_return {
+            return true;
+        }
+        let mut group_gain = group_quantity;
+        let creatures = if convoke || group_minimum != usize::MAX {
+            *creature_tap_upper.get_or_insert_with(count_untapped_creatures)
+        } else {
+            0
+        };
+        let group_uses = (creatures / group_minimum) as u128;
+        let convoke_quantity = if convoke {
+            // Each grouped activation consumes creatures that could otherwise
+            // contribute one each. Only a gain above that can increase quantity.
+            group_gain = group_gain.saturating_sub(group_minimum as u128);
+            creatures as u128
+        } else {
+            0
+        };
+        quantity = quantity
+            .saturating_add(convoke_quantity)
+            .saturating_add(group_uses.saturating_mul(group_gain));
+        for (bound, amount) in upper.iter_mut().zip(group_colors) {
+            *bound = bound
+                .saturating_add(convoke_quantity)
+                .saturating_add(group_uses.saturating_mul(amount));
         }
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
         let required = u128::from(adjusted.generic)
@@ -4419,13 +4579,20 @@ impl<'g> FundingState<'g> {
         let cost = output.deferred_cost.expect("deferred cost");
         let key = output.instance;
         let rules = key.definition.activation(key.ability);
+        let external = step.external.as_ref().map(|cost| {
+            (
+                rules.cost.additional.expect("external cost"),
+                cost.selection.objects(),
+            )
+        });
         let goal = FundingGoal {
             actor: output.controller,
             required: cost.colored,
             generic: cost.generic,
-            reserve: step
-                .external
-                .map(|e| (e.object, rules.cost.additional.expect("external cost"))),
+            reserve: external.and_then(|(spec, objects)| match objects {
+                [object] => Some((*object, spec)),
+                _ => None,
+            }),
             source: Some((
                 key.source,
                 key.ability,
@@ -4455,7 +4622,8 @@ impl<'g> FundingState<'g> {
         child.contributors = None;
         child.convoke = false;
         child.waterbend = 0;
-        child.cost_group = None;
+        child.cost_group = external
+            .and_then(|(spec, objects)| (objects.len() > 1).then(|| (spec, objects.to_vec())));
         child.cast_costs = None;
         child.continuation = None;
         child.continuation_memo = None;
@@ -4613,6 +4781,19 @@ impl Game {
         };
         FundingState::from_game(self, &goal)
             .entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
+    }
+    pub(super) fn preview_entry_riot(
+        &self,
+        movement: &entries::EntryMove,
+    ) -> Option<riot::Preparation> {
+        let goal = FundingGoal {
+            actor: movement.controller,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        FundingState::from_game(self, &goal).preview_entry_riot(movement)
     }
     pub(super) fn ghost_entry_preview(&self, movement: &entries::EntryMove) -> Option<ObjectView> {
         let goal = FundingGoal {
@@ -4773,12 +4954,12 @@ impl Game {
         }
         if let Some(a) = &self.state.announcing
             && !a.additional_paid
-            && let Some(requirement) = a.creature_counter_cost_requirement()
+            && let Some(spec) = a.counter_cost_spec()
         {
-            return self.creature_counter_fundable(
+            return self.counter_cost_fundable(
                 goal,
                 purpose,
-                requirement,
+                spec,
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),
@@ -5162,7 +5343,9 @@ impl Game {
             }
             return self.behold_announcement_fundable(&proposal, cost);
         }
-        if a.has_ordered_life_cost() {
+        if a.has_ordered_life_cost() || a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
+            // These routes must preflight the actual alternative and its
+            // additional costs instead of inferring them from the printed cost.
             return self.behold_announcement_fundable(a, cost);
         }
         if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
@@ -5285,7 +5468,7 @@ impl Game {
             ) else {
                 return false;
             };
-            return self.creature_counter_fundable(
+            return self.counter_cost_fundable(
                 FundingGoal {
                     actor: a.item.controller,
                     required: cost.colored,
@@ -5294,7 +5477,7 @@ impl Game {
                     source: None,
                 },
                 self.purpose_for_item(&a.item),
-                (a.graveyard_origin_counter_cost().unwrap(), None),
+                Self::creature_counter_spec(a.graveyard_origin_counter_cost().unwrap()),
                 a.creature_counter_cost
                     .as_ref()
                     .map_or(&[], |v| v.as_slice()),
@@ -5420,10 +5603,10 @@ impl Game {
                 definition,
             );
         }
-        if a.item
-            .cast
-            .is_some_and(|c| matches!(c.method, CastMethod::Sneak | CastMethod::ExileLife))
-        {
+        if a.item.cast.is_some_and(|c| {
+            matches!(c.method, CastMethod::Sneak | CastMethod::WebSlinging)
+                || c.method.pays_life_for_mana_value()
+        }) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);
             proposal.cast_costs = Some(Box::default());
@@ -5850,7 +6033,22 @@ impl Game {
             .as_ref()
             .expect("child mana announcement")
             .clone();
-        child.additional = external.or(child.additional);
+        if let Some(object) = external
+            && payment.is_none()
+        {
+            if let Some(spec) = child.additional_cost()
+                && let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind()
+            {
+                let group = child.additional_group.get_or_insert_default();
+                if group.len() >= amount as usize || group.contains(&object) {
+                    return false;
+                }
+                group.push(object);
+                child.additional = (group.len() == amount as usize).then_some(object);
+            } else {
+                child.additional = Some(object);
+            }
+        }
         let goal = self.funding_goal(&child);
         let quality = self
             .state
@@ -5917,9 +6115,9 @@ impl Game {
             self.payment_announcement(packet.clone(), counters, Some(production), None);
         let parents = self.deferred_mana_parents();
         if !parents.is_empty()
-            && candidate
-                .additional_cost()
-                .is_some_and(|spec| spec.kind.payment_kind() == EffectChoiceKind::TapPermanents(1))
+            && candidate.additional_cost().is_some_and(|spec| {
+                matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+            })
         {
             // During a parent payment, this family is enumerated by exact
             // FundingMoves, including deferred mana components. An unselected
@@ -6122,6 +6320,13 @@ impl Game {
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
+            || announcement
+                .item
+                .cast
+                .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
+            || announcement
+                .additional_cost()
+                .is_some_and(|cost| cost.kind == EffectChoiceKind::ReturnTappedCreature)
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement.has_ordered_life_cost()
             || announcement.linked_origin_counter_cost().is_some()
@@ -6576,16 +6781,11 @@ type CounterCostFundingKey = (FundingKey, Vec<(ObjectRef, CounterKind, u64, bool
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FundingState<'_> {
-    fn remove_creature_counter(&mut self, r: ObjectRef, kind: CounterKind) -> bool {
+    fn remove_cost_counter(&mut self, r: ObjectRef, kind: CounterKind, bearer_kinds: u16) -> bool {
         let Some(index) = self.resources.iter().position(|v| v.id == r.card) else {
             return false;
         };
-        let o = &self.resources[index].object;
-        if o.zone != Zone::Battlefield
-            || o.generation != r.generation
-            || o.controller != self.actor
-            || self.kinds(&self.resources[index]) & 1 == 0
-        {
+        if !additional_costs::counter_cost_bearer(self, self.actor, r, bearer_kinds) {
             return false;
         }
         let mut counters =
@@ -6601,19 +6801,23 @@ impl FundingState<'_> {
         }
         true
     }
-    fn creature_counter_payment_possible(
+    fn counter_payment_possible(
         &self,
         goal: &FundingGoal,
-        requirement: (u16, Option<CounterKind>),
+        requirement: CounterCostRequirement,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
-        let (amount, required_kind) = requirement;
+        let CounterCostRequirement {
+            amount,
+            kind: required_kind,
+            bearer_kinds,
+        } = requirement;
         if selected.len() > usize::from(amount) {
             return false;
         }
         let mut after = self.clone();
         for &(r, kind) in selected {
-            if !after.remove_creature_counter(r, kind) {
+            if !after.remove_cost_counter(r, kind, bearer_kinds) {
                 return false;
             }
         }
@@ -6624,16 +6828,12 @@ impl FundingState<'_> {
             goal.source
                 .as_ref()
                 .map_or(0u128, |(source, index, selected, definition, _)| {
-                    let object = after.object(source.card);
-                    if object.zone != Zone::Battlefield
-                        || object.controller != after.actor
-                        || after.kinds(&Resource {
-                            id: source.card,
-                            object: object.clone(),
-                            attacking: false,
-                        }) & 1
-                            == 0
-                    {
+                    if !additional_costs::counter_cost_bearer(
+                        &after,
+                        after.actor,
+                        *source,
+                        bearer_kinds,
+                    ) {
                         return 0;
                     }
                     let loyalty = definition
@@ -6658,9 +6858,12 @@ impl FundingState<'_> {
             .resources
             .iter()
             .filter(|r| {
-                r.object.zone == Zone::Battlefield
-                    && r.object.controller == self.actor
-                    && after.kinds(r) & 1 != 0
+                additional_costs::counter_cost_bearer(
+                    &after,
+                    self.actor,
+                    after.reference(r.id),
+                    bearer_kinds,
+                )
             })
             .map(|r| {
                 let counts = ability_world::CharacteristicWorld::counter_amounts(&after, r.id);
@@ -6671,12 +6874,12 @@ impl FundingState<'_> {
     }
     /// A mana window consisting only of taps and mana production cannot
     /// increase the number of counters on permanents the payer controls.
-    fn fixed_creature_counter_deficit(
+    fn fixed_counter_cost_deficit(
         &self,
-        requirement: (u16, Option<CounterKind>),
+        requirement: CounterCostRequirement,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
-        let (amount, kind) = requirement;
+        let CounterCostRequirement { amount, kind, .. } = requirement;
         let state = &self.game.state;
         let upper = state
             .objects
@@ -6686,17 +6889,26 @@ impl FundingState<'_> {
                 object.zone == Zone::Battlefield && object.controller == self.actor
             })
             .map(|(id, _)| {
-                // Include noncreatures in case tapping changes a type layer.
+                // Include other types in case tapping changes a type layer.
                 let counters = self.counter_amounts(id as CardId);
                 kind.map_or_else(|| counters.total(), |kind| u128::from(counters.get(kind)))
             })
             .sum::<u128>();
-        let invalid_selection = selected.iter().any(|(reference, _)| {
-            let object = self.object(reference.card);
-            self.reference(reference.card) != *reference
-                || object.zone != Zone::Battlefield
-                || object.controller != self.actor
-        });
+        // A tap-only window cannot replenish an overdrawn exact bearer.
+        let invalid_selection = selected
+            .iter()
+            .enumerate()
+            .any(|(index, &(reference, kind))| {
+                let object = self.object(reference.card);
+                let previous = selected[..index]
+                    .iter()
+                    .filter(|&&choice| choice == (reference, kind))
+                    .count();
+                self.reference(reference.card) != reference
+                    || object.zone != Zone::Battlefield
+                    || object.controller != self.actor
+                    || previous as u64 >= self.counter_amounts(reference.card).get(kind)
+            });
         (upper < u128::from(amount) || invalid_selection) && self.fixed_counter_cost_inventory()
     }
 
@@ -6766,10 +6978,10 @@ impl FundingState<'_> {
         }
         true
     }
-    fn fund_creature_counter_cost(
+    fn fund_counter_cost(
         &self,
         goal: &FundingGoal,
-        requirement: (u16, Option<CounterKind>),
+        requirement: CounterCostRequirement,
         selected: &[(ObjectRef, CounterKind)],
         visited: &mut HashSet<CounterCostFundingKey>,
     ) -> bool {
@@ -6785,7 +6997,7 @@ impl FundingState<'_> {
             mana_lots::available(self.mana, &self.lots, purpose),
             adjusted.required,
             adjusted.generic,
-        ) && self.creature_counter_payment_possible(goal, requirement, selected)
+        ) && self.counter_payment_possible(goal, requirement, selected)
         {
             return true;
         }
@@ -6799,12 +7011,12 @@ impl FundingState<'_> {
                     r,
                     kind,
                     ability_world::CharacteristicWorld::counter_count(self, r.card, kind),
-                    ability_world::CharacteristicWorld::reference(self, r.card) == r
-                        && ability_world::CharacteristicWorld::object(self, r.card).zone
-                            == Zone::Battlefield
-                        && ability_world::CharacteristicWorld::object(self, r.card).controller
-                            == self.actor
-                        && ability_world::CharacteristicWorld::kinds(self, r.card) & 1 != 0,
+                    additional_costs::counter_cost_bearer(
+                        self,
+                        self.actor,
+                        r,
+                        requirement.bearer_kinds,
+                    ),
                 )
             })
             .collect();
@@ -6819,7 +7031,7 @@ impl FundingState<'_> {
             };
             for step in moves {
                 if self.visit_applied_for(&step, Some(goal), &mut |next| {
-                    next.fund_creature_counter_cost(goal, requirement, selected, visited)
+                    next.fund_counter_cost(goal, requirement, selected, visited)
                 }) {
                     return true;
                 }
@@ -6830,6 +7042,22 @@ impl FundingState<'_> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn current_counter_cost_payable(&self, announcement: &Announcement) -> bool {
+        let goal = self.funding_goal(announcement);
+        let requirement = announcement
+            .counter_cost_spec()
+            .and_then(|cost| cost.kind.counter_requirement())
+            .expect("distributed counter cost");
+        let selected = announcement.creature_counter_cost.as_deref();
+        // A selectable prefix can depend on future mana abilities. Only
+        // keep selecting now if the complete payment fits the live inventory.
+        FundingState::from_game(self, &goal).counter_payment_possible(
+            &goal,
+            requirement,
+            selected.map_or(&[], Vec::as_slice),
+        )
+    }
+
     pub(super) fn optional_counter_cost_mana(&self, announcement: &Announcement) -> bool {
         if announcement.cast_costs.is_some()
             || !matches!(announcement.item.kind, StackKind::ActivatedAbility { .. })
@@ -6840,17 +7068,17 @@ impl Game {
         goal.requires_mana() && !FundingState::from_game(self, &goal).fixed_counter_cost_inventory()
     }
 
-    pub(super) fn creature_counter_fundable(
+    pub(super) fn counter_cost_fundable(
         &self,
         goal: FundingGoal,
         purpose: mana_lots::Purpose,
-        requirement: (u16, Option<CounterKind>),
+        spec: AdditionalCost,
         selected: &[(ObjectRef, CounterKind)],
     ) -> bool {
-        let (amount, required_kind) = requirement;
+        let requirement = spec.kind.counter_requirement().unwrap();
         if selected
             .iter()
-            .any(|&(_, kind)| required_kind.is_some_and(|required| kind != required))
+            .any(|&(_, kind)| requirement.kind.is_some_and(|required| kind != required))
         {
             return false;
         }
@@ -6875,13 +7103,7 @@ impl Game {
                     card: CardId::MAX,
                     generation: 0,
                 },
-                Some(AdditionalCost {
-                    kind: required_kind.map_or(
-                        EffectChoiceKind::RemoveCreatureCounters(amount),
-                        EffectChoiceKind::RemoveCreatureCounter,
-                    ),
-                    ..Self::creature_counter_spec(amount)
-                }),
+                Some(spec),
                 None,
                 &[],
                 false,
@@ -6898,10 +7120,10 @@ impl Game {
         let mut world = FundingState::from_game_with_convoke(self, &goal, true);
         world.convoke = false;
         world.set_purpose(purpose);
-        if world.fixed_creature_counter_deficit(requirement, selected) {
+        if world.fixed_counter_cost_deficit(requirement, selected) {
             return false;
         }
-        world.fund_creature_counter_cost(&goal, requirement, selected, &mut HashSet::new())
+        world.fund_counter_cost(&goal, requirement, selected, &mut HashSet::new())
     }
 }
 

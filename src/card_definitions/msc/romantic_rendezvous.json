@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3668592dc7e683eea6e9b77dd1b62b059abd4ace8cd3b1ec2e82817ab9ac2e93"
   },
-  "physical_metadata_sha256": "9d2d9389f695a25910177076174bc0a5a33abff214fc9a3601f5b9425d6ffe6b"
+  "physical_metadata_sha256": "9d2d9389f695a25910177076174bc0a5a33abff214fc9a3601f5b9425d6ffe6b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RomanticRendezvous.java",
+  "java_sha256": "fa7f1876d0463b2437722db4827c54f3741b41d655609175ae7f3119e00f1911",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 //! Owned spell-copy packets, delayed cast triggers, and changes to existing targets.
 use super::*;
-use crate::cards::{CastFilter, SpellCopyCount};
+use crate::cards::{CapturedSpellModification, CastFilter, SpellCopyCount};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -483,7 +483,8 @@ impl Game {
                         Some(u64::from(spell.x.unwrap_or(0)))
                     }
                     Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
-                    Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
+                    Instruction::CopyCapturedSpellModified { .. }
+                    | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
                     _ => None,
                 })
             {
@@ -558,20 +559,23 @@ impl Game {
                     trigger.refer_objects([event.object]);
                     trigger.cast_event = Some(Box::new(event));
                     trigger.x = spell.x;
-                } else {
-                    let amount = ability
+                }
+                let copy_amount =
+                    ability
                         .program
                         .iter()
                         .find_map(|instruction| match instruction {
                             Instruction::CopyCapturedSpell { count, .. } => {
                                 Some(copy_count(*count))
                             }
+                            Instruction::CopyCapturedSpellModified { .. } => Some(1),
                             _ => None,
-                        })
-                        .unwrap_or(1);
+                        });
+                if condition != TriggerCondition::DelayedSpellCastCreature || copy_amount.is_some()
+                {
                     trigger.copy_event = Some(Box::new(CopyEvent {
                         spell: spell.clone(),
-                        amount,
+                        amount: copy_amount.unwrap_or(1),
                     }));
                 }
                 self.state.pending_triggers.push(trigger);
@@ -874,36 +878,67 @@ impl Game {
         item: &SpellView,
         retarget: bool,
     ) -> bool {
-        self.copy_captured_spell_with_keywords(item, retarget, Keywords::NONE)
+        self.copy_captured_spell_modified(item, retarget, CapturedSpellModification::None)
     }
-    pub(super) fn copy_captured_spell_with_keywords(
-        &mut self,
-        item: &SpellView,
-        retarget: bool,
-        keywords: Keywords,
-    ) -> bool {
-        let Some(event) = &item.copy_event else {
-            return false;
-        };
-        if event.amount == 0 {
-            return false;
-        }
+    pub(super) fn captured_copy_template<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> Option<&'a SpellView> {
+        let event = item.copy_event.as_ref().filter(|event| event.amount > 0)?;
         let template = self
             .state
             .stack
             .iter()
-            .find(|s| s.id == event.spell.id)
-            .cloned()
-            .unwrap_or_else(|| event.spell.clone());
-        if template
+            .find(|spell| spell.id == event.spell.id)
+            .unwrap_or(&event.spell);
+        (!template
             .source
             .expect("object-backed spell or trigger")
             .card
-            .spell_cannot_be_copied()
-        {
+            .spell_cannot_be_copied())
+        .then_some(template)
+    }
+
+    pub(super) fn copy_captured_spell_modified(
+        &mut self,
+        item: &SpellView,
+        retarget: bool,
+        modification: CapturedSpellModification,
+    ) -> bool {
+        let Some(template) = self.captured_copy_template(item).cloned() else {
             return false;
-        }
-        let copy = self.allocate_spell_copy(&template, item.controller);
+        };
+        let event = item.copy_event.as_ref().unwrap();
+        let mut copy = self.allocate_spell_copy(&template, item.controller);
+        let copy_source = copy.source.expect("allocated spell copy has a source");
+        let keywords = match modification {
+            CapturedSpellModification::Nonlegendary => {
+                debug_assert_eq!(event.amount, 1);
+                let mut recipe = copy
+                    .source_copy_recipe
+                    .as_deref()
+                    .copied()
+                    .unwrap_or_else(|| CopyRecipe::new(copy_source.card));
+                let mut overrides = recipe.overrides.unwrap_or(CopyOverrides::NONE);
+                overrides.legendary = Some(false);
+                recipe.overrides = Some(overrides);
+                self.set_copy_recipe(copy_source.object, recipe);
+                copy.source_copy_recipe = Some(Box::new(recipe));
+                Keywords::NONE
+            }
+            CapturedSpellModification::PermanentHaste => {
+                debug_assert_eq!(event.amount, 1);
+                if PermanentType::ALL
+                    .into_iter()
+                    .any(|kind| copy_source.card.kind_mask() & kind.mask() != 0)
+                {
+                    self.grant_stack_keywords_expiring(copy_source.object, Keywords::HASTE, None);
+                }
+                Keywords::NONE
+            }
+            CapturedSpellModification::OriginalAndCopies(keywords) => keywords,
+            CapturedSpellModification::None => Keywords::NONE,
+        };
         // These are ordinary ability grants, not copiable values. The original
         // receives its grant only while its exact stack incarnation still exists.
         if keywords != Keywords::NONE {
@@ -1308,7 +1343,13 @@ impl Game {
             return false;
         };
         let item = resolution.item.clone();
-        if !accept || !self.copy_captured_spell_with_keywords(&item, true, keywords) {
+        if !accept
+            || !self.copy_captured_spell_modified(
+                &item,
+                true,
+                CapturedSpellModification::OriginalAndCopies(keywords),
+            )
+        {
             self.run_program();
         }
         true

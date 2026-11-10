@@ -454,29 +454,38 @@ impl Game {
             },
         }
     }
-    pub(super) fn visit_creature_counter_cost(
+    pub(super) fn visit_distributed_counter_cost(
         &self,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
-        let requirement = a.creature_counter_cost_requirement().unwrap();
+        let spec = a.counter_cost_spec().unwrap();
+        let requirement = spec.kind.counter_requirement().unwrap();
         let mut selected = a
             .creature_counter_cost
             .as_ref()
             .map_or_else(Vec::new, |v| v.as_ref().clone());
         for id in 0..self.state.objects.len() {
             let r = self.object_ref(id as CardId);
+            if !additional_costs::counter_cost_bearer(
+                self,
+                a.item.controller,
+                r,
+                requirement.bearer_kinds,
+            ) {
+                continue;
+            }
             for kind in CounterKind::ALL {
-                if requirement.1.is_some_and(|expected| expected != kind)
+                if requirement.kind.is_some_and(|expected| expected != kind)
                     || self.counter_count(r.card, kind) == 0
                 {
                     continue;
                 }
                 selected.push((r, kind));
-                let available = self.creature_counter_fundable(
+                let available = self.counter_cost_fundable(
                     self.funding_goal(a),
                     self.purpose_for_item(&a.item),
-                    requirement,
+                    spec,
                     &selected,
                 );
                 selected.pop();
@@ -498,8 +507,8 @@ impl Game {
         };
         let a = self.state.announcing.as_ref().unwrap();
         if a.cast_costs.is_some()
-            || a.creature_counter_cost_requirement().is_none()
-            || self.visit_creature_counter_cost(&mut |_| true)
+            || a.counter_cost_spec().is_none()
+            || self.current_counter_cost_payable(a)
         {
             return;
         }
@@ -513,14 +522,19 @@ impl Game {
         a.add_cast_cost_clause(CastCostClause::Additional);
         self.state.pending = Pending::PayCosts { player };
     }
-    pub(super) fn choose_creature_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
+    pub(super) fn choose_distributed_counter_cost(&mut self, object: ObjectRef, kind: CounterKind) {
         let a = self.state.announcing.as_mut().unwrap();
-        let requirement = a.creature_counter_cost_requirement().unwrap();
+        let requirement = a
+            .counter_cost_spec()
+            .unwrap()
+            .kind
+            .counter_requirement()
+            .unwrap();
         let selected = a
             .creature_counter_cost
             .get_or_insert_with(|| Box::new(Vec::new()));
         selected.push((object, kind));
-        if selected.len() == usize::from(requirement.0) {
+        if selected.len() == usize::from(requirement.amount) {
             a.additional = Some(object);
             self.state.pending = Pending::PayCosts {
                 player: a.item.controller,

@@ -12,6 +12,37 @@ pub struct MainPhaseCombatView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn begin_combat_rules_turn(&mut self) {
+        let Some(mut rules) = self.state.combat_rules.take() else {
+            return;
+        };
+        let mut continuing = rules.require_all_attack_until_next_turn;
+        continuing[self.state.active.index()] = 0;
+        if continuing != [0; 2] {
+            *rules = Default::default();
+            rules.require_all_attack_until_next_turn = continuing;
+            self.state.combat_rules = Some(rules);
+        }
+    }
+
+    pub(super) fn require_all_attacks_until_next_turn(&mut self, controller: Player) {
+        let requirements = &mut self
+            .state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .require_all_attack_until_next_turn[controller.index()];
+        *requirements = requirements
+            .checked_add(1)
+            .capacity("global attack requirements exhausted");
+    }
+
+    pub(super) fn global_attack_requirements(&self) -> [usize; 2] {
+        self.state
+            .combat_rules
+            .as_ref()
+            .map_or([0; 2], |rules| rules.require_all_attack_until_next_turn)
+    }
+
     pub(super) fn require_created_attacks_this_combat(&mut self, created: &[ObjectRef]) {
         if !matches!(
             self.state.step,

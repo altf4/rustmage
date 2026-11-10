@@ -66,13 +66,13 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**12 / 20 sets complete · 60%**
+**13 / 20 sets complete · 65%**
 
-`████████████░░░░░░░░`
+`█████████████░░░░░░░`
 
-**3,894 / 5,163 unique Standard cards supported in this checkout · 75%**
+**4,005 / 5,163 unique Standard cards supported in this checkout · 78%**
 
-`███████████████░░░░░`
+`████████████████░░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -94,7 +94,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |
 | Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
-| Marvel's Spider-Man | SPM | 82/193 (42%) | ⏳ Partial |
+| Marvel's Spider-Man | SPM | 193/193 (100%) | ✅ Complete |
 | Murders at Karlov Manor | MKM | 86/279 (31%) | ⏳ Partial |
 | Outlaws of Thunder Junction | OTJ | 106/276 (38%) | ⏳ Partial |
 | Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |

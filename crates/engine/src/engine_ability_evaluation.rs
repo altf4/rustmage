@@ -321,6 +321,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype) => {
+            if !own || id == source.card || !world.subtypes(id).has(world.definition(id), subtype) {
+                return None;
+            }
+            Keywords::RIOT
+        }
         StaticAbilityFragment::ControlledUntappedSubtypeKeywords { subtype, keywords } => {
             if !own || target.tapped || !world.subtypes(id).has(world.definition(id), subtype) {
                 return None;
@@ -589,6 +595,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 decayed_instances: usize::from(intrinsic.contains(Keywords::DECAYED))
                     + usize::from(copied.contains(Keywords::DECAYED)),
                 granted_decayed_instances: 0,
+                riot_instances: usize::from(intrinsic.contains(Keywords::RIOT))
+                    + usize::from(copied.contains(Keywords::RIOT)),
+                granted_riot_instances: 0,
                 grants: Vec::new(),
                 self_grants: Vec::new(),
                 // Native land subtypes exist before any later layer-six removal.
@@ -719,6 +728,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledArtifactFood(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                         | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)
                 )

@@ -205,6 +205,7 @@ impl Game {
             damage: None,
             damage_preventions: Vec::new(),
             heals_before_damage: Vec::new(),
+            damage_counters: Vec::new(),
             damage_event_order: Vec::new(),
         })
     }

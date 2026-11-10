@@ -84,10 +84,10 @@ impl Game {
             }
         }
     }
-    pub(super) fn put_departed_source_on_library_bottom(&mut self, item: &SpellView) {
+    pub(super) fn put_departed_source_on_library_bottom(&mut self, item: &SpellView) -> bool {
         let mut cards: Vec<_> = self.departed_source_in_graveyard(item).collect();
         let Some(&first) = cards.first() else {
-            return;
+            return false;
         };
         let owner = self.state.objects[first as usize].owner;
         if let &[first, second] = cards.as_slice() {
@@ -125,6 +125,9 @@ impl Game {
             self.restore_library_top_knowledge(owner, prior);
         }
         self.finish_zone_events(&events, &[]);
+        // A legal resolution cost was started, including when a replacement
+        // changes the movement (CR 118.11–12).
+        true
     }
     pub(super) fn valid_library_target(&self, item: &SpellView, bound: BoundTarget) -> bool {
         matches!(

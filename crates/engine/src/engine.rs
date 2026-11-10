@@ -53,6 +53,10 @@ pub use entry_exiles::EntryExileChoiceView;
 pub mod entry_devour;
 pub use entry_devour::EntryDevourChoiceView;
 #[doc(hidden)]
+#[path = "engine_riot.rs"]
+pub mod riot;
+pub use riot::EntryRiotChoiceView;
+#[doc(hidden)]
 #[path = "engine_entry_copies.rs"]
 pub mod entry_copies;
 pub use entry_copies::EntryCopyChoiceView;
@@ -200,14 +204,14 @@ use crate::capacity::{CapacityExt, CapacitySignal};
 use crate::cards::{
     ActivatedAbility, ActivationCost, ActivationGuard, ActivationOrigin, AdditionalCost,
     AmountValue, BattlefieldFilter, CastRelation, CostTurn, CountFilter, CountZone, CounterAmounts,
-    CounterKind, CounterSubject, Counters, CreatureFilter, DamageQualification, DamageSubject,
-    Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind, EntryChoiceValue, EntryCounterAmount,
-    EntryPredicate, EntryTapped, InitialCounters, Instruction, ManaCost, ManaProduction,
-    MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec, NamedCounters,
-    PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, SacrificeFilter, SearchSpec,
-    SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue, Subject, TargetGroupConstraint,
-    TargetPlan, TargetPredicate, TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep,
-    payments,
+    CounterCostRequirement, CounterKind, CounterSubject, Counters, CreatureFilter,
+    DamageQualification, DamageSubject, Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind,
+    EntryChoiceValue, EntryCounterAmount, EntryPredicate, EntryTapped, InitialCounters,
+    Instruction, ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination,
+    MilledFilter, MilledSelectionSpec, NamedCounters, PlayerSet, RecoveryFilter, ResolvedStatValue,
+    ReturnKind, SacrificeFilter, SearchSpec, SpellMode, StatExpr, StatValue, Stats, StepGuard,
+    StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule, TargetSpec,
+    TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[doc(hidden)]
 #[path = "engine_milled_selection.rs"]
@@ -596,7 +600,10 @@ pub use return_ability_modification::ResolvedAbilityModificationView;
 #[doc(hidden)]
 #[path = "engine_sneak.rs"]
 pub mod sneak;
+#[path = "engine_web_slinging.rs"]
+pub mod web_slinging;
 pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
+pub use web_slinging::WebSlingingOrigin;
 #[doc(hidden)]
 #[path = "engine_source_prevention.rs"]
 pub mod source_prevention;
@@ -883,6 +890,7 @@ define_actions! {
     PayBlight { object: ObjectRef },
     Blight { object: ObjectRef },
     PaySneakReturn { object: ObjectRef },
+    PayWebSlingingReturn { object: ObjectRef },
     ChooseTeamwork { pay: bool },
     ChooseTeammate { object: ObjectRef },
     FinishTeamwork,
@@ -909,6 +917,7 @@ define_actions! {
         life: u32,
         entry_counter: CounterKind,
     },
+    // One counter for a distributed payment. Keep the existing wire tag.
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -984,6 +993,7 @@ define_actions! {
     FinishEntryExile,
     ChooseEntryDevour { object: ObjectRef },
     FinishEntryDevour,
+    ChooseEntryRiot { counter: bool },
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
@@ -1043,6 +1053,7 @@ define_actions! {
     },
     PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceGraveyardFlashSurcharge { card: CardId },
@@ -1059,6 +1070,13 @@ define_actions! {
         #[serde(skip_serializing_if = "Option::is_none")]
         permission: Option<(ObjectRef, PermanentType)> },
     AnnounceAdventure { card: CardId },
+    AnnounceWebSlinging {
+        card: CardId,
+        face: CastFace,
+        cost: ManaCost,
+        flash_surcharge: bool,
+        origin: WebSlingingOrigin,
+    },
     AnnounceOmen { card: CardId },
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
@@ -1075,6 +1093,7 @@ define_actions! {
     // Use an exact temporary grant, independently of the card's own harmonize cost.
     AnnounceGrantedHarmonize { card: CardId, face: CastFace },
     AnnounceMayhem { card: CardId },
+    AnnounceGrantedMayhem { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceGraveyardBorrowedAbility { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateGraveyardBorrowedMana { card: CardId, graveyard: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
@@ -1387,6 +1406,7 @@ struct PlayerState {
     token_creation_attempted_this_turn: bool,
     mountain_mana_bonus: u32,
     jace_loyalty_anytime: bool,
+    library_top_life_play: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
     extra_land_plays_remaining: u64,
@@ -1485,6 +1505,14 @@ pub enum CastMethod {
     Warp,
     Disguise,
     Sneak,
+    GrantedMayhem,
+    WebSlinging,
+    LibraryLife,
+}
+impl CastMethod {
+    fn pays_life_for_mana_value(self) -> bool {
+        matches!(self, Self::ExileLife | Self::LibraryLife)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -1536,6 +1564,9 @@ pub struct CastInfo {
     /// Defender captured before the non-targeted Sneak return is paid.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sneak_defender: Option<CombatDefender>,
+    /// Mana value of the exact creature returned as the Web-slinging cost, including zero.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_slinging_return_mana_value: Option<u64>,
     /// Optional additional mana paid to obtain this spell's flash timing.
     pub flash_surcharge: bool,
     /// Explicit optional additional cost, declared before targets; None until chosen.
@@ -2678,6 +2709,9 @@ enum Pending {
     SneakReturnCost {
         player: Player,
     },
+    WebSlingingReturnCost {
+        player: Player,
+    },
     TeamworkIntent {
         player: Player,
     },
@@ -2795,6 +2829,9 @@ enum Pending {
         player: Player,
     },
     EntryDevour {
+        player: Player,
+    },
+    EntryRiot {
         player: Player,
     },
     EntryValue {
@@ -3767,6 +3804,9 @@ pub struct Observation {
     pub sneak_entries: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub must_attack_this_combat: Vec<ObjectRef>,
+    /// Resolving-controller counts, expiring at each controller's next turn.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub require_all_attack_until_next_turn: Option<[usize; 2]>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub player_combat_damage_this_turn: Option<PlayerCombatDamageView>,
@@ -3979,6 +4019,8 @@ pub struct Observation {
     pub entry_exile: Option<EntryExileChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_devour: Option<EntryDevourChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_riot: Option<EntryRiotChoiceView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -3994,6 +4036,10 @@ pub struct Observation {
     pub resolution_payment: Option<resolution_mana::ResolutionPaymentView>,
     pub waiting_triggers: Vec<SpellView>,
     pub effect_discards: Vec<CardId>,
+    /// Whether each player has chosen to discard in an optional APNAP batch.
+    /// Only that player's information set includes the chosen card's identity.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub optional_effect_discards: Option<[Option<bool>; 2]>,
     pub attackers: Vec<CardId>,
     pub attack_declarations: Vec<AttackDeclaration>,
     pub blocking: Vec<CardId>,
@@ -4160,6 +4206,7 @@ impl Game {
             token_creation_attempted_this_turn: false,
             mountain_mana_bonus: 0,
             jace_loyalty_anytime: false,
+            library_top_life_play: false,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
@@ -4460,6 +4507,7 @@ impl Game {
             | Pending::BlightIntent { player }
             | Pending::BlightPayment { player }
             | Pending::SneakReturnCost { player }
+            | Pending::WebSlingingReturnCost { player }
             | Pending::TeamworkIntent { player }
             | Pending::TeamworkPayment { player }
             | Pending::Saddle { player }
@@ -4501,6 +4549,7 @@ impl Game {
             | Pending::EntryCopy { player }
             | Pending::EntryExile { player }
             | Pending::EntryDevour { player }
+            | Pending::EntryRiot { player }
             | Pending::LandCardName { player }
             | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
@@ -5075,6 +5124,9 @@ impl Game {
             }
             Pending::BlightPayment { .. } => return self.visit_blight_payments(&mut emit),
             Pending::SneakReturnCost { .. } => return self.visit_sneak_return_cost(&mut emit),
+            Pending::WebSlingingReturnCost { .. } => {
+                return self.visit_web_slinging_return_cost(&mut emit);
+            }
             Pending::TeamworkIntent { .. } => {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
@@ -5205,6 +5257,13 @@ impl Game {
             Pending::LinkedChoice { .. } => {
                 if self.visit_linked_choices(&mut emit) {
                     return true;
+                }
+            }
+            Pending::EntryRiot { .. } => {
+                for counter in [true, false] {
+                    if emit(Action::ChooseEntryRiot { counter }) {
+                        return true;
+                    }
                 }
             }
             Pending::EntryDevour { .. } => {
@@ -5535,10 +5594,10 @@ impl Game {
                     .announcing
                     .as_ref()
                     .unwrap()
-                    .creature_counter_cost_requirement()
+                    .counter_cost_spec()
                     .is_some()
                 {
-                    return self.visit_creature_counter_cost(&mut emit)
+                    return self.visit_distributed_counter_cost(&mut emit)
                         || self.optional_counter_cost_mana(s.announcing.as_ref().unwrap())
                             && emit(Action::BeginOrderedCosts);
                 }
@@ -5605,6 +5664,11 @@ impl Game {
                 }
             }
             Pending::Bottom { .. } | Pending::Discard | Pending::EffectDiscard { .. } => {
+                if self.optional_effect_discards().is_some()
+                    && emit(Action::ChooseOptional { accept: false })
+                {
+                    return true;
+                }
                 for (i, obj) in s.objects.iter().enumerate() {
                     if obj.owner == actor && obj.zone == Zone::Hand && obj.is_card() {
                         if matches!(s.pending, Pending::EffectDiscard { .. })
@@ -5686,6 +5750,20 @@ impl Game {
                     casting_prohibited || self.nonhand_cast_prohibited(actor),
                     &mut emit,
                 ) {
+                    return true;
+                }
+                if s.players[actor.index()].library_top_life_play
+                    && !casting_prohibited
+                    && !self.nonhand_cast_prohibited(actor)
+                    && let Some(card) = self.top_library_card(actor)
+                    && self.visit_mana_value_life_casts(
+                        actor,
+                        card,
+                        CastMethod::LibraryLife,
+                        sorcery,
+                        &mut emit,
+                    )
+                {
                     return true;
                 }
                 for (i, obj) in s.objects.iter().enumerate() {
@@ -5889,6 +5967,16 @@ impl Game {
                         &graveyard_life_casts,
                         &mut emit,
                     ) {
+                        return true;
+                    }
+                    if !casting_prohibited
+                        && !self.nonhand_cast_prohibited(actor)
+                        && obj.zone == Zone::Graveyard
+                        && self.visit_mayhem_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if self.visit_web_slinging(actor, card, sorcery, &mut emit) {
                         return true;
                     }
                     // This check follows face-down disguise: the face-down spell
@@ -6110,20 +6198,6 @@ impl Game {
                                 }
                             }
                         }
-                    }
-                    if !casting_prohibited
-                        && self.can_cast_mayhem(actor, card)
-                        && self.permitted_cast_available(
-                            actor,
-                            card,
-                            CastMethod::Mayhem,
-                            CastFace::Normal,
-                            sorcery,
-                            false,
-                        )
-                        && emit(Action::AnnounceMayhem { card })
-                    {
-                        return true;
                     }
                     if !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
@@ -6360,10 +6434,8 @@ impl Game {
                                 }
                                 // Object-specific mana permissions cannot share the
                                 // printed-definition-only prefunding cache.
-                                if self.opponent_noncreature_spell_tax(
-                                    actor,
-                                    self.effective_spell_card(card),
-                                ) != 0
+                                if self.spell_generic_tax(actor, self.effective_spell_card(card))
+                                    != 0
                                     || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || convoke::potential(self, obj.card)
@@ -6421,9 +6493,7 @@ impl Game {
                         }
                     }
                     if target_cost
-                        && self
-                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
-                            == 0
+                        && self.spell_generic_tax(actor, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
@@ -6488,9 +6558,7 @@ impl Game {
                     }
                     if flashback
                         || exile
-                        || self
-                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
-                            != 0
+                        || self.spell_generic_tax(actor, self.effective_spell_card(card)) != 0
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.teamwork().is_some()
@@ -6574,7 +6642,8 @@ impl Game {
                     return true;
                 }
                 if !s.selected_attackers.is_empty()
-                    && (self.has_attack_tax_provider()
+                    && (self.global_attack_requirements() != [0; 2]
+                        || self.has_attack_tax_provider()
                         || self.has_planeswalker_attack_limit_provider())
                     && emit(Action::CancelAttackDeclaration)
                 {
@@ -7284,7 +7353,7 @@ impl Game {
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) {
                     self.pay_resolution_creature_counter(object, kind);
                 } else {
-                    self.choose_creature_counter_cost(object, kind);
+                    self.choose_distributed_counter_cost(object, kind);
                 }
             }
             Action::AnnounceGraveyardAdditionalCosts { card } => {
@@ -7372,6 +7441,7 @@ impl Game {
             Action::FinishEntryExile => self.finish_entry_exile(),
             Action::ChooseEntryDevour { object } => self.choose_entry_devour(object),
             Action::FinishEntryDevour => self.finish_entry_devour(),
+            Action::ChooseEntryRiot { counter } => self.choose_entry_riot(counter),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -7503,6 +7573,7 @@ impl Game {
                     .entry_choice()
                     .is_some()
                     || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
+                    || self.may_enter_with_riot(self.state.objects[card as usize].card)
                 {
                     // A land play is public even while its pre-entry choice is pending.
                     let reference = self.object_ref(card);
@@ -7716,10 +7787,19 @@ impl Game {
                 card,
                 face,
                 flash_surcharge,
+            }
+            | Action::AnnounceLibraryLife {
+                card,
+                face,
+                flash_surcharge,
             } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
-                Self::configure_exile_life_cast(&mut item, flash_surcharge);
+                let method = match action {
+                    Action::AnnounceLibraryLife { .. } => CastMethod::LibraryLife,
+                    _ => CastMethod::ExileLife,
+                };
+                Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceCast { card }
@@ -7816,6 +7896,13 @@ impl Game {
                 );
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceWebSlinging {
+                card,
+                face,
+                cost,
+                flash_surcharge,
+                origin,
+            } => self.start_web_slinging(actor, card, face, cost, flash_surcharge, origin),
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
                     self.consume_graveyard_type(source, kind);
@@ -7880,13 +7967,35 @@ impl Game {
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceMayhem { card } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::Mayhem;
-                if item.source.expect("mayhem source").card.x_symbols() > 0 {
-                    item.x = Some(0);
+            Action::AnnounceMayhem { card } | Action::AnnounceGrantedMayhem { card, .. } => {
+                let (method, face, flash_surcharge) = match action {
+                    Action::AnnounceGrantedMayhem {
+                        face,
+                        flash_surcharge,
+                        ..
+                    } => (CastMethod::GrantedMayhem, face, flash_surcharge),
+                    _ => (CastMethod::Mayhem, CastFace::Normal, false),
+                };
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
+                    self.cast_during_resolution_with_cost(
+                        actor,
+                        self.object_ref(card),
+                        face,
+                        Some(method),
+                    );
+                } else {
+                    let mut item = self.cast_item(actor, card, [0; 6]);
+                    self.set_cast_face(&mut item, face);
+                    let cast = item.cast.as_mut().unwrap();
+                    cast.method = method;
+                    cast.flash_surcharge = flash_surcharge;
+                    if method == CastMethod::Mayhem
+                        && item.source.expect("Mayhem source").card.x_symbols() > 0
+                    {
+                        item.x = Some(0);
+                    }
+                    self.open_payment_announcement(item, Counters::default(), None);
                 }
-                self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceHarmonize { card } | Action::AnnounceGrantedHarmonize { card, .. } => {
                 let (method, face) = match action {
@@ -8304,6 +8413,7 @@ impl Game {
             Action::PayBlight { object } => self.pay_blight(object),
             Action::Blight { object } => self.choose_effect_object(actor, object),
             Action::PaySneakReturn { object } => self.pay_sneak_return(object),
+            Action::PayWebSlingingReturn { object } => self.pay_web_slinging_return(object),
             Action::ChooseTeamwork { pay } => self.choose_teamwork(pay),
             Action::ChooseTeammate { object } => self.choose_teammate(object),
             Action::FinishTeamwork => self.finish_teamwork(),
@@ -8707,6 +8817,15 @@ impl Game {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     resolution.discards[actor.index()] -= 1;
                     resolution.selected_discards[actor.index()].push(card);
+                    if let Some(discard_events::DiscardAfter::LoseLifeForDeclinedDiscard {
+                        paid,
+                        ..
+                    }) = &mut resolution.discard_after
+                    {
+                        // CR 118.11–12: a legal payment remains paid when its
+                        // discard event is modified by a replacement effect.
+                        paid[actor.index()] = true;
+                    }
                     self.run_program();
                 } else {
                     self.state.cleanup_discards.push(card);
@@ -8814,8 +8933,8 @@ impl Game {
             Action::ChooseEquipmentAttachment { equipment } => {
                 self.choose_equipment_attachment(actor, equipment)
             }
-            Action::FinishLibrarySelection => self.finish_library_selection(actor),
-            Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
+            Action::FinishLibrarySelection => self.finish_library_selection(),
+            Action::OrderLibraryBottom { card } => self.order_library_bottom(card),
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }
@@ -8846,6 +8965,12 @@ impl Game {
                 if matches!(self.state.pending, Pending::Replacement { .. }) =>
             {
                 self.choose_optional_token_replacement(accept);
+            }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::EffectDiscard { .. }) =>
+            {
+                self.state.resolving.as_mut().unwrap().discards[actor.index()] = 0;
+                self.run_program();
             }
             Action::ChooseOptional { accept: false }
                 if matches!(self.state.pending, Pending::EffectChoice { .. }) =>
@@ -9872,13 +9997,17 @@ impl Game {
                 .capacity("library-to-graveyard history exhausted");
         }
         // An undone public move cannot erase knowledge acquired during the cast.
-        // Keep only cards that were already in the checkpoint hand; library and
-        // newly created objects are handled separately by irreversible replay.
-        if before.zone == Zone::Hand
-            && matches!(
+        // Preserve the exact checkpoint incarnation. Irreversible changes to
+        // library order are replayed separately.
+        let exposes_hidden_card = match before.zone {
+            Zone::Hand => matches!(
                 destination,
                 Zone::Graveyard | Zone::Battlefield | Zone::Stack
-            )
+            ),
+            Zone::Library => destination == Zone::Stack,
+            _ => false,
+        };
+        if exposes_hidden_card
             && !(destination == Zone::Stack
                 && before.card
                     == Card::from_name("@face-down/disguise").expect("pinned catalogue identity"))
@@ -9888,7 +10017,7 @@ impl Game {
                 .objects
                 .get(id as usize)
                 .is_some_and(|original| {
-                    original.zone == Zone::Hand
+                    original.zone == before.zone
                         && original.generation == before.reference.generation
                 })
             && !rollback.obscured_hand_cards.contains(&id)
@@ -10482,9 +10611,9 @@ impl Game {
     fn begin_turn(&mut self) {
         // This-turn delayed abilities still observe cleanup SBAs and any
         // priority cycles those actions create (CR 514.3a).
-        self.state.delayed_target_events = None;
+        self.expire_turn_delayed_target_events();
         self.state.delayed_attack_this_turn = None;
-        self.state.combat_rules = None;
+        self.begin_combat_rules_turn();
         self.expire_manifest_deaths();
         self.expire_spell_copies();
         if let Some(roles) = &mut self.state.roles {
@@ -10762,6 +10891,7 @@ impl Game {
             player.hexproof_until_end_turn = false;
             player.mountain_mana_bonus = 0;
             player.jace_loyalty_anytime = false;
+            player.library_top_life_play = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_temporary_ability_removals();
@@ -11648,6 +11778,10 @@ impl Game {
                     .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
                     .collect()
             }),
+            require_all_attack_until_next_turn: s.combat_rules.as_ref().and_then(|rules| {
+                (rules.require_all_attack_until_next_turn != [0; 2])
+                    .then_some(rules.require_all_attack_until_next_turn)
+            }),
             must_be_blocked: s
                 .combat_rules
                 .as_ref()
@@ -11734,6 +11868,7 @@ impl Game {
                 Pending::BlightIntent { .. } => "blight_intent",
                 Pending::BlightPayment { .. } => "blight_payment",
                 Pending::SneakReturnCost { .. } => "sneak_return_cost",
+                Pending::WebSlingingReturnCost { .. } => "web_slinging_return_cost",
                 Pending::TeamworkIntent { .. } => "teamwork_intent",
                 Pending::TeamworkPayment { .. } => "teamwork_payment",
                 Pending::Saddle { .. } => "saddle",
@@ -11799,6 +11934,10 @@ impl Game {
                 Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryExile { .. } => "entry_exile",
                 Pending::EntryDevour { .. } => "entry_devour",
+                Pending::EntryRiot { .. } if self.entry_riot_view(viewer).is_none() => {
+                    "entry_choice"
+                }
+                Pending::EntryRiot { .. } => "entry_riot",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
@@ -11913,6 +12052,7 @@ impl Game {
             entry_copy: self.entry_copy_view(viewer),
             entry_exile: self.entry_exile_view(viewer),
             entry_devour: self.entry_devour_view(viewer),
+            entry_riot: self.entry_riot_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),
@@ -12340,6 +12480,7 @@ impl Game {
                     })
             }),
             waiting_triggers: s.ordering_triggers.clone(),
+            optional_effect_discards: self.optional_effect_discards(),
             effect_discards: s
                 .resolving
                 .as_ref()

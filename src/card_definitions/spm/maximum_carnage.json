@@ -3,10 +3,45 @@
   "catalogue_id": 2689,
   "oracle_id": "7351fca5-8672-4ba3-a015-bd4b6b289efc",
   "facts_sha256": "cbc1c7dc569ba0ee02137df0078474883a6f570659f289ae969cca50a6d8f696",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8d8ad0916403a247cc52c374a9dd6efb11beaebcfa9633f897111d043cd13dfe"
   },
-  "physical_metadata_sha256": "6089abccb01ae3d23698b4f0484b016f927c49a76ce44588d72ff2d75182301d"
+  "physical_metadata_sha256": "6089abccb01ae3d23698b4f0484b016f927c49a76ce44588d72ff2d75182301d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaximumCarnage.java",
+  "java_sha256": "2d2dc99796d6c348c95295bfc6363a733d6e78d190e36eda98e35b80013da79f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/RestrictionEffect.java",
+      "sha256": "408c7ac5e439f5c6f0f176525253ccdcf8a3ea563323128e2a167716ebe26a4f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/AttacksIfAbleAllEffect.java",
+      "sha256": "37050e14656f7fe867c84c5ee850a725f26f03a949c925e54072fc09b1ed8b56"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaToManaPoolSourceControllerEffect.java",
+      "sha256": "945e599b5ae2bd4f6bf6f96361ee12b7c9f2fc681847c0e6f18f98aefe8f4fc5"
+    }
+  ]
 }

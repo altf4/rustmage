@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "deda6a0a0b964e1c73e7c340fa332d388215aaf9ff497455a0bd1f2c2e6b0f25"
   },
-  "physical_metadata_sha256": "c189ca29d2f493a0ee84fb18671eb35cdd0776a727e4cc6703cb73858478b782"
+  "physical_metadata_sha256": "c189ca29d2f493a0ee84fb18671eb35cdd0776a727e4cc6703cb73858478b782",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScorpionsSting.java",
+  "java_sha256": "cf2d3e0e33d1e471b8a4adda8d61e479d3d91e38bd5550e42e454c41ecb9fd71",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

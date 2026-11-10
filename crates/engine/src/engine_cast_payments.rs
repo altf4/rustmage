@@ -89,6 +89,9 @@ pub struct CastPaymentEvent {
     pub payment: Mana,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub treasure_mana_spent: bool,
+    /// Actual Web-slinging return receipt; absent for other casts and uncast copies.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_slinging_return_mana_value: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
@@ -105,6 +108,7 @@ impl SpellView {
                 controller: cast.caster,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
+                web_slinging_return_mana_value: cast.web_slinging_return_mana_value,
             })
     }
 }

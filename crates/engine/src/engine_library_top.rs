@@ -40,13 +40,15 @@ impl Game {
         {
             return;
         }
-        if !self.state.objects.iter().any(|o| {
-            o.card.static_ability_groups().iter().any(|g| {
-                g.fragments
-                    .iter()
-                    .any(|f| matches!(f, crate::cards::StaticAbilityFragment::LookAtLibraryTop))
+        if !self.state.players.iter().any(|p| p.library_top_life_play)
+            && !self.state.objects.iter().any(|o| {
+                o.card.static_ability_groups().iter().any(|g| {
+                    g.fragments
+                        .iter()
+                        .any(|f| matches!(f, crate::cards::StaticAbilityFragment::LookAtLibraryTop))
+                })
             })
-        }) {
+        {
             return;
         }
         let starting_top = std::array::from_fn(|i| {
@@ -205,6 +207,54 @@ impl Game {
             self.move_revealed_top_to_hand(id);
             self.lose_life(item.controller, amount);
         }
+    }
+
+    pub(super) fn reveal_target_tops_to_hand_lose_other_mana_value(&mut self, item: &SpellView) {
+        let plan = self.target_spec(item);
+        let legal = [Player::P0, Player::P1].map(|player| {
+            item.targets.iter().any(|target| {
+                target.target == Target::Player(player)
+                    && plan.group(target.group).is_some_and(|group| {
+                        self.item_target_matches(item, group.rule, target.target)
+                    })
+            })
+        });
+        let order = [self.state.active, self.state.active.other()];
+        let tops: [Option<(ObjectRef, Card, u64)>; 2] = [Player::P0, Player::P1].map(|player| {
+            if !legal[player.index()] {
+                return None;
+            }
+            let id = self.top_library_card(player)?;
+            Some((
+                self.object_ref(id),
+                self.state.objects[id as usize].card,
+                self.object_mana_value(id),
+            ))
+        });
+        for player in order {
+            if let Some((object, card, _)) = tops[player.index()] {
+                self.remember_library_top(player, object);
+                self.record_zone_reveal(card, player, Zone::Library);
+            }
+        }
+        self.lose_life_simultaneously(std::array::from_fn(|i| {
+            if legal[i] {
+                tops[1 - i].map_or(0, |(_, _, value)| i128::from(value))
+            } else {
+                0
+            }
+        }));
+        let cards: Vec<_> = order
+            .into_iter()
+            .filter_map(|player| tops[player.index()].map(|(object, _, _)| object))
+            .filter(|object| {
+                self.object_ref(object.card) == *object
+                    && self.state.objects[object.card as usize].zone == Zone::Library
+            })
+            .map(|object| object.card)
+            .collect();
+        let events = self.move_objects_raw(&cards, Zone::Hand);
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn reveal_top_draw_if_artifact(&mut self, item: &SpellView) {

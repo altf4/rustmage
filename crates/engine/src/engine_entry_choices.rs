@@ -1,7 +1,7 @@
 //! Mandatory as-entry values, owned by exact incarnation and shared by search branches.
 use super::ability_world::CharacteristicWorld;
 use super::*;
-use crate::cards::{ChoiceColor, ChosenModifier};
+use crate::cards::{ChoiceColor, ChosenModifier, NoncreatureCardType};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -90,6 +90,9 @@ impl Game {
             EntryChoiceKind::CardName | EntryChoiceKind::CardNameAfterOpponentHand => {
                 crate::CardName::all().any(|name| emit(EntryChoiceValue::CardName(name)))
             }
+            EntryChoiceKind::NoncreatureCardTypeAfterOpponentHand => NoncreatureCardType::ALL
+                .into_iter()
+                .any(|kind| emit(EntryChoiceValue::CardType(kind))),
             EntryChoiceKind::ManaValueParity => [ManaValueParity::Odd, ManaValueParity::Even]
                 .into_iter()
                 .any(|parity| emit(EntryChoiceValue::ManaValueParity(parity))),
@@ -205,13 +208,13 @@ impl Game {
         ) {
             return None;
         }
+        let kind = movement.before.card.entry_choice()?;
         Some(EntryChoiceView {
             object: movement.before.reference,
             card: movement.before.card,
-            kind: movement.before.card.entry_choice()?,
+            kind,
             opponent_hand: (self.shares_information(viewer, movement.controller)
-                && movement.before.card.entry_choice()
-                    == Some(EntryChoiceKind::CardNameAfterOpponentHand))
+                && kind.looks_at_opponent_hand())
             .then(|| {
                 self.state
                     .objects

@@ -79,7 +79,12 @@ impl Announcement {
     pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
         self.item
             .cast
-            .filter(|c| c.method == CastMethod::LinkedExileCounterCost)
+            .filter(|c| {
+                matches!(
+                    c.method,
+                    CastMethod::LinkedExileCounterCost | CastMethod::WebSlinging
+                )
+            })
             .and(self.origin_counter_cost)
     }
     pub(super) fn graveyard_origin_counter_cost(&self) -> Option<u16> {
@@ -116,11 +121,8 @@ impl Announcement {
                     .copied()
             }
             CastMethod::Miracle => self.origin_alternative_cost,
+            CastMethod::WebSlinging => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
-            CastMethod::Mayhem => self
-                .item
-                .source
-                .and_then(|source| source.card.mayhem_cost()),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
                 generic: 2,
@@ -129,16 +131,19 @@ impl Announcement {
                 colored: [0; 6],
                 generic: 3,
             }),
-            CastMethod::ExileLife | CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+            CastMethod::ExileLife
+            | CastMethod::LibraryLife
+            | CastMethod::Free
+            | CastMethod::Plot => Some(ManaCost {
                 colored: [0; 6],
                 generic: 0,
             }),
             _ => None,
         })
     }
-    pub(super) fn creature_counter_cost_requirement(&self) -> Option<(u16, Option<CounterKind>)> {
+    pub(super) fn counter_cost_spec(&self) -> Option<AdditionalCost> {
         self.additional_cost()
-            .and_then(|cost| cost.kind.creature_counter_requirement())
+            .filter(|cost| cost.kind.counter_requirement().is_some())
     }
     pub(super) fn has_compound_sneak_cost(&self) -> bool {
         self.item
@@ -218,11 +223,12 @@ impl Announcement {
                         })
                     }
                     CastMethod::ExileLife
+                    | CastMethod::LibraryLife
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
                     | CastMethod::Miracle
-                    | CastMethod::Mayhem => {
+                    | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
                             self.cost.is_some_and(|cost| {
                                 self.cost_before_exile_play_surcharge(cost) != base
@@ -238,6 +244,9 @@ impl Announcement {
                     CastMethod::Warp => self
                         .cost
                         .is_some_and(|cost| self.warp_additional_mana_chosen(cost)),
+                    CastMethod::Mayhem | CastMethod::GrantedMayhem => self
+                        .cost
+                        .is_some_and(|cost| self.mayhem_additional_mana_chosen(cost)),
                     _ => false,
                 }) =>
             {
@@ -344,6 +353,37 @@ impl Announcement {
             })
     }
 
+    pub(super) fn mayhem_cost_options(&self) -> crate::cards::mana_symbols::ManaOptions {
+        use crate::cards::mana_symbols::{ManaOptions, printed_cost};
+
+        let card = self.item.source.expect("Mayhem source").card;
+        if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::GrantedMayhem)
+        {
+            ManaOptions::Printed(
+                printed_cost(card.info().mana_cost)
+                    .expect("granted Mayhem printed cost")
+                    .options
+                    .into_iter(),
+            )
+        } else {
+            ManaOptions::Static(card.mayhem_cost_options().expect("printed Mayhem cost"))
+        }
+    }
+
+    fn mayhem_additional_mana_chosen(&self, cost: ManaCost) -> bool {
+        self.item
+            .source
+            .and_then(|source| source.card.mana_additional_alternative())
+            .is_some_and(|fee| {
+                self.mayhem_cost_options().any(|base| {
+                    self.apply_cost_declarations(Card::add_mana_cost(base, fee)) == Some(cost)
+                })
+            })
+    }
+
     fn cost_route_options(
         &self,
     ) -> impl Iterator<
@@ -392,9 +432,9 @@ impl Announcement {
                 if self
                     .item
                     .cast
-                    .is_some_and(|cast| cast.method == CastMethod::Mayhem) =>
+                    .is_some_and(|cast| cast.method == CastMethod::WebSlinging) =>
             {
-                std::iter::once(self.fixed_alternative_cost().expect("mayhem cost"))
+                std::iter::once(self.fixed_alternative_cost().expect("Web-slinging cost"))
                     .chain([].iter().copied())
             }
             StackKind::Spell
@@ -441,7 +481,10 @@ impl Announcement {
                 if self.item.cast.is_some_and(|c| {
                     matches!(
                         c.method,
-                        CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                        CastMethod::ExileLife
+                            | CastMethod::LibraryLife
+                            | CastMethod::Plot
+                            | CastMethod::Free
                     )
                 }) =>
             {
@@ -483,7 +526,10 @@ impl Announcement {
                 unreachable!("triggered ability has no activation cost")
             }
         };
-        let options = if let StackKind::ActivatedAbility { ability } = self.item.kind {
+        let mayhem = self.item.cast.is_some_and(|cast| cast.method.is_mayhem());
+        let options = if mayhem {
+            self.mayhem_cost_options()
+        } else if let StackKind::ActivatedAbility { ability } = self.item.kind {
             self.item
                 .source
                 .expect("activated source")
@@ -561,11 +607,16 @@ impl Announcement {
                 std::iter::once((cost, route, evoked)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| {
-                            self.item
+                            let card = self
+                                .item
                                 .source
                                 .expect("announcement has object source")
-                                .card
-                                .explicit_additional_mana()
+                                .card;
+                            if mayhem {
+                                card.mana_additional_alternative()
+                            } else {
+                                card.explicit_additional_mana()
+                            }
                         })
                         .flatten()
                         .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
@@ -1078,9 +1129,26 @@ impl Game {
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
             let mut seen_creature_types = None;
+            let mut seen_names = Vec::new();
             self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
                 if exclude_source && target == Target::Card(source.card) {
                     return false;
+                }
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DistinctNames,
+                        ..
+                    }
+                ) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let name = crate::card_names::comparison_key(world.name(id));
+                    if !seen_names.contains(&name) {
+                        seen_names.push(name);
+                    }
+                    return seen_names.len() >= usize::from(spec.min);
                 }
                 if matches!(
                     spec.rule,
@@ -1233,6 +1301,13 @@ impl Game {
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
                 }),
+            TargetGroupConstraint::DistinctNames => {
+                let name = CharacteristicWorld::name(self, id);
+                !name.is_empty() && chosen.iter()
+                    .filter(|bound| bound.group == group && bound.target != target && self.same_target_object(**bound))
+                    .all(|bound| matches!(bound.target, Target::Card(other)
+                        if !crate::card_names::same_name(name, CharacteristicWorld::name(self, other))))
+            }
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
@@ -1378,6 +1453,18 @@ impl Game {
         plan: TargetPlan,
         recheck_dependencies: bool,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                rule @ TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DistinctNames,
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.same_target_object(bound)
+                && self.target_group_compatible(rule, bound.group, &item.targets, bound.target);
+        }
         if plan.group(bound.group).is_some_and(|g| {
             matches!(
                 g.rule,
@@ -1982,6 +2069,13 @@ impl Game {
                 });
             }
             TargetRule::Grouped { base, constraint } => {
+                if constraint == TargetGroupConstraint::DistinctNames
+                    && !matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
+                        object.zone == Zone::Graveyard && object.is_card()
+                            && object.card.is_creature() && !world.name(id).is_empty()))
+                {
+                    return false;
+                }
                 if constraint == TargetGroupConstraint::DistinctCardTypeSlots
                     && !matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
                 {
@@ -1989,6 +2083,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::DistinctNames
                     | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
@@ -2097,6 +2192,9 @@ impl Game {
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
                     TargetPredicate::Equipped => world.equipped(id),
+                    TargetPredicate::Modified => {
+                        world.kinds(id) & 1 != 0 && world.has_modification(id)
+                    }
                     TargetPredicate::Attacking => world.attacking(id),
                     TargetPredicate::AttackedThisTurn => {
                         self.state.attacked_this_turn.contains(&self.object_ref(id))
@@ -2499,6 +2597,7 @@ impl Game {
                 behold_type_declared: false,
                 behold_exiled: None,
                 sneak_defender: None,
+                web_slinging_return_mana_value: None,
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,

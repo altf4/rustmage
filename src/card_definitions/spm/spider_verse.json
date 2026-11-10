@@ -3,10 +3,45 @@
   "catalogue_id": 4040,
   "oracle_id": "7ef7d902-1f05-40b3-8997-dec197b0b678",
   "facts_sha256": "79569ff459e7cdffe6b381b6ae35cef5469c72a0e862920382887c7e86567231",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2980673d2d17898f307496d4c325f4216daddc35887790304628852760bc0ac5"
   },
-  "physical_metadata_sha256": "1b588ff8007121c82dbdbbe51ed7dfa8366ff3d8cf6ea4cb45f471ad475034dd"
+  "physical_metadata_sha256": "1b588ff8007121c82dbdbbe51ed7dfa8366ff3d8cf6ea4cb45f471ad475034dd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderVerse.java",
+  "java_sha256": "5aa0c563d685d0457da949080740339eb8a82185982f3a2c79b0251c1da47524",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/LegendRuleDoesntApplyEffect.java",
+      "sha256": "61a3b1b8c11e299a8f3fa34b49a77aa1501a7e0f79962bfb55697068c73cb0cf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ]
 }

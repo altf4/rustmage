@@ -8,7 +8,10 @@ fn is_false(value: &bool) -> bool {
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const CREATURE_KIND: u16 = 1;
-use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus};
+use crate::cards::{
+    CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus,
+    StaticAbilityFragment,
+};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
@@ -786,22 +789,77 @@ impl Game {
             );
         }
     }
+    fn retained_mana_colors(&self) -> [u8; 2] {
+        let mut colors = [0; 2];
+        if self
+            .state
+            .players
+            .iter()
+            .all(|player| player.mana == [0; 6])
+        {
+            return colors;
+        }
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            for fragment in source
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                if let StaticAbilityFragment::RetainManaColor(color) = *fragment
+                    && self.active_rule_fragment(id, |candidate| std::ptr::eq(candidate, fragment))
+                {
+                    colors[source.controller.index()] |= 1 << color.index();
+                }
+            }
+        }
+        colors
+    }
+
     pub(super) fn clear_step_mana(&mut self, keep_combat: bool, keep_turn: bool) {
+        let retained_colors = self.retained_mana_colors();
         for actor in [Player::P0, Player::P1] {
+            let colors = retained_colors[actor.index()];
             let mut keep = [0; 6];
             if let Some(state) = self.state.mana_lots.as_mut() {
                 let mut lost_copy_sources = Vec::new();
-                state.pools[actor.index()].retain(|lot| {
-                    let keep = (lot.quality.retention == ManaRetention::Turn && keep_turn)
-                        || (lot.quality.retention == ManaRetention::Combat && keep_combat);
-                    if !keep
-                        && lot.amounts.iter().any(|&amount| amount > 0)
-                        && let Some(source) = lot.quality.copy_source
+                let mut expired_durations = Vec::new();
+                state.pools[actor.index()].retain_mut(|lot| {
+                    if (lot.quality.retention == ManaRetention::Turn && keep_turn)
+                        || (lot.quality.retention == ManaRetention::Combat && keep_combat)
                     {
+                        return true;
+                    }
+                    // A mixed lot keeps only its retained colors and retains
+                    // its restrictions and spending effects.
+                    let mut lost_mana = false;
+                    for (color, amount) in lot.amounts.iter_mut().enumerate() {
+                        if colors & (1 << color) == 0 {
+                            lost_mana |= *amount != 0;
+                            *amount = 0;
+                        }
+                    }
+                    if lost_mana && let Some(source) = lot.quality.copy_source {
                         lost_copy_sources.push(source.object);
                     }
-                    keep
+                    if lot.amounts != [0; 6] && lot.quality.retention != ManaRetention::Step {
+                        // The live color rule saved this mana, but its own
+                        // turn/combat retention deadline has already passed.
+                        expired_durations.push(Lot {
+                            quality: Quality {
+                                retention: ManaRetention::Step,
+                                ..lot.quality
+                            },
+                            amounts: lot.amounts,
+                        });
+                        return false;
+                    }
+                    lot.amounts != [0; 6]
                 });
+                for lot in expired_durations {
+                    add_lot(&mut state.pools[actor.index()], lot.quality, lot.amounts);
+                }
                 for source in lost_copy_sources {
                     state.retain_inert_copy_source(source);
                 }
@@ -819,6 +877,15 @@ impl Game {
             };
             // Legacy firebending remains implicit until it is migrated to lots.
             keep[3] += player.combat_red_mana;
+            if colors != 0 {
+                for (color, amount) in keep.iter_mut().enumerate() {
+                    if colors & (1 << color) != 0 {
+                        // The pool already includes tagged mana and the combat
+                        // subset. Keep its total exactly once for this color.
+                        *amount = player.mana[color];
+                    }
+                }
+            }
             player.mana = keep;
         }
         if self.state.mana_lots.as_ref().is_some_and(|state| {

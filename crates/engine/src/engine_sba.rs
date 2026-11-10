@@ -265,6 +265,16 @@ impl Game {
             }
             if !self.state.players[object.controller.index()].legend_rule_ignored_this_turn
                 && ability_world::CharacteristicWorld::legendary(self, id)
+                && !self.state.static_sources.iter().any(|&source| {
+                    self.state.objects[source as usize].controller == object.controller
+                        && self.active_rule_fragment(source, |fragment| {
+                            matches!(
+                                fragment,
+                                crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(subtype)
+                                    if self.has_subtype(id, subtype)
+                            )
+                        })
+                })
             {
                 legends[object.controller.index()]
                     .entry(crate::card_names::comparison_key(self.object_name(id)))

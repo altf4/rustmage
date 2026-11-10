@@ -1,16 +1,17 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Oracle and pinned XMage evidence are recorded in the paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(4, 3),
     keywords: Keywords::TRAMPLE,
+    extras: &CardExtras {
+        web_slinging_cost: Some(ManaCost {
+            colored: [0, 0, 0, 1, 1, 0],
+            generic: 0,
+        }),
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::WebSlingingReturnedManaValue,
+        }],
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

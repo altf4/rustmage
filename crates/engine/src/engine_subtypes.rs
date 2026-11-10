@@ -266,6 +266,11 @@ impl GrantedSubtypes {
             if types.mutant {
                 self.insert("Mutant");
             }
+            if recipe.exceptions.spider_human_hero {
+                self.insert("Spider");
+                self.insert("Human");
+                self.insert("Hero");
+            }
             if let Some(subtype) = recipe.replacement_subtype {
                 self.insert(subtype.name());
             }
@@ -882,9 +887,12 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             mask.basic_land = None;
         }
     }
+    // CR 205.1a: a card-type replacement suppresses correlated subtypes
+    // only while the corresponding card type is absent.
     if world.roles().is_some_and(|roles| {
         roles.animations.iter().any(|row| {
-            row.object == reference && (row.artifact_noncreature || row.enchantment_noncreature)
+            row.object == reference
+                && (row.creature_only || row.artifact_noncreature || row.enchantment_noncreature)
         })
     }) {
         mask.card_types = Some(kinds(id, target));

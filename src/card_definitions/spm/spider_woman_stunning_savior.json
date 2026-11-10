@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bcfd552660b5937b4470054700a334c4629fd43da92baeec1523b385534e2fa0"
   },
-  "physical_metadata_sha256": "1f5cea49e84fba703b4743023a64051ce60d91ad6f087d70c8332a159639874d"
+  "physical_metadata_sha256": "1f5cea49e84fba703b4743023a64051ce60d91ad6f087d70c8332a159639874d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderWomanStunningSavior.java",
+  "java_sha256": "d8c8651d877d0bca1823b3179b43739d01c3b2003c9184ce24ebb6716c780e72",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PermanentsEnterBattlefieldTappedEffect.java",
+      "sha256": "dbf33d531fbe994f60b47e5cb8060588643ba9d9830b7706b9a052892d42ac8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

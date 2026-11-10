@@ -533,7 +533,7 @@ impl Game {
                     }
                     EffectChoiceKind::HandPermanent { maximum, .. } => {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
-                            && o.card.fixed_mana_value() <= u64::from(maximum)
+                            && o.card.fixed_mana_value() <= maximum
                             && choice.hand_entry_filter.is_none_or(|filter| {
                                 filter.matches(o.card)
                                     && self.hand_entry_payment_legal(player, object)
@@ -791,7 +791,7 @@ impl Game {
         let pending = self.start_effect_choice_inner(
             item,
             EffectChoiceKind::HandPermanent {
-                maximum: u32::MAX,
+                maximum: u64::MAX,
                 tapped: false,
             },
             PlayerSet::Controller,
@@ -844,7 +844,7 @@ impl Game {
         maximum: AmountValue,
         tapped: bool,
     ) -> bool {
-        let maximum = u32::try_from(self.item_amount(maximum, item)).unwrap_or(u32::MAX);
+        let maximum = u64::try_from(self.item_amount(maximum, item)).unwrap_or(u64::MAX);
         self.start_effect_choice_inner(
             item,
             EffectChoiceKind::HandPermanent { maximum, tapped },
@@ -1791,6 +1791,29 @@ impl Game {
                     toughness: i128::from(other_toughness),
                 },
             );
+            return false;
+        }
+        let resolution = self.state.resolving.as_ref().unwrap();
+        if matches!(
+            resolution.program.get(resolution.pc.saturating_sub(1)),
+            Some(Instruction::MaySacrificeForManaValue { .. })
+        ) {
+            let player = resolution.item.controller;
+            let receipt = choice.selected[player.index()]
+                .first()
+                .copied()
+                .filter(|object| self.object_ref(object.card) == *object)
+                .and_then(|object| {
+                    let mana_value = self.object_mana_value(object.card);
+                    // CR 118.11–12: a replaced sacrifice still pays this cost.
+                    self.sacrifice_cost_batch_outcome(&[(player, object.card)])
+                        .map(|_| mana_value)
+                });
+            let resolution = self.state.resolving.as_mut().unwrap();
+            resolution.sacrificed_mana_value = receipt;
+            if receipt.is_none() {
+                resolution.pc = choice.skip_to.unwrap();
+            }
             return false;
         }
         // A ward cost is paid as one event: revalidate the complete selection

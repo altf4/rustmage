@@ -1,0 +1,11 @@
+{
+  "name": "@token/spm-spider",
+  "catalogue_id": 5544,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c6b4bb0f9575bcfed2f06dfa187f8a815dc9032c042c759e6033506700167a28",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spider21Token.java",
+  "java_sha256": "9338f28b600fcd12668a39dbc288e788bbdef6e9f003d6562f9f2266e89493c5"
+}

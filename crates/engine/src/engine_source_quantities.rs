@@ -113,12 +113,14 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                 ..
             }
             | Instruction::AddColorlessScaled(value)
+            | Instruction::AddColorlessScaledFor(_, value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::CastHandFreeUpTo(value)
+            | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
             | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
@@ -127,6 +129,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {

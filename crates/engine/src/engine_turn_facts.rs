@@ -25,6 +25,12 @@ pub struct TurnFactsView {
     /// A nonempty coin-flip batch has taken place for this player this turn.
     #[serde(skip_serializing_if = "is_false")]
     pub coin_flipped_this_turn: bool,
+    /// Actual spells or land plays outside this player's hand.
+    #[serde(skip_serializing_if = "is_false")]
+    pub played_from_outside_own_hand: bool,
+    /// Actual stack mana value, including the chosen face and X.
+    #[serde(skip_serializing_if = "is_false")]
+    pub cast_mana_value_at_least_four: bool,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -74,6 +80,8 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
         StepGuard::PermanentLeftBattlefieldThisTurn
             | StepGuard::ArtifactEnteredThisTurn
             | StepGuard::HeroEnteredOrAttackedThisTurn
+            | StepGuard::PlayedFromOutsideOwnHandThisTurn
+            | StepGuard::CastManaValueAtLeastFourThisTurn
             | StepGuard::FirstCombatPhase
     )
 }
@@ -93,6 +101,9 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
         | TriggerCondition::DuringOpponentsTurn(event)
+        | TriggerCondition::CastFromHand(event)
+        | TriggerCondition::CastFromExile(event)
+        | TriggerCondition::PlayFromOutsideOwnHand(event)
         | TriggerCondition::TreasureManaSpent(event)
         | TriggerCondition::ManaSpentBelowValue(event)
         | TriggerCondition::ManaSpent { event, .. } => condition_uses_facts(*event),

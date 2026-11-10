@@ -224,6 +224,7 @@ impl Game {
                         | Action::FinishEntryExile
                         | Action::ChooseEntryDevour { .. }
                         | Action::FinishEntryDevour
+                        | Action::ChooseEntryRiot { .. }
                         | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
@@ -253,6 +254,7 @@ impl Game {
             | Action::AnnounceExile { card }
             | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
+            | Action::AnnounceLibraryLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceLinkedFree { card, .. }
             | Action::AnnounceLinkedExileCounterCost { card, .. }
@@ -263,6 +265,7 @@ impl Game {
             | Action::AnnounceDisguise { card }
             | Action::AnnounceDisguiseGraveyard { card, .. }
             | Action::AnnounceSneak { card, .. }
+            | Action::AnnounceWebSlinging { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceBack { card }
@@ -272,6 +275,7 @@ impl Game {
             | Action::AnnounceHarmonize { card }
             | Action::AnnounceGrantedHarmonize { card, .. }
             | Action::AnnounceMayhem { card }
+            | Action::AnnounceGrantedMayhem { card, .. }
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }

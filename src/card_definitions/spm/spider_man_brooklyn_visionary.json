@@ -3,10 +3,35 @@
   "catalogue_id": 4030,
   "oracle_id": "2ca85872-9436-4515-af50-c13e59605627",
   "facts_sha256": "a5f8425da5d6285fca3c65f2a01e9e7fea0fe1833fc66110b74a09d0e1293334",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "63a4311bd3a3f777cc762b43f7a27baa0ef6a75b5c0af0cdc2c3d16788a671e9"
   },
-  "physical_metadata_sha256": "3673b4f8f8db53625bcf5cb9e153b9444d2f5c9b0c041fd82d92ac6d73d18db2"
+  "physical_metadata_sha256": "3673b4f8f8db53625bcf5cb9e153b9444d2f5c9b0c041fd82d92ac6d73d18db2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderManBrooklynVisionary.java",
+  "java_sha256": "4ce45de874d4eee627acaaef2176fa5dad4af89c68d962fb841a21109c56613e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WebSlingingAbility.java",
+      "sha256": "ce50bf4d1434e907fef1b9532df30264f178206a6d531e5951a4994e19a53957"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

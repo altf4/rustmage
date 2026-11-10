@@ -3,10 +3,20 @@
   "catalogue_id": 4032,
   "oracle_id": "505231d8-714f-4c5b-a635-d1662bd18a78",
   "facts_sha256": "0d0859afc15d4f42acfe49aea395c34afd7f3ae502771840037ac96ba2b617e9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "40217ce9ab4ba3411a5cd8c08a06159d6183cc2716fbaa804486fd6d4dd772b1"
   },
-  "physical_metadata_sha256": "31450b2b81116fa12e39d3cd41404464853d45608d0ea9bc18d44189e2107a59"
+  "physical_metadata_sha256": "31450b2b81116fa12e39d3cd41404464853d45608d0ea9bc18d44189e2107a59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderManWebSlinger.java",
+  "java_sha256": "a4fce764a4de8d54050386b7043da3312400b8ae99d8f520d3f67d5f18afa6b3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WebSlingingAbility.java",
+      "sha256": "ce50bf4d1434e907fef1b9532df30264f178206a6d531e5951a4994e19a53957"
+    }
+  ]
 }

@@ -57,6 +57,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .decayed_instances
         }
     }
+    pub(super) fn riot_instances(&self, id: CardId) -> usize {
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[id as usize].riot_instances
+        } else {
+            ability_evaluation::evaluate_abilities(self.world)
+                .result
+                .objects[id as usize]
+                .riot_instances
+        }
+    }
     pub(super) fn object_ref(&self, id: CardId) -> ObjectRef {
         self.reference(id)
     }
@@ -80,14 +90,6 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     && object.card.aura().is_some()
                     && object.attached_to == Some(self.reference(id))
             })
-    }
-    fn is_modified(&self, id: CardId) -> bool {
-        Game::object_modified_with(
-            self.reference(id),
-            self.object(id),
-            self.counter_amounts(id).has_any(),
-            self.attachment_sources().iter().map(|&id| self.object(id)),
-        )
     }
     fn stat_value(&self, value: StatValue, source: ObjectRef, owner: Player) -> i128 {
         self.game.stat_value_in_world(self, value, source, owner)
@@ -499,6 +501,28 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return (stats, keywords);
         }
         let evaluation = self.evaluation.as_ref();
+        let scale_by_attachments = |value: Stats| {
+            let recipient = self.reference(id);
+            let count = self
+                .attachment_sources()
+                .iter()
+                .copied()
+                .filter(|&attachment| {
+                    self.attachment_link(self.reference(attachment), recipient)
+                        && (self.is_aura(attachment) || self.is_equipment(attachment))
+                })
+                .count() as i128;
+            Stats {
+                power: value
+                    .power
+                    .checked_mul(count)
+                    .capacity("attachment power bonus exhausted"),
+                toughness: value
+                    .toughness
+                    .checked_mul(count)
+                    .capacity("attachment toughness bonus exhausted"),
+            }
+        };
         for &source in self.attachment_sources() {
             let object = self.object(source);
             if object.zone != Zone::Battlefield {
@@ -513,6 +537,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         for fragment in group.fragments {
                             match *fragment {
                                 StaticAbilityFragment::AttachmentStats(value) => stats += value,
+                                StaticAbilityFragment::AttachmentStatsPerAttachment(value) => {
+                                    stats += scale_by_attachments(value);
+                                }
                                 StaticAbilityFragment::AttachmentTurnStats(value)
                                     if object.controller == self.state.active =>
                                 {
@@ -538,11 +565,19 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
                 if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
-                    for group in object.card.static_ability_groups() {
-                        for fragment in group.fragments {
-                            if let StaticAbilityFragment::AttachmentTurnStats(value) = *fragment {
-                                stats += value;
+                }
+                for group in object.card.static_ability_groups() {
+                    for fragment in group.fragments {
+                        match *fragment {
+                            StaticAbilityFragment::AttachmentTurnStats(value)
+                                if object.controller == self.state.active =>
+                            {
+                                stats += value
                             }
+                            StaticAbilityFragment::AttachmentStatsPerAttachment(value) => {
+                                stats += scale_by_attachments(value);
+                            }
+                            _ => (),
                         }
                     }
                 }
@@ -657,6 +692,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .has(CharacteristicWorld::definition(self, id), subtype) =>
                         {
                             keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
+                            if target.controller == object.controller
+                                && id != source
+                                && CharacteristicWorld::subtypes(self, id)
+                                    .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(Keywords::RIOT)
                         }
                         StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                             if target.controller == object.controller
@@ -1181,6 +1224,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         } else {
             self.layered_stats(id)
         };
+        let kinds = self.current_kinds(id);
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
             additional_creature_death_triggers:
@@ -1189,7 +1233,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
-            kinds: self.current_kinds(id),
+            kinds,
             colors: CharacteristicWorld::colors(self, id),
             effective_legendary: {
                 let intrinsic = self
@@ -1231,7 +1275,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .game()
                 .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
-            modified: self.is_modified(id),
+            modified: kinds & 1 != 0 && self.has_modification(id),
             attacking: CharacteristicWorld::attacking(self, id),
             power: stats.power,
             toughness: stats.toughness,

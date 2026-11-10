@@ -101,6 +101,16 @@ fn is_false(value: &bool) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn stack_item_is_counterable(&self, victim: &SpellView) -> bool {
+        if self.state.static_sources.iter().any(|&id| {
+            self.active_rule_fragment(id, |fragment| {
+                matches!(
+                    fragment,
+                    crate::cards::StaticAbilityFragment::StackItemsCannotBeCountered
+                )
+            })
+        }) {
+            return false;
+        }
         victim.kind != StackKind::Spell
             || victim.source.is_some_and(|source| {
                 !self

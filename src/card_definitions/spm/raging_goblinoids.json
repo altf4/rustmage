@@ -3,10 +3,25 @@
   "catalogue_id": 3342,
   "oracle_id": "c807b53f-2917-41a0-812c-57240b623365",
   "facts_sha256": "266a6b902b5b7924827e0bbfa8ebd74127e18b7376bd3c721dfe5a2786c49b7e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2740970e39156ec7a8f49c981b007e680f1896603e7478733a6bdb4c41a77ee9"
   },
-  "physical_metadata_sha256": "f73837925e36e87e13b1cdee6568d82f60cbc931ff4e19c14e12bc449ee9bd27"
+  "physical_metadata_sha256": "f73837925e36e87e13b1cdee6568d82f60cbc931ff4e19c14e12bc449ee9bd27",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RagingGoblinoids.java",
+  "java_sha256": "625285bd766f2b65f06b44b53b6501501d885ab1da8c703da5f3179c12138d12",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    }
+  ]
 }

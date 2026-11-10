@@ -1,13 +1,17 @@
-//! Exact exile permission with a mandatory life alternative to the mana cost.
+//! Mana value life alternatives for an exact exile permission or the live library top.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Select this permission's cost and modifiers, independently of other exile
-    /// permissions. In particular another route's "cast this way" replacement
-    /// must not attach to a spell cast through the life alternative.
-    pub(super) fn configure_exile_life_cast(item: &mut SpellView, flash_surcharge: bool) {
+    /// Capture the selected route and spell face before setting X and life cost.
+    /// Another permission's "cast this way" modifiers belong only to that route.
+    pub(super) fn configure_mana_value_life_cast(
+        item: &mut SpellView,
+        method: CastMethod,
+        flash_surcharge: bool,
+    ) {
+        debug_assert!(method.pays_life_for_mana_value());
         let cast = item.cast.as_mut().unwrap();
-        cast.method = CastMethod::ExileLife;
+        cast.method = method;
         cast.flash_surcharge = flash_surcharge;
         cast.spend_any_mana = false;
         cast.exile_on_graveyard = false;
@@ -32,8 +36,19 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
+        self.has_exile_life_permission(player, card)
+            && self.visit_mana_value_life_casts(player, card, CastMethod::ExileLife, sorcery, emit)
+    }
+    pub(super) fn visit_mana_value_life_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        method: CastMethod,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
         let object = &self.state.objects[card as usize];
-        if object.is_token() || !self.has_exile_life_permission(player, card) {
+        if object.is_token() {
             return false;
         }
         for face in [
@@ -55,14 +70,22 @@ impl Game {
                 if self.permitted_cast_available(
                     player,
                     card,
-                    CastMethod::ExileLife,
+                    method,
                     face,
                     sorcery,
                     flash_surcharge,
-                ) && emit(Action::AnnounceExileLife {
-                    card,
-                    face,
-                    flash_surcharge,
+                ) && emit(match method {
+                    CastMethod::ExileLife => Action::AnnounceExileLife {
+                        card,
+                        face,
+                        flash_surcharge,
+                    },
+                    CastMethod::LibraryLife => Action::AnnounceLibraryLife {
+                        card,
+                        face,
+                        flash_surcharge,
+                    },
+                    _ => unreachable!("mana value life route"),
                 }) {
                     return true;
                 }

@@ -74,6 +74,7 @@ pub(super) fn condition_refers_to_attachment(condition: TriggerCondition) -> boo
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)
+        | TriggerCondition::PlayFromOutsideOwnHand(event)
         | TriggerCondition::TreasureManaSpent(event)
         | TriggerCondition::ManaSpent { event, .. } => condition_refers_to_attachment(*event),
         _ => false,
@@ -104,6 +105,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::GrowScaled { subject, .. }
         | Instruction::GrowResolved { subject, .. }
         | Instruction::AddCreatureTypes { subject, .. }
+        | Instruction::AddLegendaryCreatureTypes { subject, .. }
         | Instruction::AddBasicLandType { subject, .. }
         | Instruction::SetCreatureTypes { subject, .. }
         | Instruction::GrantKeywords { subject, .. }
@@ -373,7 +375,7 @@ impl Game {
         if let Some(rows) = &self.state.delayed_target_events {
             for row in rows
                 .iter()
-                .filter(|row| row.expires_turn == self.state.turn)
+                .filter(|row| row.expires_turn.is_none_or(|turn| turn == self.state.turn))
             {
                 objects.push(row.subject);
                 packet_objects(&row.packet, &mut objects, &mut stack_objects);

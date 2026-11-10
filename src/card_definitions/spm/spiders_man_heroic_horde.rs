@@ -1,16 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed rules from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersWithWebSlinging,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::GainLife(PlayerSet::Controller, 3),
+            Instruction::CreateTokens {
+                token: Card(5544),
+                amount: 2,
+                tapped: false,
+            },
+        ],
+    }],
+    extras: &CardExtras {
+        web_slinging_cost: Some(ManaCost {
+            colored: [0, 0, 0, 0, 2, 0],
+            generic: 4,
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

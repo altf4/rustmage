@@ -18,6 +18,7 @@ pub struct ChosenCreatureLinkView {
 pub(super) struct DepartureObserver {
     source: ObjectView,
     chosen_creature: Option<ObjectRef>,
+    greatest_opposing_power: Option<i128>,
 }
 
 impl DepartureRule {
@@ -62,6 +63,7 @@ impl DepartureRule {
             && counters_match
             && (self.destinations.is_empty() || self.destinations.contains(&event.destination))
             && (!self.nontoken || !before.is_token())
+            && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
             && self
                 .minimum_power
@@ -109,6 +111,7 @@ impl Game {
     pub(super) fn freeze_battlefield_departure_observers(
         &self,
     ) -> Option<Arc<[DepartureObserver]>> {
+        let mut greatest_power = None;
         let sources: Vec<_> = self
             .state
             .death_sources
@@ -135,7 +138,32 @@ impl Game {
                 } else {
                     None
                 };
+                let observes_greatest_power = triggers.iter().any(|ability| {
+                    ability.condition.event() == TriggerCondition::OpponentHighestPowerCreatureDies
+                });
+                let greatest_opposing_power = observes_greatest_power
+                    .then(|| {
+                        greatest_power.get_or_insert_with(|| {
+                            let mut power: [Option<i128>; 2] = [None; 2];
+                            let query = self.characteristic_query();
+                            for (id, creature) in self.state.objects.iter().enumerate() {
+                                let id = id as CardId;
+                                if creature.zone == Zone::Battlefield
+                                    && ability_world::CharacteristicWorld::kinds(&query, id) & 1
+                                        != 0
+                                {
+                                    let candidate = query.stats(id).power;
+                                    let highest = &mut power[creature.controller.index()];
+                                    *highest =
+                                        Some(highest.map_or(candidate, |old| old.max(candidate)));
+                                }
+                            }
+                            power
+                        })[object.controller.other().index()]
+                    })
+                    .flatten();
                 (chosen_creature.is_some()
+                    || observes_greatest_power
                     || triggers.iter().any(|ability| {
                         matches!(
                             ability.condition.event(),
@@ -147,6 +175,7 @@ impl Game {
                 .then(|| DepartureObserver {
                     source: self.object_view(id),
                     chosen_creature,
+                    greatest_opposing_power,
                 })
             })
             .collect();
@@ -166,6 +195,12 @@ impl Game {
                         DepartureRule::from_legacy(filter).matches(source, event)
                     }
                     TriggerCondition::BattlefieldDeparture(rule) => rule.matches(source, event),
+                    TriggerCondition::OpponentHighestPowerCreatureDies => {
+                        event.destination == Zone::Graveyard
+                            && before.controller != source.controller
+                            && before.is_creature()
+                            && Some(before.power) == observer.greatest_opposing_power
+                    }
                     TriggerCondition::SelfOrControlledPermanentDies(kinds) => {
                         event.destination == Zone::Graveyard
                             && (source.reference == before.reference
@@ -195,6 +230,10 @@ impl Game {
                 Instruction::ExileDeathCounterTotalUntilNextEnd
                     | Instruction::PutEventCountersOnTargets
                     | Instruction::CreateTokensScaled {
+                        amount: AmountValue::DepartureCounterCount(_),
+                        ..
+                    }
+                    | Instruction::CreateTokensWithSourceDeparture {
                         amount: AmountValue::DepartureCounterCount(_),
                         ..
                     }

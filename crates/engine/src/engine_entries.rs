@@ -8,6 +8,7 @@ use crate::cards::StaticAbilityFragment;
 pub(super) struct EntryMove {
     pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
     pub devour_preparation: Option<Box<entry_devour::Preparation>>,
+    pub riot: Option<riot::Preparation>,
     pub copy_preparation: Option<Box<entry_copies::Preparation>>,
     pub delayed_return_exile: Option<Box<SpellView>>,
     pub choice: Option<EntryChoiceValue>,
@@ -167,6 +168,7 @@ pub(super) struct EntryBatch {
     /// Allocated only for events with competing untapped-entry replacements.
     pub tap_events: Vec<EntryTapEvent>,
     pub tap_next: usize,
+    pub riot: Option<Box<riot::ChoiceOrder>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryMove {
@@ -270,6 +272,7 @@ impl EntryMove {
         EntryMove {
             exile_preparation: None,
             devour_preparation: None,
+            riot: None,
             copy_preparation: None,
             delayed_return_exile: None,
             choice: None,
@@ -385,6 +388,10 @@ impl EntryBatch {
                 * std::mem::size_of::<CastPaymentEvent>()
             + self.moves.iter().filter(|m| m.gift.is_some()).count()
                 * std::mem::size_of::<GiftContext>()
+            + self.riot.as_ref().map_or(0, |riot| {
+                std::mem::size_of::<riot::ChoiceOrder>()
+                    + riot.order.len() * std::mem::size_of::<usize>()
+            })
             + self.choices.len() * std::mem::size_of::<usize>()
             + self.counter_order.len() * std::mem::size_of::<usize>()
             + self.timestamp_order.len() * std::mem::size_of::<usize>()
@@ -617,6 +624,7 @@ impl Game {
             resume_entry: None,
             tap_events: Vec::new(),
             tap_next: 0,
+            riot: None,
         };
         if batch.moves.iter().any(|m| {
             entry_copies::needs_copy(m)
@@ -738,12 +746,25 @@ impl Game {
             .map(|(i, _)| i)
             .collect::<Vec<_>>();
         counter_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
+        let riot_grant = riot::grants_riot(self);
+        let mut riot_order: Vec<_> = moves
+            .iter()
+            .enumerate()
+            .filter_map(|(i, movement)| riot::potential(movement, riot_grant).then_some(i))
+            .collect();
+        if !riot_order.is_empty() {
+            riot_order.sort_by_key(|&i| (moves[i].controller != self.state.active, i));
+            batch.riot = Some(Box::new(riot::ChoiceOrder {
+                order: riot_order,
+                next: 0,
+            }));
+        }
         batch.moves = moves;
         batch.choices = choices;
         batch.counter_order = counter_order;
         batch.tap_events = tap_events;
         batch.copying = false;
-        if batch.choices.is_empty() {
+        if batch.choices.is_empty() && batch.riot.is_none() {
             self.add_entry_counter_bonuses(&mut batch.moves);
             batch.entry_bonuses_ready = true;
             Self::rebuild_entry_counter_order(&mut batch, self.state.active);
@@ -773,6 +794,7 @@ impl Game {
         if batch.atomic_cost.is_none()
             && batch.resume.is_none()
             && batch.choices.is_empty()
+            && batch.riot.is_none()
             && !batch
                 .moves
                 .iter()
@@ -797,6 +819,10 @@ impl Game {
             movement.cast_payment,
             movement.controller,
             movement.x,
+            movement
+                .cast_event
+                .as_ref()
+                .and_then(|cast| cast.web_slinging_return_mana_value),
         );
         if movement.destination == Zone::Battlefield && movement.battle_protector.is_none() {
             movement
@@ -885,7 +911,7 @@ impl Game {
                     }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
-        self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0)
+        self.pre_entry_counters_with_payment(before, destination, None, before.controller, 0, None)
     }
     fn pre_entry_counters_with_payment(
         &self,
@@ -894,6 +920,7 @@ impl Game {
         payment: Option<Mana>,
         controller: Player,
         x: u32,
+        returned_mana_value: Option<u64>,
     ) -> Counters {
         if destination != Zone::Battlefield {
             return Counters::default();
@@ -939,6 +966,9 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::WebSlingingReturnedManaValue => {
+                        returned_mana_value.unwrap_or(0)
+                    }
                     EntryCounterAmount::Stat(value) => {
                         u64::try_from(self.stat_value(value, before.reference, controller).max(0))
                             .capacity("entry counter amount exhausted")
@@ -1050,6 +1080,7 @@ impl Game {
         let mut life_results = Vec::new();
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
+        let mut riot_haste = Vec::new();
         let mut ability_results = Vec::new();
         let mut return_ability_results = Vec::new();
         let mut skeleton_results = Vec::new();
@@ -1059,8 +1090,10 @@ impl Game {
         let mut enchantment_results = Vec::new();
         let mut ghost_results = Vec::new();
         let mut copy_results = Vec::new();
+        let mut copy_exile_results = Vec::new();
         let mut played_lands = Vec::new();
         for (movement, counters) in moves {
+            let chosen_riot_haste = movement.has_riot_haste();
             let entering_face = movement
                 .source_before
                 .as_ref()
@@ -1111,6 +1144,13 @@ impl Game {
                     .is_some_and(|copy| copy.recipe.is_some())
                 {
                     copy_results.push(event.after);
+                    if let Some(exile) = movement
+                        .copy_preparation
+                        .as_ref()
+                        .and_then(|copy| copy.exile)
+                    {
+                        copy_exile_results.push((event.after, movement.controller, exile));
+                    }
                 }
                 if let Some(preparation) = &movement.exile_preparation {
                     let ability_origin = self.copy_ability_origin(event.after);
@@ -1249,6 +1289,9 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
+                if event.destination == Zone::Battlefield && chosen_riot_haste {
+                    riot_haste.push(event.after);
+                }
                 if event.destination == Zone::Battlefield
                     && let Some((source, keywords)) = movement.keywords_after
                 {
@@ -1334,7 +1377,12 @@ impl Game {
                 self.grant_exile_free_permission_until_end(player, event.after);
             }
             if movement.played_land && event.moved {
-                played_lands.push((movement.controller, event.after));
+                played_lands.push((
+                    movement.controller,
+                    event.after,
+                    event.before.zone,
+                    event.before.owner,
+                ));
             }
             events.push(event);
         }
@@ -1443,7 +1491,17 @@ impl Game {
                 characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
             );
         }
+        // Riot haste exists on arrival and has its own timestamp and exact recipient.
+        for recipient in riot_haste {
+            self.state
+                .roles
+                .get_or_insert_with(Default::default)
+                .grant_riot_haste(recipient);
+        }
         self.refresh_controllers_after(Some(control_watch));
+        for (entrant, controller, exile) in copy_exile_results {
+            self.queue_entry_copy_exile(entrant, controller, exile);
+        }
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
                 .iter()
@@ -1488,8 +1546,8 @@ impl Game {
         } else {
             self.finish_zone_events(&events, &[]);
         }
-        for (player, land) in played_lands {
-            self.land_play_triggers(player, land);
+        for (player, land, zone, owner) in played_lands {
+            self.land_play_triggers(player, land, zone, owner);
         }
         // "Loses all abilities" follows the return event; it does not describe
         // the entrant as having no abilities (CR 611.2e). Its entry abilities
@@ -1585,9 +1643,13 @@ impl Game {
             self.stage_counter_placements(placements, replacements::ResumeMode::Program);
         }
     }
-    /// Settle transactions until an actual player choice blocks. Call at the outer
-    /// action boundary, after the initiating cost/announcement has finished its bookkeeping.
+    /// Settle transactions at the action boundary until a player choice blocks.
     pub(super) fn advance_entries(&mut self) -> bool {
+        self.advance_entries_with_resume(true)
+    }
+
+    /// A synchronous handoff retains its caller's ownership of the program.
+    pub(super) fn advance_entries_with_resume(&mut self, resume_program: bool) -> bool {
         loop {
             if self.state.outcome.is_some() {
                 self.state.entry_batch = None;
@@ -1682,6 +1744,9 @@ impl Game {
                 }
                 batch.next += 1;
             }
+            if self.advance_entry_riot() {
+                return true;
+            }
             if !self.state.entry_batch.as_ref().unwrap().entry_bonuses_ready {
                 let mut batch = self.state.entry_batch.take().unwrap();
                 self.add_entry_counter_bonuses(&mut batch.moves);
@@ -1768,7 +1833,7 @@ impl Game {
                             .expect("atomic cost failure continuation")
                             .pc = pc;
                     }
-                    if self.state.resolving.is_some() {
+                    if resume_program && self.state.resolving.is_some() {
                         self.run_program();
                     }
                     return false;
@@ -1796,10 +1861,10 @@ impl Game {
             }
             if let Some(outer) = replacement_resume {
                 self.state.replacements = Some(outer);
-                if self.advance_replacements(true) {
+                if self.advance_replacements(resume_program) {
                     return true;
                 }
-            } else if self.state.resolving.is_some() {
+            } else if resume_program && self.state.resolving.is_some() {
                 self.run_program();
             }
             if self.state.announcing.as_ref().is_some_and(|a| {

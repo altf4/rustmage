@@ -414,7 +414,7 @@ fn funding_cannot_revive_an_expired_blight_effect_by_replacing_the_counter() {
     let saved = game.snapshot();
     assert!(game.can_fund(goal.clone()));
     let mut projected = FundingState::from_game(&game, &goal);
-    assert!(projected.remove_creature_counter(exact, CounterKind::Blight));
+    assert!(projected.remove_cost_counter(exact, CounterKind::Blight, 1));
     assert_eq!(projected.intrinsic_mana_color(land), Some(4));
     assert!(projected.visit_mana_source_counter_cost(
         exact,

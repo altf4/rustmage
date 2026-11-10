@@ -13,6 +13,7 @@ pub enum CastCostClause {
     Additional,
     OriginCounters(u16),
     SneakReturn(Option<ObjectRef>),
+    WebSlingingReturn(Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
     CraftSource,
     Harmonize(ObjectRef),
@@ -111,7 +112,7 @@ impl Announcement {
         if self
             .item
             .cast
-            .is_some_and(|c| c.method == CastMethod::ExileLife)
+            .is_some_and(|c| c.method.pays_life_for_mana_value())
         {
             self.add_cast_cost_clause(CastCostClause::AlternativeLife(
                 u32::try_from(self.item.mana_value()).expect("spell mana value fits life cost"),
@@ -128,14 +129,23 @@ impl Announcement {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::SneakReturn(None));
         }
+        if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
+        {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::WebSlingingReturn(None));
+        }
         if self.additional_cost().is_some_and(|s| {
-            matches!(
-                s.kind.payment_kind(),
-                EffectChoiceKind::BeholdMany(_)
-                    | EffectChoiceKind::BeholdAndExile
-                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                    | EffectChoiceKind::BlightCost(_)
-            )
+            s.kind == EffectChoiceKind::ReturnTappedCreature
+                || matches!(
+                    s.kind.payment_kind(),
+                    EffectChoiceKind::BeholdMany(_)
+                        | EffectChoiceKind::BeholdAndExile
+                        | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                        | EffectChoiceKind::BlightCost(_)
+                )
         }) {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
@@ -428,6 +438,12 @@ impl Game {
             }
             CastCostClause::SneakReturn(_) => {
                 self.state.pending = Pending::SneakReturnCost {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
+            CastCostClause::WebSlingingReturn(_) => {
+                self.state.pending = Pending::WebSlingingReturnCost {
                     player: a.item.controller,
                 };
                 self.state.announcing = Some(a);

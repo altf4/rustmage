@@ -71,6 +71,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 } => Some(*power >= 0 && *toughness >= 0),
                 Instruction::Untap
                 | Instruction::BlinkUntilEndStep { .. }
+                | Instruction::BlinkExiledTargetsUntilEndStep
                 | Instruction::ReturnToBattlefield
                 | Instruction::ReturnToBattlefieldWithRole { .. }
                 | Instruction::ReturnToBattlefieldTapped
@@ -302,6 +303,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayCasualty { .. }
             | Action::PayConspire { .. }
             | Action::PaySneakReturn { .. }
+            | Action::PayWebSlingingReturn { .. }
             | Action::ChooseAdditionalCost { .. }
             | Action::ChooseAdditionalLife
             | Action::ChooseCreatureCounterCost { .. } => 60,
@@ -374,18 +376,21 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceDisguise { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
+            | Action::AnnounceWebSlinging { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
             | Action::AnnounceExile { .. }
             | Action::AnnounceTaxedExile { .. }
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
+            | Action::AnnounceLibraryLife { .. }
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceLinkedFree { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
-            | Action::AnnounceMayhem { .. } => 79,
+            | Action::AnnounceMayhem { .. }
+            | Action::AnnounceGrantedMayhem { .. } => 79,
             Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
@@ -503,6 +508,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::FinishEntryExile => 0,
             Action::ChooseEntryDevour { .. } => -1,
             Action::FinishEntryDevour => 0,
+            Action::ChooseEntryRiot { counter } => i128::from(*counter),
             Action::ChooseEntryCopy { object } => {
                 // Copying an unchanged as-entry copier grants a fresh choice.
                 // Prefer a completed blueprint and decline copy-only loops.

@@ -3,10 +3,50 @@
   "catalogue_id": 3046,
   "oracle_id": "f432eb6a-f1bf-4ce7-b915-1488dccb4bb9",
   "facts_sha256": "8581aa1e77cd93aa72b921306485b00a82f8598275af71461508cb4996784d77",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d36bbec07863fefb965c181b50fe15da0b669a3b2d1af4b2eed8b8a96f5c4df7"
   },
-  "physical_metadata_sha256": "5e6f5b1818c3029e8d4444d96e8724bba076e6b967d7505032230c32b9e28bbe"
+  "physical_metadata_sha256": "5e6f5b1818c3029e8d4444d96e8724bba076e6b967d7505032230c32b9e28bbe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OscorpIndustries.java",
+  "java_sha256": "fc7f55e33550ca2a7ca9dced78e551ab1fbb9a50ca44356009cdc2aa1ec966c3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldFromGraveyardTriggeredAbility.java",
+      "sha256": "fe031b1b74da9ae21cf5d8983cce8fc3fad3b24b1c88d561cdffa35e1f18f1e6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemLandAbility.java",
+      "sha256": "d7f01a73aba6aedcdcecbd74a325715b25e2f2c60b184d53b6b99e890c0908a6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    }
+  ]
 }

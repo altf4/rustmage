@@ -140,6 +140,8 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                    | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
+                    | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -188,6 +190,8 @@ impl Game {
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::SourceDealtDamage
+                    | TriggerCondition::SourceDealtDamageAtLeast(_)
+                    | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
@@ -218,6 +222,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::BattlefieldDeparture(_)
+                    | TriggerCondition::OpponentHighestPowerCreatureDies
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)
@@ -298,6 +303,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
                             | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
@@ -318,6 +324,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
@@ -331,6 +339,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
+                            | crate::cards::StaticAbilityFragment::StackItemsCannotBeCountered
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
@@ -348,6 +357,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::DamageCantBePrevented
                             | crate::cards::StaticAbilityFragment::CombatDamageCantBePrevented
                             | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
+                            | crate::cards::StaticAbilityFragment::RetainManaColor(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
@@ -370,6 +380,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..)

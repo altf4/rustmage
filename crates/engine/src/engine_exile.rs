@@ -42,6 +42,8 @@ pub enum ExilePlayExpiry {
     EndOfNextTurn,
     StartOfNextTurn(Player),
     StartOfNextEndStep(Player),
+    /// Replaced by the same player's next actual exile with this exact source.
+    UntilSourceExilesAnother(ObjectRef),
     /// Active in turns with a positive lore placement by the granted player on the source.
     SourceLoreTurns,
 }
@@ -338,6 +340,21 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn exile_top_play_until_source_exiles_another(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let (Some(source), Some(card)) = (item.source, self.top_library_card(player)) else {
+            return;
+        };
+        let event = self.move_object(card, Zone::Exile);
+        if event.moved && event.destination == Zone::Exile {
+            let expiry = ExilePlayExpiry::UntilSourceExilesAnother(source.object);
+            self.state
+                .exile_permissions
+                .retain(|row| row.player != player || row.expiry != expiry);
+            self.grant_exile_play_permission_with_expiry(player, event.after, None, expiry);
+        }
+    }
+
     pub(super) fn exile_top_play_while_source_controlled(&mut self, item: &SpellView) {
         let player = item.controller;
         let Some(card) = self.top_library_card(player) else {
@@ -461,6 +478,29 @@ impl Game {
             },
         );
         Some(&mut self.state.exile_permissions[at])
+    }
+
+    pub(super) fn grant_face_down_exile_play(
+        &mut self,
+        object: ObjectRef,
+        beneficiaries: &[Player],
+        spend_any_mana: bool,
+    ) {
+        let viewers = beneficiaries
+            .iter()
+            .fold(0u8, |mask, player| mask | (1 << player.index()));
+        self.remember_face_down_exile(object, viewers, None);
+        for &player in beneficiaries {
+            let permission = self
+                .grant_exile_play_permission_with_expiry(
+                    player,
+                    object,
+                    None,
+                    ExilePlayExpiry::WhileExiled,
+                )
+                .expect("face-down play permission requires an exact exile object");
+            permission.spend_any_mana = spend_any_mana;
+        }
     }
 
     pub(super) fn grant_taxed_exile_play(
@@ -604,6 +644,16 @@ impl Game {
                 && self.state.active == actor
                 && self.state.step == Step::Blockers
                 && self.has_sneak_cost(actor, object.card);
+            if self.visit_web_slinging_face(
+                actor,
+                object.card,
+                face,
+                sorcery,
+                WebSlingingOrigin::TaxedExile { surcharge },
+                emit,
+            ) {
+                return true;
+            }
             let methods = [
                 Some(CastMethod::Normal),
                 free.then_some(CastMethod::Free),
@@ -1229,17 +1279,7 @@ impl Game {
             if !event.moved || event.destination != Zone::Exile {
                 continue;
             }
-            self.remember_face_down_exile(event.after, 1 << item.controller.index(), None);
-            self.grant_exile_play_permission(item.controller, event.after, false);
-            if let Some(permission) = self
-                .state
-                .exile_permissions
-                .iter_mut()
-                .find(|p| p.player == item.controller && p.object == event.after)
-            {
-                permission.expiry = ExilePlayExpiry::WhileExiled;
-                permission.spend_any_mana = true;
-            }
+            self.grant_face_down_exile_play(event.after, &[item.controller], true);
         }
         self.finish_zone_events(&events, &[]);
     }

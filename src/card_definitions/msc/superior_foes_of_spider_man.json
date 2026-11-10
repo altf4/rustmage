@@ -3,10 +3,30 @@
   "catalogue_id": 4261,
   "oracle_id": "a6a7af21-e52c-4f7f-a57f-bd365d075966",
   "facts_sha256": "d27a13a6c3bd9f1694fdba84f7b38f4d701b6f7bb15a612a85bf586db3abc6c6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2337421d308037d6dc4137c94f82afb75cd15fd2f3f9ad0f89f23aa288a1b339"
   },
-  "physical_metadata_sha256": "179043d5516e2cd95376ab9af414cdb68cd2827b357a27a35fa4d3782e653a1f"
+  "physical_metadata_sha256": "179043d5516e2cd95376ab9af414cdb68cd2827b357a27a35fa4d3782e653a1f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuperiorFoesOfSpiderMan.java",
+  "java_sha256": "39f30845d727901cd676a8bc8a29e3abecf530746a7df614a9d83aa26c0f544c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopCardPlayUntilExileAnotherEffect.java",
+      "sha256": "a58e2fb48cdd9b758cc808ff69c9b8fec9956b760f08db5126dc6873875d3fe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

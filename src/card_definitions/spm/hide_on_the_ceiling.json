@@ -3,10 +3,35 @@
   "catalogue_id": 2033,
   "oracle_id": "376fa374-ead1-4728-ab8b-aca230b72031",
   "facts_sha256": "132e5b0f3572770bc646c228bdba85c7ccd04e43a1415b4291d18c3ebac1236f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82a88875c6d15c7b81461ed910cd84b04841fb3f98e0a41bd55f693462e2dd39"
   },
-  "physical_metadata_sha256": "f7c3a26108fe84915789321e2804436aa0f72284057853ef0ac5c7c3de08ff66"
+  "physical_metadata_sha256": "0da8e113f4cc95c70b9a48e048697566942947ff746e3d2454710a24531f99f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HideOnTheCeiling.java",
+  "java_sha256": "695dbddd31c2cf7f6f8d50019c4dbeb2e99096f5af5ecfe403329b5e258a33cf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/XTargetsCountAdjuster.java",
+      "sha256": "0a0c03f91efb08ee51cbac58fc63d9f2c22d022e2fad1fcef7fd072a6143c217"
+    }
+  ]
 }

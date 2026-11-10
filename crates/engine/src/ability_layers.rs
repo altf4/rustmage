@@ -152,6 +152,8 @@ pub enum StaticAbilityFragment {
     AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
     OpponentNoncreatureSpellTax(u32),
+    /// Increase both players' spell costs for the type chosen as this source entered.
+    ChosenCardTypeSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
     AttackControllerTax {
         amount: u32,
@@ -192,6 +194,8 @@ pub enum StaticAbilityFragment {
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
     PlayFromGraveyardDuringOwnTurn,
+    /// Eligible nonland faces in your graveyard have Mayhem for their mana cost.
+    GrantManaCostMayhem,
     /// Cast a matching spell from your graveyard with an additional life cost.
     /// The permanent enters with the specified counter if cast this way.
     CastFromGraveyardWithLife {
@@ -284,6 +288,8 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Each other controlled permanent of this subtype has an instance of Riot.
+    GrantRiotToOtherControlledSubtype(&'static str),
     /// Live layer-six grant; virtual taps and control/subtype changes requalify recipients.
     ControlledUntappedSubtypeKeywords {
         subtype: &'static str,
@@ -301,6 +307,10 @@ pub enum StaticAbilityFragment {
     CantLoseGameAndOpponentsCantWin,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
+    /// A rule restriction on explicit counters, independent of stack target legality.
+    StackItemsCannotBeCountered,
+    /// Colored legendary spells you cast have this Web-slinging alternative.
+    ColoredLegendaryWebSlinging(ManaCost),
     /// Each instance grants a distinct optional paired-tap copy cost.
     NoncreatureConspire,
     ConvokeCreatureSpells,
@@ -320,6 +330,8 @@ pub enum StaticAbilityFragment {
     CombatDamageCantBePrevented,
     /// This exact permanent keeps marked damage as the cleanup step removes other damage.
     RetainDamageDuringCleanup,
+    /// This ability's controller keeps mana of the specified color at boundaries.
+    RetainManaColor(ChoiceColor),
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),
@@ -392,6 +404,8 @@ pub enum StaticAbilityFragment {
     AttachedSubtype(&'static str),
     AttachedLegendary,
     AttachmentStats(Stats),
+    /// For each Aura or Equipment attached to the same recipient.
+    AttachmentStatsPerAttachment(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
     AttachmentAttackingKeywords(Keywords),
@@ -507,6 +521,11 @@ pub enum StaticAbilityFragment {
     FlyingCombatRestriction,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    ControlledSubtypeCannotBeBlockedByKeyword {
+        subtype: &'static str,
+        blocker_keyword: Keywords,
+    },
+    ControlledSubtypeIgnoresLegendRule(&'static str),
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
@@ -549,6 +568,8 @@ pub enum PermanentForm {
     Land,
     /// Add creature type without removing other card or creature types.
     AddCreature,
+    /// Add creature subtypes without changing card types or colors.
+    AddCreatureSubtypes,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]

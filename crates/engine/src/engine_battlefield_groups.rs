@@ -1,6 +1,6 @@
 //! Non-targeted battlefield sets, frozen before simultaneous movement or damage.
 use super::*;
-use crate::cards::AnimationSpec;
+use crate::cards::{AnimationSpec, ControlledPermanentFilter, PermanentGroupCounters};
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn remove_abilities_exact(
@@ -119,11 +119,15 @@ impl Game {
         item: &SpellView,
         filters: &[BattlefieldFilter],
         keywords: Keywords,
+        exclude_source: bool,
     ) {
         let Some(source) = item.source else {
             return;
         };
-        let recipients = self.battlefield_group(item, filters);
+        let mut recipients = self.battlefield_group(item, filters);
+        if exclude_source {
+            recipients.retain(|&id| self.object_ref(id) != source.object);
+        }
         self.grant_keyword_effects(&recipients, source.object, keywords);
     }
     pub(super) fn remove_permanent_group_keywords(
@@ -268,6 +272,45 @@ impl Game {
             })
             .collect();
         self.effect_counters(affected, replacements::ResumeMode::Program);
+    }
+
+    pub(super) fn change_controlled_permanent_group_counters(
+        &mut self,
+        controller: Player,
+        filters: &[ControlledPermanentFilter],
+        effect: PermanentGroupCounters,
+    ) {
+        use ability_world::CharacteristicWorld;
+        let changes = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                if object.zone != Zone::Battlefield
+                    || object.controller != controller
+                    || !filters.iter().any(|filter| {
+                        (filter.all_kinds == 0
+                            || self.current_kinds(id) & filter.all_kinds == filter.all_kinds)
+                            && (!filter.legendary || CharacteristicWorld::legendary(self, id))
+                            && filter
+                                .subtype
+                                .is_none_or(|subtype| self.has_subtype(id, subtype))
+                    })
+                {
+                    return None;
+                }
+                let counters = match effect {
+                    PermanentGroupCounters::Add { kind, amount } => {
+                        Counters::of(kind, u64::from(amount))
+                    }
+                    PermanentGroupCounters::DoubleEachKind => self.counter_amounts(id).to_owned(),
+                };
+                Some((self.object_ref(id), counters))
+            })
+            .collect();
+        self.effect_counters(changes, replacements::ResumeMode::Program);
     }
 
     pub(super) fn battlefield_filter_matches(

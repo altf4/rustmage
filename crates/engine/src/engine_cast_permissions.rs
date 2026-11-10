@@ -7,6 +7,7 @@ use crate::cards::StaticAbilityFragment;
 pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
+    pub web_slinging: Option<ManaCost>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -174,13 +175,17 @@ impl Game {
         object.zone == Zone::Graveyard
             && object.owner == player
             && object.is_card()
-            && ((kind == GraveyardCastKind::Cast
-                && object.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
+            && ((kind == GraveyardCastKind::Play
+                && object.card.is_land()
+                && object.card.has_mayhem_land()
+                && self.discarded_to_graveyard_this_turn(card))
+                || (kind == GraveyardCastKind::Cast
+                    && object.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
                         matches!(*fragment, StaticAbilityFragment::SelfGraveyardCastIf(condition)
                             if self.stat_value(condition, self.object_ref(card), player) != 0)
                     })
-                }))
+                    }))
                 || (matches!(kind, GraveyardCastKind::Cast | GraveyardCastKind::Play)
                     && self.state.active == player
                     && cast_origins::has_fragment(self, player, |fragment| {
@@ -457,6 +462,7 @@ impl Game {
         let OriginAlternative {
             granted_warp,
             exile_play_surcharge,
+            web_slinging,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -493,6 +499,21 @@ impl Game {
             return false;
         };
         if method == CastMethod::Plot && definition.is_land() {
+            return false;
+        }
+        if method.is_mayhem()
+            && (definition.is_land()
+                || object.owner != actor
+                || !self.discarded_to_graveyard_this_turn(card)
+                || match method {
+                    CastMethod::Mayhem => definition.mayhem_cost_options().is_none(),
+                    CastMethod::GrantedMayhem => {
+                        crate::cards::mana_symbols::printed_cost(definition.info().mana_cost)
+                            .is_none()
+                    }
+                    _ => unreachable!("Mayhem method"),
+                })
+        {
             return false;
         }
         if method == CastMethod::GrantedHarmonize
@@ -536,21 +557,21 @@ impl Game {
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
         }
-        if method == CastMethod::ExileLife {
-            Self::configure_exile_life_cast(&mut item, flash_surcharge);
+        if method.pays_life_for_mana_value() {
+            Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
         }
         if exile_play_surcharge > 0 {
             Self::configure_taxed_exile_cast(&mut item, exile_play_surcharge);
         }
         if matches!(
             method,
-            CastMethod::ExileLife
-                | CastMethod::Airbend
+            CastMethod::Airbend
                 | CastMethod::Free
                 | CastMethod::Plot
                 | CastMethod::Flashback
                 | CastMethod::Harmonize
                 | CastMethod::Mayhem
+                | CastMethod::WebSlinging
                 | CastMethod::Miracle
         ) && definition.x_symbols() > 0
             && (method != CastMethod::Harmonize || definition.harmonize_x_symbols() == 0)
@@ -582,15 +603,18 @@ impl Game {
                         method,
                         CastMethod::LinkedExileCounterCost
                             | CastMethod::ExileLife
+                            | CastMethod::LibraryLife
                             | CastMethod::Airbend
                             | CastMethod::Free
                             | CastMethod::Plot
                             | CastMethod::Flashback
                             | CastMethod::Harmonize
                             | CastMethod::GrantedHarmonize
+                            | CastMethod::GrantedMayhem
                             | CastMethod::Mayhem
                             | CastMethod::Miracle
                             | CastMethod::Sneak
+                            | CastMethod::WebSlinging
                     )
             },
             |spec| spec.x_symbols > 0,
@@ -619,6 +643,7 @@ impl Game {
             origin_counter_cost,
             origin_additional_cost,
             origin_alternative_cost: granted_warp
+                .or(web_slinging)
                 .or_else(|| self.origin_alternative_cost_for(&item)),
             item,
             spec: TargetSpec::NONE,
@@ -655,13 +680,20 @@ impl Game {
         }
         if matches!(
             method,
-            CastMethod::GraveyardAdditionalCosts | CastMethod::LinkedExileCounterCost
+            CastMethod::GraveyardAdditionalCosts
+                | CastMethod::LinkedExileCounterCost
+                | CastMethod::WebSlinging
         ) || origin_additional_cost.is_some()
             || life.is_some() && warp.is_none()
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
-        if scalar_x || (definition.x_symbols() > 0 && method == CastMethod::LinkedExileCounterCost)
+        if scalar_x
+            || (definition.x_symbols() > 0
+                && matches!(
+                    method,
+                    CastMethod::LinkedExileCounterCost | CastMethod::GrantedMayhem
+                ))
         {
             return !self
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))

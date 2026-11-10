@@ -3,10 +3,45 @@
   "catalogue_id": 4033,
   "oracle_id": "3c322d99-2bc4-4618-aeb3-5583fce54f1b",
   "facts_sha256": "26cbe9c8d6be66fb0a883113523768e1c1494eea1fe27e24ad57f736d2373b64",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3f69d71a7cdae17bacb57328fd3b9772a45834436616df7b54be9a0bd0ca537d"
   },
-  "physical_metadata_sha256": "8fd68b897994e139b68e0e48d832521ba56cc0c04323c72c35e651f27b2a19f7"
+  "physical_metadata_sha256": "8fd68b897994e139b68e0e48d832521ba56cc0c04323c72c35e651f27b2a19f7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderMobile.java",
+  "java_sha256": "ba736ae0f6a74b19367e57d5fe32c27cee25a14696a29d8804cdc81c82f6e549",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksOrBlocksTriggeredAbility.java",
+      "sha256": "81f1a21b619af2d872302a4fbcd27051b2c7a5ee0fe38d7073f21ec4219ff918"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

@@ -275,7 +275,7 @@ impl Game {
                 .flat_map(|rows| rows.iter())
                 .filter(|row| {
                     row.event == DelayedTargetEvent::ControlLostWhileAttached
-                        && row.expires_turn == self.state.turn
+                        && row.expires_turn == Some(self.state.turn)
                         && self.attached_to_controlled_creature(row.subject, row.packet.controller)
                 })
                 .map(|row| (row.subject, row.packet.controller))

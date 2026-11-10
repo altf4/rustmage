@@ -49,6 +49,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
             ..
         }
         | Instruction::AddColorlessScaled(value)
+        | Instruction::AddColorlessScaledFor(_, value)
         | Instruction::AddManaScaled { amount: value, .. }
         | Instruction::AddManaChosenScaled { amount: value, .. }
         | Instruction::AddCombatRedScaled(value)
@@ -62,6 +63,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::GrowCreaturesScaled { amount: value, .. }
         | Instruction::GrowPermanentGroupScaled { amount: value, .. }
         | Instruction::CreateTokensScaled { amount: value, .. }
+        | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
         | Instruction::EndureScaled { amount: value, .. }
         | Instruction::CreateSizedToken { size: value, .. }
         | Instruction::CreateTokensWithCounters {

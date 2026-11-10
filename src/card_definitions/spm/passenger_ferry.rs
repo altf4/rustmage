@@ -1,17 +1,46 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfAttacks,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::MayPayMana {
+                    cost: ManaCost {
+                        colored: [0, 1, 0, 0, 0, 0],
+                        generic: 0,
+                    },
+                    skip: 1,
+                },
+                Instruction::Reflexive { ability: 1 },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: one(TargetRule::Filtered {
+                base: &TargetRule::Filtered {
+                    base: &TargetRule::Creature,
+                    predicate: &TargetPredicate::Attacking,
+                },
+                predicate: &TargetPredicate::OtherThanSource,
+            }),
+            program: &[Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::CANT_BE_BLOCKED,
+            }],
+        },
+    ],
+    activated: &[ActivatedAbility {
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        once_per_turn: false,
+        sorcery: false,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Crew { minimum: 2 }],
+    }],
     extras: &CardExtras {
         vehicle_stats: Some(Stats {
             power: 4,

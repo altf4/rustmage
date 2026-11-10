@@ -185,6 +185,16 @@ impl Game {
                 else {
                     continue;
                 };
+                if self.visit_web_slinging_face(
+                    player,
+                    card,
+                    face,
+                    sorcery,
+                    WebSlingingOrigin::LinkedExileCounters { source },
+                    emit,
+                ) {
+                    return true;
+                }
                 for flash_surcharge in [false, true] {
                     if self.permitted_cast_with_origin_cost(
                         player,

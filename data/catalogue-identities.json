@@ -5544,7 +5544,14 @@
     0,
     4,
     0,
-    0
+    0,
+    28,
+    11,
+    25,
+    14,
+    19,
+    16,
+    2
   ],
   "aliases": [
     [
@@ -6684,6 +6691,14 @@
       5342
     ],
     [
+      "@token/spm-illusion-villain",
+      5545
+    ],
+    [
+      "@token/spm-spider",
+      5544
+    ],
+    [
       "@token/tdm-monk-prowess",
       5486
     ],
@@ -7246,6 +7261,10 @@
     [
       "Amazing Acrobatics",
       143
+    ],
+    [
+      "Amazing Spider-Man",
+      5543
     ],
     [
       "Ambitious Augmenter",
@@ -12024,6 +12043,10 @@
       1258
     ],
     [
+      "Eddie Brock",
+      1259
+    ],
+    [
       "Eddie Brock // Venom, Lethal Protector",
       1259
     ],
@@ -14052,6 +14075,10 @@
       1733
     ],
     [
+      "Ghost-Spider",
+      5540
+    ],
+    [
       "Ghostly Dancers",
       1734
     ],
@@ -14648,6 +14675,10 @@
       1869
     ],
     [
+      "Green Goblin",
+      5542
+    ],
+    [
       "Green Goblin, Revenant",
       1870
     ],
@@ -14854,6 +14885,10 @@
     [
       "Guy in the Chair",
       1916
+    ],
+    [
+      "Gwen Stacy",
+      1917
     ],
     [
       "Gwen Stacy // Ghost-Spider",
@@ -18412,6 +18447,10 @@
       2757
     ],
     [
+      "Miles Morales",
+      2758
+    ],
+    [
       "Miles Morales // Ultimate Spider-Man",
       2758
     ],
@@ -19252,6 +19291,10 @@
       2961
     ],
     [
+      "Norman Osborn",
+      2962
+    ],
+    [
       "Norman Osborn // Green Goblin",
       2962
     ],
@@ -20002,6 +20045,10 @@
     [
       "Pet Avengers",
       3141
+    ],
+    [
+      "Peter Parker",
+      3142
     ],
     [
       "Peter Parker // Amazing Spider-Man",
@@ -26812,6 +26859,10 @@
       4744
     ],
     [
+      "Ultimate Spider-Man",
+      5541
+    ],
+    [
       "Ultimecia, Omnipotent",
       5524
     ],
@@ -27338,6 +27389,10 @@
     [
       "Venom, Evil Unleashed",
       4870
+    ],
+    [
+      "Venom, Lethal Protector",
+      5539
     ],
     [
       "Venomized Cat",
@@ -29658,6 +29713,18 @@
       "name": "Munitions",
       "subtypes": "",
       "colors": 0
+    },
+    {
+      "factory_identity": "@token/spm-spider",
+      "name": "Spider Token",
+      "subtypes": "Spider",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/spm-illusion-villain",
+      "name": "Illusion Villain Token",
+      "subtypes": "Illusion Villain",
+      "colors": 2
     }
   ],
   "emblems": [
@@ -66382,7 +66449,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Eddie Brock",
+        "mana_cost": "{2}{B}",
+        "type_line": "Legendary Creature — Human Hero Villain",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": []
+      },
+      "back_face": 5539
     },
     {
       "index": 1260,
@@ -85221,7 +85304,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Gwen Stacy",
+        "mana_cost": "{1}{R}",
+        "type_line": "Legendary Creature — Human Performer Hero",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5540
     },
     {
       "index": 1918,
@@ -88509,7 +88608,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -109388,7 +109487,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Miles Morales",
+        "mana_cost": "{1}{G}",
+        "type_line": "Legendary Creature — Human Citizen Hero",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5541
     },
     {
       "index": 2759,
@@ -115224,7 +115339,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Norman Osborn",
+        "mana_cost": "{1}{U}",
+        "type_line": "Legendary Creature — Human Scientist Villain",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5542
     },
     {
       "index": 2963,
@@ -120368,7 +120499,23 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Peter Parker",
+        "mana_cost": "{1}{W}",
+        "type_line": "Legendary Creature — Human Scientist Hero",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": []
+      },
+      "back_face": 5543
     },
     {
       "index": 3143,
@@ -188867,6 +189014,219 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5539,
+      "module": "card_5539",
+      "path": "spm/venom_lethal_protector.rs",
+      "set": "spm",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "Venom, Lethal Protector",
+      "mana_cost": "{3}{B}{R}{G}",
+      "type_line": "Legendary Creature — Symbiote Hero Villain",
+      "colored": [
+        0,
+        0,
+        1,
+        1,
+        1,
+        0
+      ],
+      "generic": 3,
+      "oracle_keywords": [
+        "Haste",
+        "Trample",
+        "Menace"
+      ],
+      "face_parent": 1259
+    },
+    {
+      "index": 5540,
+      "module": "card_5540",
+      "path": "spm/ghost_spider.rs",
+      "set": "spm",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "Ghost-Spider",
+      "mana_cost": "{2}{U}{R}{W}",
+      "type_line": "Legendary Creature — Spider Human Hero",
+      "colored": [
+        1,
+        1,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2,
+      "oracle_keywords": [
+        "Flying",
+        "Vigilance",
+        "Haste"
+      ],
+      "face_parent": 1917
+    },
+    {
+      "index": 5541,
+      "module": "card_5541",
+      "path": "spm/ultimate_spider_man.rs",
+      "set": "spm",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "Ultimate Spider-Man",
+      "mana_cost": "{3}{R}{G}{W}",
+      "type_line": "Legendary Creature — Spider Human Hero",
+      "colored": [
+        1,
+        0,
+        0,
+        1,
+        1,
+        0
+      ],
+      "generic": 3,
+      "oracle_keywords": [
+        "First strike",
+        "Haste"
+      ],
+      "face_parent": 2758
+    },
+    {
+      "index": 5542,
+      "module": "card_5542",
+      "path": "spm/green_goblin.rs",
+      "set": "spm",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "Green Goblin",
+      "mana_cost": "{1}{U}{B}{R}",
+      "type_line": "Legendary Creature — Goblin Human Villain",
+      "colored": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        0
+      ],
+      "generic": 1,
+      "oracle_keywords": [
+        "Flying",
+        "Menace"
+      ],
+      "face_parent": 2962
+    },
+    {
+      "index": 5543,
+      "module": "card_5543",
+      "path": "spm/amazing_spider_man.rs",
+      "set": "spm",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "Amazing Spider-Man",
+      "mana_cost": "{1}{G}{W}{U}",
+      "type_line": "Legendary Creature — Spider Human Hero",
+      "colored": [
+        1,
+        1,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 1,
+      "oracle_keywords": [
+        "Reach",
+        "Vigilance"
+      ],
+      "face_parent": 3142
+    },
+    {
+      "index": 5544,
+      "module": "card_5544",
+      "path": "synthetic/token_spm_spider.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/spm-spider",
+      "mana_cost": "",
+      "type_line": "Creature — Spider",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Reach"
+      ]
+    },
+    {
+      "index": 5545,
+      "module": "card_5545",
+      "path": "synthetic/token_spm_illusion_villain.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/spm-illusion-villain",
+      "mana_cost": "",
+      "type_line": "Creature — Illusion Villain",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
     }
   ]
 }

@@ -78,6 +78,7 @@ impl Game {
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            permanent_type: None,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
