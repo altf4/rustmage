@@ -6984,6 +6984,55 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CreateNonlegendaryCopyRecordAura(subject) => {
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
+                        recipe.overrides = Some(CopyOverrides {
+                            legendary: Some(false),
+                            ..recipe.overrides.unwrap_or(CopyOverrides::NONE)
+                        });
+                        self.stage_copy_creation_inner(
+                            item.controller,
+                            recipe,
+                            1,
+                            replacements::TokenCompletion::RecordCreatedAura,
+                        );
+                    }
+                }
+                Instruction::CreateReflectionCopy(subject) => {
+                    if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
+                        // Reflection is a creature subtype (also allowed on Kindred).
+                        if recipe.kinds() & (1 | 128) != 0 {
+                            recipe = recipe.with_exceptions(CopyExceptions {
+                                reflection: true,
+                                ..CopyExceptions::NONE
+                            });
+                        }
+                        let original = recipe.overrides.unwrap_or(CopyOverrides::NONE);
+                        recipe.overrides = Some(CopyOverrides {
+                            legendary: Some(false),
+                            keywords: original.keywords.union(Keywords::HASTE),
+                            ..original
+                        });
+                        self.stage_copy_creation(item.controller, recipe, 1);
+                    }
+                }
+                Instruction::SacrificeControlledSubtype(subtype) => {
+                    let sacrifices: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(index, object)| {
+                            let id = index as CardId;
+                            (object.zone == Zone::Battlefield
+                                && object.controller == item.controller
+                                && self.has_subtype(id, subtype))
+                            .then_some((item.controller, id))
+                        })
+                        .collect();
+                    self.sacrifice_batch(&sacrifices);
+                }
                 Instruction::CreateNonlegendaryCopyTokens { subject, amount }
                 | Instruction::CreateLegendaryCopyTokens { subject, amount } => {
                     if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {

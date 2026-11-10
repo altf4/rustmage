@@ -292,6 +292,7 @@ pub(super) enum TokenCompletion {
     CollectSimultaneous,
     AttackThisCombat,
     CounterOtherWizards,
+    RecordCreatedAura,
     Counters {
         kind: CounterKind,
         amount: u64,
@@ -3685,6 +3686,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::RecordCreatedAura
                                         | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::AnimateNoncreatures(_)
                                         | TokenCompletion::JobAttach(_)
@@ -3782,6 +3784,13 @@ impl Game {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == *object
             })
             .collect();
+        if matches!(completion, TokenCompletion::RecordCreatedAura) {
+            let any_aura = created.iter().any(|object| {
+                self.current_kinds(object.card) & 32 != 0 && self.has_subtype(object.card, "Aura")
+            });
+            self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(any_aura));
+            return;
+        }
         if let TokenCompletion::SourceDeparture { item, ability } = completion {
             self.register_created_token_departure(&item, ability, created);
             return;

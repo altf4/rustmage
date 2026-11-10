@@ -275,6 +275,9 @@ impl GrantedSubtypes {
             if types.mutant {
                 self.insert("Mutant");
             }
+            if recipe.exceptions.reflection {
+                self.insert("Reflection");
+            }
             if recipe.exceptions.spider_human_hero {
                 self.insert("Spider");
                 self.insert("Human");

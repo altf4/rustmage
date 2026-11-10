@@ -64,6 +64,8 @@ pub struct CopyExceptions {
     pub embalm: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub spider_human_hero: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub reflection: bool,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -93,6 +95,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        reflection: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
@@ -107,6 +110,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        reflection: false,
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_only_abilities: 1,
@@ -125,6 +129,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        reflection: false,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -166,6 +171,7 @@ impl CopyExceptions {
             retained_activation: other.retained_activation.or(self.retained_activation),
             embalm: self.embalm || other.embalm,
             spider_human_hero: self.spider_human_hero || other.spider_human_hero,
+            reflection: self.reflection || other.reflection,
         }
     }
 }
@@ -2095,6 +2101,12 @@ pub enum Instruction {
         subject: Subject,
         amount: u16,
     },
+    /// Create one nonlegendary copy and remember whether any actual result is an Aura.
+    CreateNonlegendaryCopyRecordAura(Subject),
+    /// Create one nonlegendary Reflection copy with copiable haste.
+    CreateReflectionCopy(Subject),
+    /// Sacrifice all controlled permanents with this live subtype in one event.
+    SacrificeControlledSubtype(&'static str),
     CreateNonlegendaryCopyTokens {
         subject: Subject,
         amount: u16,
