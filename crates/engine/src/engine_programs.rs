@@ -5853,7 +5853,18 @@ impl Game {
                     maximum,
                     total_mana_value,
                 } => {
-                    if self.start_graveyard_return_selection(&item, maximum, total_mana_value) {
+                    if self.start_graveyard_return_selection(
+                        &item,
+                        u32::from(maximum),
+                        Some(total_mana_value),
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::ChooseGraveyardReturnCount(count) => {
+                    // The object pool cannot supply more candidates than this.
+                    let maximum = u32::try_from(self.item_amount(count, &item)).unwrap_or(u32::MAX);
+                    if self.start_graveyard_return_selection(&item, maximum, None) {
                         return;
                     }
                 }

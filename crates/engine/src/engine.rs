@@ -5457,6 +5457,7 @@ impl Game {
                     return true;
                 }
                 if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
+                    && choice.skip_to.is_some()
                     && emit(Action::FinishGraveyardReturn)
                 {
                     return true;

@@ -431,7 +431,7 @@ impl Game {
                 && o.card.is_creature()
                 && self.object_ref(object.card) == object
                 && !selected.contains(&object)
-                && selected.len() < usize::from(maximum)
+                && selected.len() < maximum as usize
                 && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent)
                 && (!self.target_graveyard_return_active()
                     || self
@@ -914,8 +914,8 @@ impl Game {
     pub(super) fn start_graveyard_return_selection(
         &mut self,
         item: &SpellView,
-        maximum: u16,
-        total_mana_value: u64,
+        maximum: u32,
+        optional_mana_budget: Option<u64>,
     ) -> bool {
         if maximum == 0 {
             return false;
@@ -924,12 +924,12 @@ impl Game {
             item,
             EffectChoiceKind::GraveyardCreatures {
                 maximum,
-                total_mana_value,
+                total_mana_value: optional_mana_budget.unwrap_or(u64::MAX),
             },
             PlayerSet::Controller,
             evidence::cost(0).filter,
             0,
-            Some(0),
+            optional_mana_budget.map(|_| 0),
             false,
             None,
         )
@@ -997,7 +997,7 @@ impl Game {
                 card.is_creature() && card.fixed_mana_value() <= maximum_mana_value
             })
         {
-            return self.start_graveyard_return_selection(item, 1, maximum_mana_value);
+            return self.start_graveyard_return_selection(item, 1, Some(maximum_mana_value));
         }
         let moves = self.target_graveyard_return_entries(item, None);
         if !moves.is_empty() {
@@ -1477,6 +1477,35 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if let EffectChoiceKind::GraveyardCreatures {
+                maximum,
+                total_mana_value,
+            } = kind
+                && optional_skip.is_none()
+            {
+                assert_eq!(
+                    players,
+                    PlayerSet::Controller,
+                    "one exact graveyard return chooser"
+                );
+                assert_eq!(
+                    total_mana_value,
+                    u64::MAX,
+                    "exact count has no combined mana budget"
+                );
+                let count = u32::try_from(available.min(maximum as usize))
+                    .capacity("choice count exhausted");
+                if count == 0 {
+                    return false;
+                }
+                choice.amount = count;
+                choice.required[player.index()] = count;
+                choice.kind = EffectChoiceKind::GraveyardCreatures {
+                    maximum: count,
+                    total_mana_value,
+                };
+                continue;
+            }
             if available == 0 && (any_number || kind == EffectChoiceKind::PowerDifferenceBoost) {
                 return false;
             }
@@ -1611,7 +1640,7 @@ impl Game {
         }
         if let EffectChoiceKind::GraveyardCreatures { maximum, .. } = choice.kind.payment_kind() {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
-            if choice.selected[player.index()].len() >= usize::from(maximum) {
+            if choice.selected[player.index()].len() >= maximum as usize {
                 self.finish_graveyard_return_selection();
                 return false;
             }

@@ -1457,9 +1457,9 @@ pub enum EffectChoiceKind {
     DiscardedLand {
         tapped: bool,
     },
-    /// Non-targeted graveyard return with a shared total mana-value budget.
+    /// Non-targeted graveyard return. Optional choices use a shared mana-value budget.
     GraveyardCreatures {
-        maximum: u16,
+        maximum: u32,
         total_mana_value: u64,
     },
     /// Choose a creature card from the exact graveyard receipts of this program's destruction.
@@ -3126,6 +3126,8 @@ pub enum Instruction {
         maximum: u16,
         total_mana_value: u64,
     },
+    /// Choose exactly this many of your graveyard creature cards, or all if fewer.
+    ChooseGraveyardReturnCount(AmountValue),
     ReturnGraveyardManaValue {
         kinds: u16,
         value: AmountValue,
