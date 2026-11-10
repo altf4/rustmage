@@ -781,6 +781,8 @@ pub struct ChosenModifier {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ManaRestriction {
     SpellManaValueAtLeast(u64),
+    /// Cast a spell of this mana value or a spell with X in its actual mana cost.
+    SpellManaValueAtLeastOrX(u64),
     ChosenSubtypeSpellOrActivation,
     /// Any cost except casting a spell from a hand.
     ExceptCastFromHand,

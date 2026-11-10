@@ -17,6 +17,7 @@ use crate::cards::{
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
     SpellManaValueAtLeast(u64),
+    SpellManaValueAtLeastOrX(u64),
     ExceptCastFromHand,
     CastFromNonhand,
     CastFromExile,
@@ -153,6 +154,9 @@ impl Quality {
                 ManaRestriction::SpellManaValueAtLeast(minimum) => {
                     ManaRestrictionView::SpellManaValueAtLeast(minimum)
                 }
+                ManaRestriction::SpellManaValueAtLeastOrX(minimum) => {
+                    ManaRestrictionView::SpellManaValueAtLeastOrX(minimum)
+                }
                 ManaRestriction::ChosenSubtypeSpellOrActivation => {
                     match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
@@ -245,6 +249,10 @@ impl Quality {
         match self.restriction {
             ManaRestrictionView::SpellManaValueAtLeast(minimum) => {
                 matches!(purpose, Purpose::Spell(source) if source.mana_value >= minimum)
+            }
+            ManaRestrictionView::SpellManaValueAtLeastOrX(minimum) => {
+                matches!(purpose, Purpose::Spell(source)
+                    if source.mana_value >= minimum || source.card.x_symbols() != 0)
             }
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
