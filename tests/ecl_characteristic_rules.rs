@@ -220,7 +220,7 @@ fn attack_and_block_growth_uses_exact_event_object_and_current_signed_difference
         settle(&mut g);
         assert_eq!(stats(&g, creature), (4, 9));
         let source = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
-        g.self_block_triggers(&[creature, creature]);
+        g.self_block_triggers(&[creature, creature], 0);
         assert_eq!(
             g.state.pending_triggers.len(),
             1,
