@@ -340,6 +340,82 @@ fn exact_donors_grant_independent_uses_in_layer_order_to_the_recipient() {
 }
 
 #[test]
+fn paid_borrowed_transform_tracks_the_recipients_exact_transform_history() {
+    let _rules = fixture_rules::activate(&[(card("Short Bow"), &PROVIDER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let provider = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let recipient = put(&mut game, player, "Vincent Valentine", Zone::Battlefield);
+    let donor = put(&mut game, player.other(), "Eddie Brock", Zone::Graveyard);
+    let camera = put(&mut game, player, "Peter Parker's Camera", Zone::Hand);
+    cast(&mut game, camera, None);
+    settle(&mut game);
+
+    exile(&mut game, provider, donor);
+    resolve_top(&mut game);
+    act(&mut game, target(recipient));
+    resolve_top(&mut game);
+    let recipient_ref = game.object_ref(recipient);
+    let donor_ref = game.object_ref(donor);
+    let front = game.object_view(recipient).card;
+    let back = front.back_face().unwrap();
+    let eddie = card("Eddie Brock");
+    let transform = Action::AnnounceBorrowedAbility {
+        card: recipient,
+        exiled: donor_ref,
+        ability: 0,
+        counter_payment: Counters::default(),
+    };
+    let activate_transform = |game: &mut Game, serial| {
+        act(game, transform.clone());
+        assert_eq!(game.mana_payment_domain().unwrap().generic, 6);
+        pay(game);
+        let committed = game.state.stack.last().unwrap();
+        assert_eq!(committed.source_identity(), Some((recipient_ref, eddie)));
+        assert_eq!(committed.source_transform, Some(serial));
+    };
+
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 14];
+    activate_transform(&mut game, 0);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 0, 8]);
+    resolve_top(&mut game);
+    assert_eq!(game.object_ref(recipient), recipient_ref);
+    assert_eq!(game.object_view(recipient).card, back);
+    assert_eq!(count(&game, recipient), 1);
+    assert_eq!(game.object_ref(donor), donor_ref);
+    assert_eq!(game.object_view(donor).card, eddie);
+    assert_eq!(game.object_view(donor).zone, Zone::Exile);
+
+    activate_transform(&mut game, 1);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 0, 2]);
+    let original = game.state.stack.last().unwrap().id;
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: camera,
+            ability: 0,
+            counter_payment: Counters::of(CounterKind::Film, 1),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Stack(original),
+        },
+    );
+    pay(&mut game);
+    resolve_top(&mut game);
+    assert!(game.state.stack.last().unwrap().is_copy);
+    resolve_top(&mut game);
+    assert_eq!(game.object_view(recipient).card, front);
+    assert_eq!(game.state.stack.last().unwrap().id, original);
+    resolve_top(&mut game);
+    assert_eq!(game.object_ref(recipient), recipient_ref);
+    assert_eq!(game.object_view(recipient).card, front);
+    assert_eq!(game.object_view(recipient).face.unwrap().transforms, 2);
+}
+
+#[test]
 fn projected_borrowed_mana_can_spend_the_counter_that_granted_the_ability() {
     let _rules =
         fixture_rules::activate(&[(card("Short Bow"), &PROVIDER), (card("Bear Cub"), &DONOR)]);
