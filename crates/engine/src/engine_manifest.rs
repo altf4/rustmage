@@ -263,6 +263,15 @@ impl Game {
     }
 
     pub(super) fn disguise_mana_fundable(&self, player: Player, id: CardId) -> bool {
+        self.disguise_mana_fundable_with_surcharge(player, id, 0)
+    }
+
+    pub(super) fn disguise_mana_fundable_with_surcharge(
+        &self,
+        player: Player,
+        id: CardId,
+        surcharge: u32,
+    ) -> bool {
         let object = &self.state.objects[id as usize];
         let physical = object.card;
         if object.is_token()
@@ -277,15 +286,17 @@ impl Game {
         {
             return false;
         }
-        self.spell_can_fund_for_definition(
-            player,
-            id,
-            ManaCost {
-                colored: [0; 6],
-                generic: 3,
-            },
-            Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
-        )
+        3u32.checked_add(surcharge).is_some_and(|generic| {
+            self.spell_can_fund_for_definition(
+                player,
+                id,
+                ManaCost {
+                    colored: [0; 6],
+                    generic,
+                },
+                Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
+            )
+        })
     }
 
     /// Begin a face-down spell with only its public copiable values on the

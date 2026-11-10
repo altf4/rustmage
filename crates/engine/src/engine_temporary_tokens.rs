@@ -12,11 +12,12 @@ pub(super) struct TokenInstructions {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) enum TokenCleanup {
+pub enum TokenCleanup {
     NextUpkeepSacrifice,
     EndCombatSacrifice,
     NextEndStepSacrifice,
     OwnEndStepSacrifice,
+    NextOwnTurnEndStepSacrifice,
     NextEndStepDestroy,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

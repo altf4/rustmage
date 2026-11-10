@@ -288,6 +288,9 @@ impl Game {
         actor: Player,
     ) -> bool {
         match guard {
+            ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
+                self.counter_count(source, kind) >= minimum
+            }
             ActivationGuard::ClassLevelExactly(level) => {
                 self.state.objects[source as usize].class_level == level
             }
@@ -1063,6 +1066,7 @@ impl Game {
     ) -> Option<ActivationPaymentPhase> {
         self.bind_activation_source_quantities(item, definition.program);
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
+            self.pay_attachment_exile_cost(item);
             return None;
         }
         self.pay_activation_loyalty(item, definition);
@@ -1171,18 +1175,19 @@ impl Game {
         {
             return;
         }
-        let external_planeswalker_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
+        let controlled_activation_grant = item.attachment_trigger.as_ref().is_some_and(|event| {
             event.granted
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
                         matches!(fragment,
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
+                        | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
                         if *index == ability)
                     })
                 })
         });
         if item.self_granted_activation.is_none()
-            && !external_planeswalker_grant
+            && !controlled_activation_grant
             && !item.is_retained_copy_activation()
             && ability != embalm::ACTIVATION_INDEX
         {
@@ -1296,6 +1301,15 @@ impl Game {
             }
         } else if cost.sacrifice {
             self.sacrifice_batch(&[(item.controller, source.id)]);
+        }
+        self.pay_attachment_exile_cost(item);
+    }
+
+    fn pay_attachment_exile_cost(&mut self, item: &SpellView) {
+        if let Some(grantor) = item.attached_activation_exile_cost() {
+            assert_eq!(self.object_ref(grantor.card), grantor);
+            assert!(self.on_battlefield(grantor.card));
+            self.move_object(grantor.card, Zone::Exile);
         }
     }
 }

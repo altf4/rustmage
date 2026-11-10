@@ -1,6 +1,27 @@
 //! Owned mandatory spell and activation costs, chosen after targets and paid before cast completion.
 use super::*;
 
+pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    reference: ObjectRef,
+) -> bool {
+    let object = world.object(reference.card);
+    world.reference(reference.card) == reference
+        && world.kinds(reference.card) & 1 != 0
+        && match object.zone {
+            Zone::Battlefield => object.controller == actor,
+            Zone::Exile => {
+                object.owner == actor
+                    && world
+                        .game()
+                        .warped_card(reference)
+                        .is_some_and(|row| row.owner == actor)
+            }
+            _ => false,
+        }
+}
+
 /// A craft material is tested in its current zone, including abilities gained
 /// or removed on the battlefield. Activation permission is not relevant.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -137,6 +158,9 @@ impl Game {
         if object.card as usize >= self.state.objects.len() {
             return false;
         }
+        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
+            return chosen_cost_creature_matches(world, actor, object);
+        }
         let o = world.object(object.card);
         if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
@@ -171,6 +195,11 @@ impl Game {
             return false;
         }
         let spec = spec.in_zone(o.zone);
+        if let EffectChoiceKind::RemoveCreatureCounter(kind) = spec.kind.payment_kind()
+            && (world.kinds(object.card) & 1 == 0 || world.counter_count(object.card, kind) == 0)
+        {
+            return false;
+        }
         if matches!(
             spec.kind.payment_kind(),
             EffectChoiceKind::Sacrifice
@@ -206,6 +235,7 @@ impl Game {
             | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::RemoveCreatureCounter(_)
             | EffectChoiceKind::TapPermanents(_) => o.controller == actor,
             _ => false,
         };
@@ -304,6 +334,7 @@ impl Game {
             | EffectChoiceKind::SacrificePermanents(_)
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand
+            | EffectChoiceKind::RemoveCreatureCounter(_)
             | EffectChoiceKind::TapPermanents(_) => Zone::Battlefield,
             _ => return false,
         };
@@ -512,12 +543,12 @@ impl Game {
         }
         let amount = match spec.kind.payment_kind() {
             EffectChoiceKind::BeholdMany(n)
-            | EffectChoiceKind::TapPermanents(n)
             | EffectChoiceKind::ExileGraveyardCards(n)
-            | EffectChoiceKind::SacrificePermanents(n) => n,
+            | EffectChoiceKind::SacrificePermanents(n) => usize::from(n),
+            EffectChoiceKind::TapPermanents(n) => n as usize,
             _ => unreachable!("group cost"),
         };
-        let Some(needed) = usize::from(amount).checked_sub(chosen.len()) else {
+        let Some(needed) = amount.checked_sub(chosen.len()) else {
             return false;
         };
         // This fallback enumerates current candidates, not future projected
@@ -551,9 +582,9 @@ impl Game {
         spec: AdditionalCost,
         source: ObjectRef,
         chosen: &[ObjectRef],
-        amount: u16,
+        amount: usize,
     ) -> bool {
-        if chosen.len() == usize::from(amount) {
+        if chosen.len() == amount {
             return self.can_fund_cost_group(goal, purpose, spec, chosen);
         }
         (0..self.state.objects.len()).any(|id| {
@@ -875,18 +906,20 @@ impl Game {
             a.additional_group.get_or_insert_default().push(object);
             return;
         }
-        if let EffectChoiceKind::BeholdMany(amount)
-        | EffectChoiceKind::TapPermanents(amount)
-        | EffectChoiceKind::ExileGraveyardCards(amount)
-        | EffectChoiceKind::SacrificeDifferentNames(amount)
-        | EffectChoiceKind::SacrificePermanents(amount) =
-            a.additional_cost().unwrap().kind.payment_kind()
-        {
+        let group_amount = match a.additional_cost().unwrap().kind.payment_kind() {
+            EffectChoiceKind::BeholdMany(n)
+            | EffectChoiceKind::ExileGraveyardCards(n)
+            | EffectChoiceKind::SacrificeDifferentNames(n)
+            | EffectChoiceKind::SacrificePermanents(n) => Some(usize::from(n)),
+            EffectChoiceKind::TapPermanents(n) => Some(n as usize),
+            _ => None,
+        };
+        if let Some(amount) = group_amount {
             let group = a
                 .additional_group
                 .get_or_insert_with(|| Box::new(Vec::new()));
             group.push(object);
-            if group.len() < usize::from(amount) {
+            if group.len() < amount {
                 return;
             }
         }
@@ -1125,7 +1158,7 @@ impl Game {
         }
         if let EffectChoiceKind::TapPermanents(amount) = spec.kind.payment_kind() {
             let group = a.additional_group.as_ref().expect("selected tap group");
-            assert_eq!(group.len(), usize::from(amount));
+            assert_eq!(group.len(), amount as usize);
             assert!(group.iter().all(|&r| {
                 !tap_cost_reserves_source(&self.funding_goal(a), r)
                     && self.additional_candidate(
@@ -1214,6 +1247,16 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind.payment_kind() {
+            EffectChoiceKind::ChooseControlledOrWarpedCreature => {
+                let view = self.object_view(object.card);
+                a.item.set_event_object(EventObjectView {
+                    object,
+                    facts: EventObjectFacts::ChosenCostCreaturePower(view.power),
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                });
+            }
             EffectChoiceKind::BlightCost(amount) => {
                 self.blight_counters(
                     vec![(a.item.controller, object)],
@@ -1261,6 +1304,9 @@ impl Game {
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCreatureAndGraveyard
+            | EffectChoiceKind::ExileControlledLinked
+            | EffectChoiceKind::ExileGrantingAttachment
+            | EffectChoiceKind::ReturnRememberedCreature
             | EffectChoiceKind::CoverUpGraveyardCard
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
@@ -1279,6 +1325,7 @@ impl Game {
             | EffectChoiceKind::RemoveCreatureCounter(_)
             | EffectChoiceKind::BeholdMany(_)
             | EffectChoiceKind::TapPermanents(_)
+            | EffectChoiceKind::TapXPermanents
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
             | EffectChoiceKind::HandPlot { .. }
@@ -1286,11 +1333,13 @@ impl Game {
             | EffectChoiceKind::HandCreatureAttacking { .. }
             | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
             | EffectChoiceKind::ExileFromHand
+            | EffectChoiceKind::ExileFromHandWithPlaySurcharge(_)
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
+            | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
@@ -1330,9 +1379,16 @@ impl Game {
             }
             EffectChoiceKind::Sacrifice => {
                 if a.item.program().is_some_and(|(_, program)| {
-                    program
-                        .iter()
-                        .any(|i| matches!(i, Instruction::SearchSacrificedManaValue { .. }))
+                    program.iter().any(|instruction| {
+                        matches!(
+                            instruction,
+                            Instruction::SearchSacrificedManaValue { .. }
+                                | Instruction::ExileTopPlayScaled {
+                                    amount: AmountValue::SacrificeCostManaValueWithBonus(_),
+                                    ..
+                                }
+                        )
+                    })
                 }) {
                     a.item.sacrificed_mana_value =
                         Some(Box::new(self.object_mana_value(object.card)));

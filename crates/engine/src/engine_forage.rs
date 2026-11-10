@@ -124,8 +124,8 @@ impl Game {
         &self,
         a: &Announcement,
     ) -> Option<(ObjectRef, AdditionalCost)> {
-        if let Some(grantor) = a.item.attached_activation_tap_cost() {
-            return Some((grantor, Self::attached_tap_spec()));
+        if let Some(reserve) = a.item.attached_activation_reserve() {
+            return Some(reserve);
         }
         // A paid additional component is an owned result, not a reservation on
         // its former incarnation. Ordered routes may pay it before their mana.

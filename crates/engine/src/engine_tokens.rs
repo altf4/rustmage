@@ -293,6 +293,7 @@ impl Game {
                 self.record_nonland_entry(controller, id, self.current_kinds(id));
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
+                    granted_departure_mana_value: 0,
                     was_card: false,
                     linked_exile_life: None,
                     melded_after: None,

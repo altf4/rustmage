@@ -114,6 +114,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::LandMana { .. }
+        | StaticAbilityFragment::ControlledPermanentTapMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
             let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -261,8 +262,14 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
-        StaticAbilityFragment::ControlledPlaneswalkerActivation(ability) => {
-            if !own || world.kinds(id) & 64 == 0 {
+        StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
+        | StaticAbilityFragment::ControlledArtifactFood(ability) => {
+            let kinds = if matches!(fragment, StaticAbilityFragment::ControlledArtifactFood(_)) {
+                16
+            } else {
+                64
+            };
+            if !own || world.kinds(id) & kinds == 0 {
                 return None;
             }
             return Some(LayerSixGrant {
@@ -295,6 +302,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledTappedKeywords { other, keywords } => {
             if !own || !target.tapped || world.kinds(id) & 1 == 0 || (other && id == source.card) {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords {
+            condition,
+            keywords,
+        } => {
+            if !world.other_tapped_legendary_creature_applies(source, id, condition) {
                 return None;
             }
             keywords
@@ -477,7 +493,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
+                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledArtifactFood(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
                 })
         })
@@ -686,6 +702,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
+                        | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)
@@ -696,8 +713,10 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
+                        | StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
+                        | StaticAbilityFragment::ControlledArtifactFood(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }

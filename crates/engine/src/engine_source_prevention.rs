@@ -265,6 +265,7 @@ impl Game {
             Some(
                 TriggerCondition::EquippedAttacks
                     | TriggerCondition::EquippedAttacksAlone
+                    | TriggerCondition::AttachedAttacks
                     | TriggerCondition::AttachedAttacksOrBlocks
             )
         );
@@ -376,6 +377,11 @@ impl Game {
             {
                 objects.push(row.subject);
                 packet_objects(&row.packet, &mut objects, &mut stack_objects);
+            }
+        }
+        if let Some(rows) = &self.state.linked_choices {
+            for row in &rows.delayed_steps {
+                packet_objects(&row.item, &mut objects, &mut stack_objects);
             }
         }
         if let Some(rows) = &self.state.delayed_returns {

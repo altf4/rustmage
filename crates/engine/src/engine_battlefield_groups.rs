@@ -416,7 +416,7 @@ impl Game {
         item: &SpellView,
         filters: &[BattlefieldFilter],
         players: Option<PlayerSet>,
-        amount: i32,
+        amount: i128,
         excluded_subtype: Option<&str>,
         target_amount: Option<i32>,
     ) {
@@ -425,7 +425,7 @@ impl Game {
             preventable: true,
             source,
             target,
-            amount: i128::from(amount),
+            amount,
             combat: false,
         };
         let mut events: Vec<_> = self
@@ -455,11 +455,38 @@ impl Game {
                         .checked_add(i128::from(amount))
                         .capacity("simultaneous damage quantity exhausted");
                 } else {
-                    events.push(hit(target, amount));
+                    events.push(hit(target, i128::from(amount)));
                 }
             }
         }
         self.apply_damage_batch(&events);
+    }
+
+    pub(super) fn damage_each_creature_by_departure_mana_value(&mut self, item: &SpellView) {
+        let Some(EventObjectFacts::DepartureManaValue(amount)) =
+            item.event_object.as_deref().map(|event| &event.facts)
+        else {
+            unreachable!("departure damage requires the saved battlefield mana value");
+        };
+        if *amount == 0 {
+            return;
+        }
+        self.damage_battlefield_group(
+            item,
+            &[BattlefieldFilter {
+                kinds: 1,
+                relation: -1,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
+                subtype: None,
+                max_mana: u32::MAX,
+            }],
+            None,
+            i128::from(*amount),
+            None,
+            None,
+        );
     }
     /// Freeze the complete recipients before the simultaneous damage event.
     pub(super) fn damage_creatures_except_controlled_tokens(

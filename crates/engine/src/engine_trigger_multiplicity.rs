@@ -93,7 +93,8 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     AdditionalTriggerScope::ControlledPermanentAttack => {
                         matches!(cause, TriggerCause::Attack)
                     }
-                    AdditionalTriggerScope::ControlledLandOrSubtypeEntry(_) => {
+                    AdditionalTriggerScope::ControlledPermanentEntry
+                    | AdditionalTriggerScope::ControlledLandOrSubtypeEntry(_) => {
                         matches!(cause, TriggerCause::Entry(_))
                     }
                     AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
@@ -120,7 +121,8 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                 AdditionalTriggerScope::ControlledCreatureSubtype(_)
                             ) || query.kinds(id) & 1 != 0)
                     }
-                    AdditionalTriggerScope::ControlledPermanentAttack => {
+                    AdditionalTriggerScope::ControlledPermanentAttack
+                    | AdditionalTriggerScope::ControlledPermanentEntry => {
                         recipient.controller == object.controller
                     }
                     AdditionalTriggerScope::EquippedCreature => {

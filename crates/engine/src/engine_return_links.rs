@@ -140,9 +140,37 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::Revival
         | ReturnKind::FlyingRobot
         | ReturnKind::WithoutAbilities
+        | ReturnKind::SkeletonWithoutAbilities
         | ReturnKind::Persist => None,
     }
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn apply_skeleton_return(
+    roles: &mut roles::RoleState,
+    recipient: ObjectRef,
+    source: ObjectRef,
+) {
+    let timestamp = roles.next_timestamp();
+    roles
+        .creature_types
+        .push(subtypes::CreatureTypesEffectView {
+            recipient,
+            source,
+            types: &["Skeleton"],
+            additional: true,
+            timestamp,
+        });
+    roles
+        .resolved_ability_modifications
+        .push(ResolvedAbilityModificationView {
+            recipient,
+            source,
+            keywords: Keywords::NONE,
+            timestamp,
+        });
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn return_death_matches(
@@ -503,7 +531,7 @@ impl Game {
         };
         let mut link = (**link).clone();
         let counter = match kind {
-            ReturnKind::WithoutAbilities => None,
+            ReturnKind::WithoutAbilities | ReturnKind::SkeletonWithoutAbilities => None,
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
@@ -524,6 +552,24 @@ impl Game {
         let modification = (kind != ReturnKind::Persist).then_some((kind, source.object));
         self.stage_linked_return(&link, modification);
     }
+
+    pub(super) fn return_targets_as_skeletons(&mut self, item: &SpellView) {
+        let source = item.source.expect("targeted return has a source").object;
+        let moves = item
+            .targets
+            .iter()
+            .filter(|&&target| self.same_target_object(target))
+            .filter_map(|target| target.object)
+            .map(|object| {
+                let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                movement.return_modification = Some((ReturnKind::SkeletonWithoutAbilities, source));
+                movement
+            })
+            .collect();
+        self.stage_entries(moves, None);
+    }
+
     fn can_follow_return(&self, card: ReturnCardView) -> bool {
         self.state
             .objects

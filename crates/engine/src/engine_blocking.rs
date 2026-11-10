@@ -1,5 +1,6 @@
 //! Pairwise evasion and exact completion of incremental blocker declarations.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -107,6 +108,19 @@ impl Game {
                     .intersects(Keywords::FLYING.union(Keywords::REACH))
         {
             return false;
+        }
+        if !keywords.contains(Keywords::FLYING) {
+            let flying_only = |fragment: &StaticAbilityFragment| {
+                matches!(fragment, StaticAbilityFragment::CanBlockOnlyFlying)
+            };
+            if b.card
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(flying_only))
+                && self.continuous_fragment_available(blocker, flying_only)
+            {
+                return false;
+            }
         }
         let power_rules = Keywords::SKULK
             .union(Keywords::NO_GREATER_POWER_BLOCKERS)

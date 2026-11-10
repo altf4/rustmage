@@ -8,6 +8,7 @@ pub struct CreatureComparisonFacts {
     pub creature: bool,
     pub power: i128,
     pub toughness: i128,
+    pub(super) controller: Player,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CreatureComparisonFacts {
@@ -16,6 +17,7 @@ impl CreatureComparisonFacts {
             creature: view.is_creature(),
             power: view.power,
             toughness: view.toughness,
+            controller: view.controller,
         }
     }
     pub(super) fn greater_than(self, other: Self) -> bool {
@@ -37,12 +39,19 @@ pub enum EventObjectFacts {
     DamageDealt {
         amount: u128,
     },
+    /// Frozen amount of one counter kind placed in the triggering event.
+    CountersPlaced {
+        amount: u64,
+    },
+    DepartureManaValue(u64),
     /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
     Copiable(CopyRecipe),
     CopiableGroup(Vec<EntryBatchCopyView>),
     CreatureComparison(CreatureComparisonFacts),
+    /// Current or last-known signed power of a creature chosen for a cost.
+    ChosenCostCreaturePower(i128),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -257,18 +266,46 @@ impl Game {
         if !ordinary {
             return;
         }
+        // An Aura's ETB reads its live attachment or the attachment in its
+        // departure LKI. Rebind when a new attachment or the Aura leaves so
+        // subsequent moves can refresh the appropriate creature's LKI.
+        let attachments: Vec<_> = self
+            .event_fact_packets()
+            .filter_map(|packet| {
+                let source = packet.source?;
+                let attached = self.state.objects[source.id as usize].attached_to;
+                if attached == packet.source_attachment
+                    || !self.on_battlefield(source.id)
+                    || self.object_ref(source.id) != source.object
+                    || !before.iter().any(|view| {
+                        view.reference == source.object || Some(view.reference) == attached
+                    })
+                    || !packet.program().is_some_and(|(_, program)| {
+                        program.contains(&Instruction::AttachedCreaturePowerDamage)
+                    })
+                {
+                    return None;
+                }
+                let actor = attached
+                    .filter(|r| self.on_battlefield(r.card) && self.object_ref(r.card) == *r)
+                    .map(|r| self.damage_source(r.card));
+                Some((packet.id, attached, actor))
+            })
+            .collect();
         let facts: Vec<_> = before
             .into_iter()
-            .filter(|v| matches!(v.zone, Zone::Battlefield | Zone::Stack))
+            .filter(|v| matches!(v.zone, Zone::Battlefield | Zone::Stack | Zone::Exile))
             .filter(|v| {
                 self.event_fact_packets().any(|p| {
-                    p.event_object
-                        .as_ref()
-                        .is_some_and(|e| e.object == v.reference)
-                        || (p.source.is_some_and(|source| source.object == v.reference)
-                            && p.source_quantity_lki
-                                .as_ref()
-                                .is_some_and(|q| q.creature_comparison.is_some()))
+                    p.event_object.as_ref().is_some_and(|e| {
+                        e.object == v.reference
+                            && (v.zone != Zone::Exile
+                                || matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)))
+                    }) || (v.zone != Zone::Exile
+                        && p.source.is_some_and(|source| source.object == v.reference)
+                        && p.source_quantity_lki
+                            .as_ref()
+                            .is_some_and(|q| q.creature_comparison.is_some()))
                 })
             })
             .map(|v| {
@@ -277,10 +314,11 @@ impl Game {
                     CreatureComparisonFacts::from_view(v),
                     actor(v),
                     v.copy_recipe.unwrap_or_else(|| CopyRecipe::new(v.card)),
+                    v.zone,
                 )
             })
             .collect();
-        if facts.is_empty() {
+        if facts.is_empty() && attachments.is_empty() {
             return;
         }
         for p in self
@@ -305,25 +343,50 @@ impl Game {
                     .map(|f| &mut f.announcement.item),
             )
         {
+            if let Some(&(_, attached, damage)) = attachments.iter().find(|row| row.0 == p.id) {
+                p.source_attachment = attached;
+                if let (Some(recipient), Some(damage)) = (attached, damage) {
+                    p.set_event_object(EventObjectView {
+                        object: recipient,
+                        facts: EventObjectFacts::DamageActor(damage),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
+                }
+            }
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _)) = facts
-                    .iter()
-                    .find(|(r, _, _, _)| p.source.is_some_and(|source| *r == source.object))
+                && let Some((_, stats, _, _, _)) = facts.iter().find(|(r, _, _, _, zone)| {
+                    *zone != Zone::Exile && p.source.is_some_and(|source| *r == source.object)
+                })
             {
                 q.creature_comparison = Some(*stats);
             }
             if let Some(e) = &mut p.event_object
-                && let Some((_, stats, damage, recipe)) =
-                    facts.iter().find(|(r, _, _, _)| *r == e.object)
+                && let Some((_, stats, damage, recipe, zone)) =
+                    facts.iter().find(|(r, _, _, _, _)| *r == e.object)
             {
+                if matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)) {
+                    e.facts = EventObjectFacts::ChosenCostCreaturePower(if stats.creature {
+                        stats.power
+                    } else {
+                        0
+                    });
+                    continue;
+                }
+                if *zone == Zone::Exile {
+                    continue;
+                }
                 if e.subtype_lki.is_some() {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
                     EventObjectFacts::DeathCounters(_)
                     | EventObjectFacts::CopiableGroup(_)
-                    | EventObjectFacts::DamageDealt { .. } => {
+                    | EventObjectFacts::DamageDealt { .. }
+                    | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::CountersPlaced { .. } => {
                         continue;
                     }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
@@ -336,6 +399,7 @@ impl Game {
                     EventObjectFacts::CreatureComparison(_) => {
                         EventObjectFacts::CreatureComparison(*stats)
                     }
+                    EventObjectFacts::ChosenCostCreaturePower(_) => unreachable!(),
                 };
             }
         }
@@ -452,16 +516,37 @@ impl Game {
             subtype_lki: None,
         });
     }
-    fn comparison_facts(
+    pub(super) fn comparison_facts(
         &self,
         reference: ObjectRef,
         saved: CreatureComparisonFacts,
     ) -> CreatureComparisonFacts {
         if self.on_battlefield(reference.card) && self.object_ref(reference.card) == reference {
-            CreatureComparisonFacts::from_view(&self.object_view(reference.card))
+            let id = reference.card;
+            let world = self.characteristic_query();
+            let stats = world.stats(id);
+            CreatureComparisonFacts {
+                creature: ability_world::CharacteristicWorld::kinds(&world, id) & 1 != 0,
+                power: stats.power,
+                toughness: stats.toughness,
+                controller: self.state.objects[id as usize].controller,
+            }
         } else {
             saved
         }
+    }
+    pub(super) fn chosen_cost_creature_power(&self, item: &SpellView) -> i128 {
+        let Some(event) = item.event_object.as_ref() else {
+            return 0;
+        };
+        let EventObjectFacts::ChosenCostCreaturePower(saved) = event.facts else {
+            return 0;
+        };
+        if self.object_ref(event.object.card) != event.object {
+            return saved;
+        }
+        let view = self.object_view(event.object.card);
+        if view.is_creature() { view.power } else { 0 }
     }
     pub(super) fn event_object_guard(&self, p: &SpellView) -> bool {
         let StackKind::TriggeredAbility { ability } = p.kind else {
@@ -530,6 +615,44 @@ impl Game {
             }
         }
     }
+    pub(super) fn bind_trigger_damage_actor(&mut self, object: ObjectRef) {
+        let damage = self.damage_source(object.card);
+        self.state
+            .pending_triggers
+            .last_mut()
+            .unwrap()
+            .set_event_object(EventObjectView {
+                object,
+                facts: EventObjectFacts::DamageActor(damage),
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+    }
+
+    pub(super) fn attached_creature_power_damage(&mut self, item: &SpellView) {
+        let Some(aura) = item.source else {
+            return;
+        };
+        let attached = if self.on_battlefield(aura.id) && self.object_ref(aura.id) == aura.object {
+            self.state.objects[aura.id as usize].attached_to
+        } else {
+            item.source_attachment
+        };
+        let Some(attached) = attached else {
+            return;
+        };
+        if self.on_battlefield(attached.card) && self.object_ref(attached.card) == attached {
+            self.damage_targets_by_actor_power(item, self.damage_source(attached.card));
+        } else if item
+            .event_object
+            .as_ref()
+            .is_some_and(|event| event.object == attached)
+        {
+            self.event_object_power_damage(item);
+        }
+    }
+
     pub(super) fn event_object_power_damage(&mut self, item: &SpellView) {
         let Some(e) = &item.event_object else {
             return;
@@ -543,6 +666,10 @@ impl Game {
             } else {
                 saved
             };
+        self.damage_targets_by_actor_power(item, source);
+    }
+
+    fn damage_targets_by_actor_power(&mut self, item: &SpellView, source: DamageSource) {
         // CR208.3: a current noncreature permanent has no power; do not read
         // printed Vehicle stats or reuse its previous creature characteristics.
         let amount = if source.facts.kinds & 1 != 0 {
@@ -602,7 +729,7 @@ impl Game {
         &mut self,
         p: &SpellView,
         players: PlayerSet,
-        amount: i32,
+        amount: i128,
     ) {
         let e = p
             .event_object
@@ -622,7 +749,7 @@ impl Game {
             .map(|player| DamageEvent {
                 source,
                 target: Target::Player(player),
-                amount: i128::from(amount),
+                amount,
                 combat: false,
                 preventable: true,
             })

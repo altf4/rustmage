@@ -40,6 +40,7 @@ impl Game {
                             | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
                             | TriggerCondition::SpellCast { .. }
+                            | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::PlayerDamaged { .. }

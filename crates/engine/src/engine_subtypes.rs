@@ -2,6 +2,7 @@
 //! captured views carry a compact value, and speculative resource queries borrow
 //! the same exact attachment test over their own object overlay.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 use serde::ser::{SerializeSeq, SerializeStruct};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -890,6 +891,23 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     }
     if kinds(id, target) & 16 == 0 {
         mask.set_flag(ADDED_FOOD, false);
+    } else if world.roles().is_some_and(|roles| {
+        roles.characteristic_sources.iter().any(|&source| {
+            let provider = world.object(source.card);
+            provider.zone == Zone::Battlefield
+                && world.reference(source.card) == source
+                && provider.controller == target.controller
+                && provider.card.static_ability_groups().iter().any(|group| {
+                    entry_modes::group_enabled(world, source, group)
+                        && group.fragments.iter().any(|fragment| {
+                            matches!(fragment, StaticAbilityFragment::ControlledArtifactFood(_))
+                        })
+                })
+        })
+    }) {
+        // The subtype effect depends on the earlier-layer artifact set. Losing
+        // printed abilities in layer six does not undo its layer-four work.
+        mask.set_flag(ADDED_FOOD, true);
     }
     if kinds(id, target) & 1 == 0 {
         return mask;
@@ -1230,8 +1248,7 @@ impl Game {
         Self::entry_subtypes(m, true)
     }
 
-    /// CR 614.12: a return effect created simultaneously with entry does not
-    /// yet exist when choosing how that permanent enters.
+    /// CR 614.12: only return effects that apply as the permanent enters are present.
     pub(super) fn entry_replacement_subtypes(m: &entries::EntryMove) -> GrantedSubtypes {
         Self::entry_subtypes(m, false)
     }
@@ -1271,6 +1288,9 @@ impl Game {
         }
         if m.ghost_vacuum_after.is_some() && m.before.kinds & CREATURE_OR_KINDRED != 0 {
             result.insert("Spirit");
+        }
+        if m.as_entry_skeleton_source().is_some() && m.before.kinds & CREATURE_OR_KINDRED != 0 {
+            result.insert("Skeleton");
         }
         if include_return_effect && m.before.kinds & CREATURE_OR_KINDRED != 0 {
             match m.return_modification.map(|(kind, _)| kind) {

@@ -280,8 +280,8 @@ impl FundingState<'_> {
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
             EffectChoiceKind::SacrificeRange { minimum: n }
             | EffectChoiceKind::SacrificeDifferentNames(n)
-            | EffectChoiceKind::SacrificePermanents(n)
-            | EffectChoiceKind::TapPermanents(n) => battlefield >= usize::from(n),
+            | EffectChoiceKind::SacrificePermanents(n) => battlefield >= usize::from(n),
+            EffectChoiceKind::TapPermanents(n) => battlefield >= n as usize,
             EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
             EffectChoiceKind::ExileGraveyardCards(n)
             | EffectChoiceKind::ExileGraveyardRange { minimum: n } => {
@@ -598,6 +598,9 @@ impl FundingState<'_> {
         r: ObjectRef,
         source: ObjectRef,
     ) -> bool {
+        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
+            return additional_costs::chosen_cost_creature_matches(self, self.actor, r);
+        }
         let o = self.object(r.card);
         if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
             && o.attached_to != Some(source)
@@ -810,6 +813,7 @@ impl FundingState<'_> {
                     };
                     if before_zone == Zone::Battlefield && zone != Zone::Battlefield {
                         n.permanent_left_battlefield[controller.index()] = true;
+                        n.void_active_this_turn |= kinds & 2 == 0;
                     }
                     if before_zone == Zone::Battlefield && zone == Zone::Graveyard && kinds & 1 != 0
                     {
@@ -1391,6 +1395,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::AttachmentTrigger(_)
                                 | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                                 | crate::cards::StaticAbilityFragment::LandMana { .. }
+                                | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                                 | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
@@ -1705,9 +1710,9 @@ impl FundingState<'_> {
                 counters = spec.kind.creature_counter_requirement();
             }
             EffectChoiceKind::BeholdMany(n)
-            | EffectChoiceKind::TapPermanents(n)
             | EffectChoiceKind::SacrificeDifferentNames(n)
             | EffectChoiceKind::SacrificePermanents(n) => amount = usize::from(n),
+            EffectChoiceKind::TapPermanents(n) => amount = n as usize,
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::BeholdAndExile
             | EffectChoiceKind::ExileControlled
@@ -1725,6 +1730,7 @@ impl FundingState<'_> {
                 destination = Zone::Hand
             }
             EffectChoiceKind::Behold
+            | EffectChoiceKind::ChooseControlledOrWarpedCreature
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeOrDiscard { .. }
@@ -1772,6 +1778,13 @@ impl FundingState<'_> {
         }
         if !c.selected.iter().all(|r| candidates.contains(r)) {
             return false;
+        }
+        if remaining.is_empty()
+            && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+        {
+            return c.selected.len() <= amount
+                && (!c.exact || c.selected.len() == amount)
+                && candidates.len() >= amount;
         }
         let mut selected = c.selected.clone();
         self.complete_object_choices(
@@ -1824,7 +1837,9 @@ impl FundingState<'_> {
             }
             let success = if matches!(
                 spec.kind.payment_kind(),
-                EffectChoiceKind::Behold | EffectChoiceKind::BeholdMany(_)
+                EffectChoiceKind::Behold
+                    | EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
             ) {
                 self.complete_cost_rows(later, remaining)
             } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
@@ -2418,7 +2433,9 @@ impl Game {
         let ordered_additional = additional.is_some_and(|s| {
             matches!(
                 s.kind,
-                EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+                EffectChoiceKind::BeholdMany(_)
+                    | EffectChoiceKind::BeholdAndExile
+                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
             )
         }) || delve::potential(self)
             || additional.is_some_and(|a| {
@@ -2533,7 +2550,9 @@ impl Game {
                 if additional.is_some_and(|s| {
                     matches!(
                         s.kind,
-                        EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+                        EffectChoiceKind::BeholdMany(_)
+                            | EffectChoiceKind::BeholdAndExile
+                            | EffectChoiceKind::ChooseControlledOrWarpedCreature
                     )
                 }) || convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
@@ -2565,7 +2584,9 @@ impl Game {
                     mana: (additional.is_some_and(|s| {
                         matches!(
                             s.kind,
-                            EffectChoiceKind::BeholdMany(_) | EffectChoiceKind::BeholdAndExile
+                            EffectChoiceKind::BeholdMany(_)
+                                | EffectChoiceKind::BeholdAndExile
+                                | EffectChoiceKind::ChooseControlledOrWarpedCreature
                         )
                     }) || current.is_some_and(|a| {
                         a.conspire

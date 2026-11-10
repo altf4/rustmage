@@ -675,6 +675,17 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
+                        StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords {
+                            condition,
+                            keywords: grant,
+                        } if self.world.other_tapped_legendary_creature_applies(
+                            self.object_ref(source),
+                            id,
+                            condition,
+                        ) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledUntappedSubtypeKeywords {
                             subtype,
                             keywords: grant,

@@ -126,6 +126,20 @@ impl CardRules {
                             "mode activation needs battlefield source"
                         );
                     }
+                    StaticAbilityFragment::ControlledArtifactFood(ability) => {
+                        assert!(
+                            matches!(self.static_groups[group].first_layer, AbilityLayer::Type),
+                            "Food subtype grant begins in the type layer"
+                        );
+                        assert!(
+                            (ability as usize) < self.activated.len()
+                                && matches!(
+                                    self.activated[ability as usize].origin,
+                                    ActivationOrigin::Battlefield
+                                ),
+                            "Food ability needs a battlefield activation slot"
+                        );
+                    }
                     _ => {}
                 }
                 fragment += 1;
@@ -311,6 +325,8 @@ pub struct CardExtras {
     pub borrows_exiled_activations: bool,
     /// Immutable activated templates acquired only through an explicit grant.
     pub self_granted_activation_templates: &'static [u16],
+    /// Attachment-granted templates that exile their exact grantor as a cost.
+    pub attachment_activation_exile_costs: &'static [u16],
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -327,6 +343,7 @@ pub struct CardExtras {
     pub activation_target_counter_discounts: &'static [(u16, CounterKind)],
     /// Generic reduction per distinct color of the chosen permanent target.
     pub activation_target_color_discounts: &'static [(u16, u32)],
+    pub activation_generic_reductions: &'static [(u16, ActivationGenericReduction)],
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
@@ -342,6 +359,7 @@ pub struct CardExtras {
     /// Copiable keyword exceptions added by this as-entry copy replacement.
     pub entry_copy_keywords: Keywords,
     pub entry_exile_counters: Option<EntryExileCountersSpec>,
+    pub devour: Option<DevourSpec>,
     pub chosen_entry_counters: Option<CounterKind>,
     pub static_modifiers: &'static [StaticModifier],
     pub equipment: Option<EquipmentSpec>,
@@ -359,6 +377,7 @@ pub struct CardExtras {
     pub omen_spell: Option<Card>,
     pub omen_parent: Option<Card>,
     pub warp_cost: Option<ManaCost>,
+    pub warp: Option<&'static WarpSpec>,
     pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
     pub sneak_costs: &'static [ManaCost],
@@ -449,6 +468,7 @@ impl CardExtras {
         prepared_identity: None,
         borrows_exiled_activations: false,
         self_granted_activation_templates: &[],
+        attachment_activation_exile_costs: &[],
         zone_replacement: None,
         opening_hand_battlefield: false,
         power_up_abilities: &[],
@@ -458,6 +478,7 @@ impl CardExtras {
         activation_target_reductions: &[],
         activation_target_counter_discounts: &[],
         activation_target_color_discounts: &[],
+        activation_generic_reductions: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
         activation_other_subtype_discounts: &[],
@@ -474,6 +495,7 @@ impl CardExtras {
         entry_copy: None,
         entry_copy_keywords: Keywords::NONE,
         entry_exile_counters: None,
+        devour: None,
         chosen_entry_counters: None,
         static_modifiers: &[],
         equipment: None,
@@ -491,6 +513,7 @@ impl CardExtras {
         omen_spell: None,
         omen_parent: None,
         warp_cost: None,
+        warp: None,
         disguise_cost: None,
         sneak_cost: None,
         sneak_costs: &[],

@@ -353,6 +353,47 @@ impl Game {
         self.start_ward_discard_choice(item, related.controller);
         true
     }
+    pub(super) fn start_ward_random_discard(&mut self, item: &SpellView) -> bool {
+        let related = item.related_stack.expect("ward stack association");
+        if !self.state.objects.iter().any(|object| {
+            object.owner == related.controller && object.zone == Zone::Hand && object.is_card()
+        }) {
+            self.counter_stack_item(related.id, false);
+            return false;
+        }
+        self.state.pending = Pending::EffectOptional {
+            player: related.controller,
+            skip_to: self.state.resolving.as_ref().unwrap().pc,
+        };
+        true
+    }
+
+    pub(super) fn finish_ward_random_discard(&mut self, accept: bool) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        if !resolution.pc.checked_sub(1).is_some_and(|previous| {
+            matches!(
+                resolution.program[previous],
+                Instruction::CounterRelatedUnlessDiscardRandom
+            )
+        }) {
+            return false;
+        }
+        let cause = resolution.item.controller;
+        let related = resolution
+            .item
+            .related_stack
+            .expect("ward stack association");
+        if accept {
+            let mut selected = Vec::new();
+            self.select_random_discards(related.controller, 1, &mut selected);
+            self.discard_batch_caused(&selected, None, Some(cause));
+        } else {
+            self.counter_stack_item(related.id, false);
+        }
+        self.run_program();
+        true
+    }
+
     pub(super) fn start_ward_discard_only(&mut self, item: &SpellView) -> bool {
         if !self.start_ward_discard_or_mana(
             item,
@@ -531,6 +572,7 @@ impl Game {
                                     | EffectChoiceKind::ExileControlled
                                     | EffectChoiceKind::ExileControlledOrGraveyard
                                     | EffectChoiceKind::TapPermanents(_)
+                                    | EffectChoiceKind::RemoveCreatureCounter(_)
                                     | EffectChoiceKind::ReturnToHand
                             ),
                             "unsupported fixed object payment"
@@ -735,6 +777,12 @@ impl Game {
                 self.finish_zone_events(&events, &[]);
             }
             EffectChoiceKind::TapPermanents(_) => self.tap_objects(&cards),
+            EffectChoiceKind::RemoveCreatureCounter(kind) => {
+                let payment = Counters::of(kind, 1);
+                for card in cards {
+                    self.pay_counters(card, &payment);
+                }
+            }
             EffectChoiceKind::ReturnToHand => {
                 let events = self.move_objects_raw(&cards, Zone::Hand);
                 self.finish_zone_events(&events, &[]);

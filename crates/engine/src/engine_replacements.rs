@@ -233,12 +233,13 @@ fn current_player_counter(
     reason = "The completion is already boxed as a whole; keep one allocation for reflexive packets"
 )]
 enum CounterCompletion {
-    Reflexive(CounterReflexiveCompletion),
+    Reflexive(CounterTriggerCompletion),
+    NextEndStep(CounterTriggerCompletion),
     ColorRecipients { packet: u64 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-struct CounterReflexiveCompletion {
+struct CounterTriggerCompletion {
     item: SpellView,
     kind: CounterKind,
     ability: u16,
@@ -509,7 +510,8 @@ impl ReplacementState {
         }
         if let Some(Event::Counters(batch)) = &mut self.active
             && let Some(completion) = &mut batch.completion
-            && let CounterCompletion::Reflexive(context) = completion.as_mut()
+            && let CounterCompletion::Reflexive(context) | CounterCompletion::NextEndStep(context) =
+                completion.as_mut()
         {
             visit(&mut context.item);
         }
@@ -524,7 +526,8 @@ impl ReplacementState {
                 }
                 Work::Counters(batch) => {
                     if let Some(completion) = &mut batch.completion
-                        && let CounterCompletion::Reflexive(context) = completion.as_mut()
+                        && let CounterCompletion::Reflexive(context)
+                        | CounterCompletion::NextEndStep(context) = completion.as_mut()
                     {
                         visit(&mut context.item);
                     }
@@ -547,7 +550,9 @@ impl ReplacementState {
                 + b.completion.as_ref().map_or(0, |c| {
                     std::mem::size_of::<CounterCompletion>()
                         + match c.as_ref() {
-                            CounterCompletion::Reflexive(r) => r.item.owned_bytes(),
+                            CounterCompletion::Reflexive(r) | CounterCompletion::NextEndStep(r) => {
+                                r.item.owned_bytes()
+                            }
                             CounterCompletion::ColorRecipients { .. } => 0,
                         }
                 })
@@ -1289,14 +1294,12 @@ impl Game {
                         matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
                     }
                     ReplacementSpec::PreventAllDamageToSelf => {
-                        event.preventable
-                            && !self.damage_prevention_prohibited()
+                        self.damage_prevention_allowed(event)
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.object_ref(target) == source)
                     }
                     ReplacementSpec::PreventOtherCreatureNoncombatDamage => {
-                        event.preventable
-                            && !self.damage_prevention_prohibited()
-                            && !event.combat
+                        !event.combat
+                            && self.damage_prevention_allowed(event)
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.is_creature(target) && self.object_ref(target) != source && self.state.objects[target as usize].controller == object.controller)
                     }
                     _ => false,
@@ -1330,7 +1333,7 @@ impl Game {
         if event.amount <= 0 {
             return Vec::new();
         }
-        let prevention_allowed = event.preventable && !self.damage_prevention_prohibited();
+        let prevention_allowed = self.damage_prevention_allowed(event);
         let mut out = Vec::new();
         if let Target::Card(id) = event.target {
             let source = self.object_ref(id);
@@ -1719,6 +1722,27 @@ impl Game {
         if let Some(player) = proliferated {
             self.proliferated_event(player);
         }
+        if let Some(CounterCompletion::NextEndStep(context)) = completion.as_deref() {
+            let objects: Vec<_> = placements
+                .iter()
+                .filter(|p| {
+                    p.entry_index.is_none()
+                        && p.amount.get(context.kind) > 0
+                        && self.on_battlefield(p.object.card)
+                        && self.object_ref(p.object.card) == p.object
+                })
+                .map(|p| p.object)
+                .collect();
+            if !objects.is_empty() {
+                self.schedule_delayed_step(
+                    &context.item,
+                    TriggerStep::End,
+                    CastRelation::Any,
+                    context.ability,
+                    objects,
+                );
+            }
+        }
         if completed {
             let CounterCompletion::Reflexive(completion) = *completion.unwrap() else {
                 unreachable!()
@@ -1934,7 +1958,7 @@ impl Game {
             None,
             ResumeMode::Program,
             Some(Box::new(CounterCompletion::Reflexive(
-                CounterReflexiveCompletion {
+                CounterTriggerCompletion {
                     item: item.clone(),
                     kind,
                     ability,
@@ -2105,6 +2129,31 @@ impl Game {
         mode: ResumeMode,
     ) {
         self.effect_counters_by(changes, None, [[0; 5]; 2], true, None, mode);
+    }
+    pub(super) fn effect_counters_with_delayed_step(
+        &mut self,
+        item: &SpellView,
+        changes: Vec<(ObjectRef, Counters)>,
+        kind: CounterKind,
+        ability: u16,
+    ) {
+        let placements = self.create_counter_placements(changes, Some(item.controller));
+        self.stage_counter_placements_inner(
+            placements,
+            [[0; 5]; 2],
+            None,
+            true,
+            None,
+            ResumeMode::Program,
+            Some(Box::new(CounterCompletion::NextEndStep(
+                CounterTriggerCompletion {
+                    item: item.clone(),
+                    kind,
+                    ability,
+                },
+            ))),
+            Vec::new(),
+        );
     }
     fn effect_counters_by(
         &mut self,
@@ -2431,7 +2480,7 @@ impl Game {
                     ReplacementSpec::AddToken(_) => true,
                     ReplacementSpec::FirstTokensCopyAttached => {
                         b.first_this_turn == Some(true)
-                            && self.equipped_copy_recipe(source).is_some()
+                            && self.attached_copy_recipe(source).is_some()
                     }
                     ReplacementSpec::AddArtifactToken(_)
                     | ReplacementSpec::ReplaceArtifactTokens(_) => b
@@ -2456,8 +2505,8 @@ impl Game {
         match choice.source_card.replacement_effects()[choice.ability as usize] {
             ReplacementSpec::FirstTokensCopyAttached => {
                 let recipe = self
-                    .equipped_copy_recipe(choice.source)
-                    .expect("applicable attached creature");
+                    .attached_copy_recipe(choice.source)
+                    .expect("applicable attached permanent");
                 b.recipes = b
                     .groups
                     .iter_mut()
@@ -3905,27 +3954,25 @@ impl Game {
         self.advance_replacements(true);
     }
     fn apply_damage_prevention(&mut self, choice: DamagePreventionView, batch: &mut DamageBatch) {
-        let prevention_allowed = !self.damage_prevention_prohibited();
         let key = (choice.source, choice.kind);
         if choice.kind == DamagePreventionKind::ShieldCounter {
             // CR 122.1c: one effect covers all simultaneous damage to the
             // permanent, including packets redirected here after the shield
-            // counter was removed. Consume only one counter for the batch.
+            // counter was removed. CR 615.12 still removes the counter when
+            // prevention is prohibited.
+            let target = batch.events[batch.next].target;
+            for event in &mut batch.events[batch.next..] {
+                if event.target == target && self.damage_prevention_allowed(event) {
+                    event.amount = 0;
+                }
+            }
             if !batch.used_preventions.contains(&key) {
                 self.remove_shield(choice.source.card);
                 batch.used_preventions.push(key);
             }
-            if prevention_allowed {
-                let target = batch.events[batch.next].target;
-                for event in &mut batch.events[batch.next..] {
-                    if event.target == target && event.preventable {
-                        event.amount = 0;
-                    }
-                }
-            }
         } else {
             let event = &mut batch.events[batch.next];
-            if event.preventable && prevention_allowed {
+            if self.damage_prevention_allowed(event) {
                 if let DamagePreventionKind::ChosenSource(id) = choice.kind {
                     self.consume_source_prevention(id, event);
                 }
@@ -4468,15 +4515,12 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn equipped_copy_recipe(&self, source: ObjectRef) -> Option<CopyRecipe> {
+    fn attached_copy_recipe(&self, source: ObjectRef) -> Option<CopyRecipe> {
         if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
             return None;
         }
-        let recipient = self.state.objects[source.card as usize].attached_to?;
-        (self.on_battlefield(recipient.card)
-            && self.object_ref(recipient.card) == recipient
-            && self.is_creature(recipient.card))
-        .then(|| self.copiable_recipe(recipient))
+        self.attachment_recipient(source.card)
+            .map(|recipient| self.copiable_recipe(recipient))
     }
     fn begin_token_event(&mut self, player: Player, amount: u128) -> bool {
         let history = &mut self.state.players[player.index()].token_creation_attempted_this_turn;

@@ -70,7 +70,7 @@ impl Game {
         // Preserve the legacy fast path when no new untapped effect applies.
         if effects.is_empty()
             && !matches!(
-                movement.before.card.entry_tapped(),
+                movement.intrinsic_entry_tapped(),
                 EntryTapped::UnlessBehold(_)
             )
         {
@@ -106,7 +106,7 @@ impl Game {
             // Recheck for every event: advancing the previous event can expose
             // another land that must choose its type before its tap replacements.
             if batch.moves[event.index].choice.is_none()
-                && batch.moves[event.index].before.card.entry_choice()
+                && batch.moves[event.index].intrinsic_entry_choice()
                     == Some(EntryChoiceKind::BasicLandType)
             {
                 self.state.pending = Pending::EntryValue {

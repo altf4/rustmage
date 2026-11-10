@@ -131,7 +131,14 @@ impl Game {
             }
             let id = event.after.card;
             let controller = self.state.objects[id as usize].controller;
-            facts[controller.index()].artifact_entered |= self.current_kinds(id) & 16 != 0;
+            let kinds = self.current_kinds(id);
+            facts[controller.index()].artifact_entered |= kinds & 16 != 0;
+            if kinds & 2 != 0 {
+                let count = &mut self.state.players[controller.index()].lands_entered_this_turn;
+                *count = count
+                    .checked_add(1)
+                    .capacity("land entry history exhausted");
+            }
             facts[controller.index()].hero_entered |= self.has_subtype(id, "Hero");
         }
         for (player, event) in self.state.players.iter_mut().zip(facts) {

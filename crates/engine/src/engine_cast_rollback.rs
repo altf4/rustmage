@@ -222,6 +222,8 @@ impl Game {
                     Action::ChooseEntryCopy { .. }
                         | Action::ChooseEntryExile { .. }
                         | Action::FinishEntryExile
+                        | Action::ChooseEntryDevour { .. }
+                        | Action::FinishEntryDevour
                         | Action::ChooseEntryBehold { .. }
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
@@ -257,6 +259,7 @@ impl Game {
             | Action::AnnounceFlashSurcharge { card }
             | Action::AnnounceGraveyardFlashSurcharge { card }
             | Action::AnnounceWarp { card }
+            | Action::AnnounceGrantedWarp { card, .. }
             | Action::AnnounceDisguise { card }
             | Action::AnnounceDisguiseGraveyard { card, .. }
             | Action::AnnounceSneak { card, .. }
@@ -283,6 +286,7 @@ impl Game {
             | Action::BeginCast { card, .. } => card,
             Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
+            | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>

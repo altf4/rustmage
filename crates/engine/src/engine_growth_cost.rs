@@ -109,21 +109,19 @@ impl Game {
         false
     }
 
-    pub(super) fn visit_planeswalker_grants(
+    pub(super) fn visit_controlled_activation_grants(
         &self,
         card: CardId,
         actor: Player,
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if self.current_kinds(card) & 64 == 0
-            || ability_world::CharacteristicWorld::activation_prohibited(self, actor, card)
-            || self.named_activation_prohibited(card)
-        {
+        let kinds = self.current_kinds(card);
+        if kinds & (16 | 64) == 0 {
             return false;
         }
         let source = self.object_ref(card);
-        let view = self.object_view(card);
+        let mut view = None;
         for &provider in &self.state.static_sources {
             let giver = &self.state.objects[provider as usize];
             if giver.zone != Zone::Battlefield || giver.controller != actor {
@@ -136,10 +134,34 @@ impl Game {
                 .iter()
                 .flat_map(|g| g.fragments)
             {
-                let StaticAbilityFragment::ControlledPlaneswalkerActivation(index) = *fragment
-                else {
-                    continue;
+                let (index, action) = match *fragment {
+                    StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
+                        if kinds & 64 != 0 =>
+                    {
+                        (
+                            index,
+                            Action::AnnouncePlaneswalkerGrant {
+                                source,
+                                grantor,
+                                ability: index,
+                            },
+                        )
+                    }
+                    StaticAbilityFragment::ControlledArtifactFood(index) if kinds & 16 != 0 => (
+                        index,
+                        Action::AnnounceArtifactFood {
+                            source,
+                            grantor,
+                            ability: index,
+                        },
+                    ),
+                    _ => continue,
                 };
+                if CharacteristicWorld::activation_prohibited(self, actor, card)
+                    || self.named_activation_prohibited(card)
+                {
+                    return false;
+                }
                 let ability = giver.card.activation(index);
                 let Some(readiness) = self
                     .external_exhaust_readiness(source, grantor, giver.card, index, actor, ability)
@@ -149,7 +171,9 @@ impl Game {
                 if activations::pure_loyalty_placement_prohibited(self, source, &readiness)
                     || (ability.cost.sacrifice
                         && CharacteristicWorld::sacrifice_prohibited(self, card))
-                    || !view.grant_available(grantor, giver.card, index, None)
+                    || !view
+                        .get_or_insert_with(|| self.object_view(card))
+                        .grant_available(grantor, giver.card, index, None)
                     || !self.activation_guard_available(ability.guard, card, actor)
                     || !Self::object_activation_available_with_kinds(
                         &self.state.objects[card as usize],
@@ -187,11 +211,7 @@ impl Game {
                 {
                     continue;
                 }
-                if emit(Action::AnnouncePlaneswalkerGrant {
-                    source,
-                    grantor,
-                    ability: index,
-                }) {
+                if emit(action) {
                     return true;
                 }
             }
@@ -199,7 +219,7 @@ impl Game {
         false
     }
 
-    pub(super) fn announce_planeswalker_grant(
+    pub(super) fn announce_controlled_activation_grant(
         &mut self,
         source: ObjectRef,
         grantor: ObjectRef,
@@ -293,25 +313,11 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn attached_tap_spec() -> AdditionalCost {
-        AdditionalCost {
-            kind: EffectChoiceKind::TapPermanents(1),
-            filter: SacrificeFilter {
-                keywords: Keywords::NONE,
-                source_only: false,
-                kinds: 0,
-                nonland: false,
-                other: true,
-                tokens: None,
-                artifact_enchantment_or_token: false,
-                subtype: None,
-            },
-        }
-    }
     pub(super) fn visit_attached_activations(
         &self,
         card: CardId,
         actor: Player,
+        sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let grantor = self.object_ref(card);
@@ -321,7 +327,6 @@ impl Game {
         };
         let source = self.object_view(recipient.card);
         for (index, ability) in giver.card.activations().iter().enumerate() {
-            let tap_attachment = giver.card.attached_activation_taps(index as u16);
             let Some(readiness) = self.external_exhaust_readiness(
                 recipient,
                 grantor,
@@ -343,6 +348,7 @@ impl Game {
                         || self.named_activation_prohibited(recipient.card)))
                 || (ability.cost.sacrifice
                     && CharacteristicWorld::sacrifice_prohibited(self, recipient.card))
+                || !self.activation_guard_available(ability.guard, recipient.card, actor)
                 || !Self::object_activation_available_with_kinds(
                     &self.state.objects[recipient.card as usize],
                     self.counter_amounts(recipient.card),
@@ -357,35 +363,15 @@ impl Game {
                     &readiness,
                     index,
                     actor,
-                    false,
+                    self.loyalty_timing(recipient.card, ability, actor, sorcery),
                 )
-                || (tap_attachment
-                    && !self.additional_candidate(
-                        Self::attached_tap_spec(),
-                        actor,
-                        recipient,
-                        grantor,
-                    ))
             {
                 continue;
             }
-            if self
-                .activation_mana_costs(recipient.card, giver.card, index as u16, 0)
-                .any(|cost| {
-                    self.can_fund(FundingGoal {
-                        actor,
-                        required: cost.colored,
-                        generic: cost.generic,
-                        reserve: tap_attachment.then_some((grantor, Self::attached_tap_spec())),
-                        source: Some((
-                            recipient,
-                            index as u16,
-                            Counters::default(),
-                            giver.card,
-                            None,
-                        )),
-                    })
-                })
+            let item = self.attached_activation_packet(actor, recipient, grantor, index as u16);
+            if (ability.declares_target_value_x()
+                || self.item_targets_available(&item, ability.targets))
+                && self.initial_activation_packet_target_fundable(&item, &Counters::default())
                 && emit(Action::AnnounceAttachedAbility {
                     grantor,
                     ability: index as u16,
@@ -398,9 +384,21 @@ impl Game {
     }
     pub(super) fn announce_attached_ability(&mut self, grantor: ObjectRef, ability: u16) {
         let recipient = self.attachment_recipient(grantor.card).unwrap();
-        let giver = self.state.objects[grantor.card as usize].card;
         let actor = self.state.objects[recipient.card as usize].controller;
-        let mut item = self.activation_item(actor, recipient.card, ability);
+        let mut item = self.attached_activation_packet(actor, recipient, grantor, ability);
+        item.id = self.next_stack_id();
+        self.state.passes = 0;
+        self.open_payment_announcement(item, Counters::default(), None);
+    }
+    fn attached_activation_packet(
+        &self,
+        actor: Player,
+        recipient: ObjectRef,
+        grantor: ObjectRef,
+        ability: u16,
+    ) -> SpellView {
+        let giver = self.state.objects[grantor.card as usize].card;
+        let mut item = self.activation_packet(actor, recipient.card, ability);
         item.set_source_definition(giver);
         item.source_ability_origin = self.copied_grant_origin(grantor);
         item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
@@ -411,7 +409,7 @@ impl Game {
             granted: true,
             origin: item.source_ability_origin,
         }));
-        self.open_payment_announcement(item, Counters::default(), None);
+        item
     }
     pub(super) fn attached_untap_triggers(&mut self, untapped: &[ObjectRef]) {
         let sources = self.state.attachment_sources.clone();
@@ -551,19 +549,58 @@ impl Game {
     }
 }
 
-// Grant provenance alone creates no payment obligation. The immutable grant
-// declares whether its printed cost also taps the distinct attachment grantor.
+// Grant provenance binds printed costs to the same permanent that gave the
+// ability (CR 201.5a), even after an intervening mana ability ends the grant.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
-    pub(super) fn attached_activation_tap_cost(&self) -> Option<ObjectRef> {
+    fn attached_activation_grant(&self) -> Option<(&AttachmentTriggerView, u16)> {
         let StackKind::ActivatedAbility { ability } = self.kind else {
             return None;
         };
-        let source = self.source?;
-        let grant = self.attachment_trigger.as_ref()?;
-        (grant.granted
-            && grant.grantor != source.object
-            && grant.granting_card.attached_activation_taps(ability))
-        .then_some(grant.grantor)
+        let grant = self.attachment_trigger.as_deref()?;
+        (grant.granted && grant.grantor != self.source?.object).then_some((grant, ability))
+    }
+
+    pub(super) fn attached_activation_tap_cost(&self) -> Option<ObjectRef> {
+        let (grant, ability) = self.attached_activation_grant()?;
+        grant
+            .granting_card
+            .attached_activation_taps(ability)
+            .then_some(grant.grantor)
+    }
+
+    pub(super) fn attached_activation_exile_cost(&self) -> Option<ObjectRef> {
+        let (grant, ability) = self.attached_activation_grant()?;
+        grant
+            .granting_card
+            .attached_activation_exiles(ability)
+            .then_some(grant.grantor)
+    }
+
+    pub(super) fn attached_activation_reserve(&self) -> Option<(ObjectRef, AdditionalCost)> {
+        let (grantor, kind) = if let Some(grantor) = self.attached_activation_tap_cost() {
+            (grantor, EffectChoiceKind::TapPermanents(1))
+        } else {
+            (
+                self.attached_activation_exile_cost()?,
+                EffectChoiceKind::ExileGrantingAttachment,
+            )
+        };
+        Some((
+            grantor,
+            AdditionalCost {
+                kind,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 0,
+                    nonland: false,
+                    other: true,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            },
+        ))
     }
 }

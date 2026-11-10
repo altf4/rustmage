@@ -159,13 +159,7 @@ impl Game {
                 };
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
-                return a
-                    .item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card
-                    .warp_cost()
-                    .expect("fixed Warp cost");
+                return a.warp_spec().mana;
             }
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Airbend) {
                 return ManaCost {
@@ -228,7 +222,8 @@ impl Game {
             base.generic = base
                 .generic
                 .checked_add(a.behold_decline_generic())
-                .capacity("behold alternative mana cost exhausted");
+                .and_then(|generic| generic.checked_add(a.exile_play_surcharge()))
+                .capacity("spell generic cost exhausted");
         }
         if a.forage
             .as_ref()

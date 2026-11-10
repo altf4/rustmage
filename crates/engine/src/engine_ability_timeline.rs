@@ -95,10 +95,12 @@ impl Card {
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
+                            | StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
+                            | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
@@ -118,6 +120,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
+                            | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)
@@ -171,6 +174,7 @@ impl Game {
                         fragment,
                         StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::AttachedChosenColor
+                            | StaticAbilityFragment::ControlledArtifactFood(_)
                     )
                 })
             })

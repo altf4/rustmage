@@ -46,6 +46,8 @@ pub enum AdditionalTriggerScope {
     SourceAndAttachedEquipment,
     /// A land or this subtype entering caused a controlled permanent's trigger.
     ControlledLandOrSubtypeEntry(&'static str),
+    /// Any permanent entering caused a controlled permanent's ability to trigger.
+    ControlledPermanentEntry,
     /// Grant the bearer a multiplier for death triggers of itself and emblems it owns.
     EquippedCreatureAndOwnedEmblemDeath,
     /// Only abilities triggered by a creature attacking, never other events.
@@ -134,6 +136,8 @@ pub enum StaticAbilityFragment {
     AttachedCreaturePreventsSourceAttack,
     /// Controlled creatures with greater toughness assign combat damage using toughness.
     ControlledCombatDamageByGreaterToughness,
+    /// Controlled creatures with greater toughness use it when station resolves.
+    ControlledStationWithGreaterToughness,
     /// Attached creature assigns combat damage with toughness only when greater.
     AttachmentCombatToughnessIfGreater,
     /// Add one independent blocking requirement for this creature.
@@ -160,6 +164,12 @@ pub enum StaticAbilityFragment {
     FreeHandCast,
     /// An alternative mana cost only; the card needs an independent legal origin.
     FreeSpellCast(CastFilter),
+    /// Both players may take this alternative for their first spell of their turn.
+    FreeFirstSpellOnOwnTurn,
+    GrantHandWarp {
+        filter: CastFilter,
+        cost: ManaCost,
+    },
     FreeHandCastAtMostControlledCreatures,
     GrantInstantSorceryStorm {
         ability: u16,
@@ -225,6 +235,9 @@ pub enum StaticAbilityFragment {
         kind: CounterKind,
         amount: u64,
     },
+    /// Controlled creatures enter with an additional +1/+1 counter per land
+    /// that previously entered under this provider controller this turn.
+    ControlledCreatureEntryCountersForLandsEntered,
     /// Additional counters on other controlled entrants, selected by effective mana value.
     OtherControlledEntryCountersByManaValue {
         filter: ReplacementFilter,
@@ -254,6 +267,11 @@ pub enum StaticAbilityFragment {
     /// Live grant to tapped controlled creatures, including virtual payment taps.
     ControlledTappedKeywords {
         other: bool,
+        keywords: Keywords,
+    },
+    /// Live grant to other tapped legendary creatures while the provider qualifies.
+    ControlledOtherTappedLegendaryCreatureKeywords {
+        condition: StatValue,
         keywords: Keywords,
     },
     /// Grant the immutable activated template to controlled planeswalkers.
@@ -298,6 +316,8 @@ pub enum StaticAbilityFragment {
     FirstCoinFlipsHeads,
     CantGainLife,
     DamageCantBePrevented,
+    /// Combat damage from any source ignores prevention.
+    CombatDamageCantBePrevented,
     /// This exact permanent keeps marked damage as the cleanup step removes other damage.
     RetainDamageDuringCleanup,
     NoMaximumHandSize,
@@ -414,6 +434,14 @@ pub enum StaticAbilityFragment {
     },
     /// Grant a tap mana ability to each other permanent its controller controls.
     OtherControlledPermanentTapMana(ManaProduction),
+    /// Grant a tap mana ability to controlled permanents of the indicated card types.
+    ControlledPermanentTapMana {
+        kinds: u16,
+        production: ManaProduction,
+    },
+    /// In layer four add Food to controlled artifacts. In layer six grant them
+    /// this indexed activation template as part of the same continuous effect.
+    ControlledArtifactFood(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {
@@ -482,6 +510,8 @@ pub enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    /// This permanent can block only attacking creatures with flying.
+    CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.
     ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
     EntryTriggerSuppression(u16, u16),
@@ -527,6 +557,8 @@ pub enum SourceCreatureForm {
     Creature,
     /// Becoming an artifact creature retains other card types (CR 205.1b).
     ArtifactCreature,
+    /// Add only the creature type, as a Station threshold does (CR 721.2b).
+    AddCreature,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]

@@ -144,12 +144,27 @@ impl Game {
                 .map_or(0, |(_, object)| {
                     i128::from(!object.dealt_damage_this_incarnation)
                 }),
+            StatValue::MulticoloredPermanentsYouControl => objects()
+                .filter(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && colors(*id).count_ones() >= 2
+                })
+                .count() as i128,
             StatValue::CounterBearingCreatures => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
                         && object.controller == owner
                         && kinds(*id, object) & 1 != 0
                         && has_counters(*id)
+                })
+                .count() as i128,
+            StatValue::ControlledCreaturesWithCounter(kind) => objects()
+                .filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 1 != 0
+                        && counter_count(id, kind) > 0
                 })
                 .count() as i128,
             StatValue::DistinctCreatureCounterKinds => {
@@ -715,7 +730,9 @@ impl Game {
             | AmountValue::SacrificedPower
             | AmountValue::ReflexiveSacrificedPower
             | AmountValue::SacrificeCostPower
+            | AmountValue::SacrificeCostManaValueWithBonus(_)
             | AmountValue::TappedCostCreaturePower
+            | AmountValue::ChosenCostCreaturePower
             | AmountValue::TargetCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
@@ -726,6 +743,7 @@ impl Game {
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
+            | AmountValue::CounterPlacementAmount
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DepartureCounterCount(_)
             | AmountValue::DeathEventPower

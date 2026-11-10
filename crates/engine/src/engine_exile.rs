@@ -28,6 +28,10 @@ pub struct ExilePlayPermission {
     pub airbend: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requires_subtype: Option<&'static str>,
+    /// A distinct play permission: charge this generic fee for spells, or
+    /// put a land played via this permission onto the battlefield tapped.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub play_surcharge: Option<std::num::NonZeroU32>,
 }
 /// Deadline boundaries refer to actual turns, never to skipped turn candidates.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -108,7 +112,8 @@ impl Game {
     pub(super) fn has_printed_cost_exile_permission(&self, player: Player, card: CardId) -> bool {
         let object = self.object_ref(card);
         self.state.exile_permissions.iter().any(|p| {
-            !p.life_instead_of_mana
+            p.play_surcharge.is_none()
+                && !p.life_instead_of_mana
                 && !p.without_paying_mana_cost
                 && !p.airbend
                 && p.player == player
@@ -125,7 +130,8 @@ impl Game {
         self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {
-                !p.airbend
+                p.play_surcharge.is_none()
+                    && !p.airbend
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
@@ -451,9 +457,240 @@ impl Game {
                 without_paying_mana_cost: false,
                 airbend: false,
                 requires_subtype: None,
+                play_surcharge: None,
             },
         );
         Some(&mut self.state.exile_permissions[at])
+    }
+
+    pub(super) fn grant_taxed_exile_play(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        surcharge: std::num::NonZeroU32,
+    ) {
+        if let Some(permission) = self.grant_exile_play_permission_with_expiry(
+            player,
+            object,
+            None,
+            ExilePlayExpiry::WhileExiled,
+        ) {
+            permission.play_surcharge = Some(surcharge);
+        }
+    }
+
+    pub(super) fn exile_top_play_while_control_subtype(
+        &mut self,
+        player: Player,
+        subtype: &'static str,
+    ) {
+        let Some(top) = self.top_library_card(player) else {
+            return;
+        };
+        let events = self.move_objects_raw(&[top], Zone::Exile);
+        for event in &events {
+            if event.moved
+                && event.destination == Zone::Exile
+                && let Some(permission) = self.grant_exile_play_permission_with_expiry(
+                    player,
+                    event.after,
+                    None,
+                    ExilePlayExpiry::WhileExiled,
+                )
+            {
+                permission.requires_subtype = Some(subtype);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn exile_until_nonland_cast_this_turn(&mut self, player: Player) {
+        while let Some(top) = self.top_library_card(player) {
+            let events = self.move_objects_raw(&[top], Zone::Exile);
+            let nonland = events.iter().find(|event| {
+                event.moved && event.destination == Zone::Exile && !event.before.card.is_land()
+            });
+            if let Some(event) = nonland
+                && let Some(permission) = self.grant_exile_play_permission_with_expiry(
+                    player,
+                    event.after,
+                    None,
+                    ExilePlayExpiry::Turn(self.state.turn),
+                )
+            {
+                permission.cast_only = true;
+            }
+            self.finish_zone_events(&events, &[]);
+            if nonland.is_some() || !events.iter().any(|event| event.moved) {
+                break;
+            }
+        }
+    }
+
+    pub(super) fn visit_taxed_exile_plays(
+        &self,
+        actor: Player,
+        card: CardId,
+        sorcery: bool,
+        casting_prohibited: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let current = &self.state.objects[card as usize];
+        if current.zone != Zone::Exile || !current.is_card() || !current.card.is_supported() {
+            return false;
+        }
+        let object = self.object_ref(card);
+        let permissions = &self.state.exile_permissions;
+        let first = permissions.partition_point(|permission| permission.object.card < card);
+        let mut offered = Vec::new();
+        for permission in &permissions[first..] {
+            if permission.object.card != card {
+                break;
+            }
+            let Some(surcharge) = permission.play_surcharge else {
+                continue;
+            };
+            if permission.object != object
+                || permission.player != actor
+                || !permission.expiry.active(self.state.turn)
+                || !self.exile_permission_guard(permission)
+                || offered.contains(&surcharge)
+            {
+                continue;
+            }
+            if current.card.is_land() {
+                return !permission.cast_only
+                    && sorcery
+                    && (!self.state.land_played
+                        || self
+                            .continuous_land_plays(actor)
+                            .checked_add(self.state.players[actor.index()].extra_land_plays_granted)
+                            .capacity("land allowance exhausted")
+                            > self.state.continuous_land_plays_used)
+                    && emit(Action::PlayTaxedExileLand { object });
+            }
+            offered.push(surcharge);
+            if !casting_prohibited
+                && !self.nonhand_cast_prohibited(actor)
+                && self.visit_taxed_exile_casts(actor, object, sorcery, surcharge, emit)
+            {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn visit_taxed_exile_casts(
+        &self,
+        actor: Player,
+        object: ObjectRef,
+        sorcery: bool,
+        surcharge: std::num::NonZeroU32,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let physical = self.state.objects[object.card as usize].card;
+        for (face, definition) in [
+            (CastFace::Normal, Some(physical)),
+            (CastFace::Adventure, physical.adventure_spell()),
+            (CastFace::Omen, physical.omen_spell()),
+            (CastFace::Back, physical.back_face()),
+        ] {
+            let Some(definition) = definition.filter(|card| !card.is_land()) else {
+                continue;
+            };
+            let free = self.filtered_free_cast_available(actor, definition)
+                || self.turn_free_creature_available(actor, definition);
+            let sneak = face == CastFace::Normal
+                && self.state.active == actor
+                && self.state.step == Step::Blockers
+                && self.has_sneak_cost(actor, object.card);
+            let methods = [
+                Some(CastMethod::Normal),
+                free.then_some(CastMethod::Free),
+                sneak.then_some(CastMethod::Sneak),
+            ];
+            for method in methods.into_iter().flatten() {
+                for flash_surcharge in [false, true] {
+                    if flash_surcharge
+                        && (method == CastMethod::Sneak || definition.flash_surcharge().is_none())
+                    {
+                        continue;
+                    }
+                    if self.permitted_cast_with_alternative(
+                        actor,
+                        object.card,
+                        method,
+                        face,
+                        sorcery,
+                        flash_surcharge,
+                        None,
+                        None,
+                        None,
+                        false,
+                        cast_permissions::OriginAlternative {
+                            exile_play_surcharge: surcharge.get(),
+                            ..Default::default()
+                        },
+                    ) && emit(Action::AnnounceTaxedExile {
+                        object,
+                        face,
+                        method,
+                        flash_surcharge,
+                        surcharge,
+                    }) {
+                        return true;
+                    }
+                }
+            }
+        }
+        let disguised =
+            || Card::from_name("@face-down/disguise").expect("pinned catalogue identity");
+        physical.disguise_cost().is_some()
+            && (sorcery || self.cast_timing_granted(actor, disguised()))
+            && self.disguise_mana_fundable_with_surcharge(actor, object.card, surcharge.get())
+            && emit(Action::AnnounceTaxedExile {
+                object,
+                face: CastFace::Normal,
+                method: CastMethod::Disguise,
+                flash_surcharge: false,
+                surcharge,
+            })
+    }
+
+    pub(super) fn configure_taxed_exile_cast(item: &mut SpellView, surcharge: u32) {
+        let cast = item.cast.as_mut().expect("taxed exile cast");
+        cast.exile_play_surcharge = surcharge;
+        // Separate permissions cannot lend terms to the route being used.
+        cast.spend_any_mana = false;
+        cast.exile_on_graveyard = false;
+        cast.stash_origin = false;
+    }
+
+    pub(super) fn start_taxed_exile_cast(
+        &mut self,
+        actor: Player,
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        surcharge: std::num::NonZeroU32,
+    ) {
+        let mut item = if method == CastMethod::Disguise {
+            self.cast_disguised_item(actor, object.card)
+        } else {
+            self.cast_item(actor, object.card, [0; 6])
+        };
+        self.set_cast_face(&mut item, face);
+        let cast = item.cast.as_mut().expect("taxed exile cast");
+        cast.method = method;
+        cast.flash_surcharge = flash_surcharge;
+        if method == CastMethod::Sneak {
+            Self::configure_sneak(&mut item);
+        } else if method == CastMethod::Free && item.source.unwrap().card.x_symbols() > 0 {
+            item.x = Some(0);
+        }
+        Self::configure_taxed_exile_cast(&mut item, surcharge.get());
+        self.open_payment_announcement(item, Counters::default(), None);
     }
 
     pub(super) fn grant_flexible_exile_permission_this_turn(
@@ -566,6 +803,7 @@ impl Game {
             .iter()
             .filter(|link| {
                 link.source == source.object
+                    && link.ability_origin == item.source_ability_origin
                     && self.object_ref(link.exiled.card) == link.exiled
                     && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
                     && self.state.objects[link.exiled.card as usize].is_card()
@@ -896,6 +1134,7 @@ impl Game {
                 without_paying_mana_cost: true,
                 airbend: false,
                 requires_subtype: None,
+                play_surcharge: None,
             },
         );
     }
@@ -1040,6 +1279,7 @@ impl Game {
                     without_paying_mana_cost: false,
                     airbend: false,
                     requires_subtype: Some(subtype),
+                    play_surcharge: None,
                 },
             );
         }
@@ -1132,6 +1372,7 @@ impl Game {
                 without_paying_mana_cost: false,
                 airbend: true,
                 requires_subtype: None,
+                play_surcharge: None,
             },
         );
     }

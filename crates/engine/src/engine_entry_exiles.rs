@@ -30,7 +30,8 @@ pub(super) fn needs_exile(m: &entries::EntryMove) -> bool {
         && m.before.zone != Zone::Battlefield
         && !m.skipped
         && m.manifest_original.is_none()
-        && m.before.card.entry_exile_counters().is_some()
+        && m.intrinsic_entry_card()
+            .is_some_and(|card| card.entry_exile_counters().is_some())
         && m.exile_preparation.as_ref().is_none_or(|p| !p.done)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

@@ -133,6 +133,7 @@ impl Announcement {
                 s.kind.payment_kind(),
                 EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::BeholdAndExile
+                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
                     | EffectChoiceKind::BlightCost(_)
             )
         }) {

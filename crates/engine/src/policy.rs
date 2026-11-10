@@ -370,12 +370,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFlashSurcharge { .. }
             | Action::AnnounceGraveyardFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
+            | Action::AnnounceGrantedWarp { .. }
             | Action::AnnounceDisguise { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
             | Action::AnnounceExile { .. }
+            | Action::AnnounceTaxedExile { .. }
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileFree { .. }
@@ -388,6 +390,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
+            | Action::AnnounceArtifactFood { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceEmbalm { .. }
@@ -498,6 +501,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseEntryValue { .. } => 0,
             Action::ChooseEntryExile { .. } => 60,
             Action::FinishEntryExile => 0,
+            Action::ChooseEntryDevour { .. } => -1,
+            Action::FinishEntryDevour => 0,
             Action::ChooseEntryCopy { object } => {
                 // Copying an unchanged as-entry copier grants a fresh choice.
                 // Prefer a completed blueprint and decline copy-only loops.
@@ -542,6 +547,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::BeginOnBattlefield { .. } => 110,
             Action::Mulligan => -100,
             Action::PlayLand { .. }
+            | Action::PlayTaxedExileLand { .. }
             | Action::PlayGraveyardPermanent {
                 permanent_type: crate::PermanentType::Land,
                 ..
