@@ -865,6 +865,7 @@ define_actions! {
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
+    ChoosePowerThreshold { value: u16 },
     PutHandCreature { object: ObjectRef },
     PutHandPermanent { object: ObjectRef },
     PutHandLand { object: ObjectRef },
@@ -2945,6 +2946,11 @@ enum Pending {
     ResolutionColor {
         player: Player,
     },
+    PowerThreshold {
+        player: Player,
+        minimum: u16,
+        maximum: u16,
+    },
     KeywordChoice {
         player: Player,
         // Keep the common Pending value compact; the collection exists only during this choice.
@@ -4580,6 +4586,7 @@ impl Game {
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
             | Pending::ResolutionColor { player }
+            | Pending::PowerThreshold { player, .. }
             | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
             | Pending::HandDefender { player }
@@ -5369,6 +5376,15 @@ impl Game {
             Pending::HandDefender { .. } => {
                 if self.visit_hand_defenders(&mut emit) {
                     return true;
+                }
+            }
+            Pending::PowerThreshold {
+                minimum, maximum, ..
+            } => {
+                for value in minimum..=maximum {
+                    if emit(Action::ChoosePowerThreshold { value }) {
+                        return true;
+                    }
                 }
             }
             Pending::ResolutionColor { .. } => {
@@ -8719,6 +8735,10 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::ChoosePowerThreshold { value } => {
+                self.destroy_creatures_by_power(value);
+                self.run_program();
+            }
             Action::ChooseResolutionColor { color } => {
                 let resolution = self
                     .state
@@ -11980,6 +12000,7 @@ impl Game {
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::ResolutionColor { .. } => "resolution_color",
+                Pending::PowerThreshold { .. } => "power_threshold",
                 Pending::Proliferate { .. } => "proliferate",
                 Pending::EffectChoice { .. } => "effect_choice",
                 Pending::EntryTimestamp { .. } => "entry_timestamps",

@@ -342,6 +342,7 @@ impl Game {
                     objects().map(|(_, object)| object),
                 ) as i128
             }
+            StatValue::ControllerTurn => i128::from(self.state.active == owner),
             StatValue::ControllerEndStep => {
                 i128::from(self.state.step == Step::End && self.state.active == owner)
             }

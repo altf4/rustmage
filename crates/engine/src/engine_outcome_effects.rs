@@ -35,6 +35,25 @@ impl Game {
         events
     }
 
+    pub(super) fn destroy_creatures_by_power(&mut self, minimum: u16) {
+        // Read all powers before any creature leaves the battlefield.
+        let query = self.characteristic_query();
+        let objects = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && self.is_creature(id)
+                    && query.stats(id).power >= i128::from(minimum))
+                .then(|| self.object_ref(id))
+            })
+            .collect::<Vec<_>>();
+        self.destroy_objects_outcome(objects);
+    }
+
     pub(super) fn destroy_creatures_by_toughness(&mut self, maximum: i128, remember: bool) {
         // Freeze the full group before any destruction changes derived toughness.
         let query = self.characteristic_query();

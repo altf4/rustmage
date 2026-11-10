@@ -1193,6 +1193,9 @@ impl FundingState<'_> {
                         )
                     }))
                 }
+                crate::cards::EntryChoiceKind::NumberRange { minimum, maximum } => {
+                    choices.extend((minimum..=maximum).map(EntryChoiceValue::Number));
+                }
                 crate::cards::EntryChoiceKind::NoncreatureCardTypeAfterOpponentHand => choices
                     .extend(
                         crate::cards::NoncreatureCardType::ALL

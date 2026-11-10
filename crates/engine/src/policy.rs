@@ -746,7 +746,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseToken { .. } => 10,
-            Action::ChooseKeyword { .. } | Action::ChooseResolutionColor { .. } => 10,
+            Action::ChooseKeyword { .. }
+            | Action::ChooseResolutionColor { .. }
+            | Action::ChoosePowerThreshold { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,

@@ -653,6 +653,7 @@ impl BasicLandType {
 pub enum EntryChoiceValue {
     /// Zero-based selection from this definition's bounded named entry choices.
     NamedMode(u16),
+    Number(u16),
     CardName(crate::CardName),
     CardType(NoncreatureCardType),
     Color(ChoiceColor),
@@ -723,6 +724,10 @@ impl NoncreatureCardType {
 pub enum EntryChoiceKind {
     /// Printed names, in stable source-local order; no text is interpreted.
     NamedModes(&'static [&'static str]),
+    NumberRange {
+        minimum: u16,
+        maximum: u16,
+    },
     CardName,
     NonlandCardName,
     CardNameAfterOpponentHand,
@@ -754,6 +759,9 @@ impl EntryChoiceKind {
     pub(crate) fn matches(self, value: EntryChoiceValue) -> bool {
         if let Self::NamedModes(names) = self {
             return matches!(value, EntryChoiceValue::NamedMode(index) if usize::from(index) < names.len());
+        }
+        if let Self::NumberRange { minimum, maximum } = self {
+            return matches!(value, EntryChoiceValue::Number(number) if (minimum..=maximum).contains(&number));
         }
         if let Self::CreatureTypes(names) = self {
             return matches!(value, EntryChoiceValue::CreatureType(kind) if names.contains(&kind.name()));
@@ -2012,6 +2020,11 @@ pub enum Instruction {
     /// Grow the exact current attack/block event creature by its absolute stat difference.
     GrowEventPowerToughnessDifference,
     ChooseColor,
+    /// Choose a number on resolution, then simultaneously destroy creatures with at least that power.
+    ChooseNumberDestroyPowerAtLeast {
+        minimum: u16,
+        maximum: u16,
+    },
     SetColors {
         subject: Subject,
         colors: ColorValue,
@@ -4673,6 +4686,7 @@ pub enum StatValue {
     GraveyardInstantSorceryAdventure,
     /// Live condition for a provider's own end step, including projected control.
     ControllerEndStep,
+    ControllerTurn,
     Fixed(u16),
     TappedCount(CountFilter),
     Not(&'static StatValue),
@@ -5618,6 +5632,8 @@ pub enum CastFilter {
     HasX,
     SourceChosenColor,
     SourceChosenManaValueParity,
+    /// A committed cast's mana value, or its creature spell's power or toughness.
+    SourceChosenNumberMatchesSpell,
     PermanentAdventure,
     Any,
     Colorless,
@@ -5689,6 +5705,7 @@ impl CastFilter {
             | Self::CreatureToughnessGreaterThanPower
             | Self::CreatureManaValueEqualsSourcePower
             | Self::SourceChosenManaValueParity
+            | Self::SourceChosenNumberMatchesSpell
             | Self::TargetCount { .. }
             | Self::Targeted { .. }
             | Self::InstantSorceryOrdinal(_)

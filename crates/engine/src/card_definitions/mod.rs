@@ -56,6 +56,9 @@ impl CardRules {
                 );
             }
         }
+        if let Some(EntryChoiceKind::NumberRange { minimum, maximum }) = self.extras.entry_choice {
+            assert!(minimum <= maximum, "empty entry number range");
+        }
         let mode_count = match self.extras.entry_choice {
             Some(EntryChoiceKind::NamedModes(names)) => {
                 assert!(!names.is_empty(), "named entry modes cannot be empty");

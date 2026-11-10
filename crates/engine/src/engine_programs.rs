@@ -2028,6 +2028,21 @@ impl Game {
         }
     }
 
+    fn cast_matches_entry_number(&self, source: &ObjectView, event: &CastPaymentEvent) -> bool {
+        let Some(EntryChoiceValue::Number(number)) = source.entry_choice else {
+            return false;
+        };
+        if event.mana_value == u64::from(number) {
+            return true;
+        }
+        if !event.card.is_creature() {
+            return false;
+        }
+        let stats = self.stats(event.object.card);
+        let number = i128::from(number);
+        stats.power == number || stats.toughness == number
+    }
+
     pub(super) fn record_cast(&mut self, caster: Player, card: Card, stack: Option<usize>) {
         // Every committed path classifies the selected spell face, including
         // manual direct-payment insertion. The physical front may differ.
@@ -2152,6 +2167,10 @@ impl Game {
                                         self.state.objects[source.id as usize].is_spell_copy()
                                     })
                             })
+                        } else if filter == CastFilter::SourceChosenNumberMatchesSpell {
+                            cast_event
+                                .as_ref()
+                                .is_some_and(|event| self.cast_matches_entry_number(&source, event))
                         } else if filter == CastFilter::Colorless {
                             stack
                                 .and_then(|i| self.state.stack[i].source)
@@ -6798,6 +6817,15 @@ impl Game {
                     {
                         self.draw_many(item.controller, 1);
                     }
+                }
+                Instruction::ChooseNumberDestroyPowerAtLeast { minimum, maximum } => {
+                    assert!(minimum <= maximum, "empty resolution number range");
+                    self.state.pending = Pending::PowerThreshold {
+                        player: item.controller,
+                        minimum,
+                        maximum,
+                    };
+                    return;
                 }
                 Instruction::ChooseColor => {
                     self.state.resolving.as_mut().unwrap().chosen_color = None;
