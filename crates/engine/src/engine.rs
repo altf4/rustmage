@@ -1542,6 +1542,9 @@ pub struct CastInfo {
     pub payment: Mana,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub treasure_mana_spent: bool,
+    /// Whether the caster controlled a permanent of the requested subtype after costs.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub controlled_subtype_at_cast: bool,
     pub origin: Zone,
     /// Counter qualification captured before the exile-to-stack transition.
     pub stash_origin: bool,

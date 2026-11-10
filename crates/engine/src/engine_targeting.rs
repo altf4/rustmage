@@ -2678,6 +2678,7 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 treasure_mana_spent: false,
+                controlled_subtype_at_cast: false,
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,

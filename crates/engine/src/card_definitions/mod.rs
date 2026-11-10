@@ -332,6 +332,8 @@ pub struct CardExtras {
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
+    /// Subtype whose presence among the caster's permanents is recorded after costs.
+    pub cast_controlled_subtype: Option<&'static str>,
     /// Minimum cards in the caster's graveyard after this spell leaves its origin.
     pub cast_graveyard_minimum: u8,
     /// Cannot cast this spell during the caster's first three turns.
@@ -484,6 +486,7 @@ impl CardExtras {
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
+        cast_controlled_subtype: None,
         cast_graveyard_minimum: 0,
         cast_after_first_three_turns: false,
         prepared_spell: None,

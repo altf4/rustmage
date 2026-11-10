@@ -2273,6 +2273,11 @@ pub enum Instruction {
     IfCastFromGraveyard {
         skip: usize,
     },
+    /// Skip unless the caster controlled a permanent of this face's declared subtype
+    /// when the spell became cast. An uncast copy has no such cast history.
+    IfCastWithControlledSubtype {
+        skip: usize,
+    },
     /// Compare the selected alternative cost, including for a copied spell.
     IfMayhemPaid {
         paid: bool,
@@ -6265,6 +6270,10 @@ pub enum TriggerCondition {
     DelayedSpellCastAny,
     /// Source-independent one-shot callback for the next creature spell.
     DelayedSpellCastCreature,
+    /// One-shot callback for a committed instant or sorcery cast at or below this value.
+    DelayedInstantSorceryCastManaValueAtMost {
+        maximum: u64,
+    },
     /// The controller played a land as a special action or committed a spell cast.
     SpellCastOrLandPlayed,
     SpellCast {
@@ -7243,6 +7252,9 @@ impl Card {
     }
     pub(crate) fn spell_cannot_be_copied(self) -> bool {
         authored::rules(self).is_some_and(|r| r.extras.spell_cannot_be_copied)
+    }
+    pub(crate) fn cast_controlled_subtype(self) -> Option<&'static str> {
+        authored::rules(self).and_then(|rules| rules.extras.cast_controlled_subtype)
     }
     pub(crate) fn is_prepared_face(self) -> bool {
         authored::rules(self).is_some_and(|rules| rules.extras.prepared_identity.is_some())

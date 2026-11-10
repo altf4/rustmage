@@ -1051,6 +1051,7 @@ impl Game {
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
                     | TriggerCondition::DelayedSpellCastCreature
+                    | TriggerCondition::DelayedInstantSorceryCastManaValueAtMost { .. }
                     | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
@@ -2031,6 +2032,18 @@ impl Game {
             .and_then(|i| self.state.stack[i].source.map(|source| source.card))
             .unwrap_or(card);
         if let Some(index) = stack {
+            if let Some(subtype) = card.cast_controlled_subtype() {
+                let controlled = self.state.objects.iter().enumerate().any(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == caster
+                        && self.has_subtype(id as CardId, subtype)
+                });
+                self.state.stack[index]
+                    .cast
+                    .as_mut()
+                    .expect("committed spell has a cast record")
+                    .controlled_subtype_at_cast = controlled;
+            }
             let item = self.state.stack[index].clone();
             self.state.void_active_this_turn |= item
                 .cast
@@ -5013,6 +5026,14 @@ impl Game {
                 Instruction::SacrificeGreatestPower => {
                     if self.start_greatest_power_choice(&item) {
                         return;
+                    }
+                }
+                Instruction::IfCastWithControlledSubtype { skip } => {
+                    if !item
+                        .cast
+                        .is_some_and(|cast| cast.controlled_subtype_at_cast)
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::IfBargained { skip } => {

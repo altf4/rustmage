@@ -508,6 +508,11 @@ impl Game {
             let condition = ability.condition.event();
             let matching_type = match condition {
                 TriggerCondition::DelayedSpellCastCreature => creature_cast.is_some(),
+                TriggerCondition::DelayedInstantSorceryCastManaValueAtMost { maximum } => {
+                    instant_or_sorcery
+                        && !spell.is_copy
+                        && cast_event.is_some_and(|event| event.mana_value <= maximum)
+                }
                 TriggerCondition::DelayedSpellCastAny => true,
                 _ => instant_or_sorcery,
             };
@@ -661,6 +666,7 @@ impl Game {
         copy.is_copy = true;
         if let Some(cast) = &mut copy.cast {
             cast.payment = [0; 6];
+            cast.controlled_subtype_at_cast = false;
             cast.behold_exiled = None;
             // The permission-created replacement is external to copiable values.
             cast.exile_on_graveyard = false;
