@@ -17,6 +17,22 @@ pub enum SelfGrantedAbilityKind {
     OwnTurnFirstStrike,
     /// A real immutable activated template, independently acquired per grant.
     Activated { ability: u16 },
+    /// Equip and the static bonus granted by the same Equipment form.
+    EquipAndBoost {
+        equip: u16,
+        power: i32,
+        toughness: i32,
+    },
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SelfGrantedAbilityKind {
+    pub(super) fn activation(self) -> Option<u16> {
+        match self {
+            Self::Activated { ability } => Some(ability),
+            Self::EquipAndBoost { equip, .. } => Some(equip),
+            _ => None,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -120,7 +136,7 @@ impl Game {
         if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
             return;
         }
-        if let SelfGrantedAbilityKind::Activated { ability } = kind {
+        if let Some(ability) = kind.activation() {
             assert!(definition.self_granted_activation_template(ability));
             let rules = definition.activation(ability);
             assert!(
@@ -128,6 +144,12 @@ impl Game {
                     && !definition.power_up_abilities().contains(&ability),
                 "unsupported granted source-zone or power-up lifecycle"
             );
+            if matches!(kind, SelfGrantedAbilityKind::EquipAndBoost { .. }) {
+                assert!(
+                    rules.is_equip(),
+                    "Equipment form requires an equip template"
+                );
+            }
         }
         self.state
             .self_granted_abilities
@@ -199,6 +221,35 @@ impl Game {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<W: CharacteristicWorld + ?Sized> characteristic_query::CharacteristicQuery<'_, W> {
+    pub(super) fn self_granted_equipment_bonus(&self, id: CardId) -> Stats {
+        let mut stats = Stats::default();
+        let Some(rows) = &self.game().state.self_granted_abilities else {
+            return stats;
+        };
+        let target = self.reference(id);
+        for row in rows.iter() {
+            let SelfGrantedAbilityKind::EquipAndBoost {
+                power, toughness, ..
+            } = row.kind
+            else {
+                continue;
+            };
+            if self.attachment_link(row.recipient, target)
+                && self.kinds(id) & 1 != 0
+                && row
+                    .expires_turn
+                    .is_none_or(|turn| turn == self.game().state.turn)
+                && self.self_grant_available(row.recipient, row.timestamp)
+            {
+                stats += Stats {
+                    power: i128::from(power),
+                    toughness: i128::from(toughness),
+                };
+            }
+        }
+        stats
+    }
+
     pub(super) fn self_granted_artifact_bonus(&self, id: CardId) -> Stats {
         let Some(rows) = &self.game().state.self_granted_abilities else {
             return Stats::default();

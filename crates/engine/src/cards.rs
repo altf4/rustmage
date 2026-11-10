@@ -3526,6 +3526,13 @@ pub enum Instruction {
     /// Surveil one, returning noncreature nonland cards actually moved to the graveyard.
     SurveilOneReturnNoncreatureNonland,
     AnimateSource(AnimationSpec),
+    /// Permanently set the exact source's name and type, replacing its abilities.
+    BecomeLegendaryEquipment {
+        name: &'static str,
+        equip: u16,
+        power: i32,
+        toughness: i32,
+    },
     AnimateSourceColored(AnimationSpec, u8),
     /// Animate and give the same incarnation a separate ability for that duration.
     AnimateSourceColoredWithAbility {
@@ -4401,6 +4408,10 @@ pub enum Instruction {
     LoseOpponentGainSame(AmountValue),
     /// Optional block containing the following `skip` instructions.
     May {
+        skip: usize,
+    },
+    /// Offer this block only while the ability's exact source is on the battlefield.
+    MayIfSourceOnBattlefield {
         skip: usize,
     },
     /// Ask whether to draw, unless a current rule prohibits drawing.
@@ -5913,6 +5924,7 @@ pub enum EntryPredicate {
     Token,
     NontokenArtifact,
     NontokenEquipment,
+    LegendaryCreature,
     LegendarySubtype(&'static str),
     CreatureWithoutSubtype(&'static str),
     ArtifactManaValueAtLeast(u32),

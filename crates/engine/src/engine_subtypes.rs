@@ -45,7 +45,7 @@ const JOB_TYPES: [&str; 17] = [
     "Fractal",
     "Hero",
 ];
-// Seventeen named grants and three projection flags use the view's existing padding.
+// Named grants and projection flags share the same fixed-width mask.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const CREATURE_OR_KINDRED: u16 = 1 | 128;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -57,7 +57,8 @@ const LAND_ONLY: u32 = SUPPRESS_PRINTED << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const ALL_CREATURE_TYPES: u32 = LAND_ONLY << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-const FLAGS_MASK: u32 = SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES;
+const FLAGS_MASK: u32 =
+    SUPPRESS_PRINTED | LAND_ONLY | ALL_CREATURE_TYPES | SUPPRESS_PRINTED_ARTIFACT;
 // Preserve all existing bit positions. Copy exceptions use previously unused
 // high bits, keeping the common borrowed subtype value at its original size.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -79,6 +80,10 @@ const ADDED_SPIRIT: u32 = ADDED_FOOD << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const ADDED_CONSTRUCT: u32 = ADDED_SPIRIT << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+const ADDED_EQUIPMENT: u32 = ADDED_CONSTRUCT << 1;
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+const SUPPRESS_PRINTED_ARTIFACT: u32 = ADDED_EQUIPMENT << 1;
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const ADDED_MASK: u32 = JOB_MASK
     | COPY_HUMAN
     | COPY_VILLAIN
@@ -88,9 +93,10 @@ const ADDED_MASK: u32 = JOB_MASK
     | ADDED_BEAR
     | ADDED_FOOD
     | ADDED_SPIRIT
-    | ADDED_CONSTRUCT;
+    | ADDED_CONSTRUCT
+    | ADDED_EQUIPMENT;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-const _: () = assert!(JOB_TYPES.len() + 12 <= u32::BITS as usize);
+const _: () = assert!(JOB_TYPES.len() + 14 <= u32::BITS as usize);
 // Only query values and frozen views carry this fixed taxonomy mask. Hot Object
 // storage is unchanged; inherited sparse grants retain their original wire form.
 const CREATURE_TYPE_WORDS: usize = crate::cards::CREATURE_TYPES.len().div_ceil(64);
@@ -210,6 +216,9 @@ impl GrantedSubtypes {
         if self.suppress_printed_land && LAND_TYPES.contains(&subtype) {
             return self.contains(subtype);
         }
+        if self.flag(SUPPRESS_PRINTED_ARTIFACT) && subtype_card_types(subtype) == 16 {
+            return self.contains(subtype);
+        }
         if LAND_TYPES.contains(&subtype)
             && let Some(basic) = self.basic_land
         {
@@ -232,7 +241,7 @@ impl GrantedSubtypes {
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added &= FLAGS_MASK | ADDED_FOOD;
+        self.added &= FLAGS_MASK | ADDED_FOOD | ADDED_EQUIPMENT;
         self.chosen = None;
         self.additional_creature_types = CreatureTypeSet::default();
         self.creature_types = Some(types);
@@ -287,6 +296,7 @@ impl GrantedSubtypes {
             "Food" => ADDED_FOOD,
             "Spirit" => ADDED_SPIRIT,
             "Construct" => ADDED_CONSTRUCT,
+            "Equipment" => ADDED_EQUIPMENT,
             _ => 0,
         }
     }
@@ -328,6 +338,7 @@ impl Serialize for GrantedSubtypes {
                     (ADDED_FOOD, "Food"),
                     (ADDED_SPIRIT, "Spirit"),
                     (ADDED_CONSTRUCT, "Construct"),
+                    (ADDED_EQUIPMENT, "Equipment"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
@@ -343,6 +354,7 @@ impl Serialize for GrantedSubtypes {
                 + usize::from(self.added_basic_lands != 0)
                 + usize::from(self.effective_basic_lands.is_some())
                 + usize::from(self.suppress_printed_land)
+                + usize::from(self.flag(SUPPRESS_PRINTED_ARTIFACT))
                 + usize::from(!self.additional_creature_types.is_empty()),
         )?;
         out.serialize_field("suppress_printed", &self.flag(SUPPRESS_PRINTED))?;
@@ -363,6 +375,9 @@ impl Serialize for GrantedSubtypes {
         }
         if self.suppress_printed_land {
             out.serialize_field("suppress_printed_land", &true)?;
+        }
+        if self.flag(SUPPRESS_PRINTED_ARTIFACT) {
+            out.serialize_field("suppress_printed_artifact", &true)?;
         }
         if self.added_basic_lands != 0 {
             let kinds: Vec<_> = crate::cards::BasicLandType::ALL
@@ -822,6 +837,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     | characteristic_layers::SubtypeChange::Granted(..)
                     | characteristic_layers::SubtypeChange::BasicLand(_)
                     | characteristic_layers::SubtypeChange::AddBasicLand(_)
+                    | characteristic_layers::SubtypeChange::EquipmentOnly
             )
         })
         .map(|row| row.0);
@@ -854,6 +870,11 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             characteristic_layers::SubtypeChange::FoodOnly => {
                 mask = GrantedSubtypes::food_only();
             }
+            characteristic_layers::SubtypeChange::EquipmentOnly => {
+                mask.set_flag(ADDED_FOOD, false);
+                mask.set_flag(ADDED_EQUIPMENT, true);
+                mask.set_flag(SUPPRESS_PRINTED_ARTIFACT, true);
+            }
             characteristic_layers::SubtypeChange::LandOnly => {
                 mask.set_flag(ADDED_FOOD, false);
                 mask.replace_creature_types(&[]);
@@ -869,6 +890,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 if all {
                     mask.set_flag(ADDED_FOOD, false);
+                    mask.set_flag(ADDED_EQUIPMENT, false);
                     mask.set_flag(SUPPRESS_PRINTED, true);
                     mask.set_flag(LAND_ONLY, false);
                 }
@@ -899,6 +921,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     }
     if kinds(id, target) & 16 == 0 {
         mask.set_flag(ADDED_FOOD, false);
+        mask.set_flag(ADDED_EQUIPMENT, false);
     } else if world.roles().is_some_and(|roles| {
         roles.characteristic_sources.iter().any(|&source| {
             let provider = world.object(source.card);

@@ -81,7 +81,9 @@ impl Game {
         self.register_live_static_source(id);
         self.register_ability_source(id);
         self.register_hand_size_source(id);
-        if self.state.objects[id as usize].card.is_attachment_source() {
+        if self.state.objects[id as usize].card.is_attachment_source()
+            || characteristic_layers::has_equipment_form(self, id)
+        {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);

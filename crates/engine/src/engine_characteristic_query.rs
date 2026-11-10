@@ -507,11 +507,11 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (base, stats)
     }
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
-        let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
         if !self.on_battlefield(id) {
-            return (stats, keywords);
+            return (Stats::default(), keywords);
         }
+        let mut stats = self.self_granted_equipment_bonus(id);
         let evaluation = self.evaluation.as_ref();
         let scale_by_attachments = |value: Stats| {
             let recipient = self.reference(id);

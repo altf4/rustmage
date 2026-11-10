@@ -1198,6 +1198,9 @@ impl Game {
                                         && entered.kinds & 16 != 0
                                         && entered.has_subtype("Equipment")
                                 }
+                                EntryPredicate::LegendaryCreature => {
+                                    entered.is_creature() && entered.is_legendary()
+                                }
                                 EntryPredicate::LegendarySubtype(subtype) => {
                                     entered.is_legendary() && entered.has_subtype(subtype)
                                 }
@@ -7755,6 +7758,12 @@ impl Game {
                     self.set_color_effects(&subjects, colors, duration);
                 }
                 Instruction::AnimateSource(spec) => self.animate_source(&item, spec),
+                Instruction::BecomeLegendaryEquipment {
+                    name,
+                    equip,
+                    power,
+                    toughness,
+                } => self.become_legendary_equipment(&item, name, equip, power, toughness),
                 Instruction::AnimateSourceColored(spec, colors) => {
                     let _ = self.animate_source_colored(&item, spec, colors);
                 }
@@ -9028,11 +9037,18 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
                 Instruction::May { skip }
+                | Instruction::MayIfSourceOnBattlefield { skip }
                 | Instruction::MayDraw { skip }
                 | Instruction::MayExileTop { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     let available = match instruction {
+                        Instruction::MayIfSourceOnBattlefield { .. } => {
+                            item.source.is_some_and(|source| {
+                                self.on_battlefield(source.id)
+                                    && self.object_ref(source.id) == source.object
+                            })
+                        }
                         Instruction::MayDraw { .. } => !self.draws_prohibited(),
                         Instruction::MayExileTop { .. } => {
                             self.top_library_card(item.controller).is_some()

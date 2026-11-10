@@ -29,7 +29,7 @@ impl Game {
             row.recipient.card == card
                 && row.expires_turn.is_none_or(|turn| turn == self.state.turn)
         }) {
-            let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
+            let Some(ability) = row.kind.activation() else {
                 continue;
             };
             let rules = row.granting_card.activation(ability);
@@ -141,9 +141,7 @@ impl Game {
     }
     pub(super) fn self_granted_activation_packet(&self, row: self_granted::Row) -> SpellView {
         let source = row.recipient;
-        let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
-            unreachable!()
-        };
+        let ability = row.kind.activation().expect("self-granted activation");
         let actor = self.state.objects[source.card as usize].controller;
         let mut item = self.activation_packet(actor, source.card, ability);
         item.set_source_definition(row.granting_card);

@@ -1008,11 +1008,10 @@ impl<'g> FundingState<'g> {
                             .into_iter()
                             .flatten()
                             .filter(|row| row.recipient == game.object_ref(id as CardId))
-                            .filter_map(|row| match row.kind {
-                                SelfGrantedAbilityKind::Activated { ability } => {
-                                    Some(row.granting_card.activation(ability))
-                                }
-                                _ => None,
+                            .filter_map(|row| {
+                                row.kind
+                                    .activation()
+                                    .map(|ability| row.granting_card.activation(ability))
                             }),
                     )
                 {
@@ -1118,6 +1117,7 @@ impl<'g> FundingState<'g> {
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
                             || object.card.is_attachment_source()
+                            || characteristic_layers::has_equipment_form(game, *id as CardId)
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
@@ -1141,7 +1141,7 @@ impl<'g> FundingState<'g> {
                                     || (convoke
                                     && game.object_kinds(*id as CardId, object) & 1 != 0)
                                     || game.state.self_granted_abilities.as_deref().into_iter().flatten().any(|row|
-                                        row.recipient == game.object_ref(*id as CardId) && matches!(row.kind, SelfGrantedAbilityKind::Activated { ability } if row.granting_card.activation(ability).mana_production().is_some()))
+                                        row.recipient == game.object_ref(*id as CardId) && row.kind.activation().is_some_and(|ability| row.granting_card.activation(ability).mana_production().is_some()))
                                     || object.card.mana_color().is_some()
                                     || game.object_kinds(*id as CardId, object) & 2 != 0
                                     || object
@@ -1821,9 +1821,7 @@ impl<'g> FundingState<'g> {
                                 .self_grant_available(row.recipient, row.timestamp)
                     })
                     .filter_map(|row| {
-                        let SelfGrantedAbilityKind::Activated { ability } = row.kind else {
-                            return None;
-                        };
+                        let ability = row.kind.activation()?;
                         let rules = row.granting_card.activation(ability);
                         rules.mana_production().map(|_| {
                             (

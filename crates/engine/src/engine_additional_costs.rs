@@ -62,7 +62,7 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
                 .is_some_and(|rows| {
                     rows.iter().any(|row| {
                         row.recipient == world.reference(id)
-                            && matches!(row.kind, SelfGrantedAbilityKind::Activated { .. })
+                            && row.kind.activation().is_some()
                             && current.self_grants.contains(&row.timestamp)
                     })
                 })
