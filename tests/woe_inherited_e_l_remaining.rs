@@ -802,6 +802,11 @@ fn hopeful_vigil_scries_after_its_paid_effect_and_lectern_draws_with_an_optional
     pay(&mut game);
     assert_eq!(game.object_view(vigil).zone, Zone::Battlefield);
     pass_pair(&mut game);
+    assert_eq!(game.state.pending, Pending::EffectChoice { player });
+    let other = game.object_ref(knight);
+    reject(&mut game, Action::Sacrifice { object: other });
+    let object = game.object_ref(vigil);
+    act(&mut game, Action::Sacrifice { object });
     assert_eq!(game.object_view(vigil).zone, Zone::Graveyard);
     pass_pair(&mut game);
     arrange_scry(
