@@ -1,0 +1,16 @@
+{
+  "name": "Heartflame Slash",
+  "catalogue_id": 5554,
+  "oracle_id": "3ca07da2-29a1-40ce-a7f3-4838e95ca1d9",
+  "facts_sha256": "45d95419d4b5e017f27a7c6d3e89f380b6599563c01cac9252a8edb3a859a19e",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "3ca07da2-29a1-40ce-a7f3-4838e95ca1d9",
+    "index": 1,
+    "sha256": "966f18a5ec7e18d92f55cb551808a61580f5b0c6aff9a9f00572382408c88eb9"
+  },
+  "physical_metadata_sha256": "389ea291e3c15bb4effaea3c27b211027f37701226953b0c83f20c318292fbbd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeartflameDuelist.java",
+  "java_sha256": "36e5a17518a7731dd76385e1e81e70c421842ce8919a9d4a13854f75840d5091"
+}

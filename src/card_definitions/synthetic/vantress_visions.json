@@ -1,0 +1,16 @@
+{
+  "name": "Vantress Visions",
+  "catalogue_id": 5564,
+  "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
+  "facts_sha256": "a7da49797dcf35b8fa3a40c6ad217523c7fdd4d88115169d3aedca5e5a84991d",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
+    "index": 1,
+    "sha256": "073295e259f22d23e3ffc56f8d1924ae9c941337d70619a5d39f2c154d556a21"
+  },
+  "physical_metadata_sha256": "dbc89dd145cd360cc96b238302cff14fb5b91768906e3fdef9f65d1a1b1d2ad8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfKnowledge.java",
+  "java_sha256": "cf63251c6ddde1e2f3319ef55b767dfd5acc90d90ef7b4aa304340ac58fed5da"
+}

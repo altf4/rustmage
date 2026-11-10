@@ -1,0 +1,16 @@
+{
+  "name": "Swift Spiral",
+  "catalogue_id": 5562,
+  "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+  "facts_sha256": "456c70268ee6171d6761327dc7fed5141248f3237f610683567e9bc8820bd29f",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+    "index": 1,
+    "sha256": "c072681bbdb205efffabc4046290e87dcb46f15ac0b8d7ba65bcf7648305ee41"
+  },
+  "physical_metadata_sha256": "b99adb1953e92eabce0f1fb53f1be9d4ee71b03f62054b611435a9dc386d4c07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwiningTwins.java",
+  "java_sha256": "e803fb0cc2c2e190e9bc3752ab9c204855c961c587c448b481d62c04afdf0eb5"
+}

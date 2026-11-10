@@ -1,0 +1,16 @@
+{
+  "name": "Locthwain Scorn",
+  "catalogue_id": 5566,
+  "oracle_id": "fae36da0-bf9c-484f-b2fe-dd8ab2effc5c",
+  "facts_sha256": "e58ab9f3c9b5c38bebb5cbd05502fc2dbe8de740aa4cb05fff95cc017c5478d8",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "fae36da0-bf9c-484f-b2fe-dd8ab2effc5c",
+    "index": 1,
+    "sha256": "f8cc73506a8c7a564433ebf509251f737cb0a22c00d0137f9f31de4171afca36"
+  },
+  "physical_metadata_sha256": "a10a8ebc855b0629dd2e8d7c9f60cb9a759048681999686366f7c33c7e884e4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfPersistence.java",
+  "java_sha256": "aed3b7a5524d3c351be4b15def39da1eb5b575c3ed3e7ce7eab118c7177cda58"
+}

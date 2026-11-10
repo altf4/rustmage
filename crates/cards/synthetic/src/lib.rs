@@ -1921,9 +1921,149 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_woe_hylda_elemental.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5548 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/squeak_by.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5549 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/can_t_wake_up.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5550 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/expensive_taste.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5551 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/have_for_dinner.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5552 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/deathly_ride.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5553 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/tempt_with_treats.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5554 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/heartflame_slash.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5555 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/lagoon_breach.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5556 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/birthright_boon.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5557 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/dread_whispers.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5558 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/stolen_goodies.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5559 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/hare_raising.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5560 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/seek_the_beast.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5561 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/take_it_back.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5562 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/swift_spiral.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5563 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/embereth_blaze.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5564 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/vantress_visions.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5565 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/ardenvale_fealty.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5566 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/locthwain_scorn.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5567 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/garenbrig_growth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 273] = [
+pub static ENTRIES: [CatalogueEntry; 293] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Meager Meal", oracle_id: Some("0296d57e-e5b9-456f-bb21-eb584adefb4c"), mana_cost: "{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5183::RULES.keywords, deck_limit: authored::card_5183::RULES.deck_limit }, effect: authored::card_5183::RULES.checked_effect(), triggers: authored::card_5183::RULES.triggers, activated: authored::card_5183::RULES.activated, enters: authored::card_5183::RULES.enters, entry: authored::card_5183::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5183::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Seek Thrills", oracle_id: Some("06374e6d-62fa-4833-81cd-b4d0a35e7365"), mana_cost: "{2}{G}{U}{R}", type_line: "Instant — Adventure", oracle_keywords: &["Mill"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5184::RULES.keywords, deck_limit: authored::card_5184::RULES.deck_limit }, effect: authored::card_5184::RULES.checked_effect(), triggers: authored::card_5184::RULES.triggers, activated: authored::card_5184::RULES.activated, enters: authored::card_5184::RULES.enters, entry: authored::card_5184::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 1, 1, 0], generic: 2 }, rules: &authored::card_5184::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Twice the Rage", oracle_id: Some("0f222f3d-f02b-42b9-aedf-fb7ed92d4889"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5185::RULES.keywords, deck_limit: authored::card_5185::RULES.deck_limit }, effect: authored::card_5185::RULES.checked_effect(), triggers: authored::card_5185::RULES.triggers, activated: authored::card_5185::RULES.activated, enters: authored::card_5185::RULES.enters, entry: authored::card_5185::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5185::RULES },
@@ -2197,6 +2337,26 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/spm-spi
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/spm-illusion-villain", oracle_id: None, mana_cost: "", type_line: "Creature — Illusion Villain", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5545::RULES.keywords, deck_limit: authored::card_5545::RULES.deck_limit }, effect: authored::card_5545::RULES.checked_effect(), triggers: authored::card_5545::RULES.triggers, activated: authored::card_5545::RULES.activated, enters: authored::card_5545::RULES.enters, entry: authored::card_5545::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5545::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/woe-faerie-block-fliers", oracle_id: None, mana_cost: "", type_line: "Creature — Faerie", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5546::RULES.keywords, deck_limit: authored::card_5546::RULES.deck_limit }, effect: authored::card_5546::RULES.effect, triggers: authored::card_5546::RULES.triggers, activated: authored::card_5546::RULES.activated, enters: authored::card_5546::RULES.enters, entry: authored::card_5546::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5546::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/woe-hylda-elemental", oracle_id: None, mana_cost: "", type_line: "Creature — Elemental", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5547::RULES.keywords, deck_limit: authored::card_5547::RULES.deck_limit }, effect: authored::card_5547::RULES.effect, triggers: authored::card_5547::RULES.triggers, activated: authored::card_5547::RULES.activated, enters: authored::card_5547::RULES.enters, entry: authored::card_5547::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5547::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Squeak By", oracle_id: Some("db70ddae-0ac1-47f2-9158-8448e337a08f"), mana_cost: "{W}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5548::RULES.keywords, deck_limit: authored::card_5548::RULES.deck_limit }, effect: authored::card_5548::RULES.effect, triggers: authored::card_5548::RULES.triggers, activated: authored::card_5548::RULES.activated, enters: authored::card_5548::RULES.enters, entry: authored::card_5548::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5548::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Can't Wake Up", oracle_id: Some("997bdec5-f67b-4822-a3ba-c636e2685e8a"), mana_cost: "{1}{U}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5549::RULES.keywords, deck_limit: authored::card_5549::RULES.deck_limit }, effect: authored::card_5549::RULES.effect, triggers: authored::card_5549::RULES.triggers, activated: authored::card_5549::RULES.activated, enters: authored::card_5549::RULES.enters, entry: authored::card_5549::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5549::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Expensive Taste", oracle_id: Some("5df44b8d-b337-49d8-8427-34253f52cb47"), mana_cost: "{2}{B}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5550::RULES.keywords, deck_limit: authored::card_5550::RULES.deck_limit }, effect: authored::card_5550::RULES.effect, triggers: authored::card_5550::RULES.triggers, activated: authored::card_5550::RULES.activated, enters: authored::card_5550::RULES.enters, entry: authored::card_5550::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 2 }, rules: &authored::card_5550::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Have for Dinner", oracle_id: Some("c8bc28ea-5630-49d5-963a-5789fa83f3c7"), mana_cost: "{1}{W}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5551::RULES.keywords, deck_limit: authored::card_5551::RULES.deck_limit }, effect: authored::card_5551::RULES.effect, triggers: authored::card_5551::RULES.triggers, activated: authored::card_5551::RULES.activated, enters: authored::card_5551::RULES.enters, entry: authored::card_5551::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5551::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Deathly Ride", oracle_id: Some("fab8d954-807b-426f-8057-99a5d2fec618"), mana_cost: "{1}{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5552::RULES.keywords, deck_limit: authored::card_5552::RULES.deck_limit }, effect: authored::card_5552::RULES.effect, triggers: authored::card_5552::RULES.triggers, activated: authored::card_5552::RULES.activated, enters: authored::card_5552::RULES.enters, entry: authored::card_5552::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_5552::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Tempt with Treats", oracle_id: Some("4f5ebbb8-f49b-488f-bb85-888aaa918bdd"), mana_cost: "{B}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5553::RULES.keywords, deck_limit: authored::card_5553::RULES.deck_limit }, effect: authored::card_5553::RULES.effect, triggers: authored::card_5553::RULES.triggers, activated: authored::card_5553::RULES.activated, enters: authored::card_5553::RULES.enters, entry: authored::card_5553::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5553::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Heartflame Slash", oracle_id: Some("3ca07da2-29a1-40ce-a7f3-4838e95ca1d9"), mana_cost: "{2}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5554::RULES.keywords, deck_limit: authored::card_5554::RULES.deck_limit }, effect: authored::card_5554::RULES.effect, triggers: authored::card_5554::RULES.triggers, activated: authored::card_5554::RULES.activated, enters: authored::card_5554::RULES.enters, entry: authored::card_5554::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5554::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Lagoon Breach", oracle_id: Some("adca3929-4ecc-45bc-932e-604bcc32550a"), mana_cost: "{1}{U}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5555::RULES.keywords, deck_limit: authored::card_5555::RULES.deck_limit }, effect: authored::card_5555::RULES.effect, triggers: authored::card_5555::RULES.triggers, activated: authored::card_5555::RULES.activated, enters: authored::card_5555::RULES.enters, entry: authored::card_5555::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5555::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Birthright Boon", oracle_id: Some("10c48d19-d91f-4674-b186-477acaf08e5a"), mana_cost: "{1}{W}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5556::RULES.keywords, deck_limit: authored::card_5556::RULES.deck_limit }, effect: authored::card_5556::RULES.effect, triggers: authored::card_5556::RULES.triggers, activated: authored::card_5556::RULES.activated, enters: authored::card_5556::RULES.enters, entry: authored::card_5556::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5556::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Dread Whispers", oracle_id: Some("5783facf-d26e-4aae-a753-b9dc553361c1"), mana_cost: "{1}{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5557::RULES.keywords, deck_limit: authored::card_5557::RULES.deck_limit }, effect: authored::card_5557::RULES.effect, triggers: authored::card_5557::RULES.triggers, activated: authored::card_5557::RULES.activated, enters: authored::card_5557::RULES.enters, entry: authored::card_5557::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_5557::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Stolen Goodies", oracle_id: Some("334fba11-e500-40fd-a142-41ff553642b5"), mana_cost: "{3}{G}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5558::RULES.keywords, deck_limit: authored::card_5558::RULES.deck_limit }, effect: authored::card_5558::RULES.effect, triggers: authored::card_5558::RULES.triggers, activated: authored::card_5558::RULES.activated, enters: authored::card_5558::RULES.enters, entry: authored::card_5558::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 3 }, rules: &authored::card_5558::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Hare Raising", oracle_id: Some("3ef02f2b-b611-40c3-a1d5-8b34989643cf"), mana_cost: "{G}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5559::RULES.keywords, deck_limit: authored::card_5559::RULES.deck_limit }, effect: authored::card_5559::RULES.effect, triggers: authored::card_5559::RULES.triggers, activated: authored::card_5559::RULES.activated, enters: authored::card_5559::RULES.enters, entry: authored::card_5559::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 0 }, rules: &authored::card_5559::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Seek the Beast", oracle_id: Some("555df32f-f8e9-49af-bc4a-1194ea325a97"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5560::RULES.keywords, deck_limit: authored::card_5560::RULES.deck_limit }, effect: authored::card_5560::RULES.effect, triggers: authored::card_5560::RULES.triggers, activated: authored::card_5560::RULES.activated, enters: authored::card_5560::RULES.enters, entry: authored::card_5560::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5560::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Take It Back", oracle_id: Some("9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56"), mana_cost: "{2}{U}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5561::RULES.keywords, deck_limit: authored::card_5561::RULES.deck_limit }, effect: authored::card_5561::RULES.effect, triggers: authored::card_5561::RULES.triggers, activated: authored::card_5561::RULES.activated, enters: authored::card_5561::RULES.enters, entry: authored::card_5561::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5561::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Swift Spiral", oracle_id: Some("105aea98-8eb9-4fb2-a0cb-7c7513317c5b"), mana_cost: "{1}{W}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5562::RULES.keywords, deck_limit: authored::card_5562::RULES.deck_limit }, effect: authored::card_5562::RULES.effect, triggers: authored::card_5562::RULES.triggers, activated: authored::card_5562::RULES.activated, enters: authored::card_5562::RULES.enters, entry: authored::card_5562::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5562::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Embereth Blaze", oracle_id: Some("af6438b9-3fde-45c9-af69-dff686c1e0de"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5563::RULES.keywords, deck_limit: authored::card_5563::RULES.deck_limit }, effect: authored::card_5563::RULES.effect, triggers: authored::card_5563::RULES.triggers, activated: authored::card_5563::RULES.activated, enters: authored::card_5563::RULES.enters, entry: authored::card_5563::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5563::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Vantress Visions", oracle_id: Some("f0bbcabf-29e7-4c7e-893f-86b64d3620a9"), mana_cost: "{1}{U}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5564::RULES.keywords, deck_limit: authored::card_5564::RULES.deck_limit }, effect: authored::card_5564::RULES.effect, triggers: authored::card_5564::RULES.triggers, activated: authored::card_5564::RULES.activated, enters: authored::card_5564::RULES.enters, entry: authored::card_5564::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5564::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Ardenvale Fealty", oracle_id: Some("f61f4307-4eec-476a-97e5-d4d3da2b54c3"), mana_cost: "{1}{W}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5565::RULES.keywords, deck_limit: authored::card_5565::RULES.deck_limit }, effect: authored::card_5565::RULES.effect, triggers: authored::card_5565::RULES.triggers, activated: authored::card_5565::RULES.activated, enters: authored::card_5565::RULES.enters, entry: authored::card_5565::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5565::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Locthwain Scorn", oracle_id: Some("fae36da0-bf9c-484f-b2fe-dd8ab2effc5c"), mana_cost: "{1}{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5566::RULES.keywords, deck_limit: authored::card_5566::RULES.deck_limit }, effect: authored::card_5566::RULES.effect, triggers: authored::card_5566::RULES.triggers, activated: authored::card_5566::RULES.activated, enters: authored::card_5566::RULES.enters, entry: authored::card_5566::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_5566::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Garenbrig Growth", oracle_id: Some("31af78dd-e962-4d9a-b696-f3048be03486"), mana_cost: "{G}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5567::RULES.keywords, deck_limit: authored::card_5567::RULES.deck_limit }, effect: authored::card_5567::RULES.effect, triggers: authored::card_5567::RULES.triggers, activated: authored::card_5567::RULES.activated, enters: authored::card_5567::RULES.enters, entry: authored::card_5567::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 0 }, rules: &authored::card_5567::RULES },
 ];
 }
 pub use cards::ENTRIES;

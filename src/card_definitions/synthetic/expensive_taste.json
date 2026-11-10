@@ -1,0 +1,16 @@
+{
+  "name": "Expensive Taste",
+  "catalogue_id": 5550,
+  "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+  "facts_sha256": "4fc9c7b38e82244b4445cc02e0c69f2770dc106ea4b8305f4151f270b6d37f9a",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+    "index": 1,
+    "sha256": "2d4f4cb1d7c17d102197f7d11802962cfd4ebf6d74d57d7deb20dd3a122ed3a4"
+  },
+  "physical_metadata_sha256": "41fe19d598cc83ffca7608de789e1dddfa1f9e39d04cd97dcb97c51ad466498e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DecadentDragon.java",
+  "java_sha256": "58ec1b42365b23d518d5853be84741627044fd203fcdeb90b79ca74b38890a18"
+}

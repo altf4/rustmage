@@ -1,0 +1,16 @@
+{
+  "name": "Ardenvale Fealty",
+  "catalogue_id": 5565,
+  "oracle_id": "f61f4307-4eec-476a-97e5-d4d3da2b54c3",
+  "facts_sha256": "eb33e6b3928a076e8a9c1923c81a0922d380925ea797ef24e2bad26942ae008b",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "f61f4307-4eec-476a-97e5-d4d3da2b54c3",
+    "index": 1,
+    "sha256": "3d5310557b3cad89093b56ead2317587a4eb1bc11a62f1e5f3173f1323c4e801"
+  },
+  "physical_metadata_sha256": "65bffc9dc6a08e8643f63af57fc71de19dd9f929ed96c39701a30f824355efaf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfLoyalty.java",
+  "java_sha256": "8ebf79cb20b57afa030218fbf631b880accb8d8aa1d99fdd67198309ccc57adb"
+}

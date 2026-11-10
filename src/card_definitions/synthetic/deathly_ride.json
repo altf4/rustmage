@@ -1,0 +1,16 @@
+{
+  "name": "Deathly Ride",
+  "catalogue_id": 5552,
+  "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+  "facts_sha256": "513db6199ecea0c340aa64f095a5a8fd678f8badf165c253dc384790ab628926",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+    "index": 1,
+    "sha256": "738fb72d4bb0da12ab7027a9881306c3a41b0005ae27dae98675e3f73d664c1e"
+  },
+  "physical_metadata_sha256": "7146ed016747c1ecb6ac4e0180481a70dc99f90396f2563caac9446c948eb0e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FellHorseman.java",
+  "java_sha256": "1d8c0365e08a8c95c82303d223c5017a687ce550f880996af0ed6aacf0041b25"
+}

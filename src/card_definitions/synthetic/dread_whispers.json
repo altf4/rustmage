@@ -1,0 +1,16 @@
+{
+  "name": "Dread Whispers",
+  "catalogue_id": 5557,
+  "oracle_id": "5783facf-d26e-4aae-a753-b9dc553361c1",
+  "facts_sha256": "cfd83db97269c4be0eedf2ab5be6a763b5cb50fe14e04cf2952f659b5d737ad8",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "5783facf-d26e-4aae-a753-b9dc553361c1",
+    "index": 1,
+    "sha256": "52bfb22195ef15446e73159d325ffcb2e2b9526e3b5088569dfe482c466fbb17"
+  },
+  "physical_metadata_sha256": "dc78278fd828bfa40f1c21fd48e28408a332f54d32513e2cff8424e8c0e430fe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MosswoodDreadknight.java",
+  "java_sha256": "a814f451efacf3af6c5ef960af98d6260c77fd50e1c9206d9ab682eb0f843c4e"
+}

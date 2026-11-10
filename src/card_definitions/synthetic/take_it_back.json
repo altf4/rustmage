@@ -1,0 +1,16 @@
+{
+  "name": "Take It Back",
+  "catalogue_id": 5561,
+  "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+  "facts_sha256": "178e16a3109d507e3f647de984cfd87418ed1c1bb1121c4778c0c76582e9e796",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+    "index": 1,
+    "sha256": "10e87608c0ed75769a845d40fd8beb6541af7def1f48ad90566c05dbd7c388dd"
+  },
+  "physical_metadata_sha256": "26a5f4ea4158c8788ee90f568f7c504954f9754ad71579a9d6c36d63e4a9084f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpellscornCoven.java",
+  "java_sha256": "55b7d53b28954a5a1ccd205680616278ca50ab229694e620c58391851203aefc"
+}

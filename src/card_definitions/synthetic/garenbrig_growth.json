@@ -1,0 +1,16 @@
+{
+  "name": "Garenbrig Growth",
+  "catalogue_id": 5567,
+  "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+  "facts_sha256": "5f5ab7083609ad370ff70476ac6df7888c962fd89b04f55cfd3e482a0679d618",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+    "index": 1,
+    "sha256": "3688b93242846a3938ca795c12f8df9152a4595d8d607db5e3c252425d43683f"
+  },
+  "physical_metadata_sha256": "d9c5dc6a73d2cb7d5fe7075bc89eebaa6412285dc702071bcf3d55f2b36f9b8d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VirtueOfStrength.java",
+  "java_sha256": "05e72e388bc32e4a0609aec1ae8feb02d90c78ea55921b45b556884b45e87e4d"
+}

@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "059724c38de22d052b14b6ee01050f035361b73a19360d98fb024f5644f96896",
+  "catalogue_version": "893959fc8047fafacce14fa14673d1f230ca782e003ad40207d3143c733001d0",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4005,
   "implemented_total": 4014,
   "token_definitions": 175,
   "emblem_definitions": 12,
-  "adventure_definitions": 53,
+  "adventure_definitions": 73,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {

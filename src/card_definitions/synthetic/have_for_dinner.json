@@ -1,0 +1,16 @@
+{
+  "name": "Have for Dinner",
+  "catalogue_id": 5551,
+  "oracle_id": "c8bc28ea-5630-49d5-963a-5789fa83f3c7",
+  "facts_sha256": "4d890174f4a40f10de2ed5718cacda6ca0ce272815fa5e9fc1d1e1d0ea4a7c88",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "c8bc28ea-5630-49d5-963a-5789fa83f3c7",
+    "index": 1,
+    "sha256": "7b53fc5bd6d1e3d308ce7f6284113d1f045bbd3ee6e0417a38c89621a5c49f7e"
+  },
+  "physical_metadata_sha256": "f110be35aba7549aa5ec04f353f0736a29e87e882afec5049c0fd8313f7f3013",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DevouringSugarmaw.java",
+  "java_sha256": "f2ba91d8d5df437acfddc9b4f8d6d7fedc0fc542ffd12105e248b34d5210da28"
+}

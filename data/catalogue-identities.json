@@ -5553,7 +5553,27 @@
     16,
     2,
     2,
-    3
+    3,
+    1,
+    2,
+    4,
+    1,
+    4,
+    4,
+    8,
+    2,
+    1,
+    4,
+    16,
+    16,
+    8,
+    2,
+    1,
+    8,
+    2,
+    1,
+    4,
+    16
   ],
   "aliases": [
     [
@@ -7589,6 +7609,10 @@
       217
     ],
     [
+      "Ardenvale Fealty",
+      5565
+    ],
+    [
       "Ardyn, the Usurper",
       218
     ],
@@ -8483,6 +8507,10 @@
     [
       "Birnin Zana Plaza",
       421
+    ],
+    [
+      "Birthright Boon",
+      5556
     ],
     [
       "Bishop's Soldier",
@@ -9405,6 +9433,10 @@
       629
     ],
     [
+      "Can't Wake Up",
+      5549
+    ],
+    [
       "Cancel",
       630
     ],
@@ -9831,6 +9863,10 @@
     [
       "Chase Inspiration",
       730
+    ],
+    [
+      "Cheeky House-Mouse",
+      731
     ],
     [
       "Cheeky House-Mouse // Squeak By",
@@ -10573,6 +10609,10 @@
       902
     ],
     [
+      "Cruel Somnophage",
+      903
+    ],
+    [
       "Cruel Somnophage // Can't Wake Up",
       903
     ],
@@ -11001,6 +11041,10 @@
       1007
     ],
     [
+      "Deathly Ride",
+      5552
+    ],
+    [
       "Deathmark",
       1008
     ],
@@ -11011,6 +11055,10 @@
     [
       "Debris Field Crusher",
       1010
+    ],
+    [
+      "Decadent Dragon",
+      1011
     ],
     [
       "Decadent Dragon // Expensive Taste",
@@ -11239,6 +11287,10 @@
     [
       "Devoted Duelist",
       1064
+    ],
+    [
+      "Devouring Sugarmaw",
+      1065
     ],
     [
       "Devouring Sugarmaw // Have for Dinner",
@@ -11703,6 +11755,10 @@
     [
       "Dread Summons",
       1174
+    ],
+    [
+      "Dread Whispers",
+      5557
     ],
     [
       "Dreaded Bat-Cloud",
@@ -12253,6 +12309,10 @@
       1304
     ],
     [
+      "Embereth Blaze",
+      5563
+    ],
+    [
       "Embereth Veteran",
       1305
     ],
@@ -12701,6 +12761,10 @@
       1403
     ],
     [
+      "Expensive Taste",
+      5550
+    ],
+    [
       "Experimental Confectioner",
       1404
     ],
@@ -13051,6 +13115,10 @@
     [
       "Fell Gravship",
       1489
+    ],
+    [
+      "Fell Horseman",
+      1490
     ],
     [
       "Fell Horseman // Deathly Ride",
@@ -13863,6 +13931,10 @@
     [
       "Gardenize",
       1680
+    ],
+    [
+      "Garenbrig Growth",
+      5567
     ],
     [
       "Gargantuan Leech",
@@ -14861,6 +14933,10 @@
       1907
     ],
     [
+      "Gumdrop Poisoner",
+      1908
+    ],
+    [
       "Gumdrop Poisoner // Tempt with Treats",
       1908
     ],
@@ -15029,6 +15105,10 @@
       1947
     ],
     [
+      "Hare Raising",
+      5559
+    ],
+    [
       "Harmless Offering",
       1948
     ],
@@ -15109,6 +15189,10 @@
       5352
     ],
     [
+      "Have for Dinner",
+      5551
+    ],
+    [
       "Hawkeye's Bow",
       1966
     ],
@@ -15161,8 +15245,16 @@
       1978
     ],
     [
+      "Heartflame Duelist",
+      1979
+    ],
+    [
       "Heartflame Duelist // Heartflame Slash",
       1979
+    ],
+    [
+      "Heartflame Slash",
+      5554
     ],
     [
       "Hearth Elemental",
@@ -15559,6 +15651,10 @@
     [
       "Hopeless Nightmare",
       2072
+    ],
+    [
+      "Horned Loch-Whale",
+      2073
     ],
     [
       "Horned Loch-Whale // Lagoon Breach",
@@ -16713,6 +16809,10 @@
       2341
     ],
     [
+      "Kellan, the Fae-Blooded",
+      2342
+    ],
+    [
       "Kellan, the Fae-Blooded // Birthright Boon",
       2342
     ],
@@ -17103,6 +17203,10 @@
     [
       "Lady of Laughter",
       2435
+    ],
+    [
+      "Lagoon Breach",
+      5555
     ],
     [
       "Lagorin, Soul of Alacria",
@@ -17531,6 +17635,10 @@
     [
       "Locke Cole",
       2534
+    ],
+    [
+      "Locthwain Scorn",
+      5566
     ],
     [
       "Locus of Enlightenment",
@@ -18873,6 +18981,10 @@
       2858
     ],
     [
+      "Mosswood Dreadknight",
+      2859
+    ],
+    [
       "Mosswood Dreadknight // Dread Whispers",
       2859
     ],
@@ -20133,6 +20245,10 @@
       3155
     ],
     [
+      "Picnic Ruiner",
+      3156
+    ],
+    [
       "Picnic Ruiner // Stolen Goodies",
       3156
     ],
@@ -20311,6 +20427,10 @@
     [
       "Political Triumph",
       3197
+    ],
+    [
+      "Pollen-Shield Hare",
+      3198
     ],
     [
       "Pollen-Shield Hare // Hare Raising",
@@ -20775,6 +20895,10 @@
     [
       "Queen's Bay Paladin",
       3309
+    ],
+    [
+      "Questing Druid",
+      3310
     ],
     [
       "Questing Druid // Seek the Beast",
@@ -22705,6 +22829,10 @@
       5184
     ],
     [
+      "Seek the Beast",
+      5560
+    ],
+    [
       "Seek the Heart",
       5411
     ],
@@ -23765,6 +23893,10 @@
       4010
     ],
     [
+      "Spellscorn Coven",
+      4011
+    ],
+    [
       "Spellscorn Coven // Take It Back",
       4011
     ],
@@ -24051,6 +24183,10 @@
     [
       "Squawkroaster",
       4079
+    ],
+    [
+      "Squeak By",
+      5548
     ],
     [
       "Squire's Lightblade",
@@ -24371,6 +24507,10 @@
     [
       "Stoke Genius",
       5485
+    ],
+    [
+      "Stolen Goodies",
+      5558
     ],
     [
       "Stolen Stark Tech",
@@ -24945,6 +25085,10 @@
       4290
     ],
     [
+      "Swift Spiral",
+      5562
+    ],
+    [
       "Swiftblade Vindicator",
       4291
     ],
@@ -25071,6 +25215,10 @@
     [
       "Tajuru Pathwarden",
       4319
+    ],
+    [
+      "Take It Back",
+      5561
     ],
     [
       "Take Out the Trash",
@@ -25299,6 +25447,10 @@
     [
       "Temporal Intervention",
       4373
+    ],
+    [
+      "Tempt with Treats",
+      5553
     ],
     [
       "Temur Battlecrier",
@@ -26765,6 +26917,10 @@
       4721
     ],
     [
+      "Twining Twins",
+      4722
+    ],
+    [
       "Twining Twins // Swift Spiral",
       4722
     ],
@@ -27305,6 +27461,10 @@
       4849
     ],
     [
+      "Vantress Visions",
+      5564
+    ],
+    [
       "Variable Chaser // Arc of Fortune",
       4850
     ],
@@ -27553,20 +27713,40 @@
       4904
     ],
     [
+      "Virtue of Courage",
+      4905
+    ],
+    [
       "Virtue of Courage // Embereth Blaze",
       4905
+    ],
+    [
+      "Virtue of Knowledge",
+      4906
     ],
     [
       "Virtue of Knowledge // Vantress Visions",
       4906
     ],
     [
+      "Virtue of Loyalty",
+      4907
+    ],
+    [
       "Virtue of Loyalty // Ardenvale Fealty",
       4907
     ],
     [
+      "Virtue of Persistence",
+      4908
+    ],
+    [
       "Virtue of Persistence // Locthwain Scorn",
       4908
+    ],
+    [
+      "Virtue of Strength",
+      4909
     ],
     [
       "Virtue of Strength // Garenbrig Growth",
@@ -51368,14 +51548,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Cheeky House-Mouse",
+        "mana_cost": "{W}",
+        "type_line": "Creature — Mouse"
+      }
     },
     {
       "index": 732,
@@ -56278,12 +56463,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Cruel Somnophage",
+        "mana_cost": "{1}{B}",
+        "type_line": "Creature — Nightmare"
+      }
     },
     {
       "index": 904,
@@ -59388,11 +59578,16 @@
         0,
         0,
         0,
-        0,
+        2,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Decadent Dragon",
+        "mana_cost": "{2}{R}{R}",
+        "type_line": "Creature — Dragon"
+      }
     },
     {
       "index": 1012,
@@ -60919,12 +61114,17 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Devouring Sugarmaw",
+        "mana_cost": "{2}{B}{B}",
+        "type_line": "Creature — Horror"
+      }
     },
     {
       "index": 1066,
@@ -73140,12 +73340,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Fell Horseman",
+        "mana_cost": "{3}{B}",
+        "type_line": "Creature — Zombie Knight"
+      }
     },
     {
       "index": 1491,
@@ -85064,12 +85269,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Gumdrop Poisoner",
+        "mana_cost": "{2}{B}",
+        "type_line": "Creature — Human Warlock"
+      }
     },
     {
       "index": 1909,
@@ -87096,14 +87306,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Heartflame Duelist",
+        "mana_cost": "{1}{W}",
+        "type_line": "Creature — Human Knight"
+      }
     },
     {
       "index": 1980,
@@ -89776,13 +89991,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4,
+      "front_face": {
+        "name": "Horned Loch-Whale",
+        "mana_cost": "{4}{U}{U}",
+        "type_line": "Creature — Whale"
+      }
     },
     {
       "index": 2074,
@@ -97563,11 +97783,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Kellan, the Fae-Blooded",
+        "mana_cost": "{2}{R}",
+        "type_line": "Legendary Creature — Human Faerie"
+      }
     },
     {
       "index": 2343,
@@ -112427,10 +112652,15 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Mosswood Dreadknight",
+        "mana_cost": "{1}{G}",
+        "type_line": "Creature — Human Knight"
+      }
     },
     {
       "index": 2860,
@@ -120927,11 +121157,16 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Picnic Ruiner",
+        "mana_cost": "{1}{R}",
+        "type_line": "Creature — Goblin Rogue"
+      }
     },
     {
       "index": 3157,
@@ -122133,14 +122368,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Pollen-Shield Hare",
+        "mana_cost": "{1}{W}",
+        "type_line": "Creature — Rabbit"
+      }
     },
     {
       "index": 3199,
@@ -125323,10 +125563,15 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 1,
+      "front_face": {
+        "name": "Questing Druid",
+        "mana_cost": "{1}{G}",
+        "type_line": "Creature — Human Druid"
+      }
     },
     {
       "index": 3311,
@@ -145459,12 +145704,17 @@
       "colored": [
         0,
         0,
-        0,
+        1,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Spellscorn Coven",
+        "mana_cost": "{3}{B}",
+        "type_line": "Creature — Faerie Warlock"
+      }
     },
     {
       "index": 4012,
@@ -165917,13 +166167,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        2,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Twining Twins",
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Creature — Faerie Wizard"
+      }
     },
     {
       "index": 4723,
@@ -171221,11 +171476,16 @@
         0,
         0,
         0,
-        0,
+        2,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Virtue of Courage",
+        "mana_cost": "{3}{R}{R}",
+        "type_line": "Enchantment"
+      }
     },
     {
       "index": 4906,
@@ -171246,13 +171506,18 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4,
+      "front_face": {
+        "name": "Virtue of Knowledge",
+        "mana_cost": "{4}{U}",
+        "type_line": "Enchantment"
+      }
     },
     {
       "index": 4907,
@@ -171272,14 +171537,19 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        2,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3,
+      "front_face": {
+        "name": "Virtue of Loyalty",
+        "mana_cost": "{3}{W}{W}",
+        "type_line": "Enchantment"
+      }
     },
     {
       "index": 4908,
@@ -171301,12 +171571,17 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 5,
+      "front_face": {
+        "name": "Virtue of Persistence",
+        "mana_cost": "{5}{B}{B}",
+        "type_line": "Enchantment"
+      }
     },
     {
       "index": 4909,
@@ -171330,10 +171605,15 @@
         0,
         0,
         0,
-        0,
+        2,
         0
       ],
-      "generic": 0
+      "generic": 5,
+      "front_face": {
+        "name": "Virtue of Strength",
+        "mana_cost": "{5}{G}{G}",
+        "type_line": "Enchantment"
+      }
     },
     {
       "index": 4910,
@@ -189309,6 +189589,546 @@
       ],
       "generic": 0,
       "oracle_keywords": []
+    },
+    {
+      "index": 5548,
+      "module": "card_5548",
+      "path": "synthetic/squeak_by.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Squeak By",
+      "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
+      "facts_sha256": "5cf77e7909242b25cfdfc319d80cb3b92f476eb236c038a7d2be9bc242f5ff1a",
+      "mana_cost": "{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5549,
+      "module": "card_5549",
+      "path": "synthetic/can_t_wake_up.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Can't Wake Up",
+      "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+      "facts_sha256": "5d275ff0f3fe2d605ce338b3f51220da1812e30f3224c1924c6cffa4b894d05a",
+      "mana_cost": "{1}{U}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5550,
+      "module": "card_5550",
+      "path": "synthetic/expensive_taste.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Expensive Taste",
+      "oracle_id": "5df44b8d-b337-49d8-8427-34253f52cb47",
+      "facts_sha256": "4fc9c7b38e82244b4445cc02e0c69f2770dc106ea4b8305f4151f270b6d37f9a",
+      "mana_cost": "{2}{B}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5551,
+      "module": "card_5551",
+      "path": "synthetic/have_for_dinner.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Have for Dinner",
+      "oracle_id": "c8bc28ea-5630-49d5-963a-5789fa83f3c7",
+      "facts_sha256": "4d890174f4a40f10de2ed5718cacda6ca0ce272815fa5e9fc1d1e1d0ea4a7c88",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5552,
+      "module": "card_5552",
+      "path": "synthetic/deathly_ride.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Deathly Ride",
+      "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+      "facts_sha256": "513db6199ecea0c340aa64f095a5a8fd678f8badf165c253dc384790ab628926",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5553,
+      "module": "card_5553",
+      "path": "synthetic/tempt_with_treats.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Tempt with Treats",
+      "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+      "facts_sha256": "775d630adc737a72655de4493af2f41322ac94037999da536205becc1ace2b53",
+      "mana_cost": "{B}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5554,
+      "module": "card_5554",
+      "path": "synthetic/heartflame_slash.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Heartflame Slash",
+      "oracle_id": "3ca07da2-29a1-40ce-a7f3-4838e95ca1d9",
+      "facts_sha256": "45d95419d4b5e017f27a7c6d3e89f380b6599563c01cac9252a8edb3a859a19e",
+      "mana_cost": "{2}{R}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5555,
+      "module": "card_5555",
+      "path": "synthetic/lagoon_breach.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Lagoon Breach",
+      "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
+      "facts_sha256": "e3604259b9fc84d557f7dd70ad61692abf580b03cf5e0a20c0ce067227930c37",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5556,
+      "module": "card_5556",
+      "path": "synthetic/birthright_boon.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Birthright Boon",
+      "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+      "facts_sha256": "88124cad64f10f67e932fa595c82cbc85e1dc285bd7642bad324b092806a737e",
+      "mana_cost": "{1}{W}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5557,
+      "module": "card_5557",
+      "path": "synthetic/dread_whispers.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Dread Whispers",
+      "oracle_id": "5783facf-d26e-4aae-a753-b9dc553361c1",
+      "facts_sha256": "cfd83db97269c4be0eedf2ab5be6a763b5cb50fe14e04cf2952f659b5d737ad8",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5558,
+      "module": "card_5558",
+      "path": "synthetic/stolen_goodies.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Stolen Goodies",
+      "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+      "facts_sha256": "248658ef56d64d3f0c5359aaa0c1d4931ab372a7c938b7e3e6d6d05b332074d3",
+      "mana_cost": "{3}{G}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5559,
+      "module": "card_5559",
+      "path": "synthetic/hare_raising.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Hare Raising",
+      "oracle_id": "3ef02f2b-b611-40c3-a1d5-8b34989643cf",
+      "facts_sha256": "5cc74307175cbfa9e162911f35df6774470947a2ef0e2909b7420476c5a07561",
+      "mana_cost": "{G}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5560,
+      "module": "card_5560",
+      "path": "synthetic/seek_the_beast.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Seek the Beast",
+      "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
+      "facts_sha256": "676f8f1173fad54996820e2688c4f01761c1524d0e6bb070a002d727d32c8cb9",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5561,
+      "module": "card_5561",
+      "path": "synthetic/take_it_back.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Take It Back",
+      "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+      "facts_sha256": "178e16a3109d507e3f647de984cfd87418ed1c1bb1121c4778c0c76582e9e796",
+      "mana_cost": "{2}{U}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5562,
+      "module": "card_5562",
+      "path": "synthetic/swift_spiral.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Swift Spiral",
+      "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
+      "facts_sha256": "456c70268ee6171d6761327dc7fed5141248f3237f610683567e9bc8820bd29f",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5563,
+      "module": "card_5563",
+      "path": "synthetic/embereth_blaze.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Embereth Blaze",
+      "oracle_id": "af6438b9-3fde-45c9-af69-dff686c1e0de",
+      "facts_sha256": "3596b0986430d213b7651d9199b7bd36e0d03b01a16b2e9ed246a57219f1ae43",
+      "mana_cost": "{1}{R}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5564,
+      "module": "card_5564",
+      "path": "synthetic/vantress_visions.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Vantress Visions",
+      "oracle_id": "f0bbcabf-29e7-4c7e-893f-86b64d3620a9",
+      "facts_sha256": "a7da49797dcf35b8fa3a40c6ad217523c7fdd4d88115169d3aedca5e5a84991d",
+      "mana_cost": "{1}{U}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5565,
+      "module": "card_5565",
+      "path": "synthetic/ardenvale_fealty.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Ardenvale Fealty",
+      "oracle_id": "f61f4307-4eec-476a-97e5-d4d3da2b54c3",
+      "facts_sha256": "eb33e6b3928a076e8a9c1923c81a0922d380925ea797ef24e2bad26942ae008b",
+      "mana_cost": "{1}{W}",
+      "type_line": "Instant — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5566,
+      "module": "card_5566",
+      "path": "synthetic/locthwain_scorn.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Locthwain Scorn",
+      "oracle_id": "fae36da0-bf9c-484f-b2fe-dd8ab2effc5c",
+      "facts_sha256": "e58ab9f3c9b5c38bebb5cbd05502fc2dbe8de740aa4cb05fff95cc017c5478d8",
+      "mana_cost": "{1}{B}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5567,
+      "module": "card_5567",
+      "path": "synthetic/garenbrig_growth.rs",
+      "set": "synthetic",
+      "category": "adventure",
+      "name": "Garenbrig Growth",
+      "oracle_id": "31af78dd-e962-4d9a-b696-f3048be03486",
+      "facts_sha256": "5f5ab7083609ad370ff70476ac6df7888c962fd89b04f55cfd3e482a0679d618",
+      "mana_cost": "{G}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

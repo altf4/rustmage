@@ -1,0 +1,16 @@
+{
+  "name": "Birthright Boon",
+  "catalogue_id": 5556,
+  "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+  "facts_sha256": "88124cad64f10f67e932fa595c82cbc85e1dc285bd7642bad324b092806a737e",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
+    "index": 1,
+    "sha256": "3eb847de3dd5f780d594b0c9be48d3173f7d9220b683a57c749e68a1ba626215"
+  },
+  "physical_metadata_sha256": "ba910d9824c0398a02a94079ae99767a815e78dc2c74b44d71f26edd01cfd4c2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanTheFaeBlooded.java",
+  "java_sha256": "07d49ae0a33e97b2f8f4b11511339fab769cc6a51e5474201d5dc60c368f42f7"
+}

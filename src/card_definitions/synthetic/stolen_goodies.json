@@ -1,0 +1,16 @@
+{
+  "name": "Stolen Goodies",
+  "catalogue_id": 5558,
+  "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+  "facts_sha256": "248658ef56d64d3f0c5359aaa0c1d4931ab372a7c938b7e3e6d6d05b332074d3",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+    "index": 1,
+    "sha256": "c6e08d6b718eb403d4aef858cdf5cfa9f5e50603477d41b7009b82a9dba65f48"
+  },
+  "physical_metadata_sha256": "1ff46a09f4b081153b7564fd8cbd90b7466c595bb24923a91e8db1a127ce518b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PicnicRuiner.java",
+  "java_sha256": "023d74c0ec45bd13aaf9a9923ad025cb07d2a838dba129cd6db3c0dd3918bdcc"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Tempt with Treats",
+  "catalogue_id": 5553,
+  "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+  "facts_sha256": "775d630adc737a72655de4493af2f41322ac94037999da536205becc1ace2b53",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4f5ebbb8-f49b-488f-bb85-888aaa918bdd",
+    "index": 1,
+    "sha256": "f4d77cb065eed4530a2930ec49ac16d9e37cd12982309dd0157559bdecb7370c"
+  },
+  "physical_metadata_sha256": "6f26ee428454666db4477c27860a4edaa68e6c66c4cb3dc05978049b87713fa9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GumdropPoisoner.java",
+  "java_sha256": "5add957716e356a99e6060629107576c8218e584ab372866bf0fff24161b4128"
+}

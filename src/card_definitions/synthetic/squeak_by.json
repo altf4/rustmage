@@ -1,0 +1,16 @@
+{
+  "name": "Squeak By",
+  "catalogue_id": 5548,
+  "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
+  "facts_sha256": "5cf77e7909242b25cfdfc319d80cb3b92f476eb236c038a7d2be9bc242f5ff1a",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "db70ddae-0ac1-47f2-9158-8448e337a08f",
+    "index": 1,
+    "sha256": "6bc2770d1dbfd2358588ffa7ad3645cc50c3939e25babd69ef19fc12f3346bc4"
+  },
+  "physical_metadata_sha256": "f0b5df4eee16bce941b4ac976da410f13c1763c7b1f77f80e3d4384bb1f640a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CheekyHouseMouse.java",
+  "java_sha256": "5e43016d18f7bce69264519d375610252d7c495fdf197a59b93bd4e3be63263d"
+}

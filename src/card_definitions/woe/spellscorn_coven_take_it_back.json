@@ -8,5 +8,10 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8a541e4995a6c40562816c7984951849585bac7a234c81a9a8474f2ef6e3950"
   },
-  "physical_metadata_sha256": "91d9345c72cc960837e2807807f9353036a7be594f8a184bf49fdc20c6b83daa"
+  "physical_metadata_sha256": "842ec579798196079c961cac8fb23ae4c3386e5056b9f2ff2cebbae56164df93",
+  "oracle_face": {
+    "oracle_id": "9357fc7f-c9d0-4ce2-a6dd-0ff1f24bfc56",
+    "index": 0,
+    "sha256": "4cc58386cc7b02fd325b711366c7981f72f760208b9ef96c073ab161494d155f"
+  }
 }

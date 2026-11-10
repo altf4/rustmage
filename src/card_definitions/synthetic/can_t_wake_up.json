@@ -1,0 +1,16 @@
+{
+  "name": "Can't Wake Up",
+  "catalogue_id": 5549,
+  "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+  "facts_sha256": "5d275ff0f3fe2d605ce338b3f51220da1812e30f3224c1924c6cffa4b894d05a",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+    "index": 1,
+    "sha256": "0ac5b4ec2e0b4ab2dedb670b065bc251b775c87d9dc782b6f0aca2e0039b9e7c"
+  },
+  "physical_metadata_sha256": "909ba64798aa893dd407c0011775d10f8e3248e5eb28b987f87e4288c28246c5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CruelSomnophage.java",
+  "java_sha256": "5c1a743aeb81c18195677e9af2fccd4a91810c8db3f63e6a3d2525a2706c077c"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Lagoon Breach",
+  "catalogue_id": 5555,
+  "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
+  "facts_sha256": "e3604259b9fc84d557f7dd70ad61692abf580b03cf5e0a20c0ce067227930c37",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
+    "index": 1,
+    "sha256": "36684076ddb77bd50a58a6a9f18b8df8ebe4d97b9f9dc2d54d7923e46f2a14e6"
+  },
+  "physical_metadata_sha256": "7e2a41bd9de0b076e817a0a38b0fe2fea17bb0fe821d0f7a7ae2c068b51d83b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HornedLochWhale.java",
+  "java_sha256": "4a4a416bc90e2a17916dd21d9d9b5f6f9cd1226e29cfeb03f833ed67c2e80a5f"
+}

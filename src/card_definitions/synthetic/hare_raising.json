@@ -1,0 +1,16 @@
+{
+  "name": "Hare Raising",
+  "catalogue_id": 5559,
+  "oracle_id": "3ef02f2b-b611-40c3-a1d5-8b34989643cf",
+  "facts_sha256": "5cc74307175cbfa9e162911f35df6774470947a2ef0e2909b7420476c5a07561",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "3ef02f2b-b611-40c3-a1d5-8b34989643cf",
+    "index": 1,
+    "sha256": "7144b79d4bacbeef03802cdcce521562d6906cbfbd76d618bc852fc7fda34c3a"
+  },
+  "physical_metadata_sha256": "5dc3aa814f7be23653c66e51e0375da15b09735f681cc17e94e219fa104fbac8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PollenShieldHare.java",
+  "java_sha256": "4fbe4e20ae0aeb99303ed46a7e3c69ba7e32f2b538275c857b934f4cf9715c7d"
+}
