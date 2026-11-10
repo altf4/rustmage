@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "1fe0339987c9b771593f89a74a3c9d27ef307c057ac7939eb807829bd23f662d",
+  "catalogue_version": "6d01d836061c5f7840e505f8f108968a1c8adeb46c50d551c01bd15e4ef99cb6",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4108,
-  "implemented_total": 4120,
+  "implemented_standard_cards": 4113,
+  "implemented_total": 4125,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -182,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 240,
-      "gated": 18
+      "complete": 245,
+      "gated": 13
     },
     "znr": {
       "total": 1,
@@ -32178,8 +32178,8 @@
     {
       "name": "Specter of Mortality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/specter_of_mortality.rs",
       "set": "woe"
     },
@@ -34666,8 +34666,8 @@
     {
       "name": "Syr Ginger, the Meal Ender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/syr_ginger_the_meal_ender.rs",
       "set": "woe"
     },
@@ -35834,8 +35834,8 @@
     {
       "name": "The Irencrag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_irencrag.rs",
       "set": "woe"
     },
@@ -36714,8 +36714,8 @@
     {
       "name": "Three Bowls of Porridge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/three_bowls_of_porridge.rs",
       "set": "woe"
     },
@@ -41290,8 +41290,8 @@
     {
       "name": "Yenna, Redtooth Regent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/yenna_redtooth_regent.rs",
       "set": "woe"
     },

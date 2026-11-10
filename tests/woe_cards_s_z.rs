@@ -2081,7 +2081,7 @@ fn specter_of_mortality_exiles_own_creature_cards_then_triggers_a_separate_shrin
     assert_eq!(stats(&game, friend), (3, 3));
 }
 
-fn activate_only(game: &mut Game, card: CardId, ability: u16) {
+fn activate_untargeted(game: &mut Game, card: CardId, ability: u16) {
     choose(game, |action| match action {
         Action::Activate {
             card: source,
@@ -2095,6 +2095,9 @@ fn activate_only(game: &mut Game, card: CardId, ability: u16) {
         } => *source == card && *index == ability,
         _ => false,
     });
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(game);
+    }
 }
 
 #[test]
@@ -2158,10 +2161,7 @@ fn syr_ginger_reacts_to_own_other_artifacts_and_gains_its_last_power() {
     let mut negative = game.clone();
     negative.state.objects[ginger as usize].growth.power = -6;
     for (branch, gained) in [(&mut game, 4), (&mut negative, 0)] {
-        activate_only(branch, ginger, 0);
-        if matches!(branch.state.pending, Pending::PayCosts { .. }) {
-            pay(branch);
-        }
+        activate_untargeted(branch, ginger, 0);
         assert_eq!(branch.state.players[player.index()].mana, [0; 6]);
         assert_eq!(branch.object_view(ginger).zone, Zone::Graveyard);
         assert_eq!(branch.state.players[player.index()].life, 20);
@@ -2364,7 +2364,7 @@ fn will_freezes_gross_life_gained_and_discounts_white_and_blue_only_this_turn() 
     cast(&mut game, strike, Some(Target::Player(player)));
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, 20);
-    activate_only(&mut game, will, 0);
+    activate_untargeted(&mut game, will, 0);
     assert!(game.object_view(will).tapped);
     settle(&mut game);
 
