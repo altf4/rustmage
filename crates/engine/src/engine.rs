@@ -12956,6 +12956,10 @@ impl Game {
                             .as_ref()
                             .map_or(0, |f| f.bytes())
                         + resolution
+                            .exile_name_search
+                            .as_deref()
+                            .map_or(0, std::mem::size_of_val)
+                        + resolution
                             .optional_searches
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<search::OptionalSearchSequence>())

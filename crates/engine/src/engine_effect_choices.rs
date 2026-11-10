@@ -2579,21 +2579,31 @@ impl Game {
         self.run_program();
     }
 
-    pub(super) fn start_exile_same_name_search(&mut self, item: &SpellView) -> bool {
+    pub(super) fn exile_then_search_same_name(&mut self, item: &SpellView) {
         let [bound] = item.targets.as_slice() else {
-            return false;
+            return;
         };
         let Target::Card(id) = bound.target else {
-            return false;
+            return;
         };
         if !self.same_target_object(*bound) || !self.on_battlefield(id) {
-            return false;
+            return;
         }
         let owner = self.state.objects[id as usize].controller;
         let name = self.object_name(id);
+        self.state.resolving.as_mut().unwrap().exile_name_search = Some(Box::new((owner, name)));
         self.move_target_batch(&item.targets, Zone::Exile);
+    }
+
+    pub(super) fn resume_exile_name_search(&mut self) -> bool {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(search) = resolution.exile_name_search.take() else {
+            return false;
+        };
+        let (owner, name) = *search;
+        let item = resolution.item.clone();
         self.start_effect_choice(
-            item,
+            &item,
             EffectChoiceKind::CoverUpSearch { owner, name },
             PlayerSet::Controller,
             evidence::cost(0).filter,

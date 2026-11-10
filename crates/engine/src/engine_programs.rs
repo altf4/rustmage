@@ -71,6 +71,8 @@ pub(super) struct Resolution {
     pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
     pub search_result: Option<Box<super::search::SearchResult>>,
+    /// The target's controller and name before exile, awaiting any linked entries.
+    pub exile_name_search: Option<Box<(Player, &'static str)>>,
     pub optional_searches: Option<Box<super::search::OptionalSearchSequence>>,
     pub choice: Option<Box<super::effect_choices::EffectChoice>>,
 }
@@ -3635,6 +3637,7 @@ impl Game {
             target_library: None,
             search: None,
             search_result: None,
+            exile_name_search: None,
             optional_searches: None,
             choice: None,
         });
@@ -3885,6 +3888,9 @@ impl Game {
             if self.finish_entered_library_selection() {
                 return;
             }
+            if self.resume_exile_name_search() {
+                return;
+            }
             if self.state.resolving.as_ref().unwrap().connive.is_some() && self.advance_connive() {
                 return;
             }
@@ -4048,9 +4054,7 @@ impl Game {
                     }
                 }
                 Instruction::ExileTargetAndSearchItsController => {
-                    if self.start_exile_same_name_search(&item) {
-                        return;
-                    }
+                    self.exile_then_search_same_name(&item);
                 }
                 Instruction::ChooseLandCardName => {
                     self.state.pending = Pending::LandCardName {
