@@ -3,10 +3,25 @@
   "catalogue_id": 3032,
   "oracle_id": "4f10b164-6d36-4935-92e7-53be73ac4c8a",
   "facts_sha256": "99f5b621f79a5e3345c35650b2e37fa842c8a17a78d0c29956d27305743732fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "73b21987ab0d87859f2120c4ca1b2719b613dad2fb475e34f7e3305dd7789de5"
   },
-  "physical_metadata_sha256": "4e13bfbb1297d3f4a4d1b73062287dc186ee3effcf59b92c29abdba52a2bab23"
+  "physical_metadata_sha256": "4e13bfbb1297d3f4a4d1b73062287dc186ee3effcf59b92c29abdba52a2bab23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OrbitalPlunge.java",
+  "java_sha256": "dff1405928594310e912a29b6467708ccb6257aec433bd07d9a4f2eb8e84b509",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+      "sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

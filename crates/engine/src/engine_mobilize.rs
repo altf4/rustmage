@@ -2,6 +2,13 @@
 use super::temporary_tokens::TokenCleanup;
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum OwnTurnDeadline {
+    Next,
+    Turn(u32),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct DelayedSacrificeView {
     pub id: u64,
@@ -16,6 +23,8 @@ pub struct DelayedSacrificeView {
     pub next_upkeep: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub own_end_step: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub own_turn_deadline: Option<OwnTurnDeadline>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub destroy: bool,
 }
@@ -222,6 +231,7 @@ impl Game {
                 end_combat: false,
                 next_upkeep: false,
                 own_end_step: false,
+                own_turn_deadline: None,
                 destroy: false,
             },
             keywords: item.source_keywords,
@@ -278,6 +288,8 @@ impl Game {
                 end_combat: cleanup == TokenCleanup::EndCombatSacrifice,
                 next_upkeep: cleanup == TokenCleanup::NextUpkeepSacrifice,
                 own_end_step: cleanup == TokenCleanup::OwnEndStepSacrifice,
+                own_turn_deadline: (cleanup == TokenCleanup::NextOwnTurnEndStepSacrifice)
+                    .then_some(OwnTurnDeadline::Next),
                 destroy: cleanup == TokenCleanup::NextEndStepDestroy,
             },
             keywords: item.source_keywords,
@@ -289,6 +301,24 @@ impl Game {
             .delayed_sacrifices
             .get_or_insert_with(|| Box::new(Vec::new()))
             .push(batch);
+    }
+    pub(super) fn begin_delayed_sacrifice_turn(&mut self) {
+        let Some(batches) = &mut self.state.delayed_sacrifices else {
+            return;
+        };
+        let turn = self.state.turn;
+        let active = self.state.active;
+        batches.retain_mut(|batch| match batch.view.own_turn_deadline {
+            Some(OwnTurnDeadline::Turn(due)) => due == turn,
+            Some(OwnTurnDeadline::Next) if batch.view.controller == active => {
+                batch.view.own_turn_deadline = Some(OwnTurnDeadline::Turn(turn));
+                true
+            }
+            _ => true,
+        });
+        if batches.is_empty() {
+            self.state.delayed_sacrifices = None;
+        }
     }
     pub(super) fn queue_delayed_sacrifices(&mut self, end_combat: bool) {
         self.queue_delayed_token_cleanup(if end_combat {
@@ -308,6 +338,10 @@ impl Game {
                 !batch.view.end_combat
                     && !batch.view.next_upkeep
                     && (!batch.view.own_end_step || batch.view.controller == self.state.active)
+                    && batch
+                        .view
+                        .own_turn_deadline
+                        .is_none_or(|deadline| deadline == OwnTurnDeadline::Turn(self.state.turn))
             }
             _ => false,
         });

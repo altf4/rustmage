@@ -3,10 +3,44 @@
   "catalogue_id": 4305,
   "oracle_id": "a37314cf-bbbd-4003-b94d-0e6e60edfc15",
   "facts_sha256": "f8359905af7f1a40ffbe86eb7844df0a245bca71ac1b11f587284c82522cd6ad",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce38af5004d493152f124a8c96df6b4f2e9813f4b06e2e446eb4bf079334c0aa"
   },
-  "physical_metadata_sha256": "943b3da87d4910f7ff5b6f1fc542b5dc2dc896a6df96fff3721f62ad6b667b69"
+  "physical_metadata_sha256": "943b3da87d4910f7ff5b6f1fc542b5dc2dc896a6df96fff3721f62ad6b667b69",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+      "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessTargetEffect.java",
+      "sha256": "cc450621ce5efa6894bfc8eab4290a28aafb69a3f197f62851095e13d2f97f8f"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SynthesizerLabship.java",
+  "java_sha256": "40e3966a8391b0cea231990d278a1f139f4b7e826a3f75f1b42f5b46d902a6a5",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs",
+  "rules_notes": [
+    "CR 721.2b and 613.7. The two-charge combat ability functions while the Labship is a noncreature. Its animation and the other permanent’s base characteristics follow layer order."
+  ]
 }

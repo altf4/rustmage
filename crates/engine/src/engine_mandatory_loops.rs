@@ -32,6 +32,7 @@ fn pure_exiler(card: Card) -> bool {
         )
         && card.entry_tapped() == crate::cards::EntryTapped::Never
         && card.entry_counter_rules().is_empty()
+        && card.devour().is_none()
         && card.entry_choice().is_none()
         && card.chosen_entry_counters().is_none()
         && card.activations().iter().all(|ability| {
@@ -178,6 +179,7 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
     for p in 0..2 {
         after.players[p].nonland_permanents_entered_this_turn =
             before.players[p].nonland_permanents_entered_this_turn;
+        after.players[p].lands_entered_this_turn = before.players[p].lands_entered_this_turn;
     }
     if !roles::same_inert_loop_timestamps(before, &after, ids) {
         return None;

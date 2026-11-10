@@ -3,10 +3,44 @@
   "catalogue_id": 3992,
   "oracle_id": "fb84b94c-dc8c-4182-9b96-abd092b20981",
   "facts_sha256": "2c63a0cd772ad54ef8419c4ca8b6ac9d6008bce49db164720882f6a0e7c0068c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9909865a0e6ec37ec188d49b9ab7eed4372dc4a9564be83e8a60d058366db029"
   },
-  "physical_metadata_sha256": "0e62afdcb39fa0418c4de8a05ce8d5e2045f2f15405183c0f8b8ac0766800565"
+  "physical_metadata_sha256": "0e62afdcb39fa0418c4de8a05ce8d5e2045f2f15405183c0f8b8ac0766800565",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpecimenFreighter.java",
+  "java_sha256": "c8f321a092d3edfb358c3a3825704a51f7ce8cc070633f4ddc051b93fb4bf5b7",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs",
+  "rules_notes": [
+    "CR 721.2b. At nine charge counters the Spacecraft adds creature and gains its threshold abilities. A queued attack trigger retains the defending player."
+  ]
 }

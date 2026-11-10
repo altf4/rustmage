@@ -22,7 +22,7 @@ impl Game {
             ability.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(
                     ability.condition.event(),
-                    TriggerCondition::SpellCast { .. }
+                    TriggerCondition::SpellCast { .. } | TriggerCondition::SpellCastOrLandPlayed
                 )
         }) {
             self.state.cast_sources.push(id);
@@ -217,6 +217,7 @@ impl Game {
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::BattlefieldDeparture(_)
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)
@@ -263,6 +264,7 @@ impl Game {
                     && matches!(
                         ability.condition.event(),
                         TriggerCondition::SpellCast { .. }
+                            | TriggerCondition::SpellCastOrLandPlayed
                     )
             })
         {
@@ -301,6 +303,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
@@ -310,6 +314,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
@@ -341,6 +346,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            | crate::cards::StaticAbilityFragment::CombatDamageCantBePrevented
                             | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
@@ -361,6 +367,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
@@ -434,7 +441,8 @@ impl Game {
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group|
                 group.fragments.iter().any(|fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender
-                    | crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness)))
+                    | crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness
+                    | crate::cards::StaticAbilityFragment::ControlledStationWithGreaterToughness)))
             || self.state.objects[id as usize].card.has_creature_count_free_hand_cast()
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()

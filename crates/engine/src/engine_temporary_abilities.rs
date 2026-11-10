@@ -16,6 +16,20 @@ pub struct TemporaryAbilityView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
 }
+
+impl TemporaryAbilityView {
+    fn context(self) -> AttachmentTriggerView {
+        AttachmentTriggerView {
+            grantor: self.grantor,
+            granting_card: self.granting_card,
+            recipient: self.recipient,
+            defender: None,
+            granted: true,
+            origin: self.origin,
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn grant_source_permanent_trigger(
@@ -27,26 +41,42 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
+        self.grant_permanent_triggers(item, source.object, &[ability], timestamp);
+    }
+
+    pub(super) fn grant_permanent_triggers(
+        &mut self,
+        item: &SpellView,
+        recipient: ObjectRef,
+        abilities: &[u16],
+        timestamp: u64,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
         let granting_card = item.trigger_definition();
-        assert!(
-            granting_card.triggers()[usize::from(ability)]
-                .condition
-                .is_granted()
-        );
+        let turn = self.state.turn;
         self.state
             .temporary_abilities
             .get_or_insert_with(|| Box::new(Vec::new()))
-            .push(TemporaryAbilityView {
-                recipient: source.object,
-                grantor: source.object,
-                granting_card,
-                ability,
-                grantor_controller: item.controller,
-                expires_turn: self.state.turn,
-                permanent: true,
-                timestamp,
-                origin: Some(timestamp),
-            });
+            .extend(abilities.iter().map(|&ability| {
+                assert!(
+                    granting_card.triggers()[usize::from(ability)]
+                        .condition
+                        .is_granted()
+                );
+                TemporaryAbilityView {
+                    recipient,
+                    grantor: source.object,
+                    granting_card,
+                    ability,
+                    grantor_controller: item.controller,
+                    expires_turn: turn,
+                    permanent: true,
+                    timestamp,
+                    origin: Some(timestamp),
+                }
+            }));
     }
     /// Each stored grant identifies one ability. Scanning its definition's whole
     /// trigger array would duplicate independent grants from the same card.
@@ -315,59 +345,126 @@ impl Game {
             );
         }
     }
+    pub(super) fn temporary_step_triggers(&mut self, step: Step) {
+        let Some(rows) = &self.state.temporary_abilities else {
+            return;
+        };
+        let matching: Vec<_> = rows
+            .iter()
+            .copied()
+            .filter(|grant| {
+                let object = &self.state.objects[grant.recipient.card as usize];
+                (grant.permanent || grant.expires_turn == self.state.turn)
+                    && object.zone == Zone::Battlefield
+                    && self.object_ref(grant.recipient.card) == grant.recipient
+                    && self.step_event_matches(
+                        grant.granting_card.triggers()[usize::from(grant.ability)].condition,
+                        step,
+                        object.controller,
+                    )
+            })
+            .collect();
+        for grant in matching {
+            let source = self.object_view(grant.recipient.card);
+            if source.grant_available(
+                grant.grantor,
+                grant.granting_card,
+                grant.ability,
+                Some(grant.timestamp),
+            ) {
+                self.queue_trigger_from(
+                    &source,
+                    usize::from(grant.ability),
+                    Some(Box::new(grant.context())),
+                );
+            }
+        }
+    }
+
+    pub(super) fn granted_departure_mana_value(&self, before: &ObjectView) -> u64 {
+        let needs_mana_value = self.state.temporary_abilities.as_ref().is_some_and(|rows| {
+            rows.iter().any(|grant| {
+                grant.recipient == before.reference
+                    && (grant.permanent || grant.expires_turn == self.state.turn)
+                    && grant.granting_card.triggers()[usize::from(grant.ability)]
+                        .program
+                        .contains(&Instruction::DamageEachCreatureByDepartureManaValue)
+                    && before.grant_available(
+                        grant.grantor,
+                        grant.granting_card,
+                        grant.ability,
+                        Some(grant.timestamp),
+                    )
+            })
+        });
+        if needs_mana_value {
+            self.object_mana_value(before.id)
+        } else {
+            0
+        }
+    }
+
     pub(super) fn temporary_departure_triggers(&mut self, event: &ZoneChange) {
         if event.before.zone != Zone::Battlefield || !event.moved {
             return;
         }
-        if event.destination == Zone::Graveyard {
-            let matching: Vec<_> = self
-                .state
-                .temporary_abilities
-                .as_ref()
-                .map_or(&[][..], |grants| grants.as_slice())
-                .iter()
-                .copied()
-                .filter(|grant| {
-                    grant.recipient == event.before.reference
-                        && (grant.permanent || grant.expires_turn == self.state.turn)
-                        && event.before.grant_available(
-                            grant.grantor,
-                            grant.granting_card,
-                            grant.ability,
-                            Some(grant.timestamp),
-                        )
-                })
-                .collect();
-            for grant in matching {
-                let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
-                let return_death = match ability.condition.event() {
-                    TriggerCondition::SelfDies => false,
-                    TriggerCondition::ReturnDeath(filter)
-                        if self.return_death_matches(filter, &event.before, event) =>
-                    {
-                        true
-                    }
-                    _ => continue,
-                };
-                // 'You' belongs to the dying creature's actual controller, not
-                // the caster that originally bestowed the ability.
-                let context = AttachmentTriggerView {
-                    grantor: grant.grantor,
-                    granting_card: grant.granting_card,
-                    recipient: grant.recipient,
-                    defender: None,
-                    granted: true,
-                    origin: grant.origin,
-                };
-                if self.queue_zone_trigger_from(
-                    &event.before,
-                    usize::from(grant.ability),
-                    event,
-                    Some(Box::new(context)),
-                ) && return_death
+        let Some(rows) = &self.state.temporary_abilities else {
+            return;
+        };
+        let matching: Vec<_> = rows
+            .iter()
+            .copied()
+            .filter(|grant| {
+                grant.recipient == event.before.reference
+                    && (grant.permanent || grant.expires_turn == self.state.turn)
+                    && event.before.grant_available(
+                        grant.grantor,
+                        grant.granting_card,
+                        grant.ability,
+                        Some(grant.timestamp),
+                    )
+            })
+            .collect();
+        for grant in matching {
+            let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
+            let return_death = match ability.condition.event() {
+                TriggerCondition::SelfLeaves => false,
+                TriggerCondition::SelfDies if event.destination == Zone::Graveyard => false,
+                TriggerCondition::ReturnDeath(filter)
+                    if event.destination == Zone::Graveyard
+                        && self.return_death_matches(filter, &event.before, event) =>
                 {
-                    self.capture_return_death(event);
+                    true
                 }
+                _ => continue,
+            };
+            if !self.queue_zone_trigger_from(
+                &event.before,
+                usize::from(grant.ability),
+                event,
+                Some(Box::new(grant.context())),
+            ) {
+                continue;
+            }
+            if return_death {
+                self.capture_return_death(event);
+            } else if ability
+                .program
+                .contains(&Instruction::DamageEachCreatureByDepartureManaValue)
+            {
+                self.state
+                    .pending_triggers
+                    .last_mut()
+                    .unwrap()
+                    .set_event_object(EventObjectView {
+                        object: event.before.reference,
+                        facts: EventObjectFacts::DepartureManaValue(
+                            event.granted_departure_mana_value,
+                        ),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
             }
         }
         // Dispatch before erasing the exact old incarnation, including each

@@ -1,11 +1,13 @@
 //! Owned pre-entry attachment/life choices; no object moves until the batch is ready.
 use super::entry_tap::{EntryTapEffect, EntryTapEvent, EntryTapKind};
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
     pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
+    pub devour_preparation: Option<Box<entry_devour::Preparation>>,
     pub copy_preparation: Option<Box<entry_copies::Preparation>>,
     pub delayed_return_exile: Option<Box<SpellView>>,
     pub choice: Option<EntryChoiceValue>,
@@ -69,6 +71,7 @@ pub(super) struct EntryMove {
     /// A played library land is public throughout its pre-entry special action.
     /// Its actual origin remains Library; unrelated library entries stay private.
     pub public_origin: bool,
+    pub played_land: bool,
     pub life_paid: Option<bool>,
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
@@ -159,16 +162,50 @@ pub(super) struct EntryBatch {
     pub shuffle_after: Option<Player>,
     /// A surrounding effect waits for this immediate entry before its next event.
     pub replacement_resume: Option<Box<replacements::ReplacementState>>,
+    /// A devour sacrifice can return linked cards before its entrant arrives.
+    pub resume_entry: Option<Box<EntryBatch>>,
     /// Allocated only for events with competing untapped-entry replacements.
     pub tap_events: Vec<EntryTapEvent>,
     pub tap_next: usize,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryMove {
-    /// View the event before a return instruction's simultaneous effect starts.
-    /// Copy recipes and earlier static type effects participate in CR614.12.
+    pub(super) fn as_entry_skeleton_source(&self) -> Option<ObjectRef> {
+        self.return_modification.and_then(|(kind, source)| {
+            (kind == ReturnKind::SkeletonWithoutAbilities).then_some(source)
+        })
+    }
+    pub(super) fn intrinsic_entry_card(&self) -> Option<Card> {
+        self.as_entry_skeleton_source()
+            .is_none()
+            .then_some(self.before.card)
+    }
+    pub(super) fn intrinsic_entry_tapped(&self) -> EntryTapped {
+        self.intrinsic_entry_card()
+            .map_or(EntryTapped::Never, Card::entry_tapped)
+    }
+    pub(super) fn intrinsic_entry_choice(&self) -> Option<EntryChoiceKind> {
+        self.intrinsic_entry_card().and_then(Card::entry_choice)
+    }
+    pub(super) fn abilityless_entry_counters(&self) -> Counters {
+        let mut counters = Counters::default();
+        if self.destination == Zone::Battlefield {
+            for (kind, amount) in self
+                .effect_counters
+                .iter()
+                .copied()
+                .chain(self.effect_counter)
+            {
+                counters.add(kind, amount);
+            }
+        }
+        counters
+    }
+
+    /// Copy recipes and applicable continuous effects can change the prospective entrant.
     pub(super) fn requires_characteristic_preview(&self) -> bool {
         self.ghost_vacuum_after.is_some()
+            || self.as_entry_skeleton_source().is_some()
             || self.before.copy_recipe.is_some()
             || self
                 .copy_preparation
@@ -196,7 +233,9 @@ impl EntryMove {
 
     pub(super) fn replacement_preview(&self) -> Self {
         let mut movement = self.clone();
-        movement.return_modification = None;
+        if self.as_entry_skeleton_source().is_none() {
+            movement.return_modification = None;
+        }
         movement
     }
 
@@ -230,6 +269,7 @@ impl EntryMove {
     pub(super) fn from_view(before: ObjectView, destination: Zone, tapped: bool) -> Self {
         EntryMove {
             exile_preparation: None,
+            devour_preparation: None,
             copy_preparation: None,
             delayed_return_exile: None,
             choice: None,
@@ -270,6 +310,7 @@ impl EntryMove {
             reveal_hand: false,
             exile_free_until_end: None,
             public_origin: false,
+            played_land: false,
             life_paid: None,
             offspring_paid: false,
             cast_payment: None,
@@ -320,6 +361,7 @@ impl EntryBatch {
                             std::mem::size_of::<SpellView>() + item.owned_bytes()
                         })
                         + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
+                        + m.devour_preparation.as_ref().map_or(0, |p| p.bytes())
                         + m.copy_preparation
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
@@ -348,6 +390,7 @@ impl EntryBatch {
             + self.timestamp_order.len() * std::mem::size_of::<usize>()
             + self.resume.as_ref().map_or(0, Pending::owned_bytes)
             + self.replacement_resume.as_ref().map_or(0, |f| f.bytes())
+            + self.resume_entry.as_ref().map_or(0, |batch| batch.bytes())
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -571,14 +614,15 @@ impl Game {
             resume: None,
             shuffle_after,
             replacement_resume: None,
+            resume_entry: None,
             tap_events: Vec::new(),
             tap_next: 0,
         };
-        if batch
-            .moves
-            .iter()
-            .any(|m| entry_copies::needs_copy(m) || entry_exiles::needs_exile(m))
-        {
+        if batch.moves.iter().any(|m| {
+            entry_copies::needs_copy(m)
+                || entry_exiles::needs_exile(m)
+                || entry_devour::needs_devour(m)
+        }) {
             self.state.entry_batch = Some(Box::new(batch));
         } else {
             self.initialize_entry_batch(batch);
@@ -605,7 +649,8 @@ impl Game {
             let intrinsic_tapped = if movement.manifest_original.is_some() {
                 false
             } else {
-                match movement.before.card.entry_tapped() {
+                match movement.intrinsic_entry_tapped() {
+                    EntryTapped::Never => false,
                     EntryTapped::ChosenXAtMost(maximum) => movement.x <= maximum,
                     _ => self.self_entry_definition_requires_tapped(
                         movement.before.card,
@@ -616,7 +661,7 @@ impl Game {
             };
             let mut effects = self.entry_tap_effects(movement);
             if movement.manifest_original.is_none()
-                && let EntryTapped::UnlessBehold(subtype) = movement.before.card.entry_tapped()
+                && let EntryTapped::UnlessBehold(subtype) = movement.intrinsic_entry_tapped()
             {
                 effects.push(EntryTapEffect {
                     source: movement.before.reference,
@@ -645,7 +690,7 @@ impl Game {
                         kind: EntryTapKind::Tapped,
                     });
                 }
-                if let EntryTapped::PayLife(cost) = movement.before.card.entry_tapped() {
+                if let EntryTapped::PayLife(cost) = movement.intrinsic_entry_tapped() {
                     effects.push(EntryTapEffect {
                         source: movement.before.reference,
                         intrinsic: true,
@@ -672,12 +717,12 @@ impl Game {
             .filter(|(i, m)| {
                 m.destination == Zone::Battlefield
                     && (m.choose_attacking_defender
-                        || m.before.card.entry_choice().is_some()
+                        || m.intrinsic_entry_choice().is_some()
                         || !m.artifact_return
                             && !m.enchantment_return
                             && m.before.card.aura().is_some()
                             && m.attachment.is_none()
-                        || matches!(m.before.card.entry_tapped(), EntryTapped::PayLife(_))
+                        || matches!(m.intrinsic_entry_tapped(), EntryTapped::PayLife(_))
                             && m.life_paid.is_none()
                             && !tap_events.iter().any(|event| event.index == *i))
             })
@@ -699,7 +744,7 @@ impl Game {
         batch.tap_events = tap_events;
         batch.copying = false;
         if batch.choices.is_empty() {
-            self.add_subtype_entry_counters(&mut batch.moves);
+            self.add_entry_counter_bonuses(&mut batch.moves);
             batch.entry_bonuses_ready = true;
             Self::rebuild_entry_counter_order(&mut batch, self.state.active);
         }
@@ -742,6 +787,10 @@ impl Game {
         }
     }
     fn initialize_entry_counters(&self, movement: &mut EntryMove) {
+        if movement.intrinsic_entry_card().is_none() {
+            movement.counters = movement.abilityless_entry_counters();
+            return;
+        }
         movement.counters = self.pre_entry_counters_with_payment(
             &movement.before,
             movement.destination,
@@ -764,6 +813,9 @@ impl Game {
                     .capacity("entry exile counters"),
             );
         }
+        movement
+            .counters
+            .add(CounterKind::PlusOne, entry_devour::entry_counters(movement));
         self.apply_cast_entry_counters(movement);
         if movement.destination == Zone::Battlefield && movement.cast_origin.is_some() {
             for &(kind, amount) in movement.before.card.cast_entry_counters() {
@@ -805,10 +857,11 @@ impl Game {
         }
     }
     pub(super) fn has_entry_counter_replacements(&self, card: Card) -> bool {
-        self.has_subtype_entry_counter_provider()
+        self.has_entry_counter_provider()
             || (card.enters_counters().total() > 0
                 || !card.entry_counter_rules().is_empty()
-                || card.x_complement_entry_counters().is_some())
+                || card.x_complement_entry_counters().is_some()
+                || card.devour().is_some())
                 && (replacements::entry_kind_sensitive(self)
                     || card.replacement_effects().iter().any(|e| {
                         matches!(
@@ -874,6 +927,9 @@ impl Game {
                         .capacity("entry power exhausted"),
                     EntryCounterAmount::ColorsSpent => {
                         payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64)
+                    }
+                    EntryCounterAmount::ManaSpent => {
+                        payment.map_or(0, |mana| mana.into_iter().map(u64::from).sum())
                     }
                     EntryCounterAmount::IfNotCastOrZero(n) => {
                         if payment.is_none_or(|p| p == [0; 6]) {
@@ -996,12 +1052,14 @@ impl Game {
         let mut keyword_results = Vec::new();
         let mut ability_results = Vec::new();
         let mut return_ability_results = Vec::new();
+        let mut skeleton_results = Vec::new();
         let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
         let mut ghost_results = Vec::new();
         let mut copy_results = Vec::new();
+        let mut played_lands = Vec::new();
         for (movement, counters) in moves {
             let entering_face = movement
                 .source_before
@@ -1129,10 +1187,14 @@ impl Game {
                 && event.destination == Zone::Battlefield
                 && let Some((kind, source)) = movement.return_modification
             {
-                if kind == ReturnKind::WithoutAbilities {
-                    return_ability_results.push((event.after, source));
-                } else {
-                    self.apply_return_modification(event.after, kind, source);
+                match kind {
+                    ReturnKind::WithoutAbilities => {
+                        return_ability_results.push((event.after, source));
+                    }
+                    ReturnKind::SkeletonWithoutAbilities => {
+                        skeleton_results.push((event.after, source));
+                    }
+                    _ => self.apply_return_modification(event.after, kind, source),
                 }
             }
             if event.moved
@@ -1271,6 +1333,9 @@ impl Game {
             {
                 self.grant_exile_free_permission_until_end(player, event.after);
             }
+            if movement.played_land && event.moved {
+                played_lands.push((movement.controller, event.after));
+            }
             events.push(event);
         }
         // Defer only fixed Role cohort timestamps until the surrounding entry
@@ -1359,6 +1424,13 @@ impl Game {
         for (recipient, definition) in food_results {
             self.apply_food_return(recipient, definition);
         }
+        for (recipient, source) in skeleton_results {
+            return_links::apply_skeleton_return(
+                self.state.roles.get_or_insert_with(Default::default),
+                recipient,
+                source,
+            );
+        }
         for recipient in artifact_results {
             let timestamp = self.next_role_timestamp();
             self.state.roles.get_or_insert_default().animations.push(
@@ -1415,6 +1487,9 @@ impl Game {
             self.finish_discard_events(&events, context);
         } else {
             self.finish_zone_events(&events, &[]);
+        }
+        for (player, land) in played_lands {
+            self.land_play_triggers(player, land);
         }
         // "Loses all abilities" follows the return event; it does not describe
         // the entrant as having no abilities (CR 611.2e). Its entry abilities
@@ -1528,7 +1603,17 @@ impl Game {
                 if self.advance_entry_copies() || self.advance_entry_exiles() {
                     return true;
                 }
-                let batch = *self.state.entry_batch.take().unwrap();
+                match self.advance_entry_devour() {
+                    entry_devour::Advance::Choosing => return true,
+                    entry_devour::Advance::NestedEntry => continue,
+                    entry_devour::Advance::Ready => (),
+                }
+                let mut batch = *self.state.entry_batch.take().unwrap();
+                // Devour can immediately return a card that was also scheduled
+                // to enter in this batch. The older move no longer has its object.
+                batch.moves.retain(|movement| {
+                    self.object_ref(movement.before.id) == movement.before.reference
+                });
                 self.initialize_entry_batch(batch);
                 continue;
             }
@@ -1558,12 +1643,12 @@ impl Game {
                     movement.attacking = attacking.then_some(CombatDefender::Player(owner.other()));
                     continue;
                 }
-                if movement.before.card.entry_choice().is_some() && movement.choice.is_none() {
+                if movement.intrinsic_entry_choice().is_some() && movement.choice.is_none() {
                     self.state.pending = Pending::EntryValue { player: owner };
                     return true;
                 }
                 if movement.life_paid.is_none()
-                    && matches!(movement.before.card.entry_tapped(), EntryTapped::PayLife(_))
+                    && matches!(movement.intrinsic_entry_tapped(), EntryTapped::PayLife(_))
                 {
                     if self.can_pay_entry_life() {
                         self.state.pending = Pending::EntryLife { player: owner };
@@ -1599,7 +1684,7 @@ impl Game {
             }
             if !self.state.entry_batch.as_ref().unwrap().entry_bonuses_ready {
                 let mut batch = self.state.entry_batch.take().unwrap();
-                self.add_subtype_entry_counters(&mut batch.moves);
+                self.add_entry_counter_bonuses(&mut batch.moves);
                 batch.entry_bonuses_ready = true;
                 Self::rebuild_entry_counter_order(&mut batch, self.state.active);
                 self.state.entry_batch = Some(batch);
@@ -1691,6 +1776,7 @@ impl Game {
             }
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
+            let resume_entry = batch.resume_entry.take();
             let selected = self
                 .state
                 .manifest
@@ -1703,6 +1789,10 @@ impl Game {
             self.commit_entries(batch);
             if completes_manifest {
                 self.finish_manifest_entry();
+            }
+            if let Some(outer) = resume_entry {
+                self.resume_entry_after_nested(outer);
+                continue;
             }
             if let Some(outer) = replacement_resume {
                 self.state.replacements = Some(outer);
@@ -2046,7 +2136,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn has_subtype_entry_counter_provider(&self) -> bool {
+    fn has_entry_counter_provider(&self) -> bool {
         self.state.static_sources.iter().any(|&id| {
             self.state.objects[id as usize].zone == Zone::Battlefield
                 && self.state.objects[id as usize]
@@ -2060,6 +2150,7 @@ impl Game {
                                 crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                                     | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
+                                    | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             )
                         })
                     })
@@ -2079,7 +2170,7 @@ impl Game {
             .counter_order
             .sort_by_key(|&i| (batch.moves[i].controller != active, i));
     }
-    fn add_subtype_entry_counters(&self, moves: &mut [EntryMove]) {
+    fn add_entry_counter_bonuses(&self, moves: &mut [EntryMove]) {
         // Only a live provider unlocks the battlefield count. Ordinary entry
         // batches never acquire an all-object scan from this mechanic.
         for &id in &self.state.static_sources {
@@ -2102,6 +2193,27 @@ impl Game {
                                 && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
                             {
                                 movement.counters.add(kind, amount);
+                            }
+                        }
+                    }
+                    if matches!(
+                        fragment,
+                        StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
+                    ) {
+                        let count =
+                            self.state.players[source.controller.index()].lands_entered_this_turn;
+                        if count > 0
+                            && self.continuous_fragment_available(id, |f| std::ptr::eq(f, fragment))
+                        {
+                            for movement in moves.iter_mut() {
+                                if self
+                                    .ghost_entry_preview(&movement.replacement_preview())
+                                    .is_some_and(|view| {
+                                        view.controller == source.controller && view.is_creature()
+                                    })
+                                {
+                                    movement.counters.add(CounterKind::PlusOne, count);
+                                }
                             }
                         }
                     }

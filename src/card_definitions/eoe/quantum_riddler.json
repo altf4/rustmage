@@ -12,17 +12,17 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/q/QuantumRiddler.java",
   "java_sha256": "09bdd91a3b4a1eb12dcaf72bf0f282f6cf9ad5e8eb580958467737bc906fd3b4",
-  "rules_tests": "src/assurance/hartford_draw.rs",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs",
   "xmage_dependencies": [
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
-      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
-    },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
       "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
     }
   ],
   "rules_notes": [

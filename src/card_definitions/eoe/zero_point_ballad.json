@@ -3,10 +3,39 @@
   "catalogue_id": 5158,
   "oracle_id": "835abd35-27ea-45fe-b55d-25081c57bd4a",
   "facts_sha256": "173b3c3ea639d06fcf5f78b0c7e3baaadb8f9f72a2949fe8fe12793c94ca0ebb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "041dec967b943ed581a77ed20061d656e6ca7d8bca1902dca0d7cf63304907f5"
   },
-  "physical_metadata_sha256": "4e0e7fbe6fa631f65f15e9f4f14a5e20504ccdabc806c5bc994ecded40b82400"
+  "physical_metadata_sha256": "d8787bd4c647744c883e7b1ccc9487464f9d2cb68cf72aacc5899461e963e6f6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZeroPointBallad.java",
+  "java_sha256": "8c6f8f8b54d0a57f70da35d83b41854e67d01b6edea0cfde056bf5de811c8ba0",
+  "rules_tests": "tests/eoe_cards_067_132_final.rs",
+  "rules_notes": [
+    "CR 608.2c and 701.7. The non-targeted return choice uses exact creature card receipts from this spell’s destruction event, after its controller loses X life."
+  ]
 }

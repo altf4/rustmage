@@ -3,10 +3,45 @@
   "catalogue_id": 2698,
   "oracle_id": "d0025d29-d652-4af8-b367-13142d5532df",
   "facts_sha256": "4405b971c15839a34940e7b505fbc749af1119c46f137fb3bc2b10dbac94954e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "00f89978b21ae92913eb4a505488eb43ff0cf526e7199bb1385490d55de56f4b"
   },
-  "physical_metadata_sha256": "2fa7ddd3919a2761b7f73d1c84bf347edad886bba3da0cb132487abea0d4b2f1"
+  "physical_metadata_sha256": "2fa7ddd3919a2761b7f73d1c84bf347edad886bba3da0cb132487abea0d4b2f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MechanShieldmate.java",
+  "java_sha256": "134781b9f2a588b3d9dc451678092400746f559c644e56751b26d71cfdc85d79",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+      "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalAsThoughEffect.java",
+      "sha256": "40e0a82ae35b35c5434d1eb480e46ecff91ca69113a8cbc8e606dd1328bba618"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+      "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ]
 }

@@ -8,5 +8,24 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ad4457eb60d0c0c6989dee639b2499c2ed27e7da75f112d56fbac5fea8d28e8a"
   },
-  "physical_metadata_sha256": "bdf08998af401ad4b85c9d1dc97ca242142dd164f9ccf6825125ae51437bc378"
+  "physical_metadata_sha256": "bdf08998af401ad4b85c9d1dc97ca242142dd164f9ccf6825125ae51437bc378",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/Unravel.java",
+  "java_sha256": "98c5f5df8d8e298f806fbe35b126dc971c83bb3a86545fe962ccc9871693cbc6",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs",
+  "rules_notes": [
+    "Actual cast payment and spell mana value are independent. A discounted or free alternate cast can qualify for the draw."
+  ]
 }

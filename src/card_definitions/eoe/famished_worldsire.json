@@ -3,10 +3,40 @@
   "catalogue_id": 1436,
   "oracle_id": "e7f53928-a4cc-41ed-877d-b72d786e77d9",
   "facts_sha256": "29b780c67c63bce63ec523411db156bd3be049542e70f21648929784419c46fb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cfa21d668a99c59c1398deec2bb200d5f49a0f66082c4513cdf5a4fe3e95b00f"
   },
-  "physical_metadata_sha256": "008f85b530fa3916ab37fa09a71ad88fb702b93fb046cb3a1e80e9841944f7e2"
+  "physical_metadata_sha256": "008f85b530fa3916ab37fa09a71ad88fb702b93fb046cb3a1e80e9841944f7e2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FamishedWorldsire.java",
+  "java_sha256": "8676a7d4ea8e3268a64a681203c3e590b2c66cd64a55b05ca5a2f4d589ed395c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleLibrarySourceEffect.java",
+      "sha256": "9b3c461a5894f38782972b026b88b2dc191dcd4323df4831b07fa4565bf3300d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DevourAbility.java",
+      "sha256": "4ee274fd8ed1a8e8b511055576fb7ec97412fec45da3165457e40ce85d39d48b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterControlledLandPermanent.java",
+      "sha256": "849ad46e024ce53b361821cabf62476783a69b3295eb16ea66d165d18c243ac7"
+    }
+  ]
 }

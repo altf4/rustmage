@@ -30,6 +30,8 @@ impl Card {
                         | StaticAbilityFragment::CastGraveyardCreaturesUsingSneak { .. }
                         | StaticAbilityFragment::ForeignStashPlay
                         | StaticAbilityFragment::FreeSpellCast(_)
+                        | StaticAbilityFragment::FreeFirstSpellOnOwnTurn
+                        | StaticAbilityFragment::GrantHandWarp { .. }
                 )
             })
         })
@@ -41,18 +43,18 @@ pub(super) fn has_fragment<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     predicate: impl Fn(&StaticAbilityFragment) -> bool,
 ) -> bool {
-    has_fragment_from(world, player, |_, fragment| predicate(fragment))
+    has_fragment_from(world, Some(player), |_, fragment| predicate(fragment))
 }
 fn has_fragment_from<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
-    player: Player,
+    player: Option<Player>,
     predicate: impl Fn(CardId, &StaticAbilityFragment) -> bool,
 ) -> bool {
     world.static_sources().iter().any(|&id| {
         let object = world.object(id);
         let matches = |fragment: &StaticAbilityFragment| predicate(id, fragment);
         object.zone == Zone::Battlefield
-            && object.controller == player
+            && player.is_none_or(|player| object.controller == player)
             && object
                 .card
                 .static_ability_groups()
@@ -76,13 +78,15 @@ pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Siz
     player: Player,
     origin: Zone,
 ) -> bool {
-    has_fragment_from(world, player, |id, fragment| match (origin, fragment) {
-        (Zone::Library, StaticAbilityFragment::PlayFromLibraryTopAfterAttacking) => {
-            source_attacked(world, id)
+    has_fragment_from(world, Some(player), |id, fragment| {
+        match (origin, fragment) {
+            (Zone::Library, StaticAbilityFragment::PlayFromLibraryTopAfterAttacking) => {
+                source_attacked(world, id)
+            }
+            (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
+            | (Zone::Graveyard, StaticAbilityFragment::PlayLandFromGraveyard) => true,
+            _ => false,
         }
-        (Zone::Library, StaticAbilityFragment::PlayLandFromLibraryTop)
-        | (Zone::Graveyard, StaticAbilityFragment::PlayLandFromGraveyard) => true,
-        _ => false,
     })
 }
 fn is_library_top<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -112,7 +116,7 @@ pub(super) fn ordinary_library_spell_permission<W: ability_world::Characteristic
     definition: Card,
 ) -> bool {
     !definition.is_land()
-        && has_fragment_from(world, player, |id, fragment| match fragment {
+        && has_fragment_from(world, Some(player), |id, fragment| match fragment {
             StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
             StaticAbilityFragment::CastFromLibraryTop(filter) => filter.matches(definition),
             StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => source_attacked(world, id),
@@ -203,12 +207,19 @@ pub(super) fn payment_goal<W: ability_world::CharacteristicWorld + ?Sized>(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn filtered_free_cast_available(&self, player: Player, definition: Card) -> bool {
-        !definition.is_land()
-            && has_fragment(
-                self,
-                player,
-                |fragment| matches!(fragment, StaticAbilityFragment::FreeSpellCast(filter) if filter.matches(definition)),
-            )
+        if definition.is_land() {
+            return false;
+        }
+        let first_spell = self.state.active == player
+            && self.state.players[player.index()].spells_cast_this_turn == 0;
+        let only_controller = (!first_spell).then_some(player);
+        has_fragment_from(self, only_controller, |id, fragment| match *fragment {
+            StaticAbilityFragment::FreeSpellCast(filter) => {
+                self.state.objects[id as usize].controller == player && filter.matches(definition)
+            }
+            StaticAbilityFragment::FreeFirstSpellOnOwnTurn => first_spell,
+            _ => false,
+        })
     }
     pub(super) fn can_play_static_land(&self, player: Player, card: CardId) -> bool {
         let object = &self.state.objects[card as usize];

@@ -42,6 +42,18 @@ impl Announcement {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn target_value_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            unreachable!("activation X");
+        };
+        let definition = a
+            .item
+            .source
+            .expect("activation source")
+            .card
+            .activation(ability);
+        if definition.tap_x_cost() {
+            return self.activation_x_intervals(a);
+        }
         let Some((TargetPlan::Single(spec), _)) = a.item.program() else {
             return Vec::new();
         };
@@ -51,16 +63,7 @@ impl Game {
         let Some((factor, offset)) = affine_x(amount).filter(|(factor, _)| *factor > 0) else {
             return Vec::new();
         };
-        let StackKind::ActivatedAbility { ability } = a.item.kind else {
-            unreachable!("target-linked activation X");
-        };
-        let minimum = a
-            .item
-            .source
-            .expect("activation source")
-            .card
-            .activation(ability)
-            .minimum_x();
+        let minimum = definition.minimum_x();
         // Exact legal targets bound the declarations before any costs are paid.
         let mut values = Vec::new();
         self.visit_item_targets(&a.item, *base, |target| {

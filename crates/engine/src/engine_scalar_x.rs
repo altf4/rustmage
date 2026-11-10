@@ -267,15 +267,20 @@ impl Game {
         }
         intervals
     }
-    fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+    pub(super) fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!("activation X announcement")
         };
         let source = a.item.source.expect("activation source");
-        let minimum = source.card.activation(ability).minimum_x();
+        let definition = source.card.activation(ability);
+        let minimum = definition.minimum_x();
+        let tap_x = definition.tap_x_cost();
         let fundable = |value: u32| {
             let mut probe = a.clone();
             probe.item.x = Some(value);
+            if tap_x && !self.item_targets_available(&probe.item, self.target_spec(&probe.item)) {
+                return false;
+            }
             probe
                 .cost_options()
                 .any(|cost| self.announcement_cost_fundable(&probe, cost))
@@ -283,7 +288,14 @@ impl Game {
         if !fundable(minimum) {
             return Vec::new();
         }
-        let (mut low, mut high) = (minimum, u32::MAX);
+        // Every possible tap contributor corresponds to a distinct object,
+        // including cards that could enter during an intervening mana ability.
+        let upper = if tap_x {
+            u32::try_from(self.state.objects.len()).unwrap_or(u32::MAX)
+        } else {
+            u32::MAX
+        };
+        let (mut low, mut high) = (minimum, upper);
         while low < high {
             let mid = low + (high - low).div_ceil(2);
             if fundable(mid) {
@@ -507,19 +519,46 @@ impl Game {
                     .unwrap_or(0)
                     .max(0) as u128
             }
+            AmountValue::SacrificeCostManaValueWithBonus(bonus) => item
+                .sacrificed_mana_value
+                .as_deref()
+                .map_or(0, |value| u128::from(*value) + u128::from(bonus)),
+            AmountValue::ChosenCostCreaturePower => {
+                self.chosen_cost_creature_power(item).max(0) as u128
+            }
             AmountValue::TappedCostCreaturePower => {
                 let event = item.event_object.as_ref().expect("tapped cost subject");
                 let EventObjectFacts::CreatureComparison(saved) = event.facts else {
                     unreachable!()
                 };
-                let power = if self.on_battlefield(event.object.card)
-                    && self.object_ref(event.object.card) == event.object
-                {
-                    self.stats(event.object.card).power
-                } else {
-                    saved.power
+                let facts = self.comparison_facts(event.object, saved);
+                if !facts.creature {
+                    return 0;
+                }
+                let station_with_toughness = |fragment: &crate::cards::StaticAbilityFragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::ControlledStationWithGreaterToughness
+                    )
                 };
-                power.max(0) as u128
+                let contribution = if facts.controller == item.controller
+                    && facts.toughness > facts.power
+                    && self.state.static_sources.iter().copied().any(|source| {
+                        let provider = &self.state.objects[source as usize];
+                        self.on_battlefield(source)
+                            && provider.controller == item.controller
+                            && provider
+                                .card
+                                .static_ability_groups()
+                                .iter()
+                                .any(|group| group.fragments.iter().any(station_with_toughness))
+                            && self.continuous_fragment_available(source, station_with_toughness)
+                    }) {
+                    facts.toughness
+                } else {
+                    facts.power
+                };
+                contribution.max(0) as u128
             }
             AmountValue::TargetCreaturePower => {
                 let r = self.state.resolving.as_ref().unwrap();
@@ -538,6 +577,12 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::CounterPlacementAmount => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::CountersPlaced { amount }) => u128::from(*amount),
+                    _ => unreachable!("counter-placement amount requires its frozen event"),
+                }
+            }
             AmountValue::DepartureCounterCount(kind) => {
                 item.event_object.as_ref().map_or(0, |event| {
                     if let EventObjectFacts::DeathCounters(counters) = &event.facts {

@@ -62,6 +62,32 @@ impl DiscardContext {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn select_random_discards(
+        &mut self,
+        player: Player,
+        amount: u16,
+        selected: &mut Vec<CardId>,
+    ) {
+        let mut hand: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                (object.zone == Zone::Hand && object.owner == player && object.is_card())
+                    .then_some(id as CardId)
+            })
+            .collect();
+        for _ in 0..usize::from(amount).min(hand.len()) {
+            let index = if hand.len() == 1 {
+                0
+            } else {
+                self.state.rng.below(hand.len() as u64) as usize
+            };
+            selected.push(hand.swap_remove(index));
+        }
+    }
+
     pub(super) fn discard_batch(&mut self, cards: &[CardId], cycled: Option<ObjectRef>) {
         self.discard_batch_caused(cards, cycled, None);
     }

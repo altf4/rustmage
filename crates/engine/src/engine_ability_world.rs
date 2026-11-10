@@ -2,7 +2,7 @@
 //! The overlay decides presence, control, counters and life; no cached ability
 //! status from the real game is carried across a virtual sacrifice or payment.
 use super::*;
-use crate::cards::{LiveStatRecipients, LiveStaticEffect};
+use crate::cards::{ActivationGenericReduction, LiveStatRecipients, LiveStaticEffect};
 
 #[cfg(feature = "test-support")]
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -58,6 +58,9 @@ pub(super) trait CharacteristicWorld {
         own.is_some() && own >= greatest[player.other().index()]
     }
     fn game(&self) -> &Game;
+    fn void_active_this_turn(&self) -> bool {
+        self.game().state.void_active_this_turn
+    }
     fn borrowed_slots_state(&self) -> &borrowed_activations::SlotRows {
         &self.game().state.borrowed_slots
     }
@@ -136,6 +139,26 @@ pub(super) trait CharacteristicWorld {
     }
     fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
         let controller = self.object(source).controller;
+        let authored = definition
+            .activation_generic_reductions(ability)
+            .map(|reduction| {
+                let (value, multiplier) = match reduction {
+                    ActivationGenericReduction::Stat { value, multiplier } => (
+                        self.game().stat_value_in_world(
+                            self,
+                            value,
+                            self.reference(source),
+                            controller,
+                        ),
+                        multiplier,
+                    ),
+                    ActivationGenericReduction::SourcePower => (self.power(source), 1),
+                };
+                u32::try_from(value.max(0))
+                    .unwrap_or(u32::MAX)
+                    .saturating_mul(multiplier)
+            })
+            .fold(0u32, u32::saturating_add);
         let subtype =
             definition
                 .activation_subtype_discount(ability)
@@ -205,6 +228,7 @@ pub(super) trait CharacteristicWorld {
             }
         });
         exhaust::generic_discount(self, source, definition, ability)
+            .saturating_add(authored)
             .saturating_add(equip)
             .saturating_add(power_up)
             .saturating_add(artifact_token)
@@ -986,6 +1010,21 @@ pub(super) trait CharacteristicWorld {
             && (!other || self.reference(id) != source)
             && (!nontoken || !self.is_token(id))
     }
+    fn other_tapped_legendary_creature_applies(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        condition: StatValue,
+    ) -> bool {
+        let target = self.object(id);
+        target.zone == Zone::Battlefield
+            && target.controller == self.object(source.card).controller
+            && self.reference(id) != source
+            && target.tapped
+            && self.kinds(id) & 1 != 0
+            && self.legendary(id)
+            && self.value(condition, source.card) != 0
+    }
     fn death_baron_applies(&self, source: ObjectRef, id: CardId) -> bool {
         let target = self.object(id);
         target.zone == Zone::Battlefield
@@ -1185,14 +1224,10 @@ pub(super) trait CharacteristicWorld {
         fragment: crate::cards::StaticAbilityFragment,
     ) -> Option<ManaProduction> {
         use crate::cards::{LandManaRecipients, StaticAbilityFragment};
-        let (production, lands) = match fragment {
-            StaticAbilityFragment::LandMana {
-                recipients,
-                production,
-            } => (production, Some(recipients)),
-            StaticAbilityFragment::OtherControlledPermanentTapMana(production) => {
-                (production, None)
-            }
+        let production = match fragment {
+            StaticAbilityFragment::LandMana { production, .. }
+            | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
+            | StaticAbilityFragment::ControlledPermanentTapMana { production, .. } => production,
             _ => return None,
         };
         let provider = self.object(source.card);
@@ -1203,15 +1238,22 @@ pub(super) trait CharacteristicWorld {
         {
             return None;
         }
-        let qualifies = match lands {
-            None => id != source.card && provider.controller == target.controller,
-            Some(LandManaRecipients::YouControl) => {
-                self.kinds(id) & 2 != 0 && provider.controller == target.controller
+        let own = provider.controller == target.controller;
+        let qualifies = match fragment {
+            StaticAbilityFragment::LandMana { recipients, .. } => {
+                let qualifies = match recipients {
+                    LandManaRecipients::YouControl => own,
+                    LandManaRecipients::SourceChosenName => {
+                        matches!(self.entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
+                    }
+                };
+                qualifies && self.kinds(id) & 2 != 0
             }
-            Some(LandManaRecipients::SourceChosenName) => {
-                self.kinds(id) & 2 != 0
-                    && matches!(self.entry_value(source), Some(EntryChoiceValue::CardName(name)) if name.matches(self.name(id)))
+            StaticAbilityFragment::OtherControlledPermanentTapMana(_) => own && id != source.card,
+            StaticAbilityFragment::ControlledPermanentTapMana { kinds, .. } => {
+                own && self.kinds(id) & kinds != 0
             }
+            _ => unreachable!("static mana grant"),
         };
         qualifies.then_some(production)
     }

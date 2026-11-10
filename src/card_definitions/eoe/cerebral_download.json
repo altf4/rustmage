@@ -3,10 +3,30 @@
   "catalogue_id": 702,
   "oracle_id": "f27889b9-40d9-4cc7-b8af-8716c53c44f5",
   "facts_sha256": "eeb7f1ddab99e5473011b86bef127bfcc2554265bdf46c8925b9117b8c685041",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a409c915ad5cda28b91a6698578b037d9a42e8caf8a794dc262e616e90dd76a2"
   },
-  "physical_metadata_sha256": "21060138e259f3a76abcdb7c023bddcd4398df4cfd1f1c8f8c9bd75589b7e04e"
+  "physical_metadata_sha256": "21060138e259f3a76abcdb7c023bddcd4398df4cfd1f1c8f8c9bd75589b7e04e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CerebralDownload.java",
+  "java_sha256": "8704d0f2e281974fb7dabfcaeca7fd5bb68e08177ff6740f85c5f1a3d16704a6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+      "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/ArtifactYouControlHint.java",
+      "sha256": "09fdf74a55af2928741bd7d42ab27e7f78727c289bfa1dbfb5be4fcd0f3510fc"
+    }
+  ]
 }

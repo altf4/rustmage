@@ -3,10 +3,13 @@
   "catalogue_id": 3767,
   "oracle_id": "c6d89c4a-351f-4d63-ba57-b978a695191e",
   "facts_sha256": "89c9c5a06b499c2cbc14953a836158b340c15f6ba2bf1a00f72d28172ab92836",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8fb1522937019bc0ae4f1d19b069ba2a1aeff747a3166e30fd55ac796c22d99a"
   },
-  "physical_metadata_sha256": "c0be237dc121ab20b66b015e782408e29228cd1d05676cbebd6e77e699a527ce"
+  "physical_metadata_sha256": "c0be237dc121ab20b66b015e782408e29228cd1d05676cbebd6e77e699a527ce",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeedshipImpact.java",
+  "java_sha256": "7120f09801f8d07a3ac7c415060a4ab70fd9c3560753e315e21beec7aeb1f7da"
 }

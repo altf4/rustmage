@@ -3,10 +3,30 @@
   "catalogue_id": 3277,
   "oracle_id": "8019e879-cfea-40a2-ac0d-86b47ec02b48",
   "facts_sha256": "7011c8773aac9c40df9367086fc35dc91442259e12ed30536e7aa4dcbc29ef32",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "314b8ee4407f58581e4de0d8b66d30b91676f5e868b4a0baf621da84c2106fbc"
   },
-  "physical_metadata_sha256": "85aa95d0d37ef5ccad8b54aa75aff703d623977674a07405af8290ceef69e03d"
+  "physical_metadata_sha256": "85aa95d0d37ef5ccad8b54aa75aff703d623977674a07405af8290ceef69e03d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PulsarSquadronAce.java",
+  "java_sha256": "deba1092f130935e3b333a286438d5a9f6b372e66bb1128ecf187665589f4f1c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

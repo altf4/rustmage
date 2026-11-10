@@ -3,10 +3,39 @@
   "catalogue_id": 437,
   "oracle_id": "33042d12-f08b-4b3e-b106-c424ef868c13",
   "facts_sha256": "a6c1b5c4fc391db1f38f6b8806175e3aec8f54905a283b19069ef30d2a0d1882",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dc827a2dbfd86bb4f941ed95d7f68690d0511905d3dde9fcfea42ba932133185"
   },
-  "physical_metadata_sha256": "2cdc7ebb0edada367f92b5e6984a640913db4124d28986973b37554b340f5993"
+  "physical_metadata_sha256": "2cdc7ebb0edada367f92b5e6984a640913db4124d28986973b37554b340f5993",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BladeOfTheSwarm.java",
+  "java_sha256": "01f86fbad5426bea2a1da64b081d519d650f442d9fa9543e1e276ca77fd03d54",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs",
+  "rules_notes": [
+    "The public exile target must have the warp ability. The target need not have been exiled by a resolved warp trigger."
+  ]
 }

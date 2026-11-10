@@ -3,10 +3,35 @@
   "catalogue_id": 1321,
   "oracle_id": "7d8b53f4-bdb5-4ba1-b6c0-f4846d8d3565",
   "facts_sha256": "031d73976c1ed00c768b7753b2052da2341564429a2012b9b392bc98de75310e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b62d731336c89635192ab71886ae2bbb8e18a5bdda38163df53afd48ca4b216c"
   },
-  "physical_metadata_sha256": "099f56c796a3ac586d228f8adde0f1e8ff0ef26af329ce32aadb9452bcac1a89"
+  "physical_metadata_sha256": "099f56c796a3ac586d228f8adde0f1e8ff0ef26af329ce32aadb9452bcac1a89",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmissaryEscort.java",
+  "java_sha256": "56fa26d418717bc39459f8c40f01f2fc92cfd221ee7e08b90db6a05b9b67b504",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }

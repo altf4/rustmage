@@ -3,10 +3,30 @@
   "catalogue_id": 2713,
   "oracle_id": "10dda10f-2549-47e5-9a8b-fb414cf38d3f",
   "facts_sha256": "beeaa18a12d94432f1c56451fcfda6fcff2af9c00cf8743e8dfffea5cc339c20",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "727e0d2643248a9f4df85c7494d8a1e3de2a149f324e1c65bce9f00b1fc8a327"
   },
-  "physical_metadata_sha256": "979c4318ef1902cbc4b9393a32500a0ae85d82d4677ff9cf806a5906e606eb30"
+  "physical_metadata_sha256": "979c4318ef1902cbc4b9393a32500a0ae85d82d4677ff9cf806a5906e606eb30",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MemorialVault.java",
+  "java_sha256": "3a5d7708d7c617d125bcf4c7e092468429b543b96039f501f5bcc6030625fa3b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    }
+  ]
 }

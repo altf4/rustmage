@@ -110,10 +110,14 @@ impl Game {
             return;
         }
         if item.cast.is_some_and(|cast| {
-            !matches!(
-                cast.method,
-                CastMethod::Airbend | CastMethod::ExileLife | CastMethod::Plot | CastMethod::Warp
-            )
+            cast.exile_play_surcharge == 0
+                && !matches!(
+                    cast.method,
+                    CastMethod::Airbend
+                        | CastMethod::ExileLife
+                        | CastMethod::Plot
+                        | CastMethod::Warp
+                )
         }) {
             self.consume_linked_exile_play(approval);
         }

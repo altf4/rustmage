@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e0964526dd28d55985efe2c2c14d116548c86556872d1cff5433226ecb065eac"
   },
-  "physical_metadata_sha256": "6f5267c1e6b5bd8c538c4f069abac6810caf5f315bf3ba861744c5a067bf06c4"
+  "physical_metadata_sha256": "6f5267c1e6b5bd8c538c4f069abac6810caf5f315bf3ba861744c5a067bf06c4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BiotechSpecialist.java",
+  "java_sha256": "79664cf51bd8438a7b4b74a13cc4ca407a3ffc82fb777ca73a440d751d2a03d6"
 }

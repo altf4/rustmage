@@ -98,6 +98,7 @@ impl Game {
                         without_paying_mana_cost: false,
                         airbend: false,
                         requires_subtype: None,
+                        play_surcharge: None,
                     },
                 );
             }

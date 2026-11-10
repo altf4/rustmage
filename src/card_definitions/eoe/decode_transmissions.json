@@ -3,10 +3,46 @@
   "catalogue_id": 1013,
   "oracle_id": "42510758-6167-420b-bb70-65f914b7a259",
   "facts_sha256": "b54e1a06c0705eb4bbb97a8f57420e02e4c326db35f4bd67efa10c0eedc36f42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1b0e01be8117f465fc04f4b04cfd7f09b761d50178ea6b3ae2e2795502cf914"
   },
-  "physical_metadata_sha256": "9978be3aa89cf0e8192127c6241808b39e05865955f5211548315afce588289b"
+  "physical_metadata_sha256": "9978be3aa89cf0e8192127c6241808b39e05865955f5211548315afce588289b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DecodeTransmissions.java",
+  "java_sha256": "151a2ba4b21725704bf944a2b3d9361ae4b99b95b1c6a8107ce4c2ff700cdce5",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs"
 }

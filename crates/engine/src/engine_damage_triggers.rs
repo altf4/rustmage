@@ -270,7 +270,7 @@ impl Game {
     /// Observe the completed damage event before state-based actions. In
     /// particular, post-event continuous effects qualify both observer and victim.
     pub(super) fn creature_received_damage_triggers(&mut self, events: &[DamageEvent]) {
-        if !self.state.damage_sources.iter().any(|&id| {
+        let has_printed_observers = self.state.damage_sources.iter().any(|&id| {
             self.state.objects[id as usize]
                 .card
                 .triggers()
@@ -283,7 +283,20 @@ impl Game {
                             | TriggerCondition::AttachedCreatureDamaged
                     )
                 })
-        }) {
+        });
+        let has_temporary_observers =
+            self.state
+                .temporary_abilities
+                .as_ref()
+                .is_some_and(|grants| {
+                    grants.iter().any(|grant| {
+                        grant.granting_card.triggers()[usize::from(grant.ability)]
+                            .condition
+                            .event()
+                            == TriggerCondition::SelfDamaged
+                    })
+                });
+        if !has_printed_observers && !has_temporary_observers {
             return;
         }
         let mut hits = std::collections::BTreeMap::new();
@@ -337,16 +350,70 @@ impl Game {
                         continue;
                     }
                     if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                        self.state
-                            .pending_triggers
-                            .last_mut()
-                            .unwrap()
-                            .damage_received =
-                            Some(Box::new(DamageReceivedView { recipient, amount }));
+                        self.capture_damage_received_trigger(ability.program, recipient, amount);
                     }
                 }
             }
         }
+        if has_temporary_observers {
+            let grants = self.state.temporary_abilities.as_ref().unwrap().to_vec();
+            for grant in grants {
+                let Some(&amount) = hits.get(&grant.recipient) else {
+                    continue;
+                };
+                let ability = &grant.granting_card.triggers()[usize::from(grant.ability)];
+                if ability.condition.event() != TriggerCondition::SelfDamaged
+                    || !(grant.permanent || grant.expires_turn == self.state.turn)
+                {
+                    continue;
+                }
+                let source = self.object_view(grant.recipient.card);
+                if !source.grant_available(
+                    grant.grantor,
+                    grant.granting_card,
+                    grant.ability,
+                    Some(grant.timestamp),
+                ) {
+                    continue;
+                }
+                let context = AttachmentTriggerView {
+                    grantor: grant.grantor,
+                    granting_card: grant.granting_card,
+                    recipient: grant.recipient,
+                    defender: None,
+                    granted: true,
+                    origin: grant.origin,
+                };
+                if self.queue_trigger_from(
+                    &source,
+                    usize::from(grant.ability),
+                    Some(Box::new(context)),
+                ) {
+                    self.capture_damage_received_trigger(ability.program, grant.recipient, amount);
+                }
+            }
+        }
+    }
+
+    fn capture_damage_received_trigger(
+        &mut self,
+        program: &[Instruction],
+        recipient: ObjectRef,
+        amount: u128,
+    ) {
+        if program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::EventObjectDamageReceivedPlayers(_)
+            )
+        }) {
+            self.bind_trigger_damage_actor(recipient);
+        }
+        self.state
+            .pending_triggers
+            .last_mut()
+            .unwrap()
+            .damage_received = Some(Box::new(DamageReceivedView { recipient, amount }));
     }
 
     fn queue_damage_trigger(

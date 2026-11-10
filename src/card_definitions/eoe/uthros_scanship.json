@@ -3,10 +3,31 @@
   "catalogue_id": 4818,
   "oracle_id": "7b4c37dc-8cb0-4870-929e-11c2a45952a2",
   "facts_sha256": "87d8e87345a4bfe8618217f5048a6b402ca493d210da9dc9b37b6dee2b7dd917",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1274feb26200b11c580bfe5a677991fbdf494cdcf4c77f27d9529c5f5b9abf7"
   },
-  "physical_metadata_sha256": "124f9f888e4f43fc7aaa908212b4b89357d97ea77d0f8b116570874015d90d71"
+  "physical_metadata_sha256": "124f9f888e4f43fc7aaa908212b4b89357d97ea77d0f8b116570874015d90d71",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UthrosScanship.java",
+  "java_sha256": "f31863f786768f6c6c6a4f3cc43c09134a74f5017305e94866862a6d802d89fb",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs"
 }

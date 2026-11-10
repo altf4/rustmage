@@ -1,5 +1,6 @@
 //! Cold owned facts for immediate entries inside a declared cost transaction.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -165,6 +166,7 @@ pub(super) struct EntryProjection {
     /// Every committed entry, independent of whether it provides a timestamped
     /// continuous effect. Power-up and public entry facts use this exact history.
     pub entered: Vec<ObjectRef>,
+    pub lands_entered: [u64; 2],
     pub battle_protectors: Vec<(ObjectRef, Player)>,
     pub consumed: Vec<ObjectRef>,
     pub counter: Option<replacements::CounterPreview>,
@@ -211,6 +213,7 @@ impl EntryProjection {
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
             entered: Vec::new(),
+            lands_entered: std::array::from_fn(|p| w.game.state.players[p].lands_entered_this_turn),
             battle_protectors: Vec::new(),
             consumed: Vec::new(),
             counter: None,
@@ -259,9 +262,14 @@ impl EntryProjection {
                 self.roles.ability_removal_sources.push(source);
             }
             if card.static_ability_groups().iter().any(|g| {
-                g.fragments
-                    .iter()
-                    .any(|f| matches!(f, F::AttachedCharacteristics(_) | F::AttachedChosenColor))
+                g.fragments.iter().any(|f| {
+                    matches!(
+                        f,
+                        F::AttachedCharacteristics(_)
+                            | F::AttachedChosenColor
+                            | F::ControlledArtifactFood(_)
+                    )
+                })
             }) {
                 self.roles.characteristic_sources.push(source);
             }
@@ -471,6 +479,7 @@ impl FundingState<'_> {
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 self.permanent_left_battlefield[player.index()]
             }
+            StepGuard::VoidActive => self.void_active_this_turn,
             StepGuard::ArtifactEnteredThisTurn => state.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 state.turn_facts.hero_entered || state.turn_facts.hero_attacked
@@ -525,6 +534,15 @@ impl FundingState<'_> {
                         .count()
                 };
                 creatures(player.other()) > creatures(player)
+            }
+            StepGuard::AnyPlayerControlsNoCreatures => {
+                [Player::P0, Player::P1].into_iter().any(|player| {
+                    !self.resources.iter().any(|r| {
+                        r.object.zone == Zone::Battlefield
+                            && r.object.controller == player
+                            && CharacteristicWorld::kinds(self, r.id) & 1 != 0
+                    })
+                })
             }
             StepGuard::SourceTapped => {
                 if self.reference(source.card) == source
@@ -661,7 +679,9 @@ impl FundingState<'_> {
         if m.destination != Zone::Battlefield {
             return Counters::default();
         }
-        let card = m.before.card;
+        let Some(card) = m.intrinsic_entry_card() else {
+            return m.abilityless_entry_counters();
+        };
         let mut counters = card.enters_counters();
         if m.battle_protector.is_none() {
             counters.remove(CounterKind::Defense, card.printed_defense());
@@ -695,6 +715,9 @@ impl FundingState<'_> {
                 EntryCounterAmount::ColorsSpent => m
                     .cast_payment
                     .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                EntryCounterAmount::ManaSpent => m
+                    .cast_payment
+                    .map_or(0, |mana| mana.into_iter().map(u64::from).sum()),
                 EntryCounterAmount::IfNotCastOrZero(n) => {
                     if m.cast_payment.is_none_or(|p| p == [0; 6]) {
                         u64::from(n)
@@ -708,6 +731,7 @@ impl FundingState<'_> {
             };
             counters.add(CounterKind::PlusOne, amount);
         }
+        counters.add(CounterKind::PlusOne, entry_devour::entry_counters(m));
         if let Some(spec) = card.entry_exile_counters()
             && let Some(preparation) = &m.exile_preparation
         {
@@ -763,7 +787,7 @@ impl FundingState<'_> {
                 })
                 .count()
         };
-        match m.before.card.entry_tapped() {
+        match m.intrinsic_entry_tapped() {
             EntryTapped::Never | EntryTapped::PayLife(_) | EntryTapped::UnlessBehold(_) => false,
             EntryTapped::Always => true,
             EntryTapped::ChosenXAtMost(n) => m.x <= n,
@@ -848,8 +872,7 @@ impl FundingState<'_> {
                     && self.printed_abilities_available(id)
             })
             .collect::<Vec<_>>();
-        if effects.is_empty()
-            && !matches!(m.before.card.entry_tapped(), EntryTapped::UnlessBehold(_))
+        if effects.is_empty() && !matches!(m.intrinsic_entry_tapped(), EntryTapped::UnlessBehold(_))
         {
             m.tapped |= self.entry_tapped(m) || !opponent.is_empty();
             return effects;
@@ -868,7 +891,7 @@ impl FundingState<'_> {
                 kind: entry_tap::EntryTapKind::Tapped,
             });
         }
-        if let EntryTapped::PayLife(n) = m.before.card.entry_tapped() {
+        if let EntryTapped::PayLife(n) = m.intrinsic_entry_tapped() {
             effects.push(entry_tap::EntryTapEffect {
                 source: m.before.reference,
                 intrinsic: true,
@@ -876,7 +899,7 @@ impl FundingState<'_> {
             });
         }
         if m.manifest_original.is_none()
-            && let EntryTapped::UnlessBehold(subtype) = m.before.card.entry_tapped()
+            && let EntryTapped::UnlessBehold(subtype) = m.intrinsic_entry_tapped()
         {
             effects.push(entry_tap::EntryTapEffect {
                 source: m.before.reference,
@@ -903,6 +926,11 @@ impl FundingState<'_> {
         }
         if moves.iter().any(entry_exiles::needs_exile) {
             return self.visit_entry_exile_choices(moves, &mut |world, moves| {
+                world.visit_entry_moves(moves, initial, actual, emit)
+            });
+        }
+        if moves.iter().any(entry_devour::needs_devour) {
+            return self.visit_entry_devour_choices(moves, &mut |world, moves| {
                 world.visit_entry_moves(moves, initial, actual, emit)
             });
         }
@@ -943,7 +971,7 @@ impl FundingState<'_> {
             return self.visit_entry_values(moves, 0, actual, emit);
         };
         if moves[event.index].choice.is_none()
-            && moves[event.index].before.card.entry_choice() == Some(EntryChoiceKind::BasicLandType)
+            && moves[event.index].intrinsic_entry_choice() == Some(EntryChoiceKind::BasicLandType)
         {
             for kind in crate::cards::BasicLandType::ALL {
                 let mut next = moves.clone();
@@ -1115,7 +1143,7 @@ impl FundingState<'_> {
         if m.skipped || m.destination != Zone::Battlefield {
             return self.visit_entry_values(moves, at + 1, actual, emit);
         }
-        if let Some(kind) = m.before.card.entry_choice()
+        if let Some(kind) = m.intrinsic_entry_choice()
             && m.choice.is_none()
         {
             let mut choices = Vec::new();
@@ -1195,7 +1223,7 @@ impl FundingState<'_> {
             return false;
         }
         if m.life_paid.is_none()
-            && let EntryTapped::PayLife(cost) = m.before.card.entry_tapped()
+            && let EntryTapped::PayLife(cost) = m.intrinsic_entry_tapped()
         {
             for pay in [false, true] {
                 if pay && self.life(m.controller) < i128::from(cost) {
@@ -1275,6 +1303,33 @@ impl FundingState<'_> {
                                     && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
                                 {
                                     movement.counters.add(kind, amount);
+                                }
+                            }
+                        }
+                        if matches!(
+                            fragment,
+                            StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
+                        ) {
+                            let count = self.entry_projection.as_ref().map_or_else(
+                                || {
+                                    self.game.state.players[provider.controller.index()]
+                                        .lands_entered_this_turn
+                                },
+                                |projection| projection.lands_entered[provider.controller.index()],
+                            );
+                            if count > 0
+                                && self.fragment_available(id, |f| std::ptr::eq(f, fragment))
+                            {
+                                for movement in &mut moves {
+                                    if self
+                                        .preview_entry_view(&movement.replacement_preview())
+                                        .is_some_and(|view| {
+                                            view.controller == provider.controller
+                                                && view.is_creature()
+                                        })
+                                    {
+                                        movement.counters.add(CounterKind::PlusOne, count);
+                                    }
                                 }
                             }
                         }
@@ -1499,6 +1554,7 @@ impl FundingState<'_> {
             }
             if m.before.zone == Zone::Battlefield && m.destination != Zone::Battlefield {
                 next.permanent_left_battlefield[m.before.controller.index()] = true;
+                next.void_active_this_turn |= m.before.kinds & 2 == 0;
             }
             let mut entering_meld = m.meld.as_deref().copied();
             if m.destination == Zone::Battlefield
@@ -1807,6 +1863,16 @@ impl FundingState<'_> {
         for m in &moves {
             if !m.skipped
                 && m.destination == Zone::Battlefield
+                && let Some(source) = m.as_entry_skeleton_source()
+            {
+                let recipient = next.reference(m.before.id);
+                let p = next.entry_projection.as_mut().unwrap();
+                return_links::apply_skeleton_return(&mut p.roles, recipient, source);
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
                 && let Some((origin, keywords)) = m.keywords_after
             {
                 let recipient = next.reference(m.before.id);
@@ -1944,11 +2010,23 @@ impl FundingState<'_> {
         next.refresh_control_projection();
         next.refresh_enduring_projection();
         for m in &moves {
-            if m.skipped || m.destination != Zone::Battlefield || !m.counters.has_any() {
+            if m.skipped || m.destination != Zone::Battlefield {
                 continue;
             }
             let source = next.reference(m.before.id);
-            let on_creature = CharacteristicWorld::kinds(&next, source.card) & 1 != 0;
+            let kinds = CharacteristicWorld::kinds(&next, source.card);
+            if kinds & 2 != 0 {
+                let controller = next.object(source.card).controller;
+                let count =
+                    &mut next.entry_projection.as_mut().unwrap().lands_entered[controller.index()];
+                *count = count
+                    .checked_add(1)
+                    .capacity("projected land entry history exhausted");
+            }
+            if !m.counters.has_any() {
+                continue;
+            }
+            let on_creature = kinds & 1 != 0;
             counter_placement_history::record(
                 &mut next.counter_placement_history,
                 source,
@@ -2077,6 +2155,8 @@ impl Game {
             Action::ChooseEntryCopy { .. }
                 | Action::ChooseEntryExile { .. }
                 | Action::FinishEntryExile
+                | Action::ChooseEntryDevour { .. }
+                | Action::FinishEntryDevour
                 | Action::ChooseEntryBehold { .. }
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
@@ -2206,6 +2286,21 @@ impl Game {
                     .exile_preparation
                     .get_or_insert_default()
                     .selection_closed = true;
+            }
+            Some(Action::ChooseEntryDevour { object }) => {
+                let index = self.current_entry_devour_index().unwrap();
+                batch.moves[index]
+                    .devour_preparation
+                    .get_or_insert_default()
+                    .selected
+                    .push(*object);
+            }
+            Some(Action::FinishEntryDevour) => {
+                let index = self.current_entry_devour_index().unwrap();
+                batch.moves[index]
+                    .devour_preparation
+                    .get_or_insert_default()
+                    .closed = true;
             }
             Some(Action::ChooseEntryCopy { object }) => {
                 let index = batch

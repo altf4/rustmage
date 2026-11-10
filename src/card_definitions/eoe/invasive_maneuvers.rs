@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        one(TargetRule::Creature),
+        &[
+            Instruction::IfAmountAtLeast {
+                value: AmountValue::Stat(StatValue::Count(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 0,
+                    exclude: 0,
+                    subtype: Some("Spacecraft"),
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                })),
+                minimum: 1,
+                skip: 2,
+            },
+            Instruction::Damage(5),
+            Instruction::Skip(1),
+            Instruction::Damage(3),
+        ],
+    ),
     ..CardRules::EMPTY
 };

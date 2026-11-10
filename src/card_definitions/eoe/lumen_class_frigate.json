@@ -3,10 +3,45 @@
   "catalogue_id": 2578,
   "oracle_id": "3aa0cda4-fb2d-4fd4-84f6-482089a85547",
   "facts_sha256": "e97c0ecc43ef88a9881f86ac1dcb7f2deb246c53dd08e2029c31ffb9e9de31d5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce812da385ffab1ad502992ee8d11b871c70ef377ed7a1fceb5d9450baa80130"
   },
-  "physical_metadata_sha256": "d2084912f7d68a924b56b55ab5f51c3039ba0a91bfd8656301288dadac6b0673"
+  "physical_metadata_sha256": "d2084912f7d68a924b56b55ab5f51c3039ba0a91bfd8656301288dadac6b0673",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LumenClassFrigate.java",
+  "java_sha256": "19a2e7912ad352c89d507f81e74e3f4b9799f53b179f0ca03d7e0eadf15735f6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    }
+  ]
 }

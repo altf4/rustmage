@@ -15,8 +15,10 @@ use crate::cards::{CreatureType, ManaQuality, ManaRestriction, ManaRetention, Ma
 pub enum ManaRestrictionView {
     SpellManaValueAtLeast(u64),
     ExceptCastFromHand,
+    CastFromNonhand,
     CastFromExile,
     ArtifactSpell,
+    ArtifactActivation,
     ArtifactSpellOrActivation,
     ArtifactSpellOrArtifactActivation,
     ExceptNonArtifactSpells,
@@ -157,6 +159,7 @@ impl Quality {
                     }
                 }
                 ManaRestriction::ExceptCastFromHand => ManaRestrictionView::ExceptCastFromHand,
+                ManaRestriction::CastFromNonhand => ManaRestrictionView::CastFromNonhand,
                 ManaRestriction::CastFromExile => ManaRestrictionView::CastFromExile,
                 ManaRestriction::EquipmentSpellOrEquip => {
                     ManaRestrictionView::EquipmentSpellOrEquip
@@ -164,6 +167,7 @@ impl Quality {
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
+                ManaRestriction::ArtifactActivation => ManaRestrictionView::ArtifactActivation,
                 ManaRestriction::ArtifactSpellOrActivation => {
                     ManaRestrictionView::ArtifactSpellOrActivation
                 }
@@ -242,6 +246,9 @@ impl Quality {
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
             }
+            ManaRestrictionView::CastFromNonhand => {
+                matches!(purpose, Purpose::Spell(source) if !source.cast_from_hand)
+            }
             ManaRestrictionView::CastFromExile => {
                 matches!(purpose, Purpose::Spell(source) if source.cast_from_exile)
             }
@@ -256,6 +263,9 @@ impl Quality {
             ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
+            }
+            ManaRestrictionView::ArtifactActivation => {
+                matches!(purpose, Purpose::Activation(facts) if facts.kinds & 16 != 0)
             }
             ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
                 Purpose::Spell(facts) => facts.kinds & 16 != 0,

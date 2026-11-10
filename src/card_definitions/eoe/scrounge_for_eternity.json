@@ -3,10 +3,36 @@
   "catalogue_id": 3742,
   "oracle_id": "71982b17-1d9a-4f98-b8b5-d232e3a8cf1d",
   "facts_sha256": "03869af08109e23945398a6848ebf71e918f91dbdcfa0eda67ecfb39c429e219",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8987f21628b8d91913e50fcc496f08d864fd5eaf26fe65ee6b5960a96b90e1c2"
   },
-  "physical_metadata_sha256": "72800480d72e864fc25cab7b6afe0f11e63cba1d9b166af0145aecb8da469291"
+  "physical_metadata_sha256": "72800480d72e864fc25cab7b6afe0f11e63cba1d9b166af0145aecb8da469291",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScroungeForEternity.java",
+  "java_sha256": "b26be251cddba7880912f59952d257c38dbfe2b8a5d622848fca6132d04a127f",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

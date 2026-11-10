@@ -3,10 +3,34 @@
   "catalogue_id": 3730,
   "oracle_id": "da422b3e-1092-47ad-97d6-a7a3ef060a53",
   "facts_sha256": "39fdc42707c4a6819b5eef08a732639545fbe1d0d0ca030975c61517626740ab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75ba473430c4baff5a175889eb1addaabf64741e1372831afe02dff5d6423ffc"
   },
-  "physical_metadata_sha256": "f52b134f2549b1c2b186cd71867172beb5d5e814c8ef05dcd2909dca44181b4c"
+  "physical_metadata_sha256": "f52b134f2549b1c2b186cd71867172beb5d5e814c8ef05dcd2909dca44181b4c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScourForScrap.java",
+  "java_sha256": "b3c52d3a917c58610c74546f0e17ab8a4951ce491408b5985aac1d0a539a3ecf",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs",
+  "rules_notes": [
+    "CR 601.2b and 608. The three legal mode selections preserve text order. Both modes together have the graveyard target and fizzle if it is illegal."
+  ]
 }

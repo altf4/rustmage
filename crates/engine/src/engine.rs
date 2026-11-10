@@ -49,6 +49,10 @@ pub use embalm::EmbalmAbilityView;
 pub mod retained_copy_activations;
 pub use entry_exiles::EntryExileChoiceView;
 #[doc(hidden)]
+#[path = "engine_entry_devour.rs"]
+pub mod entry_devour;
+pub use entry_devour::EntryDevourChoiceView;
+#[doc(hidden)]
 #[path = "engine_entry_copies.rs"]
 pub mod entry_copies;
 pub use entry_copies::EntryCopyChoiceView;
@@ -296,7 +300,7 @@ pub mod tiered;
 pub mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use earthbend::EarthbendReturnView;
-pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView};
+pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView, OwnTurnDeadline};
 pub use plot::{PlotPaymentView, PlottedCard};
 pub use return_links::{DelayedReturnView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
@@ -908,6 +912,7 @@ define_actions! {
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
+    AnnounceArtifactFood { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceRetainedCopyAbility { source: ObjectRef },
     AnnounceEmbalm { source:ObjectRef, acquisition:u64 },
     AnnounceSelfGrantedAbility {
@@ -977,6 +982,8 @@ define_actions! {
     ChooseEntryCopy { object: Option<ObjectRef> },
     ChooseEntryExile { object: ObjectRef },
     FinishEntryExile,
+    ChooseEntryDevour { object: ObjectRef },
+    FinishEntryDevour,
     ChooseCreatureType { creature_type: crate::cards::CreatureType },
     ChooseEntryLife {
         pay: bool,
@@ -1027,11 +1034,25 @@ define_actions! {
     AnnounceExile {
         card: CardId,
     },
+    AnnounceTaxedExile {
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        surcharge: std::num::NonZeroU32,
+    },
+    PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceGraveyardFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
+    AnnounceGrantedWarp {
+        card: CardId,
+        face: CastFace,
+        flash_surcharge: bool,
+        cost: ManaCost,
+    },
     AnnounceDisguise { card: CardId },
     AnnounceDisguiseGraveyard { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceSneak { card: CardId,
@@ -1371,6 +1392,7 @@ struct PlayerState {
     extra_land_plays_remaining: u64,
     extra_land_plays_granted: u64,
     nonland_permanents_entered_this_turn: u64,
+    lands_entered_this_turn: u64,
     mount_or_vehicle_entries_this_turn: u64,
     spells_cast_this_turn: u64,
     instant_sorcery_cast_this_turn: u64,
@@ -1437,6 +1459,10 @@ impl PlayerState {
     }
 }
 
+fn is_zero_u32(value: &u32) -> bool {
+    *value == 0
+}
+
 /// How an actual spell was cast; abilities have no cast information.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -1492,6 +1518,12 @@ pub struct CastInfo {
     /// Counter qualification captured before the exile-to-stack transition.
     pub stash_origin: bool,
     pub method: CastMethod,
+    /// A granted warp ability follows the original spell onto the stack, but is not copiable.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub granted_warp: bool,
+    /// A fee captured from the exact origin permission chosen for this cast.
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub exile_play_surcharge: u32,
     /// The paid alternative-cost declaration; spell copies retain this fact.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub evoked: bool,
@@ -2762,6 +2794,9 @@ enum Pending {
     EntryExile {
         player: Player,
     },
+    EntryDevour {
+        player: Player,
+    },
     EntryValue {
         player: Player,
     },
@@ -3006,6 +3041,7 @@ struct State {
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     cards_exiled_this_turn: bool,
+    void_active_this_turn: bool,
     creatures_died_this_turn: u64,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
@@ -3268,6 +3304,7 @@ struct ZoneObservers {
 pub struct ZoneChange {
     /// Whether the departing object was represented by a physical card.
     pub(super) was_card: bool,
+    pub(super) granted_departure_mana_value: u64,
     /// Additional life gain from the exact chosen death replacement.
     pub(super) linked_exile_life: Option<(Player, u8)>,
     /// Physical result cards of one battlefield object, in chosen zone order.
@@ -3360,6 +3397,8 @@ pub struct PlayerView {
     pub no_maximum_hand_size: bool,
     /// Historical actual entries this turn; departures do not remove them.
     pub nonland_permanents_entered_this_turn: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub lands_entered_this_turn: u64,
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub mount_or_vehicle_entries_this_turn: u64,
     pub spells_cast_this_turn: u64,
@@ -3802,8 +3841,10 @@ pub struct Observation {
     pub schema: u32,
     /// Number of distinct declared attacker objects this turn, including departures.
     pub creatures_attacked_this_turn: usize,
-    /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub cards_exiled_this_turn: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub void_active_this_turn: bool,
+    /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -3936,6 +3977,8 @@ pub struct Observation {
     pub entry_copy: Option<EntryCopyChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_exile: Option<EntryExileChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_devour: Option<EntryDevourChoiceView>,
     pub additional_cost: Option<AdditionalCostView>,
     pub forage: Option<ForageView>,
     pub evidence: Option<EvidenceView>,
@@ -4121,6 +4164,7 @@ impl Game {
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
             nonland_permanents_entered_this_turn: 0,
+            lands_entered_this_turn: 0,
             mount_or_vehicle_entries_this_turn: 0,
             spells_cast_this_turn: 0,
             instant_sorcery_cast_this_turn: 0,
@@ -4253,6 +4297,7 @@ impl Game {
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 cards_exiled_this_turn: false,
+                void_active_this_turn: false,
                 creatures_died_this_turn: 0,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
@@ -4455,6 +4500,7 @@ impl Game {
             | Pending::EntryAttackingDefender { player }
             | Pending::EntryCopy { player }
             | Pending::EntryExile { player }
+            | Pending::EntryDevour { player }
             | Pending::LandCardName { player }
             | Pending::CardName { player, .. }
             | Pending::EntryLife { player }
@@ -5161,6 +5207,16 @@ impl Game {
                     return true;
                 }
             }
+            Pending::EntryDevour { .. } => {
+                if emit(Action::FinishEntryDevour) {
+                    return true;
+                }
+                for object in self.entry_devour_candidates() {
+                    if emit(Action::ChooseEntryDevour { object }) {
+                        return true;
+                    }
+                }
+            }
             Pending::EntryExile { .. } => {
                 if emit(Action::FinishEntryExile) {
                     return true;
@@ -5356,6 +5412,7 @@ impl Game {
                                 Action::ChooseSharedCreature { object }
                             }
                             EffectChoiceKind::GraveyardCreatures { .. }
+                            | EffectChoiceKind::ReturnRememberedCreature
                             | EffectChoiceKind::ReturnGraveyardToHand { .. } => {
                                 Action::SelectGraveyardReturn { object }
                             }
@@ -5407,6 +5464,7 @@ impl Game {
                             EffectChoiceKind::ExileSourceAndNamed { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyard
                             | EffectChoiceKind::ExileCreatureAndGraveyard
+                            | EffectChoiceKind::ExileControlledLinked
                             | EffectChoiceKind::CoverUpGraveyardCard
                             | EffectChoiceKind::CoverUpSearch { .. }
                             | EffectChoiceKind::NamedSearch { .. }
@@ -5480,7 +5538,9 @@ impl Game {
                     .creature_counter_cost_requirement()
                     .is_some()
                 {
-                    return self.visit_creature_counter_cost(&mut emit);
+                    return self.visit_creature_counter_cost(&mut emit)
+                        || self.optional_counter_cost_mana(s.announcing.as_ref().unwrap())
+                            && emit(Action::BeginOrderedCosts);
                 }
                 for (id, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(id as CardId);
@@ -5609,6 +5669,11 @@ impl Game {
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
+                let warp_grants = if casting_prohibited {
+                    Vec::new()
+                } else {
+                    self.hand_warp_grants(actor)
+                };
                 let graveyard_life_casts =
                     if casting_prohibited || self.nonhand_cast_prohibited(actor) {
                         Vec::new()
@@ -5630,7 +5695,7 @@ impl Game {
                     // controller; ordinary source actions keep their own filter.
                     if obj.zone == Zone::Battlefield
                         && obj.controller != actor
-                        && self.visit_attached_activations(card, actor, &mut emit)
+                        && self.visit_attached_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -5638,6 +5703,17 @@ impl Game {
                         && !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
                         && self.visit_linked_source_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Exile
+                        && self.visit_taxed_exile_plays(
+                            actor,
+                            card,
+                            sorcery,
+                            casting_prohibited,
+                            &mut emit,
+                        )
                     {
                         return true;
                     }
@@ -5693,7 +5769,7 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Battlefield
-                        && self.visit_attached_activations(card, actor, &mut emit)
+                        && self.visit_attached_activations(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -5705,7 +5781,7 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield
                         && !self.nonmana_actions_prohibited()
-                        && self.visit_planeswalker_grants(card, actor, sorcery, &mut emit)
+                        && self.visit_controlled_activation_grants(card, actor, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -5790,18 +5866,7 @@ impl Game {
                     if plotted && self.visit_plotted_casts(actor, card, &mut emit) {
                         return true;
                     }
-                    if obj.zone == Zone::Hand
-                        && self.spell_graveyard_requirement_holds(actor, card, obj.card)
-                        && (sorcery
-                            || obj.card.is_instant()
-                            || self.keywords(card).contains(Keywords::FLASH)
-                            || self.cast_timing_granted(actor, obj.card))
-                        && obj
-                            .card
-                            .warp_cost()
-                            .is_some_and(|cost| self.warp_cast_fundable(actor, card, cost))
-                        && emit(Action::AnnounceWarp { card })
-                    {
+                    if self.visit_warp_casts(actor, card, sorcery, &warp_grants, &mut emit) {
                         return true;
                     }
                     if !casting_prohibited
@@ -7271,7 +7336,12 @@ impl Game {
                 source,
                 grantor,
                 ability,
-            } => self.announce_planeswalker_grant(source, grantor, ability),
+            }
+            | Action::AnnounceArtifactFood {
+                source,
+                grantor,
+                ability,
+            } => self.announce_controlled_activation_grant(source, grantor, ability),
             Action::ChooseResolutionCost { index } => self.choose_resolution_cost(index),
             Action::ChooseAdditionalCost { object }
                 if matches!(self.state.pending, Pending::ResolutionMana { .. }) =>
@@ -7300,6 +7370,8 @@ impl Game {
             Action::ChooseEntryCopy { object } => self.choose_entry_copy(object),
             Action::ChooseEntryExile { object } => self.choose_entry_exile(object),
             Action::FinishEntryExile => self.finish_entry_exile(),
+            Action::ChooseEntryDevour { object } => self.choose_entry_devour(object),
+            Action::FinishEntryDevour => self.finish_entry_devour(),
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
@@ -7391,13 +7463,31 @@ impl Game {
                 self.finish_resolution_free_casts();
                 self.run_program();
             }
-            Action::PlayLand { card }
+            Action::AnnounceTaxedExile {
+                object,
+                face,
+                method,
+                flash_surcharge,
+                surcharge,
+            } => {
+                self.start_taxed_exile_cast(actor, object, face, method, flash_surcharge, surcharge)
+            }
+            Action::PlayLand { .. }
+            | Action::PlayTaxedExileLand { .. }
             | Action::PlayGraveyardPermanent {
-                card,
                 permanent_type: PermanentType::Land,
                 ..
             } => {
-                self.commit_linked_exile_land(actor, card);
+                let (card, tapped) = match action {
+                    Action::PlayLand { card } | Action::PlayGraveyardPermanent { card, .. } => {
+                        (card, false)
+                    }
+                    Action::PlayTaxedExileLand { object } => (object.card, true),
+                    _ => unreachable!("land play action"),
+                };
+                if !tapped {
+                    self.commit_linked_exile_land(actor, card);
+                }
                 if let Some(free) = self.state.resolution_free_casts.as_mut() {
                     free.remaining.retain(|reference| reference.card != card);
                     self.reveal_hideaway_object(self.object_ref(card));
@@ -7421,16 +7511,12 @@ impl Game {
                     {
                         self.state.known_hand.push(reference);
                     }
-                    let mut movement = self.entry_move(card, Zone::Battlefield, false);
-                    movement.controller = actor;
-                    movement.public_origin = movement.before.zone == Zone::Library;
-                    self.stage_entries(vec![movement], None);
-                } else {
-                    let mut movement = self.entry_move(card, Zone::Battlefield, false);
-                    movement.controller = actor;
-                    movement.public_origin = movement.before.zone == Zone::Library;
-                    self.stage_entries(vec![movement], None);
                 }
+                let mut movement = self.entry_move(card, Zone::Battlefield, tapped);
+                movement.controller = actor;
+                movement.public_origin = movement.before.zone == Zone::Library;
+                movement.played_land = true;
+                self.stage_entries(vec![movement], None);
                 if self.state.land_played {
                     if self.state.players[actor.index()].extra_land_plays_remaining > 0 {
                         self.state.players[actor.index()].extra_land_plays_remaining -= 1;
@@ -7762,9 +7848,15 @@ impl Game {
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceWarp { card } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::Warp;
-                self.open_payment_announcement(item, Counters::default(), None);
+                self.start_warp_cast(actor, card, CastFace::Normal, false, None);
+            }
+            Action::AnnounceGrantedWarp {
+                card,
+                face,
+                flash_surcharge,
+                cost,
+            } => {
+                self.start_warp_cast(actor, card, face, flash_surcharge, Some(cost));
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
             Action::PayPlot { payment } => self.finish_plot(payment),
@@ -8452,9 +8544,10 @@ impl Game {
                 self.state
                     .blocking
                     .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
+                let first_new_block = self.state.blocks.len();
                 self.state.blocks.append(&mut self.state.selected_blocks);
                 self.attachment_block_triggers(actor);
-                self.self_block_triggers(&declared);
+                self.self_block_triggers(&declared, first_new_block);
                 self.opponent_blocker_triggers(actor, &declared);
                 for attacker in &mut self.state.attackers {
                     attacker.blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
@@ -8555,7 +8648,7 @@ impl Game {
                 self.run_program();
             }
             Action::AnnounceSourceGrant { source, ability } => {
-                self.announce_planeswalker_grant(source, source, ability)
+                self.announce_controlled_activation_grant(source, source, ability)
             }
             Action::PutHandCreature { object }
             | Action::PutHandPermanent { object }
@@ -8775,6 +8868,9 @@ impl Game {
                 let Pending::EffectOptional { skip_to, .. } = self.state.pending else {
                     unreachable!()
                 };
+                if self.finish_ward_random_discard(accept) {
+                    return;
+                }
                 if !accept {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 } else {
@@ -9649,6 +9745,7 @@ impl Game {
         if plan.prevented {
             return ZoneChange {
                 was_card,
+                granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: false,
@@ -9701,6 +9798,7 @@ impl Game {
         {
             return ZoneChange {
                 was_card,
+                granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: false,
@@ -9732,6 +9830,7 @@ impl Game {
             self.shuffle_zone_card(&before, shuffle);
             return ZoneChange {
                 was_card,
+                granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: true,
@@ -9756,6 +9855,12 @@ impl Game {
                 evidence_collected: false,
             };
         }
+        let granted_departure_mana_value =
+            if before.zone == Zone::Battlefield && destination != Zone::Battlefield {
+                self.granted_departure_mana_value(&before)
+            } else {
+                0
+            };
         if before.zone == Zone::Library
             && destination == Zone::Graveyard
             && !self.state.objects[id as usize].is_spell_copy()
@@ -9871,6 +9976,7 @@ impl Game {
             self.state.players[before.controller.index()]
                 .turn_facts
                 .permanent_left_battlefield = true;
+            self.state.void_active_this_turn |= before.kinds & 2 == 0;
             self.capture_stat_subject_departure(&before);
             self.forget_vehicle_animation(before.reference);
             self.forget_exertions(before.reference);
@@ -10257,6 +10363,7 @@ impl Game {
         }
         ZoneChange {
             was_card,
+            granted_departure_mana_value,
             linked_exile_life,
             melded_after,
             shuffled_in_place: false,
@@ -10404,6 +10511,7 @@ impl Game {
             }
         }
         self.begin_player_control_turn();
+        self.begin_delayed_sacrifice_turn();
         self.expire_temporary_copies(false);
         self.reset_copy_turn_uses();
         if let Some(data) = &mut self.state.linked_choices {
@@ -10450,6 +10558,7 @@ impl Game {
         self.state.attacked_this_turn.clear();
         self.state.declared_attack_history = None;
         self.state.cards_exiled_this_turn = false;
+        self.state.void_active_this_turn = false;
         self.state.creatures_died_this_turn = 0;
         self.state.graveyard_entries = None;
         self.state.mayhem_discards = None;
@@ -10457,6 +10566,7 @@ impl Game {
         for player in &mut self.state.players {
             player.turn_facts = TurnFactsView::default();
             player.nonland_permanents_entered_this_turn = 0;
+            player.lands_entered_this_turn = 0;
             player.mount_or_vehicle_entries_this_turn = 0;
             player.spells_cast_this_turn = 0;
             player.token_creation_attempted_this_turn = false;
@@ -10789,34 +10899,29 @@ impl Game {
         }
     }
 
-    fn damage_prevention_prohibited(&self) -> bool {
+    fn damage_prevention_prohibited(&self, combat: bool) -> bool {
+        let prohibits = |fragment: &crate::cards::StaticAbilityFragment| match fragment {
+            crate::cards::StaticAbilityFragment::DamageCantBePrevented => true,
+            crate::cards::StaticAbilityFragment::CombatDamageCantBePrevented => combat,
+            _ => false,
+        };
         self.state.damage_prevention_prohibited
             || self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize]
                     .card
                     .static_ability_groups()
                     .iter()
-                    .any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
-                            )
-                        })
-                    })
-                    && self
-                        .characteristic_query()
-                        .continuous_fragment_available(id, |fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::DamageCantBePrevented
-                            )
-                        })
+                    .any(|group| group.fragments.iter().any(prohibits))
+                    && self.continuous_fragment_available(id, prohibits)
             })
     }
 
+    fn damage_prevention_allowed(&self, event: &DamageEvent) -> bool {
+        event.preventable && !self.damage_prevention_prohibited(event.combat)
+    }
+
     fn damage_event_prevented(&self, event: &DamageEvent) -> bool {
-        if !event.preventable || self.damage_prevention_prohibited() {
+        if !self.damage_prevention_allowed(event) {
             return false;
         }
         if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
@@ -11327,7 +11432,7 @@ impl Game {
                     .any(|&active| active)
                     .then_some(roles.prohibit_opponent_nonhand_casts)
             }),
-            damage_prevention_prohibited: self.damage_prevention_prohibited(),
+            damage_prevention_prohibited: self.damage_prevention_prohibited(false),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
             life_gain_replacement_choice: self.life_gain_choice_view(viewer),
@@ -11559,6 +11664,7 @@ impl Game {
             player_combat_damage_this_turn: self.player_combat_damage_this_turn().copied(),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             cards_exiled_this_turn: s.cards_exiled_this_turn,
+            void_active_this_turn: s.void_active_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
             mayhem_discards_this_turn: s
                 .mayhem_discards
@@ -11692,6 +11798,7 @@ impl Game {
                 Pending::EntryAttackingDefender { .. } => "entry_attacking_defender",
                 Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryExile { .. } => "entry_exile",
+                Pending::EntryDevour { .. } => "entry_devour",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",
                 Pending::EntryLife { .. } => "entry_life",
@@ -11724,6 +11831,7 @@ impl Game {
                 }),
                 nonland_permanents_entered_this_turn: s.players[i]
                     .nonland_permanents_entered_this_turn,
+                lands_entered_this_turn: s.players[i].lands_entered_this_turn,
                 mount_or_vehicle_entries_this_turn: s.players[i].mount_or_vehicle_entries_this_turn,
                 spells_cast_this_turn: s.players[i].spells_cast_this_turn,
                 cards_drawn_this_turn: s.players[i].cards_drawn_this_turn,
@@ -11804,6 +11912,7 @@ impl Game {
             entry_timestamps: self.entry_timestamp_view(viewer),
             entry_copy: self.entry_copy_view(viewer),
             entry_exile: self.entry_exile_view(viewer),
+            entry_devour: self.entry_devour_view(viewer),
             additional_cost: self.additional_cost_view(viewer),
             forage: self.forage_view(viewer),
             evidence: self.evidence_view(viewer),

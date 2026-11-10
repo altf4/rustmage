@@ -42,7 +42,31 @@ impl Game {
             .into_iter()
             .filter(|&id| self.on_battlefield(id))
             .map(|id| self.object_ref(id))
-            .collect::<Vec<_>>();
+            .collect();
+        self.record_stats_until_next_turn(recipients, item.controller, power, toughness);
+    }
+    pub(super) fn creature_stats_until_next_turn(
+        &mut self,
+        item: &SpellView,
+        filter: CreatureFilter,
+        power: i32,
+        toughness: i32,
+    ) {
+        let source = item.source.expect("creature group has a source").object;
+        let recipients = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| self.creature_matches(filter, item.controller, source, id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        self.record_stats_until_next_turn(recipients, item.controller, power, toughness);
+    }
+    fn record_stats_until_next_turn(
+        &mut self,
+        recipients: Vec<ObjectRef>,
+        controller: Player,
+        power: i32,
+        toughness: i32,
+    ) {
         if recipients.is_empty() {
             return;
         }
@@ -54,7 +78,7 @@ impl Game {
                     .into_iter()
                     .map(|recipient| UntilNextTurnStatsView {
                         recipient,
-                        controller: item.controller,
+                        controller,
                         power,
                         toughness,
                     }),

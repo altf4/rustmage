@@ -3,10 +3,36 @@
   "catalogue_id": 4646,
   "oracle_id": "ed99a0b8-d82d-4c80-af97-cabd333620df",
   "facts_sha256": "c034a06dd38cde8b53acc396ea4a49d3d67343f929237b3acc79a1cd375303ea",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c7834f2706323aa98d689f8e42de955c7af771ee970b9ec3d9f4a9d41272dd47"
   },
-  "physical_metadata_sha256": "78b55283d5515eaea348ce393f298ac967e4ed798d22e898fd24409621dffbc2"
+  "physical_metadata_sha256": "78b55283d5515eaea348ce393f298ac967e4ed798d22e898fd24409621dffbc2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapEnchantedEffect.java",
+      "sha256": "ec3b0885abf02638a5f0fa47926e753828840f1adc8307b8c4c3d85d97231f65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DontUntapInControllersUntapStepEnchantedEffect.java",
+      "sha256": "70d499fc10da2ffb0d0be4f8ac2104fd1e2c6dfc2c8f9e494c4b2e8480d90f3b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TractorBeam.java",
+  "java_sha256": "9d2a9203a7a69931116039d306a57d7e31d7ae7b17844354c61c91e66603ced8",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs"
 }

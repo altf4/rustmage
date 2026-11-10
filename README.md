@@ -66,11 +66,11 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**11 / 20 sets complete · 55%**
+**12 / 20 sets complete · 60%**
 
-`███████████░░░░░░░░░`
+`████████████░░░░░░░░`
 
-**3,750 / 5,163 unique Standard cards supported in this checkout · 73%**
+**3,894 / 5,163 unique Standard cards supported in this checkout · 75%**
 
 `███████████████░░░░░`
 
@@ -91,7 +91,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
 | Bloomburrow | BLB | 135/279 (48%) | ⏳ Partial |
 | Duskmourn: House of Horror | DSK | 91/276 (33%) | ⏳ Partial |
-| Edge of Eternities | EOE | 122/266 (46%) | ⏳ Partial |
+| Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |
 | Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
 | Marvel's Spider-Man | SPM | 82/193 (42%) | ⏳ Partial |

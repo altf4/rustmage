@@ -3,10 +3,30 @@
   "catalogue_id": 2004,
   "oracle_id": "103e0b63-fbde-4054-91f7-dd04b40b59ef",
   "facts_sha256": "b75b5f33dbe2f44daabe911725cd7b0d837e4ecef49f00ee37601fef1ec8061e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4ce70832a34a07aaa6b6e341aeccec38af3430f7d238bb64bede94afddf3799b"
   },
-  "physical_metadata_sha256": "c7b98686eed7ac8675386e98bc389b26eea3162fa63192de5715e2f6899ebe3e"
+  "physical_metadata_sha256": "c7b98686eed7ac8675386e98bc389b26eea3162fa63192de5715e2f6899ebe3e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HemosymbicMite.java",
+  "java_sha256": "da4463064c1eac24be2db60ebd4dd3727c1b03f6a069c64127d79630e5518304",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

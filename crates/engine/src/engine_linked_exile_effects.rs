@@ -4,7 +4,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LinkedExileMode {
-    ReturnCreature,
+    ReturnCreature { plus_one: u64 },
     CopyMutant,
 }
 
@@ -66,15 +66,17 @@ impl Game {
             .program_players(PlayerSet::Targeted, item)
             .flat_map(|p| exile::top_library_cards(self, p, u128::from(amount)))
             .collect::<Vec<_>>();
-        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.exile_objects_linked(item, &ids);
+    }
+
+    pub(super) fn exile_objects_linked(&mut self, item: &SpellView, ids: &[CardId]) {
+        let events = self.move_objects_raw(ids, Zone::Exile);
         self.remember_linked_exile_events(item, &events);
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn exile_controller_library_top_linked(&mut self, item: &SpellView, amount: u16) {
         let ids = exile::top_library_cards(self, item.controller, u128::from(amount));
-        let events = self.move_objects_raw(&ids, Zone::Exile);
-        self.remember_linked_exile_events(item, &events);
-        self.finish_zone_events(&events, &[]);
+        self.exile_objects_linked(item, &ids);
     }
 
     pub(super) fn exile_targets_linked(&mut self, item: &SpellView, capture_mutant: bool) {
@@ -93,9 +95,7 @@ impl Game {
                 .item
                 .captured_artifact_copy = Some(Box::new(mutant_copy(card)));
         }
-        let events = self.move_objects_raw(&ids, Zone::Exile);
-        self.remember_linked_exile_events(item, &events);
-        self.finish_zone_events(&events, &[]);
+        self.exile_objects_linked(item, &ids);
     }
 
     pub(super) fn resolution_linked_exile_candidates(&self, source: ObjectRef) -> Vec<ObjectRef> {
@@ -106,10 +106,13 @@ impl Game {
             .as_ref()
             .and_then(|state| state.linked_exile_mode)
         {
-            Some(LinkedExileMode::ReturnCreature) => self
+            Some(LinkedExileMode::ReturnCreature { .. }) => self
                 .linked_exile_for_item(&resolution.item)
                 .into_iter()
-                .filter(|object| self.state.objects[object.card as usize].card.is_creature())
+                .filter(|object| {
+                    let card = &self.state.objects[object.card as usize];
+                    card.is_card() && card.card.is_creature()
+                })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
             None => self.linked_exile_candidates(source),
@@ -149,7 +152,7 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
         match mode {
-            LinkedExileMode::ReturnCreature => {
+            LinkedExileMode::ReturnCreature { plus_one } => {
                 self.state
                     .linked_choices
                     .as_mut()
@@ -157,6 +160,9 @@ impl Game {
                     .linked_exile_selected = Some(object);
                 let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
                 movement.controller = player;
+                if plus_one != 0 {
+                    movement.effect_counter = Some((CounterKind::PlusOne, plus_one));
+                }
                 self.stage_entries(vec![movement], None);
             }
             LinkedExileMode::CopyMutant => {

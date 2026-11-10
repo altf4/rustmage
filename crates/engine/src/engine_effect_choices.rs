@@ -317,12 +317,21 @@ impl Game {
                 pair.partner.name(),
             ) && !choice.selected[player.index()].contains(&object);
         }
-        if let EffectChoiceKind::ReturnGraveyardToHand { kinds } = choice.kind {
+        let graveyard_filter = match choice.kind {
+            EffectChoiceKind::ReturnGraveyardToHand { kinds } => Some((kinds, None)),
+            EffectChoiceKind::ReturnGraveyardToHandOrSubtype { kinds, subtype } => {
+                Some((kinds, Some(subtype)))
+            }
+            _ => None,
+        };
+        if let Some((kinds, subtype)) = graveyard_filter {
             return o.zone == Zone::Graveyard
                 && o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && (kinds == 0 || self.current_kinds(object.card) & kinds != 0)
+                && ((kinds == 0 && subtype.is_none())
+                    || self.current_kinds(object.card) & kinds != 0
+                    || subtype.is_some_and(|subtype| self.has_subtype(object.card, subtype)))
                 && !choice.selected[player.index()].contains(&object);
         }
         if choice.kind.payment_kind() == EffectChoiceKind::ExileCardFromAnyGraveyard {
@@ -409,6 +418,21 @@ impl Game {
                 && !selected.contains(&object)
                 && selected.len() < usize::from(maximum)
                 && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent);
+        }
+        if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
+            return o.zone == Zone::Graveyard
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && choice.selected[player.index()].is_empty()
+                && self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .remembered_creatures
+                    .as_ref()
+                    .is_some_and(|receipts| receipts.binary_search(&object).is_ok());
         }
         if let EffectChoiceKind::LandCards { maximum, .. } = choice.kind.payment_kind() {
             return o.owner == player
@@ -1207,6 +1231,11 @@ impl Game {
             assert_eq!(amount, 1, "one alternative resolution cost");
             assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
         }
+        if kind == EffectChoiceKind::ReturnRememberedCreature {
+            assert_eq!(amount, 1, "one remembered creature return");
+            assert_eq!(players, PlayerSet::Controller, "captured return controller");
+            assert!(optional_skip.is_none(), "remembered return is mandatory");
+        }
         let any_number = kind.any_number_selection();
         if any_number {
             assert_eq!(
@@ -1723,6 +1752,31 @@ impl Game {
             }
             return false;
         }
+        if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
+            let resolution = self.state.resolving.as_mut().unwrap();
+            let player = resolution.item.controller;
+            resolution.remembered_creatures = None;
+            if let Some(&object) = choice.selected[player.index()].first() {
+                let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+                movement.controller = player;
+                self.stage_entries(vec![movement], None);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::ExileControlledLinked {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let ids = choice
+                .selected
+                .into_iter()
+                .flatten()
+                .filter(|&object| {
+                    self.on_battlefield(object.card) && self.object_ref(object.card) == object
+                })
+                .map(|object| object.card)
+                .collect::<Vec<_>>();
+            self.exile_objects_linked(&item, &ids);
+            return false;
+        }
         if let EffectChoiceKind::LinkedCreature {
             other_power,
             other_toughness,
@@ -1987,6 +2041,13 @@ impl Game {
                     | EffectChoiceKind::ExileGreatestManaValue
             ) {
                 let events = self.move_objects_raw(&ids, Zone::Exile);
+                if let EffectChoiceKind::ExileFromHandWithPlaySurcharge(surcharge) = choice.kind {
+                    for event in &events {
+                        if event.moved && event.destination == Zone::Exile {
+                            self.grant_taxed_exile_play(event.before.owner, event.after, surcharge);
+                        }
+                    }
+                }
                 self.finish_zone_events(&events, &[]);
             } else {
                 self.tap_objects(&ids);

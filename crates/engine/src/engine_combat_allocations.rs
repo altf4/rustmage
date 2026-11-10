@@ -537,7 +537,12 @@ impl ActivatedAbility {
         self.x_symbols() != 0 || self.life_x_cost() || self.nonmana_x()
     }
     pub(super) fn nonmana_x(&self) -> bool {
-        self.program.first() == Some(&Instruction::ActivationNonmanaX)
+        self.tap_x_cost() || self.program.first() == Some(&Instruction::ActivationNonmanaX)
+    }
+    pub(super) fn tap_x_cost(&self) -> bool {
+        self.cost
+            .additional
+            .is_some_and(|spec| spec.kind == EffectChoiceKind::TapXPermanents)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

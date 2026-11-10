@@ -1,16 +1,29 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const CONTROLLED: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: false,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::GrowCreatures {
+                filter: CONTROLLED,
+                power: 2,
+                toughness: 0,
+            },
+            Instruction::If {
+                guard: StepGuard::YourTurn,
+                skip: 1,
+            },
+            Instruction::Skip(1),
+            Instruction::UntapCreatures(CONTROLLED),
+        ],
+    ),
     ..CardRules::EMPTY
 };

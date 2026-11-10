@@ -3,10 +3,35 @@
   "catalogue_id": 4335,
   "oracle_id": "b5ae8016-92ed-4ae8-83a8-65068defc616",
   "facts_sha256": "f01a8cf013b0a9c9f3a8a3785851dafb96da752876490b7023ad6bdabbf71147",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c49f4d0fce3d4511c4d33d17af7f8a1de2fbe2445b46e24d12e8f9b84c633613"
   },
-  "physical_metadata_sha256": "1146f7eaf93f5aafb997ef9f52abc9d893b7112a0c39b404d03f3c40ffab6a87"
+  "physical_metadata_sha256": "1146f7eaf93f5aafb997ef9f52abc9d893b7112a0c39b404d03f3c40ffab6a87",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TannukSteadfastSecond.java",
+  "java_sha256": "5d0c0ab11a3303a3ce66bcf08235662c41abac4cf5f3159634fde042baf6f656",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ColorPredicate.java",
+      "sha256": "b62ced1f121575b7737a20875425334d7bf61e018a809548805d14f38d71e82b"
+    }
+  ]
 }

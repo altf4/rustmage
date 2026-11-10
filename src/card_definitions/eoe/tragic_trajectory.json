@@ -3,10 +3,46 @@
   "catalogue_id": 4651,
   "oracle_id": "e5e19326-3e90-439c-a3b2-749d43a1af0c",
   "facts_sha256": "4c87953e09df7f66014ea5bda4d170254a54f11afd5b3dbec1a181e04c667be1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c85ebaee89cb57d93531d6998052c24dd7c7f90bcf01cd4419fdca618e5323fa"
   },
-  "physical_metadata_sha256": "359a5f774b9ccf8ef3de5c3459a16426b1a818451cb8a9fc8a4c026c9d8b058b"
+  "physical_metadata_sha256": "359a5f774b9ccf8ef3de5c3459a16426b1a818451cb8a9fc8a4c026c9d8b058b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TragicTrajectory.java",
+  "java_sha256": "88a6182026cfb28280d0bb26e7f6e47873cefe8b6d03a2eb39e5adc7534adcb3",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

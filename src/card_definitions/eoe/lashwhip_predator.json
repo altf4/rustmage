@@ -3,10 +3,35 @@
   "catalogue_id": 2447,
   "oracle_id": "56035e66-e730-436d-8de2-4ded7fd1b51e",
   "facts_sha256": "dca7ed9aa609d94566ef82f2a2a46d83517f2b08f045e4398d9c6a02cf2e022e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9084d4ae031a2de272e2f69950fa651ea919e7cbb0371c73b48af227c49c1122"
   },
-  "physical_metadata_sha256": "eb663e6a06ec20186001e6e82bb662c22d98d7b6d8cac6ffb2f0272c7543a8b2"
+  "physical_metadata_sha256": "eb663e6a06ec20186001e6e82bb662c22d98d7b6d8cac6ffb2f0272c7543a8b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LashwhipPredator.java",
+  "java_sha256": "c34703e4b4ab5c5259f572f768b48995998b8ac446d3fcd213a415ef40108a22",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterOpponentsCreaturePermanent.java",
+      "sha256": "9e64645fa99f5e9c77a41dd9490e629a050201ee2fb8cb973bebdef3a3914942"
+    }
+  ]
 }

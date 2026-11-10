@@ -73,9 +73,9 @@ impl Game {
             .extend(ready.into_iter().map(|row| row.item));
     }
 
-    pub(super) fn return_delayed_battlefield_objects_to_hand(&mut self, item: &SpellView) {
+    fn delayed_battlefield_objects(&self, item: &SpellView) -> Vec<CardId> {
         let Some(group) = &item.event_object else {
-            return;
+            return Vec::new();
         };
         let additional = group
             .semantic_objects
@@ -85,13 +85,29 @@ impl Game {
                 DamageSourceRef::Object(object) => Some(object),
                 DamageSourceRef::StackObject { .. } => None,
             });
-        let ids: Vec<_> = std::iter::once(group.object)
+        std::iter::once(group.object)
             .chain(additional)
             .filter(|&object| {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == object
             })
             .map(|object| object.card)
-            .collect();
+            .collect()
+    }
+
+    pub(super) fn remove_delayed_object_counters(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        amount: u64,
+    ) {
+        for id in self.delayed_battlefield_objects(item) {
+            let removed = self.counter_count(id, kind).min(amount);
+            self.pay_counters(id, &Counters::of(kind, removed));
+        }
+    }
+
+    pub(super) fn return_delayed_battlefield_objects_to_hand(&mut self, item: &SpellView) {
+        let ids = self.delayed_battlefield_objects(item);
         let events = self.move_objects_raw(&ids, Zone::Hand);
         self.finish_zone_events(&events, &[]);
     }

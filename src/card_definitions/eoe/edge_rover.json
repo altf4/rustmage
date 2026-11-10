@@ -3,10 +3,30 @@
   "catalogue_id": 1265,
   "oracle_id": "b907d375-b715-446b-8966-79959feb9f58",
   "facts_sha256": "32d4b948e704518b1334a4256d9e747e24323687235e62c50047b4e9bf3c72be",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8dee09536001a5ac406d59e1ce53278bbfb4ada67e5316de77521a1cde9c1542"
   },
-  "physical_metadata_sha256": "ba06a7f052f1cfe1d29e2bef7c1d5a76755d817ef4b734c18e24a41d525ddca4"
+  "physical_metadata_sha256": "ba06a7f052f1cfe1d29e2bef7c1d5a76755d817ef4b734c18e24a41d525ddca4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EdgeRover.java",
+  "java_sha256": "aef538ee8c0d05b2325f532bf6524b12fca79ca83bc35042b4581befe7258ec2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenAllEffect.java",
+      "sha256": "0305d2adb4d80aa018cff0a846a96f9c27c77b95dc6c166902ff7210ca57945c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+      "sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+    }
+  ]
 }

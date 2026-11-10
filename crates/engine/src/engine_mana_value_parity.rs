@@ -16,16 +16,17 @@ impl ManaValueParity {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn choose_mana_value_parity(&mut self, parity: ManaValueParity) {
-        let item = self.state.resolving.as_ref().unwrap().item.clone();
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let source = resolution.item.source;
+        let other = resolution.program[resolution.pc - 1]
+            == Instruction::ChooseManaValueParityDestroyOthers;
         // The source need not remain. Exclude only its captured incarnation,
         // then freeze eligibility and indestructibility before any departure.
         let mut ids: Vec<_> = (0..self.state.objects.len())
             .map(|id| id as CardId)
             .filter(|&id| {
                 self.on_battlefield(id)
-                    && item
-                        .source
-                        .is_none_or(|source| self.object_ref(id) != source.object)
+                    && (!other || source.is_none_or(|source| self.object_ref(id) != source.object))
                     && self.is_creature(id)
                     && parity.matches(self.object_mana_value(id))
                     && !self.keywords(id).contains(Keywords::INDESTRUCTIBLE)

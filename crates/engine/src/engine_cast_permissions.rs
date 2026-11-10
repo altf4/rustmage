@@ -3,6 +3,13 @@ use super::*;
 use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Default)]
+pub(super) struct OriginAlternative {
+    pub granted_warp: Option<ManaCost>,
+    pub exile_play_surcharge: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct GraveyardCastPermissionView {
     pub object: ObjectRef,
@@ -414,6 +421,43 @@ impl Game {
         origin_life_cost: Option<u32>,
         independent_free: bool,
     ) -> bool {
+        self.permitted_cast_with_alternative(
+            actor,
+            card,
+            method,
+            face,
+            sorcery,
+            flash_surcharge,
+            origin_counter_cost,
+            origin_additional_cost,
+            origin_life_cost,
+            independent_free,
+            OriginAlternative::default(),
+        )
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "The selected alternative, additional origin costs and timing are independent"
+    )]
+    pub(super) fn permitted_cast_with_alternative(
+        &self,
+        actor: Player,
+        card: CardId,
+        method: CastMethod,
+        face: CastFace,
+        sorcery: bool,
+        flash_surcharge: bool,
+        origin_counter_cost: Option<u16>,
+        origin_additional_cost: Option<Card>,
+        origin_life_cost: Option<u32>,
+        independent_free: bool,
+        alternative: OriginAlternative,
+    ) -> bool {
+        let OriginAlternative {
+            granted_warp,
+            exile_play_surcharge,
+        } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
             && (object.zone != Zone::Graveyard
@@ -483,6 +527,8 @@ impl Game {
         if method == CastMethod::Sneak {
             Self::configure_sneak(&mut item);
         }
+        let warp =
+            (method == CastMethod::Warp).then(|| warp::configure_cast(&mut item, granted_warp));
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
@@ -492,6 +538,9 @@ impl Game {
         }
         if method == CastMethod::ExileLife {
             Self::configure_exile_life_cast(&mut item, flash_surcharge);
+        }
+        if exile_play_surcharge > 0 {
+            Self::configure_taxed_exile_cast(&mut item, exile_play_surcharge);
         }
         if matches!(
             method,
@@ -526,22 +575,27 @@ impl Game {
                 return false;
             }
         }
-        let scalar_x = definition.x_symbols() > 0
-            && !matches!(
-                method,
-                CastMethod::LinkedExileCounterCost
-                    | CastMethod::ExileLife
-                    | CastMethod::Airbend
-                    | CastMethod::Free
-                    | CastMethod::Plot
-                    | CastMethod::Flashback
-                    | CastMethod::Harmonize
-                    | CastMethod::GrantedHarmonize
-                    | CastMethod::Mayhem
-                    | CastMethod::Miracle
-                    | CastMethod::Sneak
-            );
-        if scalar_x && origin_life_cost.is_none() {
+        let scalar_x = warp.map_or_else(
+            || {
+                definition.x_symbols() > 0
+                    && !matches!(
+                        method,
+                        CastMethod::LinkedExileCounterCost
+                            | CastMethod::ExileLife
+                            | CastMethod::Airbend
+                            | CastMethod::Free
+                            | CastMethod::Plot
+                            | CastMethod::Flashback
+                            | CastMethod::Harmonize
+                            | CastMethod::GrantedHarmonize
+                            | CastMethod::Mayhem
+                            | CastMethod::Miracle
+                            | CastMethod::Sneak
+                    )
+            },
+            |spec| spec.x_symbols > 0,
+        );
+        if scalar_x && origin_life_cost.is_none() && warp.is_none() && exile_play_surcharge == 0 {
             return !self
                 .scalar_x_intervals_for_definition(actor, card, definition)
                 .is_empty();
@@ -564,7 +618,8 @@ impl Game {
             free_hand_permission: None,
             origin_counter_cost,
             origin_additional_cost,
-            origin_alternative_cost: self.origin_alternative_cost_for(&item),
+            origin_alternative_cost: granted_warp
+                .or_else(|| self.origin_alternative_cost_for(&item)),
             item,
             spec: TargetSpec::NONE,
             plan: TargetPlan::Single(TargetSpec::NONE),
@@ -591,18 +646,22 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
-        if let Some(life) = origin_life_cost {
+        let life = warp
+            .map(|spec| spec.life)
+            .filter(|&life| life != 0)
+            .or(origin_life_cost);
+        if let Some(life) = life {
             a.add_origin_life_cost(life);
         }
         if matches!(
             method,
             CastMethod::GraveyardAdditionalCosts | CastMethod::LinkedExileCounterCost
         ) || origin_additional_cost.is_some()
-            || origin_life_cost.is_some()
+            || life.is_some() && warp.is_none()
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
-        if definition.x_symbols() > 0 && (method == CastMethod::LinkedExileCounterCost || scalar_x)
+        if scalar_x || (definition.x_symbols() > 0 && method == CastMethod::LinkedExileCounterCost)
         {
             return !self
                 .scalar_x_intervals_with_announcement(actor, card, definition, Some(&a))

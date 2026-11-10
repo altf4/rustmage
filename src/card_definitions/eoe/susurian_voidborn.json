@@ -3,10 +3,41 @@
   "catalogue_id": 4282,
   "oracle_id": "4f754f11-3b6d-4a4e-86d7-7495e475ef74",
   "facts_sha256": "2711fd5034bf763b02caaad49f3a143bb6c2406a8545938344256bca436c7bfd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bccefbc44681aaf6125c36b0e17f05f5577dd0b85bb800f0cd712f45fce6c79f"
   },
-  "physical_metadata_sha256": "3a083040d871e754c2ee155ee930724afe90867a948900b8d74db676cd066f40"
+  "physical_metadata_sha256": "3a083040d871e754c2ee155ee930724afe90867a948900b8d74db676cd066f40",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesThisOrAnotherTriggeredAbility.java",
+      "sha256": "4511f11fe0c29d6984fc30bc40f6c270865b68a607f740f7247998c33b80fe01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SusurianVoidborn.java",
+  "java_sha256": "0e77bac1102c5e4e6140910f9609299d5c75b05c12a0db3a3e8d17aa7ada1d59",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

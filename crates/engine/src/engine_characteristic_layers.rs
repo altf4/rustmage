@@ -164,6 +164,7 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
     let (kinds, additive) = match form {
         SourceCreatureForm::Creature => (1, false),
         SourceCreatureForm::ArtifactCreature => (17, true),
+        SourceCreatureForm::AddCreature => (1, true),
     };
     Some(SourceCreatureChange {
         timestamp,

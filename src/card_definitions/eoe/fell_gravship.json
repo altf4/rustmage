@@ -3,10 +3,51 @@
   "catalogue_id": 1489,
   "oracle_id": "1a82be68-3b74-4dfc-9068-3abea61db709",
   "facts_sha256": "d9c44b2a74f6b0609447543b85966a796976f624e17e81a219ad86688da27cdf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82f0a2fabfa38ff2847cf2f0569cde0d190bec04aafe626556338a186e6c3276"
   },
-  "physical_metadata_sha256": "38e1ed9b1d8d4bdb7b21bb0ed0c78c8f93fe7f252a9f1f5acf6b0ec7e1afd50f"
+  "physical_metadata_sha256": "38e1ed9b1d8d4bdb7b21bb0ed0c78c8f93fe7f252a9f1f5acf6b0ec7e1afd50f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+      "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FellGravship.java",
+  "java_sha256": "fcaa6dd2481ba41db9931b909014bfb2e24125f270f20c5cc85903d9345325b4",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

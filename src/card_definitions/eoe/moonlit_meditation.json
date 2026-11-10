@@ -3,10 +3,39 @@
   "catalogue_id": 2844,
   "oracle_id": "df702b0c-e011-497f-ae29-9876efac4a4c",
   "facts_sha256": "d5a80b6a3b428feaab144262c7dd51cd109fd6d07a13cc7d7642231bea3671f7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e02be3fa8ca6f642bc31ba85a56ab0a3688efb77cfed541592739d958d44ee77"
   },
-  "physical_metadata_sha256": "384b1ee7401d3d872384b229d18efeb1469184498ade043c9dbce56ddad74986"
+  "physical_metadata_sha256": "384b1ee7401d3d872384b229d18efeb1469184498ade043c9dbce56ddad74986",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CreatedTokenWatcher.java",
+      "sha256": "e584fb15744823fe5cdbca4add163445cb36bb7a32b02d7dcf23d1b2a9ca232b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoonlitMeditation.java",
+  "java_sha256": "3ef274f5225b1d547a2f53e6b699fe282c22bfd3dad858176acf969d9ec2f4f9",
+  "rules_tests": "tests/eoe_cards_067_132_blue.rs",
+  "rules_notes": [
+    "CR 614 and 707. The optional first token replacement takes the enchanted permanent’s copiable values, including when it is a noncreature artifact."
+  ]
 }

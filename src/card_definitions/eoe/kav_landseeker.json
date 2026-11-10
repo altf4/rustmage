@@ -3,10 +3,30 @@
   "catalogue_id": 2326,
   "oracle_id": "528fe479-dab9-4cf8-bda0-1d226a644366",
   "facts_sha256": "d22927469c6c64dd8e8a4b5cb0203ccde0b6c73af94c228cba799935ac84e568",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0dadc7c5e9bb6887648fe21ad63775bbbba9d68230aad58c62488966bf129249"
   },
-  "physical_metadata_sha256": "35397632bcfec405f96123c00ada11840b168c138f8c32dc85dc2d15759c2ef0"
+  "physical_metadata_sha256": "35397632bcfec405f96123c00ada11840b168c138f8c32dc85dc2d15759c2ef0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KavLandseeker.java",
+  "java_sha256": "893776b48a98b60238980b27cbb9653bd9ba214e7c7d217566c90da91c1525fe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfStepOfYourNextTurnDelayedTriggeredAbility.java",
+      "sha256": "24b6f868bc458961a98a5f2445cdbdb97d569c1fdd6dc31070e57e6055210922"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/LanderToken.java",
+      "sha256": "5d15f49c7eab3d0b31a7d46668bcea3a14faa50b2688996344c35a5243ba53d3"
+    }
+  ]
 }

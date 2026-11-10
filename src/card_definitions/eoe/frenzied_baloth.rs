@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(3, 2),
+    keywords: Keywords::TRAMPLE.union(Keywords::HASTE),
+    extras: &CardExtras {
+        uncounterable: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::HASTE.union(Keywords::TRAMPLE),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::ControlledSpellsUncounterable(1)],
+        },
+        StaticAbilityGroup {
+            line: 3,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::CombatDamageCantBePrevented],
+        },
+    ],
     ..CardRules::EMPTY
 };

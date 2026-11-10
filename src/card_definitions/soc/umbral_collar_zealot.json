@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7afa538787275d865c9eef89dacf7eadc4058765febf574a042f9398c5501b0c"
   },
-  "physical_metadata_sha256": "dc7db6f33a96a3e3eb6fde84da61194c83dce5032ccbb3efb59939705df8aec5"
+  "physical_metadata_sha256": "dc7db6f33a96a3e3eb6fde84da61194c83dce5032ccbb3efb59939705df8aec5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UmbralCollarZealot.java",
+  "java_sha256": "8f418c8b830a5c7b9498dfc0d1daa432aae7868a347ed9f3251f56f9c7fb39ae",
+  "rules_tests": "tests/eoe_cards_067_132_final.rs"
 }

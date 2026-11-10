@@ -3,10 +3,64 @@
   "catalogue_id": 1348,
   "oracle_id": "90c5ea2b-d004-4219-b60c-d51bc1a5ee6b",
   "facts_sha256": "1dfd95fbc7eced3985bcd0688d647e44b1ec51e85590a98227d5d6f1501ec71b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a8cef4ed22ec974a380476f1899e53891949d05e0e60fdb53e651706c37c25a2"
   },
-  "physical_metadata_sha256": "77b704c67b76e4897aad8079a257ee839f0f2ed1ac0995d4499ab4b66c101eda"
+  "physical_metadata_sha256": "77b704c67b76e4897aad8079a257ee839f0f2ed1ac0995d4499ab4b66c101eda",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationAbility.java",
+      "sha256": "48fcc3b5349799c3d025dcec90d9c521eec2e9b6545fb67e0dfe499335faa18c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/StationLevelAbility.java",
+      "sha256": "4d15726c185d5bc3c2d241512f9978f1c4f370198ce97e7f212e105a8c64d6b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiscardsACardOpponentTriggeredAbility.java",
+      "sha256": "50df489321fe67d8d7939dd66eef5f58b23f4192b6f809d03c5191ddece933d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetDiscard.java",
+      "sha256": "f165d4061cca290e354f611246bf39c1157977742d5d9ae93fca883b22118668"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EntropicBattlecruiser.java",
+  "java_sha256": "573def16085d4d83a48d55c5c94119bafa9a7e079c329e10adcffc5784b5643b",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs",
+  "rules_notes": [
+    "CR 721.2b and 701.8. At eight charge counters, the attack asks each opponent for a mandatory discard. Only an opponent that cannot discard loses life from the attack ability itself."
+  ]
 }

@@ -3,10 +3,40 @@
   "catalogue_id": 1620,
   "oracle_id": "6a4ef075-9254-4d36-9572-622833fae54e",
   "facts_sha256": "e17a583fe38635a57c418c23f2d57522d2981474b22a835546515a3c94804db8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "117831abcfb0469950410d96094939d2cc44b55f59d9a1392d07f5bdb122f4b7"
   },
-  "physical_metadata_sha256": "8c6536dc35b2b26e45edd483bcb53bb83309ab69dc16f4c0f8d9d6df8ae40ec6"
+  "physical_metadata_sha256": "8c6536dc35b2b26e45edd483bcb53bb83309ab69dc16f4c0f8d9d6df8ae40ec6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FrenziedBaloth.java",
+  "java_sha256": "42db761741a9b2ec8a3dd6864b68ea2408247707b62d308f03636f1e7677ce87",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredControlledEffect.java",
+      "sha256": "27fc63b4a9057d305e6356dfcbeb00c952df15e838118ff0b63af6e135e968c3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }

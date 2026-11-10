@@ -1,6 +1,6 @@
 //! Battlefield leave observers use the exact pre-event source and recipient.
 use super::*;
-use crate::cards::DepartureCounters;
+use crate::cards::{DepartureCounters, DepartureFilter, DepartureRule, DepartureSubject};
 use std::sync::Arc;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -18,6 +18,55 @@ pub struct ChosenCreatureLinkView {
 pub(super) struct DepartureObserver {
     source: ObjectView,
     chosen_creature: Option<ObjectRef>,
+}
+
+impl DepartureRule {
+    fn from_legacy(filter: DepartureFilter) -> Self {
+        Self {
+            kinds: filter.kinds,
+            relation: filter.relation,
+            subject: if filter.other {
+                DepartureSubject::Other
+            } else {
+                DepartureSubject::Any
+            },
+            destinations: if filter.graveyard_only {
+                &[Zone::Graveyard]
+            } else {
+                &[]
+            },
+            counters: filter.counters,
+            ..Self::ANY
+        }
+    }
+
+    fn matches(self, source: &ObjectView, event: &ZoneChange) -> bool {
+        let before = &event.before;
+        let related = match self.relation {
+            CastRelation::You => source.controller == before.controller,
+            CastRelation::Opponent => source.controller != before.controller,
+            CastRelation::Any => true,
+        };
+        let subject_matches = match self.subject {
+            DepartureSubject::Any => true,
+            DepartureSubject::Other => source.reference != before.reference,
+            DepartureSubject::SelfOnly => source.reference == before.reference,
+        };
+        let counters_match = match self.counters {
+            DepartureCounters::Unrestricted => true,
+            DepartureCounters::Any => before.counters.has_any(),
+            DepartureCounters::Kind(kind) => before.counters.get(kind) != 0,
+        };
+        related
+            && subject_matches
+            && counters_match
+            && (self.destinations.is_empty() || self.destinations.contains(&event.destination))
+            && (!self.nontoken || !before.is_token())
+            && (self.kinds == 0 || before.kinds & self.kinds != 0)
+            && self
+                .minimum_power
+                .is_none_or(|power| before.is_creature() && before.power >= i128::from(power))
+    }
 }
 
 impl Game {
@@ -91,6 +140,7 @@ impl Game {
                         matches!(
                             ability.condition.event(),
                             TriggerCondition::PermanentLeaves(_)
+                                | TriggerCondition::BattlefieldDeparture(_)
                                 | TriggerCondition::SelfOrControlledPermanentDies(_)
                         )
                     }))
@@ -113,22 +163,9 @@ impl Game {
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::PermanentLeaves(filter) => {
-                        let related = match filter.relation {
-                            CastRelation::You => source.controller == before.controller,
-                            CastRelation::Opponent => source.controller != before.controller,
-                            CastRelation::Any => true,
-                        };
-                        let counters_match = match filter.counters {
-                            DepartureCounters::Unrestricted => true,
-                            DepartureCounters::Any => before.counters.has_any(),
-                            DepartureCounters::Kind(kind) => before.counters.get(kind) != 0,
-                        };
-                        related
-                            && counters_match
-                            && (!filter.other || source.reference != before.reference)
-                            && (!filter.graveyard_only || event.destination == Zone::Graveyard)
-                            && (filter.kinds == 0 || before.kinds & filter.kinds != 0)
+                        DepartureRule::from_legacy(filter).matches(source, event)
                     }
+                    TriggerCondition::BattlefieldDeparture(rule) => rule.matches(source, event),
                     TriggerCondition::SelfOrControlledPermanentDies(kinds) => {
                         event.destination == Zone::Graveyard
                             && (source.reference == before.reference

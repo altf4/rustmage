@@ -3,10 +3,30 @@
   "catalogue_id": 4395,
   "oracle_id": "03f04c2c-1036-497e-8b13-06c61b0b0ba6",
   "facts_sha256": "cf131da2509e2afec8574765d28deea0cc19bb5c48218589093deea84730275e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d9e8175d722f25b05599856d72f1488c9ad175a80630ee8a2d9d8486e6d3ad38"
   },
-  "physical_metadata_sha256": "921d9d1d18da9e6e581a5f5995715e6c4c77e3db307a54381dd0e6178c518f47"
+  "physical_metadata_sha256": "921d9d1d18da9e6e581a5f5995715e6c4c77e3db307a54381dd0e6178c518f47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerritorialBruntar.java",
+  "java_sha256": "bbafa4f1e40f7e497eb1d50327d5c98848273a2823782815309d567ffea3e95f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ]
 }

@@ -3,10 +3,35 @@
   "catalogue_id": 132,
   "oracle_id": "da9ec010-8b42-4927-b602-4e96bced4e99",
   "facts_sha256": "9fb3f63e3a38f870c154689cda3e7bf41a628393480242acd4d08f41a68086ea",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8d9a1b04c109730a2f40c34e7ffc0e877c08e5f5e0a9ae78521167879c90e522"
   },
-  "physical_metadata_sha256": "8783ea6e955e81c3ed33d28d061b2e80999c37036a48817f0efe2666bcab2056"
+  "physical_metadata_sha256": "8783ea6e955e81c3ed33d28d061b2e80999c37036a48817f0efe2666bcab2056",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AllFatesStalker.java",
+  "java_sha256": "2b65c04f5c66d72d4c0b921ad86af216c0566d31a5574e42647500708ce50c00",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

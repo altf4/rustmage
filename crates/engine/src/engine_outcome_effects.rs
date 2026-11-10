@@ -35,6 +35,41 @@ impl Game {
         events
     }
 
+    pub(super) fn destroy_creatures_by_toughness(&mut self, maximum: i128, remember: bool) {
+        // Freeze the full group before any destruction changes derived toughness.
+        let query = self.characteristic_query();
+        let mut ids = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && self.is_creature(id)
+                    && query.stats(id).toughness <= maximum)
+                    .then_some(id)
+            })
+            .collect::<Vec<_>>();
+        ids.retain(|&id| !self.effect_destruction_prevented(id));
+        let observers = self.death_trigger_sources();
+        let events = self.move_objects_raw(&ids, Zone::Graveyard);
+        if remember {
+            let mut receipts: Vec<_> = events
+                .iter()
+                .filter(|event| {
+                    event.moved && event.was_card && event.destination == Zone::Graveyard
+                })
+                .flat_map(ZoneChange::objects_after)
+                .filter(|object| self.state.objects[object.card as usize].card.is_creature())
+                .collect();
+            receipts.sort_unstable();
+            self.state.resolving.as_mut().unwrap().remembered_creatures =
+                (!receipts.is_empty()).then(|| receipts.into());
+        }
+        self.finish_zone_events(&events, &observers);
+    }
+
     pub(super) fn opponent_sacrifice_else_discard(
         &mut self,
         item: &SpellView,

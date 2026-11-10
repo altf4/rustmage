@@ -13,7 +13,7 @@ pub(super) struct ActivationCostChoice {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
-    /// Captured origin-specific Miracle or granted Sneak cost.
+    /// Captured alternate cost from Miracle, granted Sneak or granted Warp.
     pub origin_alternative_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
@@ -116,6 +116,7 @@ impl Announcement {
                     .copied()
             }
             CastMethod::Miracle => self.origin_alternative_cost,
+            CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Mayhem => self
                 .item
                 .source
@@ -211,7 +212,9 @@ impl Announcement {
                                 .source
                                 .expect("object-backed announcement")
                                 .card
-                                .mana_alternative_replaces_additional(cost)
+                                .mana_alternative_replaces_additional(
+                                    self.cost_before_exile_play_surcharge(cost),
+                                )
                         })
                     }
                     CastMethod::ExileLife
@@ -220,16 +223,21 @@ impl Announcement {
                     | CastMethod::Plot
                     | CastMethod::Miracle
                     | CastMethod::Mayhem => {
-                        self.fixed_alternative_cost()
-                            .is_some_and(|base| self.cost.is_some_and(|cost| cost != base))
-                            && self
-                                .item
-                                .source
-                                .expect("object-backed announcement")
-                                .card
-                                .mana_additional_alternative()
-                                .is_some()
+                        self.fixed_alternative_cost().is_some_and(|base| {
+                            self.cost.is_some_and(|cost| {
+                                self.cost_before_exile_play_surcharge(cost) != base
+                            })
+                        }) && self
+                            .item
+                            .source
+                            .expect("object-backed announcement")
+                            .card
+                            .mana_additional_alternative()
+                            .is_some()
                     }
+                    CastMethod::Warp => self
+                        .cost
+                        .is_some_and(|cost| self.warp_additional_mana_chosen(cost)),
                     _ => false,
                 }) =>
             {
@@ -266,13 +274,20 @@ impl Announcement {
                 .activation(ability)
                 .cost
                 .additional
-                .map(|mut cost| {
-                    if cost.kind == (EffectChoiceKind::SacrificeManaValue { value: None }) {
-                        cost.kind = EffectChoiceKind::SacrificeManaValue {
-                            value: self.item.x.map(u64::from),
-                        };
+                .and_then(|mut cost| {
+                    match cost.kind {
+                        EffectChoiceKind::SacrificeManaValue { value: None } => {
+                            cost.kind = EffectChoiceKind::SacrificeManaValue {
+                                value: self.item.x.map(u64::from),
+                            };
+                        }
+                        EffectChoiceKind::TapXPermanents => {
+                            let amount = self.item.x.filter(|&amount| amount != 0)?;
+                            cost.kind = EffectChoiceKind::TapPermanents(amount);
+                        }
+                        _ => {}
                     }
-                    cost
+                    Some(cost)
                 }),
             StackKind::TriggeredAbility { .. }
             | StackKind::DecayedAttack
@@ -290,6 +305,43 @@ impl Announcement {
             | StackKind::InherentRule { .. }
             | StackKind::SiegeDefeat => None,
         }
+    }
+
+    fn warp_cost_options(&self) -> crate::cards::ManaCostOptions {
+        let spec = self.warp_spec();
+        std::iter::once(spec.mana).chain(spec.alternatives.iter().copied())
+    }
+    pub(super) fn exile_play_surcharge(&self) -> u32 {
+        self.item.cast.map_or(0, |cast| cast.exile_play_surcharge)
+    }
+    pub(super) fn cost_before_exile_play_surcharge(&self, mut cost: ManaCost) -> ManaCost {
+        cost.generic = cost.generic.saturating_sub(self.exile_play_surcharge());
+        cost
+    }
+    fn apply_cost_declarations(&self, cost: ManaCost) -> Option<ManaCost> {
+        let mut cost = Game::with_tiered_mana(
+            Game::with_flash_surcharge(
+                cost,
+                self.item.source.expect("object-backed announcement").card,
+                self.item.cast.is_some_and(|cast| cast.flash_surcharge),
+            ),
+            &self.item,
+        )?;
+        cost.generic = cost
+            .generic
+            .checked_add(self.behold_decline_generic())?
+            .checked_add(self.exile_play_surcharge())?;
+        Some(cost)
+    }
+    fn warp_additional_mana_chosen(&self, cost: ManaCost) -> bool {
+        self.item
+            .source
+            .and_then(|source| source.card.mana_additional_alternative())
+            .is_some_and(|fee| {
+                self.warp_cost_options().any(|base| {
+                    self.apply_cost_declarations(Card::add_mana_cost(base, fee)) == Some(cost)
+                })
+            })
     }
 
     fn cost_route_options(
@@ -334,15 +386,7 @@ impl Announcement {
                 .chain([].iter().copied())
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.method == CastMethod::Warp) => {
-                std::iter::once(
-                    self.item
-                        .source
-                        .expect("announcement has object source")
-                        .card
-                        .warp_cost()
-                        .expect("fixed Warp cost"),
-                )
-                .chain([].iter().copied())
+                self.warp_cost_options()
             }
             StackKind::Spell
                 if self
@@ -473,24 +517,23 @@ impl Announcement {
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
         };
-        let extra = self.fixed_alternative_cost().and_then(|base| {
+        let fixed_alternative = self.fixed_alternative_cost();
+        let fee = fixed_alternative.and_then(|_| {
             self.item
                 .source
                 .expect("object-backed announcement")
                 .card
                 .mana_additional_alternative()
-                .map(|extra| ManaCost {
-                    colored: std::array::from_fn(|i| {
-                        base.colored[i]
-                            .checked_add(extra.colored[i])
-                            .capacity("additional mana cost exhausted")
-                    }),
-                    generic: base
-                        .generic
-                        .checked_add(extra.generic)
-                        .capacity("additional mana cost exhausted"),
-                })
         });
+        let fee_bases = if self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Warp)
+        {
+            self.warp_cost_options()
+        } else {
+            std::iter::once(fixed_alternative.unwrap_or(ManaCost::ZERO)).chain([].iter().copied())
+        };
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
@@ -620,40 +663,19 @@ impl Announcement {
                                 .1,
                         }
             })
+            .chain(fee_bases.filter_map(move |base| {
+                fee.map(|fee| {
+                    (
+                        Card::add_mana_cost(base, fee),
+                        ActivationCostRoute::Printed,
+                        None,
+                        false,
+                    )
+                })
+            }))
             .filter_map(|(cost, route, choice, evoked)| {
-                Game::with_tiered_mana(
-                    Game::with_flash_surcharge(
-                        cost,
-                        self.item
-                            .source
-                            .expect("announcement has object source")
-                            .card,
-                        self.item.cast.is_some_and(|c| c.flash_surcharge),
-                    ),
-                    &self.item,
-                )
-                .map(|cost| (cost, route, choice, evoked))
-            })
-            .chain(
-                extra
-                    .and_then(|cost| {
-                        Game::with_tiered_mana(
-                            Game::with_flash_surcharge(
-                                cost,
-                                self.item
-                                    .source
-                                    .expect("announcement has object source")
-                                    .card,
-                                self.item.cast.is_some_and(|c| c.flash_surcharge),
-                            ),
-                            &self.item,
-                        )
-                    })
-                    .map(|cost| (cost, ActivationCostRoute::Printed, None, false)),
-            )
-            .filter_map(|(mut cost, route, choice, evoked)| {
-                cost.generic = cost.generic.checked_add(self.behold_decline_generic())?;
-                Some((cost, route, choice, evoked))
+                self.apply_cost_declarations(cost)
+                    .map(|cost| (cost, route, choice, evoked))
             })
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
@@ -771,13 +793,9 @@ impl Announcement {
         self.pay_window
             && self.cost.is_none()
             && match self.item.kind {
-                StackKind::Spell => {
-                    self.item
-                        .cast
-                        .is_none_or(|cast| cast.method != CastMethod::Warp)
-                        && self.cost_options().count() > 1
+                StackKind::Spell | StackKind::ActivatedAbility { .. } => {
+                    self.cost_options().count() > 1
                 }
-                StackKind::ActivatedAbility { .. } => self.cost_options().count() > 1,
                 StackKind::TriggeredAbility { .. }
                 | StackKind::DecayedAttack
                 | StackKind::SuspendTick
@@ -1922,6 +1940,12 @@ impl Game {
                     && !self.exiled_face_down(world.reference(id))
                     && o.card.flashback_cost().is_some()));
             }
+            TargetRule::ExileWithWarp => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
+                    o.zone == Zone::Exile && o.is_card()
+                    && !self.exiled_face_down(world.reference(id))
+                    && o.card.warp_spec().is_some()));
+            }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Graveyard && o.is_card() && o.card.is_creature()
@@ -2008,6 +2032,11 @@ impl Game {
                 ) {
                     return false;
                 }
+                if *predicate == TargetPredicate::OtherThanAuraAttachment
+                    && matches!(target, Target::Player(_))
+                {
+                    return true;
+                }
                 let Target::Card(id) = target else {
                     return false;
                 };
@@ -2049,7 +2078,8 @@ impl Game {
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::OtherThanPhysicalSource => id != source.card,
-                    TargetPredicate::OtherThanSourceAttachment => {
+                    TargetPredicate::OtherThanSourceAttachment
+                    | TargetPredicate::OtherThanAuraAttachment => {
                         let attached = if self.on_battlefield(source.card)
                             && self.object_ref(source.card) == source
                         {
@@ -2057,7 +2087,11 @@ impl Game {
                         } else {
                             qualification.and_then(|q| q.attachment)
                         };
-                        attached.is_some_and(|r| self.object_ref(id) != r)
+                        if *predicate == TargetPredicate::OtherThanAuraAttachment {
+                            attached != Some(self.object_ref(id))
+                        } else {
+                            attached.is_some_and(|r| self.object_ref(id) != r)
+                        }
                     }
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
@@ -2458,6 +2492,8 @@ impl Game {
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
+                granted_warp: false,
+                exile_play_surcharge: 0,
                 evoked: false,
                 beheld_type: None,
                 behold_type_declared: false,
@@ -2647,12 +2683,34 @@ impl Game {
 
     pub(super) fn open_payment_announcement_with_origin_rules(
         &mut self,
-        mut item: SpellView,
+        item: SpellView,
         counters: Counters,
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
         origin_additional_cost: Option<Card>,
         origin_life_cost: Option<u32>,
+    ) {
+        self.open_payment_announcement_configured(
+            item,
+            counters,
+            production,
+            origin_counter_cost,
+            |announcement| {
+                announcement.origin_additional_cost = origin_additional_cost;
+                if let Some(life) = origin_life_cost {
+                    announcement.add_origin_life_cost(life);
+                }
+            },
+        );
+    }
+
+    pub(super) fn open_payment_announcement_configured(
+        &mut self,
+        mut item: SpellView,
+        counters: Counters,
+        production: Option<Mana>,
+        origin_counter_cost: Option<u16>,
+        configure: impl FnOnce(&mut Announcement),
     ) {
         let source = item.source.expect("payment announcement has object source");
         if matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -2709,10 +2767,7 @@ impl Game {
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
-        announcement.origin_additional_cost = origin_additional_cost;
-        if let Some(life) = origin_life_cost {
-            announcement.add_origin_life_cost(life);
-        }
+        configure(&mut announcement);
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()
@@ -2934,6 +2989,7 @@ impl Game {
                     player: announcement.item.controller,
                 }
             };
+            self.open_counter_cost_mana_if_needed();
             return;
         }
         let mut announcement = self.state.announcing.take().unwrap();

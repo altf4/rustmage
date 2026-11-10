@@ -3,10 +3,46 @@
   "catalogue_id": 139,
   "oracle_id": "ed43f1f9-ef96-47bc-8a54-e59154319f9d",
   "facts_sha256": "525810df41f4a869f401dd5b6eb476f97c60a5b8d1273d917648b2def3b4af0e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3a7e9c2a8254820afc7b13acfc71697efd68f4ddd80af574bb96e1de76349bc6"
   },
-  "physical_metadata_sha256": "7d234d0b21ee1df666dcd02e6c9bc65f2a60e5ee9577297f90e50f1eff81a68a"
+  "physical_metadata_sha256": "7d234d0b21ee1df666dcd02e6c9bc65f2a60e5ee9577297f90e50f1eff81a68a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseHalfLifeTargetEffect.java",
+      "sha256": "f40b9977dd7a0c411bb2cb7de86717277837ffa688f000b4f13402a5a07a4644"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlpharaelStonechosen.java",
+  "java_sha256": "0e34c5ef55bb86976d16fe86a18bd918189a40f3957e9759ece63b3618d836a6",
+  "rules_tests": "tests/eoe_cards_067_132_void.rs"
 }

@@ -286,6 +286,8 @@ pub enum TargetRule {
     },
     /// A face-up exiled card owned by the choosing player with printed flashback.
     OwnedExileWithFlashback,
+    /// A public exiled card with the printed warp ability.
+    ExileWithWarp,
     GraveCreatureEnteredThisTurn,
     GraveCreatureSourcePower {
         maximum: Option<i128>,
@@ -399,6 +401,8 @@ pub enum TargetPredicate {
     /// Exclude the source's physical card even after it changes zones.
     OtherThanPhysicalSource,
     OtherThanSourceAttachment,
+    /// May also target a player. Compare against the Aura's current or last attachment.
+    OtherThanAuraAttachment,
     Blocking,
     Nontoken,
     Permanent,
@@ -697,10 +701,14 @@ pub enum ManaRestriction {
     ChosenSubtypeSpellOrActivation,
     /// Any cost except casting a spell from a hand.
     ExceptCastFromHand,
+    /// Only the costs of casting a spell from outside its caster's hand.
+    CastFromNonhand,
     /// Only spells cast from exile.
     CastFromExile,
     /// Only the costs of casting a spell with the artifact card type.
     ArtifactSpell,
+    /// Only the costs of activating an ability whose source is an artifact.
+    ArtifactActivation,
     /// Only artifact spell casts or activated-ability costs; never unrelated payments.
     ArtifactSpellOrActivation,
     /// Cast an artifact spell or activate an ability whose source is an artifact.
@@ -1219,6 +1227,8 @@ pub enum EffectChoiceKind {
     BeholdMany(u16),
     OptionalBeholdType(u16),
     BeholdAndExile,
+    /// Choose a controlled creature or an owned creature card with an exact Warp exile record.
+    ChooseControlledOrWarpedCreature,
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
     EmpowerJace(u64),
@@ -1232,6 +1242,10 @@ pub enum EffectChoiceKind {
     ExileCraftNonlands(u16),
     /// Internal projected route for a controlled battlefield material.
     ExileControlled,
+    /// Non-targeted selection of controlled permanents for the resolving source's linked exile.
+    ExileControlledLinked,
+    /// Internal reservation for the exact permanent that granted an ability.
+    ExileGrantingAttachment,
     /// During resolution, choose a card from either graveyard without targeting.
     ExileCardFromAnyGraveyard,
     /// Targeted player chooses a creature to exile with their graveyard.
@@ -1259,7 +1273,9 @@ pub enum EffectChoiceKind {
         minimum: u16,
     },
     /// Choose distinct untapped permanents as a non-targeting activation cost.
-    TapPermanents(u16),
+    TapPermanents(u32),
+    /// Declare X, then choose exactly X distinct untapped permanents to tap.
+    TapXPermanents,
     ExileGraveyardCards(u16),
     /// Resolution cost: exile this resolving spell and named graveyard cards.
     ExileSourceAndNamed {
@@ -1290,6 +1306,9 @@ pub enum EffectChoiceKind {
         maximum_total_stats: u64,
     },
     ExileFromHand,
+    /// Exile a card from the choosing player's hand with an independent play
+    /// permission that adds generic mana to spells and taps land entries.
+    ExileFromHandWithPlaySurcharge(std::num::NonZeroU32),
     HandCreatureAndLand,
     HandPermanent {
         maximum: u32,
@@ -1312,6 +1331,8 @@ pub enum EffectChoiceKind {
         maximum: u16,
         total_mana_value: u64,
     },
+    /// Choose a creature card from the exact graveyard receipts of this program's destruction.
+    ReturnRememberedCreature,
     LandCards {
         maximum: u32,
         tapped: bool,
@@ -1337,6 +1358,10 @@ pub enum EffectChoiceKind {
     /// A zero kind mask allows any card.
     ReturnGraveyardToHand {
         kinds: u16,
+    },
+    ReturnGraveyardToHandOrSubtype {
+        kinds: u16,
+        subtype: &'static str,
     },
     Discard,
     /// Discard the payer's entire current hand as one ordinary activation cost.
@@ -1374,7 +1399,11 @@ impl EffectChoiceKind {
     pub(crate) fn payment_kind(self) -> Self {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
+            Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
             Self::SacrificeSelection => Self::Sacrifice,
+            Self::ReturnGraveyardToHandOrSubtype { kinds, .. } => {
+                Self::ReturnGraveyardToHand { kinds }
+            }
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -1385,7 +1414,7 @@ impl EffectChoiceKind {
             Self::FilteredCost {
                 action: CostAction::TapPermanents(n),
                 ..
-            } => Self::TapPermanents(n),
+            } => Self::TapPermanents(u32::from(n)),
             Self::FilteredCost {
                 action: CostAction::SacrificeRange { minimum },
                 ..
@@ -1583,6 +1612,30 @@ impl ManaCost {
     };
 }
 
+/// The declared alternative cost and authorized origins of a printed warp ability.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct WarpSpec {
+    pub mana: ManaCost,
+    pub alternatives: &'static [ManaCost],
+    pub x_symbols: u8,
+    pub life: u32,
+    pub from_graveyard: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl WarpSpec {
+    pub const fn fixed(mana: ManaCost) -> Self {
+        Self {
+            mana,
+            alternatives: &[],
+            x_symbols: 0,
+            life: 0,
+            from_graveyard: false,
+        }
+    }
+}
+
 /// A fixed number of distinct objects, selected by the player paying a cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1683,6 +1736,14 @@ pub struct EntryExileCountersSpec {
     pub filter: SearchFilter,
     pub kind: CounterKind,
     pub per_card: u16,
+}
+
+/// CR702.82: sacrifice any number of controlled permanents of these kinds as this enters.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DevourSpec {
+    pub kinds: u16,
+    pub counters_per_permanent: u16,
 }
 
 /// Non-targeted copiable blueprint selection before an entrant’s other entry replacements.
@@ -1789,6 +1850,8 @@ pub enum Instruction {
     DrawIfTargetController,
     /// Draw for the target's controller if it was not attacking at resolution.
     DrawTargetControllerIfNotAttacking,
+    /// Use the target controller and damage history captured at resolution start.
+    DrawTargetControllerIfUndamaged(u16),
     /// Draw if the target was legendary and had any of the given kinds at resolution.
     DrawIfTargetLegendaryKind(u16),
     /// Real nonmana variable activation cost; amount is declared before payment.
@@ -1803,6 +1866,10 @@ pub enum Instruction {
     CopyOtherControlledNonlands,
     CopyTargetPlayersCreaturesWithConditionalSacrifice,
     /// Preserve all copiable values except the legendary supertype.
+    CreateLegendaryCopyTokens {
+        subject: Subject,
+        amount: u16,
+    },
     CreateNonlegendaryCopyTokens {
         subject: Subject,
         amount: u16,
@@ -1948,6 +2015,7 @@ pub enum Instruction {
     ExileControllerLibraryTopLinked(u16),
     GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
+    ChooseLinkedCreatureReturnWithCounters(u64),
     ReturnOtherLinkedExileToHand,
     ExileGraveyardCaptureMutantCopy,
     CreateCapturedCopy,
@@ -2023,6 +2091,10 @@ pub enum Instruction {
     CaptureDelayedReturnTarget,
     /// Return the delayed packet's exact, still-present battlefield group.
     ReturnDelayedBattlefieldObjectsToHand,
+    RemoveDelayedObjectCounters {
+        kind: CounterKind,
+        amount: u32,
+    },
     /// Schedule one independent triggered program for the next matching step.
     ScheduleStep {
         step: TriggerStep,
@@ -2148,6 +2220,7 @@ pub enum Instruction {
     CounterRelatedUnlessDiscardOrPay(ManaCost),
     /// Ward payer may discard one card or decline and have the associated object countered.
     CounterRelatedUnlessDiscard,
+    CounterRelatedUnlessDiscardRandom,
     /// Captured ward payer may sacrifice exactly this many permanents.
     CounterRelatedUnlessSacrifice(u16),
     /// One combined ward cost, paid atomically or the related item is countered.
@@ -2159,6 +2232,7 @@ pub enum Instruction {
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
     CreateHastyCopyWithDelayedSacrifice,
+    CreateHastyCopiesWithDelayedSacrifice(AmountValue),
     /// Copy the target, grant haste, offer each resulting Saga extra lore,
     /// then sacrifice the exact tokens at the controller's next end step.
     CreateHastyCopyWithSagaLore {
@@ -2176,6 +2250,12 @@ pub enum Instruction {
     CreateLinkedExileAttackingCopies,
     IfSneakPaid {
         skip: usize,
+    },
+    CreateTokensThenCleanup {
+        token: Card,
+        amount: u16,
+        attacking: bool,
+        cleanup: crate::engine::temporary_tokens::TokenCleanup,
     },
     CreateTemporaryTokens {
         token: Card,
@@ -2272,6 +2352,7 @@ pub enum Instruction {
     ReflexiveFight,
     /// Untargeted exact event object deals its current (or last-known) power.
     EventObjectPowerDamage,
+    AttachedCreaturePowerDamage,
     CreateRolesMatching {
         token: Card,
         filter: CreatureFilter,
@@ -2481,6 +2562,7 @@ pub enum Instruction {
     LoseHalfLife(PlayerSet),
     /// Lose half of each selected player's nonnegative life total, rounded up.
     LoseHalfLifeRoundedUp(PlayerSet),
+    SetControllerLifeToHalfStarting,
     CopyTargetSpell {
         group: u16,
         retarget: bool,
@@ -2598,6 +2680,12 @@ pub enum Instruction {
     /// Exile the controller's top card and allow ordinary plays while they
     /// retain continuous control of this exact source.
     ExileTopPlayWhileSourceControlled,
+    /// Grant the exact face-up exiled top card while the beneficiary controls
+    /// a permanent of this subtype.
+    ExileTopPlayWhileControlSubtype(&'static str),
+    /// Exile from the top until a nonland is actually exiled, then grant only
+    /// a cast of that exact card through this turn.
+    ExileUntilNonlandCastThisTurn,
     ExileTopPlay {
         amount: u16,
         next_turn: bool,
@@ -2689,6 +2777,11 @@ pub enum Instruction {
         filter: CreatureFilter,
         skip: usize,
     },
+    IfSubjectHasCounter {
+        subject: Subject,
+        kind: CounterKind,
+        skip: usize,
+    },
     /// Live subtype check on one exact permanent, including noncreatures.
     IfSubjectSubtypeAny {
         subject: Subject,
@@ -2737,6 +2830,11 @@ pub enum Instruction {
         kinds: u16,
         maximum: AmountValue,
     },
+    /// Destroy a simultaneous group using current toughness, optionally saving graveyard receipts.
+    DestroyCreaturesByToughness {
+        maximum: AmountValue,
+        remember: bool,
+    },
     /// Simultaneously return the controller's nonland permanent cards.
     ReturnOwnedGraveyardNonlandPermanents,
     /// Simultaneously return every land card in the controller's graveyard tapped.
@@ -2765,6 +2863,8 @@ pub enum Instruction {
     },
     /// One damage batch to all creatures except the controller’s tokens.
     DamageCreaturesExceptControlledTokens(i32),
+    /// A granted departure trigger deals its source's last battlefield mana value to each creature.
+    DamageEachCreatureByDepartureManaValue,
     /// One simultaneous damage batch, excluding creatures with a live subtype.
     DamageBattlefieldExceptSubtype {
         filters: &'static [BattlefieldFilter],
@@ -3058,6 +3158,11 @@ pub enum Instruction {
         power: i32,
         toughness: i32,
     },
+    CreatureStatsUntilNextTurn {
+        filter: CreatureFilter,
+        power: i32,
+        toughness: i32,
+    },
     ChooseObjects {
         kind: EffectChoiceKind,
         players: PlayerSet,
@@ -3131,6 +3236,7 @@ pub enum Instruction {
     },
     Scry(u16),
     Surveil(u16),
+    SurveilScaled(AmountValue),
     /// Return a surveilled card that meets the life gained threshold after movement.
     SurveilOneReturnByLifeGained,
     /// Surveil one, returning noncreature nonland cards actually moved to the graveyard.
@@ -3214,6 +3320,8 @@ pub enum Instruction {
         keywords: Keywords,
         permanent: bool,
     },
+    /// Give the exact successful entrant the listed trigger templates indefinitely.
+    GrantEntryResultTriggers(&'static [u16]),
     ScheduleEntryResultExile {
         own_end_step: bool,
     },
@@ -3250,6 +3358,7 @@ pub enum Instruction {
     /// Record APNAP optional wheel decisions before performing either player's action.
     BeginOptionalWheel(u16),
     BeginOptionalShuffleWheel(u16),
+    ShuffleHandAndGraveyardThenDraw(u16),
     AskOptionalWheel {
         first: bool,
         skip: usize,
@@ -3351,6 +3460,7 @@ pub enum Instruction {
     DamagePlayers(PlayerSet, i32),
     /// A bound untargeted event object, independently of the ability source.
     EventObjectDamagePlayers(PlayerSet, i32),
+    EventObjectDamageReceivedPlayers(PlayerSet),
     /// The resolving ability’s source damages the current or last-known controller of its event object.
     DamageEventObjectController(i32),
     DamagePlayersScaled(PlayerSet, AmountValue),
@@ -3630,6 +3740,8 @@ pub enum Instruction {
     /// Put the exact live source in its owner’s library below its top two cards.
     PutSourceThirdFromTop,
     ChooseManaValueParityDestroyOthers,
+    ChooseManaValueParityDestroyCreatures,
+    TakeCreaturesUntilEndTurn,
     /// Shuffle even when the exact source permanent has left (CR701.24c).
     ShuffleSourceIntoOwnerLibrary,
     ShuffleTargetIntoLibrary,
@@ -3654,6 +3766,8 @@ pub enum Instruction {
     },
     ReturnToBattlefield,
     ReturnArtifactAsRobot,
+    /// Return the target with a Skeleton subtype and no abilities as it enters.
+    ReturnToBattlefieldAsSkeletonWithoutAbilities,
     ReturnToBattlefieldUnderControl,
     /// Return under your control; grant attack-each-combat and a permanent triggered template.
     ReturnToBattlefieldWithAttackTrigger(u16),
@@ -3667,6 +3781,9 @@ pub enum Instruction {
     ReturnToBattlefieldThenCounters(&'static [(CounterKind, u64)]),
     ReturnToBattlefieldTapped,
     ReturnToBattlefieldAttacking(PlayerSet),
+    /// Return an exact graveyard target under your control, tapped and attacking
+    /// a defender chosen as it enters.
+    ReturnTargetTappedAttacking,
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     DestroyCounted {
@@ -3738,6 +3855,12 @@ pub enum Instruction {
         kind: CounterKind,
         amount: u32,
     },
+    PutCountersThenScheduleEndStep {
+        subject: Subject,
+        kind: CounterKind,
+        amount: u32,
+        ability: u16,
+    },
     /// Place counters simultaneously on the current controlled tapped creatures.
     PutCountersOnTappedControlledCreatures {
         kind: CounterKind,
@@ -3797,6 +3920,9 @@ pub enum Instruction {
     },
     /// Destroy the exact untargeted entrant, independently of later type/control.
     DestroyEntering,
+    /// The exact permanent that caused the ability to trigger, without targeting it.
+    DestroyEventPermanent,
+    DestroyTargetsAtMostPower(i32),
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
     RemoveAnyTargetCounters,
@@ -3878,6 +4004,11 @@ pub enum Instruction {
         discard: u16,
     },
     Discard(PlayerSet, u16),
+    /// Mandatory private discard, saving the total actual moves as MovedCount.
+    DiscardRememberCount {
+        players: PlayerSet,
+        amount: u16,
+    },
     DiscardThenDrawForTypes {
         players: PlayerSet,
         amount: u16,
@@ -3908,6 +4039,11 @@ pub enum Instruction {
     },
     /// Ask whether to draw, unless a current rule prohibits drawing.
     MayDraw {
+        skip: usize,
+    },
+    /// An optional instruction chosen by an affected player during resolution.
+    MayForPlayer {
+        player: PlayerSet,
         skip: usize,
     },
 }
@@ -4002,7 +4138,10 @@ pub struct CountFilter {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AmountValue {
+    /// Station contribution of the exact creature tapped to pay the cost.
     TappedCostCreaturePower,
+    /// Power of the exact untargeted creature or card chosen to pay a cost.
+    ChosenCostCreaturePower,
     OpponentCreaturesExiledThisTurn,
     ControllerHandDeficit(u16),
     /// Current hand size of the spell's surviving targeted player.
@@ -4036,6 +4175,8 @@ pub enum AmountValue {
     )]
     DamageEventAmount,
     DamageReceivedAmount,
+    /// Quantity actually placed on the qualifying recipient by the triggering counter event.
+    CounterPlacementAmount,
     /// Quantity of this counter kind immediately before the triggering departure.
     DepartureCounterCount(CounterKind),
     /// Toughness of the creature immediately before the triggering death.
@@ -4061,6 +4202,7 @@ pub enum AmountValue {
     ReflexiveTargetLimit,
     /// Current power frozen immediately before paying a sacrifice additional cost.
     SacrificeCostPower,
+    SacrificeCostManaValueWithBonus(u16),
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.
@@ -4131,6 +4273,7 @@ pub enum StatValue {
     SourceHasNotDealtDamage,
     /// Controlled creatures with at least one counter of any supported kind.
     CounterBearingCreatures,
+    ControlledCreaturesWithCounter(CounterKind),
     /// Union of positive counter kinds among current controlled creatures.
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
@@ -4163,6 +4306,7 @@ pub enum StatValue {
     SourceModified,
     SourceEquipmentCount,
     LegendaryCreaturesYouControl,
+    MulticoloredPermanentsYouControl,
     /// Exclude the exact source incarnation from the current controlled creatures.
     OtherLegendaryCreaturesYouControl,
     HasEnduringStory,
@@ -4236,6 +4380,16 @@ pub struct StatExpr {
     pub value: StatValue,
     pub multiplier: i128,
     pub offset: i128,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ActivationGenericReduction {
+    Stat {
+        value: StatValue,
+        multiplier: u32,
+    },
+    /// Sample the current power of the ability's source, including a grant recipient.
+    SourcePower,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -4393,6 +4547,8 @@ pub enum EntryCounterAmount {
     ControlledCreatureDeaths,
     GreatestOtherCreaturePower,
     ColorsSpent,
+    /// Actual paid mana of a cast entrant, zero for a noncast entry.
+    ManaSpent,
     IfNotCastOrZero(u16),
     Fixed(u16),
     Stat(StatValue),
@@ -5267,11 +5423,14 @@ pub enum StepGuard {
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
     PermanentLeftBattlefieldThisTurn,
+    /// Either player warped a spell or a nonland permanent left this turn.
+    VoidActive,
     ArtifactEnteredThisTurn,
     HeroEnteredOrAttackedThisTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
+    AnyPlayerControlsNoCreatures,
     ControlsGreatestCreaturePower,
     OwnSourceAndNamedCreature(Card),
     SourceReceivedCounterThisTurn,
@@ -5357,6 +5516,7 @@ pub enum EntryPredicate {
     SourceOrSubtypeAny(&'static [&'static str]),
     /// A predicate on each actual entrant, distinct from batch token-entry events.
     Token,
+    NontokenArtifact,
     NontokenEquipment,
     LegendarySubtype(&'static str),
     CreatureWithoutSubtype(&'static str),
@@ -5384,6 +5544,7 @@ pub enum ReturnDeathFilter {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ReturnKind {
     WithoutAbilities,
+    SkeletonWithoutAbilities,
     FlyingRobot,
     Demon,
     Angel,
@@ -5407,6 +5568,39 @@ pub struct DepartureFilter {
     pub other: bool,
     pub graveyard_only: bool,
     pub counters: DepartureCounters,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DepartureSubject {
+    Any,
+    Other,
+    SelfOnly,
+}
+
+/// Conditions evaluated immediately before a battlefield object moves.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DepartureRule {
+    /// A union of qualifying permanent kinds. Zero allows all kinds.
+    pub kinds: u16,
+    pub relation: CastRelation,
+    pub subject: DepartureSubject,
+    /// Actual destinations after replacement effects. Empty allows all destinations.
+    pub destinations: &'static [Zone],
+    pub nontoken: bool,
+    pub counters: DepartureCounters,
+    pub minimum_power: Option<i32>,
+}
+
+impl DepartureRule {
+    pub const ANY: Self = Self {
+        kinds: 0,
+        relation: CastRelation::Any,
+        subject: DepartureSubject::Any,
+        destinations: &[],
+        nontoken: false,
+        counters: DepartureCounters::Unrestricted,
+        minimum_power: None,
+    };
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -5677,6 +5871,8 @@ pub enum TriggerCondition {
     DelayedSpellCastAny,
     /// Source-independent one-shot callback for the next creature spell.
     DelayedSpellCastCreature,
+    /// The controller played a land as a special action or committed a spell cast.
+    SpellCastOrLandPlayed,
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,
@@ -5713,6 +5909,7 @@ pub enum TriggerCondition {
     SelfNontokenEnters,
     SelfLeaves,
     PermanentLeaves(DepartureFilter),
+    BattlefieldDeparture(DepartureRule),
     /// The source dies, or another controlled permanent of any specified kind dies.
     SelfOrControlledPermanentDies(u16),
     /// The linked battlefield incarnation leaves, regardless of its current types.
@@ -5726,6 +5923,8 @@ pub enum TriggerCondition {
     /// Intervening equipped clause, with exact source-departure quantities.
     SelfAttacksIfEquipped,
     SelfAttacksOrBlocks,
+    /// One trigger for each attacker with this effective ability that the source blocks.
+    SelfBlocksCreatureWithKeyword(Keywords),
     SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,
@@ -5756,6 +5955,7 @@ pub enum TriggerCondition {
     /// One event per player attacked by at least one declared matching creature.
     AttackPlayer(CreatureFilter),
     GrantedAttacks,
+    AttachedAttacks,
     AttachedAttacksOrBlocks,
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
@@ -6037,6 +6237,10 @@ pub enum ActivationOrigin {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ActivationGuard {
+    SourceCounterAtLeast {
+        kind: CounterKind,
+        minimum: u64,
+    },
     ControlColorsAtLeast(u8),
     GraveyardSubtype(&'static str),
     ClassLevelExactly(u8),
@@ -6069,7 +6273,8 @@ pub enum ActivationGuard {
 impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
-            Self::ClassLevelExactly(_)
+            Self::SourceCounterAtLeast { .. }
+            | Self::ClassLevelExactly(_)
             | Self::ControlColorsAtLeast(_)
             | Self::GraveyardSubtype(_)
             | Self::Always
@@ -6653,7 +6858,12 @@ impl Card {
         authored::rules(self).and_then(|r| r.extras.disguise_cost)
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
-        generated::warp_cost(self)
+        self.warp_spec().map(|spec| spec.mana)
+    }
+    pub(crate) fn warp_spec(self) -> Option<WarpSpec> {
+        authored::rules(self)
+            .and_then(|rules| rules.extras.warp.copied())
+            .or_else(|| generated::warp_cost(self).map(WarpSpec::fixed))
     }
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
@@ -6762,6 +6972,9 @@ impl Card {
     }
     pub(crate) fn entry_exile_counters(self) -> Option<EntryExileCountersSpec> {
         authored::rules(self).and_then(|rules| rules.extras.entry_exile_counters)
+    }
+    pub(crate) fn devour(self) -> Option<DevourSpec> {
+        authored::rules(self).and_then(|rules| rules.extras.devour)
     }
     pub(crate) fn entry_copy_keywords(self) -> Keywords {
         authored::rules(self).map_or(Keywords::NONE, |rules| rules.extras.entry_copy_keywords)
@@ -6873,12 +7086,19 @@ impl Card {
             })
         })
     }
+    pub(crate) fn attached_activation_exiles(self, index: u16) -> bool {
+        authored::rules(self)
+            .unwrap()
+            .extras
+            .attachment_activation_exile_costs
+            .contains(&index)
+    }
 
     pub(crate) fn grants_activation(self, index: u16) -> bool {
         self.static_ability_groups().iter().any(|g| {
             g.fragments
                 .iter()
-                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation { ability: i, .. } | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } if *i == index))
+                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation { ability: i, .. } | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::ControlledArtifactFood(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } if *i == index))
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {
@@ -7295,6 +7515,17 @@ impl Card {
             .iter()
             .find(|(index, _)| *index == ability)
             .map(|(_, kind)| *kind)
+    }
+    pub(crate) fn activation_generic_reductions(
+        self,
+        ability: u16,
+    ) -> impl Iterator<Item = ActivationGenericReduction> {
+        authored::rules(self)
+            .unwrap()
+            .extras
+            .activation_generic_reductions
+            .iter()
+            .filter_map(move |&(index, reduction)| (index == ability).then_some(reduction))
     }
     pub(crate) fn activation_put_counter(self, ability: u16) -> Option<(CounterKind, u64)> {
         #[cfg(feature = "test-support")]

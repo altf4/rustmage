@@ -3,10 +3,30 @@
   "catalogue_id": 3208,
   "oracle_id": "ebbf84f7-d142-4de5-bfc1-ea86f082d733",
   "facts_sha256": "d600ab1401e9fbb028996ddef53da905dcf46c921b1f058dca783b8bb245d3e8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6ad7c0898042d655fd100fdcac11ee95e49ed8d9f838efe05dc6d3785125cc14"
   },
-  "physical_metadata_sha256": "0d5392fcf7add4bc2b0d9b40e50bf6d23504303def81239b03769ac350974d0c"
+  "physical_metadata_sha256": "0d5392fcf7add4bc2b0d9b40e50bf6d23504303def81239b03769ac350974d0c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PossibilityTechnician.java",
+  "java_sha256": "8a32740cc9dd42cf057d70f389d041f038df905b0012aaee25dbd1e19d7c0bcf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ]
 }

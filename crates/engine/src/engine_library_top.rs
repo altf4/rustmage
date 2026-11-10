@@ -61,6 +61,7 @@ impl Game {
             land: matches!(
                 action,
                 Action::PlayLand { .. }
+                    | Action::PlayTaxedExileLand { .. }
                     | Action::PlayGraveyardPermanent {
                         permanent_type: PermanentType::Land,
                         ..

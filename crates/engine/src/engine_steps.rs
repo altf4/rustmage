@@ -81,33 +81,44 @@ impl Game {
                 .as_ref()
                 .map_or(source.card, |event| event.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                if let TriggerCondition::AtStep {
-                    step: wanted,
-                    relation,
-                    ..
-                } = ability.condition.event()
-                {
-                    let matches_step = match wanted {
-                        TriggerStep::Upkeep => step == Step::Upkeep,
-                        TriggerStep::Draw => step == Step::Draw,
-                        TriggerStep::Main1 => step == Step::Main1,
-                        TriggerStep::Main2 => step == Step::Main2,
-                        TriggerStep::MainPhases => matches!(step, Step::Main1 | Step::Main2),
-                        TriggerStep::BeginCombat => step == Step::BeginCombat,
-                        TriggerStep::EndCombat => step == Step::EndCombat,
-                        TriggerStep::End => step == Step::End,
-                    };
-                    let related = match relation {
-                        CastRelation::You => source.controller == self.state.active,
-                        CastRelation::Opponent => source.controller != self.state.active,
-                        CastRelation::Any => true,
-                    };
-                    if matches_step && related {
-                        self.queue_trigger_from(&source, index, grant.map(Box::new));
-                    }
+                if self.step_event_matches(ability.condition, step, source.controller) {
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
                 }
             }
         }
+        self.temporary_step_triggers(step);
+    }
+
+    pub(super) fn step_event_matches(
+        &self,
+        condition: TriggerCondition,
+        step: Step,
+        controller: Player,
+    ) -> bool {
+        let TriggerCondition::AtStep {
+            step: wanted,
+            relation,
+            ..
+        } = condition.event()
+        else {
+            return false;
+        };
+        let matches_step = match wanted {
+            TriggerStep::Upkeep => step == Step::Upkeep,
+            TriggerStep::Draw => step == Step::Draw,
+            TriggerStep::Main1 => step == Step::Main1,
+            TriggerStep::Main2 => step == Step::Main2,
+            TriggerStep::MainPhases => matches!(step, Step::Main1 | Step::Main2),
+            TriggerStep::BeginCombat => step == Step::BeginCombat,
+            TriggerStep::EndCombat => step == Step::EndCombat,
+            TriggerStep::End => step == Step::End,
+        };
+        let related = match relation {
+            CastRelation::You => controller == self.state.active,
+            CastRelation::Opponent => controller != self.state.active,
+            CastRelation::Any => true,
+        };
+        matches_step && related
     }
 
     fn queue_radiation_trigger(&mut self) {
@@ -405,6 +416,7 @@ impl Game {
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 return p.turn_facts.permanent_left_battlefield;
             }
+            StepGuard::VoidActive => return world.void_active_this_turn(),
             StepGuard::ArtifactEnteredThisTurn => return p.turn_facts.artifact_entered,
             StepGuard::HeroEnteredOrAttackedThisTurn => {
                 return p.turn_facts.hero_entered || p.turn_facts.hero_attacked;
@@ -418,6 +430,24 @@ impl Game {
             }
             StepGuard::OwnSourceAndNamedCreature(partner) => {
                 return meld::owns_source_and_named_creature(world, source, player, partner.name());
+            }
+            StepGuard::AnyPlayerControlsNoCreatures => {
+                let mut controls_creature = [false; 2];
+                for id in 0..self.state.objects.len() {
+                    let id = id as CardId;
+                    let object = world.object(id);
+                    let has_creature = &mut controls_creature[object.controller.index()];
+                    if object.zone == Zone::Battlefield
+                        && !*has_creature
+                        && world.kinds(id) & 1 != 0
+                    {
+                        *has_creature = true;
+                        if controls_creature == [true; 2] {
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
             StepGuard::OpponentControlsMoreCreatures => {
                 let count = |controller| {

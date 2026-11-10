@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3635d77e0cee2638d0dba6b47c28b35b3c857505e92136d6ac10d193abceaf96"
   },
-  "physical_metadata_sha256": "dcbdfbb809faaab324194faed43a550afc9cddd11e02a1d6948dd58d12b92280"
+  "physical_metadata_sha256": "dcbdfbb809faaab324194faed43a550afc9cddd11e02a1d6948dd58d12b92280",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GravpackMonoist.java",
+  "java_sha256": "bce4a6ec3298de14e0d2d5212cad983a33cd116388874c9f5a87f8528f34ae04",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

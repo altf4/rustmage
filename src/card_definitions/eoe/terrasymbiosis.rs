@@ -1,16 +1,25 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::CounterPlacedByYou {
+            kind: CounterKind::PlusOne,
+            filter: CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: 1,
+                exclude: 0,
+                subtype: None,
+                basic: false,
+                other: false,
+                cards_only: false,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayOncePerTurn { skip: 2 },
+            Instruction::RecordOncePerTurn,
+            Instruction::DrawScaled(PlayerSet::Controller, AmountValue::CounterPlacementAmount),
+        ],
+    }],
     ..CardRules::EMPTY
 };

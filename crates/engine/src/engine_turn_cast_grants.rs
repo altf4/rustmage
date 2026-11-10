@@ -167,7 +167,8 @@ impl Game {
             }
             let ordinary_origin = match object.zone {
                 Zone::Hand => object.owner == player && object.is_card(),
-                Zone::Exile => self.can_play_exiled(player, card),
+                Zone::Exile if face == CastFace::Normal => self.can_play_exiled(player, card),
+                Zone::Exile => self.can_cast_exiled_card(player, card),
                 Zone::Library => self.can_cast_library_face(player, card, definition),
                 Zone::Graveyard => self.has_graveyard_cast(player, card, GraveyardCastKind::Cast),
                 _ => false,

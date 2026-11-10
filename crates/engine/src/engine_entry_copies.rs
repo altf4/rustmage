@@ -21,7 +21,9 @@ pub(super) fn needs_copy(movement: &entries::EntryMove) -> bool {
         && movement.before.zone != Zone::Battlefield
         && !movement.skipped
         && movement.manifest_original.is_none()
-        && movement.before.card.entry_copy().is_some()
+        && movement
+            .intrinsic_entry_card()
+            .is_some_and(|card| card.entry_copy().is_some())
         && movement
             .copy_preparation
             .as_ref()
@@ -52,6 +54,7 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: Cop
         .union(recipe.overrides.map_or(Keywords::NONE, |o| o.keywords));
     movement.before.copy_recipe = Some(recipe);
     movement.exile_preparation = None;
+    movement.devour_preparation = None;
     movement.choice = None;
     movement.life_paid = None;
     movement.attachment = None;

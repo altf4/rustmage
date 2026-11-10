@@ -3,10 +3,34 @@
   "catalogue_id": 1434,
   "oracle_id": "df7500e8-76b4-49b3-a427-9a28ffa14637",
   "facts_sha256": "df895e7704a153714cbb65cdf20418b5b1177646da567840882afb35b9ff225c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f87f35aeb86db976a6f447639e634c67e6b26d3321a91baa71fa3072fc51080a"
   },
-  "physical_metadata_sha256": "0831fbf184b5c10e031df089254ca71c963e3d2deb9b2b06cc3f009ad8fa7a8c"
+  "physical_metadata_sha256": "0831fbf184b5c10e031df089254ca71c963e3d2deb9b2b06cc3f009ad8fa7a8c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FallersFaithful.java",
+  "java_sha256": "1ce24d5cedfef0d270abfd026805de046c9266ab73eaee185a35f6db301e4a68",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs",
+  "rules_notes": [
+    "CR 608.2h and 701.7. The legal target’s damage history and controller are captured before destruction. Indestructibility still permits the undamaged branch to draw."
+  ]
 }

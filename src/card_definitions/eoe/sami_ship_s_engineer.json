@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bd0b25ad4d171979da3c331319c9d3305aed166acf515befe149bc32033f6dee"
   },
-  "physical_metadata_sha256": "801fe2525eb435a4becf56018b6054e68e860f94764895af29d3d03f08344528"
+  "physical_metadata_sha256": "801fe2525eb435a4becf56018b6054e68e860f94764895af29d3d03f08344528",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SamiShipsEngineer.java",
+  "java_sha256": "0a6f139eec02cf5684e2df94a58077d7233dc66f8fd1b54b9c8a7df235e676a8"
 }

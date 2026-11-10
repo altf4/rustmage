@@ -3,10 +3,50 @@
   "catalogue_id": 1572,
   "oracle_id": "6c4514be-fda7-45e8-83fe-04d49e2b932c",
   "facts_sha256": "47fe2e98554a9c1b7a325eff23f4a2a52d1116e2a13feecb2672b1b12dfd183a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb912e2ef51ed21a89f01f6f885bc2bffd84f37e626834238dfc080e8446c237"
   },
-  "physical_metadata_sha256": "eeeb7b25ba05b97b0c53e222581ee9eeddfde8a9ce946fe17031bae79ee8af65"
+  "physical_metadata_sha256": "eeeb7b25ba05b97b0c53e222581ee9eeddfde8a9ce946fe17031bae79ee8af65",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FocusFire.java",
+  "java_sha256": "7bcb49c63f789b5b8047586e5043a6c9233917ba2cbe5965be17e39d4f2aa5ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/IntPlusDynamicValue.java",
+      "sha256": "e6b7d97aecee63d129c961c1d35245a1daec6d200f4f495ca6ed10081e5b1c43"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+      "sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+    }
+  ]
 }

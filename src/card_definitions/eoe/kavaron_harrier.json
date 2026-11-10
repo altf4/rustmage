@@ -3,10 +3,35 @@
   "catalogue_id": 2327,
   "oracle_id": "1972e0db-e595-4ec2-b97c-902561bb275b",
   "facts_sha256": "740131817a59188fd92ea3ea3c3e64dd7da7ccdaf017132fef3178bcff01ccae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b15642c5ff1c85f5404bbc0672984d74ee49c9276b84f9b994e5904b0e6041f2"
   },
-  "physical_metadata_sha256": "61b7c2b89607f2791a13d6ea4b3cd45dad8582670d21ba747aa1845da6a097e6"
+  "physical_metadata_sha256": "61b7c2b89607f2791a13d6ea4b3cd45dad8582670d21ba747aa1845da6a097e6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KavaronHarrier.java",
+  "java_sha256": "1aa8eac9ba790ecac7f3d59f69eb4e2b5008d5201ac5d729ed5c2eca406c2cda",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheEndOfCombatDelayedTriggeredAbility.java",
+      "sha256": "002e2647f2a140f6779712baab32f0c9677bc25421148a9c457ac978e8896c33"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RobotToken.java",
+      "sha256": "4fb6db3bd46f1327a540499edabeaa4f1faf2668a60596007c13cbadec582fa0"
+    }
+  ]
 }

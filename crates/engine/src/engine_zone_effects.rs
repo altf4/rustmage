@@ -85,11 +85,21 @@ impl Game {
             })
             .map(|(id, _)| id as CardId)
             .collect();
+        self.take_and_ready_until_end_turn(item, &ids);
+    }
+    pub(super) fn take_creatures(&mut self, item: &SpellView) {
+        let ids: Vec<_> = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| self.on_battlefield(id) && self.is_creature(id))
+            .collect();
+        self.take_and_ready_until_end_turn(item, &ids);
+    }
+    fn take_and_ready_until_end_turn(&mut self, item: &SpellView, ids: &[CardId]) {
         if ids.is_empty() {
             return;
         }
         let timestamp = self.next_role_timestamp();
-        for &id in &ids {
+        for &id in ids {
             let object = self.object_ref(id);
             let expires_turn = Some(self.state.turn);
             self.ensure_control_base(object);
@@ -117,9 +127,9 @@ impl Game {
                 });
         }
         self.refresh_controllers();
-        self.untap_objects(&ids, untap_rules::UntapCause::Effect);
+        self.untap_objects(ids, untap_rules::UntapCause::Effect);
         self.grant_keyword_effects(
-            &ids,
+            ids,
             item.source.expect("spell has a source").object,
             Keywords::HASTE,
         );

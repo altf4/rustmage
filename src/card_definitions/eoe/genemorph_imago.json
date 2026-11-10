@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2618487d93a059c1333e3311da86e6d0adec2abff4bc3ad9069db2de4f617fd7"
   },
-  "physical_metadata_sha256": "447df8ffa4ebed03c359bebb0d3971fd8e6415007a84a1f81c2c25d4ddd12b3c"
+  "physical_metadata_sha256": "447df8ffa4ebed03c359bebb0d3971fd8e6415007a84a1f81c2c25d4ddd12b3c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GenemorphImago.java",
+  "java_sha256": "f95b3be622cd63077c48ed4015e714a21c8991bc1f131bc9c81b9b9666208491"
 }

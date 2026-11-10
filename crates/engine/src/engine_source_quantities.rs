@@ -1,5 +1,6 @@
 //! Opt-in public source quantities. No history rows or hot-object fields.
 use super::*;
+use crate::cards::LibraryLook;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -75,6 +76,12 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::SelectLibraryToHandRememberCount(effect)
             | Instruction::SelectLibraryThenMayTransform(effect)
             | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
+                match effect.look {
+                    LibraryLook::Amount(value)
+                    | LibraryLook::UntilNonlandCount(value)
+                    | LibraryLook::UntilCount { amount: value, .. } => amount(value, &mut result),
+                    _ => (),
+                }
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, &mut result);
                 }

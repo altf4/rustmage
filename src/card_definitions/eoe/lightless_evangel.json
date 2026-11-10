@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a7bc3a722bc44f437cf0bea0298eb0e128a0163ad0767a1d9995b6a06003d954"
   },
-  "physical_metadata_sha256": "8321285aa191a52d048f178b68766e48d8b4f2ef116aa318a958b4f3d047ed09"
+  "physical_metadata_sha256": "8321285aa191a52d048f178b68766e48d8b4f2ef116aa318a958b4f3d047ed09",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightlessEvangel.java",
+  "java_sha256": "5df01b2febf757b3253952250eead912d93a2a287255d87b04210c93ce1fda36",
+  "rules_tests": "tests/eoe_cards_067_132_death.rs"
 }

@@ -133,6 +133,7 @@ impl Announcement {
                 s.kind.payment_kind(),
                 EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::BeholdAndExile
+                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
                     | EffectChoiceKind::BlightCost(_)
             )
         }) {
@@ -309,6 +310,10 @@ impl Game {
         false
     }
     pub(super) fn begin_ordered_costs(&mut self) {
+        if let Pending::AdditionalCost { player } = self.state.pending {
+            self.open_counter_cost_mana(player);
+            return;
+        }
         let a = self.state.announcing.as_mut().unwrap();
         a.cast_costs.as_mut().unwrap().mana_closed = true;
         self.state.pending = Pending::CastCosts {

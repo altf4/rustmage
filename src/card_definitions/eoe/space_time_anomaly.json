@@ -8,5 +8,8 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "977dd4adcb0bd9b1981f865808fe884c619c8aced3bab629983754cefc5bba04"
   },
-  "physical_metadata_sha256": "bf86501e158beb5330727db87dd1ef85a9b20970de6b68da013ec22f6776af11"
+  "physical_metadata_sha256": "bf86501e158beb5330727db87dd1ef85a9b20970de6b68da013ec22f6776af11",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpaceTimeAnomaly.java",
+  "java_sha256": "3750fe09042e6b82c854f57e65b2df86b764cca82858b370e73e9bb8f42355b6"
 }
