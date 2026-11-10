@@ -41,7 +41,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     duration: AnimationDuration::EndOfTurn,
                 },
                 colors: 10,
-                kind: SelfGrantedAbilityKind::OwnTurnFirstStrike,
+                kind: rustmage_core::engine::SelfGrantedAbilityKind::OwnTurnFirstStrike,
             }],
             guard: ActivationGuard::Always,
             origin: ActivationOrigin::Battlefield,

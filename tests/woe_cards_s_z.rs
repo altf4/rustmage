@@ -2920,7 +2920,10 @@ fn thunderous_debut_privately_looks_twenty_and_reveals_up_to_two_before_moving_a
             .copied()
             .filter(|card| *card != giada && *card != angel)
             .collect();
-        assert_ne!(branch.state.players[player.index()].library, expected);
+        assert_ne!(
+            &branch.state.players[player.index()].library[..],
+            expected.as_slice()
+        );
         if bargained {
             assert_eq!(stats(&branch, angel), (4, 4));
             assert_eq!(branch.counter_count(angel, CounterKind::PlusOne), 0);

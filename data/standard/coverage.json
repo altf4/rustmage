@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "dadd9948e3636a4b922e010ec13c87aaee543e93494f3ce5b5d39d68ffeb6ed6",
+  "catalogue_version": "e4463d1ff47fbfc10c30ab0e0d8371f9d681a6c9cfd5e7c5f02af9afc409bb0c",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4116,
-  "implemented_total": 4128,
+  "implemented_standard_cards": 4121,
+  "implemented_total": 4133,
   "token_definitions": 176,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -71,8 +71,8 @@
     },
     "frc": {
       "total": 6,
-      "complete": 3,
-      "gated": 3
+      "complete": 4,
+      "gated": 2
     },
     "hob": {
       "total": 188,
@@ -182,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 248,
-      "gated": 10
+      "complete": 252,
+      "gated": 6
     },
     "znr": {
       "total": 1,
@@ -28066,16 +28066,16 @@
     {
       "name": "Restless Bivouac",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_bivouac.rs",
       "set": "woe"
     },
     {
       "name": "Restless Cottage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_cottage.rs",
       "set": "woe"
     },
@@ -28114,8 +28114,8 @@
     {
       "name": "Restless Spire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/restless_spire.rs",
       "set": "frc"
     },
@@ -28130,8 +28130,8 @@
     {
       "name": "Restless Vinestalk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_vinestalk.rs",
       "set": "woe"
     },
@@ -28994,8 +28994,8 @@
     {
       "name": "Rowan, Scion of War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rowan_scion_of_war.rs",
       "set": "woe"
     },
