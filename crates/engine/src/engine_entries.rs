@@ -928,6 +928,9 @@ impl Game {
                     EntryCounterAmount::ColorsSpent => {
                         payment.map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64)
                     }
+                    EntryCounterAmount::ManaSpent => {
+                        payment.map_or(0, |mana| mana.into_iter().map(u64::from).sum())
+                    }
                     EntryCounterAmount::IfNotCastOrZero(n) => {
                         if payment.is_none_or(|p| p == [0; 6]) {
                             u64::from(n)

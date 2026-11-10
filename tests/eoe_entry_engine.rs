@@ -384,3 +384,44 @@ fn power_scaled_private_library_look_uses_latest_departure_power() {
     assert_eq!(game.object_view(chosen.card).zone, Zone::Battlefield);
     assert!(game.object_view(chosen.card).tapped);
 }
+
+const PAID_ENTRY: CardRules = CardRules {
+    effect: Effect::Creature(0, 1),
+    extras: &CardExtras {
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::ManaSpent,
+        }],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn cast_entry_counters_count_actual_mana_and_noncast_entry_has_none() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &PAID_ENTRY)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 2, 0];
+    let casted = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, casted, None);
+    resolve_top(&mut game);
+    assert_eq!(game.counter_count(casted, CounterKind::PlusOne), 2);
+    assert_eq!(stats(&game, casted), (2, 3));
+
+    let other = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let returning = game.entry_move(other, Zone::Battlefield, false);
+    let mut projected = returning.clone();
+    projected.cast_payment = Some([0, 1, 0, 0, 3, 0]);
+    let world = FundingState::from_game(&game, &goal(player));
+    assert!(
+        world.visit_entry_moves(vec![projected], true, None, &mut |entered| {
+            assert_eq!(entered.counter_count(other, CounterKind::PlusOne), 4);
+            true
+        })
+    );
+    game.stage_entries(vec![returning], None);
+    game.advance_entries();
+    assert_eq!(game.counter_count(other, CounterKind::PlusOne), 0);
+    assert_eq!(stats(&game, other), (0, 1));
+}

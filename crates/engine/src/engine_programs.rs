@@ -3195,6 +3195,7 @@ impl Game {
                                     matches!(
                                         r.amount,
                                         EntryCounterAmount::ColorsSpent
+                                            | EntryCounterAmount::ManaSpent
                                             | EntryCounterAmount::IfNotCastOrZero(_)
                                     )
                                 })

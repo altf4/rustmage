@@ -715,6 +715,9 @@ impl FundingState<'_> {
                 EntryCounterAmount::ColorsSpent => m
                     .cast_payment
                     .map_or(0, |p| (0..5).filter(|&i| p[i] > 0).count() as u64),
+                EntryCounterAmount::ManaSpent => m
+                    .cast_payment
+                    .map_or(0, |mana| mana.into_iter().map(u64::from).sum()),
                 EntryCounterAmount::IfNotCastOrZero(n) => {
                     if m.cast_payment.is_none_or(|p| p == [0; 6]) {
                         u64::from(n)

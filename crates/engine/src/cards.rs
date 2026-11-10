@@ -4547,6 +4547,8 @@ pub enum EntryCounterAmount {
     ControlledCreatureDeaths,
     GreatestOtherCreaturePower,
     ColorsSpent,
+    /// Actual paid mana of a cast entrant, zero for a noncast entry.
+    ManaSpent,
     IfNotCastOrZero(u16),
     Fixed(u16),
     Stat(StatValue),
