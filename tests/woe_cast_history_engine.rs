@@ -84,13 +84,13 @@ fn prepare_shrink(
     let spell = put(game, player, SHRINK_SPELL, Zone::Hand);
     act(game, Action::AnnounceCast { card: spell });
     act(game, Action::ChooseBargain { sacrifice });
-    act(game, Action::ChooseX { value });
     act(
         game,
         Action::ChooseTarget {
             target: Target::Card(target),
         },
     );
+    act(game, Action::ChooseX { value });
     assert_eq!(game.state.pending, Pending::PayCosts { player });
     spell
 }
