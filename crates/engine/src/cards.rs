@@ -2291,6 +2291,8 @@ pub enum Instruction {
     PreventPlayerDamageUntilNextTurn,
     /// Prevent damage to creatures the resolving effect's controller controls this turn.
     PreventControlledCreatureDamageThisTurn,
+    /// Prevent creature damage to the controller and their current creatures this turn.
+    PreventCreatureDamageToControllerAndCreaturesThisTurn,
     /// Until your next turn, double damage to the damaged player or their permanents.
     DoubleDamageToDamagedPlayerUntilNextTurn,
     BlinkUntilEndStep {
@@ -6104,6 +6106,9 @@ pub enum TriggerCondition {
     /// One occurrence per simultaneous positive damage event by this exact source.
     SourceDealtDamage,
     SourceDealtDamageAtLeast(u128),
+    /// An instant or sorcery spell you control damages its sole distinct target,
+    /// which must be a creature. The amount is the actual damage dealt to it.
+    ControlledSpellDamagesSoleCreatureTarget,
     /// One occurrence per matching creature recipient in this source's damage batch.
     SourceDealtDamageToCreatureSubtype(&'static str),
     SourceDealtCombatDamage,

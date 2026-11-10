@@ -335,10 +335,10 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldView, DamageDoublerView,
-    DamageEventOrderView, DamagePreventionKind, DamagePreventionView, PlayerCounterPlacementView,
-    ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
-    SelfPlayerCounterReplacement, TokenGroupView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldScope,
+    CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView, DamagePreventionKind,
+    DamagePreventionView, PlayerCounterPlacementView, ProliferateReplacementView,
+    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -11125,6 +11125,7 @@ impl Game {
         }
         self.refresh_excess_threshold(events);
         self.source_damage_triggers(events);
+        self.controlled_spell_target_damage_triggers(events);
         gains
     }
 

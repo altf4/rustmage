@@ -50,6 +50,9 @@ pub(super) struct Resolution {
     pub program: &'static [Instruction],
     pub pc: usize,
     pub target_group: u16,
+    /// The instant or sorcery's original target bindings all named one exact card.
+    /// Resolution may discard illegal bindings, which cannot qualify a multi-target spell.
+    pub original_single_spell_card_target: bool,
     pub moved_count: Option<u64>,
     pub remembered_draws: Option<u64>,
     pub remembered_damage_players: Option<u8>,
@@ -1071,6 +1074,7 @@ impl Game {
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
+                    | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfCreatureDies
@@ -3277,6 +3281,17 @@ impl Game {
             return;
         }
         let was_targeted = !item.targets.is_empty();
+        let original_single_spell_card_target = item.kind == StackKind::Spell
+            && item.targets.first().is_some_and(|first| {
+                matches!(first.target, Target::Card(_))
+                    && first.object.is_some()
+                    && item
+                        .source
+                        .is_some_and(|source| source.card.kind_mask() & (4 | 8) != 0)
+                    && item.targets.iter().all(|target| {
+                        target.target == first.target && target.object == first.object
+                    })
+            });
         let spec = self.target_spec(&item);
         // Preserve the whole original target set for relational legality. A departed
         // target still contributes its last controller, even though it cannot move.
@@ -3564,6 +3579,7 @@ impl Game {
             program,
             pc: 0,
             target_group: 0,
+            original_single_spell_card_target,
             moved_count: None,
             remembered_draws: None,
             remembered_damage_players: None,
@@ -5350,9 +5366,16 @@ impl Game {
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }
-                Instruction::PreventControlledCreatureDamageThisTurn => {
-                    self.prevent_controlled_creature_damage_this_turn(&item)
-                }
+                Instruction::PreventControlledCreatureDamageThisTurn => self
+                    .prevent_creature_damage_this_turn(
+                        &item,
+                        CreatureDamageShieldScope::ControlledCreatures,
+                    ),
+                Instruction::PreventCreatureDamageToControllerAndCreaturesThisTurn => self
+                    .prevent_creature_damage_this_turn(
+                        &item,
+                        CreatureDamageShieldScope::PlayerAndCreaturesFromCreatures,
+                    ),
                 Instruction::DoubleDamageToDamagedPlayerUntilNextTurn => {
                     self.double_damage_to_damaged_player_until_next_turn(&item)
                 }

@@ -30,7 +30,7 @@ pub struct DamageDoublerView {
     pub controller: Player,
     pub recipient: Player,
 }
-/// A resolved effect preventing damage to its controller's current creatures this turn.
+/// A resolved effect preventing damage to its controller or their current creatures this turn.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CreatureDamageShieldView {
@@ -38,6 +38,19 @@ pub struct CreatureDamageShieldView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub controller: Player,
+    #[serde(skip_serializing_if = "CreatureDamageShieldScope::is_default")]
+    pub scope: CreatureDamageShieldScope,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CreatureDamageShieldScope {
+    ControlledCreatures,
+    PlayerAndCreaturesFromCreatures,
+}
+impl CreatureDamageShieldScope {
+    fn is_default(&self) -> bool {
+        *self == Self::ControlledCreatures
+    }
 }
 /// Damage prevention effects tracked separately from printed replacement slots.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -54,6 +67,7 @@ pub enum DamagePreventionKind {
     ChosenSource(u64),
     UntilNextTurn,
     ControlledCreaturesThisTurn(u64),
+    CreatureSourcesThisTurn(u64),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1207,7 +1221,11 @@ impl Game {
             recipient: event.player,
         });
     }
-    pub(super) fn prevent_controlled_creature_damage_this_turn(&mut self, item: &SpellView) {
+    pub(super) fn prevent_creature_damage_this_turn(
+        &mut self,
+        item: &SpellView,
+        scope: CreatureDamageShieldScope,
+    ) {
         let source = item.source.expect("prevention source");
         let roles = self.state.roles.get_or_insert_default();
         let id = roles.next_acquisition();
@@ -1218,6 +1236,7 @@ impl Game {
                 source: source.object,
                 source_card: source.card,
                 controller: item.controller,
+                scope,
             });
     }
     fn damage_recipient_controller(&self, event: &DamageEvent) -> Player {
@@ -1396,20 +1415,36 @@ impl Game {
             });
         }
         if let Some(roles) = &self.state.roles {
-            if !roles.creature_damage_shields.is_empty()
-                && let Target::Card(id) = event.target
-                && self.on_battlefield(id)
-                && self.is_creature(id)
-            {
-                let controller = self.state.objects[id as usize].controller;
+            if !roles.creature_damage_shields.is_empty() {
+                let creature_controller = match event.target {
+                    Target::Card(id) if self.on_battlefield(id) && self.is_creature(id) => {
+                        Some(self.state.objects[id as usize].controller)
+                    }
+                    _ => None,
+                };
+                let creature_source =
+                    event.source.facts.battlefield && event.source.facts.is_creature();
                 out.extend(roles.creature_damage_shields.iter().filter_map(|shield| {
-                    let kind = DamagePreventionKind::ControlledCreaturesThisTurn(shield.id);
-                    (shield.controller == controller && !used.contains(&(shield.source, kind)))
-                        .then_some(DamagePreventionView {
+                    let controlled_creature = creature_controller == Some(shield.controller);
+                    let (applies, kind) = match shield.scope {
+                        CreatureDamageShieldScope::ControlledCreatures => (
+                            controlled_creature,
+                            DamagePreventionKind::ControlledCreaturesThisTurn(shield.id),
+                        ),
+                        CreatureDamageShieldScope::PlayerAndCreaturesFromCreatures => (
+                            creature_source
+                                && (controlled_creature
+                                    || event.target == Target::Player(shield.controller)),
+                            DamagePreventionKind::CreatureSourcesThisTurn(shield.id),
+                        ),
+                    };
+                    (applies && !used.contains(&(shield.source, kind))).then_some(
+                        DamagePreventionView {
                             source: shield.source,
                             source_card: shield.source_card,
                             kind,
-                        })
+                        },
+                    )
                 }));
             }
             for shield in &roles.player_damage_shields {

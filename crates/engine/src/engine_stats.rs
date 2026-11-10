@@ -191,6 +191,7 @@ impl Game {
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
+                    | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtDamageAtLeast(_)
                     | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
