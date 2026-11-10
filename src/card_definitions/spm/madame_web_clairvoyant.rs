@@ -21,7 +21,10 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             guard: StepGuard::Always,
         },
         targets: TargetPlan::NONE,
-        program: &[Instruction::MayMill(1)],
+        program: &[
+            Instruction::MayMill(1),
+            Instruction::Mill(PlayerSet::Controller, MillAmount::Fixed(1)),
+        ],
     }],
     ..CardRules::EMPTY
 };

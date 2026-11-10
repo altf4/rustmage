@@ -117,7 +117,7 @@ fn parker_luck_targets_both_players_and_swaps_life_losses_without_drawing() {
     let enemy = put(&mut game, opponent, "Shock", Zone::Library);
     cast(&mut game, enchantment, None);
     settle(&mut game);
-    game.begin_step(Step::End);
+    advance_until(&mut game, |g| g.state.step == Step::End);
     choose_target(&mut game, Target::Player(opponent));
     reject(
         &mut game,
@@ -163,7 +163,14 @@ fn peter_s_camera_spends_film_and_copies_activated_or_triggered_abilities() {
         let original = game.state.stack.last().unwrap().id;
         let shock = put(&mut game, player, "Shock", Zone::Hand);
         cast(&mut game, shock, Some(Target::Player(player.other())));
-        announce_ability(&mut game, camera, 0);
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: camera,
+                ability: 0,
+                counter_payment: Counters::of(CounterKind::Film, 1),
+            },
+        );
         reject(
             &mut game,
             Action::ChooseTarget {

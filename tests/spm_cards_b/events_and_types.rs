@@ -186,7 +186,7 @@ fn living_brain_animates_and_untaps_only_a_controlled_non_equipment_artifact() {
     );
     game.state.objects[archive as usize].tapped = true;
     game.add_counter(archive, CounterKind::PlusOne, 1);
-    game.begin_step(Step::BeginCombat);
+    advance_until(&mut game, |g| g.state.step == Step::BeginCombat);
     reject(
         &mut game,
         Action::ChooseTarget {

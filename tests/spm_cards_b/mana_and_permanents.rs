@@ -342,6 +342,7 @@ fn ultimate_green_goblin_has_hybrid_mayhem_and_creates_treasure_after_discard() 
     for color in [2, 3] {
         let mut game = scenario(player);
         let goblin = put(&mut game, player, "Ultimate Green Goblin", Zone::Hand);
+        let drawn = *game.state.players[player.index()].library.last().unwrap();
         discard_with_meower(&mut game, player, goblin);
         let mut required = [0; 6];
         required[color] = 1;
@@ -359,6 +360,8 @@ fn ultimate_green_goblin_has_hybrid_mayhem_and_creates_treasure_after_discard() 
         settle(&mut game);
         assert_eq!(stats(&game, goblin), (5, 4));
         assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        act(&mut game, Action::PlayLand { card: drawn });
+        assert_eq!(game.hand_count(player), 0);
         let extra = (color == 2).then(|| put(&mut game, player, "Forest", Zone::Hand));
         let turn = game.state.turn;
         advance_until(&mut game, |g| {
