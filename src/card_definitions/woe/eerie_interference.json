@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fc06b0f365d92ffb69350b560dbb3309122ea1c1ae677ef19d8e618b738832f"
   },
-  "physical_metadata_sha256": "9ad5e5953429ccd35eeca4b8bc3d2e2fc8cc26b6b8a0acdf4d057f0186dcbedf"
+  "physical_metadata_sha256": "9ad5e5953429ccd35eeca4b8bc3d2e2fc8cc26b6b8a0acdf4d057f0186dcbedf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EerieInterference.java",
+  "java_sha256": "4d59b9340ede631a5ce8389941d652e9332939bdc285911443cf62a7be8b52cd",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectData.java",
+      "sha256": "5044af2a8b7132be5ac2d5acbe40b77a20f66541e72285e5e2d8440f07567b3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+      "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+    }
+  ]
 }
