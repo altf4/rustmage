@@ -140,6 +140,37 @@ pub(super) fn replacement_amounts<W: CharacteristicWorld + ?Sized>(
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn exchange_life_totals(
+        &mut self,
+        controller: Player,
+        target: Player,
+        draw_controller_loss: bool,
+    ) {
+        let controller_life = self.state.players[controller.index()].life;
+        let target_life = self.state.players[target.index()].life;
+        let (loser, gainer, high, low) = match controller_life.cmp(&target_life) {
+            std::cmp::Ordering::Greater => (controller, target, controller_life, target_life),
+            std::cmp::Ordering::Less => (target, controller, target_life, controller_life),
+            std::cmp::Ordering::Equal => return,
+        };
+        let loss = high
+            .checked_sub(low)
+            .capacity("life exchange amount exhausted");
+        // Resolve all replacement decisions against the pre-exchange state.
+        // A prohibited gain makes the entire exchange impossible (CR 701.12).
+        let gain = self.plan_life_gain(gainer, loss);
+        if gain == 0 {
+            return;
+        }
+        self.lose_life_unobserved(loser, loss);
+        self.commit_life_gain(gainer, gain);
+        self.life_lost_event(loser, loss);
+
+        if loser == controller && draw_controller_loss {
+            self.draw_many(controller, loss as u128);
+        }
+    }
+
     pub(super) fn gain_life(&mut self, player: Player, base: i128) {
         let amount = self.plan_life_gain(player, base);
         self.commit_life_gain(player, amount);

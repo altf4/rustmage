@@ -8963,6 +8963,13 @@ impl Game {
                         self.lose_life(player, amount);
                     }
                 }
+                Instruction::ExchangeLifeTotalsWithTarget {
+                    draw_controller_loss,
+                } => {
+                    if let Some(target) = self.program_players(PlayerSet::Targeted, &item).next() {
+                        self.exchange_life_totals(item.controller, target, draw_controller_loss);
+                    }
+                }
                 Instruction::SetControllerLifeToHalfStarting => {
                     let half = STARTING_LIFE / 2 + STARTING_LIFE % 2;
                     let life = self.state.players[item.controller.index()].life;

@@ -2681,6 +2681,10 @@ pub enum Instruction {
     /// Lose half of each selected player's nonnegative life total, rounded up.
     LoseHalfLifeRoundedUp(PlayerSet),
     SetControllerLifeToHalfStarting,
+    /// Exchange with the targeted player, optionally drawing the controller's actual loss.
+    ExchangeLifeTotalsWithTarget {
+        draw_controller_loss: bool,
+    },
     CopyTargetSpell {
         group: u16,
         retarget: bool,
