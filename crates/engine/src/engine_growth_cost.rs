@@ -148,14 +148,19 @@ impl Game {
                             },
                         )
                     }
-                    StaticAbilityFragment::ControlledArtifactFood(index) if kinds & 16 != 0 => (
-                        index,
-                        Action::AnnounceArtifactFood {
-                            source,
-                            grantor,
-                            ability: index,
-                        },
-                    ),
+                    StaticAbilityFragment::ControlledArtifactFood(index)
+                    | StaticAbilityFragment::ControlledArtifactActivation(index)
+                        if kinds & 16 != 0 =>
+                    {
+                        (
+                            index,
+                            Action::AnnounceArtifactFood {
+                                source,
+                                grantor,
+                                ability: index,
+                            },
+                        )
+                    }
                     _ => continue,
                 };
                 if CharacteristicWorld::activation_prohibited(self, actor, card)

@@ -7661,10 +7661,21 @@ impl Card {
     }
 
     pub(crate) fn grants_activation(self, index: u16) -> bool {
-        self.static_ability_groups().iter().any(|g| {
-            g.fragments
-                .iter()
-                .any(|f| matches!(f, StaticAbilityFragment::AttachmentActivation { ability: i, .. } | StaticAbilityFragment::ControlledPlaneswalkerActivation(i) | StaticAbilityFragment::ControlledArtifactFood(i) | StaticAbilityFragment::SourceMaxSpeedActivation(i) | StaticAbilityFragment::SourceEntryModeActivation { ability: i, .. } | StaticAbilityFragment::SourceCelebrationCreatureForm { activation: i, .. } if *i == index))
+        use StaticAbilityFragment as F;
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    *fragment,
+                    F::AttachmentActivation { ability, .. }
+                        | F::ControlledPlaneswalkerActivation(ability)
+                        | F::ControlledArtifactFood(ability)
+                        | F::ControlledArtifactActivation(ability)
+                        | F::SourceMaxSpeedActivation(ability)
+                        | F::SourceEntryModeActivation { ability, .. }
+                        | F::SourceCelebrationCreatureForm { activation: ability, .. }
+                        if ability == index
+                )
+            })
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {

@@ -1199,6 +1199,7 @@ impl Game {
                         matches!(fragment,
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
+                        | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         if *index == ability)
                     })
                 })

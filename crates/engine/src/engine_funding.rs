@@ -1128,6 +1128,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledActivationReduction { .. }
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
+                                        | StaticAbilityFragment::ControlledArtifactActivation(_)
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })

@@ -160,10 +160,20 @@ impl CardRules {
                             "Celebration grant needs a battlefield activation slot"
                         );
                     }
-                    StaticAbilityFragment::ControlledArtifactFood(ability) => {
+                    grant @ (StaticAbilityFragment::ControlledArtifactFood(ability)
+                    | StaticAbilityFragment::ControlledArtifactActivation(ability)) => {
                         assert!(
-                            matches!(self.static_groups[group].first_layer, AbilityLayer::Type),
-                            "Food subtype grant begins in the type layer"
+                            matches!(
+                                (grant, self.static_groups[group].first_layer),
+                                (
+                                    StaticAbilityFragment::ControlledArtifactFood(_),
+                                    AbilityLayer::Type
+                                ) | (
+                                    StaticAbilityFragment::ControlledArtifactActivation(_),
+                                    AbilityLayer::Ability
+                                )
+                            ),
+                            "artifact activation grant begins in the wrong layer"
                         );
                         assert!(
                             (ability as usize) < self.activated.len()
@@ -171,7 +181,7 @@ impl CardRules {
                                     self.activated[ability as usize].origin,
                                     ActivationOrigin::Battlefield
                                 ),
-                            "Food ability needs a battlefield activation slot"
+                            "artifact grant needs a battlefield activation slot"
                         );
                     }
                     _ => {}

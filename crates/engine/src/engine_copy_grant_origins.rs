@@ -114,6 +114,7 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                         | F::AttachmentActivation { .. }
                         | F::ControlledPlaneswalkerActivation(_)
                         | F::ControlledArtifactFood(_)
+                        | F::ControlledArtifactActivation(_)
                         | F::ControlledPlaneswalkerAttackLimit
                         | F::GrantInstantSorceryStorm { .. }
                         | F::CascadeFromHand { .. }

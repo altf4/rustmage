@@ -492,6 +492,8 @@ pub enum StaticAbilityFragment {
     /// In layer four add Food to controlled artifacts. In layer six grant them
     /// this indexed activation template as part of the same continuous effect.
     ControlledArtifactFood(u16),
+    /// In layer six grant this indexed activation to controlled artifacts.
+    ControlledArtifactActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {

@@ -293,11 +293,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
-        | StaticAbilityFragment::ControlledArtifactFood(ability) => {
-            let kinds = if matches!(fragment, StaticAbilityFragment::ControlledArtifactFood(_)) {
-                16
-            } else {
+        | StaticAbilityFragment::ControlledArtifactFood(ability)
+        | StaticAbilityFragment::ControlledArtifactActivation(ability) => {
+            let kinds = if matches!(
+                fragment,
+                StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+            ) {
                 64
+            } else {
+                16
             };
             if !own || world.kinds(id) & kinds == 0 {
                 return None;
@@ -542,7 +546,14 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledArtifactFood(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
+                        fragment,
+                        StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                            | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                            | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider())
                         || (matches!(fragment, StaticAbilityFragment::SourceCelebrationCreatureForm { .. })
                             && world.celebrating(source.controller)))
@@ -774,6 +785,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledArtifactFood(_)
+                        | StaticAbilityFragment::ControlledArtifactActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
