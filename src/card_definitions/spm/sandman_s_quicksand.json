@@ -3,10 +3,35 @@
   "catalogue_id": 3676,
   "oracle_id": "f2b376d2-a2f4-4d23-a1fb-eb7b6ebd0b7a",
   "facts_sha256": "ac4fc899b08cdf37aac2783b454b2a5dc231638b49b44370daedff47d605b546",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "585ec4f536608f3593affd923f01daa2285bba6e0faa783b18b524efed35315a"
   },
-  "physical_metadata_sha256": "b66942c8abfeab2fe258523646a33c282e0c2df82739f68a66f3c4c306bf39fa"
+  "physical_metadata_sha256": "b66942c8abfeab2fe258523646a33c282e0c2df82739f68a66f3c4c306bf39fa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SandmansQuicksand.java",
+  "java_sha256": "aa66cbfa2089f4c1f4f305e3e60db64a7d3438e3afc947bb3b9e0e5019b9f77f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+      "sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MayhemAbility.java",
+      "sha256": "d366b312564c32ceadf7a3c8337c1b517edcb5ae0ede1ca54f349902411bc6d0"
+    }
+  ]
 }
