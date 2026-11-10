@@ -643,11 +643,10 @@ fn howling_galefang_gains_haste_from_a_live_owned_exiled_adventure() {
         assert!(!view.keywords.contains(Keywords::HASTE));
 
         game.move_object(adventure, Zone::Exile);
-        assert!(
-            game.object_view(galefang)
-                .keywords
-                .contains(Keywords::HASTE)
-        );
+        assert!(game
+            .object_view(galefang)
+            .keywords
+            .contains(Keywords::HASTE));
         let mut removed = game.clone();
         removed.move_object(adventure, Zone::Hand);
         for branch in [&mut game, &mut removed] {
@@ -673,11 +672,10 @@ fn gingerbrute_has_paid_food_and_a_temporary_haste_only_blocking_rule() {
         announce(&mut game, gingerbrute, &[]);
         settle(&mut game);
         assert!(game.has_subtype(gingerbrute, "Food"));
-        assert!(
-            game.object_view(gingerbrute)
-                .keywords
-                .contains(Keywords::HASTE)
-        );
+        assert!(game
+            .object_view(gingerbrute)
+            .keywords
+            .contains(Keywords::HASTE));
 
         let activate = |ability| Action::AnnounceActivate {
             card: gingerbrute,
@@ -707,12 +705,10 @@ fn gingerbrute_has_paid_food_and_a_temporary_haste_only_blocking_rule() {
         let mut expired = game.clone();
         expired.state.step = Step::End;
         pass_twice(&mut expired);
-        assert!(
-            !expired
-                .object_view(gingerbrute)
-                .keywords
-                .contains(Keywords::ONLY_HASTE_BLOCKERS)
-        );
+        assert!(!expired
+            .object_view(gingerbrute)
+            .keywords
+            .contains(Keywords::ONLY_HASTE_BLOCKERS));
 
         pass_twice(&mut game);
         pass_twice(&mut game);
@@ -750,11 +746,10 @@ fn into_the_fae_court_draws_three_and_creates_one_restricted_faerie() {
         );
         let faeries = tokens(&game, player, FAERIE);
         assert_eq!(faeries.len(), 1);
-        assert!(
-            game.object_view(faeries[0])
-                .keywords
-                .contains(Keywords::FLYING)
-        );
+        assert!(game
+            .object_view(faeries[0])
+            .keywords
+            .contains(Keywords::FLYING));
         assert!(tokens(&game, player.other(), FAERIE).is_empty());
     }
 }
@@ -858,11 +853,10 @@ fn gumdrop_poisoner_creates_food_and_uses_life_gained_not_net_life_change() {
 
         cast_adventurer(&mut game, poisoner);
         pass_twice(&mut game);
-        assert!(
-            game.object_view(poisoner)
-                .keywords
-                .contains(Keywords::LIFELINK)
-        );
+        assert!(game
+            .object_view(poisoner)
+            .keywords
+            .contains(Keywords::LIFELINK));
         let mut no_target = game.clone();
         act(&mut no_target, Action::FinishTargets);
         settle(&mut no_target);
@@ -886,11 +880,10 @@ fn heartflame_duelist_grants_lifelink_to_a_paid_adventure_while_it_is_present() 
         announce(&mut game, duelist, &[]);
         settle(&mut game);
         cast_adventure(&mut game, slash, Some(Target::Player(opponent)));
-        assert!(
-            game.object_view(slash)
-                .keywords
-                .contains(Keywords::LIFELINK)
-        );
+        assert!(game
+            .object_view(slash)
+            .keywords
+            .contains(Keywords::LIFELINK));
         let mut removed = game.clone();
         act(&mut removed, Action::Pass);
         cast(&mut removed, bounce, Some(Target::Card(duelist)));
@@ -957,17 +950,18 @@ fn horned_loch_whale_has_flash_off_turn_tapped_entry_and_ward_two() {
 fn lagoon_breach_uses_the_attacker_owner_for_the_private_library_choice() {
     for player in [Player::P0, Player::P1] {
         let opponent = player.other();
-        let mut game = scenario(player);
+        let mut game = scenario(opponent);
         let card = candidate(&mut game, player, "Horned Loch-Whale // Lagoon Breach");
         let lands = [0; 2].map(|_| put(&mut game, player, "Island", Zone::Battlefield));
-        let attacker = put(&mut game, opponent, "Harried Spearguard", Zone::Battlefield);
+        let attacker = put(&mut game, player, "Harried Spearguard", Zone::Battlefield);
         let waiting = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
         let exact = game.object_ref(attacker);
-        game.change_controller(exact, player);
+        game.change_controller(exact, opponent);
         pass_twice(&mut game);
         pass_twice(&mut game);
         act(&mut game, Action::Attack { card: attacker });
         act(&mut game, Action::FinishAttackers);
+        act(&mut game, Action::Pass);
         for card in lands {
             act(&mut game, Action::TapMana { card });
         }
@@ -981,9 +975,9 @@ fn lagoon_breach_uses_the_attacker_owner_for_the_private_library_choice() {
         choose_target(&mut game, Target::Card(attacker));
         pay(&mut game);
         pass_twice(&mut game);
-        assert_eq!(game.actor(), Some(opponent));
-        assert!(game.observe(opponent).target_library.is_some());
-        assert!(game.observe(player).target_library.is_none());
+        assert_eq!(game.actor(), Some(player));
+        assert!(game.observe(player).target_library.is_some());
+        assert!(game.observe(opponent).target_library.is_none());
         let mut bottom = game.clone();
         for (branch, destination) in [
             (&mut game, LibraryDestination::Top),
@@ -997,9 +991,9 @@ fn lagoon_breach_uses_the_attacker_owner_for_the_private_library_choice() {
                 },
             );
             assert_eq!(branch.object_view(attacker).zone, Zone::Library);
-            assert_eq!(branch.object_view(attacker).owner, opponent);
+            assert_eq!(branch.object_view(attacker).owner, player);
             assert_eq!(branch.object_view(card).zone, Zone::Exile);
-            let library = &branch.state.players[opponent.index()].library;
+            let library = &branch.state.players[player.index()].library;
             let selected_end = if destination == LibraryDestination::Top {
                 library.last()
             } else {
@@ -1039,21 +1033,18 @@ fn birthright_boon_searches_both_types_and_kellan_counts_current_attachments() {
             act(branch, Action::FinishSearch);
             assert_eq!(branch.object_view(selection).zone, Zone::Hand);
             assert_eq!(branch.object_view(kellan).zone, Zone::Exile);
-            assert!(
-                branch
-                    .observe(opponent)
-                    .known_hand
-                    .contains(&branch.object_ref(selection))
-            );
+            assert!(branch
+                .observe(opponent)
+                .known_hand
+                .contains(&branch.object_ref(selection)));
         }
 
         cast_adventurer(&mut game, kellan);
         settle(&mut game);
-        assert!(
-            game.object_view(kellan)
-                .keywords
-                .contains(Keywords::DOUBLE_STRIKE)
-        );
+        assert!(game
+            .object_view(kellan)
+            .keywords
+            .contains(Keywords::DOUBLE_STRIKE));
         announce(&mut game, equipment, &[]);
         settle(&mut game);
         let equip = Action::AnnounceActivate {

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "6edc423c30f63da3860f3b5dacecb2a2c79b3d16fd0fba5c51fe0ff6c6671f90",
+  "catalogue_version": "2fbe72f64f6ae60f76155161674f07668a8db38d1bd761bc12f0185d430b5d9f",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4051,
-  "implemented_total": 4061,
+  "implemented_standard_cards": 4056,
+  "implemented_total": 4066,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 187,
-      "gated": 71
+      "complete": 192,
+      "gated": 66
     },
     "znr": {
       "total": 1,
@@ -12115,8 +12115,8 @@
     {
       "name": "Fell Horseman // Deathly Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/fell_horseman_deathly_ride.rs",
       "set": "woe"
     },
@@ -15459,8 +15459,8 @@
     {
       "name": "Gumdrop Poisoner // Tempt with Treats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gumdrop_poisoner_tempt_with_treats.rs",
       "set": "woe"
     },
@@ -16027,8 +16027,8 @@
     {
       "name": "Heartflame Duelist // Heartflame Slash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/heartflame_duelist_heartflame_slash.rs",
       "set": "woe"
     },
@@ -16779,8 +16779,8 @@
     {
       "name": "Horned Loch-Whale // Lagoon Breach",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/horned_loch_whale_lagoon_breach.rs",
       "set": "woe"
     },
@@ -18931,8 +18931,8 @@
     {
       "name": "Kellan, the Fae-Blooded // Birthright Boon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/kellan_the_fae_blooded_birthright_boon.rs",
       "set": "woe"
     },
