@@ -223,6 +223,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
             let slot = 0;
             result.push(BorrowedDescriptor {
                 source: row.source,
+                grantor: None,
                 donor: row.donor,
                 zone: Zone::Graveyard,
                 definition: row.definition,
@@ -236,6 +237,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
         for acquired in embalm::abilities(world, row.donor.card) {
             result.push(BorrowedDescriptor {
                 source: row.source,
+                grantor: None,
                 donor: row.donor,
                 zone: Zone::Graveyard,
                 definition: row.definition,
@@ -258,6 +260,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 let slot = 0;
                 result.push(BorrowedDescriptor {
                     source: row.source,
+                    grantor: None,
                     donor: row.donor,
                     zone: Zone::Graveyard,
                     definition: row.definition,
@@ -273,6 +276,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
             let slot = 0;
             result.push(BorrowedDescriptor {
                 source: row.source,
+                grantor: None,
                 donor: row.donor,
                 zone: Zone::Graveyard,
                 definition: row.definition,

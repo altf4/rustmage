@@ -14,6 +14,7 @@ pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub(super) struct SlotRow {
     pub(super) source: ObjectRef,
+    grantor: Option<ObjectRef>,
     acquisition: u64,
     graveyard: bool,
     pub(super) definition: Option<Card>,
@@ -32,11 +33,15 @@ pub(super) struct Link {
     pub first_slot: u64,
     pub width: u64,
     pub once_per_turn: bool,
+    /// This link supplies a continuous grant to other eligible recipients.
+    pub shared: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BorrowedAbilityView {
     pub source: ObjectRef,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub grantor: Option<ObjectRef>,
     pub exiled: ObjectRef,
     pub definition: Card,
     /// The final five indices identify the exiled object's intrinsic mana abilities.
@@ -70,6 +75,7 @@ pub struct GraveyardBorrowedAbilityView {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) struct Descriptor {
     pub source: ObjectRef,
+    pub grantor: Option<ObjectRef>,
     pub donor: ObjectRef,
     pub zone: Zone,
     pub definition: Card,
@@ -90,6 +96,41 @@ pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) 
     inventory(world, id, true)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn has_shared_links(game: &Game) -> bool {
+    game.state
+        .borrowed_links
+        .as_ref()
+        .is_some_and(|links| links.iter().any(|link| link.shared))
+}
+
+fn source_ids<W: CharacteristicWorld + ?Sized>(world: &W, include_graveyard: bool) -> Vec<CardId> {
+    if has_shared_links(world.game()) {
+        return (0..world.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| world.object(id).zone == Zone::Battlefield)
+            .collect();
+    }
+    let mut sources = if include_graveyard {
+        world.static_sources().to_vec()
+    } else {
+        Vec::new()
+    };
+    for link in world
+        .game()
+        .state
+        .borrowed_links
+        .as_ref()
+        .into_iter()
+        .flat_map(|rows| rows.iter())
+    {
+        if !sources.contains(&link.source.card) {
+            sources.push(link.source.card);
+        }
+    }
+    sources
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn inventory<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
@@ -97,12 +138,13 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
 ) -> Vec<Descriptor> {
     let source = world.object(id);
     if source.zone != Zone::Battlefield
-        || !source.card.borrows_activations()
-        || check_available && !world.printed_abilities_available(id)
+        || !source.card.borrows_activations() && !has_shared_links(world.game())
     {
         return Vec::new();
     }
+    let recipient = world.reference(id);
     let mut result = Vec::new();
+    let mut query = None;
     for link in world
         .game()
         .state
@@ -110,14 +152,50 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         .as_ref()
         .map_or(&[][..], |rows| rows.as_slice())
     {
-        if !source.card.borrows_exiled_activations()
-            || link.source != world.reference(id)
-            || link.origin != world.ability_origin(id)
-        {
-            continue;
-        }
+        let grantor = if link.shared {
+            let provider = world.object(link.source.card);
+            if provider.zone != Zone::Battlefield
+                || provider.controller != source.controller
+                || world.reference(link.source.card) != link.source
+                || world.ability_origin(link.source.card) != link.origin
+            {
+                continue;
+            }
+            let fragment = |f: &crate::cards::StaticAbilityFragment| {
+                matches!(f, crate::cards::StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(kind)
+                    if world.counter_count(id, *kind) != 0)
+            };
+            if !provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .any(|g| g.fragments.iter().any(fragment))
+                || world.kinds(id) & 1 == 0
+                || check_available
+                    && !query
+                        .get_or_insert_with(|| {
+                            characteristic_query::CharacteristicQuery::in_world(world)
+                        })
+                        .linked_exile_activation_grant_available(id, link.source, fragment)
+            {
+                continue;
+            }
+            Some(link.source)
+        } else {
+            if !source.card.borrows_exiled_activations()
+                || link.source != recipient
+                || link.origin != world.ability_origin(id)
+                || check_available && !world.printed_abilities_available(id)
+            {
+                continue;
+            }
+            None
+        };
         let card = world.object(link.exiled.card);
-        if card.zone != Zone::Exile || world.reference(link.exiled.card) != link.exiled {
+        if card.zone != Zone::Exile
+            || world.reference(link.exiled.card) != link.exiled
+            || link.shared && (!card.is_card() || !card.card.is_creature())
+        {
             continue;
         }
         for (index, _) in card.card.activations().iter().enumerate() {
@@ -131,7 +209,8 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
             }
             let slot = 0;
             result.push(Descriptor {
-                source: link.source,
+                source: recipient,
+                grantor,
                 donor: link.exiled,
                 zone: Zone::Exile,
                 definition: card.card,
@@ -153,7 +232,8 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 }
                 let slot = 0;
                 result.push(Descriptor {
-                    source: link.source,
+                    source: recipient,
+                    grantor,
                     donor: link.exiled,
                     zone: Zone::Exile,
                     definition: card.card,
@@ -168,7 +248,8 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         if !card.card.is_land() && card.card.mana_color().is_some() {
             let slot = 0;
             result.push(Descriptor {
-                source: link.source,
+                source: recipient,
+                grantor,
                 donor: link.exiled,
                 zone: Zone::Exile,
                 definition: card.card,
@@ -199,6 +280,7 @@ fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Des
         let graveyard = ability.zone == Zone::Graveyard;
         let matching = |row: &&SlotRow| {
             row.source == ability.source
+                && row.grantor == ability.grantor
                 && row.acquisition == ability.acquisition
                 && row.graveyard == graveyard
                 && row.definition == definition
@@ -218,6 +300,7 @@ fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Des
                 });
             rows.push(SlotRow {
                 source: ability.source,
+                grantor: ability.grantor,
                 acquisition: ability.acquisition,
                 graveyard,
                 definition,
@@ -248,25 +331,13 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
                 && world.reference(row.source.card) == row.source
         })
         .collect();
-    let mut sources = world.static_sources().to_vec();
-    for link in world
-        .game()
-        .state
-        .borrowed_links
-        .as_ref()
-        .into_iter()
-        .flat_map(|rows| rows.iter())
-    {
-        if !sources.contains(&link.source.card) {
-            sources.push(link.source.card);
-        }
-    }
-    for id in sources {
+    for id in source_ids(world, true) {
         for ability in inventory(world, id, false) {
             let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
                 && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
             let row = SlotRow {
                 source: ability.source,
+                grantor: ability.grantor,
                 acquisition: ability.acquisition,
                 graveyard: ability.zone == Zone::Graveyard,
                 definition: (!intrinsic).then_some(ability.definition),
@@ -275,6 +346,7 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
             };
             if !rows.iter().any(|old| {
                 old.source == row.source
+                    && old.grantor == row.grantor
                     && old.acquisition == row.acquisition
                     && old.graveyard == row.graveyard
                     && old.definition == row.definition
@@ -302,31 +374,44 @@ impl Game {
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Exile);
-        if let Some(source) = item.source
-            && self.on_battlefield(source.object.card)
-            && self.object_ref(source.object.card) == source.object
-        {
-            for event in &events {
-                if !event.moved || event.destination != Zone::Exile {
-                    continue;
-                }
-                let width = DONOR_SLOT_WIDTH;
-                let first_slot = graveyard_borrowing::next_slot(self, source.object);
-                (first_slot.checked_add(width)).capacity("borrowed activation capacity exhausted");
-                self.state
-                    .borrowed_links
-                    .get_or_insert_default()
-                    .push(Link {
-                        source: source.object,
-                        origin: item.source_ability_origin,
-                        exiled: event.after,
-                        first_slot,
-                        width,
-                        once_per_turn: false,
-                    });
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.remember_borrowed_exile(item, event.after, false);
             }
         }
         self.finish_zone_events(&events, &[]);
+    }
+    pub(super) fn remember_borrowed_exile(
+        &mut self,
+        item: &SpellView,
+        exiled: ObjectRef,
+        shared: bool,
+    ) {
+        let Some(source) = item.source else {
+            return;
+        };
+        if !self.on_battlefield(source.object.card)
+            || self.object_ref(source.object.card) != source.object
+        {
+            return;
+        }
+        let width = DONOR_SLOT_WIDTH;
+        let first_slot = graveyard_borrowing::next_slot(self, source.object);
+        first_slot
+            .checked_add(width)
+            .capacity("borrowed activation capacity exhausted");
+        self.state
+            .borrowed_links
+            .get_or_insert_default()
+            .push(Link {
+                source: source.object,
+                origin: item.source_ability_origin,
+                exiled,
+                first_slot,
+                width,
+                once_per_turn: false,
+                shared,
+            });
     }
     pub(super) fn borrowed_descriptor(
         &self,
@@ -406,24 +491,13 @@ impl Game {
         }
     }
     pub(super) fn borrowed_ability_views(&self) -> Vec<BorrowedAbilityView> {
-        let mut sources = Vec::new();
-        for link in self
-            .state
-            .borrowed_links
-            .as_ref()
-            .into_iter()
-            .flat_map(|links| links.iter())
-        {
-            if !sources.contains(&link.source.card) {
-                sources.push(link.source.card);
-            }
-        }
-        sources
+        source_ids(self, false)
             .into_iter()
             .flat_map(|id| abilities(self, id))
             .filter(|a| a.zone == Zone::Exile)
             .map(|a| BorrowedAbilityView {
                 source: a.source,
+                grantor: a.grantor,
                 exiled: a.donor,
                 definition: a.definition,
                 ability: a.ability,
@@ -467,7 +541,8 @@ impl Game {
         sorcery: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if !self.state.objects[card as usize].card.borrows_activations()
+        if (!self.state.objects[card as usize].card.borrows_activations()
+            && !has_shared_links(self))
             || CharacteristicWorld::activation_prohibited(self, actor, card)
         {
             return false;

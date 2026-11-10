@@ -228,6 +228,7 @@ fn a_borrowed_mana_x_template_uses_the_borrowers_funding_and_exact_saga() {
             first_slot: 0,
             width: borrowed_activations::DONOR_SLOT_WIDTH,
             once_per_turn: false,
+            shared: false,
         });
     let action = Action::AnnounceBorrowedAbility {
         card: recipient,

@@ -6,6 +6,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum GrantedAbilityKind {
     Template(u16),
+    LinkedExileActivations,
     PlaneswalkerAttackLimit,
     EquippedCreatureDeathMultiplier,
 }

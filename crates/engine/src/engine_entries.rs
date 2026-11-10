@@ -1184,6 +1184,7 @@ impl Game {
                                 first_slot,
                                 width: borrowed_activations::DONOR_SLOT_WIDTH,
                                 once_per_turn: true,
+                                shared: false,
                             },
                         );
                     }

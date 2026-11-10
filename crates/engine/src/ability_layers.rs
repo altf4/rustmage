@@ -140,6 +140,8 @@ pub enum StaticAbilityFragment {
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// Controlled creatures with this counter gain activated abilities from linked exiled creatures.
+    GrantLinkedExileCreatureActivationsWithCounter(CounterKind),
     /// This creature can attack despite defender after its controller scries or surveils.
     AttackWithoutDefenderIfScried,
     /// This exact source can attack despite defender while the live condition holds.

@@ -190,6 +190,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(counter) => {
+            if !own || world.kinds(id) & 1 == 0 || world.counter_count(id, counter) == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    kind: GrantedAbilityKind::LinkedExileActivations,
+                    ..key(0)
+                }],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::SourceEntryModeActivation { mode, ability } => {
             if id != source.card
                 || provider.zone != Zone::Battlefield
@@ -738,6 +752,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)

@@ -10596,38 +10596,10 @@ impl Game {
                     self.stage_entries(moves, None);
                 }
                 Instruction::ExileGraveTargetsLinked => {
-                    let ids: Vec<_> = item
-                        .targets
-                        .iter()
-                        .filter(|b| self.same_target_object(**b))
-                        .filter_map(|b| match b.target {
-                            Target::Card(id)
-                                if self.state.objects[id as usize].zone == Zone::Graveyard =>
-                            {
-                                Some(id)
-                            }
-                            _ => None,
-                        })
-                        .collect();
-                    let events = self.move_objects_raw(&ids, Zone::Exile);
-                    for event in &events {
-                        if event.moved && event.destination == Zone::Exile {
-                            self.state
-                                .linked_choices
-                                .get_or_insert_default()
-                                .links
-                                .push(linked_choices::LinkedExileView {
-                                    exiled_turn: self.state.turn,
-                                    source: item
-                                        .source
-                                        .expect("instruction requires an object source")
-                                        .object,
-                                    exiled: event.after,
-                                    ability_origin: item.source_ability_origin,
-                                });
-                        }
-                    }
-                    self.finish_zone_events(&events, &[]);
+                    self.exile_grave_targets_linked(&item, None);
+                }
+                Instruction::ExileGraveTargetsLinkedGrant { creature_reflexive } => {
+                    self.exile_grave_targets_linked(&item, Some(creature_reflexive));
                 }
                 Instruction::ExileGraveTargets => {
                     let ids: Vec<_> = item

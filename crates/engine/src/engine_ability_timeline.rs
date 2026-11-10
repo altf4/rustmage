@@ -72,6 +72,7 @@ impl Card {
                     matches!(
                         fragment,
                         StaticAbilityFragment::BorrowGraveyardActivations(..)
+                            | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                             | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)

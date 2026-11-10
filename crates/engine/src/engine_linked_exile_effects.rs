@@ -79,6 +79,48 @@ impl Game {
         self.exile_objects_linked(item, &ids);
     }
 
+    pub(super) fn exile_grave_targets_linked(
+        &mut self,
+        item: &SpellView,
+        creature_reflexive: Option<u16>,
+    ) {
+        let source = item
+            .source
+            .expect("linked exile requires an object source")
+            .object;
+        let ids: Vec<_> = item
+            .targets
+            .iter()
+            .filter(|bound| self.same_target_object(**bound))
+            .filter_map(|bound| bound.object)
+            .filter_map(|object| {
+                (self.state.objects[object.card as usize].zone == Zone::Graveyard)
+                    .then_some(object.card)
+            })
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.link_exile_to_ability(source, item.source_ability_origin, event.after);
+                if creature_reflexive.is_some() && event.was_card {
+                    self.remember_borrowed_exile(item, event.after, true);
+                }
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+        if let Some(ability) = creature_reflexive {
+            for event in events {
+                if event.was_card
+                    && event.moved
+                    && event.destination == Zone::Exile
+                    && event.before.is_creature()
+                {
+                    self.queue_reflexive(item, ability, Some(event.after));
+                }
+            }
+        }
+    }
+
     pub(super) fn exile_targets_linked(&mut self, item: &SpellView, capture_mutant: bool) {
         let ids: Vec<_> = item
             .targets

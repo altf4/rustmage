@@ -1178,6 +1178,25 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 })
         })
     }
+    pub(super) fn linked_exile_activation_grant_available(
+        &self,
+        recipient: CardId,
+        provider: ObjectRef,
+        matches: impl Fn(&StaticAbilityFragment) -> bool,
+    ) -> bool {
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[recipient as usize]
+                .grants
+                .iter()
+                .any(|grant| {
+                    grant.source == provider
+                        && grant.kind == ability_order::GrantedAbilityKind::LinkedExileActivations
+                })
+        } else {
+            self.continuous_fragment_available(provider.card, matches)
+        }
+    }
+
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -1189,6 +1208,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             grants: object
                 .grants
                 .iter()
+                .filter(|grant| {
+                    grant.kind != ability_order::GrantedAbilityKind::LinkedExileActivations
+                })
                 .map(|grant| GrantedAbilityView {
                     grantor: grant.source,
                     granting_card: grant.granting_card,

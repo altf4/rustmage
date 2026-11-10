@@ -4166,6 +4166,10 @@ pub enum Instruction {
     },
     ExileGraveTargets,
     ExileGraveTargetsLinked,
+    /// Link each actual graveyard exile to the source's shared activation grant.
+    ExileGraveTargetsLinkedGrant {
+        creature_reflexive: u16,
+    },
     ReturnLinkedGhosts,
     IfExiledCreature {
         skip: usize,

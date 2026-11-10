@@ -1088,6 +1088,7 @@ impl<'g> FundingState<'g> {
                     })
                 })
         });
+        let shared_linked_activations = borrowed_activations::has_shared_links(game);
         let resources = game
             .state
             .objects
@@ -1097,6 +1098,10 @@ impl<'g> FundingState<'g> {
                 (matches!(object.zone, Zone::Hand | Zone::Graveyard) && object.owner == goal.actor
                     && object.card.activations().iter().any(|a| a.source_zone() == object.zone && a.mana_production().is_some()))
                     || (life_replacement_possible && object.zone == Zone::Library && object.is_card())
+                    || shared_linked_activations && object.zone == Zone::Exile
+                        && game.state.borrowed_links.as_ref().unwrap().iter().any(|link| {
+                            link.shared && link.exiled.card == *id as CardId
+                        })
                     || (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
                     || game.plot_payment().is_some_and(|request| request.object.card == *id as CardId)
                     || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
@@ -1108,7 +1113,7 @@ impl<'g> FundingState<'g> {
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
-                        && (retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
+                        && (shared_linked_activations || retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
@@ -4204,9 +4209,11 @@ impl<'g> FundingState<'g> {
         if !self.joint_colors_possible(goal) {
             return false;
         }
-        // Immediate linked returns may introduce new sources, untap them, or
-        // restore an ability provider. Current-resource bounds are inapplicable.
-        if !self.game.state.exile_links.is_empty() {
+        // Linked returns and external activation grants can change the mana
+        // sources reachable in this payment. Use the exact projected moves.
+        if !self.game.state.exile_links.is_empty()
+            || borrowed_activations::has_shared_links(self.game)
+        {
             return true;
         }
         let required =
