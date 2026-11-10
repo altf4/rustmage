@@ -1247,7 +1247,7 @@ impl Game {
                     subtype_lki: None,
                 });
             }
-            self.tap_objects(
+            self.tap_objects_as(
                 a.item.controller,
                 &group.iter().map(|r| r.card).collect::<Vec<_>>(),
             );

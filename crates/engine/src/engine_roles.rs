@@ -346,7 +346,7 @@ impl Game {
             {
                 let item = resolution.item.clone();
                 let source = item.source.expect("tap source was checked");
-                self.tap_objects(item.controller, &[source.id]);
+                self.tap_objects_as(item.controller, &[source.id]);
                 if self.on_battlefield(source.id)
                     && self.object_ref(source.id) == source.object
                     && self.state.objects[source.id as usize].tapped

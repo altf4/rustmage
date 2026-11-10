@@ -786,7 +786,7 @@ impl Game {
                 let events = self.move_objects_raw(&cards, Zone::Exile);
                 self.finish_zone_events(&events, &[]);
             }
-            EffectChoiceKind::TapPermanents(_) => self.tap_objects(payer, &cards),
+            EffectChoiceKind::TapPermanents(_) => self.tap_objects_as(payer, &cards),
             EffectChoiceKind::RemoveCreatureCounter(kind) => {
                 let payment = Counters::of(kind, 1);
                 for card in cards {

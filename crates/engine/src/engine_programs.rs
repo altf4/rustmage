@@ -2243,7 +2243,7 @@ impl Game {
 
     /// Apply one simultaneous tap event, then collect source-owned triggers.
     /// Entry status and virtual mana funding never use this transition.
-    pub(super) fn tap_objects(&mut self, actor: Player, ids: &[CardId]) {
+    pub(super) fn tap_objects_as(&mut self, actor: Player, ids: &[CardId]) {
         // Keep the ordinary single-source mana tap allocation-free.
         if let &[id] = ids {
             if self.tap_permanent(id) {
@@ -2252,6 +2252,12 @@ impl Game {
         } else {
             self.tap_objects_by(ids.iter().map(|&id| (actor, id)));
         }
+    }
+
+    /// Setup taps in fixture tests use the active player.
+    #[cfg(feature = "test-support")]
+    pub(super) fn tap_objects(&mut self, ids: &[CardId]) {
+        self.tap_objects_as(self.state.active, ids);
     }
 
     /// Each player can be instructed to tap their own chosen part of the event.
@@ -6449,7 +6455,7 @@ impl Game {
                         if instruction == Instruction::UntapAttached {
                             self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                         } else {
-                            self.tap_objects(item.controller, &[id]);
+                            self.tap_objects_as(item.controller, &[id]);
                         }
                     }
                 }
@@ -9488,7 +9494,7 @@ impl Game {
                 }
                 Instruction::TapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
-                    self.tap_objects(item.controller, &recipients);
+                    self.tap_objects_as(item.controller, &recipients);
                 }
                 Instruction::UntapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
@@ -9589,7 +9595,7 @@ impl Game {
                         .map(|(id, _)| id as CardId)
                         .collect();
                     if matches!(instruction, Instruction::TapCreatures(_)) {
-                        self.tap_objects(item.controller, &ids);
+                        self.tap_objects_as(item.controller, &ids);
                     } else {
                         self.untap_objects(&ids, untap_rules::UntapCause::Effect);
                     }
@@ -9627,7 +9633,7 @@ impl Game {
                         .object
                     {
                         if instruction == Instruction::TapSource {
-                            self.tap_objects(
+                            self.tap_objects_as(
                                 item.controller,
                                 &[item
                                     .source
@@ -10930,7 +10936,7 @@ impl Game {
                         if self.state.objects[id as usize].tapped {
                             self.untap_objects(&[id], untap_rules::UntapCause::Effect);
                         } else {
-                            self.tap_objects(item.controller, &[id]);
+                            self.tap_objects_as(item.controller, &[id]);
                         }
                     }
                 }
@@ -10950,7 +10956,7 @@ impl Game {
                         if self.same_target_object(*bound)
                             && let Target::Card(id) = bound.target
                         {
-                            self.tap_objects(item.controller, &[id]);
+                            self.tap_objects_as(item.controller, &[id]);
                         }
                     } else {
                         let ids: Vec<_> = item
@@ -10966,7 +10972,7 @@ impl Game {
                                 }
                             })
                             .collect();
-                        self.tap_objects(item.controller, &ids);
+                        self.tap_objects_as(item.controller, &ids);
                     }
                 }
                 Instruction::CounterPermanentExileCast => self.counter_permanent_exile_cast(&item),

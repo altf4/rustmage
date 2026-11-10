@@ -7633,7 +7633,7 @@ impl Game {
                 }
                 let quality = self.mana_quality(grant.production, card);
                 let bonus = self.mana_tap_bonuses(actor, card);
-                self.tap_objects(actor, &[card]);
+                self.tap_objects_as(actor, &[card]);
                 let creature = self.is_creature(card);
                 let activated_object = self.object_ref(card);
                 if grant.sacrifice {
@@ -7653,7 +7653,7 @@ impl Game {
                 let quality = self.mana_quality(ManaProduction::Fixed(production), card);
                 let bonus = self.mana_tap_bonuses(actor, card);
                 let source = self.object_ref(card);
-                self.tap_objects(actor, &[card]);
+                self.tap_objects_as(actor, &[card]);
                 if quality.is_some() {
                     self.add_quality_mana(actor, production, quality);
                 } else {
@@ -10570,7 +10570,7 @@ impl Game {
         }
         self.state.attackers.extend(declared.iter().cloned());
         if !pre_tapped {
-            self.tap_objects(actor, &to_tap);
+            self.tap_objects_as(actor, &to_tap);
         }
         let power_event = self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {

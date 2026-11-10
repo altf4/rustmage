@@ -406,7 +406,7 @@ impl Game {
                 c.active = None;
                 let actor = a.item.controller;
                 self.state.announcing = Some(a);
-                self.tap_objects(actor, &[object.card]);
+                self.tap_objects_as(actor, &[object.card]);
                 self.finish_announcement();
             }
             CastCostClause::Behold(_) => {
@@ -496,7 +496,7 @@ impl Game {
         let active = costs.active.take().unwrap();
         costs.clauses[usize::from(active)].paid = true;
         let actor = a.item.controller;
-        self.tap_objects(actor, &objects.map(|r| r.card));
+        self.tap_objects_as(actor, &objects.map(|r| r.card));
         self.finish_announcement();
     }
     pub(super) fn pay_casualty_clause(&mut self, object: ObjectRef) {

@@ -92,7 +92,7 @@ impl Game {
             .filter(|a| !self.keywords(a.card).contains(Keywords::VIGILANCE))
             .map(|a| a.card)
             .collect();
-        self.tap_objects(self.state.active, &ids);
+        self.tap_objects_as(self.state.active, &ids);
     }
     /// A printed provider may become active as a result of tapping attackers.
     pub(super) fn has_attack_tax_provider(&self) -> bool {

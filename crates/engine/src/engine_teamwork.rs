@@ -156,7 +156,7 @@ impl Game {
         c.clauses[usize::from(active)].paid = true;
         let ids = c.teammates.iter().map(|r| r.card).collect::<Vec<_>>();
         let actor = a.item.controller;
-        self.tap_objects(actor, &ids);
+        self.tap_objects_as(actor, &ids);
         // This event is distinct from merely becoming tapped. Queue after the
         // complete simultaneous cost; these triggers wait until casting finishes.
         for id in ids {
