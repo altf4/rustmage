@@ -1185,6 +1185,10 @@ impl Game {
                                     entered.kinds & 16 != 0
                                         && self.object_mana_value(entered.id) >= u64::from(minimum)
                                 }
+                                EntryPredicate::CreatureManaValueAtLeast(minimum) => {
+                                    entered.is_creature()
+                                        && self.object_mana_value(entered.id) >= u64::from(minimum)
+                                }
                                 EntryPredicate::CreatureWithoutSubtype(subtype) => {
                                     entered.is_creature() && !entered.has_subtype(subtype)
                                 }
@@ -2497,11 +2501,27 @@ impl Game {
                 {
                     // This existing field holds a generic exact event object.
                     // Capture the declared attacker, not a target or later combat count.
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .entering_object = Some(attacker);
+                    let counters = ability
+                        .program
+                        .iter()
+                        .any(|instruction| {
+                            matches!(
+                                instruction,
+                                Instruction::SurveilScaled(AmountValue::EventObjectTotalCounters)
+                            )
+                        })
+                        .then(|| self.counter_amounts(attacker.card).total());
+                    let item = self.state.pending_triggers.last_mut().unwrap();
+                    item.entering_object = Some(attacker);
+                    if let Some(counters) = counters {
+                        item.set_event_object(EventObjectView {
+                            object: attacker,
+                            facts: EventObjectFacts::CounterTotal(counters),
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                    }
                 }
                 let attack_keyword = match ability.condition.event() {
                     TriggerCondition::ControlledCreatureAttacks

@@ -4369,12 +4369,15 @@ pub enum AmountValue {
     /// Resolution-time derived quantity, floored at zero if no positive toughness exists.
     GreatestCreatureToughness,
     GreatestCreaturePower(CreatureFilter),
+    GreatestCreatureCardPowerInGraveyard,
     /// Count each current equipped creature controlled by this player once.
     EquippedCreaturesYouControl,
     NonbasicLandsYouControl,
     Devotion(ChoiceColor),
     /// Frozen qualifying subjects of one attack declaration.
     DeclaredAttackerCount,
+    /// Counters on the exact event permanent, or its latest departure snapshot.
+    EventObjectTotalCounters,
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -5741,6 +5744,7 @@ pub enum EntryPredicate {
     LegendarySubtype(&'static str),
     CreatureWithoutSubtype(&'static str),
     ArtifactManaValueAtLeast(u32),
+    CreatureManaValueAtLeast(u32),
     CreaturePowerAtMost(i32),
     CreaturePowerAtLeast(i32),
     SubtypeAny(&'static [&'static str]),
@@ -6143,6 +6147,8 @@ pub enum TriggerCondition {
     SelfLeaves,
     PermanentLeaves(DepartureFilter),
     BattlefieldDeparture(DepartureRule),
+    /// Uses the opposing controller's maximum power before the whole departure.
+    OpponentHighestPowerCreatureDies,
     /// The source dies, or another controlled permanent of any specified kind dies.
     SelfOrControlledPermanentDies(u16),
     /// The linked battlefield incarnation leaves, regardless of its current types.

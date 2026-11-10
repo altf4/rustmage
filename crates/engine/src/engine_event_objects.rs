@@ -32,6 +32,8 @@ impl CreatureComparisonFacts {
 pub enum EventObjectFacts {
     /// Immutable pre-death multiset; never refreshed from a live/new incarnation.
     DeathCounters(Counters),
+    /// Refresh at departure for a program that reads the exact permanent at resolution.
+    CounterTotal(u128),
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
@@ -315,6 +317,7 @@ impl Game {
                     actor(v),
                     v.copy_recipe.unwrap_or_else(|| CopyRecipe::new(v.card)),
                     v.zone,
+                    &v.counters,
                 )
             })
             .collect();
@@ -357,15 +360,15 @@ impl Game {
             }
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _, _)) = facts.iter().find(|(r, _, _, _, zone)| {
+                && let Some((_, stats, _, _, _, _)) = facts.iter().find(|(r, _, _, _, zone, _)| {
                     *zone != Zone::Exile && p.source.is_some_and(|source| *r == source.object)
                 })
             {
                 q.creature_comparison = Some(*stats);
             }
             if let Some(e) = &mut p.event_object
-                && let Some((_, stats, damage, recipe, zone)) =
-                    facts.iter().find(|(r, _, _, _, _)| *r == e.object)
+                && let Some((_, stats, damage, recipe, zone, counters)) =
+                    facts.iter().find(|(r, _, _, _, _, _)| *r == e.object)
             {
                 if matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)) {
                     e.facts = EventObjectFacts::ChosenCostCreaturePower(if stats.creature {
@@ -390,6 +393,9 @@ impl Game {
                         continue;
                     }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
+                    EventObjectFacts::CounterTotal(_) => {
+                        EventObjectFacts::CounterTotal(counters.total())
+                    }
                     EventObjectFacts::DamageActor(_) => EventObjectFacts::DamageActor(*damage),
                     EventObjectFacts::Copiable(_) => EventObjectFacts::Copiable(*recipe),
                     EventObjectFacts::Controller(_) => {

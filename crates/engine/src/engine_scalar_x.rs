@@ -523,6 +523,19 @@ impl Game {
                 .sacrificed_mana_value
                 .as_deref()
                 .map_or(0, |value| u128::from(*value) + u128::from(bonus)),
+            AmountValue::EventObjectTotalCounters => {
+                item.event_object.as_ref().map_or(0, |event| {
+                    if self.on_battlefield(event.object.card)
+                        && self.object_ref(event.object.card) == event.object
+                    {
+                        self.counter_amounts(event.object.card).total()
+                    } else if let EventObjectFacts::CounterTotal(total) = event.facts {
+                        total
+                    } else {
+                        0
+                    }
+                })
+            }
             AmountValue::ChosenCostCreaturePower => {
                 self.chosen_cost_creature_power(item).max(0) as u128
             }

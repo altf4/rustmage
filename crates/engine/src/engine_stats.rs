@@ -222,6 +222,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::BattlefieldDeparture(_)
+                    | TriggerCondition::OpponentHighestPowerCreatureDies
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)

@@ -719,6 +719,23 @@ impl Game {
                     .unwrap_or(0)
                     .max(0) as u128
             }
+            AmountValue::GreatestCreatureCardPowerInGraveyard => {
+                let query = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, object)| {
+                        object.owner == owner
+                            && object.zone == Zone::Graveyard
+                            && object.is_card()
+                            && object.card.is_creature()
+                    })
+                    .map(|(id, _)| query.stats(id as CardId).power)
+                    .max()
+                    .unwrap_or(0)
+                    .max(0) as u128
+            }
             AmountValue::GreatestCreatureToughness => {
                 ability_world::CharacteristicWorld::greatest_creature_toughness(self, owner).max(0)
                     as u128
@@ -765,6 +782,7 @@ impl Game {
             | AmountValue::SourceToughness
             | AmountValue::SourceEquipmentCount
             | AmountValue::DeclaredAttackerCount
+            | AmountValue::EventObjectTotalCounters
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
