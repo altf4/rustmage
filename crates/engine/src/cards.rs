@@ -246,6 +246,8 @@ pub struct GiftSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TargetGroupConstraint {
     SameGraveyard,
+    /// Creature cards in graveyards with pairwise distinct rules names.
+    DistinctNames,
     /// Each distinct target must fit a distinct card-type slot.
     DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.

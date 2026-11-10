@@ -1129,9 +1129,26 @@ impl Game {
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
             let mut seen_creature_types = None;
+            let mut seen_names = Vec::new();
             self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
                 if exclude_source && target == Target::Card(source.card) {
                     return false;
+                }
+                if matches!(
+                    spec.rule,
+                    TargetRule::Grouped {
+                        constraint: TargetGroupConstraint::DistinctNames,
+                        ..
+                    }
+                ) {
+                    let Target::Card(id) = target else {
+                        return false;
+                    };
+                    let name = crate::card_names::comparison_key(world.name(id));
+                    if !seen_names.contains(&name) {
+                        seen_names.push(name);
+                    }
+                    return seen_names.len() >= usize::from(spec.min);
                 }
                 if matches!(
                     spec.rule,
@@ -1284,6 +1301,13 @@ impl Game {
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| {
                     self.same_target_object(*b) && object.attached_to == b.object
                 }),
+            TargetGroupConstraint::DistinctNames => {
+                let name = CharacteristicWorld::name(self, id);
+                !name.is_empty() && chosen.iter()
+                    .filter(|bound| bound.group == group && bound.target != target && self.same_target_object(**bound))
+                    .all(|bound| matches!(bound.target, Target::Card(other)
+                        if !crate::card_names::same_name(name, CharacteristicWorld::name(self, other))))
+            }
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
@@ -1429,6 +1453,18 @@ impl Game {
         plan: TargetPlan,
         recheck_dependencies: bool,
     ) -> bool {
+        if let Some(TargetSpec {
+            rule:
+                rule @ TargetRule::Grouped {
+                    constraint: TargetGroupConstraint::DistinctNames,
+                    ..
+                },
+            ..
+        }) = plan.group(bound.group)
+        {
+            return self.same_target_object(bound)
+                && self.target_group_compatible(rule, bound.group, &item.targets, bound.target);
+        }
         if plan.group(bound.group).is_some_and(|g| {
             matches!(
                 g.rule,
@@ -2033,6 +2069,13 @@ impl Game {
                 });
             }
             TargetRule::Grouped { base, constraint } => {
+                if constraint == TargetGroupConstraint::DistinctNames
+                    && !matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
+                        object.zone == Zone::Graveyard && object.is_card()
+                            && object.card.is_creature() && !world.name(id).is_empty()))
+                {
+                    return false;
+                }
                 if constraint == TargetGroupConstraint::DistinctCardTypeSlots
                     && !matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| !o.is_token() && !o.is_spell_copy()))
                 {
@@ -2040,6 +2083,7 @@ impl Game {
                 }
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
+                    | TargetGroupConstraint::DistinctNames
                     | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
