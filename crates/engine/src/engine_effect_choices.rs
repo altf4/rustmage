@@ -1805,8 +1805,8 @@ impl Game {
                 .filter(|object| self.object_ref(object.card) == *object)
                 .and_then(|object| {
                     let mana_value = self.object_mana_value(object.card);
+                    // CR 118.11–12: a replaced sacrifice still pays this cost.
                     self.sacrifice_cost_batch_outcome(&[(player, object.card)])
-                        .filter(|paid| paid.count != 0)
                         .map(|_| mana_value)
                 });
             let resolution = self.state.resolving.as_mut().unwrap();

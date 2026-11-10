@@ -525,7 +525,7 @@ impl Game {
                     .as_ref()
                     .unwrap()
                     .sacrificed_mana_value
-                    .expect("successful sacrifice during this resolution"),
+                    .expect("paid sacrifice cost during this resolution"),
             ),
             AmountValue::SacrificeCostManaValueWithBonus(bonus) => item
                 .sacrificed_mana_value

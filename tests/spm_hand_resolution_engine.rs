@@ -216,34 +216,59 @@ impl Drop for ClearPrevention {
 }
 
 #[test]
-fn declined_and_prevented_sacrifices_skip_the_program_but_zero_mana_value_is_success() {
-    let _rules = fixture_rules::activate(&[(card("Hill Giant"), &ATTACKER)]);
+fn decline_skips_the_program_but_a_replaced_payment_keeps_its_value() {
+    const PROHIBITED: CardRules = CardRules {
+        effect: Effect::Creature(2, 1),
+        keywords: Keywords::CANT_BE_SACRIFICED,
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (card("Hill Giant"), &ATTACKER),
+        (card("Savannah Lions"), &PROHIBITED),
+    ]);
     let player = Player::P0;
     let mut game = scenario(player);
     let attacker = put(&mut game, player, "Hill Giant", Zone::Battlefield);
     let land = put(&mut game, player, "Forest", Zone::Hand);
     let nonzero = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let replaceable = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let prohibited = put(&mut game, player, "Savannah Lions", Zone::Battlefield);
     let donor = game.create_token_batch_capture(player, Card::DrakeToken, 1, false, None, true)[0];
     let sacrifice = Action::Sacrifice { object: donor };
     let initial_draws = game.state.players[player.index()].cards_drawn_this_turn;
     game.state.land_played = true;
 
     attack_and_resolve(&mut game, attacker);
+    let object = game.object_ref(prohibited);
+    reject(&mut game, Action::Sacrifice { object });
     let mut declined = game.clone();
     act(&mut declined, Action::DeclineEffectPayment);
     assert!(declined.state.resolving.is_none());
     assert_eq!(declined.object_ref(donor.card), donor);
     {
         let _clear = ClearPrevention;
-        zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|object| object.set(Some(donor)));
+        let object = game.object_ref(replaceable);
+        zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|target| target.set(Some(object)));
         let mut prevented = game.clone();
-        act(&mut prevented, sacrifice.clone());
-        assert!(prevented.state.resolving.is_none());
-        assert_eq!(prevented.object_ref(donor.card), donor);
+        act(&mut prevented, Action::Sacrifice { object });
+        assert_eq!(prevented.object_ref(replaceable), object);
+        assert_eq!(prevented.object_view(replaceable).zone, Zone::Battlefield);
+        assert_eq!(
+            prevented.state.players[player.index()].permanents_sacrificed_this_turn,
+            0
+        );
         assert_eq!(
             prevented.state.players[player.index()].cards_drawn_this_turn,
-            initial_draws
+            initial_draws + 2
         );
+        assert_eq!(
+            prevented.observe(player).effect_choice.unwrap().kind,
+            EffectChoiceKind::HandPermanent {
+                maximum: 2,
+                tapped: false,
+            }
+        );
+        act(&mut prevented, Action::DeclineHandEntry);
     }
     act(&mut game, sacrifice);
     assert_eq!(

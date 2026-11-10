@@ -3391,7 +3391,7 @@ pub enum Instruction {
     /// Sacrifice any number of matching permanents together and remember the actual count.
     MaySacrificeAnyNumber(SacrificeFilter),
     /// Optional non-targeted sacrifice of one controlled permanent.
-    /// A completed sacrifice saves its prior battlefield mana value.
+    /// A paid sacrifice cost saves the chosen permanent’s prior battlefield mana value.
     MaySacrificeForManaValue {
         filter: SacrificeFilter,
         skip: usize,
@@ -4497,7 +4497,7 @@ pub enum AmountValue {
     SacrificeCostManaValueWithBonus(u16),
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
-    /// Battlefield mana value recorded by a successful sacrifice during this resolution.
+    /// Battlefield mana value recorded by paying a sacrifice cost during this resolution.
     ResolutionSacrificedManaValue,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.
     SourceLastKnownPower,
