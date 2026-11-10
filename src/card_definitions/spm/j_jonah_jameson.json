@@ -3,10 +3,50 @@
   "catalogue_id": 2246,
   "oracle_id": "de861715-fd0b-493e-9a7c-c470a23044c0",
   "facts_sha256": "a51f67092841f3e2e310682201f1bb8050e653c382eeeb72101b8638fd2eb77e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b28c19b8d257c734c2325d7985dad49dc41c830c4e5ef40a04f7cf55327119d8"
   },
-  "physical_metadata_sha256": "46c9513c429ebd7f6029023b7eec31418ab2ffe389d182ae4d8476adeb97cfb9"
+  "physical_metadata_sha256": "46c9513c429ebd7f6029023b7eec31418ab2ffe389d182ae4d8476adeb97cfb9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JJonahJameson.java",
+  "java_sha256": "806cdef277a01e89e130ad2fba1d72c579fa2d5d5c99c561fc0f00f6f9cf2c0b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAllTriggeredAbility.java",
+      "sha256": "685d9b004cf03f55ada70dbaa555a1d606f9ed316c2ee75457b43e51c82d650a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+      "sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

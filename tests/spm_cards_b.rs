@@ -5,8 +5,12 @@ use rustmage as _;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+#[path = "spm_cards_b/events_and_types.rs"]
+mod events_and_types;
 #[path = "spm_cards_b/faces_and_combat.rs"]
 mod faces_and_combat;
+#[path = "spm_cards_b/hidden_and_copies.rs"]
+mod hidden_and_copies;
 #[path = "spm_cards_b/mana_and_permanents.rs"]
 mod mana_and_permanents;
 
@@ -69,4 +73,23 @@ fn token_refs(game: &Game, card: Card, player: Player) -> Vec<ObjectRef> {
         })
         .map(|(id, _)| game.object_ref(id as CardId))
         .collect()
+}
+
+fn declare(game: &mut Game, attackers: &[CardId]) {
+    game.begin_step(Step::BeginCombat);
+    pass_pair(game);
+    for &card in attackers {
+        act(game, Action::Attack { card });
+    }
+    act(game, Action::FinishAttackers);
+}
+
+fn order_triggers(game: &mut Game) {
+    for _ in 0..8 {
+        if !matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+            return;
+        }
+        choose(game, |action| matches!(action, Action::PutTrigger { .. }));
+    }
+    panic!("scenario exceeded its trigger order budget");
 }

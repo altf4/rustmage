@@ -3,10 +3,45 @@
   "catalogue_id": 2434,
   "oracle_id": "8e51fdb8-4f83-4e94-b36c-40a501075ecb",
   "facts_sha256": "36fdd6a25af6a6a1b11d53d4f303f6861908fce946a58eb3cb6587f857fb5298",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4db072326371ff70f6dc3a808036bbb8c669fa2386a123a9c739fb3f72e4735f"
   },
-  "physical_metadata_sha256": "62af6293e29ea926f8fab5be696ce9928aaa5ff888f84c8f8eb7b496fd067e4c"
+  "physical_metadata_sha256": "62af6293e29ea926f8fab5be696ce9928aaa5ff888f84c8f8eb7b496fd067e4c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LadyOctopusInspiredInventor.java",
+  "java_sha256": "0ebb9ac4bced4297348c6eb4de7f3363c3e781d1d1d2be59cf10c45cd673c780",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthOrNthCardTriggeredAbility.java",
+      "sha256": "9d63a72e1a0a81bc26a34101a95b727bdd0c6b9fc1d86138277c1de0dc62ded0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CastFromHandForFreeEffect.java",
+      "sha256": "e45327251b7a38197426f979a6dbdd8217e14a848659deb0b8260cd4c0b7b9a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

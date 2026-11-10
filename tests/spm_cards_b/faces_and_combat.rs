@@ -9,15 +9,6 @@ fn transform(game: &mut Game, card: CardId, back: Card) {
     assert_eq!(game.object_view(card).card, back);
 }
 
-fn declare(game: &mut Game, attackers: &[CardId]) {
-    game.begin_step(Step::BeginCombat);
-    pass_pair(game);
-    for &card in attackers {
-        act(game, Action::Attack { card });
-    }
-    act(game, Action::FinishAttackers);
-}
-
 fn choose_clause(game: &mut Game, want: impl Fn(CastCostClause) -> bool) {
     let clause = game
         .state
