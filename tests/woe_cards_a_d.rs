@@ -1273,3 +1273,461 @@ fn devouring_sugarmaw_creates_both_tokens_and_checks_its_own_upkeep() {
     assert!(game.object_view(horror).tapped);
     assert_eq!(game.object_view(bow).zone, Zone::Battlefield);
 }
+
+fn choose_searched_card(game: &mut Game, card: CardId) {
+    act(game, Action::ChooseSearch { card });
+    act(game, Action::FinishSearch);
+}
+
+#[test]
+fn beseech_the_mirror_keeps_uncast_cards_private_and_casts_one_eligible_face() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let spell = candidate(&mut game, player, "Beseech the Mirror");
+    let offering = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let four = put(&mut game, player, "Hill Giant", Zone::Library);
+    let wurm = put(&mut game, player, "Beanstalk Wurm", Zone::Library);
+    let dragon = put(&mut game, player, "Shivan Dragon", Zone::Library);
+    let untargetable = put(&mut game, player, "Unsummon", Zone::Library);
+    let land = put(&mut game, player, "Island", Zone::Library);
+    game.state.players[player.index()].mana = [0, 0, 3, 0, 0, 1];
+    let hidden = |branch: &Game, card, zone| {
+        assert_eq!(branch.object_view(card).zone, zone);
+        assert!(
+            branch
+                .observe(player)
+                .objects
+                .iter()
+                .any(|view| view.id == card)
+        );
+        assert!(
+            !branch
+                .observe(opponent)
+                .objects
+                .iter()
+                .any(|view| view.id == card)
+        );
+    };
+    act(&mut game, Action::AnnounceCast { card: spell });
+
+    let mut unpaid = game.clone();
+    bargain(&mut unpaid, None);
+    pay(&mut unpaid);
+    pass_twice(&mut unpaid);
+    choose_searched_card(&mut unpaid, four);
+    hidden(&unpaid, four, Zone::Hand);
+    assert_eq!(unpaid.object_view(offering).zone, Zone::Battlefield);
+    assert!(unpaid.observe(player).resolution_free_casts.is_none());
+
+    bargain(&mut game, Some(offering));
+    pay(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(game.object_view(offering).zone, Zone::Graveyard);
+    pass_twice(&mut game);
+    let search = game.observe(player).search_choice.unwrap();
+    assert_eq!(search.filter, SearchFilter::Any);
+    assert_eq!(search.minimum, 1);
+    assert_eq!(search.maximum, 1);
+    assert!(!search.reveal);
+    assert!(game.observe(opponent).search_choice.is_none());
+    reject(&mut game, Action::FinishSearch);
+
+    for card in [four, dragon, untargetable, land] {
+        let mut declined = game.clone();
+        let rng = declined.state.rng;
+        choose_searched_card(&mut declined, card);
+        assert_ne!(declined.state.rng, rng);
+        hidden(&declined, card, Zone::Exile);
+        assert!(declined.observe(opponent).resolution_free_casts.is_none());
+        let free = Action::CastExiledDuringResolution {
+            object: declined.object_ref(card),
+            face: CastFace::Normal,
+        };
+        assert_eq!(declined.legal_actions().contains(&free), card == four);
+        act(&mut declined, Action::FinishResolutionCasts);
+        hidden(&declined, card, Zone::Hand);
+        reject(&mut declined, free);
+    }
+
+    for (card, face, mana_value, zone) in [
+        (four, CastFace::Normal, 4, Zone::Battlefield),
+        (wurm, CastFace::Adventure, 2, Zone::Exile),
+    ] {
+        let mut casted = game.clone();
+        choose_searched_card(&mut casted, card);
+        let object = casted.object_ref(card);
+        let illegal = if face == CastFace::Adventure {
+            CastFace::Normal
+        } else {
+            CastFace::Adventure
+        };
+        reject(
+            &mut casted,
+            Action::CastExiledDuringResolution {
+                object,
+                face: illegal,
+            },
+        );
+        act(
+            &mut casted,
+            Action::CastExiledDuringResolution { object, face },
+        );
+        act(&mut casted, Action::PayCosts { payment: [0; 6] });
+        let packet = casted.state.stack.last().unwrap();
+        assert_eq!(packet.cast.unwrap().method, CastMethod::Free);
+        assert_eq!(packet.mana_value(), mana_value);
+        assert_eq!(
+            casted
+                .observe(player)
+                .resolution_free_casts
+                .unwrap()
+                .casts_remaining,
+            Some(0)
+        );
+        act(&mut casted, Action::FinishResolutionCasts);
+        settle(&mut casted);
+        assert_eq!(casted.object_view(card).zone, zone);
+        if face == CastFace::Adventure {
+            assert_eq!(
+                casted.state.players[player.index()].extra_land_plays_granted,
+                1
+            );
+            assert!(casted.can_play_adventure(player, card));
+        } else {
+            assert_eq!(stats(&casted, card), (3, 3));
+        }
+    }
+}
+
+#[test]
+fn bitter_chill_limits_natural_untap_and_pays_for_scry_before_draw() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let aura = candidate(&mut game, player, "Bitter Chill");
+    let elf = put(&mut game, opponent, "Llanowar Elves", Zone::Battlefield);
+    let island = put(&mut game, opponent, "Island", Zone::Battlefield);
+    let shore = put(&mut game, opponent, "Shore Up", Zone::Hand);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    let removal = put(&mut game, player, "Disenchant", Zone::Hand);
+    let drawn = put(&mut game, player, "Forest", Zone::Library);
+    let top = put(&mut game, player, "Opt", Zone::Library);
+    cast(&mut game, aura, Some(Target::Card(elf)));
+
+    let mut fizzled = game.clone();
+    act(&mut fizzled, Action::Pass);
+    cast(&mut fizzled, bounce, Some(Target::Card(elf)));
+    settle(&mut fizzled);
+    assert_eq!(fizzled.object_view(aura).zone, Zone::Graveyard);
+    assert_eq!(
+        fizzled.state.players[player.index()].cards_drawn_this_turn,
+        0
+    );
+
+    pass_twice(&mut game);
+    assert_eq!(
+        game.object_view(aura).attached_to,
+        Some(game.object_ref(elf))
+    );
+    assert!(!game.object_view(elf).tapped);
+    pass_twice(&mut game);
+    assert!(game.object_view(elf).tapped);
+
+    let mut untap = game.clone();
+    finish_turn(&mut untap);
+    assert_eq!(untap.state.active, opponent);
+    assert_eq!(untap.state.step, Step::Upkeep);
+    assert!(untap.object_view(elf).tapped);
+    act(&mut untap, Action::TapMana { card: island });
+    cast(&mut untap, shore, Some(Target::Card(elf)));
+    settle(&mut untap);
+    assert!(!untap.object_view(elf).tapped);
+
+    cast(&mut game, removal, Some(Target::Card(aura)));
+    pass_twice(&mut game);
+    assert_eq!(game.object_view(aura).zone, Zone::Graveyard);
+    pass_twice(&mut game);
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineResolutionMana);
+    assert_eq!(
+        declined.state.players[player.index()].cards_drawn_this_turn,
+        0
+    );
+    assert_eq!(declined.top_library_card(player), Some(top));
+
+    assert_eq!(
+        game.observe(player)
+            .resolution_payment
+            .unwrap()
+            .cost
+            .generic,
+        1,
+    );
+    act(
+        &mut game,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert!(game.observe(opponent).library_choice.is_none());
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+    reject(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: drawn,
+            destination: LibraryDestination::Bottom,
+        },
+    );
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Bottom,
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(top).zone, Zone::Library);
+    assert_eq!(game.object_view(drawn).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+fn battlefield_treasures(game: &Game, player: Player) -> Vec<ObjectView> {
+    game.observe(player)
+        .objects
+        .into_iter()
+        .filter(|object| object.zone == Zone::Battlefield && object.has_subtype("Treasure"))
+        .collect()
+}
+
+#[test]
+fn discerning_financier_rechecks_lands_and_gifts_only_a_live_own_treasure() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let financier = candidate(&mut game, player, "Discerning Financier");
+    let own = ["Plains"; 3].map(|name| put(&mut game, player, name, Zone::Battlefield));
+    for _ in 0..3 {
+        put(&mut game, opponent, "Forest", Zone::Battlefield);
+    }
+    let fetch = put(&mut game, opponent, "Evolving Wilds", Zone::Battlefield);
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    cast(&mut game, financier, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, financier), (2, 3));
+    finish_turn(&mut game);
+    assert!(game.state.stack.is_empty());
+    finish_turn(&mut game);
+    assert_eq!(game.state.step, Step::Upkeep);
+
+    let mut tied = game.clone();
+    act(&mut tied, Action::Pass);
+    act(&mut tied, activate(fetch));
+    pay(&mut tied);
+    pass_twice(&mut tied);
+    act(&mut tied, Action::FinishSearch);
+    settle(&mut tied);
+    assert!(battlefield_treasures(&tied, player).is_empty());
+
+    pass_twice(&mut game);
+    let treasure = battlefield_treasures(&game, player);
+    assert_eq!(treasure.len(), 1);
+    let treasure = treasure[0].id;
+    assert_eq!(game.object_view(treasure).controller, player);
+    act(&mut game, activate(financier));
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(bow),
+        },
+    );
+    target(&mut game, treasure);
+    for card in own {
+        act(&mut game, Action::TapMana { card });
+    }
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.required, [1, 0, 0, 0, 0, 0]);
+    assert_eq!(cost.generic, 2);
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [3, 0, 0, 0, 0, 0],
+        },
+    );
+    assert_eq!(game.state.stack.last().unwrap().targets.len(), 1);
+
+    let mut stale = game.clone();
+    act(
+        &mut stale,
+        Action::ActivateMana {
+            card: treasure,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [1, 0, 0, 0, 0, 0],
+        },
+    );
+    settle(&mut stale);
+    assert!(battlefield_treasures(&stale, player).is_empty());
+    assert_eq!(stale.state.players[player.index()].cards_drawn_this_turn, 0);
+
+    settle(&mut game);
+    let donated = game.object_view(treasure);
+    assert_eq!(donated.owner, player);
+    assert_eq!(donated.controller, opponent);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn dream_spoilers_shrinks_an_optional_opposing_target_on_opposing_turns() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let faerie = candidate(&mut game, player, "Dream Spoilers");
+    let your_shocks = [(); 2].map(|_| put(&mut game, player, "Shock", Zone::Hand));
+    let their_shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    let your_bear = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let their_bear = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let your_mountain = put(&mut game, player, "Mountain", Zone::Battlefield);
+    let their_mountain = put(&mut game, opponent, "Mountain", Zone::Battlefield);
+    cast(&mut game, faerie, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, faerie), (2, 2));
+    assert!(game.object_view(faerie).keywords.contains(Keywords::FLYING));
+
+    cast(&mut game, your_shocks[0], Some(Target::Player(opponent)));
+    assert_eq!(game.state.stack.len(), 1);
+    settle(&mut game);
+    finish_turn(&mut game);
+    assert_eq!(game.state.active, opponent);
+    act(
+        &mut game,
+        Action::TapMana {
+            card: their_mountain,
+        },
+    );
+    cast(&mut game, their_shock, Some(Target::Player(player)));
+    assert_eq!(game.state.stack.len(), 1);
+    settle(&mut game);
+
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::TapMana {
+            card: your_mountain,
+        },
+    );
+    cast(&mut game, your_shocks[1], Some(Target::Player(opponent)));
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(your_bear),
+        },
+    );
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishTargets);
+    settle(&mut declined);
+    assert_eq!(stats(&declined, their_bear), (2, 2));
+
+    target(&mut game, their_bear);
+    pass_twice(&mut game);
+    assert_eq!(stats(&game, their_bear), (1, 1));
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 16);
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, their_bear), (2, 2));
+}
+
+#[test]
+fn dutiful_griffin_pays_two_role_enchantments_from_graveyard_on_another_turn() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let griffin = candidate(&mut game, player, "Dutiful Griffin");
+    let courtiers = [(); 2].map(|_| put(&mut game, player, "Cursed Courtier", Zone::Hand));
+    let plains = [(); 3].map(|_| put(&mut game, player, "Plains", Zone::Battlefield));
+    let bow = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let foreign = put(
+        &mut game,
+        opponent,
+        "A Tale for the Ages",
+        Zone::Battlefield,
+    );
+    let murder = put(&mut game, opponent, "Murder", Zone::Hand);
+    let ooze = put(&mut game, opponent, "Scavenging Ooze", Zone::Battlefield);
+    let forest = put(&mut game, opponent, "Forest", Zone::Battlefield);
+
+    cast(&mut game, courtiers[0], None);
+    settle(&mut game);
+    cast(&mut game, griffin, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, griffin), (4, 4));
+    assert!(
+        game.object_view(griffin)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    reject(&mut game, activate(griffin));
+    act(&mut game, Action::Pass);
+    cast(&mut game, murder, Some(Target::Card(griffin)));
+    settle(&mut game);
+    assert_eq!(game.object_view(griffin).zone, Zone::Graveyard);
+    reject(&mut game, activate(griffin));
+
+    cast(&mut game, courtiers[1], None);
+    settle(&mut game);
+    let roles = courtiers.map(|courtier| {
+        assert_eq!(stats(&game, courtier), (1, 1));
+        game.observe(player)
+            .objects
+            .into_iter()
+            .find(|object| {
+                object.is_token() && object.attached_to == Some(game.object_ref(courtier))
+            })
+            .unwrap()
+            .reference
+    });
+    finish_turn(&mut game);
+    assert_eq!(game.state.active, opponent);
+    act(&mut game, Action::Pass);
+    act(&mut game, activate(griffin));
+    for card in [bow, foreign] {
+        let object = game.object_ref(card);
+        reject(&mut game, Action::ChooseAdditionalCost { object });
+    }
+    act(&mut game, Action::ChooseAdditionalCost { object: roles[0] });
+    reject(&mut game, Action::ChooseAdditionalCost { object: roles[0] });
+    assert_eq!(stats(&game, courtiers[0]), (1, 1));
+    act(&mut game, Action::ChooseAdditionalCost { object: roles[1] });
+    for card in plains {
+        act(&mut game, Action::TapMana { card });
+    }
+    let cost = game.mana_payment_domain().unwrap();
+    assert_eq!(cost.required, [1, 0, 0, 0, 0, 0]);
+    assert_eq!(cost.generic, 2);
+    act(
+        &mut game,
+        Action::PayCosts {
+            payment: [3, 0, 0, 0, 0, 0],
+        },
+    );
+    assert!(game.state.stack.last().unwrap().targets.is_empty());
+    for courtier in courtiers {
+        assert_eq!(stats(&game, courtier), (3, 3));
+    }
+    let buried = game.object_ref(griffin);
+
+    let mut stale = game.clone();
+    act(&mut stale, Action::Pass);
+    act(&mut stale, Action::TapMana { card: forest });
+    act(&mut stale, activate(ooze));
+    target(&mut stale, griffin);
+    pay(&mut stale);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(griffin).zone, Zone::Exile);
+
+    settle(&mut game);
+    assert_eq!(game.object_view(griffin).zone, Zone::Hand);
+    assert_ne!(game.object_ref(griffin), buried);
+}
