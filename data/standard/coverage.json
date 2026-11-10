@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "73697c9176ee7307b322f339e99c1b6788b4a6941e325543a381f70ab90c4b2e",
+  "catalogue_version": "230aaf073ddd8d4d50820b5dac9d12032b44678f4dd85735e85cfb173fcad46c",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4086,
-  "implemented_total": 4097,
+  "implemented_standard_cards": 4091,
+  "implemented_total": 4102,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 221,
-      "gated": 37
+      "complete": 226,
+      "gated": 32
     },
     "znr": {
       "total": 1,
@@ -15347,8 +15347,8 @@
     {
       "name": "Gruff Triplets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gruff_triplets.rs",
       "set": "woe"
     },
@@ -17107,16 +17107,16 @@
     {
       "name": "Hylda of the Icy Crown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hylda_of_the_icy_crown.rs",
       "set": "woe"
     },
     {
       "name": "Hylda's Crown of Winter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hylda_s_crown_of_winter.rs",
       "set": "woe"
     },
@@ -17211,8 +17211,8 @@
     {
       "name": "Icewrought Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/icewrought_sentry.rs",
       "set": "woe"
     },
@@ -20227,8 +20227,8 @@
     {
       "name": "Likeness Looter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/likeness_looter.rs",
       "set": "woe"
     },
