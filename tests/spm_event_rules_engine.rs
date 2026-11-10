@@ -238,7 +238,10 @@ const DAMAGE_OBSERVER: CardRules = CardRules {
         origin: ActivationOrigin::Battlefield,
         cost: ActivationCost::ZERO,
         targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
-        program: &[Instruction::DamageWithController(2)],
+        program: &[Instruction::DamageWithController {
+            damage: 2,
+            controller_damage: 2,
+        }],
         sorcery: false,
         once_per_turn: false,
     }],
