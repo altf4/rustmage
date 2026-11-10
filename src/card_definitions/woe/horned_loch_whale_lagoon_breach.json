@@ -13,5 +13,66 @@
     "oracle_id": "adca3929-4ecc-45bc-932e-604bcc32550a",
     "index": 0,
     "sha256": "f57ba80ad27ea68e1a0a08a140366fa6bda687b74fbaf23bce24599beca3b021"
-  }
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HornedLochWhale.java",
+  "java_sha256": "4a4a416bc90e2a17916dd21d9d9b5f6f9cd1226e29cfeb03f833ed67c2e80a5f",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterAttackingCreature.java",
+      "sha256": "e42cf80f6c0414aa1547a092102896d5149783e7179f782d77f2e1e0263ad191"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/AttackingPredicate.java",
+      "sha256": "31b80ba46b462c287c4c5d4a4867f7271dccaf8eedc555fb5cbbfe9fea156617"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

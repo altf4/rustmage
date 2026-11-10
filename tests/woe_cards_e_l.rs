@@ -758,3 +758,336 @@ fn into_the_fae_court_draws_three_and_creates_one_restricted_faerie() {
         assert!(tokens(&game, player.other(), FAERIE).is_empty());
     }
 }
+
+fn choose_target(game: &mut Game, target: Target) {
+    act(game, Action::ChooseTarget { target });
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(game, Action::FinishTargets);
+    }
+}
+
+fn cast_adventure(game: &mut Game, card: CardId, target: Option<Target>) {
+    act(game, Action::AnnounceAdventure { card });
+    if let Some(target) = target {
+        choose_target(game, target);
+    }
+    pay(game);
+}
+
+fn cast_adventurer(game: &mut Game, card: CardId) {
+    act(game, Action::AnnounceExile { card });
+    pay(game);
+}
+
+#[test]
+fn fell_horseman_recovers_an_owned_creature_and_bottoms_only_its_exact_death() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let horseman = candidate(&mut game, player, "Fell Horseman // Deathly Ride");
+        let own = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        let other = put(&mut game, player.other(), "Bear Cub", Zone::Graveyard);
+        let murder = put(&mut game, player, "Murder", Zone::Hand);
+        act(&mut game, Action::AnnounceAdventure { card: horseman });
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(other),
+            },
+        );
+        choose_target(&mut game, Target::Card(own));
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(own).zone, Zone::Hand);
+        assert_eq!(game.object_view(other).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(horseman).zone, Zone::Exile);
+        cast_adventurer(&mut game, horseman);
+        settle(&mut game);
+        assert_eq!(game.object_view(horseman).zone, Zone::Battlefield);
+
+        cast(&mut game, murder, Some(Target::Card(horseman)));
+        pass_twice(&mut game);
+        assert_eq!(game.object_view(horseman).zone, Zone::Graveyard);
+        let dead = game.object_ref(horseman);
+        let mut stale = game.clone();
+        stale.move_object(horseman, Zone::Exile);
+        stale.move_object(horseman, Zone::Graveyard);
+        assert_ne!(stale.object_ref(horseman), dead);
+        settle(&mut stale);
+        assert_eq!(stale.object_view(horseman).zone, Zone::Graveyard);
+
+        settle(&mut game);
+        assert_eq!(game.object_view(horseman).zone, Zone::Library);
+        assert_eq!(
+            game.state.players[player.index()].library.first(),
+            Some(&horseman)
+        );
+    }
+}
+
+#[test]
+fn gumdrop_poisoner_creates_food_and_uses_life_gained_not_net_life_change() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let poisoner = candidate(&mut game, player, "Gumdrop Poisoner // Tempt with Treats");
+        let target = put(
+            &mut game,
+            player.other(),
+            "Gigantosaurus",
+            Zone::Battlefield,
+        );
+        let burn = put(&mut game, player.other(), "Shock", Zone::Hand);
+        cast_adventure(&mut game, poisoner, None);
+        settle(&mut game);
+        assert_eq!(game.object_view(poisoner).zone, Zone::Exile);
+        let food = tokens(&game, player, FOOD);
+        assert_eq!(food.len(), 1);
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: food[0],
+                ability: 0,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut game);
+        settle(&mut game);
+        act(&mut game, Action::Pass);
+        cast(&mut game, burn, Some(Target::Player(player)));
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 21);
+
+        cast_adventurer(&mut game, poisoner);
+        pass_twice(&mut game);
+        assert!(
+            game.object_view(poisoner)
+                .keywords
+                .contains(Keywords::LIFELINK)
+        );
+        let mut no_target = game.clone();
+        act(&mut no_target, Action::FinishTargets);
+        settle(&mut no_target);
+        assert_eq!(no_target.object_view(target).power, 10);
+
+        choose_target(&mut game, Target::Card(target));
+        settle(&mut game);
+        let target = game.object_view(target);
+        assert_eq!((target.power, target.toughness), (7, 7));
+    }
+}
+
+#[test]
+fn heartflame_duelist_grants_lifelink_to_a_paid_adventure_while_it_is_present() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let duelist = candidate(&mut game, player, "Heartflame Duelist // Heartflame Slash");
+        let slash = candidate(&mut game, player, "Heartflame Duelist // Heartflame Slash");
+        let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+        announce(&mut game, duelist, &[]);
+        settle(&mut game);
+        cast_adventure(&mut game, slash, Some(Target::Player(opponent)));
+        assert!(
+            game.object_view(slash)
+                .keywords
+                .contains(Keywords::LIFELINK)
+        );
+        let mut removed = game.clone();
+        act(&mut removed, Action::Pass);
+        cast(&mut removed, bounce, Some(Target::Card(duelist)));
+        settle(&mut removed);
+        assert_eq!(removed.state.players[player.index()].life, 20);
+        assert_eq!(removed.state.players[opponent.index()].life, 17);
+        assert_eq!(removed.object_view(slash).zone, Zone::Exile);
+
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, 23);
+        assert_eq!(game.state.players[opponent.index()].life, 17);
+        assert_eq!(game.object_view(slash).zone, Zone::Exile);
+        cast_adventurer(&mut game, slash);
+        settle(&mut game);
+        assert_eq!(game.object_view(slash).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn horned_loch_whale_has_flash_off_turn_tapped_entry_and_ward_two() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut own_turn = scenario(player);
+        let whale = candidate(&mut own_turn, player, "Horned Loch-Whale // Lagoon Breach");
+        announce(&mut own_turn, whale, &[]);
+        settle(&mut own_turn);
+        assert!(!own_turn.object_view(whale).tapped);
+
+        let mut game = scenario(opponent);
+        let whale = candidate(&mut game, player, "Horned Loch-Whale // Lagoon Breach");
+        let kill = put(&mut game, opponent, "Murder", Zone::Hand);
+        act(&mut game, Action::Pass);
+        announce(&mut game, whale, &[]);
+        settle(&mut game);
+        assert!(game.object_view(whale).tapped);
+        assert!(game.object_view(whale).keywords.contains(Keywords::FLASH));
+
+        cast(&mut game, kill, Some(Target::Card(whale)));
+        pass_twice(&mut game);
+        let mut paid = game.clone();
+        reject(
+            &mut paid,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        act(
+            &mut paid,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        settle(&mut paid);
+        assert_eq!(paid.object_view(whale).zone, Zone::Graveyard);
+
+        act(&mut game, Action::DeclineResolutionMana);
+        settle(&mut game);
+        assert_eq!(game.object_view(kill).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(whale).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn lagoon_breach_uses_the_attacker_owner_for_the_private_library_choice() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let card = candidate(&mut game, player, "Horned Loch-Whale // Lagoon Breach");
+        let lands = [0; 2].map(|_| put(&mut game, player, "Island", Zone::Battlefield));
+        let attacker = put(&mut game, opponent, "Harried Spearguard", Zone::Battlefield);
+        let waiting = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let exact = game.object_ref(attacker);
+        game.change_controller(exact, player);
+        pass_twice(&mut game);
+        pass_twice(&mut game);
+        act(&mut game, Action::Attack { card: attacker });
+        act(&mut game, Action::FinishAttackers);
+        for card in lands {
+            act(&mut game, Action::TapMana { card });
+        }
+        act(&mut game, Action::AnnounceAdventure { card });
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(waiting),
+            },
+        );
+        choose_target(&mut game, Target::Card(attacker));
+        pay(&mut game);
+        pass_twice(&mut game);
+        assert_eq!(game.actor(), Some(opponent));
+        assert!(game.observe(opponent).target_library.is_some());
+        assert!(game.observe(player).target_library.is_none());
+        let mut bottom = game.clone();
+        for (branch, destination) in [
+            (&mut game, LibraryDestination::Top),
+            (&mut bottom, LibraryDestination::Bottom),
+        ] {
+            act(
+                branch,
+                Action::ChooseLibraryDestination {
+                    object: exact,
+                    destination,
+                },
+            );
+            assert_eq!(branch.object_view(attacker).zone, Zone::Library);
+            assert_eq!(branch.object_view(attacker).owner, opponent);
+            assert_eq!(branch.object_view(card).zone, Zone::Exile);
+            let library = &branch.state.players[opponent.index()].library;
+            let selected_end = if destination == LibraryDestination::Top {
+                library.last()
+            } else {
+                library.first()
+            };
+            assert_eq!(selected_end, Some(&attacker));
+        }
+    }
+}
+
+#[test]
+fn birthright_boon_searches_both_types_and_kellan_counts_current_attachments() {
+    const WICKED_ROLE: Card = Card::from_catalogue_id(5248);
+    use rustmage_core::engine::replacements::TokenGroupView;
+
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let kellan = candidate(
+            &mut game,
+            player,
+            "Kellan, the Fae-Blooded // Birthright Boon",
+        );
+        let equipment = put(&mut game, player, "Swiftfoot Boots", Zone::Library);
+        let aura = put(&mut game, player, "Bestial Bloodline", Zone::Library);
+        let ordinary = put(&mut game, player, "Bear Cub", Zone::Library);
+        let friend = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        cast_adventure(&mut game, kellan, None);
+        pass_twice(&mut game);
+        assert!(game.observe(player).search_choice.is_some());
+        assert!(game.observe(opponent).search_choice.is_none());
+        reject(&mut game, Action::ChooseSearch { card: ordinary });
+        let mut aura_branch = game.clone();
+        for (branch, selection) in [(&mut game, equipment), (&mut aura_branch, aura)] {
+            act(branch, Action::ChooseSearch { card: selection });
+            act(branch, Action::FinishSearch);
+            assert_eq!(branch.object_view(selection).zone, Zone::Hand);
+            assert_eq!(branch.object_view(kellan).zone, Zone::Exile);
+            assert!(
+                branch
+                    .observe(opponent)
+                    .known_hand
+                    .contains(&branch.object_ref(selection))
+            );
+        }
+
+        cast_adventurer(&mut game, kellan);
+        settle(&mut game);
+        assert!(
+            game.object_view(kellan)
+                .keywords
+                .contains(Keywords::DOUBLE_STRIKE)
+        );
+        announce(&mut game, equipment, &[]);
+        settle(&mut game);
+        let equip = Action::AnnounceActivate {
+            card: equipment,
+            ability: 0,
+            counter_payment: Counters::default(),
+        };
+        act(&mut game, equip.clone());
+        choose_target(&mut game, Target::Card(kellan));
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(friend).power, 3);
+
+        let recipient = game.object_ref(kellan);
+        let _ = game.create_token_groups_attached(
+            opponent,
+            &[TokenGroupView {
+                token: WICKED_ROLE,
+                amount: 1,
+                tapped: false,
+            }],
+            None,
+            true,
+            Some(recipient),
+        );
+        assert_eq!(game.object_view(friend).power, 4);
+        assert_eq!(game.object_view(friend).toughness, 2);
+        assert_eq!(game.object_view(foreign).power, 2);
+        assert_eq!(game.object_view(kellan).power, 3);
+
+        act(&mut game, equip);
+        choose_target(&mut game, Target::Card(friend));
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(friend).power, 3);
+    }
+}

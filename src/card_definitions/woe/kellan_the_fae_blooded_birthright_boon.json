@@ -13,5 +13,56 @@
     "oracle_id": "10c48d19-d91f-4674-b186-477acaf08e5a",
     "index": 0,
     "sha256": "a7ece0b24423b2dc4e829ec7219ccf6db81671ae078e4ce53d10513a8b7b1f47"
-  }
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanTheFaeBlooded.java",
+  "java_sha256": "07d49ae0a33e97b2f8f4b11511339fab769cc6a51e5474201d5dc60c368f42f7",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/AdditiveDynamicValue.java",
+      "sha256": "156c42a7450af54725bc02366bbcba4763fdbf5c7b769ddded8d615bcaa94718"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/AuraAttachedCount.java",
+      "sha256": "dfbe4b5df8bd6fdf1c91f8ec0e8c5ba8f9a020ca78afe64928f1c4b222c1972d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/EquipmentAttachedCount.java",
+      "sha256": "8dcd1c4e3d6e1754f48f20c844a3ec61c994bdcf33087fc5d1fb165832864762"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }
