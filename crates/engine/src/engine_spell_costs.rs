@@ -210,7 +210,10 @@ impl Game {
             if a.item.cast.is_some_and(|c| {
                 matches!(
                     c.method,
-                    CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                    CastMethod::ExileLife
+                        | CastMethod::LibraryLife
+                        | CastMethod::Plot
+                        | CastMethod::Free
                 )
             }) {
                 return ManaCost {

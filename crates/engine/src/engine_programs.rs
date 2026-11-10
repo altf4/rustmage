@@ -7982,6 +7982,9 @@ impl Game {
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
                 }
+                Instruction::GrantLibraryTopLifePlayUntilEndTurn => {
+                    self.state.players[item.controller.index()].library_top_life_play = true;
+                }
                 Instruction::ExileTargetLibraryPlayLife { amount } => {
                     let count = self.item_amount(amount, &item);
                     for player in self.program_players(PlayerSet::Targeted, &item) {

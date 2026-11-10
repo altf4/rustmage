@@ -3102,11 +3102,16 @@ impl<'g> FundingState<'g> {
                     .map(|(object, player)| (*object, player.index()))
                     .collect(),
                 values: p.entry_values.iter().map(|r| (r.object, r.value)).collect(),
-                riot_haste: p.roles.keyword_effects.iter().filter_map(|row| {
-                    (row.origin == KeywordEffectOrigin::Riot
-                        && self.reference(row.recipient.card) == row.recipient)
-                        .then_some((row.recipient, row.timestamp))
-                }).collect(),
+                riot_haste: p
+                    .roles
+                    .keyword_effects
+                    .iter()
+                    .filter_map(|row| {
+                        (row.origin == KeywordEffectOrigin::Riot
+                            && self.reference(row.recipient.card) == row.recipient)
+                            .then_some((row.recipient, row.timestamp))
+                    })
+                    .collect(),
                 consumed: p.consumed.clone(),
             }),
             self_grant_uses: self.self_grant_uses.clone(),
@@ -5451,10 +5456,8 @@ impl Game {
             );
         }
         if a.item.cast.is_some_and(|c| {
-            matches!(
-                c.method,
-                CastMethod::Sneak | CastMethod::ExileLife | CastMethod::WebSlinging
-            )
+            matches!(c.method, CastMethod::Sneak | CastMethod::WebSlinging)
+                || c.method.pays_life_for_mana_value()
         }) {
             let mut proposal = a.clone();
             proposal.cost = Some(cost);

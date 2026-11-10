@@ -254,6 +254,7 @@ impl Game {
             | Action::AnnounceExile { card }
             | Action::AnnounceAirbend { card, .. }
             | Action::AnnounceExileLife { card, .. }
+            | Action::AnnounceLibraryLife { card, .. }
             | Action::AnnounceExileFree { card, .. }
             | Action::AnnounceLinkedFree { card, .. }
             | Action::AnnounceLinkedExileCounterCost { card, .. }

@@ -80,6 +80,9 @@ pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Siz
     player: Player,
     origin: Zone,
 ) -> bool {
+    if origin == Zone::Library && world.game().state.players[player.index()].library_top_life_play {
+        return true;
+    }
     has_fragment_from(world, Some(player), |id, fragment| {
         match (origin, fragment) {
             (Zone::Library, StaticAbilityFragment::PlayFromLibraryTopAfterAttacking) => {
@@ -266,9 +269,10 @@ impl Game {
         })
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
-        has_fragment(self, player, |f| {
-            matches!(f, StaticAbilityFragment::LookAtLibraryTop)
-        })
+        self.state.players[player.index()].library_top_life_play
+            || has_fragment(self, player, |f| {
+                matches!(f, StaticAbilityFragment::LookAtLibraryTop)
+            })
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
         if let Some(object) = self.private_library_top(viewer, owner) {

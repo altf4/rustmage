@@ -2827,6 +2827,8 @@ pub enum Instruction {
         amount: u16,
         next_turn: bool,
     },
+    /// Look at and play the live top card, using a life alternative for spells.
+    GrantLibraryTopLifePlayUntilEndTurn,
     ExileTargetLibraryPlayLife {
         amount: AmountValue,
     },

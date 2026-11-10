@@ -1052,6 +1052,7 @@ define_actions! {
     },
     PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
     AnnounceGraveyardFlashSurcharge { card: CardId },
@@ -1404,6 +1405,7 @@ struct PlayerState {
     token_creation_attempted_this_turn: bool,
     mountain_mana_bonus: u32,
     jace_loyalty_anytime: bool,
+    library_top_life_play: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
     extra_land_plays_remaining: u64,
@@ -1504,6 +1506,12 @@ pub enum CastMethod {
     Sneak,
     GrantedMayhem,
     WebSlinging,
+    LibraryLife,
+}
+impl CastMethod {
+    fn pays_life_for_mana_value(self) -> bool {
+        matches!(self, Self::ExileLife | Self::LibraryLife)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -4193,6 +4201,7 @@ impl Game {
             token_creation_attempted_this_turn: false,
             mountain_mana_bonus: 0,
             jace_loyalty_anytime: false,
+            library_top_life_play: false,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
@@ -5731,6 +5740,20 @@ impl Game {
                     casting_prohibited || self.nonhand_cast_prohibited(actor),
                     &mut emit,
                 ) {
+                    return true;
+                }
+                if s.players[actor.index()].library_top_life_play
+                    && !casting_prohibited
+                    && !self.nonhand_cast_prohibited(actor)
+                    && let Some(card) = self.top_library_card(actor)
+                    && self.visit_mana_value_life_casts(
+                        actor,
+                        card,
+                        CastMethod::LibraryLife,
+                        sorcery,
+                        &mut emit,
+                    )
+                {
                     return true;
                 }
                 for (i, obj) in s.objects.iter().enumerate() {
@@ -7754,10 +7777,19 @@ impl Game {
                 card,
                 face,
                 flash_surcharge,
+            }
+            | Action::AnnounceLibraryLife {
+                card,
+                face,
+                flash_surcharge,
             } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, face);
-                Self::configure_exile_life_cast(&mut item, flash_surcharge);
+                let method = match action {
+                    Action::AnnounceLibraryLife { .. } => CastMethod::LibraryLife,
+                    _ => CastMethod::ExileLife,
+                };
+                Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
             Action::AnnounceCast { card }
@@ -9940,13 +9972,17 @@ impl Game {
                 .capacity("library-to-graveyard history exhausted");
         }
         // An undone public move cannot erase knowledge acquired during the cast.
-        // Keep only cards that were already in the checkpoint hand; library and
-        // newly created objects are handled separately by irreversible replay.
-        if before.zone == Zone::Hand
-            && matches!(
+        // Preserve the exact checkpoint incarnation. Irreversible changes to
+        // library order are replayed separately.
+        let exposes_hidden_card = match before.zone {
+            Zone::Hand => matches!(
                 destination,
                 Zone::Graveyard | Zone::Battlefield | Zone::Stack
-            )
+            ),
+            Zone::Library => destination == Zone::Stack,
+            _ => false,
+        };
+        if exposes_hidden_card
             && !(destination == Zone::Stack
                 && before.card
                     == Card::from_name("@face-down/disguise").expect("pinned catalogue identity"))
@@ -9956,7 +9992,7 @@ impl Game {
                 .objects
                 .get(id as usize)
                 .is_some_and(|original| {
-                    original.zone == Zone::Hand
+                    original.zone == before.zone
                         && original.generation == before.reference.generation
                 })
             && !rollback.obscured_hand_cards.contains(&id)
@@ -10830,6 +10866,7 @@ impl Game {
             player.hexproof_until_end_turn = false;
             player.mountain_mana_bonus = 0;
             player.jace_loyalty_anytime = false;
+            player.library_top_life_play = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_temporary_ability_removals();
@@ -11872,7 +11909,9 @@ impl Game {
                 Pending::EntryCopy { .. } => "entry_copy",
                 Pending::EntryExile { .. } => "entry_exile",
                 Pending::EntryDevour { .. } => "entry_devour",
-                Pending::EntryRiot { .. } if self.entry_riot_view(viewer).is_none() => "entry_choice",
+                Pending::EntryRiot { .. } if self.entry_riot_view(viewer).is_none() => {
+                    "entry_choice"
+                }
                 Pending::EntryRiot { .. } => "entry_riot",
                 Pending::LandCardName { .. } => "land_card_name",
                 Pending::CardName { .. } => "card_name",

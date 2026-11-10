@@ -557,16 +557,15 @@ impl Game {
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
         }
-        if method == CastMethod::ExileLife {
-            Self::configure_exile_life_cast(&mut item, flash_surcharge);
+        if method.pays_life_for_mana_value() {
+            Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
         }
         if exile_play_surcharge > 0 {
             Self::configure_taxed_exile_cast(&mut item, exile_play_surcharge);
         }
         if matches!(
             method,
-            CastMethod::ExileLife
-                | CastMethod::Airbend
+            CastMethod::Airbend
                 | CastMethod::Free
                 | CastMethod::Plot
                 | CastMethod::Flashback
@@ -604,6 +603,7 @@ impl Game {
                         method,
                         CastMethod::LinkedExileCounterCost
                             | CastMethod::ExileLife
+                            | CastMethod::LibraryLife
                             | CastMethod::Airbend
                             | CastMethod::Free
                             | CastMethod::Plot

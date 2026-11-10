@@ -131,7 +131,10 @@ impl Announcement {
                 colored: [0; 6],
                 generic: 3,
             }),
-            CastMethod::ExileLife | CastMethod::Free | CastMethod::Plot => Some(ManaCost {
+            CastMethod::ExileLife
+            | CastMethod::LibraryLife
+            | CastMethod::Free
+            | CastMethod::Plot => Some(ManaCost {
                 colored: [0; 6],
                 generic: 0,
             }),
@@ -220,6 +223,7 @@ impl Announcement {
                         })
                     }
                     CastMethod::ExileLife
+                    | CastMethod::LibraryLife
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
@@ -477,7 +481,10 @@ impl Announcement {
                 if self.item.cast.is_some_and(|c| {
                     matches!(
                         c.method,
-                        CastMethod::ExileLife | CastMethod::Plot | CastMethod::Free
+                        CastMethod::ExileLife
+                            | CastMethod::LibraryLife
+                            | CastMethod::Plot
+                            | CastMethod::Free
                     )
                 }) =>
             {

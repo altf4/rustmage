@@ -112,7 +112,7 @@ impl Announcement {
         if self
             .item
             .cast
-            .is_some_and(|c| c.method == CastMethod::ExileLife)
+            .is_some_and(|c| c.method.pays_life_for_mana_value())
         {
             self.add_cast_cost_clause(CastCostClause::AlternativeLife(
                 u32::try_from(self.item.mana_value()).expect("spell mana value fits life cost"),
