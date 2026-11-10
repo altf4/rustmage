@@ -3,10 +3,35 @@
   "catalogue_id": 4024,
   "oracle_id": "00b50215-e832-417f-9c80-2bc3050b6ebb",
   "facts_sha256": "a70ec62ece91e647aeb89ea919605e6b0991dd46bbb861cfd7621d9eb75210b1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2bf37cbedba7c5275912be854c518666ffc82db3d804a23ef054fb206ea0963f"
   },
-  "physical_metadata_sha256": "e7d720101f7aaad92554e0ba840462480b43c2e2efae10bf7e8f2f6cf524c8fb"
+  "physical_metadata_sha256": "e7d720101f7aaad92554e0ba840462480b43c2e2efae10bf7e8f2f6cf524c8fb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderHamPeterPorker.java",
+  "java_sha256": "7726f0aab80216f1bf861ff3f4ede38bc7bc613d70279f42198a7b4dedd6ad73",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

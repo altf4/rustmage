@@ -3,6 +3,8 @@
 mod cast_costs;
 #[path = "spm_cards_c/events.rs"]
 mod events;
+#[path = "spm_cards_c/layers.rs"]
+mod layers;
 mod support;
 
 use rustmage as _;
