@@ -1629,9 +1629,19 @@ pub struct SacrificeFilter {
     pub nonland: bool,
     pub other: bool,
     pub tokens: Option<bool>,
-    /// Bargain disjunction; unlike ordinary kind/token constraints these are ORed.
+    /// Whether an artifact, enchantment, or token is required.
     pub artifact_enchantment_or_token: bool,
     pub subtype: Option<&'static str>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SacrificeFilter {
+    pub(crate) fn matches_kinds_and_token(self, kinds: u16, token: bool) -> bool {
+        (!self.artifact_enchantment_or_token || kinds & (16 | 32) != 0 || token)
+            && (self.kinds == 0 || kinds & u16::from(self.kinds) != 0)
+            && (!self.nonland || kinds & 2 == 0)
+            && self.tokens.is_none_or(|required| token == required)
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

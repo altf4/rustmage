@@ -62,6 +62,56 @@ fn select_return(game: &Game, card: CardId) -> Action {
 }
 
 #[test]
+fn any_number_sacrifice_offers_and_moves_only_matching_controlled_permanents() {
+    let _rules = fixture_rules::activate(&[(Card::Divination, &CONQUEST)]);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        let enchantment = put(&mut game, player, "Demonic Pact", Zone::Battlefield);
+        let token = game.state.objects.len() as CardId;
+        game.create_tokens(player, TOKEN, 1, false);
+        let ordinary = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, opponent, "Short Bow", Zone::Battlefield);
+        let spell = begin(&mut game, player);
+        let candidates = [artifact, enchantment, token].map(|id| game.object_ref(id));
+        for viewer in [player, opponent] {
+            let choice = game.observe(viewer).effect_choice.unwrap();
+            assert!(choice.optional);
+            assert_eq!(choice.amount, 3);
+            assert_eq!(choice.candidates, candidates);
+        }
+
+        for card in [ordinary, foreign] {
+            let action = Action::Sacrifice {
+                object: game.object_ref(card),
+            };
+            assert!(!game.legal_actions().contains(&action));
+            reject(&mut game, action);
+        }
+        for object in candidates {
+            let action = Action::Sacrifice { object };
+            assert!(game.legal_actions().contains(&action));
+            act(&mut game, action.clone());
+            reject(&mut game, action);
+            assert_eq!(game.object_ref(object.card), object);
+            assert_eq!(game.object_view(object.card).zone, Zone::Battlefield);
+        }
+        act(&mut game, Action::FinishEffectChoice);
+        assert_eq!(
+            game.state.players[player.index()].permanents_sacrificed_this_turn,
+            3
+        );
+        for card in [artifact, enchantment, spell] {
+            assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+        }
+        assert_ne!(game.object_view(token).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(ordinary).zone, Zone::Battlefield);
+        assert_eq!(game.object_view(foreign).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
 fn exact_public_choice_includes_fresh_artifact_creature_and_stages_all_entries() {
     let _rules = fixture_rules::activate(&[
         (Card::Divination, &CONQUEST),

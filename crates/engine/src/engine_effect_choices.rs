@@ -588,9 +588,10 @@ impl Game {
             return false;
         }
         let f = choice.filter;
+        let kinds = self.current_kinds(object.card);
         if !choice.kind.cost_matches_any(
             o.card,
-            self.current_kinds(object.card),
+            kinds,
             self.granted_subtypes(object.card),
             o.is_token(),
             || ability_world::CharacteristicWorld::legendary(self, object.card),
@@ -609,12 +610,10 @@ impl Game {
             return false;
         }
         o.zone == Zone::Battlefield
+            && f.matches_kinds_and_token(kinds, o.is_token())
             && self.keywords(object.card).contains(f.keywords)
-            && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
-            && (!f.nonland || self.current_kinds(object.card) & 2 == 0)
             && (!f.other || object != choice.source)
-            && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
             && (!matches!(
