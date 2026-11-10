@@ -3,7 +3,7 @@
   "catalogue_id": 5568,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "29abcd548d0de2ff6038da2671493cab831bacc09ebbf8831eacffb920e9379e",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/MouseToken.java",

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e4463d1ff47fbfc10c30ab0e0d8371f9d681a6c9cfd5e7c5f02af9afc409bb0c",
+  "catalogue_version": "e33403bc7f031de4d8c05f08b62da186217d0bd924bfb08677bff09b3b60057d",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4121,
-  "implemented_total": 4133,
+  "implemented_standard_cards": 4126,
+  "implemented_total": 4138,
   "token_definitions": 176,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -182,8 +182,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 252,
-      "gated": 6
+      "complete": 257,
+      "gated": 1
     },
     "znr": {
       "total": 1,
@@ -30490,8 +30490,8 @@
     {
       "name": "Sentinel of Lost Lore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/sentinel_of_lost_lore.rs",
       "set": "woe"
     },
@@ -35546,8 +35546,8 @@
     {
       "name": "The Apprentice's Folly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_apprentice_s_folly.rs",
       "set": "woe"
     },
@@ -36090,8 +36090,8 @@
     {
       "name": "The Princess Takes Flight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_princess_takes_flight.rs",
       "set": "woe"
     },
@@ -36706,8 +36706,8 @@
     {
       "name": "Three Blind Mice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/three_blind_mice.rs",
       "set": "woe"
     },
@@ -36890,8 +36890,8 @@
     {
       "name": "Thunderous Debut",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/thunderous_debut.rs",
       "set": "woe"
     },
