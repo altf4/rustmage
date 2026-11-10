@@ -527,3 +527,234 @@ fn ingenious_prodigy_enters_with_x_and_its_upkeep_checks_a_live_counter() {
         assert!(!game.can_block_pair(small, prodigy));
     }
 }
+
+#[test]
+fn edgewall_inn_enters_tapped_remembers_its_color_and_recovers_an_owned_adventure() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let inn = candidate(&mut game, player, "Edgewall Inn");
+        let adventure = put(&mut game, player, "Frolicking Familiar", Zone::Graveyard);
+        let foreign = put(&mut game, opponent, "Frolicking Familiar", Zone::Graveyard);
+        let ordinary = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        act(&mut game, Action::PlayLand { card: inn });
+        let choice = EntryChoiceValue::Color(ChoiceColor::Blue);
+        act(&mut game, Action::ChooseEntryValue { value: choice });
+        assert_eq!(game.object_view(inn).entry_choice, Some(choice));
+        assert!(game.object_view(inn).tapped);
+        let blue = Action::ActivateMana {
+            card: inn,
+            ability: 0,
+            counter_payment: Counters::default(),
+            payment: [0; 6],
+            production: [0, 1, 0, 0, 0, 0],
+        };
+        reject(&mut game, blue.clone());
+        for _ in 0..2 {
+            game.state.step = Step::End;
+            pass_twice(&mut game);
+        }
+        assert_eq!(game.actor(), Some(player));
+        assert!(!game.object_view(inn).tapped);
+        let mut mana_branch = game.clone();
+        act(&mut mana_branch, blue);
+        assert_eq!(
+            mana_branch.state.players[player.index()].mana,
+            [0, 1, 0, 0, 0, 0]
+        );
+        assert!(mana_branch.object_view(inn).tapped);
+
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: inn,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        for invalid in [foreign, ordinary] {
+            reject(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(invalid),
+                },
+            );
+        }
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(adventure),
+            },
+        );
+        pay(&mut game);
+        assert_eq!(game.object_view(inn).zone, Zone::Graveyard);
+        settle(&mut game);
+        assert_eq!(game.object_view(adventure).zone, Zone::Hand);
+        assert_eq!(game.object_view(foreign).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(ordinary).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn frantic_firebolt_counts_the_live_owned_graveyard_union() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "Frantic Firebolt");
+        let target = put(
+            &mut game,
+            player.other(),
+            "Gigantosaurus",
+            Zone::Battlefield,
+        );
+        let instant = put(&mut game, player, "Shock", Zone::Graveyard);
+        put(&mut game, player, "Divination", Zone::Graveyard);
+        put(&mut game, player, "Frolicking Familiar", Zone::Graveyard);
+        put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        put(&mut game, player.other(), "Shock", Zone::Graveyard);
+        announce(&mut game, spell, &[Target::Card(target)]);
+        let mut changed = game.clone();
+        changed.move_object(instant, Zone::Exile);
+        settle(&mut changed);
+        assert_eq!(changed.object_view(target).damage, 4);
+        settle(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(target).damage, 5);
+    }
+}
+
+#[test]
+fn howling_galefang_gains_haste_from_a_live_owned_exiled_adventure() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let galefang = candidate(&mut game, player, "Howling Galefang");
+        let adventure = put(&mut game, player, "Frolicking Familiar", Zone::Hand);
+        put(
+            &mut game,
+            player.other(),
+            "Frolicking Familiar",
+            Zone::Exile,
+        );
+        put(&mut game, player, "Forest", Zone::Exile);
+        announce(&mut game, galefang, &[]);
+        settle(&mut game);
+        let view = game.object_view(galefang);
+        assert!(view.keywords.contains(Keywords::VIGILANCE));
+        assert!(!view.keywords.contains(Keywords::HASTE));
+
+        game.move_object(adventure, Zone::Exile);
+        assert!(
+            game.object_view(galefang)
+                .keywords
+                .contains(Keywords::HASTE)
+        );
+        let mut removed = game.clone();
+        removed.move_object(adventure, Zone::Hand);
+        for branch in [&mut game, &mut removed] {
+            pass_twice(branch);
+            pass_twice(branch);
+        }
+        let attack = Action::Attack { card: galefang };
+        reject(&mut removed, attack.clone());
+        act(&mut game, attack);
+        act(&mut game, Action::FinishAttackers);
+        assert!(!game.object_view(galefang).tapped);
+    }
+}
+
+#[test]
+fn gingerbrute_has_paid_food_and_a_temporary_haste_only_blocking_rule() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let gingerbrute = candidate(&mut game, player, "Gingerbrute");
+        let slow = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let fast = put(&mut game, opponent, "Harried Spearguard", Zone::Battlefield);
+        announce(&mut game, gingerbrute, &[]);
+        settle(&mut game);
+        assert!(game.has_subtype(gingerbrute, "Food"));
+        assert!(
+            game.object_view(gingerbrute)
+                .keywords
+                .contains(Keywords::HASTE)
+        );
+
+        let activate = |ability| Action::AnnounceActivate {
+            card: gingerbrute,
+            ability,
+            counter_payment: Counters::default(),
+        };
+        let mut eaten = game.clone();
+        act(&mut eaten, activate(1));
+        act(
+            &mut eaten,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
+        assert_eq!(eaten.object_view(gingerbrute).zone, Zone::Graveyard);
+        settle(&mut eaten);
+        assert_eq!(eaten.state.players[player.index()].life, 23);
+
+        act(&mut game, activate(0));
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 1],
+            },
+        );
+        settle(&mut game);
+        let mut expired = game.clone();
+        expired.state.step = Step::End;
+        pass_twice(&mut expired);
+        assert!(
+            !expired
+                .object_view(gingerbrute)
+                .keywords
+                .contains(Keywords::ONLY_HASTE_BLOCKERS)
+        );
+
+        pass_twice(&mut game);
+        pass_twice(&mut game);
+        act(&mut game, Action::Attack { card: gingerbrute });
+        act(&mut game, Action::FinishAttackers);
+        pass_twice(&mut game);
+        reject(
+            &mut game,
+            Action::Block {
+                blocker: slow,
+                attacker: gingerbrute,
+            },
+        );
+        act(
+            &mut game,
+            Action::Block {
+                blocker: fast,
+                attacker: gingerbrute,
+            },
+        );
+    }
+}
+
+#[test]
+fn into_the_fae_court_draws_three_and_creates_one_restricted_faerie() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "Into the Fae Court");
+        announce(&mut game, spell, &[]);
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
+        assert_eq!(
+            game.state.players[player.other().index()].cards_drawn_this_turn,
+            0
+        );
+        let faeries = tokens(&game, player, FAERIE);
+        assert_eq!(faeries.len(), 1);
+        assert!(
+            game.object_view(faeries[0])
+                .keywords
+                .contains(Keywords::FLYING)
+        );
+        assert!(tokens(&game, player.other(), FAERIE).is_empty());
+    }
+}
