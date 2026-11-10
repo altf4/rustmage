@@ -151,3 +151,231 @@ fn entry_history_damage_replacement_observer_excludes_the_closed_loop_proof() {
         }
     }
 }
+
+#[test]
+fn unplaceable_entry_damage_order_does_not_hide_mandatory_cycle() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = cycle_for(player);
+        put(
+            &mut g,
+            player,
+            "Spring-Loaded Sawblades // Bladewheel Chariot",
+            Zone::Battlefield,
+        );
+        let saved = g.snapshot();
+        for indexed in [false, true] {
+            let mut branch = g.clone();
+            for _ in 0..64 {
+                if branch.outcome().is_some() {
+                    break;
+                }
+                let actions = branch.legal_actions();
+                let index = actions
+                    .iter()
+                    .position(|a| {
+                        matches!(
+                            a,
+                            Action::Pass | Action::ChooseTarget { .. } | Action::PutTrigger { .. }
+                        )
+                    })
+                    .unwrap();
+                if indexed {
+                    branch
+                        .apply_index(branch.actor().unwrap(), branch.revision(), index)
+                        .unwrap();
+                } else {
+                    act(&mut branch, actions[index].clone());
+                }
+            }
+            assert_eq!(branch.outcome(), Some(Outcome::Draw));
+            assert_eq!(g.snapshot(), saved);
+            g.restore(&saved).unwrap();
+        }
+    }
+}
+
+#[test]
+fn both_explicit_trigger_orders_draw_without_mutating_saved_branches() {
+    for player in [Player::P0, Player::P1] {
+        let mut g = cycle_for(player);
+        put(
+            &mut g,
+            player,
+            "Spring-Loaded Sawblades // Bladewheel Chariot",
+            Zone::Battlefield,
+        );
+        put(&mut g, player, "Disenchant", Zone::Hand);
+        g.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
+        for _ in 0..32 {
+            if matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+                break;
+            }
+            advance(&mut g, false);
+            assert_eq!(g.outcome(), None);
+        }
+        assert!(matches!(g.state.pending, Pending::OrderTriggers { .. }));
+        for p in &mut g.state.players {
+            p.mana = [0; 6];
+        }
+        let saved = g.snapshot();
+        let orders: Vec<_> = g
+            .legal_actions()
+            .into_iter()
+            .filter(|a| matches!(a, Action::PutTrigger { .. }))
+            .collect();
+        assert_eq!(orders.len(), 2);
+        for first in orders {
+            for indexed in [false, true] {
+                let mut branch = g.clone();
+                let index = branch
+                    .legal_actions()
+                    .iter()
+                    .position(|a| *a == first)
+                    .unwrap();
+                if indexed {
+                    branch
+                        .apply_index(branch.actor().unwrap(), branch.revision(), index)
+                        .unwrap();
+                } else {
+                    act(&mut branch, first.clone());
+                }
+                assert_eq!(branch.outcome(), Some(Outcome::Draw));
+                assert_eq!(g.snapshot(), saved);
+                g.restore(&saved).unwrap();
+            }
+        }
+    }
+}
+
+#[test]
+fn available_damage_target_remains_a_real_choice() {
+    let mut g = cycle();
+    let blade = put(
+        &mut g,
+        Player::P1,
+        "Spring-Loaded Sawblades // Bladewheel Chariot",
+        Zone::Battlefield,
+    );
+    let bear = put(&mut g, Player::P0, "Bear Cub", Zone::Battlefield);
+    g.state.objects[bear as usize].tapped = true;
+    for _ in 0..32 {
+        if matches!(g.state.pending, Pending::OrderTriggers { .. }) {
+            break;
+        }
+        advance(&mut g, false);
+        assert_eq!(g.outcome(), None);
+    }
+    let trigger = g
+        .state
+        .ordering_triggers
+        .iter()
+        .find(|i| i.source.unwrap().object.card == blade)
+        .unwrap()
+        .id;
+    act(&mut g, Action::PutTrigger { id: trigger });
+    assert_eq!(g.outcome(), None);
+    assert!(g.legal_actions().contains(&Action::ChooseTarget {
+        target: Target::Card(bear)
+    }));
+}
+
+#[test]
+fn funded_instant_escape_stays_playable_with_observer() {
+    let mut g = cycle();
+    put(
+        &mut g,
+        Player::P1,
+        "Spring-Loaded Sawblades // Bladewheel Chariot",
+        Zone::Battlefield,
+    );
+    let instant = put(&mut g, Player::P0, "Disenchant", Zone::Hand);
+    g.state.players[0].mana = [1, 0, 0, 0, 0, 1];
+    let mut seen_escape = false;
+    for _ in 0..64 {
+        if g.legal_actions()
+            .iter()
+            .any(|a| matches!(a,Action::AnnounceCast{card} if *card==instant))
+        {
+            seen_escape = true;
+        }
+        let action = g
+            .legal_actions()
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::Pass | Action::ChooseTarget { .. } | Action::PutTrigger { .. }
+                )
+            })
+            .unwrap();
+        act(&mut g, action);
+        assert_eq!(g.outcome(), None);
+    }
+    assert!(seen_escape);
+}
+
+#[test]
+fn funded_sorcery_speed_craft_is_not_an_escape_during_the_cycle() {
+    let mut g = cycle();
+    put(
+        &mut g,
+        Player::P1,
+        "Spring-Loaded Sawblades // Bladewheel Chariot",
+        Zone::Battlefield,
+    );
+    g.state.players[1].mana = [1, 0, 0, 0, 0, 3];
+    for _ in 0..64 {
+        if g.outcome().is_some() {
+            break;
+        }
+        let actions = g.legal_actions();
+        assert!(
+            !actions
+                .iter()
+                .any(|a| matches!(a, Action::AnnounceActivate { .. } | Action::Activate { .. }))
+        );
+        let action = actions
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::Pass | Action::ChooseTarget { .. } | Action::PutTrigger { .. }
+                )
+            })
+            .unwrap();
+        act(&mut g, action);
+    }
+    assert_eq!(g.outcome(), Some(Outcome::Draw));
+}
+
+#[test]
+fn funded_starcage_activation_escape_is_not_overridden_by_the_proof() {
+    let mut g = cycle();
+    put(
+        &mut g,
+        Player::P1,
+        "Spring-Loaded Sawblades // Bladewheel Chariot",
+        Zone::Battlefield,
+    );
+    // Starcage's instant-speed escape costs 6WW. Sawblades craft alone costs 3W.
+    g.state.players[1].mana = [2, 0, 0, 0, 0, 6];
+    let mut seen_escape = false;
+    for _ in 0..64 {
+        let actions = g.legal_actions();
+        seen_escape |= actions
+            .iter()
+            .any(|a| matches!(a, Action::AnnounceActivate { .. } | Action::Activate { .. }));
+        let action = actions
+            .into_iter()
+            .find(|a| {
+                matches!(
+                    a,
+                    Action::Pass | Action::ChooseTarget { .. } | Action::PutTrigger { .. }
+                )
+            })
+            .unwrap();
+        act(&mut g, action);
+        assert_eq!(g.outcome(), None);
+    }
+    assert!(seen_escape);
+}
