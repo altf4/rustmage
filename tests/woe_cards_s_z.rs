@@ -736,3 +736,229 @@ fn the_end_reduces_at_five_and_searches_the_exiled_permanents_controller() {
         assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
     }
 }
+
+#[test]
+fn spellscorn_coven_returns_physical_spells_and_discards_on_entry() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let coven = candidate(&mut game, player, "Spellscorn Coven", Zone::Hand);
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    let discard = put(&mut game, opponent, "Forest", Zone::Hand);
+    let imitator = put(&mut game, opponent, "Slick Imitator", Zone::Battlefield);
+    game.state.players[opponent.index()].speed = 4;
+    act(&mut game, Action::Pass);
+    cast(&mut game, shock, Some(Target::Player(player)));
+
+    let mut copied = game.clone();
+    let source = copied.object_ref(imitator);
+    act(
+        &mut copied,
+        Action::AnnounceSourceGrant { source, ability: 0 },
+    );
+    act(
+        &mut copied,
+        Action::ChooseTarget {
+            target: Target::Spell(shock),
+        },
+    );
+    pay(&mut copied);
+    pass_pair(&mut copied);
+    act(&mut copied, Action::FinishStackTargets);
+    if copied.actor() != Some(player) {
+        act(&mut copied, Action::Pass);
+    }
+    let copy_id = copied
+        .state
+        .stack
+        .iter()
+        .find(|item| item.is_copy)
+        .unwrap()
+        .id;
+    act(&mut copied, Action::AnnounceAdventure { card: coven });
+    act(
+        &mut copied,
+        Action::ChooseTarget {
+            target: Target::Stack(copy_id),
+        },
+    );
+    pay(&mut copied);
+    settle(&mut copied);
+    assert_eq!(copied.object_view(coven).zone, Zone::Exile);
+    assert_eq!(copied.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(copied.hand_count(opponent), 1);
+    assert_eq!(copied.state.players[player.index()].life, 18);
+
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::AnnounceAdventure { card: coven });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Spell(shock),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(shock).zone, Zone::Hand);
+    assert_eq!(game.object_view(coven).zone, Zone::Exile);
+    assert_eq!(game.state.players[player.index()].life, 20);
+
+    act(&mut game, Action::AnnounceExile { card: coven });
+    pay(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, coven), (2, 3));
+    assert!(game.object_view(coven).keywords.contains(Keywords::FLYING));
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(opponent));
+    let before = game.snapshot();
+    assert_eq!(
+        game.apply(player, Action::Discard { card: shock }),
+        Err(Error::WrongActor)
+    );
+    assert_eq!(game.snapshot(), before);
+    act(&mut game, Action::Discard { card: discard });
+    settle(&mut game);
+    assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(shock).zone, Zone::Hand);
+}
+
+#[test]
+fn swift_spiral_returns_a_nontoken_to_its_owner_and_twining_twins_has_ward() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let twins = candidate(&mut game, player, "Twining Twins", Zone::Hand);
+    let original = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.state.objects[original as usize].controller = opponent;
+    let rat_out = put(&mut game, player, "Rat Out", Zone::Hand);
+    announce(&mut game, rat_out, &[]);
+    settle(&mut game);
+    let rat = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield && object.is_token() && object.has_subtype("Rat")
+        })
+        .unwrap()
+        .id;
+    act(&mut game, Action::AnnounceAdventure { card: twins });
+    reject(&mut game, target(rat));
+    act(&mut game, target(original));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(original).zone, Zone::Exile);
+    let exiled = game.object_ref(original);
+    act(&mut game, Action::AnnounceExile { card: twins });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, twins), (4, 4));
+    assert!(game
+        .object_view(twins)
+        .keywords
+        .contains(Keywords::FLYING.union(Keywords::VIGILANCE)));
+
+    act(&mut game, Action::Pass);
+    let murder = put(&mut game, opponent, "Murder", Zone::Hand);
+    cast(&mut game, murder, Some(Target::Card(twins)));
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(opponent));
+    let mut unpaid = game.clone();
+    act(&mut unpaid, Action::DeclineResolutionMana);
+    settle(&mut unpaid);
+    assert_eq!(unpaid.object_view(twins).zone, Zone::Battlefield);
+    assert_eq!(unpaid.object_view(murder).zone, Zone::Graveyard);
+    act(
+        &mut game,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(twins).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(original).zone, Zone::Exile);
+
+    for _ in 0..16 {
+        if game.state.step == Step::End {
+            break;
+        }
+        let action = match game.state.pending {
+            Pending::Attackers => Action::FinishAttackers,
+            Pending::Blockers => Action::FinishBlockers,
+            _ => Action::Pass,
+        };
+        act(&mut game, action);
+    }
+    assert_eq!(game.state.step, Step::End);
+    settle(&mut game);
+    assert_eq!(game.object_view(original).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(original).controller, player);
+    assert_ne!(game.object_ref(original), exiled);
+}
+
+fn sacrifice_bodyguard(game: &mut Game, card: CardId, controller: Player) {
+    if game.actor() != Some(controller) {
+        act(game, Action::Pass);
+    }
+    choose(game, |action| match action {
+        Action::Activate {
+            card: source,
+            ability: 0,
+            target: None,
+            ..
+        }
+        | Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            ..
+        } => *source == card,
+        _ => false,
+    });
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(game);
+    }
+    assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+}
+
+#[test]
+fn werefox_bodyguard_can_flash_and_returns_its_exact_card_to_the_owner() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let guard = candidate(&mut game, player, "Werefox Bodyguard", Zone::Hand);
+    let other_fox = candidate(&mut game, opponent, "Werefox Bodyguard", Zone::Battlefield);
+    let bearer = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.state.objects[bearer as usize].controller = opponent;
+    act(&mut game, Action::Pass);
+    cast(&mut game, guard, None);
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, guard), (2, 2));
+    assert!(game.object_view(guard).keywords.contains(Keywords::FLASH));
+    reject(&mut game, target(other_fox));
+    reject(&mut game, target(guard));
+
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishTargets);
+    settle(&mut declined);
+    assert_eq!(declined.object_view(bearer).controller, opponent);
+    assert_eq!(declined.object_view(bearer).zone, Zone::Battlefield);
+
+    act(&mut game, target(bearer));
+    let mut early = game.clone();
+    let original = early.object_ref(bearer);
+    sacrifice_bodyguard(&mut early, guard, player);
+    settle(&mut early);
+    assert_eq!(early.object_ref(bearer), original);
+    assert_eq!(early.object_view(bearer).controller, opponent);
+    assert_eq!(early.state.players[player.index()].life, 22);
+
+    settle(&mut game);
+    assert_eq!(game.object_view(bearer).zone, Zone::Exile);
+    let exiled = game.object_ref(bearer);
+    sacrifice_bodyguard(&mut game, guard, player);
+    settle(&mut game);
+    assert_eq!(game.object_view(bearer).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(bearer).controller, player);
+    assert_ne!(game.object_ref(bearer), exiled);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}

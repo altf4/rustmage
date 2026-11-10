@@ -3,7 +3,7 @@
   "catalogue_id": 4722,
   "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
   "facts_sha256": "456c70268ee6171d6761327dc7fed5141248f3237f610683567e9bc8820bd29f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d4d2dbf05f94cb1f459a22e43f845af21b90826768b0e498e959738be023f03b"
@@ -13,5 +13,46 @@
     "oracle_id": "105aea98-8eb9-4fb2-a0cb-7c7513317c5b",
     "index": 0,
     "sha256": "703fade4f5203ce6b656ad73d62fe02d3e383236942a3e0dab87b4be05d78645"
-  }
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwiningTwins.java",
+  "java_sha256": "e803fb0cc2c2e190e9bc3752ab9c204855c961c587c448b481d62c04afdf0eb5",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileReturnBattlefieldNextEndStepTargetEffect.java",
+      "sha256": "e99352ec388fe5d84b253f86650b40687823087cf045653115c708eed09ef786"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ]
 }

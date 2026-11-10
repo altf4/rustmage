@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "3a46685540b1b7a56a8fdccff46eb445149ce1e90945c87daf3db95fa2f943b7",
+  "catalogue_version": "c45411e0ea0a3acc44afb1504113e6c50b0ad4dc5b3468f730c28fae835d4708",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4042,
-  "implemented_total": 4052,
+  "implemented_standard_cards": 4048,
+  "implemented_total": 4058,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 178,
-      "gated": 80
+      "complete": 184,
+      "gated": 74
     },
     "znr": {
       "total": 1,
@@ -851,8 +851,8 @@
     {
       "name": "Agatha of the Vile Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_of_the_vile_cauldron.rs",
       "set": "woe"
     },
@@ -867,8 +867,8 @@
     {
       "name": "Agatha's Soul Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_s_soul_cauldron.rs",
       "set": "woe"
     },
@@ -3979,8 +3979,8 @@
     {
       "name": "Blossoming Tortoise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/blossoming_tortoise.rs",
       "set": "woe"
     },
@@ -32283,8 +32283,8 @@
     {
       "name": "Spellscorn Coven // Take It Back",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spellscorn_coven_take_it_back.rs",
       "set": "woe"
     },
@@ -37971,8 +37971,8 @@
     {
       "name": "Twining Twins // Swift Spiral",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/twining_twins_swift_spiral.rs",
       "set": "woe"
     },
@@ -40475,8 +40475,8 @@
     {
       "name": "Werefox Bodyguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/werefox_bodyguard.rs",
       "set": "woe"
     },
