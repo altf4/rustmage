@@ -3,10 +3,45 @@
   "catalogue_id": 4029,
   "oracle_id": "2efd6494-c5e1-41de-bc6e-8490ff046cd1",
   "facts_sha256": "19c9108ec120f9c42558665c8c67d19f8fea227bc562b66833a66bb656d168d6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01db6f98fe027d0f60b0501396cbae129fab3b023b2385ab838359cf54be465c"
   },
-  "physical_metadata_sha256": "8144f50dbb93da28a22b1bf07ee58ddf260402e786f5b7b4be7c4de6dbc47886"
+  "physical_metadata_sha256": "8144f50dbb93da28a22b1bf07ee58ddf260402e786f5b7b4be7c4de6dbc47886",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderManNoir.java",
+  "java_sha256": "8e7637d1f97ebc1321abc227ab3ee0a0dd4d72b3e39b1674c94edcffbc79ff3a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

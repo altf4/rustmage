@@ -1,16 +1,30 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Oracle and pinned XMage evidence are recorded in the paired provenance.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 3),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: one(TargetRule::Filtered {
+                base: &TargetRule::Creature,
+                predicate: &TargetPredicate::OtherThanSource,
+            }),
+            program: &[Instruction::PutCounters {
+                subject: Subject::Targets,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfAttacks,
+            targets: one(TargetRule::Filtered {
+                base: &TargetRule::creature_you_control(),
+                predicate: &TargetPredicate::Modified,
+            }),
+            program: &[Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::LIFELINK,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

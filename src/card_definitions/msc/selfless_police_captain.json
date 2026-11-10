@@ -3,10 +3,45 @@
   "catalogue_id": 3782,
   "oracle_id": "ece77a64-8d99-430e-8407-bdb321828d63",
   "facts_sha256": "dd67238e7473c16fa3a7c87f15643c89f27dd9b0e4630ae8f783f0f92a0fdc5a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6855e8a23a2d29e560269c5fc2ad88464be63c4cea3e586ccaf92e1f69dd5d50"
   },
-  "physical_metadata_sha256": "9198b7a01e2ba20bfd8cddae06a993ead39ca2a88fa46f2052bd13cfee8bebc0"
+  "physical_metadata_sha256": "9198b7a01e2ba20bfd8cddae06a993ead39ca2a88fa46f2052bd13cfee8bebc0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SelflessPoliceCaptain.java",
+  "java_sha256": "e7abfd13781717b2ff4b6b06ff1cfc9c1a51e0d8c4a2764e09a4299d140ef674",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldWithCountersAbility.java",
+      "sha256": "b34c7e6346705407d2a8519d8afdebd93b393745b995bbbce928753c35eacd59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutSourceCountersOnTargetEffect.java",
+      "sha256": "320385417b879d53dfe01e4d3f58413732c5830ce57f6160001b43b9a7b69ac3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }
