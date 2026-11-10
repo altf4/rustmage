@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9514a7f2cbe092f95b437dd117d8ca5937166fe2cf3e36468fc201005281ea8"
   },
-  "physical_metadata_sha256": "0ca2e5a41bd9a5ae298b4db3f59d8219cce9421556027d4b53e8013d054d2208"
+  "physical_metadata_sha256": "0ca2e5a41bd9a5ae298b4db3f59d8219cce9421556027d4b53e8013d054d2208",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmbraceOblivion.java",
+  "java_sha256": "01a6137885196b933dc754a2684e5d0e80dfbdf0a685a61acca7277ebe8677ab",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

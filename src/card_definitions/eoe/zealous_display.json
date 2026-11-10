@@ -3,10 +3,35 @@
   "catalogue_id": 5154,
   "oracle_id": "0ff3afba-7a90-4f62-a1b0-b553ad81c32b",
   "facts_sha256": "6091c7865ab035cdb35865606530b56337e37928335dfd8969f7074828f65ea4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "50a1adca19bffa5ba8ebdf4bfaeba069fd73d097e099a889c4bc8ef985ace025"
   },
-  "physical_metadata_sha256": "afd04fe56d9cd4310fa234bd117db339c5448bf78faf29d6d5ff686d59d4ccd9"
+  "physical_metadata_sha256": "afd04fe56d9cd4310fa234bd117db339c5448bf78faf29d6d5ff686d59d4ccd9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZealousDisplay.java",
+  "java_sha256": "d21d122bea59956ae9fd4eb921ea29890c40e98646234b23045c1370e1dc0beb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+      "sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapAllEffect.java",
+      "sha256": "47ebd67f929a1ed625874e7efc4fa26009e074822875002bac26772575136f3c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ]
 }

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33eeaf2242fb4986a08d05168097c3c49cbfa9ca2e009ba7e7d352ae35f1a14d"
   },
-  "physical_metadata_sha256": "6698d1e529e9ccfe13f5c8aedfe7cf9989db4313ce8e75f636ad947e50317091"
+  "physical_metadata_sha256": "6698d1e529e9ccfe13f5c8aedfe7cf9989db4313ce8e75f636ad947e50317091",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/Gravkill.java",
+  "java_sha256": "ad3354ac32f1dc241de1558f4e2626ae065ac5a1159b5f1409b72cc0307815c7",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

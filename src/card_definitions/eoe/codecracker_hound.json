@@ -3,10 +3,30 @@
   "catalogue_id": 787,
   "oracle_id": "ae791b61-5825-4987-a8c2-80813758d3f7",
   "facts_sha256": "714c10c53794ad1e21ecf92136f198dc2e31a40c5e9f01fc91f2e8e4cd599885",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2f2042ce653dad203345fc814177ff71cb565e73fbd868fdab29dc77b1aa5dbe"
   },
-  "physical_metadata_sha256": "c4468826fae4cdf475710e133c02201b106d3229fe0168590cc6564f925ad40f"
+  "physical_metadata_sha256": "c4468826fae4cdf475710e133c02201b106d3229fe0168590cc6564f925ad40f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CodecrackerHound.java",
+  "java_sha256": "2e2fee41b8d8f01d44de813a6bd3c5c485c53e993e4aa74699f4d104f8ff677e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WarpAbility.java",
+      "sha256": "9ac044ebe7da1f678c965e9a3f5fd329efaf50d946e8c2b9cf622f750d9d4499"
+    }
+  ]
 }

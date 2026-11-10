@@ -8,5 +8,20 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "143e994d931886f2014ec7d40c55d8b8e17e695df02e72fe2ce9c62a3f55c52a"
   },
-  "physical_metadata_sha256": "aa350a68efabfca38e7dd4dec107683eeceb4ee45c0bc599626e21dc99d2426d"
+  "physical_metadata_sha256": "aa350a68efabfca38e7dd4dec107683eeceb4ee45c0bc599626e21dc99d2426d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/Annul.java",
+  "java_sha256": "90de4285b798ad2e7935fe1636f2c155e029431cd63cbc55f6b49b6602164213",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ]
 }

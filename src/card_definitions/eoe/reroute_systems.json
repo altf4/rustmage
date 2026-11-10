@@ -3,10 +3,35 @@
   "catalogue_id": 3473,
   "oracle_id": "26d2762b-4346-40d0-b93d-b0dbfeb6e2bc",
   "facts_sha256": "fdf7d9eccee0de3e9905b44cf5078003bc06aabe01a126fff6cb71924a049ab9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "020825356f63e804d16800690aa2815cc3154485599a8d513581f92e41866a1b"
   },
-  "physical_metadata_sha256": "73df79536dbaa7e91c772625fecd31f664e19554021ffa422c8121bfb2b407e5"
+  "physical_metadata_sha256": "73df79536dbaa7e91c772625fecd31f664e19554021ffa422c8121bfb2b407e5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RerouteSystems.java",
+  "java_sha256": "dba8df4126117ca82567bc5712a001559a192f2ab30acbbbead00e39f748d094",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

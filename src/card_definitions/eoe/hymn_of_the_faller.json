@@ -3,10 +3,46 @@
   "catalogue_id": 2117,
   "oracle_id": "ab1379b7-0016-4d2a-a83b-952666e43b89",
   "facts_sha256": "0b6445a705bcf3f47697097b895cb26faf35714bad051fdf4773623ebaec9874",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "84ec80b29c3ce748e54f058100cec0d4d892f476f10ddd68d0716f787a65e88a"
   },
-  "physical_metadata_sha256": "e80ea43f8f0e0003936dc0bd335807ec55b403a57fbbaad26620585fc7a2e49b"
+  "physical_metadata_sha256": "e80ea43f8f0e0003936dc0bd335807ec55b403a57fbbaad26620585fc7a2e49b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HymnOfTheFaller.java",
+  "java_sha256": "ccc1b09f6049917d78df399a333d632bbcb20a1ea2f489773f1cd262f2889f7f",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

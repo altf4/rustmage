@@ -3,10 +3,30 @@
   "catalogue_id": 4251,
   "oracle_id": "132de6c2-4ca2-41da-9c78-caa59838b641",
   "facts_sha256": "fd40b1ccfac71468c47e06d6b7eff2c15192d4e58db124241bbced41d945b333",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4853c2a82155020e01f316b7819a3ce9c7354e613beb483d5b1a8e35d4436b07"
   },
-  "physical_metadata_sha256": "fc8fc7404c034b3cb87217e1bfdead5ca295f32cc7e2fd5247a5514d3e2e7511"
+  "physical_metadata_sha256": "fc8fc7404c034b3cb87217e1bfdead5ca295f32cc7e2fd5247a5514d3e2e7511",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunstarLightsmith.java",
+  "java_sha256": "64e789612e0b7ffb3caa8473020c3773f5bf96a4982ae196787b0a882d20ea6a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ]
 }

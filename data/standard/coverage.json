@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "02a64de2801d6f5f2cecbd4d16ccba9a2d477e117dcc1d1fdd5102e5b4430d91",
+  "catalogue_version": "e13dac390fdc6f12fbde75d0cfca3ab3fc86aa23402d30387645a18b978f761a",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 3840,
-  "implemented_total": 3849,
+  "implemented_standard_cards": 3876,
+  "implemented_total": 3885,
   "token_definitions": 171,
   "emblem_definitions": 12,
   "adventure_definitions": 53,
@@ -55,8 +55,8 @@
     },
     "eoe": {
       "total": 259,
-      "gated": 54,
-      "complete": 205
+      "complete": 241,
+      "gated": 18
     },
     "fdn": {
       "total": 427,
@@ -621,8 +621,8 @@
     {
       "name": "Adagia, Windswept Bastion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/adagia_windswept_bastion.rs",
       "set": "eoe"
     },
@@ -5813,8 +5813,8 @@
     {
       "name": "Cerebral Download",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/cerebral_download.rs",
       "set": "eoe"
     },
@@ -6493,8 +6493,8 @@
     {
       "name": "Codecracker Hound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/codecracker_hound.rs",
       "set": "eoe"
     },
@@ -6685,8 +6685,8 @@
     {
       "name": "Command Bridge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/command_bridge.rs",
       "set": "eoe"
     },
@@ -7477,8 +7477,8 @@
     {
       "name": "Cryoshatter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/cryoshatter.rs",
       "set": "eoe"
     },
@@ -8565,8 +8565,8 @@
     {
       "name": "Depressurize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/depressurize.rs",
       "set": "eoe"
     },
@@ -8589,8 +8589,8 @@
     {
       "name": "Desculpting Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/desculpting_blast.rs",
       "set": "eoe"
     },
@@ -9781,8 +9781,8 @@
     {
       "name": "Dubious Delicacy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/dubious_delicacy.rs",
       "set": "eoe"
     },
@@ -10437,8 +10437,8 @@
     {
       "name": "Elegy Acolyte",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/elegy_acolyte.rs",
       "set": "eoe"
     },
@@ -10981,8 +10981,8 @@
     {
       "name": "Entropic Battlecruiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/entropic_battlecruiser.rs",
       "set": "eoe"
     },
@@ -11277,8 +11277,8 @@
     {
       "name": "Evendo, Waking Haven",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/evendo_waking_haven.rs",
       "set": "eoe"
     },
@@ -11669,8 +11669,8 @@
     {
       "name": "Faller's Faithful",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/faller_s_faithful.rs",
       "set": "eoe"
     },
@@ -12109,8 +12109,8 @@
     {
       "name": "Fell Gravship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/fell_gravship.rs",
       "set": "eoe"
     },
@@ -17125,16 +17125,16 @@
     {
       "name": "Hylderblade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/hylderblade.rs",
       "set": "eoe"
     },
     {
       "name": "Hymn of the Faller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/hymn_of_the_faller.rs",
       "set": "eoe"
     },
@@ -17621,8 +17621,8 @@
     {
       "name": "Insatiable Skittermaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/insatiable_skittermaw.rs",
       "set": "eoe"
     },
@@ -18837,8 +18837,8 @@
     {
       "name": "Kavaron, Memorial World",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/kavaron_memorial_world.rs",
       "set": "eoe"
     },
@@ -25533,8 +25533,8 @@
     {
       "name": "Pinnacle Kill-Ship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/pinnacle_kill_ship.rs",
       "set": "eoe"
     },
@@ -27429,8 +27429,8 @@
     {
       "name": "Rayblade Trooper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/rayblade_trooper.rs",
       "set": "eoe"
     },
@@ -27981,8 +27981,8 @@
     {
       "name": "Reroute Systems",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/reroute_systems.rs",
       "set": "eoe"
     },
@@ -28005,8 +28005,8 @@
     {
       "name": "Rescue Skiff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/rescue_skiff.rs",
       "set": "eoe"
     },
@@ -30053,8 +30053,8 @@
     {
       "name": "Scout for Survivors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/scout_for_survivors.rs",
       "set": "eoe"
     },
@@ -30261,8 +30261,8 @@
     {
       "name": "Secluded Starforge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/secluded_starforge.rs",
       "set": "eoe"
     },
@@ -32981,8 +32981,8 @@
     {
       "name": "Starfield Shepherd",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/starfield_shepherd.rs",
       "set": "eoe"
     },
@@ -33061,8 +33061,8 @@
     {
       "name": "Starport Security",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/starport_security.rs",
       "set": "eoe"
     },
@@ -34189,24 +34189,24 @@
     {
       "name": "Sunstar Chaplain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/sunstar_chaplain.rs",
       "set": "eoe"
     },
     {
       "name": "Sunstar Expansionist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/sunstar_expansionist.rs",
       "set": "eoe"
     },
     {
       "name": "Sunstar Lightsmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/sunstar_lightsmith.rs",
       "set": "eoe"
     },
@@ -34405,8 +34405,8 @@
     {
       "name": "Survey Mechan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/survey_mechan.rs",
       "set": "eoe"
     },
@@ -34437,8 +34437,8 @@
     {
       "name": "Susur Secundi, Void Altar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/susur_secundi_void_altar.rs",
       "set": "eoe"
     },
@@ -35517,8 +35517,8 @@
     {
       "name": "Thaumaton Torpedo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/thaumaton_torpedo.rs",
       "set": "eoe"
     },
@@ -36165,8 +36165,8 @@
     {
       "name": "The Seriema",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/the_seriema.rs",
       "set": "eoe"
     },
@@ -38749,8 +38749,8 @@
     {
       "name": "Uthros, Titanic Godcore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/uthros_titanic_godcore.rs",
       "set": "eoe"
     },
@@ -40429,8 +40429,8 @@
     {
       "name": "Wedgelight Rammer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/wedgelight_rammer.rs",
       "set": "eoe"
     },
@@ -41205,8 +41205,8 @@
     {
       "name": "Wurmwall Sweeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/wurmwall_sweeper.rs",
       "set": "eoe"
     },
@@ -41429,8 +41429,8 @@
     {
       "name": "Zealous Display",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoe/zealous_display.rs",
       "set": "eoe"
     },

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d5f7b9198464d89a69d16e4480d9b98cd99bf9c3e5bdb7ceab7839f0aa61421a"
   },
-  "physical_metadata_sha256": "387b1709ae5e0090d43955f3d5f3f9ce4c166c2eae1f93f455583d6c60898b59"
+  "physical_metadata_sha256": "387b1709ae5e0090d43955f3d5f3f9ce4c166c2eae1f93f455583d6c60898b59",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/Hullcarver.java",
+  "java_sha256": "34e1e8ed629e919c362fa2e1f6a44db96e3e3913924715d01025a754d31f7a9a",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }

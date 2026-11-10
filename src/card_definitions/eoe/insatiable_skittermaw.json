@@ -3,10 +3,41 @@
   "catalogue_id": 2178,
   "oracle_id": "69a68dec-4b01-4528-81fc-a3c5f5097f72",
   "facts_sha256": "d9fd346e8c3d34ed1b728efcef8b11282a51a2dad66421306a9d533d8fd0830d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e2892e032f21cf74935f994e5d3663d7eed00d142cc0f30e177ab47816274ca6"
   },
-  "physical_metadata_sha256": "63cc727d1483014b0b69084b3b4f4171f2e7d738910202ad8140b48c923b09c6"
+  "physical_metadata_sha256": "63cc727d1483014b0b69084b3b4f4171f2e7d738910202ad8140b48c923b09c6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/VoidCondition.java",
+      "sha256": "d8121e9849e10e0ae98f15e879bf5dd82c452ae632b34a224eae623184bb680f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/VoidWatcher.java",
+      "sha256": "2499e3b479a40908c1d646715ed63a3e24c1a3204867d5628502e4a31af42702"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InsatiableSkittermaw.java",
+  "java_sha256": "dc5e89e1e8146e6c3c78ee1ef34d6a471c3b53d745cd125d065f544d446e6159",
+  "rules_tests": "tests/eoe_cards_067_132_black.rs"
 }
