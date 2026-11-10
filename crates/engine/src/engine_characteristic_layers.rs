@@ -539,10 +539,13 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                     SubtypeChange::Named(s.creature_types, false)
                 }
                 PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
-                PermanentForm::AddCreatureSubtypes if can_have_creature_subtypes(time) => {
-                    SubtypeChange::Add(s.creature_types)
+                PermanentForm::AddCreatureSubtypes => {
+                    // A live attachment grant depends on the effect making its
+                    // recipient a creature, even when that effect is newer.
+                    let time = time.max(creature_addition_timestamp(world, id).unwrap_or(0));
+                    return can_have_creature_subtypes(time)
+                        .then_some((time, SubtypeChange::Add(s.creature_types)));
                 }
-                PermanentForm::AddCreatureSubtypes => return None,
             };
             Some((time, change))
         })

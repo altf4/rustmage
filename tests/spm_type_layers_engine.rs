@@ -412,6 +412,31 @@ fn subtype_only_equipment_keeps_vehicle_type_and_detaches_when_crew_expires() {
         Some(equipped.reference)
     );
 
+    let mut animated = game.clone();
+    animated.change_object_form(
+        equipped.reference,
+        AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Named(&["Construct"]),
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        },
+        characteristic_layers::AnimationTypeMode::AddCreature,
+    );
+    animated.begin_step(Step::End);
+    animated.give_priority();
+    pass_pair(&mut animated);
+    let overlap = animated.object_view(vehicle);
+    assert_eq!(overlap.kinds, 17);
+    for subtype in ["Vehicle", "Construct", "Spider", "Hero"] {
+        assert!(overlap.has_subtype(subtype), "missing {subtype}");
+    }
+    assert_eq!(
+        animated.object_view(equipment).attached_to,
+        Some(overlap.reference)
+    );
+
     game.begin_step(Step::End);
     game.give_priority();
     pass_pair(&mut game);
