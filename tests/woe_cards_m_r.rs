@@ -2157,14 +2157,13 @@ fn restless_fortress_drains_the_defending_player_even_after_its_land_is_bounced(
             Zone::Battlefield,
         );
         game.add_counter(walker, CounterKind::Loyalty, 3);
-        let siege = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+        let siege = spawn(
+            &mut game,
+            player,
+            named("@fixture/siege-front"),
+            Zone::Battlefield,
+        );
         let battle = game.object_ref(siege);
-        let mut recipe = CopyRecipe::new(named("Goblin Piker"));
-        recipe.overrides = Some(CopyOverrides {
-            kinds: Some(BATTLE_KIND),
-            ..CopyOverrides::NONE
-        });
-        game.apply_temporary_copy(battle, recipe, CopyDeadline::EndOfTurn);
         game.add_counter(siege, CounterKind::Defense, 5);
         game.set_battle_protector(battle, other);
         let bounce = put(&mut game, other, "Unsummon", Zone::Hand);
