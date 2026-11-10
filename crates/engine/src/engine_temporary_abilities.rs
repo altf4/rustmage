@@ -484,27 +484,40 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         role: Option<Card>,
     ) {
-        if let Some(movement) = self.granted_source_entry(item, counter, role) {
-            self.stage_entries(vec![movement], None);
+        let moves: Vec<_> = self
+            .departed_source_in_graveyard(item)
+            .filter_map(|id| {
+                let kinds = self.state.objects[id as usize].card.kind_mask();
+                // An instant or sorcery that was face down stays in the graveyard.
+                if kinds & (4 | 8) != 0
+                    || !PermanentType::ALL
+                        .into_iter()
+                        .any(|kind| kind.mask() & kinds != 0)
+                {
+                    return None;
+                }
+                let mut movement = self.granted_return_move(id);
+                movement.effect_counter = counter;
+                movement.role_after = role.map(|token| (token, item.controller));
+                Some(movement)
+            })
+            .collect();
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
         }
     }
-    pub(super) fn granted_source_entry(
-        &self,
-        item: &SpellView,
-        counter: Option<(CounterKind, u64)>,
-        role: Option<Card>,
-    ) -> Option<entries::EntryMove> {
+    pub(super) fn granted_source_entry(&self, item: &SpellView) -> Option<entries::EntryMove> {
         let expected = item.target_source();
         let object = self.state.objects.get(expected.card as usize)?;
         if object.zone != Zone::Graveyard || self.object_ref(expected.card) != expected {
             return None;
         }
-        let owner = object.owner;
-        let mut movement = self.entry_move(expected.card, Zone::Battlefield, true);
-        movement.controller = owner;
-        movement.effect_counter = counter;
-        movement.role_after = role.map(|token| (token, item.controller));
-        Some(movement)
+        Some(self.granted_return_move(expected.card))
+    }
+    fn granted_return_move(&self, id: CardId) -> entries::EntryMove {
+        let mut movement = self.entry_move(id, Zone::Battlefield, true);
+        movement.controller = movement.before.owner;
+        movement
     }
     pub(super) fn temporary_ability_bytes(&self) -> usize {
         self.state.temporary_abilities.as_ref().map_or(0, |grants| {

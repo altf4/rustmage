@@ -1596,8 +1596,12 @@ impl Game {
         for recipient in suspect_results {
             self.set_suspected(recipient, true);
         }
-        for (controller, token, recipient) in role_results {
-            if self.aura_can_enchant(token, controller, recipient) {
+        role_results.retain(|&(controller, token, recipient)| {
+            self.aura_can_enchant(token, controller, recipient)
+        });
+        match role_results.as_slice() {
+            [] => (),
+            &[(controller, token, recipient)] => {
                 self.stage_token_creation(
                     controller,
                     token,
@@ -1605,6 +1609,24 @@ impl Game {
                     false,
                     replacements::TokenCompletion::RoleAttach(recipient),
                 );
+            }
+            _ => {
+                // A single returned meld can yield multiple creatures. Create
+                // the Roles for all eligible fronts in the same token event.
+                let mut batches: Vec<(Player, Card, Vec<ObjectRef>)> = Vec::new();
+                for (controller, token, recipient) in role_results {
+                    if let Some((_, _, recipients)) = batches
+                        .iter_mut()
+                        .find(|batch| batch.0 == controller && batch.1 == token)
+                    {
+                        recipients.push(recipient);
+                    } else {
+                        batches.push((controller, token, vec![recipient]));
+                    }
+                }
+                for (controller, token, recipients) in batches {
+                    self.stage_role_creation(controller, token, recipients);
+                }
             }
         }
         if let Some(player) = batch.shuffle_after {
