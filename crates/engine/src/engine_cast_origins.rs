@@ -882,7 +882,7 @@ impl Game {
                     return true;
                 }
                 if paid_graveyard
-                    && self.visit_resolution_mayhem_face(player, object.card, face, emit)
+                    && self.visit_resolution_mayhem_face(player, object.card, face, &mut *emit)
                 {
                     return true;
                 }
