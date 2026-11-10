@@ -255,21 +255,18 @@ impl Game {
         filters: &[BattlefieldFilter],
         kind: CounterKind,
         amount: AmountValue,
-        legendary_only: bool,
+        qualifies: impl Fn(&Self, CardId) -> bool,
     ) {
         let count = u64::try_from(self.item_amount(amount, item))
             .capacity("group counter quantity exhausted");
+        if count == 0 {
+            return;
+        }
         let affected = self
             .battlefield_group(item, filters)
             .into_iter()
-            .filter(|&id| {
-                !legendary_only || ability_world::CharacteristicWorld::legendary(self, id)
-            })
-            .map(|id| {
-                let mut counters = Counters::default();
-                counters.add(kind, count);
-                (self.object_ref(id), counters)
-            })
+            .filter(|&id| qualifies(self, id))
+            .map(|id| (self.object_ref(id), Counters::of(kind, count)))
             .collect();
         self.effect_counters(affected, replacements::ResumeMode::Program);
     }

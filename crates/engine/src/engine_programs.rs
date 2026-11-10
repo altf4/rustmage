@@ -7220,18 +7220,24 @@ impl Game {
                     filters,
                     kind,
                     amount,
+                }
+                | Instruction::PutNamedPermanentCountersScaled {
+                    filters,
+                    kind,
+                    amount,
+                    ..
                 } => {
-                    let legendary_only = matches!(
-                        instruction,
-                        Instruction::PutLegendaryPermanentCountersScaled { .. }
-                    );
-                    self.put_permanent_counters_scaled(
-                        &item,
-                        filters,
-                        kind,
-                        amount,
-                        legendary_only,
-                    );
+                    self.put_permanent_counters_scaled(&item, filters, kind, amount, |game, id| {
+                        match instruction {
+                            Instruction::PutLegendaryPermanentCountersScaled { .. } => {
+                                ability_world::CharacteristicWorld::legendary(game, id)
+                            }
+                            Instruction::PutNamedPermanentCountersScaled { name, .. } => {
+                                crate::card_names::same_name(game.object_name(id), name)
+                            }
+                            _ => true,
+                        }
+                    });
                 }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {

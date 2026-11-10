@@ -2170,6 +2170,13 @@ pub enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// A simultaneous placement on the live group with this effective name.
+    PutNamedPermanentCountersScaled {
+        filters: &'static [BattlefieldFilter],
+        name: &'static str,
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     Paradigm {
         ability: u16,
     },
