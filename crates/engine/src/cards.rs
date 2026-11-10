@@ -3887,6 +3887,11 @@ pub enum Instruction {
         filters: &'static [BattlefieldFilter],
         keywords: Keywords,
     },
+    /// As above, excluding the originating ability's exact source incarnation.
+    GrantOtherPermanentGroupKeywords {
+        filters: &'static [BattlefieldFilter],
+        keywords: Keywords,
+    },
     GrantCreatures {
         filter: CreatureFilter,
         keywords: Keywords,

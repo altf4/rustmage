@@ -119,11 +119,15 @@ impl Game {
         item: &SpellView,
         filters: &[BattlefieldFilter],
         keywords: Keywords,
+        exclude_source: bool,
     ) {
         let Some(source) = item.source else {
             return;
         };
-        let recipients = self.battlefield_group(item, filters);
+        let mut recipients = self.battlefield_group(item, filters);
+        if exclude_source {
+            recipients.retain(|&id| self.object_ref(id) != source.object);
+        }
         self.grant_keyword_effects(&recipients, source.object, keywords);
     }
     pub(super) fn remove_permanent_group_keywords(

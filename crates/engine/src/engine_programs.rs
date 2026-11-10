@@ -9978,8 +9978,17 @@ impl Game {
                         keywords,
                     );
                 }
-                Instruction::GrantPermanentGroupKeywords { filters, keywords } => {
-                    self.grant_permanent_group_keywords(&item, filters, keywords);
+                Instruction::GrantPermanentGroupKeywords { filters, keywords }
+                | Instruction::GrantOtherPermanentGroupKeywords { filters, keywords } => {
+                    self.grant_permanent_group_keywords(
+                        &item,
+                        filters,
+                        keywords,
+                        matches!(
+                            instruction,
+                            Instruction::GrantOtherPermanentGroupKeywords { .. }
+                        ),
+                    );
                 }
                 Instruction::GrantCreatures { filter, keywords } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
