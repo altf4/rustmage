@@ -2353,11 +2353,11 @@ impl Game {
                     TriggerCondition::ControlledCreaturesBecomeTapped => {
                         let matching: Vec<_> = changed
                             .iter()
-                            .filter_map(|&(_, id)| {
-                                (self.state.objects[id as usize].controller == source.controller
-                                    && self.is_creature(id))
-                                .then(|| self.object_ref(id))
+                            .filter(|&&(_, id)| {
+                                self.state.objects[id as usize].controller == source.controller
+                                    && self.is_creature(id)
                             })
+                            .map(|&(_, id)| self.object_ref(id))
                             .collect();
                         self.queue_tapped_objects(&source, index, matching);
                     }
@@ -2383,12 +2383,12 @@ impl Game {
                     TriggerCondition::OpponentCreatureTappedByYou { one_or_more } => {
                         let matching: Vec<_> = changed
                             .iter()
-                            .filter_map(|&(actor, id)| {
-                                (actor == source.controller
+                            .filter(|&&(actor, id)| {
+                                actor == source.controller
                                     && self.state.objects[id as usize].controller != actor
-                                    && self.is_creature(id))
-                                .then(|| self.object_ref(id))
+                                    && self.is_creature(id)
                             })
+                            .map(|&(_, id)| self.object_ref(id))
                             .collect();
                         if one_or_more {
                             self.queue_tapped_objects(&source, index, matching);

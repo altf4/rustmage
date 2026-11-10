@@ -370,12 +370,18 @@ fn exhaust_discounts_stack_for_other_controlled_sources_and_recheck_suppression(
     let enemy = put(&mut g, p.other(), "Grizzly Bears", Zone::Battlefield);
     assert_eq!(
         g.activation_generic_discount(first, named("Grizzly Bears"), 0),
-        2
+        power_up::ActivationDiscounts {
+            ordinary: 2,
+            leave_one: 0,
+        }
     );
     let third = put(&mut g, p, "Grizzly Bears", Zone::Battlefield);
     assert_eq!(
         g.activation_generic_discount(first, named("Grizzly Bears"), 0),
-        4
+        power_up::ActivationDiscounts {
+            ordinary: 4,
+            leave_one: 0,
+        }
     );
     g.state.players[p.index()].mana = [0, 0, 0, 1, 0, 0];
     direct(&mut g, first, 0);
@@ -387,7 +393,10 @@ fn exhaust_discounts_stack_for_other_controlled_sources_and_recheck_suppression(
     g.state.objects[aura as usize].attached_to = Some(second_ref);
     assert_eq!(
         g.activation_generic_discount(third, named("Grizzly Bears"), 0),
-        2,
+        power_up::ActivationDiscounts {
+            ordinary: 2,
+            leave_one: 0,
+        },
         "suppressed reducers and opposing reducers contribute zero"
     );
     assert_eq!(g.object_view(enemy).controller, p.other());

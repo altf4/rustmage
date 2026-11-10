@@ -9,7 +9,6 @@ use support::*;
 
 const ZERO: Mana = [0; 6];
 const BLUE: Mana = [0, 1, 0, 0, 0, 0];
-const COLORLESS: Mana = [0, 0, 0, 0, 0, 1];
 const OWN_CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Object {
     zone: TargetZone::Battlefield,
     kinds: 1,
