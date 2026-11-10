@@ -176,8 +176,8 @@ fn printed_hybrid_uses_both_colors_and_owned_cost_branches() {
         let mut restored = parent.clone();
         drop(parent);
 
-        let first = Action::ChooseSpellCost { index: 0 };
-        let second = Action::ChooseSpellCost { index: 1 };
+        let first = Action::ChooseSpellCost { cost: 0 };
+        let second = Action::ChooseSpellCost { cost: 1 };
         let second_index = indexed
             .legal_actions()
             .iter()
@@ -250,7 +250,7 @@ fn granted_mayhem_tracks_discard_before_provider_and_locks_x_and_additional_cost
         act(
             child,
             Action::ChooseSpellCost {
-                index: u16::from(pay_fee),
+                cost: u16::from(pay_fee),
             },
         );
         if !pay_fee {
