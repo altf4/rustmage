@@ -407,6 +407,7 @@ impl FundingState<'_> {
                                 | CostReduction(..)
                                 | TargetCostReduction(..)
                                 | OpponentNoncreatureSpellTax(_)
+                                | ChosenCardTypeSpellTax(_)
                                 | AdditionalTriggers { .. }
                                 | AttachedChosenColor
                                 | BasicLandTapManaBonus(_)

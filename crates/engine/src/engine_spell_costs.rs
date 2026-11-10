@@ -5,22 +5,63 @@ use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Compute the wide pre-reduction generic increase from active sources.
-    pub(super) fn opponent_noncreature_spell_tax(&self, actor: Player, definition: Card) -> u64 {
-        if definition.kind_mask() & 1 != 0 {
+    pub(super) fn spell_generic_tax(&self, actor: Player, definition: Card) -> u64 {
+        use crate::cards::StaticAbilityFragment::{
+            ChosenCardTypeSpellTax, OpponentNoncreatureSpellTax,
+        };
+
+        let kinds = definition.kind_mask();
+        // A creature spell can only be taxed here if another one of its
+        // types was chosen. Preserve the common no-tax path for creatures.
+        if kinds & 1 != 0
+            && !self.state.entry_values.as_ref().is_some_and(|rows| {
+                rows.iter().any(|row| {
+                    matches!(row.value, EntryChoiceValue::CardType(kind) if kind.spell_mask() & kinds != 0)
+                })
+            })
+        {
             return 0;
         }
-        self.state.static_sources.iter().copied().filter(|&source| {
-            self.on_battlefield(source) && self.state.objects[source as usize].controller != actor
-        }).map(|source| {
-            self.state.objects[source as usize].card.static_ability_groups().iter()
-                .flat_map(|group| group.fragments.iter())
-                .filter_map(|fragment| {
-                    let crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(amount) = *fragment else { return None; };
-                    self.continuous_fragment_available(source, |f| matches!(f,
-                        crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(n) if *n == amount))
-                        .then_some(u64::from(amount))
-                }).fold(0u64, u64::saturating_add)
-        }).fold(0u64, u64::saturating_add)
+        let mut total = 0u64;
+        let mut query = None;
+        for &id in &self.state.static_sources {
+            if !self.on_battlefield(id) {
+                continue;
+            }
+            let object = &self.state.objects[id as usize];
+            let source = self.object_ref(id);
+            for (index, group) in object.card.static_ability_groups().iter().enumerate() {
+                let amount = group
+                    .fragments
+                    .iter()
+                    .filter_map(|fragment| match *fragment {
+                        OpponentNoncreatureSpellTax(amount)
+                            if kinds & 1 == 0 && object.controller != actor =>
+                        {
+                            Some(amount)
+                        }
+                        ChosenCardTypeSpellTax(amount)
+                            if matches!(
+                                CharacteristicWorld::entry_value(self, source),
+                                Some(EntryChoiceValue::CardType(kind)) if kind.spell_mask() & kinds != 0
+                            ) =>
+                        {
+                            Some(amount)
+                        }
+                        _ => None,
+                    })
+                    .map(u64::from)
+                    .fold(0, u64::saturating_add);
+                if amount != 0
+                    && query
+                        .get_or_insert_with(|| self.characteristic_query())
+                        .continuous_group_available(source, index, group)
+                {
+                    total = total.saturating_add(amount);
+                }
+            }
+        }
+        total
     }
     /// Keep increases and all reductions wide until the final payable total.
     #[allow(clippy::too_many_arguments)] // Keep the distinct cost components explicit.
@@ -37,7 +78,7 @@ impl Game {
     ) -> Option<ManaCost> {
         let raw = u64::from(base.generic)
             .checked_add(extra_generic)?
-            .checked_add(self.opponent_noncreature_spell_tax(actor, definition))?;
+            .checked_add(self.spell_generic_tax(actor, definition))?;
         let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(discount.colored[i]));
         let excess = (0..6)
             .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))

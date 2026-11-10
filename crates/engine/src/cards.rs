@@ -630,11 +630,70 @@ pub enum EntryChoiceValue {
     /// Zero-based selection from this definition's bounded named entry choices.
     NamedMode(u16),
     CardName(crate::CardName),
+    CardType(NoncreatureCardType),
     Color(ChoiceColor),
     BasicLandType(BasicLandType),
     CreatureType(CreatureType),
     ManaValueParity(crate::engine::ManaValueParity),
 }
+/// A card type other than creature (CR 205.2a), including types that are never cast.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum NoncreatureCardType {
+    Artifact,
+    Battle,
+    Conspiracy,
+    Dungeon,
+    Enchantment,
+    Instant,
+    Kindred,
+    Land,
+    Phenomenon,
+    Plane,
+    Planeswalker,
+    Scheme,
+    Sorcery,
+    Vanguard,
+}
+
+impl NoncreatureCardType {
+    pub const ALL: [Self; 14] = [
+        Self::Artifact,
+        Self::Battle,
+        Self::Conspiracy,
+        Self::Dungeon,
+        Self::Enchantment,
+        Self::Instant,
+        Self::Kindred,
+        Self::Land,
+        Self::Phenomenon,
+        Self::Plane,
+        Self::Planeswalker,
+        Self::Scheme,
+        Self::Sorcery,
+        Self::Vanguard,
+    ];
+
+    pub(crate) const fn spell_mask(self) -> u16 {
+        match self {
+            Self::Artifact => 16,
+            Self::Battle => BATTLE_KIND,
+            Self::Enchantment => 32,
+            Self::Instant => 8,
+            Self::Kindred => 128,
+            Self::Planeswalker => 64,
+            Self::Sorcery => 4,
+            Self::Conspiracy
+            | Self::Dungeon
+            | Self::Land
+            | Self::Phenomenon
+            | Self::Plane
+            | Self::Scheme
+            | Self::Vanguard => 0,
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EntryChoiceKind {
@@ -643,6 +702,7 @@ pub enum EntryChoiceKind {
     CardName,
     NonlandCardName,
     CardNameAfterOpponentHand,
+    NoncreatureCardTypeAfterOpponentHand,
     ManaValueParity,
     LandCardName,
     Color,
@@ -652,6 +712,13 @@ pub enum EntryChoiceKind {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EntryChoiceKind {
+    pub(crate) const fn looks_at_opponent_hand(self) -> bool {
+        matches!(
+            self,
+            Self::CardNameAfterOpponentHand | Self::NoncreatureCardTypeAfterOpponentHand
+        )
+    }
+
     pub(crate) const fn creature_type_names(self) -> Option<&'static [&'static str]> {
         match self {
             Self::CreatureType => Some(crate::CREATURE_TYPES),
@@ -678,6 +745,9 @@ impl EntryChoiceKind {
             (
                 Self::CardNameAfterOpponentHand | Self::CardName,
                 EntryChoiceValue::CardName(_)
+            ) | (
+                Self::NoncreatureCardTypeAfterOpponentHand,
+                EntryChoiceValue::CardType(_)
             ) | (Self::ManaValueParity, EntryChoiceValue::ManaValueParity(_))
                 | (Self::Color, EntryChoiceValue::Color(_))
                 | (Self::BasicLandType, EntryChoiceValue::BasicLandType(_))
@@ -1003,6 +1073,10 @@ pub struct LibrarySelectionSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryPickDestination {
     ExileCastThisTurn,
+    /// The selector can look at and play each exact face-down exile result.
+    ExileFaceDownPlay {
+        spend_any_mana: bool,
+    },
     /// A single forced candidate; evaluate the threshold before any entry choices.
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
     BattlefieldTapped,
@@ -3387,6 +3461,13 @@ pub enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Privately choose cards from the targeted player's top group, then
+    /// exile the selection face down and put the rest on the bottom at random.
+    SelectTargetLibraryFaceDownPlay {
+        look: u16,
+        count: u16,
+        spend_any_mana: bool,
+    },
     /// Select cards for the hand and remember the actual number that moved there.
     SelectLibraryToHandRememberCount(LibrarySelectionEffect),
     /// Reveal the top cards, alternating the owner's hand and the opponent's

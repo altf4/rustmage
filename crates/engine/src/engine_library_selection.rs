@@ -231,6 +231,47 @@ impl Game {
         effect: LibrarySelectionEffect,
         completion: LibrarySelectionCompletion,
     ) -> bool {
+        self.start_library_selection_for_owner(item, item.controller, effect, completion)
+    }
+
+    pub(super) fn select_target_library_face_down_play(
+        &mut self,
+        item: &SpellView,
+        look: u16,
+        count: u16,
+        spend_any_mana: bool,
+    ) -> bool {
+        let Some(owner) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        self.start_library_selection_for_owner(
+            item,
+            owner,
+            LibrarySelectionEffect {
+                spec: LibrarySelectionSpec {
+                    look,
+                    count: LibrarySelectionCount::Fixed(count),
+                    filter: LibrarySelectionFilter::Any,
+                    optional: false,
+                    reveal: false,
+                    remainder: LibraryRemainder::BottomRandom,
+                },
+                look: LibraryLook::Fixed(look),
+                destination: LibraryPickDestination::ExileFaceDownPlay { spend_any_mana },
+                public: false,
+                maximum_mana_value: None,
+            },
+            LibrarySelectionCompletion::None,
+        )
+    }
+
+    fn start_library_selection_for_owner(
+        &mut self,
+        item: &SpellView,
+        owner: Player,
+        effect: LibrarySelectionEffect,
+        completion: LibrarySelectionCompletion,
+    ) -> bool {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
         match completion {
             LibrarySelectionCompletion::None => {}
@@ -247,7 +288,7 @@ impl Game {
                 || effect.spec.count == LibrarySelectionCount::Fixed(1)
         );
         let spec = effect.spec;
-        let owner = item.controller;
+        let chooser = item.controller;
         let limit = match effect.look {
             LibraryLook::Fixed(n) => usize::from(n),
             LibraryLook::Amount(value) => {
@@ -456,7 +497,7 @@ impl Game {
                     | LibraryRemainder::OptionalGraveyard
             )
         {
-            return self.finish_library_selection_internal(owner);
+            return self.finish_library_selection_internal();
         }
         let frame = self
             .state
@@ -468,9 +509,9 @@ impl Game {
             .unwrap();
         if minimum == frame.remaining.len() && !frame.public {
             frame.selected = std::mem::take(&mut frame.remaining);
-            return self.finish_library_selection_internal(owner);
+            return self.finish_library_selection_internal();
         }
-        self.state.pending = Pending::EffectLibrarySelection { player: owner };
+        self.state.pending = Pending::EffectLibrarySelection { player: chooser };
         true
     }
     pub(super) fn start_alternating_library_picks(&mut self, item: &SpellView, look: u16) -> bool {
@@ -663,7 +704,7 @@ impl Game {
         let index = f.remaining.iter().position(|r| r.card == card).unwrap();
         f.selected.push(f.remaining.remove(index));
     }
-    pub(super) fn order_library_bottom(&mut self, owner: Player, card: CardId) {
+    pub(super) fn order_library_bottom(&mut self, card: CardId) {
         let f = self
             .state
             .resolving
@@ -675,11 +716,11 @@ impl Game {
         let index = f.remaining.iter().position(|r| r.card == card).unwrap();
         f.bottom.push(f.remaining.remove(index));
         if f.remaining.is_empty() {
-            self.commit_library_selection(owner);
+            self.commit_library_selection();
             self.run_program();
         }
     }
-    pub(super) fn finish_library_selection(&mut self, owner: Player) {
+    pub(super) fn finish_library_selection(&mut self) {
         let count = self
             .state
             .resolving
@@ -707,20 +748,16 @@ impl Game {
                 .card;
             self.choose_library_selection(card);
         }
-        if !self.finish_library_selection_internal(owner) {
+        if !self.finish_library_selection_internal() {
             self.run_program();
         }
     }
-    fn finish_library_selection_internal(&mut self, owner: Player) -> bool {
-        let f = self
-            .state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .selection
-            .as_mut()
-            .unwrap();
+    fn finish_library_selection_internal(&mut self) -> bool {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let chooser = resolution.item.controller;
+        let f = resolution.selection.as_mut().unwrap();
         if f.top_land == Some(TopLandStage::HandThenLands) {
+            let owner = f.owner;
             self.continue_top_hand_then_lands(owner);
             return true;
         }
@@ -729,7 +766,7 @@ impl Game {
             f.destination = LibraryPickDestination::Graveyard;
             f.spec.reveal = false;
             f.eligible.clone_from(&f.remaining);
-            self.state.pending = Pending::EffectLibrarySelection { player: owner };
+            self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             return true;
         }
         if f.spec.remainder == LibraryRemainder::OptionalGraveyard
@@ -737,15 +774,15 @@ impl Game {
             && !f.ordering
         {
             f.ordering = true;
-            self.state.pending = Pending::EffectLibrarySelection { player: owner };
+            self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             return true;
         }
         if f.spec.remainder == LibraryRemainder::BottomAny && !f.remaining.is_empty() {
             f.ordering = true;
-            self.state.pending = Pending::EffectLibrarySelection { player: owner };
+            self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             true
         } else {
-            self.commit_library_selection(owner);
+            self.commit_library_selection();
             false
         }
     }
@@ -787,7 +824,7 @@ impl Game {
         // Keep the same private choice boundary even when no looked land qualifies.
         self.state.pending = Pending::EffectLibrarySelection { player: owner };
     }
-    fn commit_library_selection(&mut self, owner: Player) {
+    fn commit_library_selection(&mut self) {
         let mut f = self
             .state
             .resolving
@@ -796,6 +833,8 @@ impl Game {
             .selection
             .take()
             .unwrap();
+        let owner = f.owner;
+        let chooser = self.state.resolving.as_ref().unwrap().item.controller;
         let remembers_hand = f.completion == LibrarySelectionCompletion::RememberHandCount;
         let keep_private_look =
             remembers_hand && f.selected.is_empty() && f.spec.remainder == LibraryRemainder::Keep;
@@ -848,7 +887,9 @@ impl Game {
         let events = match f.destination {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
             LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
-            LibraryPickDestination::Exile | LibraryPickDestination::ExileCastThisTurn => {
+            LibraryPickDestination::Exile
+            | LibraryPickDestination::ExileCastThisTurn
+            | LibraryPickDestination::ExileFaceDownPlay { .. } => {
                 self.move_objects_raw(&ids, Zone::Exile)
             }
             _ => Vec::new(),
@@ -871,6 +912,13 @@ impl Game {
                         .find(|p| p.object == event.after && p.player == owner && !p.cast_only)
                         .unwrap()
                         .cast_only = true;
+                }
+            }
+        }
+        if let LibraryPickDestination::ExileFaceDownPlay { spend_any_mana } = f.destination {
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.grant_face_down_exile_play(event.after, &[chooser], spend_any_mana);
                 }
             }
         }
@@ -1124,8 +1172,9 @@ impl Game {
         false
     }
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
-        let f = self.state.resolving.as_ref()?.selection.as_ref()?;
-        if !self.shares_information(viewer, f.owner) && !f.public {
+        let resolution = self.state.resolving.as_ref()?;
+        let f = resolution.selection.as_ref()?;
+        if !self.shares_information(viewer, resolution.item.controller) && !f.public {
             return None;
         }
         let visible = |object: &&ObjectRef| {
@@ -1184,6 +1233,7 @@ impl Game {
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",
                 LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
+                LibraryPickDestination::ExileFaceDownPlay { .. } => "exile_face_down_play",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Keep => "keep",

@@ -463,6 +463,29 @@ impl Game {
         Some(&mut self.state.exile_permissions[at])
     }
 
+    pub(super) fn grant_face_down_exile_play(
+        &mut self,
+        object: ObjectRef,
+        beneficiaries: &[Player],
+        spend_any_mana: bool,
+    ) {
+        let viewers = beneficiaries
+            .iter()
+            .fold(0u8, |mask, player| mask | (1 << player.index()));
+        self.remember_face_down_exile(object, viewers, None);
+        for &player in beneficiaries {
+            let permission = self
+                .grant_exile_play_permission_with_expiry(
+                    player,
+                    object,
+                    None,
+                    ExilePlayExpiry::WhileExiled,
+                )
+                .expect("face-down play permission requires an exact exile object");
+            permission.spend_any_mana = spend_any_mana;
+        }
+    }
+
     pub(super) fn grant_taxed_exile_play(
         &mut self,
         player: Player,
@@ -1229,17 +1252,7 @@ impl Game {
             if !event.moved || event.destination != Zone::Exile {
                 continue;
             }
-            self.remember_face_down_exile(event.after, 1 << item.controller.index(), None);
-            self.grant_exile_play_permission(item.controller, event.after, false);
-            if let Some(permission) = self
-                .state
-                .exile_permissions
-                .iter_mut()
-                .find(|p| p.player == item.controller && p.object == event.after)
-            {
-                permission.expiry = ExilePlayExpiry::WhileExiled;
-                permission.spend_any_mana = true;
-            }
+            self.grant_face_down_exile_play(event.after, &[item.controller], true);
         }
         self.finish_zone_events(&events, &[]);
     }

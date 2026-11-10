@@ -1155,6 +1155,12 @@ impl FundingState<'_> {
                         )
                     }))
                 }
+                crate::cards::EntryChoiceKind::NoncreatureCardTypeAfterOpponentHand => choices
+                    .extend(
+                        crate::cards::NoncreatureCardType::ALL
+                            .into_iter()
+                            .map(EntryChoiceValue::CardType),
+                    ),
                 crate::cards::EntryChoiceKind::ManaValueParity => choices.extend(
                     [ManaValueParity::Odd, ManaValueParity::Even]
                         .into_iter()

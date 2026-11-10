@@ -8019,6 +8019,16 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::SelectTargetLibraryFaceDownPlay {
+                    look,
+                    count,
+                    spend_any_mana,
+                } => {
+                    if self.select_target_library_face_down_play(&item, look, count, spend_any_mana)
+                    {
+                        return;
+                    }
+                }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
                         return;

@@ -6360,10 +6360,8 @@ impl Game {
                                 }
                                 // Object-specific mana permissions cannot share the
                                 // printed-definition-only prefunding cache.
-                                if self.opponent_noncreature_spell_tax(
-                                    actor,
-                                    self.effective_spell_card(card),
-                                ) != 0
+                                if self.spell_generic_tax(actor, self.effective_spell_card(card))
+                                    != 0
                                     || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || convoke::potential(self, obj.card)
@@ -6421,9 +6419,7 @@ impl Game {
                         }
                     }
                     if target_cost
-                        && self
-                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
-                            == 0
+                        && self.spell_generic_tax(actor, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
@@ -6488,9 +6484,7 @@ impl Game {
                     }
                     if flashback
                         || exile
-                        || self
-                            .opponent_noncreature_spell_tax(actor, self.effective_spell_card(card))
-                            != 0
+                        || self.spell_generic_tax(actor, self.effective_spell_card(card)) != 0
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.teamwork().is_some()
@@ -8814,8 +8808,8 @@ impl Game {
             Action::ChooseEquipmentAttachment { equipment } => {
                 self.choose_equipment_attachment(actor, equipment)
             }
-            Action::FinishLibrarySelection => self.finish_library_selection(actor),
-            Action::OrderLibraryBottom { card } => self.order_library_bottom(actor, card),
+            Action::FinishLibrarySelection => self.finish_library_selection(),
+            Action::OrderLibraryBottom { card } => self.order_library_bottom(card),
             Action::ArrangeLibrary { card, destination } => {
                 self.arrange_library(actor, card, destination);
             }

@@ -219,9 +219,6 @@ impl Game {
         if beneficiaries.is_empty() {
             return;
         }
-        let viewers = beneficiaries
-            .iter()
-            .fold(0u8, |mask, player| mask | (1 << player.index()));
         for owner in libraries {
             let ids = exile::top_library_cards(self, owner, u128::from(amount));
             // The look precedes replacement planning for exile. Its knowledge
@@ -237,20 +234,7 @@ impl Game {
                 if !event.moved || event.destination != Zone::Exile {
                     continue;
                 }
-                self.remember_face_down_exile(event.after, viewers, None);
-                for &player in &beneficiaries {
-                    self.grant_exile_play_permission(player, event.after, false);
-                    let permission = self
-                        .state
-                        .exile_permissions
-                        .iter_mut()
-                        .find(|permission| {
-                            permission.player == player && permission.object == event.after
-                        })
-                        .expect("new exact exile permission");
-                    permission.expiry = ExilePlayExpiry::WhileExiled;
-                    permission.spend_any_mana = spend_any_mana;
-                }
+                self.grant_face_down_exile_play(event.after, &beneficiaries, spend_any_mana);
             }
             self.finish_zone_events(&events, &[]);
         }

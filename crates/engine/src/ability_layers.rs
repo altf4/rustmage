@@ -152,6 +152,8 @@ pub enum StaticAbilityFragment {
     AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
     OpponentNoncreatureSpellTax(u32),
+    /// Increase both players' spell costs for the type chosen as this source entered.
+    ChosenCardTypeSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
     AttackControllerTax {
         amount: u32,
