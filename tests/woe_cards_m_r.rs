@@ -469,10 +469,10 @@ fn mosswood_dreadknight_dies_into_a_paid_next_turn_adventure_and_returns_from_ex
         let mut game = scenario(player);
         let dreadknight = spawn(&mut game, player, named("Mosswood Dreadknight"), Zone::Hand);
         let shock = put(&mut game, player, "Shock", Zone::Hand);
-        let lands = ["Swamp", "Forest", "Wastes", "Wastes"]
+        let lands = ["Swamp", "Swamp", "Forest", "Forest"]
             .map(|land| put(&mut game, player, land, Zone::Battlefield));
         let creature_payment = Action::PayCosts {
-            payment: [0, 0, 0, 0, 1, 1],
+            payment: [0, 0, 0, 0, 2, 0],
         };
         let adventure = Action::AnnounceAdventure { card: dreadknight };
 
@@ -527,7 +527,7 @@ fn mosswood_dreadknight_dies_into_a_paid_next_turn_adventure_and_returns_from_ex
         act(
             &mut game,
             Action::PayCosts {
-                payment: [0, 0, 1, 0, 0, 1],
+                payment: [0, 0, 2, 0, 0, 0],
             },
         );
         let spell = game.state.stack.last().unwrap();
