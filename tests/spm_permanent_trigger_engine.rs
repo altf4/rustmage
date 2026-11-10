@@ -24,6 +24,8 @@ const PRIVATE_LOOK: &[Instruction] = &[Instruction::SelectLibraryTo(LibrarySelec
     },
     look: LibraryLook::Amount(AmountValue::DamageEventAmount),
     destination: LibraryPickDestination::Hand,
+    public: false,
+    maximum_mana_value: None,
 })];
 
 const GRAVE_GRANT: CardRules = CardRules {
