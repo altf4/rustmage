@@ -352,9 +352,9 @@ const DAMAGE_SUBTYPE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
-const SHROUDED_BIRD: CardRules = CardRules {
+const HEXPROOF_BIRD: CardRules = CardRules {
     effect: Effect::Creature(1, 4),
-    keywords: Keywords::SHROUD,
+    keywords: Keywords::HEXPROOF,
     ..CardRules::EMPTY
 };
 
@@ -362,7 +362,7 @@ const SHROUDED_BIRD: CardRules = CardRules {
 fn only_the_positively_damaged_subtype_is_destroyed_without_targeting() {
     let _rules = fixture_rules::activate(&[
         (Card::HillGiant, &DAMAGE_SUBTYPE),
-        (Card::from_name("Healer's Hawk").unwrap(), &SHROUDED_BIRD),
+        (Card::from_name("Healer's Hawk").unwrap(), &HEXPROOF_BIRD),
     ]);
     let player = Player::P0;
     let mut game = scenario(player);
