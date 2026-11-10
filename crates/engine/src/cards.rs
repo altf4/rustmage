@@ -4730,6 +4730,8 @@ pub enum StatValue {
     OtherNamedCreatures(&'static str),
     /// Unqualified all-player count; distinct from controller-owned attackers.
     AllAttackingCreatures,
+    /// Current attacking creatures of this subtype, regardless of controller.
+    AllAttackingSubtype(&'static str),
     /// Gate a continuous effect on this exact permanent's current Class level.
     SourceClassLevelAtLeast(u8),
     ArtifactEnteredThisTurn,

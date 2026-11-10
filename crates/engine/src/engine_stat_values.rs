@@ -377,13 +377,20 @@ impl Game {
                         && (*id != source.card || o.generation != source.generation)
                 })
                 .count() as i128,
-            StatValue::AllAttackingCreatures => objects()
-                .filter(|(id, o)| {
-                    o.zone == Zone::Battlefield
-                        && kinds(*id, o) & 1 != 0
-                        && self.state.attackers.iter().any(|a| a.card == *id)
-                })
-                .count() as i128,
+            StatValue::AllAttackingCreatures | StatValue::AllAttackingSubtype(_) => {
+                let subtype = match value {
+                    StatValue::AllAttackingSubtype(subtype) => Some(subtype),
+                    _ => None,
+                };
+                objects()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && kinds(*id, o) & 1 != 0
+                            && self.state.attackers.iter().any(|a| a.card == *id)
+                            && subtype.is_none_or(|subtype| subtypes(*id).has(o.card, subtype))
+                    })
+                    .count() as i128
+            }
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {
