@@ -1394,3 +1394,334 @@ fn curse_of_the_werefox_creates_the_role_before_the_optional_live_fight() {
     assert_eq!(game.object_view(own).damage, 2);
     assert_eq!(game.object_view(foreign).zone, Zone::Graveyard);
 }
+
+#[test]
+fn aquatic_alchemist_distinguishes_first_spell_and_bubble_up_uses_own_graveyard() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let alchemist = put(
+        &mut game,
+        player,
+        "Aquatic Alchemist // Bubble Up",
+        Zone::Hand,
+    );
+    let creature = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let first = put(&mut game, player, "Shock", Zone::Hand);
+    let second = put(&mut game, player, "Shock", Zone::Hand);
+    let recover = put(&mut game, player, "Opt", Zone::Graveyard);
+    let wrong_kind = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    let foreign = put(&mut game, opponent, "Opt", Zone::Graveyard);
+
+    let mut adventure = game.clone();
+    act(
+        &mut adventure,
+        Action::AnnounceAdventure { card: alchemist },
+    );
+    reject(&mut adventure, target(wrong_kind));
+    reject(&mut adventure, target(foreign));
+    act(&mut adventure, target(recover));
+    pay(&mut adventure);
+    settle(&mut adventure);
+    assert_eq!(adventure.top_library_card(player), Some(recover));
+    assert_eq!(adventure.object_view(alchemist).zone, Zone::Exile);
+    act(&mut adventure, Action::AnnounceExile { card: alchemist });
+    pay(&mut adventure);
+    settle(&mut adventure);
+    cast(&mut adventure, first, Some(Target::Player(opponent)));
+    settle(&mut adventure);
+    assert_eq!(stats(&adventure, alchemist), (1, 3));
+
+    for card in [alchemist, creature] {
+        cast(&mut game, card, None);
+        settle(&mut game);
+    }
+    assert_eq!(stats(&game, alchemist), (1, 3));
+    cast(&mut game, first, Some(Target::Player(opponent)));
+    pass_twice(&mut game);
+    assert_eq!(stats(&game, alchemist), (3, 3));
+    assert_eq!(game.state.players[opponent.index()].life, 20);
+    settle(&mut game);
+    cast(&mut game, second, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(stats(&game, alchemist), (3, 3));
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, alchemist), (1, 3));
+}
+
+#[test]
+fn barrow_naughty_lifelink_needs_another_own_faerie_and_its_pumps_expire() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let barrow = put(&mut game, player, "Barrow Naughty", Zone::Hand);
+    let faerie = put(&mut game, player, "Obyra, Dreaming Duelist", Zone::Hand);
+    put(&mut game, opponent, "Barrow Naughty", Zone::Battlefield);
+    let remove = put(&mut game, player, "Unsummon", Zone::Hand);
+    cast(&mut game, barrow, None);
+    settle(&mut game);
+    let keywords = game.object_view(barrow).keywords;
+    assert!(keywords.contains(Keywords::FLYING));
+    assert!(!keywords.contains(Keywords::LIFELINK));
+
+    cast(&mut game, faerie, None);
+    settle(&mut game);
+    assert!(
+        game.object_view(barrow)
+            .keywords
+            .contains(Keywords::LIFELINK)
+    );
+    let mut removed = game.clone();
+    cast(&mut removed, remove, Some(Target::Card(faerie)));
+    settle(&mut removed);
+    assert!(
+        !removed
+            .object_view(barrow)
+            .keywords
+            .contains(Keywords::LIFELINK)
+    );
+
+    for power in [2, 3] {
+        act(&mut game, activate(barrow, 0));
+        let domain = game.mana_payment_domain().unwrap();
+        assert_eq!(domain.required, [0, 0, 1, 0, 0, 0]);
+        assert_eq!(domain.generic, 2);
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(stats(&game, barrow), (power, 3));
+    }
+    finish_turn(&mut game);
+    assert_eq!(stats(&game, barrow), (1, 3));
+    assert!(
+        game.object_view(barrow)
+            .keywords
+            .contains(Keywords::LIFELINK)
+    );
+}
+
+#[test]
+fn beat_a_path_keeps_a_live_blocking_restriction_and_the_bruiser_has_haste() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let bruiser = put(
+        &mut game,
+        player,
+        "Bellowing Bruiser // Beat a Path",
+        Zone::Hand,
+    );
+    let attacker = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let first = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let bounce = put(&mut game, player, "Unsummon", Zone::Hand);
+    act(&mut game, Action::AnnounceAdventure { card: bruiser });
+
+    let mut zero = game.clone();
+    act(&mut zero, Action::FinishTargets);
+    pay(&mut zero);
+    settle(&mut zero);
+    assert_eq!(zero.object_view(bruiser).zone, Zone::Exile);
+    act(&mut zero, Action::AnnounceExile { card: bruiser });
+    pay(&mut zero);
+    settle(&mut zero);
+    reach_attackers(&mut zero);
+    act(&mut zero, Action::Attack { card: bruiser });
+
+    act(&mut game, target(first));
+    act(&mut game, target(second));
+    pay(&mut game);
+    cast(&mut game, bounce, Some(Target::Card(first)));
+    settle(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Hand);
+    assert_eq!(game.object_view(bruiser).zone, Zone::Exile);
+    assert!(
+        game.object_view(second)
+            .keywords
+            .contains(Keywords::CANT_BLOCK)
+    );
+    reach_attackers(&mut game);
+    act(&mut game, Action::Attack { card: attacker });
+    act(&mut game, Action::FinishAttackers);
+    pass_twice(&mut game);
+    reject(
+        &mut game,
+        Action::Block {
+            blocker: second,
+            attacker,
+        },
+    );
+    finish_turn(&mut game);
+    assert!(
+        !game
+            .object_view(second)
+            .keywords
+            .contains(Keywords::CANT_BLOCK)
+    );
+}
+
+#[test]
+fn entry_denied_bounces_an_opposing_three_drop_to_its_owner() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let gatekeeper = put(
+        &mut game,
+        player,
+        "Beluna's Gatekeeper // Entry Denied",
+        Zone::Hand,
+    );
+    let borrowed = put(&mut game, player, "Diminisher Witch", Zone::Battlefield);
+    game.state.objects[borrowed as usize].controller = opponent;
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let four = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    act(&mut game, Action::AnnounceAdventure { card: gatekeeper });
+    reject(&mut game, target(own));
+    reject(&mut game, target(four));
+    act(&mut game, target(borrowed));
+    pay(&mut game);
+    settle(&mut game);
+    let returned = game.object_view(borrowed);
+    assert_eq!((returned.owner, returned.zone), (player, Zone::Hand));
+    assert!(
+        game.observe(player)
+            .objects
+            .iter()
+            .any(|view| view.id == borrowed)
+    );
+    assert_eq!(game.object_view(gatekeeper).zone, Zone::Exile);
+    act(&mut game, Action::AnnounceExile { card: gatekeeper });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(gatekeeper).zone, Zone::Battlefield);
+    assert_eq!(stats(&game, gatekeeper), (6, 5));
+}
+
+#[test]
+fn betroth_the_beast_grants_royal_ward_then_the_knight_can_enter() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let knight = put(
+        &mut game,
+        player,
+        "Besotted Knight // Betroth the Beast",
+        Zone::Hand,
+    );
+    let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let foe = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+    act(&mut game, Action::AnnounceAdventure { card: knight });
+    reject(&mut game, target(foe));
+    act(&mut game, target(own));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, own), (3, 3));
+    assert_eq!(game.object_view(knight).zone, Zone::Exile);
+
+    act(&mut game, Action::Pass);
+    cast(&mut game, bounce, Some(Target::Card(own)));
+    pass_twice(&mut game);
+    assert_eq!(
+        game.observe(opponent)
+            .resolution_payment
+            .unwrap()
+            .cost
+            .generic,
+        1
+    );
+    act(&mut game, Action::DeclineResolutionMana);
+    settle(&mut game);
+    assert_eq!(game.object_view(own).zone, Zone::Battlefield);
+    act(&mut game, Action::AnnounceExile { card: knight });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, knight), (3, 3));
+}
+
+#[test]
+fn bespoke_battlegarb_pays_equip_and_optionally_moves_at_qualified_combat() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let garb = put(&mut game, player, "Bespoke Battlegarb", Zone::Hand);
+    let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let foreign = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    let lands = [(); 2].map(|_| put(&mut game, player, "Forest", Zone::Battlefield));
+    cast(&mut game, garb, None);
+    settle(&mut game);
+    let equip = activate(garb, 0);
+    act(&mut game, equip.clone());
+    act(&mut game, target(first));
+    assert_eq!(game.mana_payment_domain().unwrap().generic, 2);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(stats(&game, first), (4, 2));
+
+    let mut unqualified = game.clone();
+    reach_attackers(&mut unqualified);
+    assert_eq!(
+        unqualified.object_view(garb).attached_to,
+        Some(unqualified.object_ref(first))
+    );
+    cast(&mut game, second, None);
+    settle(&mut game);
+    pass_twice(&mut game);
+    reject(&mut game, target(foreign));
+
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishTargets);
+    settle(&mut declined);
+    assert_eq!(stats(&declined, first), (4, 2));
+    assert_eq!(stats(&declined, second), (2, 2));
+
+    act(&mut game, target(second));
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(garb).attached_to,
+        Some(game.object_ref(second))
+    );
+    assert_eq!(stats(&game, first), (2, 2));
+    assert_eq!(stats(&game, second), (4, 2));
+    for card in lands {
+        act(&mut game, Action::TapMana { card });
+    }
+    reject(&mut game, equip);
+}
+
+#[test]
+fn bestial_bloodline_can_enchant_an_opponent_and_recovers_only_its_exact_graveyard_object() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
+    let removal = put(&mut game, player, "Disenchant", Zone::Hand);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let ooze = put(&mut game, opponent, "Scavenging Ooze", Zone::Battlefield);
+    cast(&mut game, aura, Some(Target::Card(foreign)));
+    settle(&mut game);
+    assert_eq!(stats(&game, foreign), (4, 4));
+    reject(&mut game, activate(aura, 0));
+    cast(&mut game, removal, Some(Target::Card(aura)));
+    settle(&mut game);
+    assert_eq!(stats(&game, foreign), (2, 2));
+    assert_eq!(game.object_view(aura).zone, Zone::Graveyard);
+    act(&mut game, activate(aura, 0));
+    let domain = game.mana_payment_domain().unwrap();
+    assert_eq!(domain.required, [0, 0, 0, 0, 1, 0]);
+    assert_eq!(domain.generic, 4);
+    pay(&mut game);
+
+    let mut stale = game.clone();
+    act(&mut stale, Action::Pass);
+    act(&mut stale, activate(ooze, 0));
+    act(&mut stale, target(aura));
+    pay(&mut stale);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(aura).zone, Zone::Exile);
+
+    settle(&mut game);
+    assert_eq!(game.object_view(aura).zone, Zone::Hand);
+}
