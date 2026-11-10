@@ -338,3 +338,224 @@ fn succumb_to_the_cold_stuns_each_surviving_target_including_a_tapped_creature()
         assert!(!game.object_view(third).tapped);
     }
 }
+
+fn resolve_with_target(game: &mut Game, card: CardId) {
+    for _ in 0..24 {
+        match game.state.pending {
+            Pending::Targets { .. } => act(game, target(card)),
+            Pending::OrderTriggers { .. } => {
+                choose(game, |action| matches!(action, Action::PutTrigger { .. }));
+            }
+            Pending::Priority if game.state.stack.is_empty() => return,
+            Pending::Priority => act(game, Action::Pass),
+            _ => panic!("unexpected choice {:?}", game.state.pending),
+        }
+    }
+    panic!("tap trigger resolution budget exhausted");
+}
+
+#[test]
+fn sharae_and_solitary_sanctuary_count_actual_taps_in_different_ways() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        game.state.players[player.index()].mana = [16; 6];
+        let sharae = candidate(&mut game, player, "Sharae of Numbing Depths", Zone::Hand);
+        let sanctuary = candidate(&mut game, player, "Solitary Sanctuary", Zone::Hand);
+        let already = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let first = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let second = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let later = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        game.state.objects[already as usize].tapped = true;
+        cast(&mut game, sharae, None);
+        resolve_with_target(&mut game, already);
+        assert_eq!(stats(&game, sharae), (2, 3));
+        assert_eq!(game.counter_count(already, CounterKind::Stun), 1);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+        cast(&mut game, sanctuary, None);
+        resolve_with_target(&mut game, already);
+        assert_eq!(game.counter_count(already, CounterKind::Stun), 2);
+        assert_eq!(game.counter_count(sharae, CounterKind::PlusOne), 0);
+
+        let spell = put(&mut game, player, "Succumb to the Cold", Zone::Hand);
+        announce(
+            &mut game,
+            spell,
+            &[Target::Card(first), Target::Card(second)],
+        );
+        resolve_with_target(&mut game, sharae);
+        assert!(game.object_view(first).tapped && game.object_view(second).tapped);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert_eq!(game.counter_count(sharae, CounterKind::PlusOne), 2);
+
+        let repeat = put(&mut game, player, "Succumb to the Cold", Zone::Hand);
+        announce(
+            &mut game,
+            repeat,
+            &[Target::Card(later), Target::Card(first)],
+        );
+        resolve_with_target(&mut game, sharae);
+        assert!(game.object_view(later).tapped);
+        assert_eq!(game.counter_count(first, CounterKind::Stun), 2);
+        assert_eq!(game.counter_count(sharae, CounterKind::PlusOne), 3);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    }
+}
+
+#[test]
+fn snaremaster_sprite_pays_before_choosing_the_reflexive_target() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let sprite = candidate(&mut game, player, "Snaremaster Sprite", Zone::Hand);
+    let bearer = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    cast(&mut game, sprite, None);
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, sprite), (1, 1));
+    assert!(game.object_view(sprite).keywords.contains(Keywords::FLYING));
+    pass_pair(&mut game);
+    reject(&mut game, target(bearer));
+    let mut declined = game.clone();
+    act(&mut declined, Action::DeclineResolutionMana);
+    settle(&mut declined);
+    assert!(!declined.object_view(bearer).tapped);
+    assert_eq!(declined.counter_count(bearer, CounterKind::Stun), 0);
+
+    let mana_before: u32 = game.state.players[player.index()].mana.iter().sum();
+    choose(&mut game, |action| {
+        matches!(action, Action::PayResolutionMana { .. })
+    });
+    let mana_after: u32 = game.state.players[player.index()].mana.iter().sum();
+    assert_eq!(mana_before - mana_after, 2);
+    assert!(!game.object_view(bearer).tapped);
+    reject(&mut game, target(sprite));
+    act(&mut game, target(bearer));
+    let mut response = game.clone();
+    act(&mut response, Action::Pass);
+    let bounce = put(&mut response, player.other(), "Unsummon", Zone::Hand);
+    cast(&mut response, bounce, Some(Target::Card(bearer)));
+    settle(&mut response);
+    assert_eq!(response.object_view(bearer).zone, Zone::Hand);
+    assert_eq!(response.counter_count(bearer, CounterKind::Stun), 0);
+
+    settle(&mut game);
+    assert!(game.object_view(bearer).tapped);
+    assert_eq!(game.counter_count(bearer, CounterKind::Stun), 1);
+}
+
+fn complete_scry_one(game: &mut Game, player: Player) {
+    let top = game.top_library_card(player).unwrap();
+    pass_pair(game);
+    assert_eq!(game.state.pending, Pending::EffectLibrary { player });
+    assert!(game.observe(player).library_choice.is_some());
+    assert!(game.observe(player.other()).library_choice.is_none());
+    assert_eq!(
+        game.legal_actions()
+            .iter()
+            .filter(|action| matches!(action, Action::ArrangeLibrary { .. }))
+            .count(),
+        2
+    );
+    act(
+        game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Bottom,
+        },
+    );
+    assert_ne!(game.top_library_card(player), Some(top));
+    settle(game);
+}
+
+#[test]
+fn slumbering_keepguard_scries_for_enchantments_and_locks_its_paid_boost() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let keepguard = candidate(&mut game, player, "Slumbering Keepguard", Zone::Hand);
+    put(
+        &mut game,
+        player.other(),
+        "A Tale for the Ages",
+        Zone::Battlefield,
+    );
+    let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    cast(&mut game, keepguard, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, keepguard), (1, 1));
+    let own = put(&mut game, player, "A Tale for the Ages", Zone::Hand);
+    cast(&mut game, own, None);
+    pass_pair(&mut game);
+    complete_scry_one(&mut game, player);
+
+    choose(
+        &mut game,
+        |action| matches!(action, Action::Activate { card, ability: 0, target: None, .. } if *card == keepguard),
+    );
+    let mut interrupted = game.clone();
+    act(&mut interrupted, Action::Pass);
+    let disenchant = put(&mut interrupted, player.other(), "Disenchant", Zone::Hand);
+    cast(&mut interrupted, disenchant, Some(Target::Card(own)));
+    settle(&mut interrupted);
+    assert_eq!(stats(&interrupted, keepguard), (1, 1));
+
+    settle(&mut game);
+    assert_eq!(stats(&game, keepguard), (2, 2));
+    let role = put(&mut game, player, "Royal Treatment", Zone::Hand);
+    cast(&mut game, role, Some(Target::Card(recipient)));
+    pass_pair(&mut game);
+    complete_scry_one(&mut game, player);
+    assert_eq!(stats(&game, keepguard), (2, 2));
+}
+
+#[test]
+fn spider_food_creates_food_with_zero_or_one_legal_target() {
+    let player = Player::P0;
+    for (name, stale) in [
+        (None, false),
+        (Some("Short Bow"), false),
+        (Some("A Tale for the Ages"), false),
+        (Some("Barrow Naughty"), false),
+        (Some("Barrow Naughty"), true),
+    ] {
+        let mut game = scenario(player);
+        let spell = candidate(&mut game, player, "Spider Food", Zone::Hand);
+        let ground = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let chosen = name.map(|name| put(&mut game, player.other(), name, Zone::Battlefield));
+        let spare = name
+            .is_none()
+            .then(|| put(&mut game, player.other(), "Short Bow", Zone::Battlefield));
+        act(&mut game, Action::AnnounceCast { card: spell });
+        reject(&mut game, target(ground));
+        if let Some(card) = chosen {
+            act(&mut game, target(card));
+        } else {
+            act(&mut game, Action::FinishTargets);
+        }
+        pay(&mut game);
+        if stale {
+            act(&mut game, Action::Pass);
+            let bounce = put(&mut game, player.other(), "Unsummon", Zone::Hand);
+            cast(&mut game, bounce, chosen.map(Target::Card));
+        }
+        settle(&mut game);
+        if let Some(card) = chosen {
+            assert_eq!(
+                game.object_view(card).zone,
+                if stale { Zone::Hand } else { Zone::Graveyard }
+            );
+        }
+        if let Some(card) = spare {
+            assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        }
+        let food = game
+            .observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.has_subtype("Food")
+            })
+            .count();
+        assert_eq!(food, usize::from(!stale));
+    }
+}

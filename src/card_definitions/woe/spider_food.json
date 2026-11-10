@@ -3,10 +3,36 @@
   "catalogue_id": 4018,
   "oracle_id": "38eabfea-5ea5-4baa-8ad6-7a7cb00e1fed",
   "facts_sha256": "93214f05a8576074ad2affd827ec80478ecb7c7d4fb106ca51ef57e581f763dd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d70979e580c76b08ef115d375e38c98955cf12a309c58bde97014b3184e35e0b"
   },
-  "physical_metadata_sha256": "34df8245c437f1d8a79cd782a1ac35ac81b7bc3a3476cd4ac52cb2896cf557e5"
+  "physical_metadata_sha256": "34df8245c437f1d8a79cd782a1ac35ac81b7bc3a3476cd4ac52cb2896cf557e5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpiderFood.java",
+  "java_sha256": "b06eba1a3e4504a6502124d64b6d2f741fd2b7e2a3e59bf755148ba2d404553b",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b04b0e407b31feab6cef2fbd3724f23437f021e61ebf0daecd1bbe62176dfdb3",
+  "catalogue_version": "e23f92d567c85c37aaa64ebdca5d4dfd2a2e25fc07bfb390fc05e8cdd43db543",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4020,
-  "implemented_total": 4029,
+  "implemented_standard_cards": 4028,
+  "implemented_total": 4038,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -140,8 +140,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 14,
-      "gated": 10
+      "complete": 15,
+      "gated": 9
     },
     "sos": {
       "total": 264,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 158,
-      "gated": 100
+      "complete": 165,
+      "gated": 93
     },
     "znr": {
       "total": 1,
@@ -22891,8 +22891,8 @@
     {
       "name": "Monstrous Rage",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/monstrous_rage.rs",
       "set": "woe"
     },
@@ -22971,8 +22971,8 @@
     {
       "name": "Moonshaker Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/moonshaker_cavalry.rs",
       "set": "soc"
     },
@@ -25779,8 +25779,8 @@
     {
       "name": "Pollen-Shield Hare // Hare Raising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/pollen_shield_hare_hare_raising.rs",
       "set": "woe"
     },
@@ -27283,8 +27283,8 @@
     {
       "name": "Rat Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rat_out.rs",
       "set": "woe"
     },
@@ -30691,8 +30691,8 @@
     {
       "name": "Sharae of Numbing Depths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/sharae_of_numbing_depths.rs",
       "set": "woe"
     },
@@ -31635,8 +31635,8 @@
     {
       "name": "Slumbering Keepguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/slumbering_keepguard.rs",
       "set": "woe"
     },
@@ -31723,8 +31723,8 @@
     {
       "name": "Snaremaster Sprite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/snaremaster_sprite.rs",
       "set": "woe"
     },
@@ -31875,8 +31875,8 @@
     {
       "name": "Solitary Sanctuary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/solitary_sanctuary.rs",
       "set": "woe"
     },
@@ -32339,8 +32339,8 @@
     {
       "name": "Spider Food",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spider_food.rs",
       "set": "woe"
     },
