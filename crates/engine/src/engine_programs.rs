@@ -3944,6 +3944,7 @@ impl Game {
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
+                    | Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. }
                     | Instruction::ExileAllTargetsLinkedToSource
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
@@ -11235,6 +11236,14 @@ impl Game {
                 Instruction::ResolveDelayedTokenCreation => {
                     if let StackKind::DelayedTokenCreation { token, amount } = item.kind {
                         self.create_tokens(item.controller, token, u128::from(amount), false);
+                    }
+                }
+                Instruction::ReturnGraveyardTargetsToHandOrBattlefield {
+                    maximum_mana_value,
+                    bargain_only,
+                } => {
+                    if self.start_target_graveyard_return(&item, maximum_mana_value, bargain_only) {
+                        return;
                     }
                 }
                 Instruction::ReturnAllTargetsToHand => {

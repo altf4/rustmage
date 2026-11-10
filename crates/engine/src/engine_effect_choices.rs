@@ -417,7 +417,17 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && !selected.contains(&object)
                 && selected.len() < usize::from(maximum)
-                && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent);
+                && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent)
+                && (!self.target_graveyard_return_active()
+                    || self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .item
+                        .targets
+                        .iter()
+                        .any(|bound| bound.object == Some(object)));
         }
         if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
             return o.zone == Zone::Graveyard
@@ -909,6 +919,77 @@ impl Game {
         )
     }
 
+    fn target_graveyard_return_active(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution.program.get(resolution.pc.saturating_sub(1)),
+                Some(Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. })
+            )
+        })
+    }
+
+    fn graveyard_return_targets<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> impl Iterator<Item = ObjectRef> + 'a {
+        item.targets
+            .iter()
+            .filter_map(|bound| bound.object)
+            .filter(move |&object| {
+                let card = &self.state.objects[object.card as usize];
+                self.object_ref(object.card) == object
+                    && card.zone == Zone::Graveyard
+                    && card.owner == item.controller
+                    && card.is_card()
+            })
+    }
+
+    fn target_graveyard_return_entries(
+        &self,
+        item: &SpellView,
+        battlefield: Option<ObjectRef>,
+    ) -> Vec<entries::EntryMove> {
+        let mut moves = Vec::<entries::EntryMove>::new();
+        for object in self.graveyard_return_targets(item) {
+            if moves
+                .iter()
+                .any(|movement| movement.before.reference == object)
+            {
+                continue;
+            }
+            let destination = if battlefield == Some(object) {
+                Zone::Battlefield
+            } else {
+                Zone::Hand
+            };
+            let mut movement = self.entry_move(object.card, destination, false);
+            movement.controller = item.controller;
+            moves.push(movement);
+        }
+        moves
+    }
+
+    pub(super) fn start_target_graveyard_return(
+        &mut self,
+        item: &SpellView,
+        maximum_mana_value: u64,
+        bargain_only: bool,
+    ) -> bool {
+        if (!bargain_only || item.cast.is_some_and(|cast| cast.bargain == Some(true)))
+            && self.graveyard_return_targets(item).any(|object| {
+                let card = self.state.objects[object.card as usize].card;
+                card.is_creature() && card.fixed_mana_value() <= maximum_mana_value
+            })
+        {
+            return self.start_graveyard_return_selection(item, 1, maximum_mana_value);
+        }
+        let moves = self.target_graveyard_return_entries(item, None);
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
+        }
+        false
+    }
+
     pub(super) fn finish_graveyard_return_selection(&mut self) {
         let choice = self
             .state
@@ -918,7 +999,16 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        let player = item.controller;
+        if self.target_graveyard_return_active() {
+            let battlefield = choice.selected[player.index()].first().copied();
+            let moves = self.target_graveyard_return_entries(item, battlefield);
+            if !moves.is_empty() {
+                self.stage_entries(moves, None);
+            }
+            return;
+        }
         let movements = choice.selected[player.index()]
             .iter()
             .filter(|r| {

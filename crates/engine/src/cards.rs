@@ -4041,6 +4041,11 @@ pub enum Instruction {
     },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
+    /// Return owned graveyard targets to hand, with an optional creature entry instead.
+    ReturnGraveyardTargetsToHandOrBattlefield {
+        maximum_mana_value: u64,
+        bargain_only: bool,
+    },
     /// Return every creature lacking the named subtype in one simultaneous batch.
     ReturnCreaturesWithoutSubtype(&'static str),
     /// Return all creatures that have none of these live subtypes.
