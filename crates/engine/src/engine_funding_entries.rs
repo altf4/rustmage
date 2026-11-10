@@ -407,17 +407,23 @@ impl FundingState<'_> {
         })
         .flatten()
     }
-    pub(super) fn preview_entry_riot(&self, movement: &entries::EntryMove) -> Option<riot::Preparation> {
+    pub(super) fn preview_entry_riot(
+        &self,
+        movement: &entries::EntryMove,
+    ) -> Option<riot::Preparation> {
         self.with_entry_preview(&movement.replacement_preview(), |world| {
             let id = movement.before.id;
-            let remaining = characteristic_query::CharacteristicQuery::in_world(world)
-                .riot_instances(id);
+            let remaining =
+                characteristic_query::CharacteristicQuery::in_world(world).riot_instances(id);
             riot::Preparation {
                 remaining,
                 // Like other entry counters, use the entrant's projected kinds
                 // and the existing battlefield's global prohibitions.
                 can_add_counter: remaining != 0
-                    && !replacements::global_counters_prohibited(self, world.kinds(id)),
+                    && !replacements::global_counters_prohibited(
+                        self,
+                        CharacteristicWorld::kinds(world, id),
+                    ),
                 haste: false,
             }
         })

@@ -1255,6 +1255,7 @@ impl Game {
             {
                 ghost_results.push((event.after, source));
             }
+            let chosen_riot_haste = movement.has_riot_haste();
             event.cast_event = movement.cast_event;
             if event.moved && event.destination == Zone::Battlefield && movement.sneak_paid {
                 self.record_sneak_entry(event.after);
@@ -1288,7 +1289,7 @@ impl Game {
             event.x = movement.x;
             event.evidence_collected = movement.evidence_collected;
             if event.moved {
-                if event.destination == Zone::Battlefield && movement.has_riot_haste() {
+                if event.destination == Zone::Battlefield && chosen_riot_haste {
                     riot_haste.push(event.after);
                 }
                 if event.destination == Zone::Battlefield
