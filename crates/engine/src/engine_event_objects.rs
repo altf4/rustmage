@@ -786,7 +786,7 @@ impl Game {
             return;
         };
         let object = event.object;
-        if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+        if self.object_ref(object.card) == object && self.can_receive_damage(object.card) {
             self.apply_damage_batch(&[DamageEvent {
                 source: self.program_damage_source(item),
                 target: Target::Card(object.card),

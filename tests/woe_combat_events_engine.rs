@@ -16,6 +16,11 @@ const PAIR_OBSERVER: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const LIFELINK_PAIR_OBSERVER: CardRules = CardRules {
+    keywords: Keywords::LIFELINK,
+    ..PAIR_OBSERVER
+};
+
 const RAT_OBSERVER: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[TriggeredAbility {
@@ -104,6 +109,50 @@ fn each_blocking_pair_deals_damage_only_to_its_original_incarnation() {
         settle(&mut defending);
         assert_eq!(defending.object_view(attacker).damage, 1);
     }
+}
+
+#[test]
+fn removing_an_animation_in_response_leaves_no_damage_event() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &LIFELINK_PAIR_OBSERVER)]);
+    let player = Player::P0;
+    let defender = player.other();
+    let mut game = scenario(player);
+    let artifact = put(&mut game, player, "Nutrient Block", Zone::Battlefield);
+    let animation = put(&mut game, player, "Puppet Crafting", Zone::Hand);
+    let disenchant = put(&mut game, player, "Disenchant", Zone::Hand);
+    let plains = put(&mut game, player, "Plains", Zone::Battlefield);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let slinger = put(&mut game, defender, "Hill Giant", Zone::Battlefield);
+
+    cast(&mut game, animation, Some(Target::Card(artifact)));
+    settle(&mut game);
+    let animated = game.object_view(artifact);
+    assert_eq!(animated.kinds, 1 | 16);
+    declare_blocks(&mut game, artifact, &[slinger]);
+    announce_triggers(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+
+    let life = game.state.players[defender.index()].life;
+    let mut still_creature = game.clone();
+    settle(&mut still_creature);
+    assert_eq!(still_creature.object_view(artifact).damage, 1);
+    assert_eq!(
+        still_creature.state.players[defender.index()].life,
+        life + 1
+    );
+
+    act(&mut game, Action::TapMana { card: plains });
+    act(&mut game, Action::TapMana { card: forest });
+    cast(&mut game, disenchant, Some(Target::Card(animation)));
+    settle(&mut game);
+    assert_eq!(game.object_view(animation).zone, Zone::Graveyard);
+    let object = game.object_view(artifact);
+    assert_eq!(object.reference, animated.reference);
+    assert_eq!(object.zone, Zone::Battlefield);
+    assert_eq!(object.kinds, 16);
+    assert!(!object.damaged_this_turn);
+    assert!(!game.object_view(slinger).dealt_damage_this_turn);
+    assert_eq!(game.state.players[defender.index()].life, life);
 }
 
 #[test]

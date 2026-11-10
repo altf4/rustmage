@@ -1318,12 +1318,12 @@ impl Game {
                         })
                     }
                     ReplacementSpec::RedirectControlledDamageToSource => {
-                        self.can_receive_redirected_damage(id)
+                        self.can_receive_damage(id)
                             && match event.target {
                                 Target::Player(player) => player == object.controller,
                                 Target::Card(target) => {
                                     target != id
-                                        && self.can_receive_redirected_damage(target)
+                                        && self.can_receive_damage(target)
                                         && self.state.objects[target as usize].controller
                                             == object.controller
                                 }
@@ -1514,8 +1514,8 @@ impl Game {
         }
         out
     }
-    fn can_receive_redirected_damage(&self, id: CardId) -> bool {
-        // CR 614.9: a permanent endpoint must be able to take damage.
+    pub(super) fn can_receive_damage(&self, id: CardId) -> bool {
+        // CR 120.1a limits damage to these permanent types.
         self.on_battlefield(id)
             && self.current_kinds(id) & (1 | 64 | crate::cards::BATTLE_KIND) != 0
     }
@@ -1523,8 +1523,7 @@ impl Game {
     fn enchanted_damage_recipient(&self, aura: CardId) -> Option<CardId> {
         let recipient = self.state.objects[aura as usize].attached_to?;
         // CR 303.4m still identifies the exact attachment before the next SBA.
-        (self.can_receive_redirected_damage(recipient.card)
-            && self.object_ref(recipient.card) == recipient)
+        (self.can_receive_damage(recipient.card) && self.object_ref(recipient.card) == recipient)
             .then_some(recipient.card)
     }
 
