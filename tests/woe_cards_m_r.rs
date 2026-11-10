@@ -632,3 +632,353 @@ fn redtooth_vanguard_offers_two_mana_for_its_exact_graveyard_card_on_own_enchant
         );
     }
 }
+
+fn activate(card: CardId, ability: u16) -> Action {
+    Action::AnnounceActivate {
+        card,
+        ability,
+        counter_payment: Counters::default(),
+    }
+}
+
+fn enter_end_step(game: &mut Game) {
+    game.begin_step(Step::Main2);
+    pass_pair(game);
+    assert_eq!(game.state.step, Step::End);
+}
+
+#[test]
+fn malevolent_witchkite_sacrifices_any_subset_and_draws_before_death_triggers() {
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let kite = spawn(&mut game, player, named("Malevolent Witchkite"), Zone::Hand);
+        let artifact = put(&mut game, player, "Gingerbrute", Zone::Battlefield);
+        let enchantment = put(&mut game, player, "Demonic Pact", Zone::Battlefield);
+        let token = spawn(&mut game, player, RAT, Zone::Battlefield);
+        let unchosen = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        let ordinary = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
+        let observer = put(&mut game, player, "Midnight Reaper", Zone::Battlefield);
+        let library = game.state.players[player.index()].library.len();
+
+        act(&mut game, Action::AnnounceCast { card: kite });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 2, 0, 0, 4],
+            },
+        );
+        pass_pair(&mut game);
+        let creature = game.object_view(kite);
+        assert_eq!((creature.power, creature.toughness), (5, 4));
+        assert!(creature.keywords.contains(Keywords::FLYING));
+        pass_pair(&mut game);
+        assert_eq!(game.state.pending, Pending::EffectChoice { player });
+
+        let mut zero = game.clone();
+        act(&mut zero, Action::FinishEffectChoice);
+        assert_eq!(zero.state.players[player.index()].library.len(), library);
+        assert!(zero.state.stack.is_empty());
+        for card in [artifact, enchantment, token] {
+            assert_eq!(zero.object_view(card).zone, Zone::Battlefield);
+        }
+
+        let sacrifice = |game: &Game, card| Action::Sacrifice {
+            object: game.object_ref(card),
+        };
+        for card in [ordinary, foreign, kite] {
+            let choice = sacrifice(&game, card);
+            reject(&mut game, choice);
+        }
+        for card in [artifact, enchantment, token] {
+            let choice = sacrifice(&game, card);
+            act(&mut game, choice);
+            assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        }
+        assert_eq!(game.state.players[player.index()].library.len(), library);
+        act(&mut game, Action::FinishEffectChoice);
+        for card in [artifact, enchantment] {
+            assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+        }
+        assert_ne!(game.object_view(token).zone, Zone::Battlefield);
+        for card in [ordinary, foreign, unchosen] {
+            assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        }
+        assert_eq!(
+            game.state.players[player.index()].library.len(),
+            library - 3
+        );
+        assert_eq!(game.state.stack.len(), 1);
+        assert_eq!(
+            game.state.stack.last().unwrap().source.unwrap().id,
+            observer
+        );
+        settle(&mut game);
+        assert_eq!(
+            game.state.players[player.index()].library.len(),
+            library - 4
+        );
+    }
+}
+
+#[test]
+fn ogre_chitterlord_counts_rat_permanents_after_creation_on_entry_and_attack() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let ogre = spawn(&mut game, player, named("Ogre Chitterlord"), Zone::Hand);
+        let core = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
+        let rat = put(&mut game, player, "Burglar Rat", Zone::Battlefield);
+        spawn(&mut game, player, RAT, Zone::Battlefield);
+        let foreign_rat = spawn(&mut game, other, RAT, Zone::Battlefield);
+        let bystander = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let blockers = [0; 2].map(|_| put(&mut game, other, "Bear Cub", Zone::Battlefield));
+        let core_view = game.object_view(core);
+        assert!(core_view.has_subtype("Rat") && !core_view.is_creature());
+
+        let mut below = game.clone();
+        below.move_object(core, Zone::Exile);
+        cast(&mut below, ogre, None);
+        settle(&mut below);
+        assert_eq!(stats(&below, rat), (1, 1));
+        let below_rats = tokens(&below, player, RAT);
+        assert_eq!(below_rats.len(), 3);
+        assert!(below_rats.iter().all(|&id| stats(&below, id) == (1, 1)));
+
+        act(&mut game, Action::AnnounceCast { card: ogre });
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 2, 0, 4],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, ogre), (6, 5));
+        assert!(game.object_view(ogre).keywords.contains(Keywords::MENACE));
+        assert_eq!(stats(&game, rat), (3, 1));
+        assert_eq!(stats(&game, foreign_rat), (1, 1));
+        assert_eq!(stats(&game, bystander), (2, 2));
+        let entered_rats = tokens(&game, player, RAT);
+        assert_eq!(entered_rats.len(), 3);
+        for &id in &entered_rats {
+            let view = game.object_view(id);
+            assert_eq!((view.power, view.toughness, view.colors), (3, 1, 4));
+            assert!(view.has_subtype("Rat") && view.keywords.contains(Keywords::CANT_BLOCK));
+        }
+        act(&mut game, activate(core, 1));
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 4],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, core), (6, 4));
+
+        finish_turn(&mut game);
+        assert_eq!(stats(&game, rat), (1, 1));
+        assert!(entered_rats.iter().all(|&id| stats(&game, id) == (1, 1)));
+        finish_turn(&mut game);
+        assert_eq!(game.state.active, player);
+        attack(&mut game, ogre);
+        assert_eq!(game.state.stack.len(), 1);
+        settle(&mut game);
+        let attacking_rats = tokens(&game, player, RAT);
+        assert_eq!(attacking_rats.len(), 5);
+        assert!(attacking_rats.iter().all(|&id| stats(&game, id) == (3, 1)));
+
+        pass_pair(&mut game);
+        reject(
+            &mut game,
+            Action::Block {
+                blocker: foreign_rat,
+                attacker: ogre,
+            },
+        );
+        act(
+            &mut game,
+            Action::Block {
+                blocker: blockers[0],
+                attacker: ogre,
+            },
+        );
+        reject(&mut game, Action::FinishBlockers);
+        act(
+            &mut game,
+            Action::Block {
+                blocker: blockers[1],
+                attacker: ogre,
+            },
+        );
+        act(&mut game, Action::FinishBlockers);
+    }
+}
+
+#[test]
+fn old_flitterfang_creates_food_on_either_end_step_only_if_a_creature_already_died() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let flitterfang = spawn(&mut game, player, named("Old Flitterfang"), Zone::Hand);
+        let first_shock = put(&mut game, player, "Shock", Zone::Hand);
+        let second_shock = put(&mut game, other, "Shock", Zone::Hand);
+        let mountain = put(&mut game, other, "Mountain", Zone::Battlefield);
+        let first_victim = put(&mut game, other, "Bear Cub", Zone::Battlefield);
+        let second_victim = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        cast(&mut game, first_shock, Some(Target::Card(first_victim)));
+        settle(&mut game);
+        assert_eq!(game.object_view(first_victim).zone, Zone::Graveyard);
+        cast(&mut game, flitterfang, None);
+        settle(&mut game);
+        let creature = game.object_view(flitterfang);
+        assert_eq!((creature.power, creature.toughness), (3, 4));
+        assert!(creature.is_legendary() && creature.keywords.contains(Keywords::FLYING));
+
+        enter_end_step(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
+        settle(&mut game);
+        assert_eq!(tokens(&game, player, FOOD).len(), 1);
+        pass_pair(&mut game);
+        assert_eq!(game.state.active, other);
+
+        let mut late = game.clone();
+        enter_end_step(&mut late);
+        assert!(late.state.stack.is_empty());
+        act(&mut late, Action::TapMana { card: mountain });
+        cast(&mut late, second_shock, Some(Target::Card(second_victim)));
+        settle(&mut late);
+        assert_eq!(late.object_view(second_victim).zone, Zone::Graveyard);
+        assert_eq!(tokens(&late, player, FOOD).len(), 1);
+
+        act(&mut game, Action::TapMana { card: mountain });
+        cast(&mut game, second_shock, Some(Target::Card(second_victim)));
+        settle(&mut game);
+        enter_end_step(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
+        settle(&mut game);
+        assert_eq!(tokens(&game, player, FOOD).len(), 2);
+        assert!(tokens(&game, other, FOOD).is_empty());
+    }
+}
+
+#[test]
+fn old_flitterfang_can_pay_to_sacrifice_another_artifact_or_creature_twice() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(other);
+        let flitterfang = spawn(
+            &mut game,
+            player,
+            named("Old Flitterfang"),
+            Zone::Battlefield,
+        );
+        let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let enchantment = put(&mut game, player, "Demonic Pact", Zone::Battlefield);
+        let foreign = put(&mut game, other, "Bear Cub", Zone::Battlefield);
+        let choose_cost = |game: &Game, card| Action::ChooseAdditionalCost {
+            object: game.object_ref(card),
+        };
+        for (sacrifice, expected) in [(artifact, (5, 6)), (creature, (7, 8))] {
+            act(&mut game, Action::Pass);
+            act(&mut game, activate(flitterfang, 0));
+            for card in [flitterfang, enchantment, foreign] {
+                let choice = choose_cost(&game, card);
+                reject(&mut game, choice);
+            }
+            let choice = choose_cost(&game, sacrifice);
+            act(&mut game, choice);
+            act(
+                &mut game,
+                Action::PayCosts {
+                    payment: [0, 0, 1, 0, 0, 2],
+                },
+            );
+            assert_eq!(game.object_view(sacrifice).zone, Zone::Graveyard);
+            settle(&mut game);
+            assert_eq!(stats(&game, flitterfang), expected);
+        }
+
+        enter_end_step(&mut game);
+        settle(&mut game);
+        pass_pair(&mut game);
+        assert_eq!(game.state.active, player);
+        assert_eq!(stats(&game, flitterfang), (3, 4));
+    }
+}
+
+#[test]
+fn night_of_the_sweets_revenge_funds_its_paid_boost_then_samples_remaining_foods() {
+    for player in [Player::P0, Player::P1] {
+        let other = player.other();
+        let mut game = scenario(player);
+        let night = spawn(
+            &mut game,
+            player,
+            named("Night of the Sweets' Revenge"),
+            Zone::Hand,
+        );
+        let cookie = put(&mut game, player, "Gingerbrute", Zone::Battlefield);
+        let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        let ally = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = put(&mut game, other, "Bear Cub", Zone::Battlefield);
+        let foreign_food = spawn(&mut game, other, FOOD, Zone::Battlefield);
+        let disenchant = put(&mut game, other, "Disenchant", Zone::Hand);
+        let forest = put(&mut game, player, "Forest", Zone::Hand);
+        let late = put(&mut game, player, "Llanowar Elves", Zone::Hand);
+        cast(&mut game, night, None);
+        settle(&mut game);
+        let foods = tokens(&game, player, FOOD);
+        assert_eq!(foods.len(), 1);
+        let food = foods[0];
+        let grantor = game.object_ref(night);
+        let tap = |card| Action::TapGrantedMana {
+            card,
+            grantor,
+            production: [0, 0, 0, 0, 1, 0],
+        };
+        for card in [artifact, ally, foreign_food] {
+            reject(&mut game, tap(card));
+        }
+        assert!(game.legal_actions().contains(&tap(cookie)));
+
+        let announce = activate(night, 0);
+        let mut combat = game.clone();
+        combat.begin_step(Step::BeginCombat);
+        reject(&mut combat, announce.clone());
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 5];
+        act(&mut game, announce);
+        act(&mut game, tap(food));
+        assert!(game.object_view(food).tapped);
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 2, 5],
+            },
+        );
+        assert_eq!(game.object_view(night).zone, Zone::Graveyard);
+        reject(&mut game, tap(cookie));
+
+        let mut both_foods = game.clone();
+        settle(&mut both_foods);
+        assert_eq!(stats(&both_foods, ally), (4, 4));
+        assert_eq!(stats(&both_foods, cookie), (3, 3));
+
+        act(&mut game, Action::Pass);
+        cast(&mut game, disenchant, Some(Target::Card(food)));
+        settle(&mut game);
+        assert!(tokens(&game, player, FOOD).is_empty());
+        assert_eq!(stats(&game, ally), (3, 3));
+        assert_eq!(stats(&game, cookie), (2, 2));
+        assert_eq!(stats(&game, foreign), (2, 2));
+
+        act(&mut game, Action::PlayLand { card: forest });
+        act(&mut game, Action::TapMana { card: forest });
+        cast(&mut game, late, None);
+        settle(&mut game);
+        assert_eq!(stats(&game, late), (1, 1));
+        finish_turn(&mut game);
+        assert_eq!(stats(&game, ally), (2, 2));
+        assert_eq!(stats(&game, cookie), (1, 1));
+    }
+}
