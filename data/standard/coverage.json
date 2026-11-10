@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "20622fb578aceb8a22bf3363fcc98665dd8bc61e2dc4d9e61b766ecbf2288274",
+  "catalogue_version": "bef23888fc7a8816bafb51a0975e533c8342ab729d7826f0c9a2725dab8d94d2",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4064,
-  "implemented_total": 4074,
+  "implemented_standard_cards": 4075,
+  "implemented_total": 4086,
   "token_definitions": 175,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -183,8 +183,8 @@
     },
     "woe": {
       "total": 258,
-      "complete": 199,
-      "gated": 59
+      "complete": 210,
+      "gated": 48
     },
     "znr": {
       "total": 1,
@@ -3595,8 +3595,8 @@
     {
       "name": "Bitter Chill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/bitter_chill.rs",
       "set": "woe"
     },
@@ -8915,8 +8915,8 @@
     {
       "name": "Discerning Financier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/discerning_financier.rs",
       "set": "woe"
     },
@@ -9643,8 +9643,8 @@
     {
       "name": "Dream Spoilers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/dream_spoilers.rs",
       "set": "woe"
     },
@@ -9875,8 +9875,8 @@
     {
       "name": "Dutiful Griffin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/dutiful_griffin.rs",
       "set": "woe"
     },
@@ -10371,8 +10371,8 @@
     {
       "name": "Ego Drain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/ego_drain.rs",
       "set": "woe"
     },
@@ -11051,8 +11051,8 @@
     {
       "name": "Eriette's Tempting Apple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/eriette_s_tempting_apple.rs",
       "set": "woe"
     },
@@ -15203,8 +15203,8 @@
     {
       "name": "Greta, Sweettooth Scourge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/greta_sweettooth_scourge.rs",
       "set": "woe"
     },
@@ -16771,8 +16771,8 @@
     {
       "name": "Hopeless Nightmare",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hopeless_nightmare.rs",
       "set": "woe"
     },
@@ -20659,8 +20659,8 @@
     {
       "name": "Lord Skitter, Sewer King",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/lord_skitter_sewer_king.rs",
       "set": "woe"
     },
@@ -23675,8 +23675,8 @@
     {
       "name": "Night of the Sweets' Revenge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/night_of_the_sweets_revenge.rs",
       "set": "woe"
     },
@@ -24147,8 +24147,8 @@
     {
       "name": "Ogre Chitterlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/ogre_chitterlord.rs",
       "set": "woe"
     },
@@ -24235,8 +24235,8 @@
     {
       "name": "Old Flitterfang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/old_flitterfang.rs",
       "set": "woe"
     },
