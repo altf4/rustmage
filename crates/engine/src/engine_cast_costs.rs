@@ -87,6 +87,20 @@ impl Announcement {
             });
         }
     }
+    pub(super) fn add_origin_life_cost(&mut self, life: u32) {
+        if life != 0 {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::Life(life));
+        }
+    }
+    pub(super) fn has_ordered_life_cost(&self) -> bool {
+        self.cast_costs.as_ref().is_some_and(|costs| {
+            costs
+                .clauses
+                .iter()
+                .any(|row| matches!(row.clause, CastCostClause::Life(_)))
+        })
+    }
     pub(super) fn initialize_alternative_life(&mut self) {
         if let Some((life, _)) = self.self_graveyard_cast_cost() {
             self.add_cast_cost_clause(CastCostClause::Mana);
@@ -364,12 +378,7 @@ impl Game {
                 a.item.source_attachment = view.attached_to;
                 let event = self.move_object(source.id, Zone::Exile);
                 self.craft_exile_triggers(&event, a.item.controller);
-                a.item.source_move = Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                a.item.source_move = Some(Box::new(event.source_movement()));
                 let costs = a.cast_costs.as_mut().unwrap();
                 costs.clauses[usize::from(index)].paid = true;
                 costs.active = None;

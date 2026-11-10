@@ -3,10 +3,27 @@
   "catalogue_id": 159,
   "oracle_id": "e6873252-653a-47a8-99b7-b2ef70aa1f7f",
   "facts_sha256": "ead0d04c5d3d517a1616171f2f31cf1898eb1d174b43adc3644e0d223debb4e1",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "9b3a9a383ffca51e11c535586b32102655890e7f7a720c7ef74cebc843031635"
-  },
-  "physical_metadata_sha256": "70174c7c9c801becabefc3ceb5657de9b0ed839696b46642ef0934cb3fb69e68"
+  "complete": true,
+  "physical_metadata_sha256": "70174c7c9c801becabefc3ceb5657de9b0ed839696b46642ef0934cb3fb69e68",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AncientAdamantoise.java",
+  "java_sha256": "75ec4545ab067fe4acb6e237d35b245918d48578ae76fb23e5b24144844e24a0",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSourceEffect.java",
+      "sha256": "8a3f35805bee6f05c458c62e4e8cfa6892cc1ef97dbe23c1ff0e33c828cc028e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }

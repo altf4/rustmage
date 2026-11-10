@@ -1,5 +1,6 @@
 //! Batch milling and exact-incarnation, non-targeted recovery continuations.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -13,7 +14,9 @@ impl Game {
         // does as much as possible and never attempts a draw from an empty library.
         if matches!(
             amount,
-            MillAmount::RecipientGraveyard | MillAmount::HalfLibraryRoundedUp
+            MillAmount::RecipientGraveyard
+                | MillAmount::HalfLibraryRoundedUp
+                | MillAmount::HalfLibraryRoundedDown
         ) {
             return self
                 .mill_batch_with_counts(players, |game, player| match amount {
@@ -27,12 +30,8 @@ impl Game {
                                 && object.is_card()
                         })
                         .count(),
-                    MillAmount::HalfLibraryRoundedUp => game.state.players[player.index()]
-                        .library
-                        .iter()
-                        .filter(|&&id| game.state.objects[id as usize].is_card())
-                        .count()
-                        .div_ceil(2),
+                    MillAmount::HalfLibraryRoundedUp => game.library_card_count(player).div_ceil(2),
+                    MillAmount::HalfLibraryRoundedDown => game.library_card_count(player) / 2,
                     _ => unreachable!(),
                 })
                 .iter()
@@ -40,7 +39,9 @@ impl Game {
                 .count();
         }
         let maximum = match amount {
-            MillAmount::RecipientGraveyard | MillAmount::HalfLibraryRoundedUp => {
+            MillAmount::RecipientGraveyard
+            | MillAmount::HalfLibraryRoundedUp
+            | MillAmount::HalfLibraryRoundedDown => {
                 unreachable!("per-player counts handled above")
             }
             MillAmount::LifeEvent => usize::try_from(
@@ -113,14 +114,15 @@ impl Game {
     ) -> Vec<ZoneChange> {
         let ids: Vec<_> = players
             .iter()
-            .flat_map(|player| {
+            .flat_map(|&player| {
+                let count = self.replaced_mill_count(player, maximum(self, player));
                 self.state.players[player.index()]
                     .library
                     .iter()
                     .rev()
                     .copied()
                     .filter(|&id| self.state.objects[id as usize].is_card())
-                    .take(maximum(self, *player))
+                    .take(count)
             })
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
@@ -132,6 +134,35 @@ impl Game {
         self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Mill);
         self.finish_zone_events(&events, &[]);
         events
+    }
+
+    fn replaced_mill_count(&self, player: Player, count: usize) -> usize {
+        if count == 0 {
+            return 0;
+        }
+        // Each live additive replacement applies once. Additions commute, and
+        // the library size bounds how many cards the resulting event can move.
+        self.state.static_sources.iter().fold(count, |count, &id| {
+            let source = &self.state.objects[id as usize];
+            if source.controller == player {
+                return count;
+            }
+            source
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+                .fold(count, |count, fragment| match fragment {
+                    StaticAbilityFragment::OpponentMillAdditional(additional)
+                        if self.active_rule_fragment(id, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        }) =>
+                    {
+                        count.saturating_add(usize::from(*additional))
+                    }
+                    _ => count,
+                })
+        })
     }
 
     pub(super) fn refill_empty_library_from_graveyard(

@@ -3,10 +3,35 @@
   "catalogue_id": 2569,
   "oracle_id": "42d8ab49-703a-4fd3-84d0-0a3ac1eafca8",
   "facts_sha256": "6e51d104f3cce853e4696b41f819825b63220f3f9e35c7b905b8098779a70f8f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25bef37b1271d1dcba018013ce6e1ac0d9f1f44263502a3123c521f1e55c0f4a"
   },
-  "physical_metadata_sha256": "01d836a3f47c3fa1edc12fc4bd1ca3cd05c1c816ef36223daa120300c38493d4"
+  "physical_metadata_sha256": "01d836a3f47c3fa1edc12fc4bd1ca3cd05c1c816ef36223daa120300c38493d4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LouisoixsSacrifice.java",
+  "java_sha256": "d80beaad85b9f893f66ca61dfbfdef2c42336dfabe9b94fff9915f4be9a3adcf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    }
+  ]
 }

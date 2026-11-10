@@ -3,10 +3,17 @@
   "catalogue_id": 71,
   "oracle_id": "14c3e48b-4c4e-4787-8c50-0e3aee19aa23",
   "facts_sha256": "00df6a12f84e063533783ac889dca4e08b089208a3fe43ae3300cf965c35166f",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "98737858711a342c8085d52ed81a49fc25a26134032d3f7ffd5aff63e890002c"
-  },
-  "physical_metadata_sha256": "f028fad2a17899b7fcb0bed375aa0fd304b10d535eb2e0e40ec8a377377f9891"
+  "complete": true,
+  "physical_metadata_sha256": "f028fad2a17899b7fcb0bed375aa0fd304b10d535eb2e0e40ec8a377377f9891",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AerithRescueMission.java",
+  "java_sha256": "ec013e805e81c444404637de6c3096fa5224123011dd506a9d3bdc9f4fc696ac",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeroToken.java",
+      "sha256": "ae85d8ad9709b08a990352247abee6a63ab13b152ca1caf9c541a85c32b59dcc"
+    }
+  ]
 }

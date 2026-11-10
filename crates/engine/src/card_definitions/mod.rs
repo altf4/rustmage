@@ -296,6 +296,8 @@ pub struct CardExtras {
     /// Explicit source-audited absence/presence of rules abilities, including outside the battlefield.
     pub has_rules_abilities: Option<bool>,
     pub transforming_double_face: bool,
+    pub meld_face: bool,
+    pub as_transform: Option<AsTransformEffect>,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -328,6 +330,7 @@ pub struct CardExtras {
     pub activation_counter_discounts: &'static [(u16, CounterKind)],
     /// Reduce generic activation cost once per controlled permanent of this subtype.
     pub activation_subtype_discounts: &'static [(u16, &'static str)],
+    pub activation_other_subtype_discounts: &'static [(u16, &'static str)],
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub battle_defense: u64,
@@ -434,6 +437,8 @@ impl CardExtras {
     pub const EMPTY: Self = Self {
         has_rules_abilities: None,
         transforming_double_face: false,
+        meld_face: false,
+        as_transform: None,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
@@ -455,6 +460,7 @@ impl CardExtras {
         activation_target_color_discounts: &[],
         activation_counter_discounts: &[],
         activation_subtype_discounts: &[],
+        activation_other_subtype_discounts: &[],
         activation_put_counters: &[],
         fixed_entry_counters: &[],
         battle_defense: 0,

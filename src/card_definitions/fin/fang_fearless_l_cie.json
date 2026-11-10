@@ -3,10 +3,55 @@
   "catalogue_id": 1443,
   "oracle_id": "04ac8b2c-95e9-40e9-8cc0-af9b075a94c0",
   "facts_sha256": "9c6736c28132974d88093924dd093ce1880c7ca3859cdfd82c56d53b5d1c2f26",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8abe9ca3a8c432c2b7744ead2b899aa48e1396f1e525a18e19d59c4b22957ab0"
   },
-  "physical_metadata_sha256": "8fc8c00d608a56dd48515b21c76ea9dd1bd1c80717e74b374138653d95e68321"
+  "physical_metadata_sha256": "8fc8c00d608a56dd48515b21c76ea9dd1bd1c80717e74b374138653d95e68321",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FangFearlessLCie.java",
+  "java_sha256": "4c3e724a7808fed778d6b8ba842e0d5b15555767d077c95cc43cdbf938df141c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/r/RagnarokDivineDeliverance.java",
+      "sha256": "3c996216a784e81ed024bd4110f082f5c46ac145e50780ec741dc871ce5b0ff8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/cards/v/VanilleCheerfulLCie.java",
+      "sha256": "3abdf707bf0dcaf58cf945cb9daedbaa45d0d0a47aa1c2a7e8c7451b1af6e33b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+      "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ]
 }

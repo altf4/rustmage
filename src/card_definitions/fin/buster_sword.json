@@ -3,10 +3,22 @@
   "catalogue_id": 603,
   "oracle_id": "5e060d58-4d6e-425c-b7d4-727669fcce5b",
   "facts_sha256": "c68d14b2b8d84d1f4559444a574a0cdf03a445eb23013c9d053170ccd5b06234",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "abbd38e65c084344c94a4ff1513f5795fbc84e02de2603af45ed06720806331f"
-  },
-  "physical_metadata_sha256": "16cd8eb9dcac698a505666ddb4ced1a1a5c8dc3c58f0817f900a1fdd0f9c775d"
+  "complete": true,
+  "physical_metadata_sha256": "16cd8eb9dcac698a505666ddb4ced1a1a5c8dc3c58f0817f900a1fdd0f9c775d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BusterSword.java",
+  "java_sha256": "066ae3c6eec070e8e0566d186d24f66da9414140465f995ce21645bb242affe8",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAttachedTriggeredAbility.java",
+      "sha256": "62965ddbc906f2b304710561deb0f8541e038fb29f89ca4da7340fd7f26091a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    }
+  ]
 }

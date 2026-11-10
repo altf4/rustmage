@@ -3,10 +3,27 @@
   "catalogue_id": 1380,
   "oracle_id": "566533af-5e67-463f-ac33-dfcf1ec735c9",
   "facts_sha256": "21bb6dc5b38b9bb62edf2dfa75734d44d97ad4f689007ef5d4f512e43e2be6d1",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "b1727d245bf26602c94898aac77688a43df0492cf931c970706bd693b578f3f8"
-  },
-  "physical_metadata_sha256": "b5cf1c18c80fffd3da4d5690e6c270141ca4f6e3bfec539e463c3353ba84fa9d"
+  "complete": true,
+  "physical_metadata_sha256": "b5cf1c18c80fffd3da4d5690e6c270141ca4f6e3bfec539e463c3353ba84fa9d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Ether.java",
+  "java_sha256": "e120a3d8206738844e8e1daadb7f41d51721d19a263d26b466cce62efa7ea133",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CopyNextSpellDelayedTriggeredAbility.java",
+      "sha256": "40d1a8d8178748adf58bc8bd5bfeea6ab90afbcfe49d639a730d7ae1ed9c5a01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+      "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    }
+  ]
 }

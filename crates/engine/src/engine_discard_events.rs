@@ -20,6 +20,7 @@ pub(super) enum DiscardAfter {
     },
     /// A chosen-card condition, independent of whether the discard was replaced.
     DrawFixed(Player, u16),
+    DrawCardTypes(Player),
     RememberActual,
     DrawUnlessOpponentDiscardedTwoNonland(Player),
     NonlandReflexive {
@@ -370,6 +371,13 @@ impl Game {
                 if nonland < 2 {
                     self.draw_many(controller, 1);
                 }
+            }
+            Some(DiscardAfter::DrawCardTypes(player)) => {
+                let types = events
+                    .iter()
+                    .filter(|event| event.moved)
+                    .fold(0u16, |types, event| types | event.before.kinds);
+                self.draw_many(player, types.count_ones() as u128);
             }
             Some(DiscardAfter::RememberActual) => {
                 self.state.resolving.as_mut().unwrap().moved_count =

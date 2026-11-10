@@ -1,0 +1,58 @@
+{
+  "name": "Lasting Fayth",
+  "catalogue_id": 5530,
+  "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+  "facts_sha256": "f130a9088d0d8067a5091b8b4023a2eed2e4117452d75b05599aaa180ff44fd3",
+  "complete": true,
+  "physical_metadata_sha256": "813dcc95052b509bb39808b2fca3e85d25ed606412e010d8302295d679c90f74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZanarkandAncientMetropolis.java",
+  "java_sha256": "c53519073c3ce2b844166b008330752e2c46320ed57f06c6a9ae36b4de6c3a8f",
+  "oracle_face": {
+    "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+    "index": 1,
+    "sha256": "a13c35578c0711abb96427df429adfeff7a6cc621f267969737fbcf39def8327"
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/LandsYouControlHint.java",
+      "sha256": "0d426836c0b651641885b7eda5ea89a55a831428ea003df44497a81ae2f608d0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HeroToken.java",
+      "sha256": "ae85d8ad9709b08a990352247abee6a63ab13b152ca1caf9c541a85c32b59dcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Token.java",
+      "sha256": "77098d7376c01bf204d0fed3cd83eb2a99b55b03525dfeff9188e1dbce27903f"
+    }
+  ]
+}

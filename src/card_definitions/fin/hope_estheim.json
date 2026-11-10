@@ -3,10 +3,35 @@
   "catalogue_id": 2070,
   "oracle_id": "187a110c-032a-42e1-be2d-3cfaaa9495f8",
   "facts_sha256": "6a852924b9cbf7b789923048496dd0e5d5931e9c6425d34eb9d185acc94bf729",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9105d86f60de9165c9516792e001ae8273182916c2701041586938ffcc89914a"
   },
-  "physical_metadata_sha256": "be8c1393d9a0e8b431360158bf6221cacd09fbea9dfd133aaf1e27f4c1b124f1"
+  "physical_metadata_sha256": "be8c1393d9a0e8b431360158bf6221cacd09fbea9dfd133aaf1e27f4c1b124f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HopeEstheim.java",
+  "java_sha256": "00a716875cc421ccf0f15f023f317a676c94625feae8386ae5534d502909a56c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ControllerGainedLifeCount.java",
+      "sha256": "06b6225a857a623e5651806f49b75b4b55e99570818c8bccd12791342a322e58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsEachPlayerEffect.java",
+      "sha256": "7ec575d98b3fbe73cbd601b00756ee1c1abaf6520534f657d6fd617949f105aa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

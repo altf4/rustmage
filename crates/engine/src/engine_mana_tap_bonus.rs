@@ -26,13 +26,19 @@ pub struct ManaTapBonus {
     pub fixed: Mana,
     /// One freely selected type actually produced by the land, per trigger.
     pub amount: u32,
+    // Evaluated after paying costs, against the base mana event's output.
+    #[serde(skip)]
+    pub(super) colorless: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) land_at_tap: Option<LandAtTap>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaTapBonus {
     pub(super) fn has_any(self) -> bool {
-        self.fixed != [0; 6] || self.amount != 0 || self.land_at_tap.is_some()
+        self.fixed != [0; 6]
+            || self.amount != 0
+            || self.colorless != 0
+            || self.land_at_tap.is_some()
     }
     pub(super) fn domain(self, production: Mana) -> ManaProduction {
         let mask = production
@@ -48,15 +54,25 @@ impl ManaTapBonus {
             }
         }
     }
+    fn fixed_for(self, production: Mana) -> Mana {
+        let mut fixed = self.fixed;
+        if production[5] != 0 {
+            fixed[5] = fixed[5]
+                .checked_add(self.colorless)
+                .capacity("mana representation exhausted");
+        }
+        fixed
+    }
     pub(super) fn visit(self, production: Mana, mut emit: impl FnMut(Mana) -> bool) -> bool {
         // CR106.12a: tapping for mana must actually produce mana. A captured
         // fixed-color trigger does not fire for an ability that produces zero.
         if production == [0; 6] {
             return emit([0; 6]);
         }
+        let fixed = self.fixed_for(production);
         self.domain(production).visit(|mana| {
             let bonus = std::array::from_fn(|i| {
-                self.fixed[i]
+                fixed[i]
                     .checked_add(mana[i])
                     .capacity("mana representation exhausted")
             });
@@ -112,22 +128,27 @@ impl ManaTapBonus {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                let (production, amount) = match *fragment {
+                let (production, amount, colorless) = match *fragment {
                     StaticAbilityFragment::ControlledLandTapManaBonus(mana)
                         if provider.controller == actor =>
                     {
-                        (Some(ManaProduction::Fixed(mana)), 0)
+                        (Some(ManaProduction::Fixed(mana)), 0, 0)
+                    }
+                    StaticAbilityFragment::ControlledLandColorlessTapManaBonus
+                        if provider.controller == actor =>
+                    {
+                        (None, 0, 1u32)
                     }
                     StaticAbilityFragment::BasicLandTapManaBonus(amount)
                         if land_kind == LandAtTap::Basic =>
                     {
-                        (None, u32::from(amount))
+                        (None, u32::from(amount), 0)
                     }
                     // CR303.4m: a departed land has no current Aura.
                     StaticAbilityFragment::AttachmentManaBonus(production)
                         if live && provider.attached_to == Some(land) =>
                     {
-                        (Some(production), 0)
+                        (Some(production), 0, 0)
                     }
                     _ => continue,
                 };
@@ -141,6 +162,14 @@ impl ManaTapBonus {
                     .amount
                     .checked_add(
                         amount
+                            .checked_mul(count)
+                            .capacity("mana representation exhausted"),
+                    )
+                    .capacity("mana representation exhausted");
+                self.colorless = self
+                    .colorless
+                    .checked_add(
+                        colorless
                             .checked_mul(count)
                             .capacity("mana representation exhausted"),
                     )
@@ -217,7 +246,7 @@ impl Game {
             self.produce_tap_mana_bonus(actor, bonus);
             return;
         }
-        self.produce_tap_mana_bonus(actor, receipt.fixed);
+        self.produce_tap_mana_bonus(actor, receipt.fixed_for(production));
         let state = self.state.mana_lots.get_or_insert_default();
         assert!(state.tap_bonus.is_none(), "one mana event at a time");
         state.tap_bonus = Some(Box::new(TapBonusChoice {

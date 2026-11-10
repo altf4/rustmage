@@ -109,16 +109,23 @@ impl Game {
     pub(super) fn sacrifice_exact_source(&mut self, item: &SpellView) {
         self.try_sacrifice_exact_source(item);
     }
+    fn exact_controlled_sacrifice_source(&self, item: &SpellView) -> Option<StackSourceView> {
+        item.source.filter(|source| {
+            self.on_battlefield(source.id)
+                && self.object_ref(source.id) == source.object
+                && self.state.objects[source.id as usize].controller == item.controller
+        })
+    }
+    pub(super) fn exact_source_can_sacrifice(&self, item: &SpellView) -> bool {
+        self.exact_controlled_sacrifice_source(item)
+            .is_some_and(|source| {
+                !ability_world::CharacteristicWorld::sacrifice_prohibited(self, source.id)
+            })
+    }
     pub(super) fn try_sacrifice_exact_source(&mut self, item: &SpellView) -> bool {
-        let Some(source) = item.source else {
+        let Some(source) = self.exact_controlled_sacrifice_source(item) else {
             return false;
         };
-        if !self.on_battlefield(source.id)
-            || self.object_ref(source.id) != source.object
-            || self.state.objects[source.id as usize].controller != item.controller
-        {
-            return false;
-        }
         self.sacrifice_batch(&[(item.controller, source.id)]);
         // A replacement destination (for example exile) still completes the
         // sacrifice. A prevented movement must not create its reflexive payoff.
@@ -232,6 +239,49 @@ impl Game {
         recipe.exceptions = CopyExceptions::NIGHTMARE;
         self.move_object(id, Zone::Exile);
         self.state.nightmare_cull = Some(Default::default());
+        self.stage_copy_creation(item.controller, recipe, 1);
+    }
+    pub(super) fn exile_and_copy_creature_as(
+        &mut self,
+        item: &SpellView,
+        base: (i16, i16),
+        color: crate::cards::ChoiceColor,
+        subtype: &'static str,
+    ) {
+        let Some(id) = item.targets.iter().find_map(|bound| {
+            let Target::Card(id) = bound.target else {
+                return None;
+            };
+            let object = self.state.objects.get(id as usize)?;
+            (self.same_target_object(*bound)
+                && object.zone == Zone::Graveyard
+                && object.is_card()
+                && object.card.is_creature())
+            .then_some(id)
+        }) else {
+            return;
+        };
+        let definition = self.state.objects[id as usize].card;
+        let event = self.move_object(id, Zone::Exile);
+        if !event.moved || event.destination != Zone::Exile || self.object_ref(id) != event.after {
+            return;
+        }
+        let mut recipe = CopyRecipe::new(definition).with_exceptions(CopyExceptions {
+            base: Some(base),
+            ..CopyExceptions::NONE
+        });
+        recipe.overrides = Some(CopyOverrides {
+            kinds: Some(1),
+            types: Some(CopyTypes {
+                replace: true,
+                ..CopyTypes::default()
+            }),
+            ..CopyOverrides::NONE
+        });
+        recipe.color_override = Some(1 << color.index());
+        recipe.replacement_subtype = Some(
+            crate::cards::CreatureType::from_name(subtype).expect("valid copy creature subtype"),
+        );
         self.stage_copy_creation(item.controller, recipe, 1);
     }
     pub(super) fn exile_other_nightmares(&mut self, player: Player) {

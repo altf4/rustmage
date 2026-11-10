@@ -3,10 +3,17 @@
   "catalogue_id": 15,
   "oracle_id": "fd230ab5-874e-4827-9b5c-6d39d079cee6",
   "facts_sha256": "eb39040482956dc6f38a1cf16797454e20735df924d53a515d806b44f02fe695",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "0b19c7525e1f4b707583add1eb826167acf50a157b71cf05f9c4a1cdb4417701"
-  },
-  "physical_metadata_sha256": "66631340ac5bd332538eea55f3d77122e73683bae9bf58a245d0f9482c7cbf2e"
+  "complete": true,
+  "physical_metadata_sha256": "66631340ac5bd332538eea55f3d77122e73683bae9bf58a245d0f9482c7cbf2e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ARealmReborn.java",
+  "java_sha256": "809a7259f289be4d26b250d16478fd9f0ecb0ac6c101c537766bd3539c73a183",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ]
 }

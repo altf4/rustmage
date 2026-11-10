@@ -46,14 +46,23 @@ def load(root=ROOT):
     if sum(card['category']=='physical' for card in metadata['cards']) != metadata['physical_count']:
         raise ValueError('physical_count must count physical identities, not imply a contiguous prefix')
     facts,standard_ids=oracle_facts.load(root)
+    meld_results = {oracle_id for oracle_id, card in facts.items()
+                    if oracle_facts.is_meld_result(card)}
     for card in metadata['cards']:
-        if card['category']=='physical' and card['oracle_id'] and card['standard_legal'] != (card['oracle_id'] in standard_ids):
-            raise ValueError('Standard legality differs from frozen inventory: '+card['name'])
-    physical_oracles=[card['oracle_id'] for card in metadata['cards'] if card['category']=='physical' and card['oracle_id']]
-    if len(physical_oracles)!=len(set(physical_oracles)):
-        raise ValueError('duplicate physical Oracle identity in catalogue')
+        oracle_id = card['oracle_id']
+        if card['category'] == 'meld_face' and (oracle_id not in meld_results or card['standard_legal']):
+            raise ValueError('invalid nondeck meld face: ' + card['name'])
+        if card['category'] == 'physical' and oracle_id:
+            if oracle_id in meld_results:
+                raise ValueError('meld result cannot be a physical card: ' + card['name'])
+            if card['standard_legal'] != (oracle_id in standard_ids):
+                raise ValueError('Standard legality differs from frozen inventory: ' + card['name'])
+    identities = [c for c in metadata['cards']
+                  if c['category'] in ('physical', 'meld_face') and c['oracle_id']]
+    by_oracle = {c['oracle_id']: c for c in identities}
+    if len(identities) != len(by_oracle):
+        raise ValueError('duplicate physical Oracle identity or meld result in catalogue')
     by_id={c['index']:c for c in metadata['cards']}
-    by_oracle={c['oracle_id']:c for c in [card for card in metadata['cards'] if card['category']=='physical'] if c['oracle_id']}
     records={};fingerprint=bytearray(canonical(metadata))
     directory=root/'src/card_definitions'
     for path in sorted(directory.rglob('*.json')):
@@ -172,7 +181,7 @@ def render(metadata,records,version):
     for field,ty in metadata['helper_interface']:
         lines.append(f'pub(super) fn {field}(card: Card) -> {ty} {{ authored::RULES[card.index()].extras.{field} }}')
     coverage=[];sets=defaultdict(Counter)
-    for c in [card for card in cards if card['category']=='physical']:
+    for c in (card for card in cards if card['category'] in ('physical', 'meld_face')):
         complete=records[c['index']]['complete'];row=dict(name=c['name'],standard_legal=c['standard_legal'],implemented=complete,implementation='typed_rust'if complete else None,definition=records[c['index']]['relative'],set=c['set'])
         coverage.append(row)
         if c['standard_legal']:

@@ -2,7 +2,7 @@
   "schema": 1,
   "baseline_revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
   "source_catalogue_sha256": "fc523880211a2f576ec8f37f6eab5a392cb02bfc8ca2bb488ebb352922e26914",
-  "physical_count": 5183,
+  "physical_count": 5182,
   "token_base": 5236,
   "emblem_base": 5333,
   "colors": [
@@ -4929,7 +4929,7 @@
     5,
     16,
     0,
-    0,
+    10,
     16,
     16,
     2,
@@ -5507,7 +5507,42 @@
     4,
     1,
     8,
-    20
+    20,
+    0,
+    1,
+    8,
+    1,
+    1,
+    6,
+    20,
+    12,
+    4,
+    2,
+    9,
+    14,
+    12,
+    4,
+    17,
+    2,
+    0,
+    4,
+    8,
+    16,
+    24,
+    10,
+    6,
+    1,
+    4,
+    4,
+    2,
+    8,
+    16,
+    4,
+    2,
+    17,
+    5,
+    0,
+    4
   ],
   "aliases": [
     [
@@ -5701,6 +5736,10 @@
     [
       "@emblem/eoe-tezzeret-cruel-captain",
       5469
+    ],
+    [
+      "@emblem/fin-sephiroth",
+      5535
     ],
     [
       "@emblem/fra-ajani-resolute",
@@ -6401,6 +6440,26 @@
     [
       "@token/fc4d98b9982bc99c31b60b7c",
       5332
+    ],
+    [
+      "@token/fin-angelo",
+      5533
+    ],
+    [
+      "@token/fin-darkstar",
+      5534
+    ],
+    [
+      "@token/fin-horror-black",
+      5536
+    ],
+    [
+      "@token/fin-robot-warrior-blue",
+      5532
+    ],
+    [
+      "@token/fin-wizard-black",
+      5531
     ],
     [
       "@token/fra-ajani-pridemate",
@@ -7863,6 +7922,10 @@
       306
     ],
     [
+      "Bahamut, Warden of Light",
+      5506
+    ],
+    [
       "Bake into a Pie",
       307
     ],
@@ -7873,6 +7936,14 @@
     [
       "Bakery Raid",
       5197
+    ],
+    [
+      "Balamb Garden, Airborne",
+      5502
+    ],
+    [
+      "Balamb Garden, SeeD Academy",
+      309
     ],
     [
       "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
@@ -8407,6 +8478,10 @@
       429
     ],
     [
+      "Black Chocobo",
+      5521
+    ],
+    [
       "Black Mage's Rod",
       430
     ],
@@ -8841,6 +8916,10 @@
     [
       "Branch of Vitu-Ghazi",
       526
+    ],
+    [
+      "Braska's Final Aeon",
+      5510
     ],
     [
       "Brass's Bounty",
@@ -9547,8 +9626,16 @@
       692
     ],
     [
+      "Cecil, Dark Knight",
+      693
+    ],
+    [
       "Cecil, Dark Knight // Cecil, Redeemed Paladin",
       693
+    ],
+    [
+      "Cecil, Redeemed Paladin",
+      5503
     ],
     [
       "Celebrate the Mountain-king",
@@ -9657,6 +9744,10 @@
     [
       "Chaos Spewer",
       720
+    ],
+    [
+      "Chaos, the Endless",
+      5509
     ],
     [
       "Charge the Sanctum",
@@ -9885,6 +9976,10 @@
     [
       "Clive's Hideaway",
       771
+    ],
+    [
+      "Clive, Ifrit's Dominant",
+      772
     ],
     [
       "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
@@ -10177,6 +10272,10 @@
     [
       "Convenient Target",
       841
+    ],
+    [
+      "Cooking Campsite",
+      5518
     ],
     [
       "Cool but Rude",
@@ -10499,12 +10598,20 @@
       918
     ],
     [
+      "Crystal Fragments",
+      919
+    ],
+    [
       "Crystal Fragments // Summon: Alexander",
       919
     ],
     [
       "Crystal Grotto",
       920
+    ],
+    [
+      "Crystallized Serah",
+      5516
     ],
     [
       "Cuboid Colony",
@@ -11165,6 +11272,10 @@
     [
       "Dinotomaton",
       1082
+    ],
+    [
+      "Dion, Bahamut's Dominant",
+      1083
     ],
     [
       "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
@@ -12179,6 +12290,10 @@
       1318
     ],
     [
+      "Emet-Selch, Unsundered",
+      1319
+    ],
+    [
       "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
       1319
     ],
@@ -12399,6 +12514,10 @@
       1369
     ],
     [
+      "Esper Terra",
+      5522
+    ],
+    [
       "Essence Anchor",
       1370
     ],
@@ -12497,6 +12616,10 @@
     [
       "Exclusion Mage",
       1394
+    ],
+    [
+      "Exdeath, Void Warlock",
+      1395
     ],
     [
       "Exdeath, Void Warlock // Neo Exdeath, Dimension's End",
@@ -13623,6 +13746,10 @@
       1664
     ],
     [
+      "Galian Beast",
+      5526
+    ],
+    [
       "Galion, Elvenking's Butler",
       1665
     ],
@@ -13697,6 +13824,10 @@
     [
       "Gargantuan Leech",
       1681
+    ],
+    [
+      "Garland, Knight of Cornelia",
+      1682
     ],
     [
       "Garland, Knight of Cornelia // Chaos, the Endless",
@@ -14751,6 +14882,10 @@
       1925
     ],
     [
+      "Hades, Sorcerer of Eld",
+      5507
+    ],
+    [
       "Hakoda, Selfless Commander",
       1926
     ],
@@ -15523,6 +15658,10 @@
       2110
     ],
     [
+      "Hydaelyn, the Mothercrystal",
+      5525
+    ],
+    [
       "Hydraulic Helper",
       2111
     ],
@@ -15601,6 +15740,10 @@
     [
       "Idol of the Deep King // Sovereign's Macuahuitl",
       2130
+    ],
+    [
+      "Ifrit, Warden of Inferno",
+      5504
     ],
     [
       "Ignis Scientia",
@@ -16155,6 +16298,10 @@
       2260
     ],
     [
+      "Jecht, Reluctant Guardian",
+      2261
+    ],
+    [
       "Jecht, Reluctant Guardian // Braska's Final Aeon",
       2261
     ],
@@ -16235,8 +16382,16 @@
       2279
     ],
     [
+      "Jidoor, Aristocratic Capital",
+      2280
+    ],
+    [
       "Jidoor, Aristocratic Capital // Overture",
       2280
+    ],
+    [
+      "Jill, Shiva's Dominant",
+      2281
     ],
     [
       "Jill, Shiva's Dominant // Shiva, Warden of Ice",
@@ -16277,6 +16432,10 @@
     [
       "Joraga Invocation",
       2289
+    ],
+    [
+      "Joshua, Phoenix's Dominant",
+      2290
     ],
     [
       "Joshua, Phoenix's Dominant // Phoenix, Warden of Fire",
@@ -16467,8 +16626,16 @@
       2335
     ],
     [
+      "Kefka, Court Mage",
+      2336
+    ],
+    [
       "Kefka, Court Mage // Kefka, Ruler of Ruin",
       2336
+    ],
+    [
+      "Kefka, Ruler of Ruin",
+      5513
     ],
     [
       "Kellan Joins Up",
@@ -16815,6 +16982,10 @@
       2419
     ],
     [
+      "Kuja, Genome Sorcerer",
+      2420
+    ],
+    [
       "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
       2420
     ],
@@ -16945,6 +17116,10 @@
     [
       "Last Light of Durin's Day",
       2450
+    ],
+    [
+      "Lasting Fayth",
+      5530
     ],
     [
       "Lasting Tarfire",
@@ -17197,6 +17372,10 @@
     [
       "Liminal Hold",
       2511
+    ],
+    [
+      "Lindblum, Industrial Regency",
+      2512
     ],
     [
       "Lindblum, Industrial Regency // Mage Siege",
@@ -17623,6 +17802,10 @@
       2613
     ],
     [
+      "Mage Siege",
+      5529
+    ],
+    [
       "Mage Tower Referee",
       2614
     ],
@@ -17637,6 +17820,10 @@
     [
       "Magic Pot",
       2617
+    ],
+    [
+      "Magicked Card",
+      5517
     ],
     [
       "Magitek Armor",
@@ -18871,6 +19058,10 @@
       2916
     ],
     [
+      "Neo Exdeath, Dimension's End",
+      5508
+    ],
+    [
       "Neriv, Heart of the Storm",
       2917
     ],
@@ -19527,6 +19718,10 @@
       3076
     ],
     [
+      "Overture",
+      5528
+    ],
+    [
       "Overwhelming Surge",
       3077
     ],
@@ -19833,6 +20028,10 @@
     [
       "Phoenix Fleet Airship",
       3149
+    ],
+    [
+      "Phoenix, Warden of Fire",
+      5512
     ],
     [
       "Photon Blast Barrage",
@@ -22535,12 +22734,24 @@
       3789
     ],
     [
+      "Sephiroth, Fabled SOLDIER",
+      3790
+    ],
+    [
       "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
       3790
     ],
     [
+      "Sephiroth, One-Winged Angel",
+      5515
+    ],
+    [
       "Sephiroth, Planet's Heir",
       3791
+    ],
+    [
+      "Serah Farron",
+      3792
     ],
     [
       "Serah Farron // Crystallized Serah",
@@ -22715,6 +22926,10 @@
       3834
     ],
     [
+      "Shinryu, Transcendent Rival",
+      5527
+    ],
+    [
       "Shipwreck Dowser",
       3835
     ],
@@ -22725,6 +22940,10 @@
     [
       "Shipwreck Sentry",
       3837
+    ],
+    [
+      "Shiva, Warden of Ice",
+      5511
     ],
     [
       "Shivan Dragon",
@@ -22819,20 +23038,40 @@
       3858
     ],
     [
+      "Sidequest: Card Collection",
+      3859
+    ],
+    [
       "Sidequest: Card Collection // Magicked Card",
       3859
+    ],
+    [
+      "Sidequest: Catch a Fish",
+      3860
     ],
     [
       "Sidequest: Catch a Fish // Cooking Campsite",
       3860
     ],
     [
+      "Sidequest: Hunt the Mark",
+      3861
+    ],
+    [
       "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
       3861
     ],
     [
+      "Sidequest: Play Blitzball",
+      3862
+    ],
+    [
       "Sidequest: Play Blitzball // World Champion, Celestial Weapon",
       3862
+    ],
+    [
+      "Sidequest: Raise a Chocobo",
+      3863
     ],
     [
       "Sidequest: Raise a Chocobo // Black Chocobo",
@@ -24315,6 +24554,10 @@
       4212
     ],
     [
+      "Summon: Alexander",
+      5505
+    ],
+    [
       "Summon: Anima",
       4213
     ],
@@ -25051,6 +25294,10 @@
       4388
     ],
     [
+      "Terra, Magical Adept",
+      4389
+    ],
+    [
       "Terra, Magical Adept // Esper Terra",
       4389
     ],
@@ -25263,6 +25510,10 @@
       4439
     ],
     [
+      "The Emperor of Palamecia",
+      4440
+    ],
+    [
       "The Emperor of Palamecia // The Lord Master of Hell",
       4440
     ],
@@ -25389,6 +25640,10 @@
     [
       "The Lonely Mountain",
       4468
+    ],
+    [
+      "The Lord Master of Hell",
+      5523
     ],
     [
       "The Lord of the Eagles",
@@ -26159,6 +26414,10 @@
       4654
     ],
     [
+      "Trance Kuja, Fate Defied",
+      5514
+    ],
+    [
       "Tranquil Cove",
       4655
     ],
@@ -26543,8 +26802,16 @@
       4744
     ],
     [
+      "Ultimecia, Omnipotent",
+      5524
+    ],
+    [
       "Ultimecia, Temporal Threat",
       4745
+    ],
+    [
+      "Ultimecia, Time Sorceress",
+      4746
     ],
     [
       "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
@@ -27015,6 +27282,10 @@
       4859
     ],
     [
+      "Venat, Heart of Hydaelyn",
+      4860
+    ],
+    [
       "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
       4860
     ],
@@ -27165,6 +27436,10 @@
     [
       "Villainous Wrath",
       4895
+    ],
+    [
+      "Vincent Valentine",
+      4896
     ],
     [
       "Vincent Valentine // Galian Beast",
@@ -28047,6 +28322,10 @@
       5111
     ],
     [
+      "World Champion, Celestial Weapon",
+      5520
+    ],
+    [
       "World Map",
       5112
     ],
@@ -28155,6 +28434,10 @@
       5138
     ],
     [
+      "Yiazmat, Ultimate Mark",
+      5519
+    ],
+    [
       "Yip Yip!",
       5139
     ],
@@ -28211,6 +28494,10 @@
       5152
     ],
     [
+      "Zanarkand, Ancient Metropolis",
+      5153
+    ],
+    [
       "Zanarkand, Ancient Metropolis // Lasting Fayth",
       5153
     ],
@@ -28225,6 +28512,10 @@
     [
       "Zell Dincht",
       5156
+    ],
+    [
+      "Zenos yae Galvus",
+      5157
     ],
     [
       "Zenos yae Galvus // Shinryu, Transcendent Rival",
@@ -29315,6 +29606,36 @@
       "name": "Worm Token",
       "subtypes": "Worm",
       "colors": 20
+    },
+    {
+      "factory_identity": "@token/fin-wizard-black",
+      "name": "Wizard Token",
+      "subtypes": "Wizard",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/fin-robot-warrior-blue",
+      "name": "Robot Token",
+      "subtypes": "Robot Warrior",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/fin-angelo",
+      "name": "Angelo",
+      "subtypes": "Dog",
+      "colors": 17
+    },
+    {
+      "factory_identity": "@token/fin-darkstar",
+      "name": "Darkstar",
+      "subtypes": "Dog",
+      "colors": 5
+    },
+    {
+      "factory_identity": "@token/fin-horror-black",
+      "name": "Horror Token",
+      "subtypes": "Horror",
+      "colors": 4
     }
   ],
   "emblems": [
@@ -29350,6 +29671,9 @@
     },
     {
       "oracle_text": "Ninjas you control get +1/+1."
+    },
+    {
+      "oracle_text": "Whenever a creature dies, target opponent loses 1 life and you gain 1 life."
     }
   ],
   "creature_types": [
@@ -38789,7 +39113,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Balamb Garden, SeeD Academy",
+        "mana_cost": "",
+        "type_line": "Land — Town",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 2,
+        "legendary": false
+      },
+      "back_face": 5502
     },
     {
       "index": 310,
@@ -49810,7 +50154,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Cecil, Dark Knight",
+        "mana_cost": "{B}",
+        "type_line": "Legendary Creature — Human Knight",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Transform",
+          "Darkness",
+          "Deathtouch"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5503
     },
     {
       "index": 694,
@@ -52071,7 +52437,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Clive, Ifrit's Dominant",
+        "mana_cost": "{4}{R}{R}",
+        "type_line": "Legendary Creature — Human Noble Warrior",
+        "colored": [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        "generic": 4,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5504
     },
     {
       "index": 773,
@@ -56248,7 +56634,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Crystal Fragments",
+        "mana_cost": "{W}",
+        "type_line": "Artifact — Equipment",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Transform",
+          "Equip"
+        ],
+        "kind": 16,
+        "legendary": false
+      },
+      "back_face": 5505
     },
     {
       "index": 920,
@@ -60922,7 +61329,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Dion, Bahamut's Dominant",
+        "mana_cost": "{3}{W}",
+        "type_line": "Legendary Creature — Human Noble Knight",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Dragonfire Dive",
+          "Flying",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5506
     },
     {
       "index": 1084,
@@ -67673,7 +68102,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Emet-Selch, Unsundered",
+        "mana_cost": "{1}{U}{B}",
+        "type_line": "Legendary Creature — Elder Wizard",
+        "colored": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Vigilance",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5507
     },
     {
       "index": 1320,
@@ -69844,7 +70294,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Exdeath, Void Warlock",
+        "mana_cost": "{1}{B}{G}",
+        "type_line": "Legendary Creature — Spirit Warlock",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5508
     },
     {
       "index": 1396,
@@ -77982,7 +78452,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Garland, Knight of Cornelia",
+        "mana_cost": "{B}{R}",
+        "type_line": "Legendary Creature — Human Knight",
+        "colored": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Surveil",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5509
     },
     {
       "index": 1683,
@@ -94510,7 +95001,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Jecht, Reluctant Guardian",
+        "mana_cost": "{3}{B}",
+        "type_line": "Legendary Creature — Human Warrior",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform",
+          "Menace"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5510
     },
     {
       "index": 2262,
@@ -95070,7 +95582,24 @@
         0,
         0
       ],
-      "generic": 4
+      "generic": 4,
+      "front_face": {
+        "name": "Jidoor, Aristocratic Capital",
+        "mana_cost": "",
+        "type_line": "Land — Town",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [],
+        "kind": 2,
+        "legendary": false
+      }
     },
     {
       "index": 2281,
@@ -95099,7 +95628,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Jill, Shiva's Dominant",
+        "mana_cost": "{2}{U}",
+        "type_line": "Legendary Creature — Human Noble Warrior",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5511
     },
     {
       "index": 2282,
@@ -95357,7 +95906,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Joshua, Phoenix's Dominant",
+        "mana_cost": "{1}{R}{W}",
+        "type_line": "Legendary Creature — Human Noble Wizard",
+        "colored": [
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5512
     },
     {
       "index": 2291,
@@ -96661,7 +97230,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Kefka, Court Mage",
+        "mana_cost": "{2}{U}{B}{R}",
+        "type_line": "Legendary Creature — Human Wizard",
+        "colored": [
+          0,
+          1,
+          1,
+          1,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5513
     },
     {
       "index": 2337,
@@ -99110,7 +99699,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Kuja, Genome Sorcerer",
+        "mana_cost": "{2}{B}{R}",
+        "type_line": "Legendary Creature — Human Mutant Wizard",
+        "colored": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5514
     },
     {
       "index": 2421,
@@ -101737,7 +102346,24 @@
         0,
         0
       ],
-      "generic": 2
+      "generic": 2,
+      "front_face": {
+        "name": "Lindblum, Industrial Regency",
+        "mana_cost": "",
+        "type_line": "Land — Town",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [],
+        "kind": 2,
+        "legendary": false
+      }
     },
     {
       "index": 2513,
@@ -125447,7 +126073,7 @@
       "module": "card_3344",
       "path": "fin/ragnarok_divine_deliverance.rs",
       "set": "fin",
-      "category": "physical",
+      "category": "meld_face",
       "name": "Ragnarok, Divine Deliverance",
       "oracle_id": "14b839ef-80b1-4e7d-b2fd-38e973899cde",
       "facts_sha256": "6250a54ec3c988fb68cea91c1eb98b59677229a1e3877cf28ef642e38d3623cc",
@@ -125460,7 +126086,7 @@
         "Trample",
         "Menace"
       ],
-      "standard_legal": true,
+      "standard_legal": false,
       "legendary": true,
       "kind": 1,
       "basic": false,
@@ -138163,7 +138789,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sephiroth, Fabled SOLDIER",
+        "mana_cost": "{2}{B}",
+        "type_line": "Legendary Creature — Human Avatar Soldier",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5515
     },
     {
       "index": 3791,
@@ -138221,7 +138867,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Serah Farron",
+        "mana_cost": "{1}{G}{W}",
+        "type_line": "Legendary Creature — Human Citizen",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5516
     },
     {
       "index": 3793,
@@ -140152,7 +140818,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sidequest: Card Collection",
+        "mana_cost": "{3}{U}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 32,
+        "legendary": false
+      },
+      "back_face": 5517
     },
     {
       "index": 3860,
@@ -140182,7 +140868,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sidequest: Catch a Fish",
+        "mana_cost": "{2}{W}",
+        "type_line": "Enchantment",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform",
+          "Food"
+        ],
+        "kind": 32,
+        "legendary": false
+      },
+      "back_face": 5518
     },
     {
       "index": 3861,
@@ -140212,7 +140919,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sidequest: Hunt the Mark",
+        "mana_cost": "{3}{B}{B}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform",
+          "Treasure"
+        ],
+        "kind": 32,
+        "legendary": false
+      },
+      "back_face": 5519
     },
     {
       "index": 3862,
@@ -140244,7 +140972,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sidequest: Play Blitzball",
+        "mana_cost": "{2}{R}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 32,
+        "legendary": false
+      },
+      "back_face": 5520
     },
     {
       "index": 3863,
@@ -140274,7 +141022,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sidequest: Raise a Chocobo",
+        "mana_cost": "{1}{G}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 32,
+        "legendary": false
+      },
+      "back_face": 5521
     },
     {
       "index": 3864,
@@ -155330,7 +156098,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Terra, Magical Adept",
+        "mana_cost": "{1}{R}{G}",
+        "type_line": "Legendary Creature — Human Wizard Warrior",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform",
+          "Mill",
+          "Trance"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5522
     },
     {
       "index": 4390,
@@ -156780,7 +157570,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Emperor of Palamecia",
+        "mana_cost": "{U}{R}",
+        "type_line": "Legendary Creature — Human Noble Wizard",
+        "colored": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5523
     },
     {
       "index": 4441,
@@ -165609,7 +166419,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Ultimecia, Time Sorceress",
+        "mana_cost": "{3}{U}{B}",
+        "type_line": "Legendary Creature — Human Warlock",
+        "colored": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Surveil",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5524
     },
     {
       "index": 4747,
@@ -168873,7 +169704,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Venat, Heart of Hydaelyn",
+        "mana_cost": "{1}{W}{W}",
+        "type_line": "Legendary Creature — Elder Wizard",
+        "colored": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5525
     },
     {
       "index": 4861,
@@ -169895,7 +170746,27 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Vincent Valentine",
+        "mana_cost": "{2}{B}{B}",
+        "type_line": "Legendary Creature — Assassin",
+        "colored": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5526
     },
     {
       "index": 4897,
@@ -170641,29 +171512,29 @@
     {
       "index": 4923,
       "module": "card_4923",
-      "path": "legacy/vivi_ornitier.rs",
-      "set": "legacy",
+      "path": "fin/vivi_ornitier.rs",
+      "set": "fin",
       "category": "physical",
       "name": "Vivi Ornitier",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "0452be2a-e97a-4269-a9e3-b616265ecb2e",
+      "facts_sha256": "1e75a13ef090ae3a1ebd5dbc7acc4786a0ef46eee2c7c8ef5af3290ae540915f",
+      "mana_cost": "{1}{U}{R}",
+      "type_line": "Legendary Creature — Wizard",
       "oracle_keywords": [],
       "standard_legal": false,
-      "legendary": false,
-      "kind": 0,
+      "legendary": true,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
+        1,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 4924,
@@ -177244,7 +178115,24 @@
         2,
         0
       ],
-      "generic": 4
+      "generic": 4,
+      "front_face": {
+        "name": "Zanarkand, Ancient Metropolis",
+        "mana_cost": "",
+        "type_line": "Land — Town",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [],
+        "kind": 2,
+        "legendary": false
+      }
     },
     {
       "index": 5154,
@@ -177357,7 +178245,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Zenos yae Galvus",
+        "mana_cost": "{3}{B}{B}",
+        "type_line": "Legendary Creature — Human Noble Warrior",
+        "colored": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform",
+          "My First Friend"
+        ],
+        "kind": 1,
+        "legendary": true
+      },
+      "back_face": 5527
     },
     {
       "index": 5158,
@@ -186831,6 +187740,1040 @@
       "facts_sha256": null,
       "mana_cost": "",
       "type_line": "Creature — Worm",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5502,
+      "module": "card_5502",
+      "path": "fin/balamb_garden_airborne.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Balamb Garden, Airborne",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact — Vehicle",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Crew"
+      ],
+      "kind": 16,
+      "legendary": true,
+      "face_parent": 309
+    },
+    {
+      "index": 5503,
+      "module": "card_5503",
+      "path": "fin/cecil_redeemed_paladin.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Cecil, Redeemed Paladin",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Human Knight",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Lifelink",
+        "Protect"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 693
+    },
+    {
+      "index": 5504,
+      "module": "card_5504",
+      "path": "fin/ifrit_warden_of_inferno.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Ifrit, Warden of Inferno",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Demon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Fight"
+      ],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 772
+    },
+    {
+      "index": 5505,
+      "module": "card_5505",
+      "path": "fin/summon_alexander.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Summon: Alexander",
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Saga Construct",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 33,
+      "legendary": false,
+      "face_parent": 919
+    },
+    {
+      "index": 5506,
+      "module": "card_5506",
+      "path": "fin/bahamut_warden_of_light.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Bahamut, Warden of Light",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Dragon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 1083
+    },
+    {
+      "index": 5507,
+      "module": "card_5507",
+      "path": "fin/hades_sorcerer_of_eld.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Hades, Sorcerer of Eld",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Vigilance",
+        "Echo of the Lost"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 1319
+    },
+    {
+      "index": 5508,
+      "module": "card_5508",
+      "path": "fin/neo_exdeath_dimension_s_end.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Neo Exdeath, Dimension's End",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Spirit Avatar",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Trample"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 1395
+    },
+    {
+      "index": 5509,
+      "module": "card_5509",
+      "path": "fin/chaos_the_endless.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Chaos, the Endless",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Demon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 1682
+    },
+    {
+      "index": 5510,
+      "module": "card_5510",
+      "path": "fin/braska_s_final_aeon.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Braska's Final Aeon",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Nightmare",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Menace"
+      ],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 2261
+    },
+    {
+      "index": 5511,
+      "module": "card_5511",
+      "path": "fin/shiva_warden_of_ice.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Shiva, Warden of Ice",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Elemental",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 2281
+    },
+    {
+      "index": 5512,
+      "module": "card_5512",
+      "path": "fin/phoenix_warden_of_fire.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Phoenix, Warden of Fire",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Phoenix",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Lifelink"
+      ],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 2290
+    },
+    {
+      "index": 5513,
+      "module": "card_5513",
+      "path": "fin/kefka_ruler_of_ruin.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Kefka, Ruler of Ruin",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Wizard",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 2336
+    },
+    {
+      "index": 5514,
+      "module": "card_5514",
+      "path": "fin/trance_kuja_fate_defied.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Trance Kuja, Fate Defied",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Avatar Wizard",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flare Star",
+        "Double"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 2420
+    },
+    {
+      "index": 5515,
+      "module": "card_5515",
+      "path": "fin/sephiroth_one_winged_angel.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Sephiroth, One-Winged Angel",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Angel Nightmare Avatar",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Transform",
+        "Super Nova"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 3790
+    },
+    {
+      "index": 5516,
+      "module": "card_5516",
+      "path": "fin/crystallized_serah.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Crystallized Serah",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 16,
+      "legendary": true,
+      "face_parent": 3792
+    },
+    {
+      "index": 5517,
+      "module": "card_5517",
+      "path": "fin/magicked_card.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Magicked Card",
+      "mana_cost": "",
+      "type_line": "Artifact — Vehicle",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Crew"
+      ],
+      "kind": 16,
+      "legendary": false,
+      "face_parent": 3859
+    },
+    {
+      "index": 5518,
+      "module": "card_5518",
+      "path": "fin/cooking_campsite.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Cooking Campsite",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": false,
+      "face_parent": 3860
+    },
+    {
+      "index": 5519,
+      "module": "card_5519",
+      "path": "fin/yiazmat_ultimate_mark.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Yiazmat, Ultimate Mark",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dragon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 3861
+    },
+    {
+      "index": 5520,
+      "module": "card_5520",
+      "path": "fin/world_champion_celestial_weapon.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "World Champion, Celestial Weapon",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact — Equipment",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Double Overdrive",
+        "Equip",
+        "Double"
+      ],
+      "kind": 16,
+      "legendary": true,
+      "face_parent": 3862
+    },
+    {
+      "index": 5521,
+      "module": "card_5521",
+      "path": "fin/black_chocobo.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Black Chocobo",
+      "mana_cost": "",
+      "type_line": "Creature — Bird",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform",
+        "Landfall"
+      ],
+      "kind": 1,
+      "legendary": false,
+      "face_parent": 3863
+    },
+    {
+      "index": 5522,
+      "module": "card_5522",
+      "path": "fin/esper_terra.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Esper Terra",
+      "mana_cost": "",
+      "type_line": "Legendary Enchantment Creature — Saga Wizard",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 33,
+      "legendary": true,
+      "face_parent": 4389
+    },
+    {
+      "index": 5523,
+      "module": "card_5523",
+      "path": "fin/the_lord_master_of_hell.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "The Lord Master of Hell",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Demon Noble Wizard",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Starfall"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 4440
+    },
+    {
+      "index": 5524,
+      "module": "card_5524",
+      "path": "fin/ultimecia_omnipotent.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Ultimecia, Omnipotent",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Nightmare Warlock",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform",
+        "Menace",
+        "Time Compression"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 4746
+    },
+    {
+      "index": 5525,
+      "module": "card_5525",
+      "path": "fin/hydaelyn_the_mothercrystal.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Hydaelyn, the Mothercrystal",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — God",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Blessing of Light",
+        "Indestructible"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 4860
+    },
+    {
+      "index": 5526,
+      "module": "card_5526",
+      "path": "fin/galian_beast.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Galian Beast",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Werewolf Beast",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Lifelink",
+        "Trample"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 4896
+    },
+    {
+      "index": 5527,
+      "module": "card_5527",
+      "path": "fin/shinryu_transcendent_rival.rs",
+      "set": "fin",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Shinryu, Transcendent Rival",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dragon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Transform",
+        "Burning Chains"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "face_parent": 5157
+    },
+    {
+      "index": 5528,
+      "module": "card_5528",
+      "path": "fin/overture.rs",
+      "set": "fin",
+      "category": "adventure",
+      "oracle_id": "bd513d9d-5aa2-4860-bd86-8b5d9430f133",
+      "facts_sha256": "8952da60b9bfb6361f4d66e8018a4553ee9ef691973217f5d0a36dd75062b74c",
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Overture",
+      "mana_cost": "{4}{U}{U}",
+      "type_line": "Sorcery — Adventure",
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4,
+      "oracle_keywords": [
+        "Mill"
+      ],
+      "kind": 4,
+      "legendary": false
+    },
+    {
+      "index": 5529,
+      "module": "card_5529",
+      "path": "fin/mage_siege.rs",
+      "set": "fin",
+      "category": "adventure",
+      "oracle_id": "4cc014f3-05e0-442e-9dee-03eab1aa65a3",
+      "facts_sha256": "226f8c52e558e7409217cfb8e6b730c5864548fa7aede3ff93c7676dbeb29cc1",
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Mage Siege",
+      "mana_cost": "{2}{R}",
+      "type_line": "Instant — Adventure",
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2,
+      "oracle_keywords": [],
+      "kind": 8,
+      "legendary": false
+    },
+    {
+      "index": 5530,
+      "module": "card_5530",
+      "path": "fin/lasting_fayth.rs",
+      "set": "fin",
+      "category": "adventure",
+      "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+      "facts_sha256": "f130a9088d0d8067a5091b8b4023a2eed2e4117452d75b05599aaa180ff44fd3",
+      "standard_legal": false,
+      "basic": false,
+      "mana_color": null,
+      "name": "Lasting Fayth",
+      "mana_cost": "{4}{G}{G}",
+      "type_line": "Sorcery — Adventure",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "generic": 4,
+      "oracle_keywords": [],
+      "kind": 4,
+      "legendary": false
+    },
+    {
+      "index": 5531,
+      "module": "card_5531",
+      "path": "synthetic/token_fin_wizard_black.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-wizard-black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Wizard",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5532,
+      "module": "card_5532",
+      "path": "synthetic/token_fin_robot_warrior_blue.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-robot-warrior-blue",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Robot Warrior",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5533,
+      "module": "card_5533",
+      "path": "synthetic/token_fin_angelo.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-angelo",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dog",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5534,
+      "module": "card_5534",
+      "path": "synthetic/token_fin_darkstar.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-darkstar",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Dog",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5535,
+      "module": "card_5535",
+      "path": "synthetic/emblem_fin_sephiroth.rs",
+      "set": "synthetic",
+      "category": "emblem",
+      "name": "@emblem/fin-sephiroth",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 0,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5536,
+      "module": "card_5536",
+      "path": "synthetic/token_fin_horror_black.rs",
+      "set": "synthetic",
+      "category": "token",
+      "name": "@token/fin-horror-black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Horror",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,

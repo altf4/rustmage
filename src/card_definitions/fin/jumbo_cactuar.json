@@ -3,10 +3,25 @@
   "catalogue_id": 2296,
   "oracle_id": "e0bdfbb4-3060-4492-bd9b-0c47e719400a",
   "facts_sha256": "0f8ba740cf92970998ff6f76eac9a8d534ff5573e4e832ad37e1c1d2be861f3e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb5b989b2740ab6dd2742be7a9d6466247a24888c34bb42ed441571631b39944"
   },
-  "physical_metadata_sha256": "0cc16cc5c908e294a82bc8471f560df430fed3c5aeaad9233c594ffb46a955d2"
+  "physical_metadata_sha256": "0cc16cc5c908e294a82bc8471f560df430fed3c5aeaad9233c594ffb46a955d2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JumboCactuar.java",
+  "java_sha256": "f0f5fe44abeb66900dd2e738fdb9d06c4c2b9b64655073e938b9136f2c421192",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ]
 }

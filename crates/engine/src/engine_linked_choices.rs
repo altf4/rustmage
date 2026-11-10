@@ -507,10 +507,7 @@ impl Game {
             }
         }
     }
-    pub(super) fn play_hideaway_if_coven(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
-            return;
-        };
+    pub(super) fn has_coven(&self, player: Player) -> bool {
         let mut powers: Vec<_> = self
             .state
             .objects
@@ -518,33 +515,30 @@ impl Game {
             .enumerate()
             .filter(|(id, o)| {
                 o.zone == Zone::Battlefield
-                    && o.controller == item.controller
+                    && o.controller == player
                     && self.is_creature(*id as CardId)
             })
             .map(|(id, _)| self.stats(id as CardId).power)
             .collect();
         powers.sort_unstable();
         powers.dedup();
-        if powers.len() < 3 {
-            return;
-        }
-        let remaining: Vec<_> = self
-            .state
-            .linked_choices
-            .as_ref()
-            .map_or_else(Vec::new, |data| {
-                data.links
-                    .iter()
-                    .filter(|link| {
-                        link.source == source.object
-                            && self.object_ref(link.exiled.card) == link.exiled
-                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
-                    })
-                    .map(|link| link.exiled)
-                    .collect()
-            });
+        powers.len() >= 3
+    }
+    pub(super) fn play_hideaway(&mut self, item: &SpellView) -> bool {
+        let Some(source) = item.source else {
+            return false;
+        };
+        let Some(data) = self.state.linked_choices.as_ref() else {
+            return false;
+        };
+        let mut remaining = self.linked_exile_for_origin(source.object, item.source_ability_origin);
+        remaining.retain(|object| {
+            data.hidden
+                .get(object)
+                .is_some_and(|row| row.hideaway_source == Some(source.object))
+        });
         if remaining.is_empty() {
-            return;
+            return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             uncast_to_hand: false,
@@ -564,6 +558,7 @@ impl Game {
         self.state.pending = Pending::ResolutionCasts {
             player: item.controller,
         };
+        true
     }
     pub(super) fn create_sized_tokens_for_linked_exile_owners(
         &mut self,
@@ -606,17 +601,7 @@ impl Game {
         };
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
-                let exiled = self.object_ref(id);
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .links
-                    .push(LinkedExileView {
-                        exiled_turn: self.state.turn,
-                        source,
-                        exiled,
-                        ability_origin: None,
-                    });
+                self.link_exile_to_ability(source, None, self.object_ref(id));
             }
         }
     }

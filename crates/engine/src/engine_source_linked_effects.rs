@@ -10,6 +10,8 @@ pub enum SourceLinkedEffectKind {
     LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
     RemoveAbilitiesUntilEndOfTurn,
+    /// Lose all land subtypes and abilities, then gain a colorless mana ability.
+    BlankLandWhileBlighted,
     GrantHexproof,
     /// Independent land grant, ending when the captured exile incarnation is cast.
     GrantTwoColorlessUntilSourceCast,
@@ -20,6 +22,25 @@ pub enum SourceLinkedEffectKind {
     Control,
     /// One fixed resolving controller; losing source control ends both effects forever.
     ControlAndCombatLockWhileControlled,
+}
+impl SourceLinkedEffectKind {
+    pub(super) fn removes_abilities(self) -> bool {
+        matches!(
+            self,
+            Self::RemoveAbilities
+                | Self::RemoveAbilitiesUntilEndOfTurn
+                | Self::BlankLandWhileBlighted
+        )
+    }
+    fn survives_source_departure(self) -> bool {
+        matches!(
+            self,
+            Self::RemoveAbilitiesUntilEndOfTurn
+                | Self::BlankLandWhileBlighted
+                | Self::GrantTwoColorlessUntilSourceCast
+                | Self::PreventActivationsUntilUntapped
+        )
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -35,13 +56,9 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
     world: &W,
     row: &SourceLinkedEffectView,
 ) -> bool {
-    (matches!(
-        row.kind,
-        SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
-            | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
-            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
-    ) || (world.object(row.source.card).zone == Zone::Battlefield
-        && world.reference(row.source.card) == row.source))
+    (row.kind.survives_source_departure()
+        || (world.object(row.source.card).zone == Zone::Battlefield
+            && world.reference(row.source.card) == row.source))
         && (row.kind == SourceLinkedEffectKind::PreventDamageBy
             || (world.object(row.recipient.card).zone == Zone::Battlefield
                 && world.reference(row.recipient.card) == row.recipient))
@@ -52,6 +69,31 @@ pub(super) fn active<W: CharacteristicWorld + ?Sized>(
         ) || world.object(row.source.card).controller == row.controller)
         && (row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
             || world.object(row.recipient.card).tapped)
+        && (row.kind != SourceLinkedEffectKind::BlankLandWhileBlighted
+            || world.counter_count(row.recipient.card, CounterKind::Blight) != 0)
+}
+
+fn blights(row: &SourceLinkedEffectView, recipient: ObjectRef) -> bool {
+    row.recipient == recipient && row.kind == SourceLinkedEffectKind::BlankLandWhileBlighted
+}
+
+pub(super) fn blighted_land_expired<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    recipient: ObjectRef,
+) -> bool {
+    world.roles().is_some_and(|roles| {
+        roles
+            .source_linked_effects
+            .iter()
+            .any(|row| blights(row, recipient))
+    }) && world.counter_count(recipient.card, CounterKind::Blight) == 0
+}
+
+impl roles::RoleState {
+    pub(super) fn forget_blighted_land(&mut self, recipient: ObjectRef) {
+        self.source_linked_effects
+            .retain(|row| !blights(row, recipient));
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -65,20 +107,26 @@ impl Game {
         };
         // CR611.2b: an already-ended duration never starts. The preceding tap
         // remains independent and has already happened even when this fails.
-        if !self.on_battlefield(source.object.card)
-            || self.object_ref(source.object.card) != source.object
-            || (matches!(
-                kind,
-                SourceLinkedEffectKind::PreventUntap
-                    | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
-            ) && self.state.objects[source.object.card as usize].controller != item.controller)
+        if !kind.survives_source_departure()
+            && (!self.on_battlefield(source.object.card)
+                || self.object_ref(source.object.card) != source.object
+                || (matches!(
+                    kind,
+                    SourceLinkedEffectKind::PreventUntap
+                        | SourceLinkedEffectKind::ControlAndCombatLockWhileControlled
+                ) && self.state.objects[source.object.card as usize].controller
+                    != item.controller))
         {
             return;
         }
         let recipients: Vec<_> = self
             .keyword_subjects(item, Subject::Targets)
             .into_iter()
-            .filter(|&id| self.on_battlefield(id))
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && (kind != SourceLinkedEffectKind::BlankLandWhileBlighted
+                        || self.counter_count(id, CounterKind::Blight) != 0)
+            })
             .map(|id| self.object_ref(id))
             .collect();
         if recipients.is_empty() {
@@ -377,13 +425,7 @@ impl Game {
     pub(super) fn forget_source_linked_effects(&mut self, reference: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
-                (row.source != reference
-                    || matches!(
-                        row.kind,
-                        SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
-                            | SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
-                            | SourceLinkedEffectKind::PreventActivationsUntilUntapped
-                    ))
+                (row.source != reference || row.kind.survives_source_departure())
                     && (row.recipient != reference
                         || row.kind == SourceLinkedEffectKind::PreventDamageBy)
             });

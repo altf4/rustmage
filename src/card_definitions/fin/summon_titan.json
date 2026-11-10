@@ -3,10 +3,40 @@
   "catalogue_id": 4227,
   "oracle_id": "66ce0c60-f406-4ece-915f-675da4e8b16d",
   "facts_sha256": "d2f22f64b58d937db36a8042d732cd99228c4b4019a2ef661c7cd0e24afda13a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d0e1f307cb2f14951d536fe2bb685d64c4ce0ebcc79c8800e64480c74f9b1968"
   },
-  "physical_metadata_sha256": "b05105830510643b90cf2451679e4434565dcce45106bc923270cd268813f718"
+  "physical_metadata_sha256": "b05105830510643b90cf2451679e4434565dcce45106bc923270cd268813f718",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummonTitan.java",
+  "java_sha256": "6e5f4634b4f62fd71d3d4b68f7ed18453b426ca4283ddaf8746d0e3e0009e0f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/LandsYouControlCount.java",
+      "sha256": "5d39300c382c862538f44ba6be1565cb60cfed952c2a95515f3d4b9daee3483e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

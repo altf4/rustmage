@@ -1,7 +1,7 @@
 //! Cold receipts of completed legal mana abilities inside a casting proposal.
 //! Speculative funding never calls these hooks or owns these snapshots.
 use super::*;
-use cast_rollback_mana::{LifePaymentReceipt, ManaEvent, ManaEventKind};
+use cast_rollback_mana::{LifeGainReceipt, LifePaymentReceipt, ManaEvent, ManaEventKind};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -54,9 +54,11 @@ impl Game {
             counter_costs: Vec::new(),
             entries: Vec::new(),
             life_payments: Vec::new(),
+            life_gains: Vec::new(),
             moves: Vec::new(),
             allocations: Vec::new(),
             triggers: Vec::new(),
+            delayed_stack_triggers: Vec::new(),
             irreversible: false,
         };
         rollback.capture = Some(Box::new(ManaCapture {
@@ -300,6 +302,20 @@ impl Game {
             });
         }
     }
+    pub(super) fn record_cast_mana_life_gain(&mut self, player: Player, base: i128, amount: i128) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            capture.event.life_gains.push(LifeGainReceipt {
+                player,
+                base,
+                amount,
+            });
+        }
+    }
     pub(super) fn record_cast_mana_zone_plan(
         &mut self,
         before: &ObjectView,
@@ -317,10 +333,21 @@ impl Game {
                 plan.shuffle,
                 plan.prevented,
                 plan.completion,
+                plan.meld_companion_first,
             ));
             capture.event.irreversible |= plan.shuffle.is_some()
                 || plan.destination == Zone::Library
                 || before.zone == Zone::Library && plan.destination != Zone::Stack;
+        }
+    }
+    pub(super) fn record_cast_mana_delayed_stack_trigger(&mut self, trigger: &SpellView) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+        {
+            capture.event.delayed_stack_triggers.push(trigger.clone());
         }
     }
     pub(super) fn record_cast_mana_allocation(&mut self, id: CardId, generation: u64) {

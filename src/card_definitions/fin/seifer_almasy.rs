@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 4),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::ControlledCreatureAttacksAlone,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GrantKeywords {
+                subject: Subject::Entering,
+                keywords: Keywords::DOUBLE_STRIKE,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::PlayerDamaged {
+                subject: DamageSubject::Source,
+                combat_only: true,
+                opponent_only: false,
+                one_or_more: false,
+            },
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                zone: TargetZone::Graveyard,
+                kinds: 4 | 8,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: 3,
+            })),
+            program: &[Instruction::CastTargetedGraveyardFree],
+        },
+    ],
     ..CardRules::EMPTY
 };

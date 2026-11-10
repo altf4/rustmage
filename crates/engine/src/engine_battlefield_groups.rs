@@ -251,12 +251,16 @@ impl Game {
         filters: &[BattlefieldFilter],
         kind: CounterKind,
         amount: AmountValue,
+        legendary_only: bool,
     ) {
         let count = u64::try_from(self.item_amount(amount, item))
             .capacity("group counter quantity exhausted");
         let affected = self
             .battlefield_group(item, filters)
             .into_iter()
+            .filter(|&id| {
+                !legendary_only || ability_world::CharacteristicWorld::legendary(self, id)
+            })
             .map(|id| {
                 let mut counters = Counters::default();
                 counters.add(kind, count);
@@ -377,6 +381,35 @@ impl Game {
                 keywords: item.source_keywords,
             }
         }
+    }
+    pub(super) fn damage_with_target_controller(
+        &mut self,
+        item: &SpellView,
+        damage: i128,
+        controller_damage: i128,
+    ) {
+        let source = self.program_damage_source(item);
+        let hit = |target, amount| DamageEvent {
+            preventable: true,
+            source,
+            target,
+            amount,
+            combat: false,
+        };
+        let mut events = Vec::new();
+        for &bound in &item.targets {
+            if self.same_target_object(bound)
+                && let Target::Card(id) = bound.target
+                && self.on_battlefield(id)
+            {
+                let controller = self.state.objects[id as usize].controller;
+                events.extend([
+                    hit(bound.target, damage),
+                    hit(Target::Player(controller), controller_damage),
+                ]);
+            }
+        }
+        self.apply_damage_batch(&events);
     }
     pub(super) fn damage_battlefield_group(
         &mut self,

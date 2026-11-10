@@ -7,6 +7,7 @@ use super::*;
 pub(super) enum GrantedAbilityKind {
     Template(u16),
     PlaneswalkerAttackLimit,
+    EquippedCreatureDeathMultiplier,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

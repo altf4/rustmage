@@ -154,11 +154,9 @@ impl Game {
                             .map(|&id| self.object_ref(id))
             })
     }
-    pub(super) fn reveal_top_move_if_permanent(&mut self, item: &SpellView) {
+    fn reveal_top_for(&mut self, item: &SpellView) -> Option<LibraryRevealEvent> {
         let player = item.controller;
-        let Some(id) = self.top_library_card(player) else {
-            return;
-        };
+        let id = self.top_library_card(player)?;
         let revealed = RevealedLibraryCard {
             object: self.object_ref(id),
             card: self.state.objects[id as usize].card,
@@ -172,59 +170,57 @@ impl Game {
             .map_or(0, |e| e.sequence)
             .checked_add(1)
             .capacity("library reveal sequence exhausted");
-        self.state.library_top.get_or_insert_default().reveal = Some(LibraryRevealEvent {
+        Some(LibraryRevealEvent {
             sequence,
             source: item.source.expect("library effect requires source").object,
             player,
             revealed,
             drawn: None,
-        });
-        if revealed.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128 | 256) != 0 {
-            let event = self.move_object(id, Zone::Hand);
-            if event.moved
-                && event.destination == Zone::Hand
-                && !self.state.known_hand.contains(&event.after)
-            {
-                self.state.known_hand.push(event.after);
+        })
+    }
+
+    fn move_revealed_top_to_hand(&mut self, id: CardId) {
+        let event = self.move_object(id, Zone::Hand);
+        if event.moved && event.destination == Zone::Hand {
+            self.remember_public_hand(event.after);
+        }
+    }
+
+    pub(super) fn reveal_top_move_if_permanent(&mut self, item: &SpellView) {
+        if let Some(reveal) = self.reveal_top_for(item) {
+            let revealed = reveal.revealed;
+            self.state.library_top.get_or_insert_default().reveal = Some(reveal);
+            if revealed.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 128 | 256) != 0 {
+                self.move_revealed_top_to_hand(revealed.object.card);
             }
         }
     }
+
+    pub(super) fn reveal_top_to_hand_lose_mana_value(&mut self, item: &SpellView) {
+        if let Some(reveal) = self.reveal_top_for(item) {
+            let id = reveal.revealed.object.card;
+            let amount = i128::from(self.object_mana_value(id));
+            self.state.library_top.get_or_insert_default().reveal = Some(reveal);
+            self.move_revealed_top_to_hand(id);
+            self.lose_life(item.controller, amount);
+        }
+    }
+
     pub(super) fn reveal_top_draw_if_artifact(&mut self, item: &SpellView) {
-        let player = item.controller;
-        let Some(id) = self.top_library_card(player) else {
+        let Some(mut event) = self.reveal_top_for(item) else {
             return;
         };
-        let revealed = RevealedLibraryCard {
-            object: self.object_ref(id),
-            card: self.state.objects[id as usize].card,
-        };
-        self.remember_library_top(player, revealed.object);
-        // Reveal is public even if this ordinary draw completes within one action.
-        let sequence = self
-            .state
-            .library_top
-            .as_ref()
-            .and_then(|s| s.reveal.as_ref())
-            .map_or(0, |e| e.sequence)
-            .checked_add(1)
-            .capacity("library reveal sequence exhausted");
-        let mut event = LibraryRevealEvent {
-            sequence,
-            source: item.source.expect("library effect requires source").object,
-            player,
-            revealed,
-            drawn: None,
-        };
-        if revealed.card.kind_mask() & 16 != 0 {
-            self.draw_many(player, 1);
+        let id = event.revealed.object.card;
+        if event.revealed.card.kind_mask() & 16 != 0 {
+            self.draw_many(event.player, 1);
             let result = self.object_ref(id);
-            if result != revealed.object && self.state.objects[id as usize].zone == Zone::Hand {
+            if result != event.revealed.object && self.state.objects[id as usize].zone == Zone::Hand
+            {
                 event.drawn = Some(result);
-                if !self.state.known_hand.contains(&result) {
-                    self.state.known_hand.push(result);
-                }
+                self.remember_public_hand(result);
             }
         }
+        // Reveal is public even if this ordinary draw completes within one action.
         self.state.library_top.get_or_insert_default().reveal = Some(event);
     }
     pub(super) fn exile_top_play_boost_source(

@@ -256,6 +256,7 @@ impl Game {
             None,
             Some(amount),
             None,
+            None,
         );
     }
     pub(super) fn commit_linked_free_cast(&mut self, item: &SpellView) {

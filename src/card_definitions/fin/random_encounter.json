@@ -3,10 +3,14 @@
   "catalogue_id": 3369,
   "oracle_id": "324493fc-a205-4177-aa94-cf4672844c81",
   "facts_sha256": "f159dd440d52150f11c8a13e9f26156e72227f7e858aa54c4e38272c00865246",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dc20d260d1baeb970f9a57e2c6ae83b2988173665a8c0d03db6bdb894f295d7d"
   },
-  "physical_metadata_sha256": "c31b9842a06c4ed632cdb9755f134a03d6e462f15ff6aba37959cff81f234629"
+  "physical_metadata_sha256": "c31b9842a06c4ed632cdb9755f134a03d6e462f15ff6aba37959cff81f234629",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RandomEncounter.java",
+  "java_sha256": "5627a44dd8d6ece52c3511af2a5c228ff380a6ad027b1560cce7197472ed92ae",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

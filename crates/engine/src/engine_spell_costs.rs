@@ -468,6 +468,13 @@ impl Game {
                 CastFilter::SourceChosenCreatureType => {
                     matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if definition.has_subtype(typ.name()))
                 }
+                CastFilter::FirstQualifiedCreature(qualifier) => {
+                    qualifier.matches(definition)
+                        && self.state.players[actor.index()]
+                            .turn_facts
+                            .qualified_creature_cast_count(qualifier)
+                            == 0
+                }
                 CastFilter::CreatureToughnessGreaterThanPower => {
                     definition.is_creature() && {
                         let value = stats(id);

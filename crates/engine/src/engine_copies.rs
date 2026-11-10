@@ -13,6 +13,10 @@ pub struct CopyRecipe {
     pub exceptions: CopyExceptions,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub overrides: Option<CopyOverrides>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) color_override: Option<u8>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(super) replacement_subtype: Option<crate::cards::CreatureType>,
     // Physical token face structure is independent of the active copiable
     // definition (CR707.8a). Ordinary recipes derive it from their definition.
     #[serde(skip)]
@@ -186,6 +190,14 @@ impl CopyRecipe {
         self.exceptions.base = None;
         self
     }
+    pub(super) fn copiable_colors(self) -> u8 {
+        if self.exceptions.embalm {
+            1
+        } else {
+            self.color_override
+                .unwrap_or_else(|| self.definition.colors())
+        }
+    }
     pub(super) fn copiable_base(self) -> Option<Stats> {
         self.sampled_size
             .map(|size| Stats {
@@ -210,6 +222,8 @@ impl CopyRecipe {
             sampled_size: None,
             exceptions: CopyExceptions::NONE,
             overrides: None,
+            color_override: None,
+            replacement_subtype: None,
             faces: None,
         }
     }
@@ -243,16 +257,16 @@ impl CopyRecipe {
                 .overrides
                 .and_then(|v| v.name)
                 .unwrap_or_else(|| card.name()),
-            subtypes: card
-                .info()
-                .type_line
-                .split_once('—')
-                .map_or("", |(_, types)| types.trim()),
-            colors: if self.exceptions.embalm {
-                1
-            } else {
-                card.colors()
-            },
+            subtypes: self.replacement_subtype.map_or_else(
+                || {
+                    card.info()
+                        .type_line
+                        .split_once('—')
+                        .map_or("", |(_, types)| types.trim())
+                },
+                crate::cards::CreatureType::name,
+            ),
+            colors: self.copiable_colors(),
         }
     }
 }
@@ -473,7 +487,11 @@ impl Game {
         if !moves.is_empty() {
             self.track_nightmare_copy_entries(&moves);
             if let Some(context) = instructions {
-                self.stage_temporary_token_entries(moves, &context.item, context.cleanup);
+                self.stage_entries_with_cleanup(
+                    moves,
+                    &context.item,
+                    entries::EntryCleanup::Token(context.cleanup),
+                );
             } else if let Some(item) = temporary {
                 self.stage_temporary_copy_entries(moves, item);
             } else {

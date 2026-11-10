@@ -15,6 +15,7 @@ pub(super) struct EntryMove {
     pub zone_plan: Option<zone_replacements::Plan>,
     /// Original source-zone view when this entry is projected using another face.
     pub source_before: Option<Box<ObjectView>>,
+    pub meld: Option<Box<meld::MeldEntry>>,
     /// Exact material exile incarnations attached to this craft return.
     #[allow(
         clippy::box_collection,
@@ -124,12 +125,25 @@ pub(super) struct AtomicCostCheckpoint {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum EntryCleanup {
+    Token(temporary_tokens::TokenCleanup),
+    ReturnToHandAtNextEndStep { ability: u16 },
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct EntryCleanupPacket {
+    item: SpellView,
+    action: EntryCleanup,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
-    pub delayed_sacrifice: Option<Box<SpellView>>,
-    pub delayed_token_cleanup: temporary_tokens::TokenCleanup,
+    cleanup: Option<Box<EntryCleanupPacket>>,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -167,6 +181,19 @@ impl EntryMove {
                 .iter()
                 .any(|group| group.first_layer == crate::cards::AbilityLayer::Type)
     }
+    pub(super) fn project_printed_face(&mut self, face: Card) {
+        self.source_before = Some(Box::new(self.before.clone()));
+        self.before.card = face;
+        self.before.kinds = face.kind_mask();
+        self.before.colors = face.colors();
+        self.before.name = face.name();
+        self.before.keywords = face.keywords();
+        (self.before.power, self.before.toughness) = match face.effect() {
+            Effect::Creature(power, toughness) => (i128::from(power), i128::from(toughness)),
+            _ => (0, 0),
+        };
+    }
+
     pub(super) fn replacement_preview(&self) -> Self {
         let mut movement = self.clone();
         movement.return_modification = None;
@@ -213,6 +240,7 @@ impl EntryMove {
             battle_protector: None,
             before,
             source_before: None,
+            meld: None,
             craft_materials: None,
             zone_plan: None,
             destination,
@@ -270,8 +298,8 @@ impl EntryBatch {
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
-            + self.delayed_sacrifice.as_ref().map_or(0, |item| {
-                std::mem::size_of::<SpellView>() + item.owned_bytes()
+            + self.cleanup.as_ref().map_or(0, |packet| {
+                std::mem::size_of::<EntryCleanupPacket>() + packet.item.owned_bytes()
             })
             + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
@@ -285,9 +313,13 @@ impl EntryBatch {
                 .moves
                 .iter()
                 .map(|m| {
-                    m.delayed_return_exile.as_ref().map_or(0, |item| {
-                        std::mem::size_of::<SpellView>() + item.owned_bytes()
-                    }) + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
+                    m.meld
+                        .as_ref()
+                        .map_or(0, |_| std::mem::size_of::<meld::MeldEntry>())
+                        + m.delayed_return_exile.as_ref().map_or(0, |item| {
+                            std::mem::size_of::<SpellView>() + item.owned_bytes()
+                        })
+                        + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
                         + m.copy_preparation
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
@@ -439,77 +471,41 @@ impl Game {
         EntryMove::from_view(self.object_view(id), destination, tapped)
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
-        self.stage_entries_inner(
-            moves,
-            shuffle_after,
-            None,
-            None,
-            None,
-            None,
-            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
-        );
+        self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
     }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
         context: discard_events::DiscardContext,
     ) {
-        self.stage_entries_inner(
-            moves,
-            None,
-            Some(context),
-            None,
-            None,
-            None,
-            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
-        );
+        self.stage_entries_inner(moves, None, Some(context), None, None, None);
     }
     pub(super) fn stage_temporary_copy_entries(&mut self, moves: Vec<EntryMove>, item: &SpellView) {
-        self.stage_entries_inner(
-            moves,
-            None,
-            None,
-            Some(Box::new(item.clone())),
-            None,
-            None,
-            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
-        );
+        self.stage_entries_inner(moves, None, None, Some(Box::new(item.clone())), None, None);
     }
     pub(super) fn stage_atomic_cost_entries(
         &mut self,
         moves: Vec<EntryMove>,
         checkpoint: AtomicCostCheckpoint,
     ) {
-        self.stage_entries_inner(
-            moves,
-            None,
-            None,
-            None,
-            Some(Box::new(checkpoint)),
-            None,
-            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
-        );
+        self.stage_entries_inner(moves, None, None, None, Some(Box::new(checkpoint)), None);
     }
     pub(super) fn stage_entries_with_delayed_sacrifice(
         &mut self,
         moves: Vec<EntryMove>,
         item: &SpellView,
     ) {
-        self.stage_entries_inner(
+        self.stage_entries_with_cleanup(
             moves,
-            None,
-            None,
-            None,
-            None,
-            Some(Box::new(item.clone())),
-            temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+            item,
+            EntryCleanup::Token(temporary_tokens::TokenCleanup::NextEndStepSacrifice),
         );
     }
-    pub(super) fn stage_temporary_token_entries(
+    pub(super) fn stage_entries_with_cleanup(
         &mut self,
         moves: Vec<EntryMove>,
         item: &SpellView,
-        cleanup: temporary_tokens::TokenCleanup,
+        action: EntryCleanup,
     ) {
         self.stage_entries_inner(
             moves,
@@ -517,14 +513,12 @@ impl Game {
             None,
             None,
             None,
-            Some(Box::new(item.clone())),
-            cleanup,
+            Some(Box::new(EntryCleanupPacket {
+                item: item.clone(),
+                action,
+            })),
         );
     }
-    #[allow(
-        clippy::too_many_arguments,
-        reason = "Cold entry transactions retain independent optional contexts and one explicit sacrifice timing flag"
-    )]
     fn stage_entries_inner(
         &mut self,
         moves: Vec<EntryMove>,
@@ -532,8 +526,7 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
-        delayed_sacrifice: Option<Box<SpellView>>,
-        delayed_token_cleanup: temporary_tokens::TokenCleanup,
+        cleanup: Option<Box<EntryCleanupPacket>>,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -563,8 +556,7 @@ impl Game {
         let batch = EntryBatch {
             atomic_cost,
             temporary_copy,
-            delayed_sacrifice,
-            delayed_token_cleanup,
+            cleanup,
             captures_result,
             copying: true,
             discard_context,
@@ -993,6 +985,7 @@ impl Game {
                 .as_deref()
                 .unwrap_or(&movement.before)
         }));
+        let control_watch = self.freeze_control_watch();
         let mut events = Vec::new();
         let mut post_counter_results = Vec::new();
         let mut attachments = Vec::new();
@@ -1045,6 +1038,7 @@ impl Game {
                         .as_ref()
                         .and_then(|copy| copy.recipe),
                     choice: movement.choice,
+                    meld: movement.meld.as_deref().copied(),
                 },
                 ZoneObservers {
                     graveyard: graveyard_observers.clone(),
@@ -1377,7 +1371,7 @@ impl Game {
                 characteristic_layers::enchantment_noncreature_form(recipient, timestamp),
             );
         }
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         if let Some(item) = &batch.temporary_copy {
             let tokens = events
                 .iter()
@@ -1395,19 +1389,27 @@ impl Game {
         if batch.captures_result {
             self.capture_search_result_entry(&events);
         }
-        if let Some(item) = &batch.delayed_sacrifice {
+        if let Some(packet) = &batch.cleanup {
             let recipients = events
                 .iter()
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
-                .map(|event| event.after)
-                .collect();
-            self.register_delayed_token_cleanup(
-                item,
-                recipients,
-                false,
-                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
-                batch.delayed_token_cleanup == temporary_tokens::TokenCleanup::NextEndStepDestroy,
-            );
+                .map(|event| event.after);
+            match packet.action {
+                EntryCleanup::ReturnToHandAtNextEndStep { ability } => self.schedule_delayed_step(
+                    &packet.item,
+                    TriggerStep::End,
+                    CastRelation::Any,
+                    ability,
+                    recipients,
+                ),
+                EntryCleanup::Token(cleanup) => {
+                    self.register_delayed_token_cleanup(
+                        &packet.item,
+                        recipients.collect(),
+                        cleanup,
+                    );
+                }
+            }
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);

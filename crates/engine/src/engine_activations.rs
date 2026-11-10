@@ -207,7 +207,7 @@ impl Game {
             } => {
                 self.add_quality_mana(actor, production, quality);
                 self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(self), production);
-                self.committed_mana_reflexive(&payment.item);
+                self.committed_mana_followups(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
             ActivationPaymentCompletion::AlreadyOnStack => {
@@ -299,6 +299,9 @@ impl Game {
             }
             ActivationGuard::OpponentNoncombatDamageThisTurn => {
                 self.state.players[actor.other().index()].noncombat_damage_this_turn
+            }
+            ActivationGuard::OpponentWasDealtLegendaryCombatDamageThisTurn => {
+                self.player_was_dealt_legendary_combat_damage(actor.other())
             }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
             ActivationGuard::Always => true,
@@ -704,7 +707,7 @@ impl Game {
                         Some(Instruction::Modal(modes)) => Some(*modes),
                         _ => None,
                     };
-                    let targets_available = ability.nonmana_x()
+                    let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
                             || {
                                 self.targets_available(
@@ -1283,12 +1286,7 @@ impl Game {
                         | Instruction::ReturnCraftedSourceTransformed
                 )
             }) {
-                item.source_move = Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                item.source_move = Some(Box::new(event.source_movement()));
             }
         } else if cost.discard {
             if definition.cycling {

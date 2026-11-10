@@ -509,6 +509,9 @@ impl Game {
     }
 
     fn commit_sba_batch(&mut self, mut batch: SbaBatch) {
+        // Player loss looks back before all simultaneous state-based actions
+        // (CR 603.10f), including death of the observing permanent.
+        self.chosen_player_loss_triggers(batch.lost);
         for group in &batch.groups {
             let keep = group.keep.expect("every legend choice precedes the event");
             batch.deaths.extend(
@@ -548,10 +551,7 @@ impl Game {
         }
         self.food_sacrifice_triggers(&events, &sources);
         for source in batch.detached {
-            if self.object_ref(source.card) == source {
-                self.state.objects[source.card as usize].attached_to = None;
-                self.renew_copy_grant_origin(source, false);
-            }
+            self.unattach(source);
         }
         // Cancellation belongs to the frozen event, never a newly returned object.
         for (object, pairs) in batch.pairs {

@@ -3,10 +3,17 @@
   "catalogue_id": 146,
   "oracle_id": "2bcc9f11-5b12-433e-9680-0f4b18aa521c",
   "facts_sha256": "71ad8415fc959f61f16e529a1c58d4e1d72e4f46216317bfb9dcf02081e68677",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "c205fb644eb7b17ff5ca0ab5b3ccf0219e58dba53188d6d8a19215df68c12422"
-  },
-  "physical_metadata_sha256": "6ff77329b91eb400919322bcabc3dfb82ff407b26a564e7005c1316f253c30d8"
+  "complete": true,
+  "physical_metadata_sha256": "6ff77329b91eb400919322bcabc3dfb82ff407b26a564e7005c1316f253c30d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AmbrosiaWhiteheart.java",
+  "java_sha256": "f0c0c90d95026d37aeaad5aa9e712dd363a2cd7631b84ac12eb6ca64152eb9c3",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    }
+  ]
 }

@@ -40,6 +40,64 @@ impl Game {
         self.characteristic_query().keywords(id)
     }
 
+    pub(super) fn attached_to_controlled_creature(
+        &self,
+        object: ObjectRef,
+        player: Player,
+    ) -> bool {
+        self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.state.objects[object.card as usize]
+                .attached_to
+                .is_some_and(|recipient| {
+                    self.on_battlefield(recipient.card)
+                        && self.object_ref(recipient.card) == recipient
+                        && self.state.objects[recipient.card as usize].controller == player
+                        && self.is_creature(recipient.card)
+                })
+    }
+    pub(super) fn equipment_attached_to_target(
+        &self,
+        item: &SpellView,
+        group: u16,
+        equipment: ObjectRef,
+    ) -> bool {
+        if !self.on_battlefield(equipment.card)
+            || self.object_ref(equipment.card) != equipment
+            || !ability_world::CharacteristicWorld::is_equipment(self, equipment.card)
+        {
+            return false;
+        }
+        let Some(recipient) = self.state.objects[equipment.card as usize].attached_to else {
+            return false;
+        };
+        self.on_battlefield(recipient.card)
+            && item.targets.iter().any(|bound| {
+                bound.group == group
+                    && bound.object == Some(recipient)
+                    && self.same_target_object(*bound)
+            })
+    }
+    pub(super) fn unattach_event_object(&mut self, item: &SpellView) {
+        if let Some(event) = &item.event_object
+            && self.unattach(event.object)
+        {
+            self.refresh_controllers();
+        }
+    }
+    pub(super) fn unattach(&mut self, object: ObjectRef) -> bool {
+        if !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize]
+                .attached_to
+                .take()
+                .is_none()
+        {
+            return false;
+        }
+        self.renew_copy_grant_origin(object, false);
+        true
+    }
     pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
         can_attach(self, source, target)
     }
@@ -54,6 +112,33 @@ impl Game {
         }
         self.state.objects[source.card as usize].attached_to = Some(target);
         true
+    }
+    pub(super) fn new_source_attachment_pair(
+        &self,
+        item: &SpellView,
+        group: u16,
+    ) -> Option<(ObjectRef, ObjectRef)> {
+        let source = item.source?.object;
+        let recipient = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| bound.object)?;
+        (self.equipment_can_attach(source, recipient)
+            && self.state.objects[source.card as usize].attached_to != Some(recipient))
+        .then_some((source, recipient))
+    }
+    pub(super) fn complete_optional_source_attachment(&mut self, skip_to: usize) {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let Some(Instruction::MayAttachSource { recipient, .. }) =
+            resolution.program.get(resolution.pc.saturating_sub(1))
+        else {
+            return;
+        };
+        let pair = self.new_source_attachment_pair(&resolution.item, *recipient);
+        if !pair.is_some_and(|(source, recipient)| self.attach_equipment(source, recipient)) {
+            self.state.resolving.as_mut().unwrap().pc = skip_to;
+        }
     }
     pub(super) fn attach_reflexive_subjects(&mut self, item: &SpellView) -> bool {
         let Some(recipient) = item

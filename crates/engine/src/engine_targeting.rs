@@ -1916,6 +1916,12 @@ impl Game {
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
+            TargetRule::OwnedExileWithFlashback => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
+                    o.zone == Zone::Exile && o.is_card() && o.owner == controller
+                    && !self.exiled_face_down(world.reference(id))
+                    && o.card.flashback_cost().is_some()));
+            }
             TargetRule::GraveCreatureEnteredThisTurn => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Graveyard && o.is_card() && o.card.is_creature()
@@ -2042,6 +2048,7 @@ impl Game {
                         })
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
+                    TargetPredicate::OtherThanPhysicalSource => id != source.card,
                     TargetPredicate::OtherThanSourceAttachment => {
                         let attached = if self.on_battlefield(source.card)
                             && self.object_ref(source.card) == source
@@ -2055,7 +2062,8 @@ impl Game {
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
-                    TargetPredicate::Attacking => self.state.attackers.iter().any(|a| a.card == id),
+                    TargetPredicate::Equipped => world.equipped(id),
+                    TargetPredicate::Attacking => world.attacking(id),
                     TargetPredicate::AttackedThisTurn => {
                         self.state.attacked_this_turn.contains(&self.object_ref(id))
                     }
@@ -2113,14 +2121,16 @@ impl Game {
         }
         match target {
             Target::Player(player) => {
-                (player == controller || !self.player_has_hexproof(player))
-                    && match rule {
-                        TargetRule::Any => true,
-                        TargetRule::Player { opponent_only } => {
-                            !opponent_only || player != controller
-                        }
-                        _ => false,
-                    }
+                let allowed = match rule {
+                    TargetRule::Any => true,
+                    TargetRule::Player { opponent_only } => !opponent_only || player != controller,
+                    _ => false,
+                };
+                // CR 702.16k uses the spell or ability controller when targeting.
+                allowed
+                    && (player == controller
+                        || (!self.player_has_hexproof(player)
+                            && ability_world::player_protection_source(world, player).is_none()))
             }
             Target::Stack(id) => self.stack_items_for_targets().any(|item| {
                 item.id == id && self.stack_target_rule_matches(rule, item, controller)
@@ -2436,7 +2446,8 @@ impl Game {
             reflexive_target_limit: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
-                spend_any_mana: self.exile_cast_modifiers(actor, card).0,
+                spend_any_mana: self.exile_cast_modifiers(actor, card).0
+                    || self.resolution_offer_spends_any_mana(actor, card),
                 exile_on_graveyard: self.exile_cast_modifiers(actor, card).1,
                 caster: actor,
                 gift: None,
@@ -2630,6 +2641,7 @@ impl Game {
             production,
             origin_counter_cost,
             None,
+            None,
         );
     }
 
@@ -2640,6 +2652,7 @@ impl Game {
         production: Option<Mana>,
         origin_counter_cost: Option<u16>,
         origin_additional_cost: Option<Card>,
+        origin_life_cost: Option<u32>,
     ) {
         let source = item.source.expect("payment announcement has object source");
         if matches!(item.kind, StackKind::ActivatedAbility { .. })
@@ -2678,7 +2691,7 @@ impl Game {
         }
         let plan = self.target_spec(&item);
         assert!(
-            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).nonmana_x())
+            matches!(item.kind, StackKind::ActivatedAbility { ability } if item.x.is_none() && source.card.activation(ability).declares_target_value_x())
                 || self.item_targets_available(&item, plan)
                 || source.card.gift().is_some_and(|gift| {
                     self.item_targets_available(&item, gift.promised_targets)
@@ -2697,6 +2710,9 @@ impl Game {
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
         announcement.origin_additional_cost = origin_additional_cost;
+        if let Some(life) = origin_life_cost {
+            announcement.add_origin_life_cost(life);
+        }
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()
@@ -3101,7 +3117,7 @@ impl Game {
                 return;
             }
             self.add_announced_mana(&announcement.item, production);
-            self.committed_mana_reflexive(&announcement.item);
+            self.committed_mana_followups(&announcement.item);
             if self.restore_mana_announcement() {
                 return;
             }
@@ -3168,9 +3184,10 @@ impl Game {
         let object = &self.state.objects[id as usize];
         if object.card.has_rules_abilities()
             || !embalm::abilities(self, id).is_empty()
-            || self
-                .copy_recipe(self.object_ref(id))
-                .is_some_and(|recipe| recipe.exceptions.retained_activation.is_some())
+            || self.copy_recipe(self.object_ref(id)).is_some_and(|recipe| {
+                recipe.exceptions.retained_activation.is_some()
+                    || recipe.exceptions.equip_generic_reduction != 0
+            })
         {
             return true;
         }

@@ -1,4 +1,4 @@
-//! Discrete X declarations for ordinary nonmana costs and their typed targets.
+//! Discrete X declarations bounded by a target card's exact mana value.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -15,7 +15,24 @@ fn affine_x(value: AmountValue) -> Option<(u128, u128)> {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ActivatedAbility {
+    pub(super) fn declares_target_value_x(&self) -> bool {
+        self.nonmana_x()
+            || self.targets.single().is_some_and(|spec| {
+                matches!(spec.rule, TargetRule::ManaValueExactly { amount, .. }
+                    if affine_x(amount).is_some_and(|(factor, _)| factor != 0))
+                    && self.x_symbols() != 0
+            })
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn declares_target_value_x(&self) -> bool {
+        matches!(self.item.kind, StackKind::ActivatedAbility { ability }
+            if self.item.source.expect("activation source").card.activation(ability).declares_target_value_x())
+    }
+
     pub(super) fn nonmana_x(&self) -> bool {
         matches!(self.item.kind, StackKind::ActivatedAbility { ability }
             if self.item.source.expect("activation source").card.activation(ability).nonmana_x())
@@ -24,7 +41,7 @@ impl Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn nonmana_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+    pub(super) fn target_value_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
         let Some((TargetPlan::Single(spec), _)) = a.item.program() else {
             return Vec::new();
         };
@@ -34,15 +51,25 @@ impl Game {
         let Some((factor, offset)) = affine_x(amount).filter(|(factor, _)| *factor > 0) else {
             return Vec::new();
         };
-        // Targets are chosen before costs. Their public values bound all possible
-        // declarations, including costs enabled later by a mana child.
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            unreachable!("target-linked activation X");
+        };
+        let minimum = a
+            .item
+            .source
+            .expect("activation source")
+            .card
+            .activation(ability)
+            .minimum_x();
+        // Exact legal targets bound the declarations before any costs are paid.
         let mut values = Vec::new();
-        self.visit_targets(*base, a.item.controller, a.item.target_source(), |target| {
+        self.visit_item_targets(&a.item, *base, |target| {
             if let Target::Card(card) = target {
                 let value = u128::from(self.object_mana_value(card));
                 if let Some(delta) = value.checked_sub(offset)
                     && delta % factor == 0
                     && let Ok(x) = u32::try_from(delta / factor)
+                    && x >= minimum
                 {
                     values.push(x);
                 }
@@ -56,9 +83,10 @@ impl Game {
             let mut proposal = a.clone();
             proposal.item.x = Some(value);
             proposal.plan = self.target_spec(&proposal.item);
-            if !proposal
-                .cost_options()
-                .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+            if !self.item_targets_available(&proposal.item, proposal.plan)
+                || !proposal
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&proposal, cost))
             {
                 continue;
             }

@@ -3,10 +3,21 @@
   "catalogue_id": 3790,
   "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
   "facts_sha256": "61d8d58e6eb2c44954643179efa7438b8deaac09a6534c3144bbd9907aa01ea3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3c0c47a022737a9f9407078e90bcfde76e6f2fb11393a719eba2ea6fed9e08d2"
   },
-  "physical_metadata_sha256": "6b72572060f0292637e1d46b8b6a372a5cef099a1784693ca997cf0178afd8ae"
+  "physical_metadata_sha256": "9496364360c2947f379d878d22fb964c496f59466455f82bb785b9969062b170",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SephirothFabledSOLDIER.java",
+  "java_sha256": "c3e53b87c69dfe96e5018142f06614b1da569597eda75fd11e7191ae0254d9be",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/AbilityResolvedWatcher.java",
+      "sha256": "9f5cd5721700eb1dae7c7cad6a20a7a07fb79a1a6f1b8091c2bdb4fce13ae2ff"
+    }
+  ]
 }

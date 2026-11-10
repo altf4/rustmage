@@ -224,10 +224,16 @@ impl Game {
             StatValue::SourceCounters(kind) => objects()
                 .find(|(id, object)| *id == source.card && object.generation == source.generation)
                 .map_or(0, |_| i128::from(counter_count(source.card, kind))),
-            StatValue::LegendaryCreaturesYouControl => objects()
+            StatValue::LegendaryCreaturesYouControl
+            | StatValue::OtherLegendaryCreaturesYouControl => objects()
                 .filter(|(id, object)| {
                     object.zone == Zone::Battlefield
                         && object.controller == owner
+                        && (value == StatValue::LegendaryCreaturesYouControl
+                            || ObjectRef {
+                                card: *id,
+                                generation: object.generation,
+                            } != source)
                         && kinds(*id, object) & 1 != 0
                         && legendary(*id)
                 })
@@ -474,6 +480,7 @@ impl Game {
             StatValue::ControllerLifeAboveStarting { minimum } => {
                 i128::from(life >= STARTING_LIFE + i128::from(minimum))
             }
+            StatValue::ControllerLifeAtMostHalfStarting => i128::from(life <= STARTING_LIFE / 2),
             StatValue::HasColor { filter, color } => i128::from(objects().any(|(id, o)| {
                 Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
                     && colors(id) & (1u8 << color.index()) != 0
@@ -617,6 +624,20 @@ impl Game {
                 .capacity("stat sum exhausted"),
         }
     }
+    pub(super) fn nonbasic_land_count(&self, controller: Player) -> usize {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(id, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && self.current_kinds(*id as CardId) & 2 != 0
+                    && !object.card.is_basic_land()
+            })
+            .count()
+    }
+
     pub(super) fn amount_value(
         &self,
         value: AmountValue,
@@ -630,6 +651,24 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
+            AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
+            AmountValue::Devotion(color) => self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter(|(id, object)| {
+                    let reference = self.object_ref(*id as CardId);
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && !self.is_face_down(reference)
+                        && !self
+                            .copy_recipe(reference)
+                            .is_some_and(|recipe| recipe.exceptions.embalm)
+                })
+                .map(|(_, object)| u128::from(object.card.mana_symbols_of_color(color)))
+                .sum(),
             AmountValue::GreatestCreaturePower(filter) => {
                 let query = self.characteristic_query();
                 (0..self.state.objects.len())
@@ -662,6 +701,7 @@ impl Game {
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
+            | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
@@ -682,6 +722,7 @@ impl Game {
             | AmountValue::SourcePower
             | AmountValue::SourceToughness
             | AmountValue::SourceEquipmentCount
+            | AmountValue::DeclaredAttackerCount
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount

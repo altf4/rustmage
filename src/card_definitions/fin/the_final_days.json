@@ -3,10 +3,40 @@
   "catalogue_id": 4446,
   "oracle_id": "f2b88031-bfb7-46c4-abdd-3b6b5f5acfa4",
   "facts_sha256": "e117810806a29505c209d658dac76479747e694f4b90eb1465023344dbba4af8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "475e86bdbb58b96e295900e609d832a62db8f6004f63eea75b051095bd1fc219"
   },
-  "physical_metadata_sha256": "d688d2fe1762d0a5200e35b6fb8631819cb7e1f114e4b75336f76e0f44b86187"
+  "physical_metadata_sha256": "d688d2fe1762d0a5200e35b6fb8631819cb7e1f114e4b75336f76e0f44b86187",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheFinalDays.java",
+  "java_sha256": "a9690b02532c675d7e74cdd5f66151c35748df7ba01535443f2050b2a866a7aa",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromGraveyardSourceCondition.java",
+      "sha256": "7eed055c9671f6cc59ee3c85360ac3ceb7e5c25682b32e66a548dfe6ec801878"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Horror3Token.java",
+      "sha256": "f87ec017c7f5fcc8a05e7ac0492df09f6c54e3f18d8ed281e85060e47848781d"
+    }
+  ]
 }

@@ -1,16 +1,49 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 5),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersOrAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::DiscardThenDrawForTypes {
+            players: PlayerSet::Each,
+            amount: 1,
+        }],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            generic: 8,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::ChooseObjects {
+                kind: EffectChoiceKind::Sacrifice,
+                players: PlayerSet::Opponent,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 0,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+                amount: 1,
+                optional_skip: None,
+            },
+            Instruction::TransformSource,
+        ],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING,
     ..CardRules::EMPTY
 };

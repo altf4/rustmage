@@ -8,6 +8,7 @@ use super::*;
 pub struct ExilePlayPermission {
     pub object: ObjectRef,
     pub player: Player,
+    /// Exact permanent that supplies a source-dependent permission or lore history.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub source: Option<ObjectRef>,
     pub expiry: ExilePlayExpiry,
@@ -37,6 +38,8 @@ pub enum ExilePlayExpiry {
     EndOfNextTurn,
     StartOfNextTurn(Player),
     StartOfNextEndStep(Player),
+    /// Active in turns with a positive lore placement by the granted player on the source.
+    SourceLoreTurns,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ExilePlayExpiry {
@@ -122,8 +125,7 @@ impl Game {
         self.can_play_foreign_stash(player, card)
             || self.can_play_adventure(player, card)
             || self.state.exile_permissions.iter().any(|p| {
-                !p.without_paying_mana_cost
-                    && !p.airbend
+                !p.airbend
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
@@ -152,9 +154,9 @@ impl Game {
             })
     }
     pub(super) fn end_source_bound_exile_permissions(&mut self, source: ObjectRef) {
-        self.state
-            .exile_permissions
-            .retain(|row| row.source != Some(source));
+        self.state.exile_permissions.retain(|row| {
+            row.source != Some(source) || row.expiry == ExilePlayExpiry::SourceLoreTurns
+        });
     }
     pub(super) fn grant_source_bound_exile_cast(
         &mut self,
@@ -239,32 +241,59 @@ impl Game {
     pub(super) fn exile_top_play(&mut self, player: Player, amount: u128, next_turn: bool) {
         self.exile_top_play_from(player, player, amount, next_turn);
     }
-    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+    fn random_graveyard_card(
+        &mut self,
+        player: Player,
+        eligible: impl Fn(Card) -> bool,
+    ) -> Option<CardId> {
         let candidates: Vec<_> = self
             .state
             .objects
             .iter()
             .enumerate()
             .filter_map(|(id, object)| {
-                (object.zone == Zone::Graveyard && object.owner == player && object.is_card())
-                    .then_some(id as CardId)
+                (object.zone == Zone::Graveyard
+                    && object.owner == player
+                    && object.is_card()
+                    && eligible(object.card))
+                .then_some(id as CardId)
             })
             .collect();
-        if candidates.is_empty() {
-            return;
-        }
-        let index = if candidates.len() == 1 {
-            0
-        } else {
-            self.state.rng.below(candidates.len() as u64) as usize
+        let index = match candidates.len() {
+            0 => return None,
+            1 => 0,
+            len => self.state.rng.below(len as u64) as usize,
         };
-        let events = self.move_objects_raw(&[candidates[index]], Zone::Exile);
+        Some(candidates[index])
+    }
+
+    pub(super) fn exile_random_graveyard_play(&mut self, player: Player) {
+        let Some(card) = self.random_graveyard_card(player, |_| true) else {
+            return;
+        };
+        let events = self.move_objects_raw(&[card], Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
                 self.grant_exile_play_permission(player, event.after, false);
             }
         }
         self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn exile_random_graveyard_permanent(&mut self, player: Player) -> Option<Card> {
+        let card = self.random_graveyard_card(player, |card| {
+            card.kind_mask() & (1 | 2 | 16 | 32 | 64 | crate::cards::BATTLE_KIND) != 0
+        })?;
+        let events = self.move_objects_raw(&[card], Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        let event = &events[0];
+        let exiled = &self.state.objects[event.after.card as usize];
+        (event.moved
+            && event.was_card
+            && event.destination == Zone::Exile
+            && exiled.zone == Zone::Exile
+            && self.object_ref(event.after.card) == event.after)
+            .then(|| exiled.card.front_face())
     }
 
     pub(super) fn exile_top_play_from(
@@ -303,22 +332,107 @@ impl Game {
         self.finish_zone_events(&events, &[]);
     }
 
+    pub(super) fn exile_top_play_while_source_controlled(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let Some(card) = self.top_library_card(player) else {
+            return;
+        };
+        let event = self.move_object(card, Zone::Exile);
+        if event.moved
+            && event.destination == Zone::Exile
+            && let Some(source) = item.source
+            && self.on_battlefield(source.id)
+            && self.object_ref(source.id) == source.object
+            && self.state.objects[source.id as usize].controller == player
+        {
+            self.grant_exile_play_permission_with_expiry(
+                player,
+                event.after,
+                Some(source.object),
+                ExilePlayExpiry::WhileExiled,
+            );
+        }
+    }
+
+    pub(super) fn exile_each_top_play_own_and_lesser_free(&mut self, player: Player) {
+        let cards: Vec<_> = [self.state.active, self.state.active.other()]
+            .into_iter()
+            .filter_map(|owner| self.top_library_card(owner))
+            .collect();
+        let events = self.move_objects_raw(&cards, Zone::Exile);
+        let exiled = || {
+            events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Exile)
+        };
+        if let Some(owned) = exiled().find(|event| event.before.owner == player) {
+            let maximum = self.object_mana_value(owned.after.card);
+            for event in exiled() {
+                if event.after == owned.after || self.object_mana_value(event.after.card) < maximum
+                {
+                    self.grant_exile_free_permission_with_expiry(
+                        player,
+                        event.after,
+                        ExilePlayExpiry::Turn(self.state.turn),
+                        false,
+                    );
+                }
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn exile_top_play_on_source_lore_turns(&mut self, item: &SpellView) {
+        let player = item.controller;
+        let Some(id) = self.top_library_card(player) else {
+            return;
+        };
+        let event = self.move_object(id, Zone::Exile);
+        if event.moved && event.destination == Zone::Exile {
+            let source = item.source.expect("lore permission has a source").object;
+            if (self.on_battlefield(source.card) && self.object_ref(source.card) == source)
+                || counter_placement_history::lore_placed(
+                    &self.state.counter_placement_history,
+                    source,
+                    player,
+                )
+            {
+                self.grant_exile_play_permission_with_expiry(
+                    player,
+                    event.after,
+                    Some(source),
+                    ExilePlayExpiry::SourceLoreTurns,
+                );
+            }
+        }
+    }
+
     pub(super) fn grant_exile_play_permission(
         &mut self,
         player: Player,
         object: ObjectRef,
         next_turn: bool,
     ) {
-        if self.object_ref(object.card) != object
-            || self.state.objects[object.card as usize].zone != Zone::Exile
-        {
-            return;
-        }
         let expiry = if next_turn {
             ExilePlayExpiry::EndOfNextTurn
         } else {
             ExilePlayExpiry::Turn(self.state.turn)
         };
+        self.grant_exile_play_permission_with_expiry(player, object, None, expiry);
+    }
+
+    fn grant_exile_play_permission_with_expiry(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        source: Option<ObjectRef>,
+        expiry: ExilePlayExpiry,
+    ) -> Option<&mut ExilePlayPermission> {
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Exile
+        {
+            return None;
+        }
         let at = self
             .state
             .exile_permissions
@@ -326,7 +440,7 @@ impl Game {
         self.state.exile_permissions.insert(
             at,
             ExilePlayPermission {
-                source: None,
+                source,
                 object,
                 player,
                 expiry,
@@ -339,6 +453,22 @@ impl Game {
                 requires_subtype: None,
             },
         );
+        Some(&mut self.state.exile_permissions[at])
+    }
+
+    pub(super) fn grant_flexible_exile_permission_this_turn(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        cast_only: bool,
+    ) {
+        let expiry = ExilePlayExpiry::Turn(self.state.turn);
+        if let Some(row) =
+            self.grant_exile_play_permission_with_expiry(player, object, None, expiry)
+        {
+            row.spend_any_mana = true;
+            row.cast_only = cast_only;
+        }
     }
 
     pub(super) fn exile_top_choose_play(
@@ -413,12 +543,14 @@ impl Game {
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
-                self.state.exile_links.push(ExileLink {
-                    ability_origin,
-                    source,
-                    exiled: event.after,
-                    return_zone: event.before.zone,
-                });
+                self.state
+                    .exile_links
+                    .extend(event.objects_after().map(|exiled| ExileLink {
+                        ability_origin,
+                        source,
+                        exiled,
+                        return_zone: event.before.zone,
+                    }));
             }
         }
         self.finish_zone_events(&events, &[]);
@@ -474,11 +606,16 @@ impl Game {
         {
             self.prune_source_bound_copies();
         }
+        // Every member has moved before a gain consults live replacement providers.
+        // Keep one gain event per actual linked exile, even for the same controller.
+        for (player, amount) in events.iter().filter_map(|event| event.linked_exile_life) {
+            self.gain_life(player, i128::from(amount));
+        }
         self.queue_earthbend_returns(events);
         self.record_entry_turn_facts(events);
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
-        self.creature_death_batch_triggers(events, death_sources);
+        self.death_batch_triggers(events, death_sources);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
         self.creatures_exiled_batch_triggers(events);
@@ -560,11 +697,13 @@ impl Game {
                 if ability.condition.event() == TriggerCondition::TokensEnterYou
                     && self.queue_trigger(source, index)
                 {
+                    let entrants = &token_entered[source.controller.index()];
+                    self.add_entry_trigger_multiplicity(source, entrants);
                     self.state
                         .pending_triggers
                         .last_mut()
                         .unwrap()
-                        .refer_objects(token_entered[source.controller.index()].iter().copied());
+                        .refer_objects(entrants.iter().copied());
                 }
             }
         }
@@ -698,7 +837,12 @@ impl Game {
             })
     }
     pub(super) fn grant_exile_free_permission(&mut self, player: Player, object: ObjectRef) {
-        self.grant_exile_free_permission_with_expiry(player, object, ExilePlayExpiry::WhileExiled);
+        self.grant_exile_free_permission_with_expiry(
+            player,
+            object,
+            ExilePlayExpiry::WhileExiled,
+            true,
+        );
     }
     pub(super) fn grant_exile_free_permission_until_end(
         &mut self,
@@ -709,6 +853,7 @@ impl Game {
             player,
             object,
             ExilePlayExpiry::Turn(self.state.turn),
+            true,
         );
     }
     fn grant_exile_free_permission_with_expiry(
@@ -716,6 +861,7 @@ impl Game {
         player: Player,
         object: ObjectRef,
         expiry: ExilePlayExpiry,
+        cast_only: bool,
     ) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
@@ -723,12 +869,13 @@ impl Game {
         {
             return;
         }
-        if self.state.exile_permissions.iter().any(|p| {
+        if let Some(existing) = self.state.exile_permissions.iter_mut().find(|p| {
             p.object == object
                 && p.player == player
                 && p.without_paying_mana_cost
                 && p.expiry == expiry
         }) {
+            existing.cast_only &= cast_only;
             return;
         }
         let at = self
@@ -743,7 +890,7 @@ impl Game {
                 player,
                 expiry,
                 spend_any_mana: false,
-                cast_only: true,
+                cast_only,
                 exile_on_graveyard: false,
                 life_instead_of_mana: false,
                 without_paying_mana_cost: true,
@@ -803,6 +950,15 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn exile_permission_guard(&self, permission: &ExilePlayPermission) -> bool {
+        if permission.expiry == ExilePlayExpiry::SourceLoreTurns {
+            return permission.source.is_some_and(|source| {
+                counter_placement_history::lore_placed(
+                    &self.state.counter_placement_history,
+                    source,
+                    permission.player,
+                )
+            });
+        }
         if permission.source.is_some_and(|source| {
             self.object_ref(source.card) != source
                 || !self.on_battlefield(source.card)

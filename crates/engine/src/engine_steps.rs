@@ -27,6 +27,7 @@ impl Game {
         self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
+            self.queue_delayed_token_cleanup(Step::Upkeep);
         }
         if step == Step::BeginCombat {
             let phases = &mut self.state.players[self.state.active.index()]
@@ -282,6 +283,11 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if condition.event() == TriggerCondition::DelayedTargetControlLostWhileAttached {
+            return item.event_object.as_ref().is_some_and(|event| {
+                self.attached_to_controlled_creature(event.object, item.controller)
+            });
+        }
         if let TriggerCondition::SubtypeEntersYouWithOthers { subtype, minimum } = condition.event()
         {
             let Some(entering) = item.entering_object else {
@@ -387,6 +393,9 @@ impl Game {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 return !self.case_solved(source) && p.life_gained_this_turn >= n;
             }
+            StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
+                return self.any_player_combat_damage_at_least(minimum);
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }
@@ -404,6 +413,12 @@ impl Game {
                 return attached_controller_turn(world, source, self.state.active);
             }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
+            StepGuard::ControlsGreatestCreaturePower => {
+                return world.controls_greatest_creature_power(player);
+            }
+            StepGuard::OwnSourceAndNamedCreature(partner) => {
+                return meld::owns_source_and_named_creature(world, source, player, partner.name());
+            }
             StepGuard::OpponentControlsMoreCreatures => {
                 let count = |controller| {
                     self.state
@@ -421,6 +436,9 @@ impl Game {
             }
             StepGuard::OpponentHasMoreCardsInHand => {
                 return hand_count(player.other()) > hand_count(player);
+            }
+            StepGuard::SourceEnteredThisTurn(entered) => {
+                return world.entered_this_turn(source) == entered;
             }
             StepGuard::SourceReceivedCounterThisTurn => {
                 return self.put_counter_on_source_this_turn(source, player);
@@ -482,6 +500,10 @@ impl Game {
             }
             StepGuard::Attacked => return p.attacked_this_turn,
             StepGuard::CreatureDied => return self.state.creatures_died_this_turn > 0,
+            StepGuard::OpponentControlledCreatureDied => {
+                return self.state.players[player.other().index()]
+                    .controlled_creature_died_this_turn;
+            }
             StepGuard::OpponentLostLife => {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }

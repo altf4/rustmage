@@ -198,17 +198,18 @@ class ValidatorTests(unittest.TestCase):
                             for _, env in commands))
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
-    def test_native_compile_budget_fits_inside_parent_deadline(self):
+    def test_native_suite_budget_fits_inside_parent_deadline(self):
         status, _, report, commands = self.invoke()
         self.assertEqual(status, 0)
         index = next(i for i, (command, _) in enumerate(commands)
                      if 'scripts/run_native_tests.py' in command)
         command = commands[index][0]
-        compile_budget = float(command[command.index('--compile-timeout') + 1])
-        self.assertEqual(command[command.index('--test-timeout') + 1], '45')
-        self.assertEqual(command[command.index('--suite-timeout') + 1], '240')
-        self.assertGreaterEqual(self.command_timeouts[index], compile_budget + 240)
-        self.assertLessEqual(self.command_timeouts[index], compile_budget + 260)
+        compile_budget = int(command[command.index('--compile-timeout') + 1])
+        suite_budget = int(command[command.index('--suite-timeout') + 1])
+        self.assertEqual(compile_budget, 1800)
+        self.assertEqual(suite_budget, 480)
+        self.assertEqual(command[command.index('--test-timeout') + 1], '90')
+        self.assertEqual(self.command_timeouts[index], compile_budget + suite_budget + 20)
         self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):

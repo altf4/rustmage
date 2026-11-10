@@ -3,10 +3,17 @@
   "catalogue_id": 777,
   "oracle_id": "33d2584b-bf29-4c22-bd45-14ba2fb98c0e",
   "facts_sha256": "9eabfd3d3d3ee547f12f1764a2b03bc99a1277feb0d5f586c5c393889f3da906",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "283ae199f64768ccea18b1a23c0da983a282493a3b13168fb54c06723a278568"
-  },
-  "physical_metadata_sha256": "3be235231dd6e2b581f8f643fd002524bdca9b73034a0f94171b2b83d04e9386"
+  "complete": true,
+  "physical_metadata_sha256": "3be235231dd6e2b581f8f643fd002524bdca9b73034a0f94171b2b83d04e9386",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CloudMidgarMercenary.java",
+  "java_sha256": "fc7ac155bd9a18b7c7d96307302e1057082c560f738c25779643aa1366fee679",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

@@ -110,6 +110,9 @@ def main(argv=None):
     env.setdefault('RUSTMAGE_TDM_EVIDENCE_DIR', str(report_dir/'tdm-games'))
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+    native_compile_timeout = 1800
+    # Multi-game replay cases can exceed 45 seconds on hosted runners.
+    native_suite_timeout = 480
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
@@ -118,11 +121,11 @@ def main(argv=None):
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
         ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 600),
-        # A 56-game FRA workload can approach 30 seconds on CI; the enlarged
-        # catalogue also needs more than 120 seconds of serialized execution.
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
-                              '--test-timeout', '45', '--suite-timeout', '240', '--compile-timeout', '1800'], 2060),
+                              '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
+                              '--compile-timeout', str(native_compile_timeout)],
+         native_compile_timeout + native_suite_timeout + 20),
     ]
     if args.release or args.python != 'none':
         commands.append(('release build', ['cargo', 'build', '--release', '--lib', '--bin', 'benchmark'], 900))

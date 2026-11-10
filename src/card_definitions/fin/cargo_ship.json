@@ -3,10 +3,22 @@
   "catalogue_id": 653,
   "oracle_id": "93e336e3-2be7-4581-8ab3-9bea422d81c3",
   "facts_sha256": "372cec3ad9c6b982ef73c69544fc610217d02829cfd5f4ec4a61099ea86189d7",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "2c1b6bfa34320c871a95032335407563dc03d8e9c78728382fe4979d3784d0dd"
-  },
-  "physical_metadata_sha256": "e825b929bbf1ae2aa219f64a78050cf2299678269bbec3431434a55cb1de5d77"
+  "complete": true,
+  "physical_metadata_sha256": "e825b929bbf1ae2aa219f64a78050cf2299678269bbec3431434a55cb1de5d77",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CargoShip.java",
+  "java_sha256": "67a5431509ca96c8389798f8aa795280306f174299209d95fad799dbbcff023d",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+      "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

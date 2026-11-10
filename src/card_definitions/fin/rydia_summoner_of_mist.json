@@ -3,10 +3,31 @@
   "catalogue_id": 3634,
   "oracle_id": "a08f79b7-d66f-47da-9670-afd7409c0c5c",
   "facts_sha256": "1d99c861a87863a5ec8da8fbf790eaaefd1fe56106f6cca47303ba934d99605f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5510e037207387048578d433c339d78c3242a2d16d7738de0043836fb861554e"
   },
-  "physical_metadata_sha256": "1c5b12e4fcfe4560e53cd5f5e51370d914a2c6050db6d3c3eb435663f2acb7a2"
+  "physical_metadata_sha256": "1c5b12e4fcfe4560e53cd5f5e51370d914a2c6050db6d3c3eb435663f2acb7a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RydiaSummonerOfMist.java",
+  "java_sha256": "9e940708df6c9b3e6e997005822f109c986e9ff2dd1a9fd2de8583700a168618",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LandfallAbility.java",
+      "sha256": "aeae9b06e1910d69c88eca416249ba9d5629f7cb9d3626c9de9bbd3f7fdd1be1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ManaValueTargetAdjuster.java",
+      "sha256": "c9315bc9a46db9cfa1ae5eef49d75f50a03875683b6de3722e36314a2529bb71"
+    }
+  ]
 }

@@ -3,10 +3,27 @@
   "catalogue_id": 771,
   "oracle_id": "283f743f-6e79-49de-b7ed-08e6ffb64cc6",
   "facts_sha256": "f4dc087674a11d3f03ec2e11b9ee0bca792ab505f554a20f152f0cb51ab5467e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "9264a679c0e8808d6b849bdca42d5f1186beea458ed0a37f77784303073a1a2f"
-  },
-  "physical_metadata_sha256": "ed12ecd840423902b76161c863688e4456c8dd0cf1f64ec634dc725b9e31122e"
+  "complete": true,
+  "physical_metadata_sha256": "ed12ecd840423902b76161c863688e4456c8dd0cf1f64ec634dc725b9e31122e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClivesHideaway.java",
+  "java_sha256": "443c69d4892c9fb7810983960d0cad55c716dc0c778c79377acb7689429c004d",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HideawayAbility.java",
+      "sha256": "4c836b05b74e5ff4ecc8e82a26148848506d3ca41002f9bcfbd6aab0c7266ed3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/HideawayPlayEffect.java",
+      "sha256": "9d68e2036101105d53b35ad7a67c126b36e183090efd2137f0c13f6285e9aa5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    }
+  ]
 }

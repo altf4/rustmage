@@ -1,7 +1,7 @@
 //! A permission route freezes its own nonmana costs; ordinary casts of the
 //! same physical card never inherit them just because their origin is a graveyard.
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{CastFilter, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Card {
@@ -60,6 +60,146 @@ impl Game {
                 sorcery,
                 false,
             )
+    }
+    pub(super) fn graveyard_life_cast_rules(
+        &self,
+        actor: Player,
+    ) -> Vec<(CastFilter, u32, CounterKind)> {
+        let mut rules = Vec::new();
+        for &id in &self.state.static_sources {
+            let provider = &self.state.objects[id as usize];
+            if provider.zone != Zone::Battlefield || provider.controller != actor {
+                continue;
+            }
+            for fragment in provider
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                let StaticAbilityFragment::CastFromGraveyardWithLife {
+                    filter,
+                    life,
+                    entry_counter,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if self.continuous_fragment_available(id, |found| std::ptr::eq(found, fragment)) {
+                    rules.push((filter, life, entry_counter));
+                }
+            }
+        }
+        rules
+    }
+
+    pub(super) fn visit_graveyard_life_casts(
+        &self,
+        actor: Player,
+        card: CardId,
+        sorcery: bool,
+        rules: &[(CastFilter, u32, CounterKind)],
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
+        if rules.is_empty()
+            || object.zone != Zone::Graveyard
+            || object.owner != actor
+            || !object.is_card()
+        {
+            return false;
+        }
+        for (face, definition) in [
+            (CastFace::Normal, Some(object.card)),
+            (CastFace::Adventure, object.card.adventure_spell()),
+            (CastFace::Omen, object.card.omen_spell()),
+            (CastFace::Back, object.card.back_face()),
+        ] {
+            let Some(definition) = definition.filter(|d| !d.is_land()) else {
+                continue;
+            };
+            let mut offered = Vec::new();
+            for &(filter, life, entry_counter) in rules {
+                if !filter.matches(definition) || offered.contains(&(life, entry_counter)) {
+                    continue;
+                }
+                offered.push((life, entry_counter));
+                let free = self.filtered_free_cast_available(actor, definition)
+                    || self.turn_free_creature_available(actor, definition);
+                let sneak = face == CastFace::Normal
+                    && self.state.active == actor
+                    && self.state.step == Step::Blockers
+                    && self.has_sneak_cost(actor, card);
+                for (method, available) in [
+                    (CastMethod::Normal, true),
+                    (CastMethod::Free, free),
+                    (CastMethod::Sneak, sneak),
+                ] {
+                    if !available {
+                        continue;
+                    }
+                    for flash_surcharge in [false, true] {
+                        if flash_surcharge
+                            && (method == CastMethod::Sneak
+                                || definition.flash_surcharge().is_none())
+                        {
+                            continue;
+                        }
+                        if self.permitted_cast_with_origin_rules(
+                            actor,
+                            card,
+                            method,
+                            face,
+                            sorcery,
+                            flash_surcharge,
+                            None,
+                            None,
+                            Some(life),
+                            false,
+                        ) && emit(Action::AnnounceGraveyardWithLife {
+                            object: self.object_ref(card),
+                            face,
+                            method,
+                            flash_surcharge,
+                            life,
+                            entry_counter,
+                        }) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        false
+    }
+    pub(super) fn start_graveyard_life_cast(
+        &mut self,
+        actor: Player,
+        card: CardId,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        (life, entry_counter): (u32, CounterKind),
+    ) {
+        let mut item = self.cast_item(actor, card, [0; 6]);
+        self.set_cast_face(&mut item, face);
+        let cast = item.cast.as_mut().unwrap();
+        cast.method = method;
+        cast.flash_surcharge = flash_surcharge;
+        if method == CastMethod::Sneak {
+            Self::configure_sneak(&mut item);
+        } else if method == CastMethod::Free && item.source.unwrap().card.x_symbols() != 0 {
+            item.x = Some(0);
+        }
+        self.record_cast_entry_counters(item.source.unwrap().object, entry_counter, 1);
+        self.open_payment_announcement_with_origin_rules(
+            item,
+            Counters::default(),
+            None,
+            None,
+            None,
+            Some(life),
+        );
     }
     pub(super) fn exile_library_top_face_down_play(
         &mut self,

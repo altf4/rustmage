@@ -3,10 +3,30 @@
   "catalogue_id": 4389,
   "oracle_id": "54ca5904-9099-497a-9684-101656025487",
   "facts_sha256": "d122bdbfe15619c2442872944e3ad8af4f2640bc7aeb5c392d9dc92b80614940",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f573fa625c4341869acb40a57ef08b9a7de4b216e4976b2b8b85915bad20d682"
   },
-  "physical_metadata_sha256": "2c677c0caa35988691101a1718c5ea9aee5e7f70af83b022054f4f1b9ab96337"
+  "physical_metadata_sha256": "9a2795897e5ba9ad9562a3e659385be0cab75fbde798c07fab361ef7dbc49e5e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerraMagicalAdept.java",
+  "java_sha256": "a665f8b1c20bd02ada1790c4c719add0f453a3cf1e4855c6c1ea4323613b48c1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSourceAndReturnFaceUpEffect.java",
+      "sha256": "b21e4ea6281cceadcd71cb6e364b2016f7e116a315d161f280087d27e4a62f35"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    }
+  ]
 }

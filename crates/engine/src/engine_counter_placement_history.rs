@@ -7,6 +7,8 @@ pub struct CounterPlacementHistoryView {
     pub placed_by: Player,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub plus_one: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub lore: bool,
     /// The recipient was a creature when at least one counter was placed.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub on_creature: bool,
@@ -18,6 +20,7 @@ impl std::hash::Hash for CounterPlacementHistoryView {
             self.object,
             self.placed_by.index(),
             self.plus_one,
+            self.lore,
             self.on_creature,
         )
             .hash(state);
@@ -38,6 +41,7 @@ pub(super) fn record(
     object: ObjectRef,
     placed_by: Player,
     plus_one: bool,
+    lore: bool,
     on_creature: bool,
 ) {
     if let Some(index) = rows.as_ref().and_then(|r| {
@@ -45,9 +49,13 @@ pub(super) fn record(
             .position(|row| row.object == object && row.placed_by == placed_by)
     }) {
         let prior = rows.as_ref().unwrap()[index];
-        if (plus_one && !prior.plus_one) || (on_creature && !prior.on_creature) {
+        if (plus_one && !prior.plus_one)
+            || (lore && !prior.lore)
+            || (on_creature && !prior.on_creature)
+        {
             let row = &mut rows.as_mut().unwrap()[index];
             row.plus_one |= plus_one;
+            row.lore |= lore;
             row.on_creature |= on_creature;
         }
         return;
@@ -57,6 +65,7 @@ pub(super) fn record(
             object,
             placed_by,
             plus_one,
+            lore,
             on_creature,
         });
 }
@@ -103,12 +112,20 @@ pub(super) fn plus_one_placed(rows: &Rows, object: ObjectRef, player: Player) ->
     })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn lore_placed(rows: &Rows, object: ObjectRef, player: Player) -> bool {
+    rows.as_ref().is_some_and(|r| {
+        r.iter()
+            .any(|row| row.object == object && row.placed_by == player && row.lore)
+    })
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn record_counter_placement(
         &mut self,
         object: ObjectRef,
         placed_by: Player,
         plus_one: bool,
+        lore: bool,
     ) {
         let on_creature = self.is_creature(object.card);
         record(
@@ -116,6 +133,7 @@ impl Game {
             object,
             placed_by,
             plus_one,
+            lore,
             on_creature,
         );
     }

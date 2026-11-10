@@ -135,22 +135,6 @@ impl Game {
             }
         }
     }
-    pub(super) fn turn_free_library_origin(&self, player: Player, card: CardId) -> bool {
-        let object = &self.state.objects[card as usize];
-        [
-            Some(object.card),
-            object.card.adventure_spell(),
-            object.card.omen_spell(),
-            object.card.back_face(),
-        ]
-        .into_iter()
-        .flatten()
-        .any(|definition| {
-            (self.turn_free_creature_available(player, definition)
-                || self.filtered_free_cast_available(player, definition))
-                && self.can_cast_library_face(player, card, definition)
-        })
-    }
     pub(super) fn visit_turn_free_casts(
         &self,
         player: Player,

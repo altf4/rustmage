@@ -1,9 +1,31 @@
 //! Deterministic coin flips and actual-turn boundaries (CR500.11/614.10).
 use super::*;
+use crate::cards::StaticAbilityFragment;
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn flip_coins(&mut self, player: Player, coins: u16) -> u64 {
+        if coins == 0 {
+            return 0;
+        }
+        let history = &mut self.state.players[player.index()].turn_facts;
+        let first = !std::mem::replace(&mut history.coin_flipped_this_turn, true);
+        if first
+            && self.state.static_sources.iter().any(|&id| {
+                self.state.objects[id as usize].controller == player
+                    && self.active_rule_fragment(id, |fragment| {
+                        matches!(fragment, StaticAbilityFragment::FirstCoinFlipsHeads)
+                    })
+            })
+        {
+            return u64::from(coins);
+        }
+        // Both supported uses ask for a binary result: heads or a won flip.
+        (0..coins).filter(|_| self.state.rng.below(2) == 1).count() as u64
+    }
+
     pub(super) fn flip_coins_skip_turns(&mut self, item: &SpellView, coins: u16) {
-        let heads = (0..coins).filter(|_| self.state.rng.below(2) == 1).count() as u64;
+        let heads = self.flip_coins(item.controller, coins);
         if heads == 0 {
             return;
         }

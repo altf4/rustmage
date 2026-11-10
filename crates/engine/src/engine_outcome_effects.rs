@@ -7,11 +7,22 @@ impl Game {
     /// The attempted destruction is prevented before a simultaneous movement.
     /// Redirected destinations remain destruction; prevented moves do not.
     pub(super) fn destroy_targets_outcome(&mut self, targets: &[BoundTarget]) -> Vec<ZoneChange> {
+        self.destroy_objects_outcome(targets.iter().filter_map(|bound| {
+            let (Target::Card(id), Some(object)) = (bound.target, bound.object) else {
+                return None;
+            };
+            (object.card == id).then_some(object)
+        }))
+    }
+    pub(super) fn destroy_objects_outcome(
+        &mut self,
+        objects: impl IntoIterator<Item = ObjectRef>,
+    ) -> Vec<ZoneChange> {
         let mut ids = Vec::new();
-        for &bound in targets {
-            if self.same_target_object(bound)
-                && let Target::Card(id) = bound.target
-                && self.on_battlefield(id)
+        for object in objects {
+            let id = object.card;
+            if self.on_battlefield(id)
+                && self.object_ref(id) == object
                 && !ids.contains(&id)
                 && !self.effect_destruction_prevented(id)
             {

@@ -3,10 +3,25 @@
   "catalogue_id": 4489,
   "oracle_id": "27a7610e-acbe-4a2b-9f61-81b383eb20a5",
   "facts_sha256": "3f056b43e0f360df791e831a6bf33458aa64bbcb08ac9d675a6d491fad7aaddd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d4fdb81017833eeeee81318e674eb9217d8662d6b8d94778059b048554594bb2"
   },
-  "physical_metadata_sha256": "e49182cb2791765582752cae0c9330410a79e9e4e69a6ac127d14b545fab4ae9"
+  "physical_metadata_sha256": "e49182cb2791765582752cae0c9330410a79e9e4e69a6ac127d14b545fab4ae9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheRegalia.java",
+  "java_sha256": "35b1dc34420147c6ad8331ac9e36f291be81f799da44e5352cd65ce24f309cbf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

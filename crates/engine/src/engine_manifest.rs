@@ -252,7 +252,11 @@ impl Game {
             Zone::Hand => object.owner == player,
             Zone::Graveyard => self.has_graveyard_cast(player, id, GraveyardCastKind::Cast),
             Zone::Exile => !object.is_spell_copy() && self.can_play_exiled(player, id),
-            Zone::Library => self.can_cast_library_top(player, id),
+            Zone::Library => self.can_cast_library_face(
+                player,
+                id,
+                Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
+            ),
             _ => false,
         };
         origin_permitted && self.disguise_mana_fundable(player, id)
@@ -474,6 +478,7 @@ impl Game {
     /// event. Counter replacement commits call this immediately before adding
     /// the finalized counters, so observers see a single completed transition.
     pub(super) fn materialize_face_up(&mut self, object: ObjectRef) {
+        let control_watch = self.freeze_control_watch();
         let physical = self
             .take_face_down_physical(object)
             .expect("face-down incarnation");
@@ -484,7 +489,7 @@ impl Game {
             self.register_battlefield_providers(object.card);
         }
         self.retimestamp_self_granted_statics(object);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
     }
 
     pub(super) fn finish_face_up_counter_replacement(&mut self) {

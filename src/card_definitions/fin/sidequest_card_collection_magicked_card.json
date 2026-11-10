@@ -3,10 +3,21 @@
   "catalogue_id": 3859,
   "oracle_id": "0c2095b0-478d-45b4-a34d-b19eb77cea4c",
   "facts_sha256": "08c97aca7e8f1a40f2c21442d3129a024b69e634ba4469c545f07a015bf528c0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8cd734bbbfeb805d17fe8fc9960f2f39a3fcbc80a103d3b49fb2f14d0c4e5a07"
   },
-  "physical_metadata_sha256": "f4c44fd74d5f8d74a805ad17ae7a4b0ae8a0b23f2e750f212dc4adbbc1693922"
+  "physical_metadata_sha256": "ad699cb31926f453f64e7c4c8adac644550e314cb0dc9e8a769d875144ef00c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SidequestCardCollection.java",
+  "java_sha256": "6cfd95a59dabdb5fce35fb6dfead6eb4073e042b49f757c5955f1aaea9c358a6",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ]
 }

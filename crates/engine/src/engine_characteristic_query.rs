@@ -316,10 +316,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .capacity("scaled group toughness exhausted"),
                         };
                     }
-                    if let StaticAbilityFragment::CreatureGroupBonus {
-                        filters,
-                        stats: bonus,
-                    } = *fragment
+                    let group_bonus = match *fragment {
+                        StaticAbilityFragment::CreatureGroupBonus { filters, stats } => {
+                            Some((filters, stats, None))
+                        }
+                        StaticAbilityFragment::CreatureGroupScaling {
+                            filters,
+                            value,
+                            stats,
+                        } => Some((filters, stats, Some(value))),
+                        _ => None,
+                    };
+                    if let Some((filters, bonus, value)) = group_bonus
                         && self.continuous_fragment_available(source, |candidate| {
                             std::ptr::eq(candidate, fragment)
                         })
@@ -330,6 +338,28 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 self.object_ref(source),
                                 id,
                             )
+                        })
+                    {
+                        let value = value.map_or(1, |value| {
+                            self.stat_value(value, self.object_ref(source), object.controller)
+                        });
+                        stats += Stats {
+                            power: bonus
+                                .power
+                                .checked_mul(value)
+                                .capacity("scaled group power exhausted"),
+                            toughness: bonus
+                                .toughness
+                                .checked_mul(value)
+                                .capacity("scaled group toughness exhausted"),
+                        };
+                    }
+                    if let StaticAbilityFragment::ControlledLegendaryCreatureBonus(bonus) =
+                        *fragment
+                        && object.controller == self.object(id).controller
+                        && self.legendary(id)
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
                         })
                     {
                         stats += bonus;
@@ -502,9 +532,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     }
                     continue;
                 }
-                let spec = object.card.attachment_bonus().unwrap();
-                stats += spec.stats;
-                keywords = keywords.union(spec.keywords);
+                if let Some(spec) = object.card.attachment_bonus() {
+                    stats += spec.stats;
+                    keywords = keywords.union(spec.keywords);
+                }
                 if object.controller == self.state.active {
                     keywords = keywords.union(object.card.attached_turn_keywords());
                     for group in object.card.static_ability_groups() {
@@ -598,6 +629,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             for group in object.card.static_ability_groups() {
                 for fragment in group.fragments {
                     match *fragment {
+                        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+                            kinds,
+                            keywords: grant,
+                            ..
+                        } if self.world.own_turn_source_or_controlled_creature_kind(
+                            self.object_ref(source),
+                            id,
+                            kinds,
+                        ) =>
+                        {
+                            keywords = keywords.union(grant);
+                        }
                         StaticAbilityFragment::ControlledPermanentKeywords {
                             kinds,
                             keywords: grant,
@@ -612,6 +655,13 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         } if target.controller == object.controller
                             && CharacteristicWorld::subtypes(self, id)
                                 .has(CharacteristicWorld::definition(self, id), subtype) =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
+                        StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
+                            if target.controller == object.controller
+                                && self.is_creature(id)
+                                && self.equipped(id) =>
                         {
                             keywords = keywords.union(grant)
                         }
@@ -988,6 +1038,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
                 for fragment in group.fragments {
                     let ability = match *fragment {
+                        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+                            kinds,
+                            ward,
+                            ..
+                        } if self.world.own_turn_source_or_controlled_creature_kind(
+                            source, recipient, kinds,
+                        ) =>
+                        {
+                            Some(ward)
+                        }
                         StaticAbilityFragment::ConditionalWard {
                             condition,
                             filter,
@@ -1048,6 +1108,22 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     .contains(&timestamp)
             })
     }
+    pub(super) fn equipped_death_multiplier_available(
+        &self,
+        bearer: CardId,
+        source: ObjectRef,
+    ) -> bool {
+        self.evaluation.as_ref().is_none_or(|value| {
+            value.result.objects[bearer as usize]
+                .grants
+                .iter()
+                .any(|grant| {
+                    grant.source == source
+                        && grant.kind
+                            == ability_order::GrantedAbilityKind::EquippedCreatureDeathMultiplier
+                })
+        })
+    }
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -1067,6 +1143,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         _ => None,
                     },
                     static_rule: match grant.kind {
+                        ability_order::GrantedAbilityKind::EquippedCreatureDeathMultiplier => Some(
+                            ability_evaluation::GrantedStaticRule::EquippedCreatureDeathMultiplier,
+                        ),
                         ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => {
                             Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
                         }
@@ -1093,6 +1172,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         };
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            additional_creature_death_triggers:
+                trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
@@ -1135,14 +1216,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
             entered_this_turn: CharacteristicWorld::entered_this_turn(self, self.object_ref(id)),
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
-            face: FaceView::from_faces(
-                self.recipe(id).face_structure(),
-                if obj.zone == Zone::Battlefield {
-                    self.transform_serial(self.object_ref(id))
-                } else {
-                    0
-                },
-            ),
+            face: self
+                .game()
+                .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
             modified: self.is_modified(id),
             attacking: CharacteristicWorld::attacking(self, id),

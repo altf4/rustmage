@@ -3,10 +3,21 @@
   "catalogue_id": 3809,
   "oracle_id": "d3f4aa87-a89e-43f8-abc3-712e6bf08889",
   "facts_sha256": "04cda6ca832ac2cf78e39ad6bdf3eff00d565dce3ffd4b8be3d6c5b1ea73a018",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "007416234e48843dbb2678b065e44aed3a3cfd7a503077151e883a334d053d2c"
   },
-  "physical_metadata_sha256": "3fa1ebecfe5268cb1b33852dabf010eec8235fb794144aa5690e5d73ed854617"
+  "physical_metadata_sha256": "3fa1ebecfe5268cb1b33852dabf010eec8235fb794144aa5690e5d73ed854617",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShamblingCieth.java",
+  "java_sha256": "7d4c64141fe3c6ec8cc2cb668f50e1598ac60f0d17a40a51d365f4491b9d061f",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    }
+  ]
 }

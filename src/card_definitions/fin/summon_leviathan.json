@@ -3,10 +3,30 @@
   "catalogue_id": 4223,
   "oracle_id": "b38d1811-64d7-4a35-a86c-3291eecd8391",
   "facts_sha256": "59bacc59e44452a6fb1598a2f1c53afbbc6de1ce54493f8ed052bac46d9cc755",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "79c26e57ed08f49c8722524c9641f60cc5b703c4edf25ede3778a80f8869b8b9"
   },
-  "physical_metadata_sha256": "b15a300191e9c98a7bf5823061efdcbe93cddc662bc5467ae7e7c3b617604dfa"
+  "physical_metadata_sha256": "b15a300191e9c98a7bf5823061efdcbe93cddc662bc5467ae7e7c3b617604dfa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummonLeviathan.java",
+  "java_sha256": "077eb122db47267bbc0667b9ab176ebe039a82d70b0bc1e0ef9153c82f2821da",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandFromBattlefieldAllEffect.java",
+      "sha256": "f8ea6d746634b1c78d29e989867a33b2f66c883130595784f62fb04f8e447d5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }

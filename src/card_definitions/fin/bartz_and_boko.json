@@ -3,10 +3,17 @@
   "catalogue_id": 341,
   "oracle_id": "2d995c47-e548-4fc4-9182-fef46af20ca5",
   "facts_sha256": "9b7d2db2d054058ac3232db204cd154dcef0a7d2c65c1325ae114c23f4305400",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "15aa53c6adc87900f383fa8c5dad65b9f19a65a8c120a0a21bdab5f595aa547e"
-  },
-  "physical_metadata_sha256": "b27b3a09765be79f0d9671add22a95ff2690c8840f0ae1c8e4f095d7e0d13bd7"
+  "complete": true,
+  "physical_metadata_sha256": "b27b3a09765be79f0d9671add22a95ff2690c8840f0ae1c8e4f095d7e0d13bd7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BartzAndBoko.java",
+  "java_sha256": "100b42b7b3a9b98b531a1da1e8ee9c7f7b0e5a766c221a840f99387e38290c9c",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/AffinityAbility.java",
+      "sha256": "b1b523671266f687df90eb3003d186bb0f68f9ca99ccaffe675f25ed11f40547"
+    }
+  ]
 }

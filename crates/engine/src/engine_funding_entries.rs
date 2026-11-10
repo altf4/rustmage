@@ -225,7 +225,7 @@ impl EntryProjection {
         if !self.static_sources.contains(&source.card) {
             self.static_sources.push(source.card);
         }
-        if card.attachment_bonus().is_some() && !self.attachment_sources.contains(&source.card) {
+        if card.is_attachment_source() && !self.attachment_sources.contains(&source.card) {
             self.attachment_sources.push(source.card);
         }
         if let Some(spec) = card.base_stat_setter() {
@@ -459,6 +459,9 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
+                self.game.any_player_combat_damage_at_least(minimum)
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
@@ -488,6 +491,9 @@ impl FundingState<'_> {
             StepGuard::GainedAndLostLife => self.gained_life(player) && self.lost_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,
+            StepGuard::OpponentControlledCreatureDied => {
+                self.controlled_creatures_died[player.other().index()] > 0
+            }
             StepGuard::OpponentLostLife => self.lost_life(player.other()),
             StepGuard::CommittedCrimeThisTurn => state.committed_crime_this_turn,
             StepGuard::CardExiledThisTurn => {
@@ -500,6 +506,12 @@ impl FundingState<'_> {
             }
             StepGuard::OpponentHasMoreCardsInHand => {
                 count(Zone::Hand, player.other()) > count(Zone::Hand, player)
+            }
+            StepGuard::ControlsGreatestCreaturePower => {
+                self.controls_greatest_creature_power(player)
+            }
+            StepGuard::OwnSourceAndNamedCreature(partner) => {
+                meld::owns_source_and_named_creature(self, source, player, partner.name())
             }
             StepGuard::OpponentControlsMoreCreatures => {
                 let creatures = |p| {
@@ -522,6 +534,9 @@ impl FundingState<'_> {
                 } else {
                     movement.before.tapped
                 }
+            }
+            StepGuard::SourceEnteredThisTurn(entered) => {
+                CharacteristicWorld::entered_this_turn(self, source) == entered
             }
             StepGuard::SourceReceivedCounterThisTurn => counter_placement_history::any_placed(
                 &self.counter_placement_history,
@@ -1008,10 +1023,11 @@ impl FundingState<'_> {
     pub(super) fn pay_projected_life(
         &mut self,
         player: Player,
-        n: u32,
+        amount: impl Into<i128>,
         entering: &[entries::EntryMove],
     ) {
-        if n == 0 {
+        let amount = amount.into();
+        if amount == 0 {
             return;
         }
         let applies = self.life_replacement_possible
@@ -1040,9 +1056,11 @@ impl FundingState<'_> {
                     object.zone == Zone::Library && object.is_card()
                 })
                 .map(|id| self.reference(id));
-            if let Some(cards) =
-                entries::life_replacement_exile_cards(library, n as usize, entering)
-            {
+            if let Some(cards) = entries::life_replacement_exile_cards(
+                library,
+                usize::try_from(amount).unwrap_or(usize::MAX),
+                entering,
+            ) {
                 if !cards.is_empty() {
                     let mut result = None;
                     self.cost_departures(&cards, Zone::Exile, &mut |world| {
@@ -1056,11 +1074,11 @@ impl FundingState<'_> {
                 return;
             }
         }
-        self.life_lost[player.index()] |= n > 0;
+        self.life_lost[player.index()] |= amount > 0;
         if player == self.actor {
-            self.life -= i128::from(n)
+            self.life -= amount
         } else {
-            self.other_life -= i128::from(n)
+            self.other_life -= amount
         }
     }
     fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
@@ -1482,6 +1500,21 @@ impl FundingState<'_> {
             if m.before.zone == Zone::Battlefield && m.destination != Zone::Battlefield {
                 next.permanent_left_battlefield[m.before.controller.index()] = true;
             }
+            let mut entering_meld = m.meld.as_deref().copied();
+            if m.destination == Zone::Battlefield
+                && let Some(entry) = &mut entering_meld
+            {
+                if next.reference(entry.companion.card) != entry.companion
+                    || next.object(entry.companion.card).zone != Zone::Exile
+                {
+                    return false;
+                }
+                entry.companion = next.project_nonbattlefield_move(
+                    entry.companion,
+                    Zone::Outside,
+                    Some(entry.front_cards[1]),
+                );
+            }
             let face_down_physical = next.projected_face_down_physical(m.before.reference);
             let physical_copy = next
                 .temporary_copy_rows_state()
@@ -1553,7 +1586,24 @@ impl FundingState<'_> {
                 card: row.id,
                 generation: o.generation,
             };
-            let manifested = &mut next.entry_projection.as_mut().unwrap().manifested;
+            let projection = next.entry_projection.as_mut().unwrap();
+            if m.destination == Zone::Battlefield
+                && let Some(entry) = entering_meld
+            {
+                projection
+                    .roles
+                    .melded_permanents
+                    .push(meld::MeldedPermanent {
+                        object: source,
+                        entry,
+                    });
+            }
+            if m.before.zone == Zone::Stack {
+                projection
+                    .roles
+                    .continue_stack_keywords(m.before.reference, source, m.destination);
+            }
+            let manifested = &mut projection.manifested;
             manifested.retain(|(object, _)| *object != m.before.reference);
             if m.destination == Zone::Battlefield
                 && let Some(physical) = m.manifest_original
@@ -1574,7 +1624,7 @@ impl FundingState<'_> {
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
                 }
-                if o.card.attachment_bonus().is_some() && !p.attachment_sources.contains(&row.id) {
+                if o.card.is_attachment_source() && !p.attachment_sources.contains(&row.id) {
                     p.attachment_sources.push(row.id)
                 }
             }
@@ -1904,6 +1954,7 @@ impl FundingState<'_> {
                 source,
                 m.controller,
                 m.counters.plus_one > 0,
+                m.counters.lore > 0,
                 on_creature,
             );
         }
@@ -1956,6 +2007,7 @@ impl FundingState<'_> {
                         *object,
                         *player,
                         amount.plus_one > 0,
+                        amount.lore > 0,
                         on_creature,
                     );
                 }
@@ -2336,6 +2388,7 @@ impl<'g> FundingState<'g> {
                         object,
                         self.actor,
                         placed.plus_one > 0,
+                        placed.lore > 0,
                         placement.kind & 1 != 0,
                     );
                 }
@@ -2348,6 +2401,15 @@ impl<'g> FundingState<'g> {
     pub(super) fn visit_applied(
         &self,
         step: &FundingMove,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        self.visit_applied_for(step, None, emit)
+    }
+
+    pub(super) fn visit_applied_for(
+        &self,
+        step: &FundingMove,
+        goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
@@ -2397,7 +2459,7 @@ impl<'g> FundingState<'g> {
                 next.add_funding_output(step, bonus, production);
                 return emit(&next);
             }
-            return next.visit_output(step, bonus, emit);
+            return next.visit_output(step, bonus, goal, emit);
         }
         let external = if let Some(external) = step.external {
             let source = &self.resources[step.resource];
@@ -2466,7 +2528,7 @@ impl<'g> FundingState<'g> {
                 external,
                 &mut |world| {
                     let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
-                    world.visit_output(step, bonus, emit)
+                    world.visit_output(step, bonus, goal, emit)
                 },
             )
         })

@@ -18,6 +18,15 @@ impl Game {
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
         self.register_activation_observer(id);
         let triggers = self.state.objects[id as usize].card.triggers();
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCast { .. }
+                )
+        }) {
+            self.state.cast_sources.push(id);
+        }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(a.condition.event(), TriggerCondition::AtStep { .. })
@@ -43,6 +52,9 @@ impl Game {
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
     pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        if self.state.cast_sources.contains(&id) {
+            self.state.cast_sources.retain(|&source| source != id);
+        }
         if self.state.death_sources.contains(&id) {
             self.state.death_sources.retain(|&source| source != id);
         }
@@ -69,11 +81,7 @@ impl Game {
         self.register_live_static_source(id);
         self.register_ability_source(id);
         self.register_hand_size_source(id);
-        if self.state.objects[id as usize]
-            .card
-            .attachment_bonus()
-            .is_some()
-        {
+        if self.state.objects[id as usize].card.is_attachment_source() {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);
@@ -131,12 +139,24 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
             self.state.attack_sources.push(id);
+        }
+        if triggers
+            .iter()
+            .any(|ability| ability.condition.event() == TriggerCondition::OpponentTakesPermanent)
+        {
+            self.state
+                .roles
+                .get_or_insert_default()
+                .control_change_sources
+                .get_or_insert_default()
+                .push(id);
         }
         if triggers
             .iter()
@@ -166,6 +186,8 @@ impl Game {
                 TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::AttachedCreatureDamaged
+                    | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
@@ -195,20 +217,25 @@ impl Game {
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::SelfOrControlledPermanentDies(_)
+                    | TriggerCondition::ChosenCreatureLeaves
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
+                    | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
+                    | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
             )
         }) {
             self.state.death_sources.push(id);
@@ -232,10 +259,11 @@ impl Game {
             .triggers()
             .iter()
             .any(|ability| {
-                matches!(
-                    ability.condition.event(),
-                    TriggerCondition::SpellCast { .. }
-                )
+                ability.condition.origin() != Some(TargetZone::Graveyard)
+                    && matches!(
+                        ability.condition.event(),
+                        TriggerCondition::SpellCast { .. }
+                    )
             })
         {
             self.state.cast_sources.push(id);
@@ -257,18 +285,23 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
+                            | crate::cards::StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                            | crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
+                            | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
+                        | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
@@ -284,10 +317,12 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                            | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
+                            | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
@@ -298,11 +333,15 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
+                            | crate::cards::StaticAbilityFragment::LifeGainDouble
+                            | crate::cards::StaticAbilityFragment::OpponentMillAdditional(_)
+                            | crate::cards::StaticAbilityFragment::FirstCoinFlipsHeads
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                             | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                             | crate::cards::StaticAbilityFragment::AdditionalLandPlays(_)
                             | crate::cards::StaticAbilityFragment::ConditionalAdditionalLandPlays { .. }
                             | crate::cards::StaticAbilityFragment::DamageCantBePrevented
+                            | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
@@ -314,10 +353,13 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
+                            | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
@@ -333,8 +375,10 @@ impl Game {
                 Some(
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
+                        | crate::cards::ZoneReplacementRule::ExileControllerGraveyard
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
+                        | crate::cards::ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { .. }
                 )
             )
             || !self.state.objects[id as usize]

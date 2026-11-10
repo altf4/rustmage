@@ -5,22 +5,36 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SourceQuantityView {
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub power: Option<i128>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub toughness: Option<i128>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chosen_creature_type: Option<crate::cards::CreatureType>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_count: Option<u64>,
+    /// Exact Equipment incarnations attached to the source before departure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attached_equipment: Option<Box<[ObjectRef]>>,
     /// Signed source facts for an intervening creature-stat comparison.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_comparison: Option<CreatureComparisonFacts>,
 }
 
+#[derive(Clone, Copy, Default, PartialEq, Eq)]
+struct SelectedQuantities {
+    power: bool,
+    toughness: bool,
+    equipment: bool,
+    attached_equipment: bool,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn selected(program: &[Instruction]) -> (bool, bool) {
-    fn amount(value: AmountValue, result: &mut (bool, bool)) {
+fn selected(program: &[Instruction]) -> SelectedQuantities {
+    fn amount(value: AmountValue, result: &mut SelectedQuantities) {
         match value {
-            AmountValue::SourceToughness => result.0 = true,
-            AmountValue::SourceEquipmentCount => result.1 = true,
+            AmountValue::SourcePower => result.power = true,
+            AmountValue::SourceToughness => result.toughness = true,
+            AmountValue::SourceEquipmentCount => result.equipment = true,
             AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
                 amount(*value, result)
             }
@@ -32,7 +46,7 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             _ => (),
         }
     }
-    let mut result = (false, false);
+    let mut result = SelectedQuantities::default();
     for instruction in program {
         match *instruction {
             Instruction::Modal(modes)
@@ -41,18 +55,32 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::ModalUpToX { modes, .. } => {
                 for mode in modes {
                     let nested = selected(mode.program);
-                    result.0 |= nested.0;
-                    result.1 |= nested.1;
+                    result.power |= nested.power;
+                    result.toughness |= nested.toughness;
+                    result.equipment |= nested.equipment;
+                    result.attached_equipment |= nested.attached_equipment;
                 }
             }
-            Instruction::SetBaseStatsFromSource { .. } => result.0 = true,
+            Instruction::CounterUnlessPayCosts { costs, .. }
+            | Instruction::MayPayCosts { costs, .. } => {
+                for cost in costs {
+                    for value in cost.extra_generic.into_iter().chain(cost.life) {
+                        amount(value, &mut result);
+                    }
+                }
+            }
+            Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
+            Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
-            | Instruction::SelectLibraryThenMayTransform(effect) => {
+            | Instruction::SelectLibraryToHandRememberCount(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect)
+            | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, &mut result);
                 }
             }
             Instruction::UpToTargets(value)
+            | Instruction::RememberCount(value)
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
@@ -73,14 +101,20 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
+            | Instruction::DamageWithControllerScaled {
+                controller_damage: value,
+                ..
+            }
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
             | Instruction::AddCombatRedScaled(value)
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
+            | Instruction::CastHandFreeUpTo(value)
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
@@ -89,6 +123,9 @@ fn selected(program: &[Instruction]) -> (bool, bool) {
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
+                counters: value, ..
+            }
+            | Instruction::CreateTokensThenCounters {
                 counters: value, ..
             } => amount(value, &mut result),
             _ => (),
@@ -115,21 +152,46 @@ impl Game {
                     .map(|frame| &frame.announcement.item),
             )
     }
+    pub(super) fn equipped_creature_count(&self, player: Player) -> u128 {
+        self.state
+            .attachment_sources
+            .iter()
+            .filter_map(|&id| {
+                let recipient = self.state.objects[id as usize].attached_to?;
+                let creature = &self.state.objects[recipient.card as usize];
+                (creature.controller == player
+                    && ability_world::CharacteristicWorld::equipment_attached_to(
+                        self, id, recipient,
+                    )
+                    && self.is_creature(recipient.card))
+                .then_some(recipient)
+            })
+            .collect::<std::collections::HashSet<_>>()
+            .len() as u128
+    }
     pub(super) fn source_equipment_count(&self, source: ObjectRef) -> Option<u64> {
         (self.on_battlefield(source.card) && self.object_ref(source.card) == source).then(|| {
-            self.state
-                .objects
-                .iter()
-                .enumerate()
-                .filter(|(id, object)| {
-                    object.zone == Zone::Battlefield
-                        && object.attached_to == Some(source)
-                        && self.has_subtype(*id as CardId, "Equipment")
-                })
+            self.source_equipment_refs(source)
                 .count()
                 .try_into()
                 .capacity("equipment quantity exhausted")
         })
+    }
+    pub(super) fn source_equipment_refs(
+        &self,
+        source: ObjectRef,
+    ) -> impl Iterator<Item = ObjectRef> + '_ {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(move |(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.attached_to == Some(source)
+                    && self.has_subtype(id, "Equipment"))
+                .then(|| self.object_ref(id))
+            })
     }
     pub(super) fn source_quantity_facts(
         &self,
@@ -137,10 +199,11 @@ impl Game {
         targets: TargetPlan,
         source: &ObjectView,
     ) -> Option<Box<SourceQuantityView>> {
-        let (toughness, equipment) = selected(program);
+        let quantities = selected(program);
         let chosen_type = targets.reads_source_creature_type() || reads_chosen_type(program);
-        (toughness || equipment || chosen_type).then(|| {
+        (quantities != SelectedQuantities::default() || chosen_type).then(|| {
             Box::new(SourceQuantityView {
+                power: quantities.power.then_some(source.power),
                 creature_comparison: None,
                 chosen_creature_type: if chosen_type {
                     match source.entry_choice {
@@ -150,13 +213,17 @@ impl Game {
                 } else {
                     None
                 },
-                toughness: toughness.then_some(if source.is_creature() {
+                toughness: quantities.toughness.then_some(if source.is_creature() {
                     source.toughness
                 } else {
                     0
                 }),
-                equipment_count: equipment
+                equipment_count: quantities
+                    .equipment
                     .then(|| self.source_equipment_count(source.reference).unwrap_or(0)),
+                attached_equipment: quantities
+                    .attached_equipment
+                    .then(|| self.source_equipment_refs(source.reference).collect()),
             })
         })
     }
@@ -185,7 +252,7 @@ impl Game {
                 .expect("exact activated quantity source")
         });
         let targets = item.program().map_or(TargetPlan::NONE, |(plan, _)| plan);
-        if selected(program) != (false, false)
+        if selected(program) != SelectedQuantities::default()
             || reads_chosen_type(program)
             || targets.reads_source_creature_type()
         {
@@ -212,6 +279,9 @@ impl Game {
         }
         let view = self.object_view(source.card);
         let saved = item.source_quantity_lki.as_mut().unwrap();
+        if saved.power.is_some() {
+            saved.power = Some(view.power);
+        }
         if saved.toughness.is_some() {
             saved.toughness = Some(if view.is_creature() {
                 view.toughness
@@ -221,6 +291,9 @@ impl Game {
         }
         if saved.equipment_count.is_some() {
             saved.equipment_count = Some(self.source_equipment_count(source).unwrap_or(0));
+        }
+        if saved.attached_equipment.is_some() {
+            saved.attached_equipment = Some(self.source_equipment_refs(source).collect());
         }
     }
     /// Freeze before ANY member commits. Live queries remain authoritative until
@@ -241,30 +314,36 @@ impl Game {
                 if source.zone != Zone::Battlefield {
                     return None;
                 }
-                let mut selected = (false, false);
+                let mut selected = SelectedQuantities::default();
                 for item in self.source_quantity_packets().filter(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source.reference)
                 }) {
                     if let Some(facts) = &item.source_quantity_lki {
-                        selected.0 |= facts.toughness.is_some();
-                        selected.1 |= facts.equipment_count.is_some();
+                        selected.power |= facts.power.is_some();
+                        selected.toughness |= facts.toughness.is_some();
+                        selected.equipment |= facts.equipment_count.is_some();
+                        selected.attached_equipment |= facts.attached_equipment.is_some();
                     }
                 }
-                (selected.0 || selected.1).then(|| {
+                (selected != SelectedQuantities::default()).then(|| {
                     (
                         source.reference,
                         SourceQuantityView {
+                            power: selected.power.then_some(source.power),
                             creature_comparison: None,
                             chosen_creature_type: None,
-                            toughness: selected.0.then_some(if source.is_creature() {
+                            toughness: selected.toughness.then_some(if source.is_creature() {
                                 source.toughness
                             } else {
                                 0
                             }),
-                            equipment_count: selected.1.then(|| {
+                            equipment_count: selected.equipment.then(|| {
                                 self.source_equipment_count(source.reference).unwrap_or(0)
                             }),
+                            attached_equipment: selected
+                                .attached_equipment
+                                .then(|| self.source_equipment_refs(source.reference).collect()),
                         },
                     )
                 })
@@ -300,11 +379,17 @@ impl Game {
                     .iter()
                     .find(|(object, _)| item.source.is_some_and(|source| *object == source.object))
             {
+                if saved.power.is_some() {
+                    saved.power = frozen.power;
+                }
                 if saved.toughness.is_some() {
                     saved.toughness = frozen.toughness;
                 }
                 if saved.equipment_count.is_some() {
                     saved.equipment_count = frozen.equipment_count;
+                }
+                if saved.attached_equipment.is_some() {
+                    saved.attached_equipment = frozen.attached_equipment.clone();
                 }
             }
         }
@@ -368,7 +453,11 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
     program.iter().any(|instruction| match instruction {
         Instruction::SelectLibrary(spec) => filter(spec.filter),
         Instruction::SelectLibraryTo(effect)
-        | Instruction::SelectLibraryThenMayTransform(effect) => filter(effect.spec.filter),
+        | Instruction::SelectLibraryToHandRememberCount(effect)
+        | Instruction::SelectLibraryThenMayTransform(effect)
+        | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
+            filter(effect.spec.filter)
+        }
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)

@@ -1,4 +1,4 @@
-//! Retain an existing cast event only for programs consuming its mana value or symbols.
+//! Retain a cast event for programs consuming its identity, mana value or symbols.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn amount(value: AmountValue) -> bool {
@@ -17,16 +17,19 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::ModalOncePerTurn(modes)
         | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|m| selected(m.program)),
         Instruction::SelectLibraryTo(effect)
-        | Instruction::SelectLibraryThenMayTransform(effect) => {
+        | Instruction::SelectLibraryToHandRememberCount(effect)
+        | Instruction::SelectLibraryThenMayTransform(effect)
+        | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
             effect.maximum_mana_value.is_some_and(amount)
         }
+        Instruction::AddCastEntryCounters { .. }
+        | Instruction::AddCastEntryCountersForControlledSubtypes { .. } => true,
         Instruction::UpToTargets(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
         | Instruction::DestroyTargetsAtMostManaValue(value)
         | Instruction::DiscardScaled(_, value)
-        | Instruction::AddCastEntryCounters { amount: value, .. }
         | Instruction::SearchScaled { maximum: value, .. }
         | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
         | Instruction::SetCreatureForm { base: value, .. }
@@ -41,6 +44,10 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::DrainLifeScaled(value)
         | Instruction::LoseOpponentGainSame(value)
         | Instruction::DamageScaled(value)
+        | Instruction::DamageWithControllerScaled {
+            controller_damage: value,
+            ..
+        }
         | Instruction::AddColorlessScaled(value)
         | Instruction::AddManaScaled { amount: value, .. }
         | Instruction::AddManaChosenScaled { amount: value, .. }
@@ -49,6 +56,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::CounterUnlessPayScaled { amount: value, .. }
         | Instruction::PutCountersScaled { amount: value, .. }
         | Instruction::PutPermanentCountersScaled { amount: value, .. }
+        | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
         | Instruction::GrowScaled { amount: value, .. }
         | Instruction::GrowFilteredScaled { amount: value, .. }
         | Instruction::GrowCreaturesScaled { amount: value, .. }
@@ -57,6 +65,9 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         | Instruction::EndureScaled { amount: value, .. }
         | Instruction::CreateSizedToken { size: value, .. }
         | Instruction::CreateTokensWithCounters {
+            counters: value, ..
+        }
+        | Instruction::CreateTokensThenCounters {
             counters: value, ..
         } => amount(value),
         _ => false,

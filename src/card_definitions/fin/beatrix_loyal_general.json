@@ -3,10 +3,17 @@
   "catalogue_id": 365,
   "oracle_id": "2f24637d-8d8e-49de-b229-4cdb97595ed7",
   "facts_sha256": "4d8814db5df395724eabcd40f0c829e0f7a3fb952a8ec9e1d903a13e3c2d9d7c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "75bcb7d1e621935c0f9520e46a85d0ec21cdab33e7af23f2a892cd514cb34c48"
-  },
-  "physical_metadata_sha256": "6cb477561b3f78cc991a8c53cb818ce20901af99d8a1f9c78eb9df5927d8aeb9"
+  "complete": true,
+  "physical_metadata_sha256": "6cb477561b3f78cc991a8c53cb818ce20901af99d8a1f9c78eb9df5927d8aeb9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeatrixLoyalGeneral.java",
+  "java_sha256": "97164d62df24d6982aab08226c32fa708ff8b7e2a57091ff6461c2d2047307c2",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    }
+  ]
 }

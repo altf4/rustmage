@@ -69,9 +69,15 @@ pub(super) struct RoleState {
     pub resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     pub ability_removal_sources: Vec<ObjectRef>,
     pub characteristic_sources: Vec<ObjectRef>,
+    pub control_change_sources: Option<SharedVec<CardId>>,
+    pub melded_permanents: Vec<meld::MeldedPermanent>,
+    pub meld_departure_orders: Vec<MeldDepartureOrder>,
     pub harnessed: Vec<ObjectRef>,
     pub source_prevention: Option<Box<source_prevention::SourcePreventionState>>,
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
+    pub creature_damage_shields: Vec<CreatureDamageShieldView>,
+    pub damage_doublers: Vec<DamageDoublerView>,
+    pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl RoleState {
@@ -109,11 +115,19 @@ impl RoleState {
             + self.source_linked_effects.len() * std::mem::size_of::<SourceLinkedEffectView>()
             + self.player_damage_shields.len()
                 * std::mem::size_of::<return_links::PlayerDamageShieldView>()
+            + self.creature_damage_shields.len() * std::mem::size_of::<CreatureDamageShieldView>()
+            + self.damage_doublers.len() * std::mem::size_of::<DamageDoublerView>()
+            + self.chosen_creature_links.len() * std::mem::size_of::<ChosenCreatureLinkView>()
             + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
                 * std::mem::size_of::<ResolvedAbilityModificationView>()
             + self.ability_removal_sources.len() * std::mem::size_of::<ObjectRef>()
             + self.characteristic_sources.len() * std::mem::size_of::<ObjectRef>()
+            + self.control_change_sources.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<CardId>>() + rows.len() * std::mem::size_of::<CardId>()
+            })
+            + self.melded_permanents.len() * std::mem::size_of::<meld::MeldedPermanent>()
+            + self.meld_departure_orders.len() * std::mem::size_of::<MeldDepartureOrder>()
             + self.harnessed.len() * std::mem::size_of::<ObjectRef>()
             + self
                 .source_prevention
@@ -154,9 +168,13 @@ impl Game {
             )
         });
         let matches_action = match (action, instruction) {
-            (ReflexiveAction::Sacrifice, Some(Instruction::SacrificeSourceReflexive { .. })) => {
-                true
-            }
+            (
+                ReflexiveAction::Sacrifice,
+                Some(
+                    Instruction::SacrificeSourceReflexive { .. }
+                    | Instruction::MaySacrificeSourceReflexive { .. },
+                ),
+            ) => true,
             (ReflexiveAction::Mill, Some(Instruction::MillThenReflexive { .. })) => true,
             (ReflexiveAction::Sacrifice, Some(Instruction::ChooseObjects { kind, .. })) => {
                 follows
@@ -304,23 +322,43 @@ impl Game {
                 && !self.state.objects[source.id as usize].tapped
         })
     }
-    pub(super) fn complete_optional_tap_reflexive(&mut self) {
+    pub(super) fn sacrifice_source_reflexive(&mut self, item: &SpellView, ability: u16) {
+        if self.try_sacrifice_exact_source(item) {
+            // Departure refreshes the saved packet's last-known source facts.
+            let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
+            self.queue_reflexive_objects(
+                &sacrificed,
+                ability,
+                sacrificed.reflexive_action_objects(),
+            );
+        }
+    }
+
+    pub(super) fn complete_optional_source_reflexive(&mut self) {
         let resolution = self.state.resolving.as_ref().unwrap();
-        let Some(Instruction::MayTapSourceReflexive { ability }) =
-            resolution.program.get(resolution.pc.saturating_sub(1))
-        else {
-            return;
-        };
-        let (item, ability) = (resolution.item.clone(), *ability);
-        if self.exact_source_can_tap(&item) {
-            let source = item.source.expect("tap source was checked");
-            self.tap_objects(&[source.id]);
-            if self.on_battlefield(source.id)
-                && self.object_ref(source.id) == source.object
-                && self.state.objects[source.id as usize].tapped
+        match resolution
+            .program
+            .get(resolution.pc.saturating_sub(1))
+            .copied()
+        {
+            Some(Instruction::MayTapSourceReflexive { ability })
+                if self.exact_source_can_tap(&resolution.item) =>
             {
-                self.queue_reflexive(&item, ability, None);
+                let item = resolution.item.clone();
+                let source = item.source.expect("tap source was checked");
+                self.tap_objects(&[source.id]);
+                if self.on_battlefield(source.id)
+                    && self.object_ref(source.id) == source.object
+                    && self.state.objects[source.id as usize].tapped
+                {
+                    self.queue_reflexive(&item, ability, None);
+                }
             }
+            Some(Instruction::MaySacrificeSourceReflexive { ability }) => {
+                let item = resolution.item.clone();
+                self.sacrifice_source_reflexive(&item, ability);
+            }
+            _ => {}
         }
     }
     pub(super) fn resolve_role_reflexive(&mut self, item: &SpellView, token: Card, ability: u16) {

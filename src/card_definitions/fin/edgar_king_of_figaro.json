@@ -3,10 +3,17 @@
   "catalogue_id": 1263,
   "oracle_id": "264efed9-65ab-40ad-877f-c6c25ca0281e",
   "facts_sha256": "cbb915123134a4d3cc24a8b47d7b5a43904c1082f72cab317debd36637462367",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "6facd351198643f6c78c855696f4cdffbe17c1e97fb0ae2459b68af7a6922d42"
-  },
-  "physical_metadata_sha256": "936e07f9ed126dea9f9b682bc18e49f8bd4992a0a566411330aca108c08571b9"
+  "complete": true,
+  "physical_metadata_sha256": "936e07f9ed126dea9f9b682bc18e49f8bd4992a0a566411330aca108c08571b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EdgarKingOfFigaro.java",
+  "java_sha256": "12c12993e64a20ffb4a17289993e40243f6e78be1bed107251b6478e473eb127",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ArtifactYouControlCount.java",
+      "sha256": "92087ef848245fb2f446712fb82cfc54bd7d12bf00b8babd522e4ba655a52a6a"
+    }
+  ]
 }

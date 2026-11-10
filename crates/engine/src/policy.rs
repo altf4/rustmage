@@ -181,12 +181,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseEntryTimestamp { .. } => 120,
             Action::ChooseDrawReplacement { .. }
             | Action::ChooseReplacement { .. }
+            | Action::ChooseResolvedDamageReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageSource { .. }
             | Action::ChooseStackDamageSource { .. }
             | Action::ChooseDamageEvent { .. } => 120,
             Action::ChooseCreatedToken { .. } => 120,
+            Action::ChooseCopiedSagaLore { amount, .. } => 120 + i128::from(*amount),
             Action::ChooseEndure { put_counters } => {
                 if *put_counters {
                     40
@@ -212,15 +214,20 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PutHandLand { .. }
             | Action::ChooseColorCounter { .. }
             | Action::ChoosePowerDifferenceCreature { .. }
+            | Action::ChooseEquipmentRecipient { .. }
+            | Action::ChooseLinkedCreature { .. }
             | Action::ChooseArmy { .. }
             | Action::ChooseJace { .. }
             | Action::SelectGraveyardReturn { .. }
+            | Action::ChooseEffectObject { .. }
             | Action::AnnounceSourceGrant { .. }
             | Action::SelectLand { .. }
             | Action::SelectResolutionExile { .. } => 50,
             Action::ProliferatePermanent { .. } | Action::ProliferatePlayer { .. } => 50,
             Action::FinishProliferate => 0,
-            Action::FinishGraveyardReturn | Action::FinishLandSelection => -1,
+            Action::FinishGraveyardReturn
+            | Action::FinishLandSelection
+            | Action::FinishEffectChoice => -1,
             Action::DeclineHandEntry | Action::FinishHandSelection => -1,
             Action::BottomHandCard { .. } => 10,
             Action::ChooseBlight { pay } => i128::from(*pay) * 40,
@@ -325,7 +332,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseSearchZones { .. } | Action::ChooseHandLibrarySearchZones { .. } => 50,
             Action::Concede => -1000,
-            Action::ChooseZoneReplacement { .. } => 50,
+            Action::ChooseZoneReplacement { .. } | Action::ChooseMeldOrder { .. } => 50,
             Action::Sacrifice { .. } => 50,
             Action::DeclineEffectPayment => -1,
             Action::AnnounceFreeCounterGraveyard {
@@ -358,8 +365,10 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceGraveyardFinality { .. }
+            | Action::AnnounceGraveyardWithLife { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
+            | Action::AnnounceGraveyardFlashSurcharge { .. }
             | Action::AnnounceWarp { .. }
             | Action::AnnounceDisguise { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
@@ -394,6 +403,17 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::PayFaceUp { .. }
             | Action::PayAttackCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
+            Action::ChooseResolutionCost { .. } => {
+                if observation
+                    .resolution_payment
+                    .as_ref()
+                    .is_some_and(|request| request.selected_cost.is_some())
+                {
+                    -2
+                } else {
+                    50
+                }
+            }
             Action::ChooseMode { .. } => 50,
             Action::ChooseOutsideCard { .. }
             | Action::ChooseOutsideBasic { .. }

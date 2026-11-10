@@ -3,10 +3,35 @@
   "catalogue_id": 1960,
   "oracle_id": "5249dd0d-3bda-452e-ac6e-774c0ebc2e41",
   "facts_sha256": "bcd683d8652e5c0cb8e1e40db249223180a2cb52e79a7ff9062b0dec65d90be0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61eb08ba2c98131d44e524312921c3976061eb560b125d6e5da138f1489649ee"
   },
-  "physical_metadata_sha256": "eb5afdbab0cc3c428ac44d15838ed1b0eb688011719ae93580579ccd097ba433"
+  "physical_metadata_sha256": "eb5afdbab0cc3c428ac44d15838ed1b0eb688011719ae93580579ccd097ba433",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HasteMagic.java",
+  "java_sha256": "b3bb3228ae4422feb3654fe56c0c7fbaf85396eeba18eb6f4470de1e6a4ae932",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ]
 }

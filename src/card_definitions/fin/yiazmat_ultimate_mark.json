@@ -1,0 +1,17 @@
+{
+  "name": "Yiazmat, Ultimate Mark",
+  "catalogue_id": 5519,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "d3e15b3a14f832fc65718bc838a9270154e227933cc765120c9dc8144743978a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SidequestHuntTheMark.java",
+  "java_sha256": "ff03a15fb2a4be741ed9903b2efded31183e29170b50376b7b63e06b1f467a80",
+  "oracle_face": {
+    "oracle_id": "d74f9a18-8dab-4549-be3f-9697ff68d73c",
+    "index": 1,
+    "sha256": "9f163dc86c76ec47f9f42e8029249b073b335c22a018101e26760d2af574b009"
+  },
+  "rules_tests": "tests/fin_cards_157_234.rs"
+}

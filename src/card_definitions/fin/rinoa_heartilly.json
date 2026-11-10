@@ -3,10 +3,26 @@
   "catalogue_id": 3532,
   "oracle_id": "8896c74b-d466-4c25-94cf-82b5e2b1fdef",
   "facts_sha256": "5e46f33c29a7103cfd9cd4e4f8c8c6d09b02e3e8e3882e85da21ffd7018a387b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "63d0d8ca1916e843f3c5bb142cf3e10a79c85757e37c55449d6adf206512cb5c"
   },
-  "physical_metadata_sha256": "5f78984a9b59d03242abac37f140f4c88c12214c89b9910343e25268355bd1c0"
+  "physical_metadata_sha256": "5f78984a9b59d03242abac37f140f4c88c12214c89b9910343e25268355bd1c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RinoaHeartilly.java",
+  "java_sha256": "54eb633ac4ac703d8a715ef4fa7d11b9a0b1c58e354d6dc1e1ad5e998355ba6d",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AngeloToken.java",
+      "sha256": "e9cfd7fe88dd28922a25e433876208519add2e11779c7ceac9594531cab07e72"
+    }
+  ]
 }

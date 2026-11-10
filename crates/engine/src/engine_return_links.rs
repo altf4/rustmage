@@ -36,6 +36,57 @@ pub struct ReturnLinkView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ReturnLinkView {
+    pub(super) fn from_event(
+        event: &ZoneChange,
+        controller: Player,
+        counter: Option<(CounterKind, u64)>,
+        tapped: bool,
+        exile_after: bool,
+    ) -> Self {
+        let additional_returning = event.melded_after.map(|cards| {
+            Box::new(
+                cards
+                    .into_iter()
+                    .filter(|&object| object != event.after)
+                    .map(|object| ReturnCardView {
+                        object,
+                        zone: event.destination,
+                        controller,
+                        counter,
+                        tapped,
+                    })
+                    .collect(),
+            )
+        });
+        Self {
+            exile_after,
+            additional_returning,
+            object: event.after,
+            zone: event.destination,
+            controller,
+            counter,
+            tapped,
+        }
+    }
+    fn cards(&self) -> impl Iterator<Item = ReturnCardView> + '_ {
+        std::iter::once(self.card()).chain(
+            self.additional_returning
+                .iter()
+                .flat_map(|rows| rows.iter().copied()),
+        )
+    }
+    fn set_recipient_values(&mut self, controller: Player, counter: Option<(CounterKind, u64)>) {
+        self.controller = controller;
+        self.counter = counter;
+        for card in self
+            .additional_returning
+            .iter_mut()
+            .flat_map(|rows| rows.iter_mut())
+        {
+            card.controller = controller;
+            card.counter = counter;
+        }
+    }
     fn card(&self) -> ReturnCardView {
         ReturnCardView {
             object: self.object,
@@ -197,36 +248,28 @@ impl Game {
     }
     pub(super) fn capture_return_death(&mut self, event: &ZoneChange) {
         self.state.pending_triggers.last_mut().unwrap().return_link =
-            Some(Box::new(ReturnLinkView {
-                exile_after: false,
-                additional_returning: None,
-                object: event.after,
-                zone: Zone::Graveyard,
-                tapped: false,
-                controller: event.before.owner,
-                counter: Some((
+            Some(Box::new(ReturnLinkView::from_event(
+                event,
+                event.before.owner,
+                Some((
                     CounterKind::Revival,
                     event.before.counters.get(CounterKind::Revival),
                 )),
-            }));
+                false,
+                false,
+            )));
     }
     pub(super) fn return_event_card_to_hand(&mut self, item: &SpellView) {
         let Some(link) = &item.return_link else {
             return;
         };
-        if self
-            .state
-            .objects
-            .get(link.object.card as usize)
-            .is_some_and(|object| {
-                object.generation == link.object.generation
-                    && object.zone == link.zone
-                    && link.zone == Zone::Graveyard
-                    && !object.is_token()
-            })
-        {
-            self.move_object(link.object.card, Zone::Hand);
-        }
+        let returning: Vec<_> = link
+            .cards()
+            .filter(|&card| card.zone == Zone::Graveyard && self.can_follow_return(card))
+            .map(|card| card.object.card)
+            .collect();
+        let events = self.move_objects_raw(&returning, Zone::Hand);
+        self.finish_zone_events(&events, &[]);
     }
     fn register_delayed_return(&mut self, item: &SpellView, returning: ReturnLinkView) {
         let Some(source) = item.source else {
@@ -260,21 +303,10 @@ impl Game {
         let events = self.move_objects_raw(&[id], Zone::Exile);
         let returning = events
             .iter()
-            .filter_map(|event| {
-                (small
-                    && event.moved
-                    && event.destination == Zone::Exile
-                    && !event.before.is_token())
-                .then_some(ReturnLinkView {
-                    exile_after: true,
-                    additional_returning: None,
-                    object: event.after,
-                    zone: Zone::Exile,
-                    controller: item.controller,
-                    counter: None,
-                    tapped: true,
-                })
+            .filter(|event| {
+                small && event.moved && event.destination == Zone::Exile && !event.before.is_token()
             })
+            .map(|event| ReturnLinkView::from_event(event, item.controller, None, true, true))
             .collect();
         self.state
             .resolving
@@ -338,25 +370,25 @@ impl Game {
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let returning = events
             .iter()
-            .filter_map(|event| {
-                (event.moved
+            .filter(|event| {
+                event.moved
                     && !event.before.is_token()
                     && (event.destination == Zone::Exile
                         || follow_public_move
-                            && matches!(event.destination, Zone::Graveyard | Zone::Command)))
-                .then_some(ReturnLinkView {
-                    exile_after: false,
-                    additional_returning: None,
-                    object: event.after,
-                    zone: event.destination,
-                    controller: if attacking {
+                            && matches!(event.destination, Zone::Graveyard | Zone::Command))
+            })
+            .map(|event| {
+                ReturnLinkView::from_event(
+                    event,
+                    if attacking {
                         item.controller
                     } else {
                         event.before.owner
                     },
                     counter,
                     tapped,
-                })
+                    false,
+                )
             })
             .collect();
         // Departure events can themselves stage a choice-bearing linked return.
@@ -377,17 +409,16 @@ impl Game {
         let moves = blink
             .rows
             .iter()
-            .filter_map(|row| {
-                if self.object_ref(row.object.card) != row.object
-                    || self.state.objects[row.object.card as usize].zone != row.zone
-                {
+            .flat_map(|link| link.cards().map(|card| (card, link.exile_after)))
+            .filter_map(|(row, exile_after)| {
+                if !self.can_follow_return(row) {
                     return None;
                 }
                 let mut movement = self.entry_move(row.object.card, Zone::Battlefield, row.tapped);
                 movement.controller = row.controller;
                 movement.effect_counter = row.counter;
                 movement.choose_attacking_defender = attacking;
-                if row.exile_after {
+                if exile_after {
                     movement.delayed_return_exile = self
                         .state
                         .resolving
@@ -422,25 +453,29 @@ impl Game {
         // Freeze all recipients and their owners before ANY departure. Linked
         // returns may suspend entry choices only after the entire exile batch.
         let events = self.move_objects_raw(&ids, Zone::Exile);
-        let mut returning = events.iter().filter_map(|event| {
-            (event.moved
-                && matches!(
-                    event.destination,
-                    Zone::Exile | Zone::Graveyard | Zone::Command
-                )
-                && !event.before.is_token())
-            .then_some(ReturnCardView {
-                object: event.after,
-                zone: event.destination,
-                tapped,
-                controller: if under_owner {
-                    event.before.owner
-                } else {
-                    item.controller
-                },
-                counter: None,
+        let mut returning = events
+            .iter()
+            .filter(|event| {
+                event.moved
+                    && matches!(
+                        event.destination,
+                        Zone::Exile | Zone::Graveyard | Zone::Command
+                    )
+                    && !event.before.is_token()
             })
-        });
+            .flat_map(|event| {
+                event.objects_after().map(|object| ReturnCardView {
+                    object,
+                    zone: event.destination,
+                    tapped,
+                    controller: if under_owner {
+                        event.before.owner
+                    } else {
+                        item.controller
+                    },
+                    counter: None,
+                })
+            });
         if let Some(first) = returning.next() {
             let companions: Vec<_> = returning.collect();
             self.register_delayed_return(
@@ -467,56 +502,56 @@ impl Game {
             return;
         };
         let mut link = (**link).clone();
-        match kind {
-            ReturnKind::WithoutAbilities => {
-                link.counter = None;
-                self.stage_linked_return(&link, Some((kind, source.object)));
-            }
+        let counter = match kind {
+            ReturnKind::WithoutAbilities => None,
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
-                link.counter = Some((CounterKind::Revival, amount - 1));
-                link.controller = item.controller;
+                link.set_recipient_values(
+                    item.controller,
+                    Some((CounterKind::Revival, amount - 1)),
+                );
                 self.register_delayed_return(item, link);
+                return;
             }
-            ReturnKind::Persist => {
-                link.counter = Some((CounterKind::MinusOne, 1));
-                self.stage_linked_return(&link, None);
-            }
-            ReturnKind::HeroFinality => {
-                link.counter = Some((CounterKind::Finality, 1));
-                self.stage_linked_return(&link, Some((kind, source.object)));
-            }
-            ReturnKind::FlyingRobot => self.stage_linked_return(&link, Some((kind, source.object))),
-            ReturnKind::Demon | ReturnKind::Angel => {
-                link.counter = Some((
-                    CounterKind::PlusOne,
-                    if kind == ReturnKind::Demon { 2 } else { 1 },
-                ));
-                self.stage_linked_return(&link, Some((kind, source.object)));
-            }
-        }
+            ReturnKind::Persist => Some((CounterKind::MinusOne, 1)),
+            ReturnKind::HeroFinality => Some((CounterKind::Finality, 1)),
+            ReturnKind::FlyingRobot => link.counter,
+            ReturnKind::Demon => Some((CounterKind::PlusOne, 2)),
+            ReturnKind::Angel => Some((CounterKind::PlusOne, 1)),
+        };
+        link.set_recipient_values(link.controller, counter);
+        let modification = (kind != ReturnKind::Persist).then_some((kind, source.object));
+        self.stage_linked_return(&link, modification);
+    }
+    fn can_follow_return(&self, card: ReturnCardView) -> bool {
+        self.state
+            .objects
+            .get(card.object.card as usize)
+            .is_some_and(|object| {
+                object.generation == card.object.generation
+                    && object.zone == card.zone
+                    && !object.is_token()
+            })
     }
     fn stage_linked_return(
         &mut self,
         link: &ReturnLinkView,
         modification: Option<(ReturnKind, ObjectRef)>,
     ) {
-        if !self
-            .state
-            .objects
-            .get(link.object.card as usize)
-            .is_some_and(|o| {
-                o.generation == link.object.generation && o.zone == link.zone && !o.is_token()
+        let movements = link
+            .cards()
+            .filter(|&card| self.can_follow_return(card))
+            .map(|card| {
+                let mut movement =
+                    self.entry_move(card.object.card, Zone::Battlefield, card.tapped);
+                movement.controller = card.controller;
+                movement.effect_counter = card.counter;
+                movement.return_modification = modification;
+                movement
             })
-        {
-            return;
-        }
-        let mut movement = self.entry_move(link.object.card, Zone::Battlefield, link.tapped);
-        movement.controller = link.controller;
-        movement.effect_counter = link.counter;
-        movement.return_modification = modification;
-        self.stage_entries(vec![movement], None);
+            .collect();
+        self.stage_entries(movements, None);
     }
     pub(super) fn queue_delayed_returns(&mut self) {
         let Some(rows) = self.state.delayed_returns.take() else {
@@ -541,43 +576,28 @@ impl Game {
             self.state.delayed_returns = Some(Box::new(retained));
         }
     }
+    pub(super) fn return_event_card_tapped_under_control(&mut self, item: &SpellView) {
+        if let Some(mut link) = item.return_link.as_deref().cloned() {
+            link.set_recipient_values(item.controller, None);
+            self.stage_linked_return(&link, None);
+        }
+    }
+
     pub(super) fn resolve_delayed_return(&mut self, item: &SpellView) {
         let Some(link) = &item.return_link else {
             return;
         };
         if link.exile_after {
-            if self.on_battlefield(link.object.card)
-                && self.object_ref(link.object.card) == link.object
-            {
-                self.move_object(link.object.card, Zone::Exile);
-            }
-            return;
+            let ids: Vec<_> = link
+                .cards()
+                .filter(|&card| self.can_follow_return(card))
+                .map(|card| card.object.card)
+                .collect();
+            let events = self.move_objects_raw(&ids, Zone::Exile);
+            self.finish_zone_events(&events, &[]);
+        } else {
+            self.stage_linked_return(link, None);
         }
-        // Validate every exact incarnation independently, then stage one entry
-        // batch. No priority, ETB collection or partial entry precedes companions.
-        let cards = std::iter::once(link.card()).chain(
-            link.additional_returning
-                .as_ref()
-                .into_iter()
-                .flat_map(|rows| rows.iter().copied()),
-        );
-        let moves = cards
-            .filter_map(|card| {
-                let object = self.state.objects.get(card.object.card as usize)?;
-                if object.generation != card.object.generation
-                    || object.zone != card.zone
-                    || object.is_token()
-                {
-                    return None;
-                }
-                let mut movement =
-                    self.entry_move(card.object.card, Zone::Battlefield, card.tapped);
-                movement.controller = card.controller;
-                movement.effect_counter = card.counter;
-                Some(movement)
-            })
-            .collect();
-        self.stage_entries(moves, None);
     }
     pub(super) fn apply_return_modification(
         &mut self,

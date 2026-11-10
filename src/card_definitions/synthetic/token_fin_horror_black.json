@@ -1,0 +1,11 @@
+{
+  "name": "@token/fin-horror-black",
+  "catalogue_id": 5536,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "99b7d752bd1eb501e0b51b47c29a42335dcbcf98357a7803cafa01828cdee5cc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Horror3Token.java",
+  "java_sha256": "f87ec017c7f5fcc8a05e7ac0492df09f6c54e3f18d8ed281e85060e47848781d"
+}

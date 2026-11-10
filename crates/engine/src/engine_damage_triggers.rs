@@ -1,4 +1,4 @@
-//! Player-damage observers and frozen amounts; no source graph is cloned.
+//! Damage observers and frozen amounts; no source graph is cloned.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -51,6 +51,7 @@ impl Game {
             colors: ability_world::CharacteristicWorld::colors(self, id),
             power: stats.power,
             power_above_base: creature && stats.power > base.power,
+            legendary_creature: creature && ability_world::CharacteristicWorld::legendary(self, id),
             granted_subtypes: self.granted_subtypes(id),
             card: if object.zone == Zone::Stack {
                 self.effective_spell_card(id)
@@ -74,6 +75,13 @@ impl Game {
         match subject {
             DamageSubject::AnySources | DamageSubject::AnyNoncombatSources => true,
             DamageSubject::ControlledNoncombatSources => dealer.controller == source.controller,
+            DamageSubject::ControlledSubtypes(subtypes) => {
+                dealer.facts.battlefield
+                    && dealer.controller == source.controller
+                    && subtypes
+                        .iter()
+                        .any(|subtype| dealer.facts.has_subtype(subtype))
+            }
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {
                 source.attached_to == Some(dealer.reference)
@@ -109,6 +117,52 @@ impl Game {
                         DamageQualification::PlusOne => facts.plus_one,
                         DamageQualification::Modified => facts.modified,
                     }
+            }
+        }
+    }
+
+    /// CR 120.4b: capture actual damage after prevention and before its results.
+    pub(super) fn source_damage_triggers(&mut self, events: &[DamageEvent]) {
+        if self.state.damage_sources.is_empty() {
+            return;
+        }
+        let mut hits = std::collections::BTreeMap::<ObjectRef, u128>::new();
+        for event in events {
+            let reference = event.source.reference;
+            if event.amount <= 0
+                || !self.on_battlefield(reference.card)
+                || self.object_ref(reference.card) != reference
+                || !self.state.objects[reference.card as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|ability| ability.condition.event() == TriggerCondition::SourceDealtDamage)
+            {
+                continue;
+            }
+            let total = hits.entry(reference).or_default();
+            *total = total
+                .checked_add(event.amount as u128)
+                .capacity("damage dealt amount exhausted");
+        }
+        for (reference, amount) in hits {
+            let source = self.object_view(reference.card);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SourceDealtDamage
+                    && self.queue_trigger(&source, index)
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .set_event_object(EventObjectView {
+                            object: reference,
+                            facts: EventObjectFacts::DamageDealt { amount },
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                }
             }
         }
     }
@@ -224,7 +278,9 @@ impl Game {
                 .any(|ability| {
                     matches!(
                         ability.condition.event(),
-                        TriggerCondition::CreatureDamaged { .. } | TriggerCondition::SelfDamaged
+                        TriggerCondition::CreatureDamaged { .. }
+                            | TriggerCondition::SelfDamaged
+                            | TriggerCondition::AttachedCreatureDamaged
                     )
                 })
         }) {
@@ -250,22 +306,33 @@ impl Game {
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                let relation = match ability.condition.event() {
-                    TriggerCondition::CreatureDamaged { relation } => Some(relation),
-                    TriggerCondition::SelfDamaged => None,
-                    _ => continue,
-                };
+                let condition = ability.condition.event();
+                if !matches!(
+                    condition,
+                    TriggerCondition::CreatureDamaged { .. }
+                        | TriggerCondition::SelfDamaged
+                        | TriggerCondition::AttachedCreatureDamaged
+                ) {
+                    continue;
+                }
                 for (&recipient, &amount) in &hits {
                     let controller = self.state.objects[recipient.card as usize].controller;
-                    if !match relation {
-                        None => recipient == source.reference,
-                        Some(CastRelation::You) => {
-                            self.is_creature(recipient.card) && controller == source.controller
+                    if !match condition {
+                        TriggerCondition::SelfDamaged => recipient == source.reference,
+                        TriggerCondition::AttachedCreatureDamaged => {
+                            source.attached_to == Some(recipient)
+                                && self.is_creature(recipient.card)
+                                && self.attachment_recipient(source.id) == Some(recipient)
                         }
-                        Some(CastRelation::Opponent) => {
-                            self.is_creature(recipient.card) && controller != source.controller
+                        TriggerCondition::CreatureDamaged { relation } => {
+                            self.is_creature(recipient.card)
+                                && match relation {
+                                    CastRelation::You => controller == source.controller,
+                                    CastRelation::Opponent => controller != source.controller,
+                                    CastRelation::Any => true,
+                                }
                         }
-                        Some(CastRelation::Any) => self.is_creature(recipient.card),
+                        _ => unreachable!("damage recipient condition"),
                     } {
                         continue;
                     }

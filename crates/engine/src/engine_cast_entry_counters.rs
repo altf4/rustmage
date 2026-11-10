@@ -1,4 +1,4 @@
-//! Resolved entry-counter replacements belong to one exact creature spell.
+//! Resolved entry-counter replacements belong to one exact permanent spell.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -6,6 +6,15 @@ pub struct CastEntryCounterView {
     pub spell: ObjectRef,
     pub kind: CounterKind,
     pub amount: u64,
+    /// A count evaluated when this spell enters. Fixed receipts use `amount`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub per_controlled_subtypes: Option<CastEntrySubtypeCount>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct CastEntrySubtypeCount {
+    pub player: Player,
+    pub subtypes: &'static [&'static str],
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<CastEntryCounterView>>;
@@ -24,20 +33,35 @@ impl Game {
         kind: CounterKind,
         amount: AmountValue,
     ) {
-        let Some(event) = item.cast_event.as_deref() else {
+        let Some(spell) = self.live_cast_spell(item) else {
             return;
         };
-        if !self.state.stack.iter().any(|spell| {
-            spell.kind == StackKind::Spell
-                && spell
-                    .source
-                    .is_some_and(|source| source.object == event.object)
-        }) {
-            return;
-        }
         let amount =
             u64::try_from(self.item_amount(amount, item)).capacity("cast entry counters exhausted");
-        self.record_cast_entry_counters(event.object, kind, amount);
+        self.record_cast_entry_counters(spell, kind, amount);
+    }
+
+    pub(super) fn add_cast_entry_counters_for_subtypes(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        subtypes: &'static [&'static str],
+    ) {
+        let Some(spell) = self.live_cast_spell(item) else {
+            return;
+        };
+        self.state
+            .cast_entry_counters
+            .get_or_insert_default()
+            .push(CastEntryCounterView {
+                spell,
+                kind,
+                amount: 0,
+                per_controlled_subtypes: Some(CastEntrySubtypeCount {
+                    player: item.controller,
+                    subtypes,
+                }),
+            });
     }
     pub(super) fn record_cast_entry_counters(
         &mut self,
@@ -52,10 +76,9 @@ impl Game {
             .state
             .cast_entry_counters
             .get_or_insert_with(SharedVec::default);
-        if let Some(row) = rows
-            .iter_mut()
-            .find(|row| row.spell == spell && row.kind == kind)
-        {
+        if let Some(row) = rows.iter_mut().find(|row| {
+            row.spell == spell && row.kind == kind && row.per_controlled_subtypes.is_none()
+        }) {
             row.amount = row
                 .amount
                 .checked_add(amount)
@@ -65,6 +88,7 @@ impl Game {
                 spell,
                 kind,
                 amount,
+                per_controlled_subtypes: None,
             });
         }
     }
@@ -93,7 +117,22 @@ impl Game {
                 .iter()
                 .filter(|row| row.spell == movement.before.reference)
             {
-                movement.counters.add(row.kind, row.amount);
+                let amount = row.per_controlled_subtypes.map_or(row.amount, |rule| {
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, object)| {
+                            object.zone == Zone::Battlefield
+                                && object.controller == rule.player
+                                && rule
+                                    .subtypes
+                                    .iter()
+                                    .any(|subtype| self.has_subtype(*id as CardId, subtype))
+                        })
+                        .count() as u64
+                });
+                movement.counters.add(row.kind, amount);
             }
         }
     }

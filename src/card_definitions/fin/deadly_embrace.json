@@ -3,10 +3,22 @@
   "catalogue_id": 997,
   "oracle_id": "32ad99a9-b5ed-41a1-8060-22265f7c5da1",
   "facts_sha256": "cf5c4e5fd99b2f7a1e3b90ddf1f9d91a8574ea78bf1bba9f9fc5e11c85a97b4d",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e9ea55eeac0f14d82ef3b978575ebb77447efca3998cef8d12d0ff63a94f6ecd"
-  },
-  "physical_metadata_sha256": "938e8e1a376751a12161787cb22ba560835a7a8f1e6c569ba8e733271be69d45"
+  "complete": true,
+  "physical_metadata_sha256": "938e8e1a376751a12161787cb22ba560835a7a8f1e6c569ba8e733271be69d45",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeadlyEmbrace.java",
+  "java_sha256": "1d9e7e5f6a1a540d600df03216c3b11ffd60439be466ebd6817464f63fae3b74",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesDiedThisTurnCount.java",
+      "sha256": "25c244c8a1f92d6c98e9014da4fbcfb48875db9ffb60f2b45590f3d2278f5a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CreaturesDiedWatcher.java",
+      "sha256": "c54597f69b5487c4714868ce642f8fc78464db0bb508ed154206096a74ae1ab1"
+    }
+  ]
 }

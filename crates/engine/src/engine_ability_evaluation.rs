@@ -79,6 +79,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::AttachmentAttackingKeywords(value) => {
+            if !world.attacking(id) || !world.attached(source, id) {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::AttachedTurnKeywords(value) => {
             if provider.controller != world.game().state.active || !world.attached(source, id) {
                 return None;
@@ -107,13 +113,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
-        StaticAbilityFragment::LandMana {
-            recipients,
-            production,
-        } => {
-            if !world.land_mana_applies(source, id, recipients) {
-                return None;
-            }
+        StaticAbilityFragment::LandMana { .. }
+        | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
+            let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -153,6 +155,21 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords: Keywords::NONE,
                 abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
+            kinds,
+            keywords,
+            ward,
+        } => {
+            if !world.own_turn_source_or_controlled_creature_kind(source, id, kinds) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords,
+                abilities: vec![key(ward)],
                 mana: Vec::new(),
             });
         }
@@ -207,6 +224,26 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::AdditionalTriggers {
+            scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+            ..
+        } => {
+            if !world.is_equipment(source.card) || !world.attached(source, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    source,
+                    kind: GrantedAbilityKind::EquippedCreatureDeathMultiplier,
+                    granting_card: provider.card,
+                    grantor_controller: provider.controller,
+                    timestamp: time,
+                }],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ControlledPlaneswalkerAttackLimit => {
             if !own || world.kinds(id) & 64 == 0 {
                 return None;
@@ -246,6 +283,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
             if !own || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledEquippedCreatureKeywords(keywords) => {
+            if !own || world.kinds(id) & 1 == 0 || !world.equipped(id) {
                 return None;
             }
             keywords
@@ -438,6 +481,16 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
                 })
         })
+        || world.static_sources().iter().any(|&id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.attached_to.is_some_and(|recipient| world.attacking(recipient.card))
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::AttachmentAttackingKeywords(_))
+                    })
+                })
+        })
         // External attachment rules must participate even without ability removal.
         // They are deliberately absent from EquipmentSpec's granted abilities.
         || world.attachment_sources().iter().any(|&id| {
@@ -616,17 +669,24 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::SourceCounterCreature { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
+                        | StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                        | StaticAbilityFragment::AdditionalTriggers {
+                            scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+                            ..
+                        }
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
+                        | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)
                         | StaticAbilityFragment::CounterKeywordOwnTurn(..)
@@ -634,6 +694,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
@@ -720,6 +781,19 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let action = match row.kind {
                 SourceLinkedEffectKind::RemoveAbilities
                 | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                SourceLinkedEffectKind::BlankLandWhileBlighted => {
+                    LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
+                        recipient: row.recipient.card,
+                        keywords: Keywords::NONE,
+                        abilities: Vec::new(),
+                        mana: vec![GrantedManaAbility {
+                            source: row.recipient,
+                            production: ManaProduction::Fixed([0, 0, 0, 0, 0, 1]),
+                            sacrifice: false,
+                            subtype_derived: false,
+                        }],
+                    }])
+                }
                 SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
                 | SourceLinkedEffectKind::LandUntilControllerNextTurn => {
                     LayerSixAction::GrantEach(vec![LayerSixGrant {
@@ -910,6 +984,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum GrantedStaticRule {
     PlaneswalkerAttackLimit,
+    EquippedCreatureDeathMultiplier,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

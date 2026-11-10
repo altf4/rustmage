@@ -78,6 +78,7 @@ mod mana_tap_bonus;
 pub use mana_tap_bonus::ManaTapBonus;
 #[path = "engine_mana_output.rs"]
 pub mod mana_output;
+pub use mana_output::ManaSplitChoiceView;
 #[doc(hidden)]
 #[path = "engine_turn_facts.rs"]
 pub mod turn_facts;
@@ -85,7 +86,7 @@ pub use turn_facts::TurnFactsView;
 #[doc(hidden)]
 #[path = "engine_turn_schedule.rs"]
 pub mod turn_schedule;
-pub use turn_schedule::{ExtraTurnView, TurnScheduleView};
+pub use turn_schedule::{AdditionalEndStepsView, ExtraTurnView, TurnScheduleView};
 #[doc(hidden)]
 #[path = "engine_turn_skips.rs"]
 pub mod turn_skips;
@@ -112,6 +113,13 @@ pub mod endgame;
 #[path = "engine_library_entry_counter.rs"]
 pub mod library_entry_counter;
 #[doc(hidden)]
+#[path = "engine_meld.rs"]
+pub mod meld;
+pub use meld::{MeldDepartureOrder, MeldOrderingChoice, MeldedPermanentView};
+#[doc(hidden)]
+#[path = "engine_life_gain.rs"]
+pub mod life_gain;
+#[doc(hidden)]
 #[path = "engine_limited_exile.rs"]
 pub mod limited_exile;
 #[doc(hidden)]
@@ -120,6 +128,7 @@ pub mod linked_choices;
 #[doc(hidden)]
 #[path = "engine_linked_exile_effects.rs"]
 pub mod linked_exile_effects;
+pub use life_gain::{LifeGainReplacement, LifeGainReplacementChoice, LifeGainReplacementEffect};
 #[doc(hidden)]
 #[path = "engine_zone_replacements.rs"]
 pub mod zone_replacements;
@@ -318,9 +327,10 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CreatedTokenChoiceView, DamageEventOrderView, DamagePreventionKind, DamagePreventionView,
-    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
-    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldView, DamageDoublerView,
+    DamageEventOrderView, DamagePreventionKind, DamagePreventionView, PlayerCounterPlacementView,
+    ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
+    SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -397,7 +407,7 @@ pub use target_library::{TargetLibraryMovement, TargetLibraryView};
 #[doc(hidden)]
 #[path = "engine_combat_allocations.rs"]
 pub mod combat_allocations;
-pub use combat_allocations::CombatDamagePlayerView;
+pub use combat_allocations::{CombatDamagePlayerView, PlayerCombatDamageView};
 #[doc(hidden)]
 #[path = "engine_combat_schedule.rs"]
 pub mod combat_schedule;
@@ -721,7 +731,7 @@ pub enum Zone {
     Graveyard,
     Exile,
     Command,
-    /// Vacant slot after a token ceases to exist; never a game zone.
+    /// Internal token or meld-component slot; never a game zone.
     Outside,
 }
 
@@ -806,6 +816,7 @@ define_actions! {
     ChooseLibraryPile { pile: LibraryPile },
     KeepPermanentType { object: ObjectRef },
     ChooseZoneReplacement { effect: ZoneReplacementKind },
+    ChooseMeldOrder { first: ObjectRef },
     FinishStackTargets,
     FinishCraftMaterials,
     FinishAdditionalCostGroup,
@@ -817,6 +828,7 @@ define_actions! {
     FinishEvidence,
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
+    ChooseResolvedDamageReplacement { effect: u64 },
     ChooseDrawReplacement { source: ObjectRef },
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
@@ -824,6 +836,7 @@ define_actions! {
     ChooseDamageSource { source: ObjectRef },
     ChooseStackDamageSource { id: u64 },
     ChooseCreatedToken { object: ObjectRef },
+    ChooseCopiedSagaLore { object: ObjectRef, amount: u8 },
     ChooseEndure { put_counters: bool },
     BeginConvoke,
     ChooseHarmonizer { object: Option<ObjectRef> },
@@ -847,6 +860,8 @@ define_actions! {
     SelectLand { object: ObjectRef },
     SelectGraveyardReturn { object: ObjectRef },
     FinishGraveyardReturn,
+    ChooseEffectObject { object: ObjectRef },
+    FinishEffectChoice,
     AnnounceSourceGrant { source: ObjectRef, ability: u16 },
     SelectResolutionExile { object: ObjectRef },
     ProliferatePermanent { object: ObjectRef },
@@ -882,6 +897,14 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
     AnnounceGraveyardFinality { card: CardId, sneak: bool },
+    AnnounceGraveyardWithLife {
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        life: u32,
+        entry_counter: CounterKind,
+    },
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
@@ -981,7 +1004,7 @@ define_actions! {
     TapMana {
         card: CardId,
     },
-    // Mana ability granted to this permanent by an exact attached source.
+    // Mana ability granted to this permanent by an exact source.
     TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceCast {
@@ -1000,12 +1023,14 @@ define_actions! {
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
+    ChooseResolutionCost { index: u16 },
     AnnounceExile {
         card: CardId,
     },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceAirbend { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFlashSurcharge { card: CardId },
+    AnnounceGraveyardFlashSurcharge { card: CardId },
     AnnounceWarp { card: CardId },
     AnnounceDisguise { card: CardId },
     AnnounceDisguiseGraveyard { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
@@ -1141,6 +1166,8 @@ define_actions! {
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
     ChooseEquipmentAttachment { equipment: Option<ObjectRef> },
+    ChooseEquipmentRecipient { recipient: ObjectRef },
+    ChooseLinkedCreature { object: ObjectRef },
     OrderLibraryBottom { card: CardId },
     ArrangeLibrary {
         card: CardId,
@@ -1412,7 +1439,7 @@ impl PlayerState {
 
 /// How an actual spell was cast; abilities have no cast information.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum CastMethod {
     Normal,
     GraveyardCounterCost,
@@ -1521,6 +1548,18 @@ pub struct TriggerSourceMoveView {
     pub after: ObjectRef,
     pub origin: Zone,
     pub destination: Zone,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub melded_after: Option<[ObjectRef; 2]>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TriggerSourceMoveView {
+    pub(super) fn objects_after(&self) -> impl Iterator<Item = ObjectRef> {
+        self.melded_after
+            .map_or([Some(self.after), None], |cards| cards.map(Some))
+            .into_iter()
+            .flatten()
+    }
 }
 
 /// A successful action's non-targeted subject, separate from source LKI.
@@ -1548,11 +1587,13 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
         Some(ManaTapBonus {
             fixed: [0, 0, 0, red, 0, 0],
             amount: 0,
+            colorless: 0,
             land_at_tap: None,
         }) => serializer.serialize_u32(*red),
         Some(ManaTapBonus {
             fixed,
             amount: 0,
+            colorless: 0,
             land_at_tap: None,
         }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),
@@ -1915,10 +1956,12 @@ impl SpellView {
             + self.copy_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
             })
-            + self
-                .source_quantity_lki
-                .as_ref()
-                .map_or(0, |_| std::mem::size_of::<SourceQuantityView>())
+            + self.source_quantity_lki.as_ref().map_or(0, |facts| {
+                std::mem::size_of::<SourceQuantityView>()
+                    + facts.attached_equipment.as_ref().map_or(0, |equipment| {
+                        equipment.len() * std::mem::size_of::<ObjectRef>()
+                    })
+            })
             + self.source_counter_lki.as_ref().map_or(0, |facts| {
                 std::mem::size_of::<Vec<SourceCounterQuantityView>>()
                     + facts.len() * std::mem::size_of::<SourceCounterQuantityView>()
@@ -2425,6 +2468,8 @@ pub struct DamageFacts {
     pub colors: u8,
     pub power: i128,
     pub power_above_base: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub legendary_creature: bool,
     pub granted_subtypes: GrantedSubtypes,
     pub card: Card,
     pub battlefield: bool,
@@ -2449,6 +2494,9 @@ impl DamageFacts {
             colors: view.colors,
             power: view.power,
             power_above_base: view.power_above_base,
+            legendary_creature: view.zone == Zone::Battlefield
+                && view.kinds & 1 != 0
+                && view.is_legendary(),
             granted_subtypes: view.granted_subtypes,
             card: view.card,
             token: view.is_token(),
@@ -2493,13 +2541,6 @@ pub struct LifeTriggerView {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct LifeGainEvent {
-    source: DamageSource,
-    amount: i128,
-}
-
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
     Proliferate {
@@ -2538,6 +2579,12 @@ enum Pending {
     ZoneReplacement {
         player: Player,
     },
+    LifeGainReplacement {
+        player: Player,
+    },
+    MeldOrdering {
+        player: Player,
+    },
     Retarget {
         player: Player,
     },
@@ -2548,6 +2595,9 @@ enum Pending {
         player: Player,
     },
     CreatedToken {
+        player: Player,
+    },
+    CopiedSagaLore {
         player: Player,
     },
     Endure {
@@ -3087,6 +3137,8 @@ pub struct ObjectView {
     // never Deserialize); supported snapshots own State and retain this value.
     #[serde(skip)]
     pub(crate) additional_triggers: usize,
+    #[serde(skip)]
+    pub(crate) additional_creature_death_triggers: usize,
     pub prepared: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub harnessed: Option<bool>,
@@ -3198,6 +3250,7 @@ struct EntryIdentity {
     face: Option<Card>,
     copy: Option<CopyRecipe>,
     choice: Option<EntryChoiceValue>,
+    meld: Option<meld::MeldEntry>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3205,7 +3258,7 @@ struct EntryIdentity {
 struct ZoneObservers {
     graveyard: Option<std::sync::Arc<[ObjectView]>>,
     returned_hand: Option<std::sync::Arc<[ObjectView]>>,
-    battlefield_departure: Option<std::sync::Arc<[ObjectView]>>,
+    battlefield_departure: Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -3215,6 +3268,10 @@ struct ZoneObservers {
 pub struct ZoneChange {
     /// Whether the departing object was represented by a physical card.
     pub(super) was_card: bool,
+    /// Additional life gain from the exact chosen death replacement.
+    pub(super) linked_exile_life: Option<(Player, u8)>,
+    /// Physical result cards of one battlefield object, in chosen zone order.
+    pub(super) melded_after: Option<[ObjectRef; 2]>,
     /// An attempted library departure was replaced by revealing and shuffling
     /// the same card into that library; no zone change occurred.
     pub(super) shuffled_in_place: bool,
@@ -3223,7 +3280,8 @@ pub struct ZoneChange {
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
-    pub(super) battlefield_departure_observers: Option<std::sync::Arc<[ObjectView]>>,
+    pub(super) battlefield_departure_observers:
+        Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub(super) cast_origin: Option<Zone>,
@@ -3241,6 +3299,25 @@ pub struct ZoneChange {
     pub bargained: bool,
     pub x: u32,
     pub evidence_collected: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ZoneChange {
+    pub(super) fn source_movement(&self) -> TriggerSourceMoveView {
+        TriggerSourceMoveView {
+            before: self.before.reference,
+            after: self.after,
+            origin: self.before.zone,
+            destination: self.destination,
+            melded_after: self.melded_after,
+        }
+    }
+    pub(super) fn objects_after(&self) -> impl Iterator<Item = ObjectRef> {
+        self.melded_after
+            .map_or([Some(self.after), None], |cards| cards.map(Some))
+            .into_iter()
+            .flatten()
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -3421,7 +3498,7 @@ pub struct RecoveryChoiceView {
     pub candidates: Vec<ObjectRef>,
 }
 
-/// Private discard costs and public sacrifice choices suspended during resolution.
+/// Owned object choices suspended during resolution.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct EffectChoiceView {
@@ -3538,6 +3615,8 @@ pub struct LegalActionSpace {
     pub source_counter_choice: Option<SourceCounterChoiceView>,
     pub mana_lot_spend: Option<ManaLotSpendRange>,
     pub mana_payment: Option<ManaPaymentDomain>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_split: Option<ManaSplitChoiceView>,
     pub choices: Vec<Action>,
     pub x_choice: Option<XChoiceView>,
     pub damage_assignment: Option<DamageAssignmentRange>,
@@ -3615,6 +3694,8 @@ pub struct Observation {
     pub hand_deployment: Option<HandDeploymentView>,
     pub keep_types: Option<KeepTypesView>,
     pub linked_exile: Vec<LinkedExileView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
     pub dream_exiles: Vec<DreamExileView>,
     pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub linked_free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
@@ -3633,6 +3714,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inserted_phases: Option<Vec<Step>>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_end_steps: Option<AdditionalEndStepsView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub turn_callbacks: Option<Vec<TurnCallbackView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attack_without_defender: Option<Vec<ObjectRef>>,
@@ -3646,6 +3729,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub combat_damaged_players: Vec<combat_allocations::CombatDamagePlayerView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub player_combat_damage_this_turn: Option<PlayerCombatDamageView>,
     pub animations: Vec<AnimationView>,
     pub temporary_controls: Vec<TemporaryControlView>,
     pub casting_prohibited: bool,
@@ -3663,8 +3748,18 @@ pub struct Observation {
     pub solved_cases: Vec<ObjectRef>,
     pub replacement_choice: Option<ReplacementChoiceView>,
     pub zone_replacement_choice: Option<ZoneReplacementChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub life_gain_replacement_choice: Option<LifeGainReplacementChoice>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub meld_ordering_choice: Option<MeldOrderingChoice>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub melded_permanents: Vec<MeldedPermanentView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub meld_departure_orders: Vec<MeldDepartureOrder>,
     pub zone_reveals: Vec<ZoneRevealView>,
     pub created_token_choice: Option<CreatedTokenChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub copied_saga_lore: Option<CopiedSagaLoreView>,
     /// Complete exact numeric cost-payment space, visible only to its actor.
     pub mana_payment: Option<ManaPaymentDomain>,
     pub endure_choice: Option<EndureChoiceView>,
@@ -3782,6 +3877,10 @@ pub struct Observation {
     pub chosen_source_shields: Option<Vec<ChosenSourceShieldView>>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub creature_damage_shields: Vec<CreatureDamageShieldView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_doublers: Vec<DamageDoublerView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -3802,6 +3901,8 @@ pub struct Observation {
     pub used_free_hand_permissions: Vec<ObjectRef>,
     pub suspended_mana_announcements: Vec<ManaAnnouncementView>,
     pub announcing_payment: Option<PendingPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_split: Option<ManaSplitChoiceView>,
     pub mana_choices: Vec<Mana>,
     pub mode_choices: Vec<ModeChoiceView>,
     pub cost_choices: Vec<SpellCostChoiceView>,
@@ -3898,6 +3999,7 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.face_parent().is_some()
+                    || card.is_meld_face()
                     || !card.is_supported()
                     || outside_names::names(card).is_none()
                 {
@@ -3975,9 +4077,10 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.face_parent().is_some()
+                    || card.is_meld_face()
                 {
                     return Err(Error::InvalidDeck(
-                        if card.face_parent().is_some() {
+                        if card.face_parent().is_some() || card.is_meld_face() {
                             "back face definitions cannot be submitted in decks"
                         } else if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
@@ -4253,6 +4356,7 @@ impl Game {
         if game.state.objects.iter().any(|o| {
             o.card.zone_replacement().is_some()
                 || zone_replacements::card_provides_prevention(o.card)
+                || life_gain::can_double(o.card)
         }) {
             game.state.zone_rules = Some(Box::default());
         }
@@ -4291,9 +4395,12 @@ impl Game {
             Pending::MiracleReveal { player }
             | Pending::ResolutionCasts { player }
             | Pending::ZoneReplacement { player }
+            | Pending::LifeGainReplacement { player }
+            | Pending::MeldOrdering { player }
             | Pending::ManaLotSpend { player }
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
+            | Pending::CopiedSagaLore { player }
             | Pending::PlotPayment { player }
             | Pending::FaceUpPayment { player }
             | Pending::EvidenceIntent { player }
@@ -4407,6 +4514,7 @@ impl Game {
             source_counter_choice: self.source_counter_choice(),
             mana_lot_spend: self.mana_lot_spend_range(),
             mana_payment: self.mana_payment_domain(),
+            mana_split: self.mana_split_choice(),
             choices: self.legal_actions(),
             x_choice: self.x_choice(),
             damage_assignment: self.damage_assignment_range(),
@@ -4436,7 +4544,7 @@ impl Game {
         })
     }
     /// Reuse a caller-owned buffer of concrete indexed choices. Numeric ranges
-    /// up to 64 wide are exhaustive; larger damage/X domains provide bounded
+    /// up to 64 wide are exhaustive; larger numeric domains provide bounded
     /// representatives. Use legal_action_space for the complete parametric space.
     pub fn legal_actions_into(&self, out: &mut Vec<Action>) {
         out.clear();
@@ -4584,8 +4692,10 @@ impl Game {
             return Err(Error::GameOver);
         }
         if action == Action::Concede {
-            self.state.outcome = Some(Outcome::Winner(actor.other()));
-            self.state.pending = Pending::Terminal;
+            let mut lost = [false; 2];
+            lost[actor.index()] = true;
+            self.chosen_player_loss_triggers(lost);
+            self.commit_game_losses(lost);
         } else {
             if self.semantic_actor() != Some(actor) {
                 return Err(Error::WrongActor);
@@ -4614,6 +4724,16 @@ impl Game {
             } else if let Action::ChooseX { value } = &action {
                 self.x_choice()
                     .is_some_and(|domain| domain.contains(*value))
+            } else if let Action::ChooseMana { production } = &action
+                && matches!(
+                    self.state.pending,
+                    Pending::EffectMana {
+                        production: ManaProduction::Split(_),
+                        ..
+                    }
+                )
+            {
+                self.mana_split_production_legal(*production)
             } else if let Action::AssignDamage { target, amount } = &action {
                 self.damage_assignment_range().is_some_and(|range| {
                     *target == range.target && *amount >= range.minimum && *amount <= range.maximum
@@ -4813,8 +4933,10 @@ impl Game {
             }
             Pending::HandLibrarySearch { .. } => return self.visit_hand_library_search(&mut emit),
             Pending::LibraryGraveyardSearch { .. } => return self.visit_zone_search(&mut emit),
-            Pending::ZoneReplacement { .. } => {
-                if self.zone_choice_actions(&mut emit) {
+            Pending::ZoneReplacement { .. }
+            | Pending::LifeGainReplacement { .. }
+            | Pending::MeldOrdering { .. } => {
+                if self.ordered_event_choice_actions(&mut emit) {
                     return true;
                 }
             }
@@ -4853,6 +4975,17 @@ impl Game {
             Pending::CreatedToken { .. } => {
                 if self.visit_created_token_actions(&mut emit) {
                     return true;
+                }
+            }
+            Pending::CopiedSagaLore { .. } => {
+                let choice = self.copied_saga_lore_choice().unwrap();
+                for amount in 0..=choice.maximum {
+                    if emit(Action::ChooseCopiedSagaLore {
+                        object: choice.object,
+                        amount,
+                    }) {
+                        return true;
+                    }
                 }
             }
             Pending::Endure { .. } => {
@@ -5163,6 +5296,9 @@ impl Game {
                 {
                     return true;
                 }
+                if choice.kind.any_number_selection() && emit(Action::FinishEffectChoice) {
+                    return true;
+                }
                 if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
                     && emit(Action::FinishGraveyardReturn)
                 {
@@ -5197,6 +5333,15 @@ impl Game {
                             | EffectChoiceKind::HandLand { .. }
                     ) {
                         Action::DeclineHandEntry
+                    } else if matches!(
+                        choice.kind,
+                        EffectChoiceKind::ReturnToHand
+                            | EffectChoiceKind::ReturnGraveyardToHand { .. }
+                            | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
+                            | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
+                    ) {
+                        Action::ChooseOptional { accept: false }
                     } else {
                         Action::DeclineEffectPayment
                     })
@@ -5210,8 +5355,16 @@ impl Game {
                             EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseSharedCreature { object }
                             }
-                            EffectChoiceKind::GraveyardCreatures { .. } => {
+                            EffectChoiceKind::GraveyardCreatures { .. }
+                            | EffectChoiceKind::ReturnGraveyardToHand { .. } => {
                                 Action::SelectGraveyardReturn { object }
+                            }
+                            EffectChoiceKind::ReturnToHand
+                            | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
+                            | EffectChoiceKind::RemoveLoreForSourceCounters(_)
+                            | EffectChoiceKind::MeldPartner(_) => {
+                                Action::ChooseEffectObject { object }
                             }
                             EffectChoiceKind::ColorCounter { .. } => {
                                 Action::ChooseColorCounter { object }
@@ -5223,6 +5376,13 @@ impl Game {
                             EffectChoiceKind::EmpowerJace(_) => Action::ChooseJace { object },
                             EffectChoiceKind::PowerDifferenceBoost => {
                                 Action::ChoosePowerDifferenceCreature { object }
+                            }
+                            EffectChoiceKind::EquipmentRecipient
+                            | EffectChoiceKind::ReflexiveEquipmentRecipient { .. } => {
+                                Action::ChooseEquipmentRecipient { recipient: object }
+                            }
+                            EffectChoiceKind::LinkedCreature { .. } => {
+                                Action::ChooseLinkedCreature { object }
                             }
                             EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
@@ -5449,6 +5609,12 @@ impl Game {
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
+                let graveyard_life_casts =
+                    if casting_prohibited || self.nonhand_cast_prohibited(actor) {
+                        Vec::new()
+                    } else {
+                        self.graveyard_life_cast_rules(actor)
+                    };
                 if self.visit_graveyard_permanent_plays(
                     actor,
                     sorcery,
@@ -5480,9 +5646,8 @@ impl Game {
                         Zone::Battlefield => obj.controller == actor,
                         Zone::Hand | Zone::Graveyard => obj.owner == actor,
                         Zone::Library => {
-                            self.can_cast_library_top(actor, card)
+                            self.has_library_spell_face(actor, card)
                                 || self.can_play_static_land(actor, card)
-                                || self.turn_free_library_origin(actor, card)
                         }
                         Zone::Exile => {
                             plotted = sorcery && self.has_plotted_permission(actor, card);
@@ -5652,9 +5817,20 @@ impl Game {
                     {
                         return true;
                     }
+                    if self.visit_graveyard_life_casts(
+                        actor,
+                        card,
+                        sorcery,
+                        &graveyard_life_casts,
+                        &mut emit,
+                    ) {
+                        return true;
+                    }
                     // This check follows face-down disguise: the face-down spell
                     // has no printed restriction from its underlying card.
-                    if !self.spell_graveyard_requirement_holds(actor, card, obj.card) {
+                    let front_allowed =
+                        self.spell_graveyard_requirement_holds(actor, card, obj.card);
+                    if obj.zone != Zone::Library && !front_allowed {
                         continue;
                     }
                     if !casting_prohibited
@@ -5681,13 +5857,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.card.adventure_spell().is_some()
-                        && self.alternate_cast_available(
-                            actor,
-                            card,
-                            sorcery,
-                            obj.card.adventure_spell().unwrap(),
-                        )
+                    if self.alternate_cast_available(actor, card, sorcery, CastFace::Adventure)
                         && emit(Action::AnnounceAdventure { card })
                     {
                         return true;
@@ -5698,8 +5868,7 @@ impl Game {
                     {
                         return true;
                     }
-                    if let Some(definition) = obj.card.omen_spell()
-                        && self.alternate_cast_available(actor, card, sorcery, definition)
+                    if self.alternate_cast_available(actor, card, sorcery, CastFace::Omen)
                         && emit(Action::AnnounceOmen { card })
                     {
                         return true;
@@ -5841,17 +6010,23 @@ impl Game {
                         }
                         if !obj.card.is_land()
                             && self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast)
-                            && self.permitted_cast_available(
-                                actor,
-                                card,
-                                CastMethod::Normal,
-                                CastFace::Normal,
-                                sorcery,
-                                false,
-                            )
-                            && emit(Action::AnnounceCast { card })
                         {
-                            return true;
+                            for flash_surcharge in [false, true] {
+                                if self.permitted_cast_available(
+                                    actor,
+                                    card,
+                                    CastMethod::Normal,
+                                    CastFace::Normal,
+                                    sorcery,
+                                    flash_surcharge,
+                                ) && emit(if flash_surcharge {
+                                    Action::AnnounceGraveyardFlashSurcharge { card }
+                                } else {
+                                    Action::AnnounceCast { card }
+                                }) {
+                                    return true;
+                                }
+                            }
                         }
                         if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback) {
                             for flash_surcharge in [false, true] {
@@ -5922,6 +6097,9 @@ impl Game {
                         && emit(Action::AnnounceHarmonize { card })
                     {
                         return true;
+                    }
+                    if !front_allowed {
+                        continue;
                     }
                     let flashback =
                         obj.zone == Zone::Graveyard && obj.card.flashback_cost().is_some();
@@ -6989,9 +7167,17 @@ impl Game {
             }
             Action::ChooseOutsideSelfReplacement { effect } => self.choose_outside_self(effect),
             Action::ChooseZoneReplacement { effect } => self.choose_zone_replacement(effect),
+            Action::ChooseMeldOrder { first } => self.choose_meld_order(first),
             Action::ChooseDrawReplacement { source } => self.choose_draw_replacement(source),
             Action::ChooseReplacement { source, ability } => {
-                self.choose_replacement(source, ability)
+                if matches!(self.state.pending, Pending::LifeGainReplacement { .. }) {
+                    self.choose_life_gain_replacement(source, ability);
+                } else {
+                    self.choose_replacement(source, ability);
+                }
+            }
+            Action::ChooseResolvedDamageReplacement { effect } => {
+                self.choose_resolved_damage_replacement(effect)
             }
             Action::ChooseSelfCounterReplacement { effect } => {
                 self.choose_self_counter_replacement(effect)
@@ -7006,6 +7192,9 @@ impl Game {
             Action::ChooseStackDamageSource { id } => self
                 .finish_source_prevention_choice(DamageSourceRef::StackObject { stack_object: id }),
             Action::ChooseCreatedToken { object } => self.choose_created_token(object),
+            Action::ChooseCopiedSagaLore { object, amount } => {
+                self.choose_copied_saga_lore(object, amount)
+            }
             Action::ChooseLibraryDestination {
                 object,
                 destination,
@@ -7083,6 +7272,12 @@ impl Game {
                 grantor,
                 ability,
             } => self.announce_planeswalker_grant(source, grantor, ability),
+            Action::ChooseResolutionCost { index } => self.choose_resolution_cost(index),
+            Action::ChooseAdditionalCost { object }
+                if matches!(self.state.pending, Pending::ResolutionMana { .. }) =>
+            {
+                self.choose_resolution_cost_object(object)
+            }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::FinishAdditionalCostGroup => self.finish_additional_cost_group(),
             Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
@@ -7181,7 +7376,7 @@ impl Game {
                     && resolution.pc > 0
                     && matches!(
                         resolution.program[resolution.pc - 1],
-                        Instruction::ExileTopMayCastPaid
+                        Instruction::ExileTopMayCastPaid | Instruction::ExileTopMayCastPaidFrom(_)
                     )
                 {
                     resolution.moved_count = Some(u64::from(
@@ -7372,6 +7567,7 @@ impl Game {
                     None,
                     origin_counter_cost,
                     origin_additional_cost,
+                    None,
                 );
             }
             Action::AnnounceExileFree {
@@ -7446,8 +7642,10 @@ impl Game {
                 let item = self.cast_item(actor, card, [0; 6]);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
-            Action::AnnounceFlashSurcharge { card } => {
-                let flashback = self.state.objects[card as usize].zone == Zone::Graveyard;
+            Action::AnnounceFlashSurcharge { card }
+            | Action::AnnounceGraveyardFlashSurcharge { card } => {
+                let flashback = matches!(action, Action::AnnounceFlashSurcharge { .. })
+                    && self.state.objects[card as usize].zone == Zone::Graveyard;
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 let cast = item.cast.as_mut().unwrap();
                 cast.flash_surcharge = true;
@@ -7502,6 +7700,23 @@ impl Game {
                     .facts
                     .power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceGraveyardWithLife {
+                object,
+                face,
+                method,
+                flash_surcharge,
+                life,
+                entry_counter,
+            } => {
+                self.start_graveyard_life_cast(
+                    actor,
+                    object.card,
+                    face,
+                    method,
+                    flash_surcharge,
+                    (life, entry_counter),
+                );
             }
             Action::AnnounceGraveyardFinality { card, sneak } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
@@ -7601,6 +7816,16 @@ impl Game {
                     self.configure_harmonize_cast(&mut item, method);
                     self.open_payment_announcement(item, Counters::default(), None);
                 }
+            }
+            Action::AnnounceFlashback { card }
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) =>
+            {
+                self.cast_during_resolution_with_cost(
+                    actor,
+                    self.object_ref(card),
+                    CastFace::Normal,
+                    Some(CastMethod::Flashback),
+                );
             }
             Action::AnnounceFlashback { card } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
@@ -7706,7 +7931,7 @@ impl Game {
                 } else {
                     self.add_quality_mana(actor, production, quality);
                     self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
-                    self.committed_mana_reflexive(&item);
+                    self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
             }
@@ -7846,7 +8071,7 @@ impl Game {
                 } else {
                     self.add_quality_mana(actor, production, quality);
                     self.finish_mana_tap_bonus(actor, item.tap_mana_bonus(self), production);
-                    self.committed_mana_reflexive(&item);
+                    self.committed_mana_followups(&item);
                     self.reopen_evidence_after_mana_sacrifice(card);
                 }
             }
@@ -8043,22 +8268,16 @@ impl Game {
                 {
                     a.add_cast_cost_clause(CastCostClause::Life(value));
                 }
-                if self
-                    .state
-                    .announcing
-                    .as_ref()
-                    .unwrap()
-                    .item
+                let a = self.state.announcing.as_ref().unwrap();
+                if a.item
                     .source
                     .expect("object-backed announcement")
                     .card
                     .targets_up_to_x()
-                    || self
-                        .exact_x_targets(&self.state.announcing.as_ref().unwrap().item)
-                        .is_some()
-                    || self.state.announcing.as_ref().unwrap().nonmana_x()
+                    || self.exact_x_targets(&a.item).is_some()
+                    || a.declares_target_value_x()
                 {
-                    let plan = self.target_spec(&self.state.announcing.as_ref().unwrap().item);
+                    let plan = self.target_spec(&a.item);
                     self.state.announcing.as_mut().unwrap().plan = plan;
                 }
                 self.continue_announcement_choices(false);
@@ -8345,10 +8564,31 @@ impl Game {
             | Action::ChooseArmy { object }
             | Action::ChooseJace { object }
             | Action::ChoosePowerDifferenceCreature { object }
+            | Action::ChooseEquipmentRecipient { recipient: object }
+            | Action::ChooseLinkedCreature { object }
             | Action::SelectGraveyardReturn { object }
+            | Action::ChooseEffectObject { object }
             | Action::SelectLand { object }
             | Action::SelectResolutionExile { object }
             | Action::BottomHandCard { object } => self.choose_effect_object(actor, object),
+            Action::FinishEffectChoice => {
+                let choice = self
+                    .state
+                    .resolving
+                    .as_ref()
+                    .unwrap()
+                    .choice
+                    .as_ref()
+                    .unwrap();
+                match choice.kind {
+                    EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
+                        self.finish_lore_counter_selection();
+                    }
+                    EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    _ => unreachable!("explicitly finished resolution selection"),
+                }
+                self.run_program();
+            }
             Action::FinishGraveyardReturn => {
                 self.finish_graveyard_return_selection();
                 self.run_program();
@@ -8514,6 +8754,11 @@ impl Game {
             {
                 self.choose_optional_token_replacement(accept);
             }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::EffectChoice { .. }) =>
+            {
+                self.decline_effect_payment();
+            }
             Action::ChooseOptional { accept }
                 if matches!(self.state.pending, Pending::OptionalSearch(_)) =>
             {
@@ -8533,8 +8778,9 @@ impl Game {
                 if !accept {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 } else {
-                    self.complete_optional_tap_reflexive();
+                    self.complete_optional_source_reflexive();
                     self.complete_optional_discard_exile_play();
+                    self.complete_optional_source_attachment(skip_to);
                 }
                 self.complete_optional_source_counter_cast(accept);
                 self.run_program();
@@ -8835,6 +9081,7 @@ impl Game {
             .any(|(view, _)| view.zone == Zone::Battlefield)
             .then(|| self.freeze_battlefield_departure_observers())
             .flatten();
+        let control_watch = self.freeze_control_watch();
         let events = plans
             .into_iter()
             .map(|(view, plan)| {
@@ -8852,7 +9099,7 @@ impl Game {
                 )
             })
             .collect();
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         Some(events)
     }
 
@@ -8947,6 +9194,7 @@ impl Game {
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let graveyard_observers = self.freeze_exile_batch_observers();
         let battlefield_departure = self.freeze_battlefield_departure_observers();
+        let control_watch = self.freeze_control_watch();
         let mut events: Vec<_> = plans
             .into_iter()
             .map(|(before, plan)| {
@@ -8971,7 +9219,7 @@ impl Game {
         }
         self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Sacrifice);
         self.food_sacrifice_triggers(&events, &sources);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         self.record_own_sacrifices(&events);
         let paid = PaidAdditionalCostView {
             selected: sacrifices.len() as u64,
@@ -9085,6 +9333,7 @@ impl Game {
             .any(|&id| self.on_battlefield(id))
             .then(|| self.freeze_battlefield_departure_observers())
             .flatten();
+        let control_watch = self.freeze_control_watch();
         let events = planned
             .into_iter()
             .map(|(before, plan, (tapped, counters))| {
@@ -9104,7 +9353,7 @@ impl Game {
             .collect();
         // A surveil caller must first restore reserved library positions.
         if positions.is_none() {
-            self.refresh_controllers();
+            self.refresh_controllers_after(Some(control_watch));
         }
         events
     }
@@ -9236,8 +9485,9 @@ impl Game {
             "choice-bearing entry must be staged"
         );
         let before = self.object_view(id);
+        let control_watch = self.freeze_control_watch();
         let event = self.transition_object(before, destination, tapped);
-        self.refresh_controllers();
+        self.refresh_controllers_after(Some(control_watch));
         event
     }
 
@@ -9363,6 +9613,7 @@ impl Game {
                 face: None,
                 copy: None,
                 choice: None,
+                meld: None,
             },
             ZoneObservers {
                 graveyard: graveyard_observers,
@@ -9386,6 +9637,7 @@ impl Game {
             face: entering_face,
             copy: entering_copy,
             choice: entering_choice,
+            meld: entering_meld,
         } = entry;
         let ZoneObservers {
             graveyard: graveyard_observers,
@@ -9397,6 +9649,8 @@ impl Game {
         if plan.prevented {
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9429,6 +9683,7 @@ impl Game {
             self.capture_stack_copy_departure(id);
         }
         let destination = plan.destination;
+        let departing_meld = self.melded_permanent(before.reference);
         if before.zone == Zone::Graveyard
             && destination != Zone::Graveyard
             && !before.is_token()
@@ -9446,6 +9701,8 @@ impl Game {
         {
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: false,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9475,6 +9732,8 @@ impl Game {
             self.shuffle_zone_card(&before, shuffle);
             return ZoneChange {
                 was_card,
+                linked_exile_life: None,
+                melded_after: None,
                 shuffled_in_place: true,
                 cast_event: None,
                 entry_counter_player: None,
@@ -9559,8 +9818,13 @@ impl Game {
             state
                 .harnessed
                 .retain(|reference| *reference != before.reference);
+            state
+                .chosen_creature_links
+                .retain(|link| link.source != before.reference);
         }
         self.forget_face_change(before.reference);
+        self.forget_meld_departure_order(before.reference);
+        self.forget_melded_permanent(before.reference);
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
                 row.recipient != before.reference
@@ -9748,6 +10012,7 @@ impl Game {
             self.state.cast_sources.retain(|&source| source != id);
             self.forget_activation_observer(id);
             self.state.attack_sources.retain(|&source| source != id);
+            self.forget_control_change_source(id);
             self.state.tap_sources.retain(|&source| source != id);
             self.state.damage_sources.retain(|&source| source != id);
             self.state.discard_sources.retain(|&source| source != id);
@@ -9810,14 +10075,17 @@ impl Game {
         self.forget_granted_exhaust_uses(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
-        let copy_physical_card = self.state.objects[id as usize].card;
+        let copy_physical_card =
+            entering_meld.map_or(self.state.objects[id as usize].card, |meld| meld.combined);
         let obj = &mut self.state.objects[id as usize];
         // CR608.3f/707.10f: a resolving permanent-spell copy becomes a token.
         // This is an entry, not token creation, so creation replacements do not apply.
         if before.zone == Zone::Stack && destination == Zone::Battlefield && obj.is_spell_copy() {
             obj.copy_kind = CopyKind::Token;
         }
-        obj.card = if let Some(physical) = manifested_physical {
+        obj.card = if let Some(meld) = departing_meld {
+            meld.front_cards[0]
+        } else if let Some(physical) = manifested_physical {
             physical.front_face()
         } else if let Some(row) = disguised_spell
             && destination != Zone::Battlefield
@@ -9903,8 +10171,14 @@ impl Game {
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
         }
+        if destination == Zone::Battlefield
+            && let Some(meld) = entering_meld
+        {
+            self.finish_meld_entry(self.object_ref(id), meld);
+        }
         let entered_with_counters = counters.has_any();
         let entered_with_plus_one = counters.plus_one > 0;
+        let entered_with_lore = counters.lore > 0;
         self.set_counters(id, counters);
         if destination == Zone::Battlefield {
             let (owner, _) = entry_identity;
@@ -9919,6 +10193,7 @@ impl Game {
                     reference,
                     placed_by,
                     entered_with_plus_one,
+                    entered_with_lore,
                     false,
                 );
             }
@@ -9939,12 +10214,26 @@ impl Game {
                 self.state.known_hand.push(reference);
             }
         }
+        let after = self.object_ref(id);
+        let melded_after = departing_meld.map(|meld| {
+            self.split_melded_permanent(after, meld, destination, plan.meld_companion_first)
+        });
         if let Some(shuffle) = plan.shuffle {
             self.shuffle_zone_card(&before, shuffle);
         }
-        if let Some(completion) = plan.completion {
-            self.complete_special_zone_move(self.object_ref(id), completion);
-        }
+        let linked_exile_life = plan.completion.and_then(|completion| {
+            let mut life = self.complete_special_zone_move(after, completion, was_card);
+            if let Some(companion) =
+                melded_after.and_then(|cards| cards.into_iter().find(|&card| card != after))
+            {
+                // The linked replacement affects both physical results, but the
+                // life gain belongs to the single permanent departure.
+                life = self
+                    .complete_special_zone_move(companion, completion, was_card)
+                    .or(life);
+            }
+            life
+        });
         self.copy_characteristic_zone_commit(&before, self.object_ref(id), destination);
         // A Siege's protector must be an opponent; this library is two-player.
         if destination == Zone::Battlefield
@@ -9968,6 +10257,8 @@ impl Game {
         }
         ZoneChange {
             was_card,
+            linked_exile_life,
+            melded_after,
             shuffled_in_place: false,
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
@@ -10007,11 +10298,12 @@ impl Game {
             .map(|a| a.card)
             .collect();
         let declared_count = self.state.selected_attackers.len();
-        self.commit_attackers_with(actor, pre_tapped, |game, card| {
+        self.commit_attackers_with(actor, pre_tapped, |game, attack| {
             game.attack_triggers_for_declaration(
-                &game.object_view(card),
+                &game.object_view(attack.card),
+                attack.defender,
                 declared_count,
-                first_attacks.contains(&card),
+                first_attacks.contains(&attack.card),
             );
         });
         self.give_priority();
@@ -10020,7 +10312,7 @@ impl Game {
         &mut self,
         actor: Player,
         pre_tapped: bool,
-        mut event: impl FnMut(&mut Self, CardId),
+        mut event: impl FnMut(&mut Self, &AttackDeclaration),
     ) {
         self.state.attack_declared = !self.state.selected_attackers.is_empty();
         self.state.players[actor.index()].attacked_this_turn |= self.state.attack_declared;
@@ -10044,7 +10336,7 @@ impl Game {
         }
         let power_event = self.record_attack_turn_facts(actor, &declared);
         for attack in &declared {
-            event(self, attack.card);
+            event(self, attack);
         }
         if self.state.attack_declared {
             self.declaration_triggers(actor, alone, &declared, power_event);
@@ -10093,6 +10385,9 @@ impl Game {
             roles
                 .player_damage_shields
                 .retain(|shield| shield.controller != self.state.active);
+            roles
+                .damage_doublers
+                .retain(|effect| effect.controller != self.state.active);
         }
         self.expire_source_land_forms(self.state.active);
         self.expire_next_turn_stats(self.state.active);
@@ -10118,9 +10413,19 @@ impl Game {
         self.prune_modal_history();
         self.state.entered_this_turn = None;
         self.state.creature_entry_history = None;
+        let objects = &self.state.objects;
+        let active_player = self.state.active;
         self.state
             .exile_permissions
-            .retain(|p| p.expiry != ExilePlayExpiry::StartOfNextTurn(self.state.active));
+            .retain(|permission| match permission.expiry {
+                ExilePlayExpiry::StartOfNextTurn(player) => player != active_player,
+                ExilePlayExpiry::SourceLoreTurns => permission.source.is_some_and(|source| {
+                    objects.get(source.card as usize).is_some_and(|object| {
+                        object.zone == Zone::Battlefield && object.generation == source.generation
+                    })
+                }),
+                _ => true,
+            });
         for permission in &mut self.state.exile_permissions {
             if permission.expiry == ExilePlayExpiry::EndOfNextTurn
                 && permission.player == self.state.active
@@ -10296,6 +10601,11 @@ impl Game {
                 self.give_priority();
             }
             Step::End | Step::Cleanup => {
+                if self.state.step == Step::End && self.take_additional_end_step() {
+                    self.begin_step(Step::End);
+                    self.give_priority();
+                    return;
+                }
                 self.state.step = Step::Cleanup;
                 if self.above_hand_limit(self.state.active, 0) {
                     self.state.pending = Pending::Discard;
@@ -10308,12 +10618,31 @@ impl Game {
     }
 
     fn finish_cleanup(&mut self) {
+        let control_watch = self.freeze_control_watch();
+        // CR 514.2: decide which abilities apply before damage removal and the
+        // expiration of until-end-of-turn effects happen simultaneously.
+        let retained_damage: Vec<_> = self
+            .state
+            .static_sources
+            .iter()
+            .copied()
+            .filter(|&id| {
+                self.state.objects[id as usize].damage > 0
+                    && self.active_rule_fragment(id, |fragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
+                        )
+                    })
+            })
+            .collect();
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
             rules.must_attack_this_combat.clear();
             rules.additional_combats = 0;
             rules.after_main = None;
             rules.inserted_phases.clear();
+            rules.end_steps = AdditionalEndStepsView::default();
             rules.attack_without_defender.clear();
         }
         self.state.casting_prohibited = false;
@@ -10349,6 +10678,7 @@ impl Game {
         self.expire_keyword_effects();
         if let Some(roles) = &mut self.state.roles {
             roles.toughness_combat_damage = [false; 2];
+            roles.creature_damage_shields.clear();
         }
         self.state.death_exile_replacements = None;
         for player in &mut self.state.players {
@@ -10361,8 +10691,10 @@ impl Game {
             |p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn),
         );
         // Damage removal and expiration of until-end-of-turn effects are simultaneous.
-        for obj in &mut self.state.objects {
-            obj.damage = 0;
+        for (index, obj) in self.state.objects.iter_mut().enumerate() {
+            if !retained_damage.contains(&(index as CardId)) {
+                obj.damage = 0;
+            }
             obj.deathtouch_since_sba = false;
             obj.growth = Stats::default();
             obj.gained_keywords = Keywords::NONE;
@@ -10372,6 +10704,8 @@ impl Game {
             expired_legend_rule |= std::mem::take(&mut player.legend_rule_ignored_this_turn);
         }
         let expired_copies = self.expire_temporary_copies(true);
+        // All cleanup expirations and damage removal happen simultaneously.
+        self.refresh_controllers_after(Some(control_watch));
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
@@ -10388,7 +10722,8 @@ impl Game {
                 || expired_vehicles
                 || expired_animations
                 || expired_copies
-                || expired_legend_rule)
+                || expired_legend_rule
+                || !retained_damage.is_empty())
                 && self.sba_required()
             || self.state.objects.iter().enumerate().any(|(id, obj)| {
                 obj.zone == Zone::Battlefield
@@ -10436,15 +10771,11 @@ impl Game {
         }
     }
 
-    fn apply_damage_batch(&mut self, events: &[DamageEvent]) -> Vec<LifeGainEvent> {
-        self.apply_damage_batch_recording(events, None)
+    fn apply_damage_batch(&mut self, events: &[DamageEvent]) {
+        self.apply_damage_batch_recording(events, None);
     }
 
-    fn apply_damage_batch_recording(
-        &mut self,
-        events: &[DamageEvent],
-        remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+    fn apply_damage_batch_recording(&mut self, events: &[DamageEvent], remembering: Option<u64>) {
         if self.damage_replacement_candidates_exist(events)
             || events.iter().any(|event| {
                 event.amount > 0
@@ -10453,9 +10784,8 @@ impl Game {
             })
         {
             self.stage_damage_replacements(events, remembering);
-            Vec::new()
         } else {
-            self.commit_damage_batch(events, remembering)
+            self.commit_damage_batch(events, remembering);
         }
     }
 
@@ -10492,6 +10822,10 @@ impl Game {
         if event.combat && event.source.keywords.contains(Keywords::PREVENT_COMBAT_BY) {
             return true;
         }
+        if let Target::Player(player) = event.target {
+            return event.source.controller != player
+                && ability_world::player_protection_source(self, player).is_some();
+        }
         let Target::Card(id) = event.target else {
             return false;
         };
@@ -10504,11 +10838,7 @@ impl Game {
             )
     }
 
-    fn commit_damage_batch(
-        &mut self,
-        events: &[DamageEvent],
-        remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+    fn commit_damage_batch(&mut self, events: &[DamageEvent], remembering: Option<u64>) {
         // Avoid allocating on the ordinary, unprevented damage path.
         let dealt = events
             .iter()
@@ -10521,8 +10851,41 @@ impl Game {
                     .collect::<Vec<_>>()
             });
         let events = dealt.as_deref().unwrap_or(events);
+        let gains = self.prepare_damage_results(events);
+        self.commit_unprevented_damage_batch(events, remembering, &gains);
+    }
+
+    fn prepare_damage_results(&mut self, events: &[DamageEvent]) -> Vec<LifeTriggerView> {
+        // Lifelink is simultaneous with the other damage results. Freeze
+        // per-source gains after prevention, and settle their replacement
+        // choices before exposing any of the damage results.
+        let mut gains: Vec<LifeTriggerView> = Vec::new();
+        let mut indices = std::collections::BTreeMap::<DamageSource, usize>::new();
+        for event in events {
+            if event.amount <= 0 || !event.source.keywords.contains(Keywords::LIFELINK) {
+                continue;
+            }
+            if let Some(&index) = indices.get(&event.source) {
+                gains[index].amount = gains[index]
+                    .amount
+                    .checked_add(event.amount)
+                    .capacity("life gain representation exhausted");
+            } else {
+                indices.insert(event.source, gains.len());
+                gains.push(LifeTriggerView {
+                    player: event.source.controller,
+                    amount: event.amount,
+                });
+            }
+        }
+        for player in [self.state.active, self.state.active.other()] {
+            for gain in gains.iter_mut().filter(|gain| gain.player == player) {
+                gain.amount = self.plan_life_gain(player, gain.amount);
+            }
+        }
         self.refresh_excess_threshold(events);
-        self.commit_unprevented_damage_batch(events, remembering)
+        self.source_damage_triggers(events);
+        gains
     }
 
     /// Prevention and pre-damage thresholds are already fixed, including when
@@ -10531,11 +10894,9 @@ impl Game {
         &mut self,
         events: &[DamageEvent],
         remembering: Option<u64>,
-    ) -> Vec<LifeGainEvent> {
+        gains: &[LifeTriggerView],
+    ) {
         let mut losses = [0i128; 2];
-        let mut gains: Vec<LifeGainEvent> = Vec::new();
-        let mut gain_indices: std::collections::BTreeMap<DamageSource, usize> =
-            std::collections::BTreeMap::new();
         for event in events {
             if event.amount <= 0 {
                 continue;
@@ -10618,28 +10979,12 @@ impl Game {
                     source.dealt_combat_damage_this_incarnation = true;
                 }
             }
-            if event.source.keywords.contains(Keywords::LIFELINK) {
-                // One source damaging multiple objects simultaneously causes a
-                // single life-gain event; distinct sources remain distinct.
-                if let Some(&index) = gain_indices.get(&event.source) {
-                    gains[index].amount = gains[index]
-                        .amount
-                        .checked_add(event.amount)
-                        .capacity("life gain representation exhausted");
-                } else {
-                    gain_indices.insert(event.source, gains.len());
-                    gains.push(LifeGainEvent {
-                        source: event.source,
-                        amount: event.amount,
-                    });
-                }
-            }
         }
         for player in [Player::P0, Player::P1] {
             self.life_lost_event(player, losses[player.index()]);
         }
-        for gain in &gains {
-            self.gain_life(gain.source.controller, gain.amount);
+        for gain in gains {
+            self.commit_life_gain(gain.player, gain.amount);
         }
         self.record_combat_and_excess_damage(events);
         self.creature_damage_events(events);
@@ -10647,7 +10992,6 @@ impl Game {
         self.player_damage_triggers(events);
         self.delayed_target_combat_damage(events);
         // Trigger events are recorded before SBAs, after the whole damage batch.
-        gains
     }
 
     fn combatants(&self) -> Vec<CardId> {
@@ -10971,6 +11315,10 @@ impl Game {
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))
                     .collect()
             }),
+            chosen_creature_links: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.chosen_creature_links.clone()),
             casting_prohibited: s.casting_prohibited || self.static_casting_prohibited(viewer),
             prohibit_opponent_nonhand_casts: s.roles.as_ref().and_then(|roles| {
                 roles
@@ -10982,8 +11330,16 @@ impl Game {
             damage_prevention_prohibited: self.damage_prevention_prohibited(),
             replacement_choice: self.replacement_choice(viewer),
             zone_replacement_choice: self.zone_choice_view(viewer),
+            life_gain_replacement_choice: self.life_gain_choice_view(viewer),
+            meld_ordering_choice: self.meld_ordering_view(viewer),
+            melded_permanents: self.melded_views(),
+            meld_departure_orders: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.meld_departure_orders.clone()),
             zone_reveals: self.zone_reveals(),
             created_token_choice: self.created_token_choice(),
+            copied_saga_lore: self.copied_saga_lore_choice(),
             mana_lots: self.mana_lot_views(),
             inert_mana_copy_sources: self.inert_mana_copy_source_views(),
             mana_lot_spend: owns_choice.then(|| self.mana_lot_spend_range()).flatten(),
@@ -11162,6 +11518,10 @@ impl Game {
                 (!r.inserted_phases.is_empty())
                     .then(|| r.inserted_phases.iter().rev().copied().collect())
             }),
+            additional_end_steps: s.combat_rules.as_ref().and_then(|rules| {
+                (s.step == Step::End && rules.end_steps != AdditionalEndStepsView::default())
+                    .then_some(rules.end_steps)
+            }),
             turn_callbacks: s
                 .combat_rules
                 .as_ref()
@@ -11196,6 +11556,7 @@ impl Game {
                 .combat_rules
                 .as_ref()
                 .map_or_else(Vec::new, |r| r.damaged_players.clone()),
+            player_combat_damage_this_turn: self.player_combat_damage_this_turn().copied(),
             creatures_attacked_this_turn: s.attacked_this_turn.len(),
             cards_exiled_this_turn: s.cards_exiled_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
@@ -11222,8 +11583,11 @@ impl Game {
                 Pending::ResolutionCasts { .. } => "resolution_casts",
                 Pending::ManaLotSpend { .. } => "mana_lot_spend",
                 Pending::ZoneReplacement { .. } => "zone_replacement",
+                Pending::LifeGainReplacement { .. } => "life_gain_replacement",
+                Pending::MeldOrdering { .. } => "meld_ordering",
                 Pending::Replacement { .. } => "replacement",
                 Pending::CreatedToken { .. } => "created_token",
+                Pending::CopiedSagaLore { .. } => "copied_saga_lore",
                 Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::AttackPayment { .. } => "attack_payment",
                 Pending::ResolutionLife { .. } => "resolution_life",
@@ -11473,8 +11837,18 @@ impl Game {
             resolution_free_casts: s
                 .resolution_free_casts
                 .as_deref()
-                .filter(|f| f.origin != Zone::Library || self.shares_information(viewer, f.player))
-                .cloned(),
+                .filter(|f| {
+                    !matches!(f.origin, Zone::Hand | Zone::Library)
+                        || self.shares_information(viewer, f.player)
+                })
+                .map(|offer| {
+                    let mut view = offer.clone();
+                    if view.origin == Zone::Exile {
+                        view.remaining
+                            .retain(|&object| self.can_view_hideaway(viewer, object));
+                    }
+                    view
+                }),
             suspend_cards: self.suspend_views(),
             graveyard_type_uses: s
                 .graveyard_type_uses
@@ -11557,6 +11931,14 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.player_damage_shields.clone()),
+            creature_damage_shields: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.creature_damage_shields.clone()),
+            damage_doublers: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.damage_doublers.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles
@@ -11656,15 +12038,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|r| r.mana_payment.as_deref())
-                .map(|p| resolution_mana::ResolutionPaymentView {
-                    payer: p.payer,
-                    cost: p.cost,
-                    alternatives: p.alternatives.to_vec(),
-                    life: p.life,
-                    discard_only: p.discard_only,
-                    victim: p.victim,
-                    exile: p.exile,
-                }),
+                .map(|p| p.view(self.shares_information(viewer, p.payer))),
             payment_request: self.announcement_payment_request(viewer),
             targeting_group: if owns_choice && matches!(s.pending, Pending::Targets { .. }) {
                 s.announcing.as_ref().map(|announcement| announcement.group)
@@ -11712,6 +12086,7 @@ impl Game {
             } else {
                 Vec::new()
             },
+            mana_split: owns_choice.then(|| self.mana_split_choice()).flatten(),
             mana_choices: {
                 let mut options = Vec::new();
                 if owns_choice {
@@ -12240,9 +12615,7 @@ impl Game {
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
-                        + resolution.mana_payment.as_ref().map_or(0, |_| {
-                            std::mem::size_of::<resolution_mana::ResolutionPayment>()
-                        })
+                        + resolution.mana_payment.as_ref().map_or(0, |p| p.bytes())
                         + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
                         + resolution.remembered_creatures.as_ref().map_or(0, |rows| {
                             std::mem::size_of::<Vec<ObjectRef>>()
@@ -12375,7 +12748,7 @@ pub use entries::{
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 
-pub use resolution_mana::ResolutionPaymentView;
+pub use resolution_mana::{ResolutionCostView, ResolutionPaymentView};
 
 pub use discard_events::DiscardTriggerView;
 
@@ -12530,6 +12903,7 @@ pub mod graveyard_symbol_cost;
 #[doc(hidden)]
 #[path = "engine_battlefield_departures.rs"]
 mod battlefield_departures;
+pub use battlefield_departures::ChosenCreatureLinkView;
 
 #[doc(hidden)]
 #[path = "engine_death_return.rs"]

@@ -1,7 +1,7 @@
 //! Layer-two control effects. The object controller is a derived cache; baselines
 //! and resolution-created effects remain owned independently of their sources.
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{DelayedTargetEvent, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -34,6 +34,13 @@ struct AppliedControl {
     source_condition: Option<(ObjectRef, Player)>,
     timestamp: u64,
 }
+/// The abilities and attachment facts that existed just before a layer-two event.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) struct ControlWatch {
+    sources: Vec<ObjectView>,
+    attached: Vec<(ObjectRef, Player)>,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Card {
     pub(crate) fn controls_attached(self) -> bool {
@@ -237,6 +244,45 @@ impl Game {
         self.refresh_controllers();
     }
     pub(super) fn refresh_controllers(&mut self) {
+        self.refresh_controllers_after(None);
+    }
+    pub(super) fn forget_control_change_source(&mut self, id: CardId) {
+        if let Some(roles) = &mut self.state.roles
+            && let Some(sources) = &mut roles.control_change_sources
+            && sources.contains(&id)
+        {
+            sources.retain(|&source| source != id);
+            if sources.is_empty() {
+                roles.control_change_sources = None;
+            }
+        }
+    }
+    pub(super) fn freeze_control_watch(&self) -> ControlWatch {
+        ControlWatch {
+            sources: self
+                .state
+                .roles
+                .as_ref()
+                .and_then(|roles| roles.control_change_sources.as_ref())
+                .iter()
+                .flat_map(|sources| sources.iter())
+                .map(|&id| self.object_view(id))
+                .collect(),
+            attached: self
+                .state
+                .delayed_target_events
+                .iter()
+                .flat_map(|rows| rows.iter())
+                .filter(|row| {
+                    row.event == DelayedTargetEvent::ControlLostWhileAttached
+                        && row.expires_turn == self.state.turn
+                        && self.attached_to_controlled_creature(row.subject, row.packet.controller)
+                })
+                .map(|row| (row.subject, row.packet.controller))
+                .collect(),
+        }
+    }
+    pub(super) fn refresh_controllers_after(&mut self, watch: Option<ControlWatch>) {
         // Capture bases before projecting new attachment effects. The previous
         // cache still represents the world before this attachment changed.
         let targets: Vec<_> = self
@@ -258,8 +304,24 @@ impl Game {
             self.refresh_enduring_stories();
             return;
         }
-        for row in controllers(self) {
-            self.change_controller(row.object, row.controller);
+        let mut changes = controllers(self);
+        changes.retain(|row| {
+            self.state.objects[row.object.card as usize].controller != row.controller
+        });
+        if !changes.is_empty() {
+            let watch = watch.unwrap_or_else(|| self.freeze_control_watch());
+            let observed = !watch.sources.is_empty() || !watch.attached.is_empty();
+            let mut losses = Vec::new();
+            for row in changes {
+                if observed {
+                    losses.push((
+                        row.object,
+                        self.state.objects[row.object.card as usize].controller,
+                    ));
+                }
+                self.change_controller(row.object, row.controller);
+            }
+            self.control_change_triggers(&watch, &losses);
         }
         let live: Vec<_> = self
             .state
@@ -305,6 +367,28 @@ impl Game {
         }
         self.refresh_copy_grant_availability();
         self.refresh_enduring_stories();
+    }
+    fn control_change_triggers(&mut self, watch: &ControlWatch, losses: &[(ObjectRef, Player)]) {
+        // CR603.10d. One batch can take both the observer and other permanents
+        // from the same player. Its original controller gets every trigger.
+        for &(object, previous) in losses {
+            for source in watch
+                .sources
+                .iter()
+                .filter(|source| source.controller == previous)
+            {
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    if ability.condition.event() == TriggerCondition::OpponentTakesPermanent
+                        && self.queue_trigger(source, index)
+                    {
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.refer_objects([object]);
+                        packet.event_player = Some(previous.other());
+                    }
+                }
+            }
+        }
+        self.delayed_target_control_losses(losses, &watch.attached);
     }
     pub(super) fn control_bytes(&self) -> usize {
         self.state.controls.as_ref().map_or(0, |state| {

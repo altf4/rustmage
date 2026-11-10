@@ -54,12 +54,23 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
                 }
             }
             Instruction::SelectLibraryTo(effect)
-            | Instruction::SelectLibraryThenMayTransform(effect) => {
+            | Instruction::SelectLibraryToHandRememberCount(effect)
+            | Instruction::SelectLibraryThenMayTransform(effect)
+            | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
                 if let Some(value) = effect.maximum_mana_value {
                     amount(value, kinds);
                 }
             }
+            Instruction::CounterUnlessPayCosts { costs, .. }
+            | Instruction::MayPayCosts { costs, .. } => {
+                for cost in costs {
+                    for value in cost.extra_generic.into_iter().chain(cost.life) {
+                        amount(value, kinds);
+                    }
+                }
+            }
             Instruction::UpToTargets(value)
+            | Instruction::RememberCount(value)
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
@@ -80,6 +91,10 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
+            | Instruction::DamageWithControllerScaled {
+                controller_damage: value,
+                ..
+            }
             | Instruction::AddColorlessScaled(value)
             | Instruction::AddManaScaled { amount: value, .. }
             | Instruction::AddManaChosenScaled { amount: value, .. }
@@ -88,6 +103,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
             | Instruction::GrowFilteredScaled { amount: value, .. }
             | Instruction::GrowCreaturesScaled { amount: value, .. }
@@ -96,6 +112,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }
             | Instruction::CreateTokensWithCounters {
+                counters: value, ..
+            }
+            | Instruction::CreateTokensThenCounters {
                 counters: value, ..
             } => amount(value, kinds),
             _ => (),

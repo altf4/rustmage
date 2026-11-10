@@ -1,5 +1,6 @@
-//! Owned spell-copy packets and incremental changes to existing targets.
+//! Owned spell-copy packets, delayed cast triggers, and changes to existing targets.
 use super::*;
+use crate::cards::{CastFilter, SpellCopyCount};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -27,6 +28,7 @@ pub struct RetargetView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CopyState {
+    /// Source-independent stack event callbacks, including one-shot cast triggers.
     delayed: Vec<SpellView>,
     retarget: Option<Retarget>,
 }
@@ -152,6 +154,9 @@ impl Game {
             }
             TargetRule::SingleTargetStackObject => item.targets.len() == 1,
             TargetRule::Ability => item.kind != StackKind::Spell,
+            TargetRule::YourAbility => {
+                item.kind != StackKind::Spell && item.controller == controller
+            }
             TargetRule::TriggeredAbility { relation } => {
                 !matches!(
                     item.kind,
@@ -265,14 +270,20 @@ impl Game {
                 _ => false,
             })
     }
-    pub(super) fn remember_next_spell_copy(&mut self, item: &SpellView, ability: u16) {
+    pub(super) fn register_delayed_stack_trigger(&mut self, item: &SpellView, ability: u16) {
         let mut delayed = item.clone();
         delayed.kind = StackKind::TriggeredAbility { ability };
+        // CR 603.2d: multipliers for the initiating ability do not apply here.
+        delayed.additional_triggers = 0;
         delayed.cast = None;
         delayed.is_copy = false;
         delayed.targets.clear();
         delayed.clear_initiating_event_references();
         delayed.target_type_slots = None;
+        self.record_cast_mana_delayed_stack_trigger(&delayed);
+        self.push_delayed_stack_trigger(delayed);
+    }
+    pub(super) fn push_delayed_stack_trigger(&mut self, delayed: SpellView) {
         self.state
             .stack_copy_data
             .get_or_insert_with(Default::default)
@@ -394,19 +405,30 @@ impl Game {
             }
         }
     }
-    pub(super) fn capture_copy_cast(&mut self, stack: Option<usize>, first_trigger: usize) {
+    pub(super) fn capture_cast_callbacks(
+        &mut self,
+        stack: Option<usize>,
+        first_trigger: usize,
+        cast_event: Option<CastPaymentEvent>,
+    ) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
-        let instant_or_sorcery = crate::cards::CastFilter::InstantSorcery
+        let instant_or_sorcery = CastFilter::InstantSorcery
             .matches(spell.source.expect("object-backed spell or trigger").card);
-        self.capture_copy_cast_classified(spell, first_trigger, instant_or_sorcery);
+        self.capture_cast_callbacks_classified(
+            spell,
+            first_trigger,
+            instant_or_sorcery,
+            cast_event,
+        );
     }
 
-    fn capture_copy_cast_classified(
+    fn capture_cast_callbacks_classified(
         &mut self,
         spell: SpellView,
         first_trigger: usize,
         instant_or_sorcery: bool,
+        cast_event: Option<CastPaymentEvent>,
     ) {
         let repeated = self
             .state
@@ -442,13 +464,15 @@ impl Game {
             .instant_sorcery_cast_this_turn
             .saturating_sub(1);
         let earlier_spells = self.earlier_spells_this_turn();
+        let copy_count = |count| match count {
+            SpellCopyCount::One => 1,
+            SpellCopyCount::Fixed(amount) => u64::from(amount),
+            SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
+        };
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
             if let Some((_, program)) = trigger.program()
                 && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCapturedSpell { count, .. } => Some(match count {
-                        crate::cards::SpellCopyCount::One => 1,
-                        crate::cards::SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
-                    }),
+                    Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
                     Instruction::CopyCastSpell {
                         prior_spells: false,
                     } => Some(1),
@@ -469,20 +493,24 @@ impl Game {
                 }));
             }
         }
-        // Existing narrow callbacks keep their instant/sorcery population;
-        // a one-shot any-spell callback observes permanent spells as well.
         let Some(state) = &mut self.state.stack_copy_data else {
             return;
         };
+        let creature_cast = cast_event.filter(|event| CastFilter::Creature.matches(event.card));
         let mut delayed = std::mem::take(&mut state.delayed);
         let mut retained = Vec::new();
         for mut trigger in delayed.drain(..) {
-            let any_type = matches!(trigger.kind, StackKind::TriggeredAbility { ability }
-                if trigger.trigger_definition().triggers()[usize::from(ability)]
-                    .condition.event() == TriggerCondition::DelayedSpellCastAny);
-            if delayed_copy_all_spells(&trigger)
-                || delayed_copy_exhaust(&trigger)
-                || (!instant_or_sorcery && !any_type)
+            let StackKind::TriggeredAbility { ability } = trigger.kind else {
+                unreachable!("registered delayed callback is a triggered ability");
+            };
+            let ability = &trigger.trigger_definition().triggers()[usize::from(ability)];
+            let condition = ability.condition.event();
+            let matching_type = match condition {
+                TriggerCondition::DelayedSpellCastCreature => creature_cast.is_some(),
+                TriggerCondition::DelayedSpellCastAny => true,
+                _ => instant_or_sorcery,
+            };
+            if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) || !matching_type
             {
                 retained.push(trigger);
                 continue;
@@ -525,10 +553,27 @@ impl Game {
                 })
             {
                 trigger.id = self.next_stack_id();
-                trigger.copy_event = Some(Box::new(CopyEvent {
-                    spell: spell.clone(),
-                    amount: 1,
-                }));
+                if condition == TriggerCondition::DelayedSpellCastCreature {
+                    let event = creature_cast.expect("matched committed creature cast");
+                    trigger.refer_objects([event.object]);
+                    trigger.cast_event = Some(Box::new(event));
+                    trigger.x = spell.x;
+                } else {
+                    let amount = ability
+                        .program
+                        .iter()
+                        .find_map(|instruction| match instruction {
+                            Instruction::CopyCapturedSpell { count, .. } => {
+                                Some(copy_count(*count))
+                            }
+                            _ => None,
+                        })
+                        .unwrap_or(1);
+                    trigger.copy_event = Some(Box::new(CopyEvent {
+                        spell: spell.clone(),
+                        amount,
+                    }));
+                }
                 self.state.pending_triggers.push(trigger);
             } else {
                 retained.push(trigger);
@@ -547,7 +592,7 @@ impl Game {
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
         spell.source.as_mut().unwrap().card = Card::test_index(5458);
-        self.capture_copy_cast_classified(spell, first_trigger, false);
+        self.capture_cast_callbacks_classified(spell, first_trigger, false, None);
     }
     pub(super) fn allocate_spell_copy(
         &mut self,
@@ -712,32 +757,24 @@ impl Game {
             false
         }
     }
-    /// Copy an ability packet, never its physical source. All declared choices,
-    /// paid-cost facts and immutable program/origin contexts remain owned.
-    pub(super) fn copy_target_ability(&mut self, item: &SpellView, group: u16) -> bool {
+    pub(super) fn copy_target_ability(
+        &mut self,
+        item: &SpellView,
+        group: u16,
+        amount: u64,
+    ) -> bool {
         let Some(template) = item
             .targets
             .iter()
             .find(|bound| bound.group == group)
             .and_then(|bound| self.bound_stack_item(bound))
-            .filter(|candidate| candidate.kind != StackKind::Spell)
             .cloned()
         else {
             return false;
         };
-        let mut copy = template.clone();
-        copy.id = self.next_stack_id();
-        copy.controller = item.controller;
-        copy.is_copy = true;
-        self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
-            item: copy,
-            template,
-            remaining: 0,
-            victim: None,
-            keywords: Keywords::NONE,
-        });
-        self.advance_copy_targets()
+        self.begin_ability_copies(template, item.controller, amount)
     }
+
     pub(super) fn copy_captured_activated_ability(&mut self, item: &SpellView) -> bool {
         let Some(event) = item.copy_event.as_ref() else {
             return false;
@@ -755,19 +792,49 @@ impl Game {
         if !matches!(template.kind, StackKind::ActivatedAbility { .. }) {
             return false;
         }
-        let mut copy = template.clone();
-        copy.id = self.next_stack_id();
-        copy.controller = item.controller;
-        copy.is_copy = true;
+        self.begin_ability_copies(template, item.controller, 1)
+    }
+
+    fn begin_ability_copies(
+        &mut self,
+        template: SpellView,
+        controller: Player,
+        amount: u64,
+    ) -> bool {
+        if amount == 0 || template.kind == StackKind::Spell {
+            return false;
+        }
+        if let StackKind::ActivatedAbility { ability } = template.kind
+            && template.source.is_some_and(|source| {
+                source
+                    .card
+                    .activation(ability)
+                    .program
+                    .contains(&Instruction::ActivationCannotBeCopied)
+            })
+        {
+            return false;
+        }
+        let copy = self.allocate_ability_copy(&template, controller);
         self.state.stack_copy_data.get_or_insert_default().retarget = Some(Retarget {
             item: copy,
             template,
-            remaining: 0,
+            remaining: amount - 1,
             victim: None,
             keywords: Keywords::NONE,
         });
         self.advance_copy_targets()
     }
+
+    /// Copies retain the physical source, paid-cost facts and declared choices.
+    fn allocate_ability_copy(&mut self, template: &SpellView, controller: Player) -> SpellView {
+        let mut copy = template.clone();
+        copy.id = self.next_stack_id();
+        copy.controller = controller;
+        copy.is_copy = true;
+        copy
+    }
+
     fn ability_source_kinds(&self, item: &SpellView) -> u16 {
         let Some(source) = item.source() else {
             return 0;
@@ -1186,8 +1253,13 @@ impl Game {
         if r.remaining == 0 {
             state.retarget = None;
         } else {
-            let copy = self.allocate_spell_copy(&r.template, r.item.controller);
-            self.grant_stack_keywords_expiring(copy.source.unwrap().object, r.keywords, None);
+            let copy = if r.template.kind == StackKind::Spell {
+                let copy = self.allocate_spell_copy(&r.template, r.item.controller);
+                self.grant_stack_keywords_expiring(copy.source.unwrap().object, r.keywords, None);
+                copy
+            } else {
+                self.allocate_ability_copy(&r.template, r.item.controller)
+            };
             self.state.stack_copy_data.as_mut().unwrap().retarget = Some(Retarget {
                 item: copy,
                 remaining: r.remaining - 1,

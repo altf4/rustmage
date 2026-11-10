@@ -2,41 +2,79 @@
 //! their program branch before linked zone events can suspend the resolution.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ZoneChange {
+    pub(super) fn is_creature_death(&self) -> bool {
+        self.moved
+            && self.before.zone == Zone::Battlefield
+            && self.destination == Zone::Graveyard
+            && self.before.is_creature()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn creature_death_batch_triggers(
-        &mut self,
-        events: &[ZoneChange],
-        sources: &[ObjectView],
-    ) {
+    pub(super) fn death_batch_triggers(&mut self, events: &[ZoneChange], sources: &[ObjectView]) {
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::CreatureDiesBatch { filter } = ability.condition.event()
-                else {
+                let condition = ability.condition.event();
+                if !matches!(
+                    condition,
+                    TriggerCondition::CreatureDiesBatch { .. }
+                        | TriggerCondition::PermanentDiesBatch { .. }
+                ) {
                     continue;
-                };
+                }
                 let matching: Vec<_> = events
                     .iter()
                     .filter(|event| {
                         event.moved
                             && event.before.zone == Zone::Battlefield
                             && event.destination == Zone::Graveyard
-                            && event.before.is_creature()
-                            && filter.matches_characteristics(
-                                event.before.card,
-                                event.before.is_token(),
-                                event.before.kinds,
-                                event.before.granted_subtypes,
-                                event.before.controller == source.controller,
-                                event.before.reference == source.reference,
-                                event.before.attacking,
-                            )
-                            && event.before.keywords.contains(filter.keyword)
+                            && match condition {
+                                TriggerCondition::CreatureDiesBatch { filter } => {
+                                    event.before.is_creature()
+                                        && filter.matches_characteristics(
+                                            event.before.card,
+                                            event.before.is_token(),
+                                            event.before.kinds,
+                                            event.before.granted_subtypes,
+                                            event.before.controller == source.controller,
+                                            event.before.reference == source.reference,
+                                            event.before.attacking,
+                                        )
+                                        && event.before.keywords.contains(filter.keyword)
+                                }
+                                TriggerCondition::PermanentDiesBatch {
+                                    kinds,
+                                    relation,
+                                    other,
+                                } => {
+                                    let controlled = event.before.controller == source.controller;
+                                    let related = match relation {
+                                        CastRelation::You => controlled,
+                                        CastRelation::Opponent => !controlled,
+                                        CastRelation::Any => true,
+                                    };
+                                    related
+                                        && (!other || event.before.reference != source.reference)
+                                        && (kinds == 0 || event.before.kinds & kinds != 0)
+                                }
+                                _ => unreachable!("batch departure condition"),
+                            }
                     })
                     .collect();
                 if let Some(event) = matching.first() {
                     // This queues one annotated original. Its frozen multiplicity
                     // witness expands only after all event annotations are complete.
                     if self.queue_zone_trigger_from(source, index, event, None) {
+                        if source.additional_creature_death_triggers != 0
+                            && !event.is_creature_death()
+                            && matching.iter().any(|event| event.is_creature_death())
+                        {
+                            self.add_event_trigger_multiplicity(
+                                source.additional_creature_death_triggers,
+                            );
+                        }
                         let packet = self.state.pending_triggers.last_mut().unwrap();
                         for event in matching {
                             packet.refer_zone_event(event);

@@ -3,10 +3,40 @@
   "catalogue_id": 1752,
   "oracle_id": "c9432e87-38f6-4889-8f07-ae7cd045e532",
   "facts_sha256": "e50a57d56511794376602dc8ed1139b71568ece2326815e703b6d2f8891cc153",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d4ccb90808357e564e353b431ae9cef24df8f7ed4bcb43d468abca61be697fc4"
   },
-  "physical_metadata_sha256": "4f33198893712f1dec3d6e39303369ee943501b2c71759c34e376fba822f7bf2"
+  "physical_metadata_sha256": "4f33198893712f1dec3d6e39303369ee943501b2c71759c34e376fba822f7bf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GilgameshMasterAtArms.java",
+  "java_sha256": "5e22e4aedd9fb09406da75367538ae3afd5cff99fcaa2c048de0326f492abe94",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentReferenceInCollectionPredicate.java",
+      "sha256": "e7ec47749bb94bfad8ea07ca41c59b141bf7262358cec100670be0a925f3c132"
+    }
+  ]
 }

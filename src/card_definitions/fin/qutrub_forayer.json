@@ -3,10 +3,14 @@
   "catalogue_id": 3323,
   "oracle_id": "500ccb61-83b0-4b1f-ada6-65850ed5a825",
   "facts_sha256": "705b7f8d702b77e60f4d846551f39f01909de7505127c881a6537aa31ee9aa0d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5e883acbc3defe428a859716d082b3bc3ff18238111bbfc7bc70e94de8b9ef7d"
   },
-  "physical_metadata_sha256": "899192495bc480d355c1777acced0aace5dc5400c8e6fc6ed6df42dc088d0849"
+  "physical_metadata_sha256": "899192495bc480d355c1777acced0aace5dc5400c8e6fc6ed6df42dc088d0849",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QutrubForayer.java",
+  "java_sha256": "6f6126251afe7f4ab6998609872f827f6cead69ccdab4e82877d0951191f6206",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

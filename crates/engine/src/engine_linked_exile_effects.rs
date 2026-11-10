@@ -30,22 +30,33 @@ impl Game {
         self.linked_exile_for_origin(source.object, item.source_ability_origin)
     }
 
+    pub(super) fn link_exile_to_ability(
+        &mut self,
+        source: ObjectRef,
+        ability_origin: Option<u64>,
+        exiled: ObjectRef,
+    ) {
+        self.state
+            .linked_choices
+            .get_or_insert_default()
+            .links
+            .push(LinkedExileView {
+                exiled_turn: self.state.turn,
+                source,
+                exiled,
+                ability_origin,
+            });
+    }
+
     fn remember_linked_exile_events(&mut self, item: &SpellView, events: &[ZoneChange]) {
         let Some(source) = item.source else {
             return;
         };
         for event in events {
             if event.was_card && event.moved && event.destination == Zone::Exile {
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .links
-                    .push(LinkedExileView {
-                        exiled_turn: self.state.turn,
-                        source: source.object,
-                        exiled: event.after,
-                        ability_origin: item.source_ability_origin,
-                    });
+                for exiled in event.objects_after() {
+                    self.link_exile_to_ability(source.object, item.source_ability_origin, exiled);
+                }
             }
         }
     }

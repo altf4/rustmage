@@ -12,18 +12,21 @@ pub use cards::{
 pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
 pub use rustmage_core::cards::RetainedCopyActivation;
+pub use rustmage_core::engine::ChosenCreatureLinkView;
+pub use rustmage_core::engine::combat_allocations::PlayerCombatDamageView;
 pub use rustmage_core::engine::effect_choices::PowerDifferenceView;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
+pub use rustmage_core::engine::replacements::CreatureDamageShieldView;
 pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
-    ActivationCostRoute, AdditionalCostView, AdventurePermission, AnimationView,
-    AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView, AuraEntryView,
-    BaseStatsEffectView, BorrowedAbilityView, BoundTarget, CardId, CascadeView, CastCostClause,
-    CastCostRow, CastCostTransaction, CastCreatureSubjectsView, CastEntryCounterView, CastFace,
-    CastInfo, CastMethod, CastPaymentEvent, CasualtyDeclaration, CasualtyGrant,
-    CombatDamagePlayerView, CombatDefender, Config, ConniveChoiceView, ConniverView,
+    ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
+    AnimationView, AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView,
+    AuraEntryView, BaseStatsEffectView, BorrowedAbilityView, BoundTarget, CardId, CascadeView,
+    CastCostClause, CastCostRow, CastCostTransaction, CastCreatureSubjectsView,
+    CastEntryCounterView, CastFace, CastInfo, CastMethod, CastPaymentEvent, CasualtyDeclaration,
+    CasualtyGrant, CombatDamagePlayerView, CombatDefender, Config, ConniveChoiceView, ConniverView,
     ConspireDeclaration, ConspireGrant, ControlledPlayer, ConvokeChoiceView, ConvokeContribution,
     ConvokePaymentView, CopyDeadline, CopyEvent, CopyExceptions, CopyLayerView, CopyOverrides,
     CopyRecipe, CopyTypes, CounterPlacementHistoryView, CounterRemovalDomain,
@@ -59,10 +62,10 @@ pub use rustmage_core::engine::{
     PendingPaymentView, Player, PlayerCastGrantsView, PlayerControlView, PlayerCounterAmountView,
     PlayerCounterPlacementView, PlayerView, PlotPaymentView, PlottedCard, PowerUpUseView,
     PreparationView, ProliferateReplacementView, RecoveryChoiceView, ReflexiveSubjectView,
-    ReplacementChoiceView, ReplacementEffectView, ResolutionFreeCasts, ResolutionPaidCast,
-    ResolutionPaymentView, ResolvedAbilityModificationView, ResolvedSpellNameView,
-    ResolvedStatSubjectView, RetargetView, ReturnCardView, ReturnLinkView, RevealedLibraryCard,
-    RoleGroupView, RoleTimestampView, SaddleChoiceView, SearchChoiceView,
+    ReplacementChoiceView, ReplacementEffectView, ResolutionCostView, ResolutionFreeCasts,
+    ResolutionPaidCast, ResolutionPaymentView, ResolvedAbilityModificationView,
+    ResolvedSpellNameView, ResolvedStatSubjectView, RetargetView, ReturnCardView, ReturnLinkView,
+    RevealedLibraryCard, RoleGroupView, RoleTimestampView, SaddleChoiceView, SearchChoiceView,
     SearchDestinationChoiceView, SearchDistributionView, SelfGrantedAbilityKind,
     SelfGrantedAbilityView, SelfGrantedActivationContext, SelfPlayerCounterReplacement, Snapshot,
     SourceCounterChoiceView, SourceCounterPaymentView, SourceCounterQuantityView, SourceLessRule,
@@ -74,6 +77,11 @@ pub use rustmage_core::engine::{
     TurnFactsView, TurnScheduleView, UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView,
     XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
     ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
+};
+pub use rustmage_core::engine::{
+    CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
+    LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
+    MeldedPermanentView,
 };
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;

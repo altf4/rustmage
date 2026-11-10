@@ -1,29 +1,98 @@
-//! Resolution-owned mana choices and exact ward stack associations.
+//! Resolution-owned payments and exact stack associations.
 use super::*;
+use crate::cards::{ResolutionCost, ResolutionObjectCost};
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ResolutionPayment {
     pub payer: Player,
     pub cost: ManaCost,
     pub alternatives: &'static [ManaCost],
-    pub life: Option<u32>,
+    pub life: Option<i128>,
     pub discard: bool,
     pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
     pub unpaid_pc: usize,
+    pub choices: Option<ResolutionCostChoices>,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ResolutionCostChoices {
+    pub options: Vec<ResolutionCostView>,
+    pub selected: Option<u16>,
+    pub objects: Vec<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ResolutionCostView {
+    pub mana: ManaCost,
+    pub life: Option<i128>,
+    pub objects: Option<ResolutionObjectCost>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ResolutionPayment {
+    fn object_cost(&self) -> Option<ResolutionObjectCost> {
+        let choices = self.choices.as_ref()?;
+        choices.options[usize::from(choices.selected?)].objects
+    }
+
+    pub(super) fn route_selected(&self) -> bool {
+        self.choices
+            .as_ref()
+            .is_none_or(|choices| choices.selected.is_some())
+    }
+
+    pub(super) fn view(&self, private: bool) -> ResolutionPaymentView {
+        ResolutionPaymentView {
+            payer: self.payer,
+            cost: self.cost,
+            alternatives: self.alternatives.to_vec(),
+            life: self.life,
+            discard_only: self.discard_only,
+            victim: self.victim,
+            exile: self.exile,
+            costs: self
+                .choices
+                .as_ref()
+                .map_or_else(Vec::new, |c| c.options.clone()),
+            selected_cost: self.choices.as_ref().and_then(|c| c.selected),
+            selected_objects: self
+                .choices
+                .as_ref()
+                .filter(|_| private)
+                .map_or_else(Vec::new, |c| c.objects.clone()),
+        }
+    }
+
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.choices.as_ref().map_or(0, |choices| {
+                std::mem::size_of_val(choices.options.as_slice())
+                    + std::mem::size_of_val(choices.objects.as_slice())
+            })
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct ResolutionPaymentView {
     pub payer: Player,
     pub cost: ManaCost,
     pub alternatives: Vec<ManaCost>,
-    pub life: Option<u32>,
+    pub life: Option<i128>,
     #[serde(skip_serializing_if = "is_false")]
     pub discard_only: bool,
     pub victim: Option<u64>,
     pub exile: bool,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub costs: Vec<ResolutionCostView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub selected_cost: Option<u16>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub selected_objects: Vec<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn is_false(value: &bool) -> bool {
@@ -190,6 +259,7 @@ impl Game {
                                 matches!(
                                     fragment,
                                     crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                        | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                                         | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                                 )
                             })
@@ -308,14 +378,28 @@ impl Game {
         let request = resolution.mana_payment.take().unwrap();
         assert!(request.discard);
         resolution.choice = None;
-        let cause = if request.discard_only {
-            request.payer
-        } else {
-            resolution.item.controller
-        };
+        let cause = resolution.item.controller;
         self.discard_batch_caused(&[card], None, Some(cause));
         self.run_program();
     }
+    fn resolution_payment_subject(
+        &self,
+        item: &SpellView,
+        subject: CounterSubject,
+    ) -> Option<StackLink> {
+        match subject {
+            // The triggering payer is fixed even if the stack item leaves or changes
+            // controller before this payment is offered (CR 118.12a).
+            CounterSubject::Related => Some(item.related_stack.expect("ward stack association")),
+            CounterSubject::Targets => item.targets.iter().find_map(|target| {
+                self.bound_stack_item(target).map(|s| StackLink {
+                    id: s.id,
+                    controller: s.controller,
+                })
+            }),
+        }
+    }
+
     pub(super) fn start_resolution_payment(
         &mut self,
         item: &SpellView,
@@ -324,15 +408,7 @@ impl Game {
         exile: bool,
         unpaid_skip: usize,
     ) -> bool {
-        let victim = match subject {
-            CounterSubject::Related => Some(item.related_stack.expect("ward stack association")),
-            CounterSubject::Targets => item.targets.iter().find_map(|target| {
-                self.bound_stack_item(target).map(|s| StackLink {
-                    id: s.id,
-                    controller: s.controller,
-                })
-            }),
-        };
+        let victim = self.resolution_payment_subject(item, subject);
         let resolution = self.state.resolving.as_mut().unwrap();
         let unpaid_pc = resolution
             .pc
@@ -353,6 +429,7 @@ impl Game {
             victim: Some(victim.id),
             exile,
             unpaid_pc,
+            choices: None,
         }));
         self.state.pending = Pending::ResolutionMana {
             player: victim.controller,
@@ -378,35 +455,292 @@ impl Game {
             victim: None,
             exile: false,
             unpaid_pc,
+            choices: None,
         }));
         self.state.pending = Pending::ResolutionMana {
             player: item.controller,
         };
     }
-    pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: u32) -> bool {
-        // Ward's "that player" is fixed by the triggering event. The optional
-        // payment remains available even if another ward already countered the
-        // spell, or control of that spell subsequently changed (CR118.12a).
-        let victim = item.related_stack.expect("ward stack association");
-        let resolution = self.state.resolving.as_mut().unwrap();
-        resolution.mana_payment = Some(Box::new(ResolutionPayment {
-            payer: victim.controller,
-            cost: ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            },
-            alternatives: &[],
-            life: Some(amount),
-            discard: false,
-            discard_only: false,
-            victim: Some(victim.id),
-            exile: false,
-            unpaid_pc: resolution.pc,
-        }));
+    pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: i128) -> bool {
+        if !self.start_resolution_payment(item, ManaCost::ZERO, CounterSubject::Related, false, 0) {
+            return false;
+        }
+        let request = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap();
+        request.life = Some(amount);
         self.state.pending = Pending::ResolutionLife {
-            player: victim.controller,
+            player: request.payer,
         };
         true
+    }
+
+    pub(super) fn start_resolution_costs(
+        &mut self,
+        item: &SpellView,
+        subject: Option<CounterSubject>,
+        costs: &'static [ResolutionCost],
+        exile: bool,
+        unpaid_skip: usize,
+    ) -> bool {
+        assert!(!costs.is_empty() && costs.len() <= usize::from(u16::MAX));
+        if let Some(subject) = subject {
+            if !self.start_resolution_payment(item, ManaCost::ZERO, subject, exile, unpaid_skip) {
+                return false;
+            }
+        } else {
+            self.start_optional_resolution_payment(item, ManaCost::ZERO, unpaid_skip);
+        }
+        let options = costs
+            .iter()
+            .map(|cost| {
+                let extra = cost.extra_generic.map_or(0, |amount| {
+                    u32::try_from(self.item_amount(amount, item))
+                        .capacity("resolution mana cost exhausted")
+                });
+                ResolutionCostView {
+                    mana: ManaCost {
+                        generic: cost
+                            .mana
+                            .generic
+                            .checked_add(extra)
+                            .capacity("resolution mana cost exhausted"),
+                        ..cost.mana
+                    },
+                    life: cost.life.map(|amount| {
+                        i128::try_from(self.item_amount(amount, item))
+                            .capacity("life payment exhausted")
+                    }),
+                    objects: cost.objects.inspect(|requirement| {
+                        assert!(
+                            matches!(
+                                requirement.cost.kind.payment_kind(),
+                                EffectChoiceKind::Sacrifice
+                                    | EffectChoiceKind::SacrificePermanents(_)
+                                    | EffectChoiceKind::Discard
+                                    | EffectChoiceKind::DiscardNamed(_)
+                                    | EffectChoiceKind::DiscardMatchingLegendary
+                                    | EffectChoiceKind::DiscardLegendary
+                                    | EffectChoiceKind::ExileGraveyard
+                                    | EffectChoiceKind::ExileGraveyardCards(_)
+                                    | EffectChoiceKind::ExileControlled
+                                    | EffectChoiceKind::ExileControlledOrGraveyard
+                                    | EffectChoiceKind::TapPermanents(_)
+                                    | EffectChoiceKind::ReturnToHand
+                            ),
+                            "unsupported fixed object payment"
+                        );
+                    }),
+                }
+            })
+            .collect();
+        self.state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap()
+            .choices = Some(ResolutionCostChoices {
+            options,
+            selected: None,
+            objects: Vec::new(),
+        });
+        if costs.len() == 1 {
+            self.choose_resolution_cost(0);
+        }
+        true
+    }
+
+    pub(super) fn choose_resolution_cost(&mut self, index: u16) {
+        let request = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap();
+        let choices = request.choices.as_mut().unwrap();
+        assert_ne!(choices.selected, Some(index));
+        let choice = choices.options[usize::from(index)];
+        choices.selected = Some(index);
+        choices.objects.clear();
+        request.cost = choice.mana;
+        request.life = choice.life;
+        if choices.options.len() == 1
+            && choice.mana == ManaCost::ZERO
+            && choice.life.is_some()
+            && choice.objects.is_none()
+        {
+            self.state.pending = Pending::ResolutionLife {
+                player: request.payer,
+            };
+        }
+    }
+
+    fn resolution_cost_objects_in_world<W: ability_world::CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        payer: Player,
+        source: ObjectRef,
+        required: AdditionalCost,
+    ) -> Vec<ObjectRef> {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, _)| {
+                let object = world.reference(id as CardId);
+                self.additional_candidate_in_world(world, required, payer, source, object, false)
+                    .then_some(object)
+            })
+            .collect()
+    }
+
+    fn resolution_cost_objects(
+        &self,
+        payer: Player,
+        life: Option<i128>,
+        required: ResolutionObjectCost,
+    ) -> Vec<ObjectRef> {
+        let Some(source) = self.state.resolving.as_ref().unwrap().item.source else {
+            return Vec::new();
+        };
+        if required.count == 0 || !self.resolution_life_available(payer, life) {
+            return Vec::new();
+        }
+        if let Some(life) = life.filter(|&life| life > 0) {
+            // As in the shared payment projection, life paid before another
+            // component can change which objects satisfy its live filter.
+            let world = self.project_resolution_life(payer, life);
+            self.resolution_cost_objects_in_world(&world, payer, source.object, required.cost)
+        } else {
+            self.resolution_cost_objects_in_world(self, payer, source.object, required.cost)
+        }
+    }
+
+    pub(super) fn resolution_life_available(&self, payer: Player, life: Option<i128>) -> bool {
+        life.is_none_or(|amount| amount == 0 || self.state.players[payer.index()].life >= amount)
+    }
+
+    pub(super) fn visit_resolution_cost_selections(
+        &self,
+        request: &ResolutionPayment,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let Some(choices) = &request.choices else {
+            return false;
+        };
+        if choices.options.len() > 1
+            && choices.options.iter().enumerate().any(|(index, option)| {
+                let index = index as u16;
+                choices.selected != Some(index)
+                    && self.resolution_life_available(request.payer, option.life)
+                    && option.objects.is_none_or(|required| {
+                        self.resolution_cost_objects(request.payer, option.life, required)
+                            .len()
+                            >= usize::from(required.count)
+                    })
+                    && emit(Action::ChooseResolutionCost { index })
+            })
+        {
+            return true;
+        }
+        let Some(required) = request.object_cost() else {
+            return false;
+        };
+        let candidates = self.resolution_cost_objects(request.payer, request.life, required);
+        let selected = choices
+            .objects
+            .iter()
+            .filter(|object| candidates.contains(object))
+            .count();
+        candidates.len() >= usize::from(required.count)
+            && selected < usize::from(required.count)
+            && candidates.into_iter().any(|object| {
+                !choices.objects.contains(&object) && emit(Action::ChooseAdditionalCost { object })
+            })
+    }
+
+    pub(super) fn resolution_objects_ready(&self, request: &ResolutionPayment) -> bool {
+        request.object_cost().is_none_or(|required| {
+            let objects = &request.choices.as_ref().unwrap().objects;
+            objects.len() == usize::from(required.count)
+                && (objects.is_empty() || {
+                    let candidates =
+                        self.resolution_cost_objects(request.payer, request.life, required);
+                    objects.iter().all(|object| candidates.contains(object))
+                })
+        })
+    }
+
+    pub(super) fn choose_resolution_cost_object(&mut self, object: ObjectRef) {
+        let request = self
+            .state
+            .resolving
+            .as_ref()
+            .unwrap()
+            .mana_payment
+            .as_ref()
+            .unwrap();
+        let required = request.object_cost().unwrap();
+        let candidates = self.resolution_cost_objects(request.payer, request.life, required);
+        let request = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap();
+        let objects = &mut request.choices.as_mut().unwrap().objects;
+        objects.retain(|selected| candidates.contains(selected));
+        assert!(objects.len() < usize::from(required.count) && !objects.contains(&object));
+        objects.push(object);
+    }
+
+    fn pay_resolution_objects(
+        &mut self,
+        payer: Player,
+        required: AdditionalCost,
+        objects: &[ObjectRef],
+    ) {
+        let cards: Vec<_> = objects.iter().map(|object| object.card).collect();
+        match required.kind.payment_kind() {
+            EffectChoiceKind::Sacrifice | EffectChoiceKind::SacrificePermanents(_) => {
+                let sacrifices: Vec<_> = cards.into_iter().map(|card| (payer, card)).collect();
+                assert!(
+                    self.sacrifice_cost_batch_atomic(&sacrifices),
+                    "legal sacrifice cost"
+                );
+            }
+            EffectChoiceKind::Discard
+            | EffectChoiceKind::DiscardNamed(_)
+            | EffectChoiceKind::DiscardMatchingLegendary
+            | EffectChoiceKind::DiscardLegendary => {
+                let cause = self.state.resolving.as_ref().unwrap().item.controller;
+                self.discard_batch_caused(&cards, None, Some(cause));
+            }
+            EffectChoiceKind::ExileGraveyard
+            | EffectChoiceKind::ExileGraveyardCards(_)
+            | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExileControlledOrGraveyard => {
+                let events = self.move_objects_raw(&cards, Zone::Exile);
+                self.finish_zone_events(&events, &[]);
+            }
+            EffectChoiceKind::TapPermanents(_) => self.tap_objects(&cards),
+            EffectChoiceKind::ReturnToHand => {
+                let events = self.move_objects_raw(&cards, Zone::Hand);
+                self.finish_zone_events(&events, &[]);
+            }
+            _ => unreachable!("unsupported resolution object cost"),
+        }
     }
     pub(super) fn can_pay_resolution_life(&self) -> bool {
         let request = self
@@ -417,7 +751,7 @@ impl Game {
             .mana_payment
             .as_ref()
             .unwrap();
-        self.state.players[request.payer.index()].life >= i128::from(request.life.unwrap())
+        self.resolution_life_available(request.payer, request.life)
     }
     pub(super) fn finish_resolution_life(&mut self, pay: bool) {
         let request = self
@@ -429,11 +763,17 @@ impl Game {
             .take()
             .unwrap();
         if pay {
-            self.pay_life(request.payer, i128::from(request.life.unwrap()));
-        } else if let Some(victim) = request.victim {
-            self.counter_stack_item(victim, false);
+            self.pay_life(request.payer, request.life.unwrap());
+        } else {
+            self.decline_resolution_payment(&request);
         }
         self.run_program();
+    }
+    fn decline_resolution_payment(&mut self, request: &ResolutionPayment) {
+        self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
+        if let Some(victim) = request.victim {
+            self.counter_stack_item(victim, request.exile);
+        }
     }
     pub(super) fn finish_resolution_payment(&mut self, payment: Option<Mana>) {
         let request = self
@@ -450,7 +790,11 @@ impl Game {
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
             if let Some(life) = request.life {
-                self.pay_life(request.payer, i128::from(life));
+                self.pay_life(request.payer, life);
+            }
+            if let Some(required) = request.object_cost() {
+                let objects = &request.choices.as_ref().unwrap().objects;
+                self.pay_resolution_objects(request.payer, required.cost, objects);
             }
             let r = self.state.resolving.as_ref().unwrap();
             if let Some(
@@ -462,10 +806,7 @@ impl Game {
                 self.queue_reflexive(&item, ability, None);
             }
         } else {
-            self.state.resolving.as_mut().unwrap().pc = request.unpaid_pc;
-            if let Some(victim) = request.victim {
-                self.counter_stack_item(victim, request.exile);
-            }
+            self.decline_resolution_payment(&request);
         }
         self.run_program();
     }

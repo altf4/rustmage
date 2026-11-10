@@ -46,7 +46,7 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: Cop
         .and_then(|o| o.name)
         .unwrap_or_else(|| recipe.definition.name());
     movement.before.kinds = recipe.kinds();
-    movement.before.colors = recipe.definition.colors();
+    movement.before.colors = recipe.copiable_colors();
     movement.before.keywords = recipe
         .intrinsic_keywords()
         .union(recipe.overrides.map_or(Keywords::NONE, |o| o.keywords));

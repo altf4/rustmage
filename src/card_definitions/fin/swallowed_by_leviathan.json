@@ -3,10 +3,30 @@
   "catalogue_id": 4284,
   "oracle_id": "1a8185ed-636b-49ad-bf24-2ab02c7fb91e",
   "facts_sha256": "129a1984564c7eb56d4c55e74c2c2b3c47ebdd474cb743370fe10e5ee57a8069",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3635d1e5519bc8f3607d35df446e244ed4b8f744bd840cdef9da0213f1f2985b"
   },
-  "physical_metadata_sha256": "468b33876b550f2170d580398c753a12dc20639eca866a3f1fdf2e5e6b4dc36e"
+  "physical_metadata_sha256": "468b33876b550f2170d580398c753a12dc20639eca866a3f1fdf2e5e6b4dc36e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SwallowedByLeviathan.java",
+  "java_sha256": "09830d70f139234b83961a34aa5fdb41f484ccde717814bca67346484ed3ba71",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 3500,
   "oracle_id": "9d6fdbd4-ba51-4df1-b383-9b709b36a8d7",
   "facts_sha256": "f4bab7a46061911b8a3b142a08ac85ff13dd58f12b14078cfae676095dc76842",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f059a986ed431f85fa65ffb03a4c9f1187094b7a2bacae8932ec1c457693934"
   },
-  "physical_metadata_sha256": "1825d9bd14bd2b1c3399c13b4fb6302d30fcf48e98c9106f4c086bc80a1e5d05"
+  "physical_metadata_sha256": "1825d9bd14bd2b1c3399c13b4fb6302d30fcf48e98c9106f4c086bc80a1e5d05",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RetrieveTheEsper.java",
+  "java_sha256": "a0d564780acdaccb6d3d6943165d23df60715be5e578883d7d591057b274d2aa",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromGraveyardSourceCondition.java",
+      "sha256": "7eed055c9671f6cc59ee3c85360ac3ceb7e5c25682b32e66a548dfe6ec801878"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/RobotBlueToken.java",
+      "sha256": "253bbefbd8b5c59e24808a5ae1246dd8c71f2c38dbdf413b21a1e6caafd0d8c8"
+    }
+  ]
 }

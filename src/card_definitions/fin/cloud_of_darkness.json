@@ -3,10 +3,17 @@
   "catalogue_id": 776,
   "oracle_id": "525f57df-7d4d-4089-9003-4b01005558dc",
   "facts_sha256": "0a9acbf00cf7696a56defbccb6ddddad222233490c3666ca732b46a568af4d30",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "f0cb32c359a4c8c6b7004f80ee1a53b181ec2434ea6ee43f2655b54e59632407"
-  },
-  "physical_metadata_sha256": "ddc9389d7126fdeeac5052e86a459f6e6f0b3adabada6b515c2232de10d814c2"
+  "complete": true,
+  "physical_metadata_sha256": "ddc9389d7126fdeeac5052e86a459f6e6f0b3adabada6b515c2232de10d814c2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CloudOfDarkness.java",
+  "java_sha256": "e118040cfcc89e25096f6a560322a70ff00cdca9b9521c4f083c7b00479e05f3",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    }
+  ]
 }

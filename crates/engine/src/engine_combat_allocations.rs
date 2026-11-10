@@ -7,12 +7,20 @@ pub struct CombatDamagePlayerView {
     pub source: ObjectRef,
     pub player: Player,
 }
+/// Actual player combat damage by recipient seat during the current turn.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+pub struct PlayerCombatDamageView {
+    pub amounts: [u128; 2],
+    pub by_legendary_creature: [bool; 2],
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CombatRulesState {
     pub additional_combats: u64,
     pub after_main: Option<MainPhaseCombatView>,
     pub inserted_phases: Vec<Step>,
+    pub end_steps: AdditionalEndStepsView,
     pub turn_callbacks: Vec<TurnCallbackView>,
     pub attack_without_defender: Vec<ObjectRef>,
     #[allow(
@@ -24,6 +32,7 @@ pub(super) struct CombatRulesState {
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub damaged_players: Vec<CombatDamagePlayerView>,
+    pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -259,14 +268,16 @@ impl Game {
                     source: event.source.reference,
                     player,
                 };
-                let rows = &mut self
-                    .state
-                    .combat_rules
-                    .get_or_insert_with(Default::default)
-                    .damaged_players;
-                if !rows.contains(&row) {
-                    rows.push(row);
+                let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+                if !rules.damaged_players.contains(&row) {
+                    rules.damaged_players.push(row);
                 }
+                let history = &mut rules.player_damage_this_turn;
+                let recipient = player.index();
+                history.amounts[recipient] = history.amounts[recipient]
+                    .checked_add(event.amount.unsigned_abs())
+                    .capacity("player combat damage history exhausted");
+                history.by_legendary_creature[recipient] |= event.source.facts.legendary_creature;
             }
             let target = match event.target {
                 Target::Card(id) => Some(self.object_ref(id)),
@@ -286,6 +297,21 @@ impl Game {
                     .capacity("excess damage exhausted");
             }
         }
+    }
+    pub(super) fn player_combat_damage_this_turn(&self) -> Option<&PlayerCombatDamageView> {
+        self.state
+            .combat_rules
+            .as_ref()
+            .map(|rules| &rules.player_damage_this_turn)
+            .filter(|history| history.amounts != [0; 2])
+    }
+    pub(super) fn any_player_combat_damage_at_least(&self, minimum: u128) -> bool {
+        self.player_combat_damage_this_turn()
+            .is_some_and(|history| history.amounts.into_iter().any(|amount| amount >= minimum))
+    }
+    pub(super) fn player_was_dealt_legendary_combat_damage(&self, player: Player) -> bool {
+        self.player_combat_damage_this_turn()
+            .is_some_and(|history| history.by_legendary_creature[player.index()])
     }
     pub(super) fn tracked_excess_damage(&self) -> u64 {
         let amount = self
@@ -380,6 +406,19 @@ impl Game {
             })
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
+        self.add_block_requirements(recipients);
+    }
+    pub(super) fn require_targets_blocked(&mut self, item: &SpellView, group: u16) {
+        let recipients: Vec<_> = item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == group && self.same_target_object(**bound))
+            .filter_map(|bound| bound.object)
+            .filter(|object| self.on_battlefield(object.card))
+            .collect();
+        self.add_block_requirements(recipients);
+    }
+    fn add_block_requirements(&mut self, recipients: Vec<ObjectRef>) {
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
         // Repeated spells create independent requirements for the same object.
         rules.must_be_blocked.extend(recipients);
@@ -396,7 +435,42 @@ impl Game {
             && self
                 .characteristic_query()
                 .continuous_fragment_available(id, matches_requirement);
+        let attached_requirements = if self
+            .state
+            .attackers
+            .iter()
+            .any(|attacker| attacker.card == id)
+        {
+            use ability_world::CharacteristicWorld;
+            let query = self.characteristic_query();
+            let recipient = self.object_ref(id);
+            self.state
+                .static_sources
+                .iter()
+                .filter(|&&source| {
+                    let object = &self.state.objects[source as usize];
+                    let applies = |fragment: &crate::cards::StaticAbilityFragment| {
+                        matches!(
+                            fragment,
+                            crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
+                        )
+                    };
+                    object.attached_to == Some(recipient)
+                        && query.is_equipment(source)
+                        && query.attached(self.object_ref(source), id)
+                        && object
+                            .card
+                            .static_ability_groups()
+                            .iter()
+                            .any(|group| group.fragments.iter().any(applies))
+                        && query.continuous_fragment_available(source, applies)
+                })
+                .count()
+        } else {
+            0
+        };
         usize::from(static_requirement)
+            + attached_requirements
             + self.state.combat_rules.as_ref().map_or(0, |rules| {
                 rules
                     .must_be_blocked
@@ -442,6 +516,9 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
     pub(crate) fn x_symbols(&self) -> u32 {
+        if let Some(Instruction::ActivationXWithMinimum { symbols, .. }) = self.program.first() {
+            return u32::from(*symbols);
+        }
         u32::try_from(
             self.program
                 .iter()
@@ -449,6 +526,12 @@ impl ActivatedAbility {
                 .count(),
         )
         .expect("activation X header count")
+    }
+    pub(super) fn minimum_x(&self) -> u32 {
+        match self.program.first() {
+            Some(Instruction::ActivationXWithMinimum { minimum, .. }) => *minimum,
+            _ => 0,
+        }
     }
     pub(super) fn has_x_cost(&self) -> bool {
         self.x_symbols() != 0 || self.life_x_cost() || self.nonmana_x()

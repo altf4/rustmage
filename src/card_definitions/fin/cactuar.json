@@ -3,10 +3,22 @@
   "catalogue_id": 613,
   "oracle_id": "3e61d7c4-263f-4077-bdbc-d79020f2a479",
   "facts_sha256": "8a1adcf97069890af1830fd7894269d4cb3db3603d5cc65aad3152585c844042",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "5d67be9d55e19902af4af9c2a6500b6da0efbf39a4f9ae1d18a250ab0231953a"
-  },
-  "physical_metadata_sha256": "26e9fcfcb32fa254944c19e02ead1f63bfe9c455c2a6d6f5060f03e00df72ecf"
+  "complete": true,
+  "physical_metadata_sha256": "26e9fcfcb32fa254944c19e02ead1f63bfe9c455c2a6d6f5060f03e00df72ecf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Cactuar.java",
+  "java_sha256": "33e3e19ddda4947f075cf7b3d661afb4f5b32fe2c15966db41fa62994d69e5a6",
+  "rules_tests": "tests/fin_cards_001_078.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceEnteredThisTurnCondition.java",
+      "sha256": "b9c22aae1f1981e0f78f0a779ad8490493d2fc1ee61ed52a0e71782a4f2a8612"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandSourceEffect.java",
+      "sha256": "3af51f033e9d30c6f946feca7948ce7ee423fdd1314a715820d3ae9d98ca7935"
+    }
+  ]
 }

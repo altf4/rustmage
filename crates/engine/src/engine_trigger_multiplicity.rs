@@ -33,31 +33,48 @@ impl Card {
     }
 }
 
+#[derive(Clone, Copy)]
+enum TriggerCause<'a> {
+    Ordinary,
+    Attack,
+    Entry(&'a [ObjectRef]),
+    CreatureDeath,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn additional_triggers<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
 ) -> usize {
-    additional_triggers_for_event(query, id, false)
+    additional_triggers_for_event(query, id, TriggerCause::Ordinary)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn additional_attack_triggers<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
 ) -> usize {
-    additional_triggers_for_event(query, id, true)
+    additional_triggers_for_event(query, id, TriggerCause::Attack)
+}
+pub(super) fn additional_creature_death_triggers<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+) -> usize {
+    additional_triggers_for_event(query, id, TriggerCause::CreatureDeath)
 }
 fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
-    attack_only: bool,
+    cause: TriggerCause<'_>,
 ) -> usize {
     let providers = query.trigger_multiplier_sources();
     if providers.is_empty() {
         return 0;
     }
     let recipient = query.object(id);
-    if recipient.zone != Zone::Battlefield {
+    let emblem = matches!(cause, TriggerCause::CreatureDeath)
+        && recipient.zone == Zone::Command
+        && recipient.card.is_emblem();
+    if recipient.zone != Zone::Battlefield && !emblem {
         return 0;
     }
     let mut extra = 0usize;
@@ -72,8 +89,19 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                 else {
                     continue;
                 };
-                if matches!(scope, AdditionalTriggerScope::ControlledPermanentAttack) != attack_only
-                {
+                let matches_event = match scope {
+                    AdditionalTriggerScope::ControlledPermanentAttack => {
+                        matches!(cause, TriggerCause::Attack)
+                    }
+                    AdditionalTriggerScope::ControlledLandOrSubtypeEntry(_) => {
+                        matches!(cause, TriggerCause::Entry(_))
+                    }
+                    AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
+                        matches!(cause, TriggerCause::CreatureDeath)
+                    }
+                    _ => matches!(cause, TriggerCause::Ordinary),
+                };
+                if !matches_event {
                     continue;
                 }
                 if query.value(condition, provider) == 0
@@ -98,6 +126,46 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     AdditionalTriggerScope::EquippedCreature => {
                         query.is_equipment(provider)
                             && query.attached(query.reference(provider), id)
+                    }
+                    AdditionalTriggerScope::SourceAndAttachedEquipment => {
+                        let equipped = |equipment| {
+                            query.object(equipment).attached_to == Some(query.reference(provider))
+                                && query.is_equipment(equipment)
+                                && query.attached(query.reference(equipment), provider)
+                        };
+                        if id == provider {
+                            (0..query.state.objects.len())
+                                .any(|equipment| equipped(equipment as CardId))
+                        } else {
+                            equipped(id)
+                        }
+                    }
+                    AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
+                        object.attached_to.is_some_and(|bearer| {
+                            let source = query.reference(provider);
+                            (query.reference(id) == bearer
+                                || (emblem
+                                    && query.object(bearer.card).controller == recipient.owner))
+                                && query.is_equipment(provider)
+                                && query.attached(source, bearer.card)
+                                && query.equipped_death_multiplier_available(bearer.card, source)
+                        })
+                    }
+                    AdditionalTriggerScope::ControlledLandOrSubtypeEntry(subtype) => {
+                        let TriggerCause::Entry(entrants) = cause else {
+                            unreachable!("entry trigger cause")
+                        };
+                        recipient.controller == object.controller
+                            && entrants.iter().any(|&entrant| {
+                                let entrant_object = query.object(entrant.card);
+                                entrant_object.zone == Zone::Battlefield
+                                    && query.reference(entrant.card) == entrant
+                                    && entrant_object.controller == object.controller
+                                    && (query.kinds(entrant.card) & 2 != 0
+                                        || query
+                                            .subtypes(entrant.card)
+                                            .has(entrant_object.card, subtype))
+                            })
                     }
                 };
                 if applies {
@@ -135,6 +203,47 @@ impl Game {
             }
         }
     }
+    pub(super) fn add_entry_trigger_multiplicity(
+        &mut self,
+        source: &ObjectView,
+        entrants: &[ObjectRef],
+    ) {
+        if TriggerMultiplicityState::providers(self).is_empty() || source.zone != Zone::Battlefield
+        {
+            return;
+        }
+        let extra = additional_triggers_for_event(
+            &self.characteristic_query(),
+            source.id,
+            TriggerCause::Entry(entrants),
+        );
+        self.add_event_trigger_multiplicity(extra);
+    }
+
+    pub(super) fn add_event_trigger_multiplicity(&mut self, extra: usize) {
+        if extra == 0 {
+            return;
+        }
+        let packet = self
+            .state
+            .pending_triggers
+            .last_mut()
+            .expect("queued event trigger");
+        let StackKind::TriggeredAbility { ability } = packet.kind else {
+            unreachable!("event trigger kind")
+        };
+        if packet.trigger_definition().triggers()[usize::from(ability)]
+            .condition
+            .once_per_turn()
+        {
+            return;
+        }
+        packet.additional_triggers = packet
+            .additional_triggers
+            .checked_add(extra)
+            .capacity("trigger multiplicity exhausted");
+    }
+
     pub(super) fn expand_trigger_multiplicity(&mut self) {
         if !self
             .state

@@ -52,6 +52,43 @@
           "released_at": "2025-04-11"
         }
       }
+    },
+    {
+      "facts_sha256": "1e75a13ef090ae3a1ebd5dbc7acc4786a0ef46eee2c7c8ef5af3290ae540915f",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/fin/248",
+      "source_response_sha256": "e05afccb25fd31f7add71c8d1ecc4715e8ab66a55342cf632e64013293bea77f",
+      "facts": {
+        "oracle_id": "0452be2a-e97a-4269-a9e3-b616265ecb2e",
+        "name": "Vivi Ornitier",
+        "layout": "normal",
+        "mana_cost": "{1}{U}{R}",
+        "cmc": 3.0,
+        "type_line": "Legendary Creature — Wizard",
+        "oracle_text": "{0}: Add X mana in any combination of {U} and/or {R}, where X is Vivi Ornitier's power. Activate only during your turn and only once each turn.\nWhenever you cast a noncreature spell, put a +1/+1 counter on Vivi Ornitier and it deals 1 damage to each opponent.",
+        "power": "0",
+        "toughness": "3",
+        "colors": [
+          "R",
+          "U"
+        ],
+        "color_identity": [
+          "R",
+          "U"
+        ],
+        "keywords": [],
+        "produced_mana": [
+          "R",
+          "U"
+        ],
+        "reference_printing": {
+          "id": "ecc1027a-8c07-44a0-bdde-fa2844cff694",
+          "set": "fin",
+          "collector_number": "248",
+          "released_at": "2025-06-13"
+        }
+      }
     }
   ]
 }

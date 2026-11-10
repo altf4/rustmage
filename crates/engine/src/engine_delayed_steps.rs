@@ -17,6 +17,7 @@ impl Game {
         step: TriggerStep,
         relation: CastRelation,
         ability: u16,
+        objects: impl IntoIterator<Item = ObjectRef>,
     ) {
         let steps: &'static [Step] = match step {
             TriggerStep::Upkeep => &[Step::Upkeep],
@@ -38,6 +39,7 @@ impl Game {
         packet.kind = StackKind::TriggeredAbility { ability };
         packet.targets.clear();
         packet.clear_initiating_event_references();
+        packet.refer_objects(objects);
         packet.mode = None;
         packet.target_type_slots = None;
         packet.additional_triggers = 0;
@@ -69,6 +71,29 @@ impl Game {
         self.state
             .pending_triggers
             .extend(ready.into_iter().map(|row| row.item));
+    }
+
+    pub(super) fn return_delayed_battlefield_objects_to_hand(&mut self, item: &SpellView) {
+        let Some(group) = &item.event_object else {
+            return;
+        };
+        let additional = group
+            .semantic_objects
+            .iter()
+            .flat_map(|rows| rows.iter())
+            .filter_map(|reference| match *reference {
+                DamageSourceRef::Object(object) => Some(object),
+                DamageSourceRef::StackObject { .. } => None,
+            });
+        let ids: Vec<_> = std::iter::once(group.object)
+            .chain(additional)
+            .filter(|&object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == object
+            })
+            .map(|object| object.card)
+            .collect();
+        let events = self.move_objects_raw(&ids, Zone::Hand);
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn capture_delayed_return_target(&mut self, item: &SpellView) {

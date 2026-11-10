@@ -3,10 +3,21 @@
   "catalogue_id": 4215,
   "oracle_id": "bab5e9ce-6d55-4d1e-a9ac-c2b954191be9",
   "facts_sha256": "905c2f950a2545463217f40467101f5d4f304b99379316f18bdb62f6a1b94897",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8790de352be5043c908d369916fcf3089a3b5b6ef9623f03f5149ca4e9286cdc"
   },
-  "physical_metadata_sha256": "237b286c8325d63359497cbeaa3c309bb1e4a0e00821e633631d9de213b28e4b"
+  "physical_metadata_sha256": "237b286c8325d63359497cbeaa3c309bb1e4a0e00821e633631d9de213b28e4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SummonBrynhildr.java",
+  "java_sha256": "8714bc9ad52eac95ffa19dafbb4331e3ce58a417937244be982935a40aa5c873",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/CastNextSpellDelayedTriggeredAbility.java",
+      "sha256": "a6b2f8fcd1d6e64faa8dfa3e5c3d07e0127ffdb31f8b046b619bd04768bce4cc"
+    }
+  ]
 }

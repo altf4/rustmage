@@ -223,8 +223,8 @@ impl Game {
         let source = packet.source.expect("activated packet source");
         let mut proposal =
             self.payment_announcement(packet.clone(), counter_payment.clone(), None, None);
-        if proposal.nonmana_x() {
-            return !self.nonmana_x_intervals(&proposal).is_empty();
+        if proposal.declares_target_value_x() {
+            return !self.target_value_x_intervals(&proposal).is_empty();
         }
         if source.card.activation_target_color_discount(ability) != 0 {
             return self.activation_color_target_fundable(&proposal, None, false);
@@ -263,12 +263,12 @@ impl Game {
             unreachable!("activation source");
         };
         let ability = definition.activation(*index);
-        if ability.nonmana_x() {
+        if ability.declares_target_value_x() {
             let mut packet = self.activation_packet(goal.actor, source.card, *index);
             packet.set_source_definition(*definition);
             packet.borrowed_slot = goal.source.as_ref().unwrap().4;
             let proposal = self.payment_announcement(packet, counters.clone(), None, None);
-            return !self.nonmana_x_intervals(&proposal).is_empty();
+            return !self.target_value_x_intervals(&proposal).is_empty();
         }
         if definition.activation_target_color_discount(*index) != 0 {
             let mut packet = self.activation_packet(goal.actor, source.card, *index);
@@ -276,6 +276,10 @@ impl Game {
             packet.borrowed_slot = goal.source.as_ref().unwrap().4;
             let mut proposal = self.payment_announcement(packet, counters.clone(), None, None);
             proposal.plan = plan;
+            let minimum = ability.minimum_x();
+            if minimum != 0 {
+                proposal.item.x = Some(minimum);
+            }
             return self.activation_color_target_fundable(&proposal, None, false);
         }
         if *counters == Counters::default() && self.first_equip_zero_available(goal.actor, ability)

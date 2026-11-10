@@ -3,10 +3,40 @@
   "catalogue_id": 4471,
   "oracle_id": "89eb4c39-35ae-405b-8af4-779880cb11c9",
   "facts_sha256": "d427f5ba748addf6110b4ce4ec046a874295e08c2e44f1e4a639d3a1467c11bd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8d88b445c821f9cf35d5ff099ddb677756063a3e45834c848ffda5dc7d8a9c7a"
   },
-  "physical_metadata_sha256": "9602a3d6a1fd793e0c78cb8e1f62580f86b2f3d0ab4c09825310d6292e97bbfd"
+  "physical_metadata_sha256": "9602a3d6a1fd793e0c78cb8e1f62580f86b2f3d0ab4c09825310d6292e97bbfd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheMasamune.java",
+  "java_sha256": "65aa5a219db951cb84758336f3100036ef000cb432ea038d86280c62d9c3af77",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/AttachedAttackingCondition.java",
+      "sha256": "1147e7f5d181e695cbb7a8521e6b2b99c4067d6ef6c3071f2e31aeefb7483fb1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneAttachedEffect.java",
+      "sha256": "fde46a1dfc296d504bc3b76a56bba3451dcaa956df8114dec4b648d026ad2d70"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/NumberOfTriggersEvent.java",
+      "sha256": "09c3f80e824860142be1e3869e2e5371d331b8b4db6991f62ab33483e6d8cee6"
+    }
+  ]
 }

@@ -3,10 +3,14 @@
   "catalogue_id": 2955,
   "oracle_id": "2d44bdd2-aa31-415a-be71-d9e98ef12334",
   "facts_sha256": "b9d397b44885f10a29f04d0483d70072a1f52a75de7b5ecf9054f92aa692f0aa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c42eab2aef75d2808798a48c1c61edcb515400e5121cec5d15eddee5e1c1ace"
   },
-  "physical_metadata_sha256": "c7c59ab727a3561f26417c519abc7bcbe45c7b8e8bab7dbeae3f4b2b792f9cd0"
+  "physical_metadata_sha256": "c7c59ab727a3561f26417c519abc7bcbe45c7b8e8bab7dbeae3f4b2b792f9cd0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NoctisPrinceOfLucis.java",
+  "java_sha256": "ee1b9725fb56ac3d0173d410a62b60a7d873df688018428143859d085266b939",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

@@ -1,5 +1,5 @@
-//! Cold nested mana payment frames. Production resolves immediately; reflexive
-//! triggers wait for priority after the enclosing spell/ability has been paid.
+//! Cold nested mana payment frames. Production and delayed registrations resolve
+//! immediately. Reflexive triggers wait for priority after the enclosing payment.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -62,12 +62,25 @@ impl Game {
         self.state.pending = frame.pending;
         true
     }
-    pub(super) fn committed_mana_reflexive(&mut self, item: &SpellView) {
+    pub(super) fn committed_mana_followups(&mut self, item: &SpellView) {
         self.committed_activation_observers(item);
-        if let Some((_, [Instruction::AddMana(_), Instruction::Reflexive { ability }])) =
-            item.program()
-        {
-            self.queue_reflexive(item, *ability, None);
+        let Some((_, program)) = item.program() else {
+            return;
+        };
+        let program = program
+            .strip_prefix(&[Instruction::ExertCost])
+            .unwrap_or(program);
+        match program {
+            [Instruction::AddMana(_), Instruction::Reflexive { ability }] => {
+                self.queue_reflexive(item, *ability, None);
+            }
+            [
+                Instruction::AddMana(_),
+                Instruction::CopyNextInstantSorcery { ability },
+            ] => {
+                self.register_delayed_stack_trigger(item, *ability);
+            }
+            _ => {}
         }
     }
     pub(super) fn mana_announcement_views(&self, viewer: Player) -> Vec<ManaAnnouncementView> {

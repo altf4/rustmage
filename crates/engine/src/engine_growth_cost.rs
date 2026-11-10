@@ -74,7 +74,8 @@ impl Game {
                     actor,
                     self.loyalty_timing(card, ability, actor, sorcery),
                 )
-                || (!ability.nonmana_x() && !self.targets_available(ability.targets, actor, source))
+                || (!ability.declares_target_value_x()
+                    && !self.targets_available(ability.targets, actor, source))
                 || !self
                     .activation_mana_costs(card, object.card, index, 0)
                     .any(|cost| {
@@ -161,7 +162,7 @@ impl Game {
                         actor,
                         self.loyalty_timing(card, ability, actor, sorcery),
                     )
-                    || (!ability.nonmana_x()
+                    || (!ability.declares_target_value_x()
                         && !self.targets_available(ability.targets, actor, source))
                     || !self
                         .activation_mana_costs(card, giver.card, index, 0)

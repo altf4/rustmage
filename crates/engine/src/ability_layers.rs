@@ -42,6 +42,12 @@ pub enum AdditionalTriggerScope {
     ControlledCreatureSubtype(&'static str),
     OtherControlledSubtype(&'static str),
     EquippedCreature,
+    /// Abilities of this equipped source or of any Equipment attached to it.
+    SourceAndAttachedEquipment,
+    /// A land or this subtype entering caused a controlled permanent's trigger.
+    ControlledLandOrSubtypeEntry(&'static str),
+    /// Grant the bearer a multiplier for death triggers of itself and emblems it owns.
+    EquippedCreatureAndOwnedEmblemDeath,
     /// Only abilities triggered by a creature attacking, never other events.
     ControlledPermanentAttack,
 }
@@ -82,6 +88,8 @@ pub enum StaticAbilityFragment {
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
     ControlledLandTapManaBonus(Mana),
+    /// Add one {C} when a controlled land's tap ability produces {C}.
+    ControlledLandColorlessTapManaBonus,
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),
@@ -91,6 +99,8 @@ pub enum StaticAbilityFragment {
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
     ActivatedPermanentKindsProhibited(u16),
+    /// The exact attached permanent's activated abilities cannot be activated.
+    AttachedActivationsProhibited,
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
@@ -116,6 +126,8 @@ pub enum StaticAbilityFragment {
     BorrowGraveyardActivations(&'static str),
     /// This creature can attack despite defender after its controller scries or surveils.
     AttackWithoutDefenderIfScried,
+    /// This exact source can attack despite defender while the live condition holds.
+    AttackWithoutDefenderIf(StatValue),
     /// Controlled creatures may attack despite defender.
     ControlledAttackWithoutDefender,
     /// This source cannot be attacked while attached to a creature.
@@ -162,9 +174,21 @@ pub enum StaticAbilityFragment {
     },
     LookAtLibraryTop,
     CastCreatureFromLibraryTop,
+    /// An ordinary cast from the current top, using the chosen spell face.
+    CastFromLibraryTop(CastFilter),
+    /// Ordinary land plays and spell casts after this exact source attacked.
+    PlayFromLibraryTopAfterAttacking,
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
     PlayLandFromLibraryTop,
     PlayLandFromGraveyard,
+    PlayFromGraveyardDuringOwnTurn,
+    /// Cast a matching spell from your graveyard with an additional life cost.
+    /// The permanent enters with the specified counter if cast this way.
+    CastFromGraveyardWithLife {
+        filter: CastFilter,
+        life: u32,
+        entry_counter: CounterKind,
+    },
     SpendAnyManaForCreatures,
     SpellImprovise(CastFilter),
     /// Controlled matching spells have delve while this provider's rule is available.
@@ -225,6 +249,8 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         keywords: Keywords,
     },
+    /// Live grant to equipped creatures, independent of the Equipment controller.
+    ControlledEquippedCreatureKeywords(Keywords),
     /// Live grant to tapped controlled creatures, including virtual payment taps.
     ControlledTappedKeywords {
         other: bool,
@@ -246,6 +272,7 @@ pub enum StaticAbilityFragment {
         keywords: Keywords,
     },
     PlayerHexproof,
+    PlayerProtectionFromOpponents,
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
         kind: CounterKind,
@@ -264,8 +291,15 @@ pub enum StaticAbilityFragment {
         minimum: u16,
     },
     LifeGainAdditional(u16),
+    LifeGainDouble,
+    /// Add to an opponent's positive mill event.
+    OpponentMillAdditional(u16),
+    /// The controller's first positive batch of coin flips comes up heads and is won.
+    FirstCoinFlipsHeads,
     CantGainLife,
     DamageCantBePrevented,
+    /// This exact permanent keeps marked damage as the cleanup step removes other damage.
+    RetainDamageDuringCleanup,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     AdditionalLandPlays(u16),
@@ -340,6 +374,8 @@ pub enum StaticAbilityFragment {
     AttachmentStats(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
+    AttachmentAttackingKeywords(Keywords),
+    AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
@@ -357,6 +393,12 @@ pub enum StaticAbilityFragment {
         filter: CountFilter,
         ability: u16,
     },
+    /// During the provider's turn, grant both abilities to it and controlled creatures of these kinds.
+    OwnTurnSourceAndKindCreatureWard {
+        kinds: u16,
+        keywords: Keywords,
+        ward: u16,
+    },
     /// Grant a creature the indexed ordinary activation template. Tapping the
     /// distinct attachment is an additional cost only when printed explicitly.
     AttachmentActivation {
@@ -370,6 +412,8 @@ pub enum StaticAbilityFragment {
         recipients: LandManaRecipients,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to each other permanent its controller controls.
+    OtherControlledPermanentTapMana(ManaProduction),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {
@@ -382,6 +426,14 @@ pub enum StaticAbilityFragment {
         filters: &'static [CreatureFilter],
         stats: Stats,
     },
+    /// Scale one live layer-7c effect across the union of its creature groups.
+    CreatureGroupScaling {
+        filters: &'static [CreatureFilter],
+        value: StatValue,
+        stats: Stats,
+    },
+    /// A layer-7c bonus to the source controller's current legendary creatures.
+    ControlledLegendaryCreatureBonus(Stats),
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,

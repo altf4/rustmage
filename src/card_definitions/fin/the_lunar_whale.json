@@ -3,10 +3,35 @@
   "catalogue_id": 4470,
   "oracle_id": "13b4aeac-4530-4e09-a547-548b4884bb2f",
   "facts_sha256": "ada48d0d7649d90892f1a76d57d16ba25c6a6797813a50b916e3cfb7f0fca5b7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7353a5e1ab78622578f74f8a4842e94b90d5f2bdcec3c0691dbb47bb638e4565"
   },
-  "physical_metadata_sha256": "f9b95b6ceaab6d5a4cca1ac0e50ae28d199977a708c60a40ae8cc777b72c74ff"
+  "physical_metadata_sha256": "f9b95b6ceaab6d5a4cca1ac0e50ae28d199977a708c60a40ae8cc777b72c74ff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLunarWhale.java",
+  "java_sha256": "202e4ef646ecb2198ecfd88aeabfd25cdf7f773fd2f69dbd62f8f4fc1dad27ee",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/AttackedThisTurnSourceCondition.java",
+      "sha256": "9248a7acdbeb0417ece767a41b4cf3af32e522678567f2aa5943d6d16bb28a68"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ]
 }

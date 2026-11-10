@@ -3,10 +3,26 @@
   "catalogue_id": 3450,
   "oracle_id": "50994df7-300d-4e30-897a-0974dc0820ee",
   "facts_sha256": "43c97856cbe31c6855a2217a5d5d08f795c96f1727d4ecac891a4da3954eb71f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f2165a844759e0c33723b03a2d462751e60e4c5cf99bf312ebe8bae2e755b923"
   },
-  "physical_metadata_sha256": "05605ea065126d7fd0ef280bb71135585ede737e9cd1aa8fa03284108b4e7eb5"
+  "physical_metadata_sha256": "05605ea065126d7fd0ef280bb71135585ede737e9cd1aa8fa03284108b4e7eb5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RelentlessXATM092.java",
+  "java_sha256": "8f3e9d7ec202741d7b08313f04924d0f4b902663d2f47b79297584d465103310",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    }
+  ]
 }

@@ -229,9 +229,11 @@ impl Game {
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
+                        | Action::ChooseResolvedDamageReplacement { .. }
                         | Action::ChooseDrawReplacement { .. }
                         | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
+                        | Action::ChooseMeldOrder { .. }
                 )
             {
                 rollback.foreign_choice = true;
@@ -253,6 +255,7 @@ impl Game {
             | Action::AnnounceLinkedFree { card, .. }
             | Action::AnnounceLinkedExileCounterCost { card, .. }
             | Action::AnnounceFlashSurcharge { card }
+            | Action::AnnounceGraveyardFlashSurcharge { card }
             | Action::AnnounceWarp { card }
             | Action::AnnounceDisguise { card }
             | Action::AnnounceDisguiseGraveyard { card, .. }
@@ -279,7 +282,8 @@ impl Game {
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::CastExiledDuringResolution { object, .. }
-            | Action::CastFreeDuringResolution { object, .. } => object.card,
+            | Action::CastFreeDuringResolution { object, .. }
+            | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>
             {
@@ -442,13 +446,7 @@ impl Game {
             if before.zone != Zone::Library {
                 self.commit_planned_zone_move(
                     before,
-                    zone_replacements::Plan {
-                        completion: None,
-                        destination: Zone::Library,
-                        prevented: false,
-                        shuffle: None,
-                        reflexive: None,
-                    },
+                    zone_replacements::Plan::unreplaced(Zone::Library),
                     false,
                     Counters::default(),
                     EntryIdentity::default(),

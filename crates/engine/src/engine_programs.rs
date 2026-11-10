@@ -84,13 +84,32 @@ pub(super) struct LibraryChoice {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn departed_source_in_graveyard(&self, item: &SpellView) -> Option<CardId> {
-        let event = item.source_move.as_ref()?;
-        (event.destination == Zone::Graveyard
-            && self.object_ref(event.after.card) == event.after
-            && self.state.objects[event.after.card as usize].zone == Zone::Graveyard
-            && self.state.objects[event.after.card as usize].is_card())
-        .then_some(event.after.card)
+    pub(super) fn departed_source_in_graveyard<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> impl Iterator<Item = CardId> + 'a {
+        item.source_move
+            .iter()
+            .filter(|event| event.destination == Zone::Graveyard)
+            .flat_map(|event| event.objects_after())
+            .filter(|&object| {
+                self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Graveyard
+                    && self.state.objects[object.card as usize].is_card()
+            })
+            .map(|object| object.card)
+    }
+    fn exile_departed_source(&mut self, item: &SpellView) -> bool {
+        let ids = self.departed_source_in_graveyard(item).collect::<Vec<_>>();
+        if ids.is_empty() {
+            return false;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        let moved = events
+            .iter()
+            .any(|event| event.moved && event.destination == Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        moved
     }
 
     pub(super) fn entering_subject(&self, item: &SpellView) -> Option<CardId> {
@@ -519,7 +538,12 @@ impl Game {
         {
             return;
         }
-        self.record_counter_placement(object, placed_by, kind == CounterKind::PlusOne);
+        self.record_counter_placement(
+            object,
+            placed_by,
+            kind == CounterKind::PlusOne,
+            kind == CounterKind::Lore,
+        );
         if self.state.objects[object.card as usize].card.triggers().iter().any(|a| {
             matches!(a.condition.event(), TriggerCondition::CounterThresholdCrossed { kind: expected, .. } if expected == kind)
         }) {
@@ -611,44 +635,10 @@ impl Game {
         }
     }
 
-    pub(super) fn gain_life(&mut self, player: Player, amount: i128) {
+    pub(super) fn commit_life_gain(&mut self, player: Player, amount: i128) {
         if amount <= 0 {
             return;
         }
-        // These additive replacements commute; each available source applies once.
-        // Prohibition takes precedence and creates no life-gain event (CR101.2).
-        let query = self.characteristic_query();
-        let mut additional = 0i128;
-        for &id in &self.state.static_sources {
-            let source = &self.state.objects[id as usize];
-            for group in source.card.static_ability_groups() {
-                for fragment in group.fragments {
-                    match fragment {
-                        StaticAbilityFragment::CantGainLife
-                            if query.continuous_fragment_available(id, |f| {
-                                matches!(f, StaticAbilityFragment::CantGainLife)
-                            }) =>
-                        {
-                            return;
-                        }
-                        StaticAbilityFragment::LifeGainAdditional(n)
-                            if source.controller == player
-                                && query.continuous_fragment_available(id, |f| {
-                                    matches!(f, StaticAbilityFragment::LifeGainAdditional(_))
-                                }) =>
-                        {
-                            additional = additional
-                                .checked_add(i128::from(*n))
-                                .capacity("life replacement exhausted");
-                        }
-                        _ => {}
-                    }
-                }
-            }
-        }
-        let amount = amount
-            .checked_add(additional)
-            .capacity("life replacement exhausted");
         let state = &mut self.state.players[player.index()];
         state.life = state
             .life
@@ -732,6 +722,7 @@ impl Game {
                             ability.condition.event(),
                             TriggerCondition::Sacrificed { .. }
                                 | TriggerCondition::SacrificedByOpponent { .. }
+                                | TriggerCondition::SacrificedByAny { .. }
                         )
                     {
                         continue;
@@ -805,18 +796,26 @@ impl Game {
                                     .iter()
                                     .any(|subtype| event.before.has_subtype(subtype))
                         }
+                        TriggerCondition::ControlledPermanentWithSubtypeDies(subtype) => {
+                            source.controller == event.before.controller
+                                && event.before.has_subtype(subtype)
+                        }
                         TriggerCondition::Sacrificed { filter: f, .. }
-                        | TriggerCondition::SacrificedByOpponent { filter: f } => {
+                        | TriggerCondition::SacrificedByOpponent { filter: f }
+                        | TriggerCondition::SacrificedByAny { filter: f } => {
                             let (player, own_turn) = match ability.condition.event() {
                                 TriggerCondition::Sacrificed { own_turn, .. } => {
-                                    (source.controller, own_turn)
+                                    (Some(source.controller), own_turn)
                                 }
                                 TriggerCondition::SacrificedByOpponent { .. } => {
-                                    (source.controller.other(), false)
+                                    (Some(source.controller.other()), false)
                                 }
+                                TriggerCondition::SacrificedByAny { .. } => (None, false),
                                 _ => unreachable!(),
                             };
-                            event.sacrificed_by == Some(player)
+                            event
+                                .sacrificed_by
+                                .is_some_and(|actor| player.is_none_or(|p| p == actor))
                                 && (!own_turn || self.state.active == source.controller)
                                 && (!f.source_only || source.reference == event.before.reference)
                                 && (!f.other || source.reference != event.before.reference)
@@ -886,25 +885,26 @@ impl Game {
                         if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
                             self.capture_return_death(event);
                         }
-                        if ability.program.iter().any(|i| {
+                        let return_tapped = ability.program.iter().any(|instruction| {
                             matches!(
-                                i,
-                                Instruction::ReturnEventCardToHand
-                                    | Instruction::ReturnEventCardToBattlefieldTapped
+                                instruction,
+                                Instruction::ReturnEventCardToBattlefieldTapped
+                                    | Instruction::ReturnEventCardToBattlefieldTappedUnderControl
                             )
-                        }) {
+                        });
+                        if return_tapped
+                            || ability
+                                .program
+                                .contains(&Instruction::ReturnEventCardToHand)
+                        {
                             self.state.pending_triggers.last_mut().unwrap().return_link =
-                                Some(Box::new(ReturnLinkView {
-                                    exile_after: false,
-                                    additional_returning: None,
-                                    object: event.after,
-                                    zone: Zone::Graveyard,
-                                    controller: event.before.owner,
-                                    counter: None,
-                                    tapped: ability.program.iter().any(|i| {
-                                        matches!(i, Instruction::ReturnEventCardToBattlefieldTapped)
-                                    }),
-                                }));
+                                Some(Box::new(ReturnLinkView::from_event(
+                                    event,
+                                    event.before.owner,
+                                    None,
+                                    return_tapped,
+                                    false,
+                                )));
                         }
                         if ability.program.iter().any(|i| {
                             matches!(i, Instruction::ScheduleSacrificedArtifactCopy { .. })
@@ -991,6 +991,8 @@ impl Game {
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::DelayedExhaustAbilityActivated
                     | TriggerCondition::DelayedTargetEvent
+                    | TriggerCondition::DelayedTargetControlLostWhileAttached
+                    | TriggerCondition::OpponentTakesPermanent
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -1011,6 +1013,7 @@ impl Game {
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
+                    | TriggerCondition::DelayedSpellCastCreature
                     | TriggerCondition::DelayedSpellCastSourcePower
                     | TriggerCondition::Ward
                     | TriggerCondition::SelfTargeted { .. }
@@ -1021,6 +1024,7 @@ impl Game {
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
+                    | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
                     | TriggerCondition::AttachedDealtCombatDamage
@@ -1030,23 +1034,30 @@ impl Game {
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::SelfDies
                     | TriggerCondition::SelfNontokenDies
                     | TriggerCondition::SelfCreatureDies
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
+                    | TriggerCondition::SelfOrControlledPermanentDies(_)
+                    | TriggerCondition::ChosenCreatureLeaves
+                    | TriggerCondition::ChosenPlayerLosesGame
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
+                    | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
+                    | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
                     | TriggerCondition::CreatureDiesAttackState { .. }
                     | TriggerCondition::Sacrificed { .. }
                     | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
                     | TriggerCondition::LifeGained { .. }
                     | TriggerCondition::LifeLost { .. }
                     | TriggerCondition::SelfCountersAdded { .. }
@@ -1065,14 +1076,18 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
+                    | TriggerCondition::SelfAttacksDefendingPlayer
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::DelayedCreatureAttacksAlone
+                    | TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::CrewedVehicleAttacks
+                    | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledEquippedCreatureAttacks
@@ -1124,6 +1139,11 @@ impl Game {
                                     same || subtypes.iter().any(|typ| entered.has_subtype(typ))
                                 }
                                 EntryPredicate::Token => entered.is_token(),
+                                EntryPredicate::NontokenEquipment => {
+                                    !entered.is_token()
+                                        && entered.kinds & 16 != 0
+                                        && entered.has_subtype("Equipment")
+                                }
                                 EntryPredicate::LegendarySubtype(subtype) => {
                                     entered.is_legendary() && entered.has_subtype(subtype)
                                 }
@@ -1200,6 +1220,10 @@ impl Game {
                     }
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
+                    self.add_entry_trigger_multiplicity(
+                        source,
+                        std::slice::from_ref(&entered.reference),
+                    );
                     if ability.program.iter().any(|instruction| {
                         matches!(
                             instruction,
@@ -1274,6 +1298,20 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
+        if source.additional_creature_death_triggers != 0 && event.is_creature_death() {
+            let packet = self.state.pending_triggers.last().unwrap();
+            let cause = packet.trigger_definition().triggers()[index]
+                .condition
+                .event();
+            if !matches!(
+                cause,
+                TriggerCondition::Sacrificed { .. }
+                    | TriggerCondition::SacrificedByOpponent { .. }
+                    | TriggerCondition::SacrificedByAny { .. }
+            ) {
+                self.add_event_trigger_multiplicity(source.additional_creature_death_triggers);
+            }
+        }
         if event.moved
             && event.destination == Zone::Battlefield
             && source.reference == event.after
@@ -1305,7 +1343,7 @@ impl Game {
             event.destination,
             Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
         ) {
-            packet.refer_objects([event.after]);
+            packet.refer_objects(event.objects_after());
         }
         // Only the movement which actually triggered this ability may bind its
         // new source. Unrelated simultaneous observer deaths do not qualify.
@@ -1317,12 +1355,7 @@ impl Game {
             )
         {
             self.state.pending_triggers.last_mut().unwrap().source_move =
-                Some(Box::new(TriggerSourceMoveView {
-                    before: event.before.reference,
-                    after: event.after,
-                    origin: event.before.zone,
-                    destination: event.destination,
-                }));
+                Some(Box::new(event.source_movement()));
         }
         true
     }
@@ -1693,6 +1726,13 @@ impl Game {
                         .checked_sub(player.creature_spells_cast_this_turn)
                         .is_some_and(|count| count == wanted)
             }
+            CastFilter::FirstQualifiedCreature(qualifier) => {
+                qualifier.matches(card)
+                    && self.state.players[caster.index()]
+                        .turn_facts
+                        .qualified_creature_cast_count(qualifier)
+                        == 1
+            }
             CastFilter::InstantSorceryOrdinal(wanted) => {
                 CastFilter::InstantSorcery.matches(card)
                     && self.state.players[caster.index()].instant_sorcery_cast_this_turn == wanted
@@ -1902,20 +1942,20 @@ impl Game {
                 .and_then(|source| self.state.objects.get(source.id as usize))
                 .map(|object| object.owner)
         });
-        self.state.players[caster.index()]
-            .turn_facts
-            .cast_card_kinds |= card.kind_mask();
-        let count = &mut self.state.players[caster.index()].spells_cast_this_turn;
+        let player = &mut self.state.players[caster.index()];
+        player.turn_facts.cast_card_kinds |= card.kind_mask();
+        let count = &mut player.spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");
         let ordinal = *count;
         if CastFilter::InstantSorcery.matches(card) {
-            let count = &mut self.state.players[caster.index()].instant_sorcery_cast_this_turn;
+            let count = &mut player.instant_sorcery_cast_this_turn;
             *count = count
                 .checked_add(1)
                 .capacity("qualifying spell count exhausted");
         }
         if CastFilter::Creature.matches(card) {
-            let count = &mut self.state.players[caster.index()].creature_spells_cast_this_turn;
+            player.turn_facts.record_qualified_creature_cast(card);
+            let count = &mut player.creature_spells_cast_this_turn;
             *count = count
                 .checked_add(1)
                 .capacity("creature spell count exhausted");
@@ -2083,7 +2123,7 @@ impl Game {
         }
         self.temporary_cast_triggers(caster, card, stack);
         self.capture_cast_creature_subjects(stack, first_trigger);
-        self.capture_copy_cast(stack, first_trigger);
+        self.capture_cast_callbacks(stack, first_trigger, cast_event);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
         }
@@ -2221,6 +2261,7 @@ impl Game {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
         self.defender_attack_group_triggers(declared);
+        self.crewed_vehicle_attack_triggers(declared);
         let delayed = self
             .state
             .delayed_opponent_attack_until_next_turn
@@ -2295,16 +2336,34 @@ impl Game {
                 .as_deref()
                 .into_iter()
                 .flatten()
-                .filter(|item| item.controller == actor)
-                .cloned()
-                .collect();
-            for mut packet in packets {
-                if let StackKind::TriggeredAbility { ability } = packet.kind
-                    && packet.trigger_definition().triggers()[usize::from(ability)]
+                .filter_map(|item| {
+                    let StackKind::TriggeredAbility { ability } = item.kind else {
+                        return None;
+                    };
+                    let event = item.trigger_definition().triggers()[usize::from(ability)]
                         .condition
-                        .event()
-                        == TriggerCondition::DelayedCreatureAttacksAlone
-                {
+                        .event();
+                    (item.controller == actor
+                        || matches!(event, TriggerCondition::DelayedCreatureAttacksSubtypeAny(_)))
+                    .then(|| (item.clone(), event))
+                })
+                .collect();
+            for (mut packet, event) in packets {
+                if let TriggerCondition::DelayedCreatureAttacksSubtypeAny(subtypes) = event {
+                    for attack in declared {
+                        if subtypes
+                            .iter()
+                            .any(|name| self.has_subtype(attack.card, name))
+                        {
+                            let mut trigger = packet.clone();
+                            trigger.id = self.next_stack_id();
+                            trigger.entering_object = Some(self.object_ref(attack.card));
+                            self.state.pending_triggers.push(trigger);
+                        }
+                    }
+                    continue;
+                }
+                if event == TriggerCondition::DelayedCreatureAttacksAlone {
                     let Some(attacker) = alone else { continue };
                     packet.entering_object = Some(attacker);
                 }
@@ -2445,6 +2504,28 @@ impl Game {
                                 .unwrap()
                                 .refer_objects(matching);
                         }
+                    }
+                }
+                if let TriggerCondition::ControlledSubtypeAttackDeclaration(subtype) =
+                    ability.condition.event()
+                {
+                    let matching: Vec<_> = declared
+                        .iter()
+                        .filter(|attack| self.has_subtype(attack.card, subtype))
+                        .map(|attack| self.object_ref(attack.card))
+                        .collect();
+                    if let Some((&object, rest)) = matching.split_first()
+                        && self.queue_attack_trigger(&source, index)
+                    {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .reflexive_subject = Some(Box::new(ReflexiveSubjectView {
+                            object,
+                            action: false,
+                            additional_objects: rest.to_vec(),
+                        }));
                     }
                 }
                 if let TriggerCondition::AttackDeclared {
@@ -2777,6 +2858,7 @@ impl Game {
     pub(super) fn attack_triggers_for_declaration(
         &mut self,
         source: &ObjectView,
+        defender: Option<CombatDefender>,
         declared_count: usize,
         first_attack: bool,
     ) {
@@ -2799,8 +2881,10 @@ impl Game {
             }
         }
         for (index, ability) in source.card.triggers().iter().enumerate() {
-            if match ability.condition.event() {
+            let condition = ability.condition.event();
+            let matches = match condition {
                 TriggerCondition::SelfAttacks
+                | TriggerCondition::SelfAttacksDefendingPlayer
                 | TriggerCondition::SelfAttacksIfEquipped
                 | TriggerCondition::SelfAttacksOrBlocks
                 | TriggerCondition::SelfEntersOrAttacks => true,
@@ -2809,8 +2893,22 @@ impl Game {
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
-            } {
-                self.queue_attack_trigger(source, index);
+            };
+            if matches
+                && self.queue_attack_trigger(source, index)
+                && condition == TriggerCondition::SelfAttacksDefendingPlayer
+            {
+                let player = match defender {
+                    Some(CombatDefender::Player(player)) => player,
+                    Some(CombatDefender::Planeswalker(object)) => {
+                        self.state.objects[object.card as usize].controller
+                    }
+                    Some(CombatDefender::Battle(object)) => self
+                        .battle_protector(object)
+                        .unwrap_or(self.state.active.other()),
+                    None => self.state.active.other(),
+                };
+                self.state.pending_triggers.last_mut().unwrap().event_player = Some(player);
             }
         }
     }
@@ -3094,6 +3192,7 @@ impl Game {
                     amount: AmountValue::TargetCreaturePower,
                     ..
                 } | Instruction::DamageByTargetPower { .. }
+                    | Instruction::LoseLifeScaled(_, AmountValue::TargetCreaturePower)
             )
         });
         let reads_target_attacking = program.iter().any(|instruction| {
@@ -3102,65 +3201,62 @@ impl Game {
         let reads_target_legendary_kind = program
             .iter()
             .any(|instruction| matches!(instruction, Instruction::DrawIfTargetLegendaryKind(_)));
-        let target_card_facts = program
-            .iter()
-            .any(|instruction| {
-                matches!(
-                    instruction,
-                    Instruction::EnsureGoblinArmyFor(PlayerSet::TargetController)
-                        | Instruction::AmassGoblinsScaled {
-                            player: PlayerSet::TargetController,
-                            ..
-                        }
-                        | Instruction::DrawIfTargetController
-                        | Instruction::CreateTokensFor {
-                            players: PlayerSet::TargetController,
-                            ..
-                        }
-                        | Instruction::DrawTargetControllerIfNotAttacking
-                        | Instruction::DrawIfTargetLegendaryKind(_)
-                        | Instruction::LoseLifeTargetCardManaValue(_)
-                        | Instruction::MayTargetController { .. }
-                        | Instruction::SearchTargetController(_)
-                        | Instruction::SearchTargetControllerWithEntryCounters { .. }
-                        | Instruction::LoseLifeTargetController(_)
-                        | Instruction::DamageTargetController(_)
-                        | Instruction::DamageByTargetPower { .. }
-                        | Instruction::DecreaseLeadingSpeed {
-                            players: PlayerSet::TargetController,
-                            ..
-                        }
-                )
-            })
-            .then(|| {
-                Box::new(
-                    item.targets
-                        .iter()
-                        .filter_map(|bound| match bound.target {
-                            Target::Card(card) => Some(TargetCardFacts {
-                                group: bound.group,
-                                power: if reads_target_power && self.is_creature(card) {
-                                    self.stats(card).power
-                                } else {
-                                    0
-                                },
-                                controller: self.state.objects[card as usize].controller,
-                                legendary: reads_target_legendary_kind
-                                    && ability_world::CharacteristicWorld::legendary(self, card),
-                                kinds: if reads_target_legendary_kind {
-                                    self.object_kinds(card, &self.state.objects[card as usize])
-                                } else {
-                                    0
-                                },
-                                mana_value: self.object_mana_value(card),
-                                attacking: reads_target_attacking
-                                    && self.state.attackers.iter().any(|a| a.card == card),
-                            }),
-                            _ => None,
-                        })
-                        .collect(),
-                )
-            });
+        let reads_target_card = program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::EnsureGoblinArmyFor(PlayerSet::TargetController)
+                    | Instruction::AmassGoblinsScaled {
+                        player: PlayerSet::TargetController,
+                        ..
+                    }
+                    | Instruction::DrawIfTargetController
+                    | Instruction::CreateTokensFor {
+                        players: PlayerSet::TargetController,
+                        ..
+                    }
+                    | Instruction::DrawTargetControllerIfNotAttacking
+                    | Instruction::DrawIfTargetLegendaryKind(_)
+                    | Instruction::LoseLifeTargetCardManaValue(_)
+                    | Instruction::MayTargetController { .. }
+                    | Instruction::SearchTargetController(_)
+                    | Instruction::SearchTargetControllerWithEntryCounters { .. }
+                    | Instruction::LoseLifeTargetController(_)
+                    | Instruction::DamageTargetController(_)
+                    | Instruction::DecreaseLeadingSpeed {
+                        players: PlayerSet::TargetController,
+                        ..
+                    }
+            )
+        });
+        let target_card_facts = (reads_target_power || reads_target_card).then(|| {
+            Box::new(
+                item.targets
+                    .iter()
+                    .filter_map(|bound| match bound.target {
+                        Target::Card(card) => Some(TargetCardFacts {
+                            group: bound.group,
+                            power: if reads_target_power && self.is_creature(card) {
+                                self.stats(card).power
+                            } else {
+                                0
+                            },
+                            controller: self.state.objects[card as usize].controller,
+                            legendary: reads_target_legendary_kind
+                                && ability_world::CharacteristicWorld::legendary(self, card),
+                            kinds: if reads_target_legendary_kind {
+                                self.object_kinds(card, &self.state.objects[card as usize])
+                            } else {
+                                0
+                            },
+                            mana_value: self.object_mana_value(card),
+                            attacking: reads_target_attacking
+                                && self.state.attackers.iter().any(|a| a.card == card),
+                        }),
+                        _ => None,
+                    })
+                    .collect(),
+            )
+        });
         self.state.resolving = Some(Resolution {
             power_difference: None,
             chosen_color: None,
@@ -3521,6 +3617,12 @@ impl Game {
                 Instruction::Fight { .. }
                     | Instruction::RevealTargetHandExileUntilSourceLeaves
                     | Instruction::MayAttachControlledEquipment { .. }
+                    | Instruction::MayAttachAnyControlledEquipment { .. }
+                    | Instruction::MayAttachControlledEquipmentUntilNextEndStep { .. }
+                    | Instruction::MayDestroyAttachedEquipment { .. }
+                    | Instruction::MayAttachSource { .. }
+                    | Instruction::RequireTargetsBlocked { .. }
+                    | Instruction::AttachPriorSourceEquipment { .. }
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
@@ -3531,10 +3633,12 @@ impl Game {
                     | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
+                    | Instruction::CopyTargetAbilityX { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::LoyaltyDamage { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::CreaturePowerDamageAny { .. }
+                    | Instruction::CreaturePowerDamageBatch { .. }
                     | Instruction::SacrificeTarget { .. }
                     | Instruction::ScaledPowerDamage { .. }
                     | Instruction::CreateCopyTokenForPlayer { .. }
@@ -3757,6 +3861,11 @@ impl Game {
                 Instruction::DelayTargetEvent { event, ability } => {
                     self.delay_target_event(&item, event, ability);
                 }
+                Instruction::Meld(pair) => {
+                    if self.begin_meld(&item, pair) {
+                        return;
+                    }
+                }
                 Instruction::ScheduleTurnTrigger {
                     event,
                     ability,
@@ -3805,20 +3914,20 @@ impl Game {
                 Instruction::CopyEnteringPermanentThenAnimate(spec) => {
                     self.copy_entering_then_animate(&item, spec);
                 }
+                Instruction::CopyEnteringWithEquipDiscount(generic) => {
+                    self.copy_entering_with_equip_discount(&item, generic);
+                }
                 Instruction::CreateCapturedArtifactCopy | Instruction::CreateCapturedCopy => {
                     if let Some(recipe) = item.captured_artifact_copy.as_deref() {
                         self.stage_copy_creation(item.controller, *recipe, 1);
                     }
                 }
-                Instruction::CopyNextExhaustAbility { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
-                }
                 Instruction::CopyNextSpell { ability }
-                | Instruction::CopyNextInstantSorcery { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
-                }
-                Instruction::CopySpellsThisTurn { ability } => {
-                    self.remember_next_spell_copy(&item, ability)
+                | Instruction::CopyNextInstantSorcery { ability }
+                | Instruction::CopyNextExhaustAbility { ability }
+                | Instruction::CopySpellsThisTurn { ability }
+                | Instruction::DelayNextCreatureSpell { ability } => {
+                    self.register_delayed_stack_trigger(&item, ability)
                 }
                 Instruction::ExileTargetsCopyFreeWithBudget { mana_value } => {
                     if self.exile_targets_copy_free_with_budget(&item, mana_value) {
@@ -3974,32 +4083,18 @@ impl Game {
                 Instruction::DamageWithController {
                     damage,
                     controller_damage,
+                } => self.damage_with_target_controller(
+                    &item,
+                    i128::from(damage),
+                    i128::from(controller_damage),
+                ),
+                Instruction::DamageWithControllerScaled {
+                    damage,
+                    controller_damage,
                 } => {
-                    let source = self.program_damage_source(&item);
-                    let mut events = Vec::new();
-                    for bound in &item.targets {
-                        if self.same_target_object(*bound)
-                            && let Target::Card(id) = bound.target
-                            && self.on_battlefield(id)
-                        {
-                            let controller = self.state.objects[id as usize].controller;
-                            events.push(DamageEvent {
-                                preventable: true,
-                                source,
-                                target: bound.target,
-                                amount: i128::from(damage),
-                                combat: false,
-                            });
-                            events.push(DamageEvent {
-                                preventable: true,
-                                source,
-                                target: Target::Player(controller),
-                                amount: i128::from(controller_damage),
-                                combat: false,
-                            });
-                        }
-                    }
-                    self.apply_damage_batch(&events);
+                    let amount = i128::try_from(self.item_amount(controller_damage, &item))
+                        .capacity("damage amount exhausted");
+                    self.damage_with_target_controller(&item, i128::from(damage), amount);
                 }
                 Instruction::IfGift { promised, skip } => {
                     if item.gift_context().is_some() != promised {
@@ -4157,7 +4252,11 @@ impl Game {
                 Instruction::SacrificeDelayedTokens => self.sacrifice_delayed_tokens(&item),
                 Instruction::SacrificeSourceAtEndCombat => {
                     if let Some(source) = item.source {
-                        self.register_delayed_sacrifice_at(&item, vec![source.object], true);
+                        self.register_delayed_token_cleanup(
+                            &item,
+                            vec![source.object],
+                            temporary_tokens::TokenCleanup::EndCombatSacrifice,
+                        );
                     }
                 }
                 Instruction::ExileWarpedPermanent => self.exile_warped_permanent(&item),
@@ -4226,6 +4325,13 @@ impl Game {
                         cards_group,
                     );
                 }
+                Instruction::ShuffleGraveyardIntoLibraryCount { excluded_kinds } => {
+                    self.shuffle_graveyard_into_library_count(item.controller, excluded_kinds);
+                }
+                Instruction::ShuffleYourLibrary => {
+                    self.forget_library_top(item.controller);
+                    self.shuffle_library_cards(item.controller);
+                }
                 Instruction::ShuffleGraveyardIntoLibrary => {
                     let ids: Vec<_> = self
                         .state
@@ -4243,17 +4349,17 @@ impl Game {
                     self.forget_library_top(item.controller);
                     self.shuffle_library_cards(item.controller);
                 }
-                Instruction::DoubleTargetPower => {
-                    let affected: Vec<_> = item
-                        .targets
-                        .iter()
-                        .filter(|b| self.same_target_object(**b))
-                        .filter_map(|b| match b.target {
-                            Target::Card(id) if self.is_creature(id) => {
-                                Some((id, self.stats(id).power))
-                            }
-                            _ => None,
-                        })
+                Instruction::DoubleTargetPower | Instruction::DoubleSourcePower => {
+                    let subject = if instruction == Instruction::DoubleSourcePower {
+                        Subject::Source
+                    } else {
+                        Subject::Targets
+                    };
+                    let affected: Vec<_> = self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .filter(|&id| self.is_creature(id))
+                        .map(|id| (id, self.stats(id).power))
                         .collect();
                     for (id, power) in affected {
                         self.state.objects[id as usize].growth += Stats {
@@ -4430,9 +4536,16 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::MayTapSourceReflexive { .. } => {
+                Instruction::MayTapSourceReflexive { .. }
+                | Instruction::MaySacrificeSourceReflexive { .. } => {
                     let skip_to = resolution.pc;
-                    if self.exact_source_can_tap(&item) {
+                    let can_pay =
+                        if matches!(instruction, Instruction::MayTapSourceReflexive { .. }) {
+                            self.exact_source_can_tap(&item)
+                        } else {
+                            self.exact_source_can_sacrifice(&item)
+                        };
+                    if can_pay {
                         self.state.pending = Pending::EffectOptional {
                             player: item.controller,
                             skip_to,
@@ -4874,15 +4987,28 @@ impl Game {
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }
+                Instruction::PreventControlledCreatureDamageThisTurn => {
+                    self.prevent_controlled_creature_damage_this_turn(&item)
+                }
+                Instruction::DoubleDamageToDamagedPlayerUntilNextTurn => {
+                    self.double_damage_to_damaged_player_until_next_turn(&item)
+                }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_until_end_step(&item, under_owner)
                 }
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
-                Instruction::ReturnEventCardToBattlefieldTapped => {
-                    self.resolve_delayed_return(&item)
+                Instruction::PutDepartedSourceOnLibraryBottom => {
+                    self.put_departed_source_on_library_bottom(&item)
                 }
-                Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::ReturnEventCardToBattlefieldTapped
+                | Instruction::ResolveDelayedReturn => self.resolve_delayed_return(&item),
+                Instruction::ReturnEventCardToBattlefieldTappedUnderControl => {
+                    self.return_event_card_tapped_under_control(&item)
+                }
+                Instruction::ReturnDelayedBattlefieldObjectsToHand => {
+                    self.return_delayed_battlefield_objects_to_hand(&item);
+                }
                 Instruction::CaptureDelayedReturnTarget => {
                     self.capture_delayed_return_target(&item)
                 }
@@ -4891,7 +5017,7 @@ impl Game {
                     relation,
                     ability,
                 } => {
-                    self.schedule_delayed_step(&item, step, relation, ability);
+                    self.schedule_delayed_step(&item, step, relation, ability, None);
                 }
                 Instruction::PreventTargetActivationsWhileTapped => {
                     self.prevent_target_activations_until_untapped(&item);
@@ -5227,6 +5353,23 @@ impl Game {
                 } => {
                     self.gain_control(&item, subject, controller);
                 }
+                Instruction::IfSubjectControlledBy {
+                    subject,
+                    controller,
+                    skip,
+                } => {
+                    let subjects = self.keyword_subjects(&item, subject);
+                    let matches = self.program_players(controller, &item).any(|player| {
+                        subjects.iter().any(|&id| {
+                            self.on_battlefield(id)
+                                && self.state.objects[id as usize].controller == player
+                        })
+                    });
+                    if !matches {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::UnattachEventObject => self.unattach_event_object(&item),
                 Instruction::ChooseGraveyardReturn {
                     maximum,
                     total_mana_value,
@@ -5256,7 +5399,10 @@ impl Game {
                     );
                 }
                 Instruction::ReturnOwnedGraveyardNonlandPermanents => {
-                    self.return_owned_graveyard_nonland_permanents(&item);
+                    self.return_owned_graveyard_permanents(&item, 1 | 16 | 32 | 64 | 256, 2, false);
+                }
+                Instruction::ReturnOwnedGraveyardLandsTapped => {
+                    self.return_owned_graveyard_permanents(&item, 2, 0, true);
                 }
                 Instruction::ReturnGraveyardCreatures {
                     players,
@@ -5340,6 +5486,9 @@ impl Game {
                 Instruction::GrantExiledResultPlay { next_turn } => {
                     self.grant_exiled_result_play(item.controller, next_turn);
                 }
+                Instruction::GrantExiledResultFlexiblePlay => {
+                    self.grant_exiled_result_flexible_play(item.controller, false);
+                }
                 Instruction::MayExileDiscardedPlay { .. } => {
                     let skip_to = resolution.pc;
                     if self.discarded_play_object(&item).is_some() {
@@ -5358,7 +5507,20 @@ impl Game {
                     return;
                 }
                 Instruction::CastTargetedGraveyardFree => {
-                    if self.offer_targeted_graveyard_free_cast(&item) {
+                    if self.offer_targeted_graveyard_cast(&item, None, true) {
+                        return;
+                    }
+                }
+                Instruction::CastTargetedGraveyardPaid {
+                    spend_any_mana,
+                    exile_on_graveyard,
+                } => {
+                    let paid = ResolutionPaidCast {
+                        kinds: u8::MAX,
+                        exile_instants_sorceries: false,
+                        spend_any_mana,
+                    };
+                    if self.offer_targeted_graveyard_cast(&item, Some(paid), exile_on_graveyard) {
                         return;
                     }
                 }
@@ -5370,11 +5532,18 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ExileTopMayCastPaid => {
-                    // Reuse the owned resolution count to retain the committed result
-                    // across the cast announcement, mana payment and snapshots.
+                Instruction::ExileTopMayCastPaid | Instruction::ExileTopMayCastPaidFrom(_) => {
+                    // The result is set only when a child cast commits.
                     self.state.resolving.as_mut().unwrap().moved_count = Some(0);
-                    if self.exile_top_offer_paid_cast(item.controller) {
+                    let library = match instruction {
+                        Instruction::ExileTopMayCastPaidFrom(player) => {
+                            self.program_players(player, &item).next()
+                        }
+                        _ => Some(item.controller),
+                    };
+                    if let Some(library) = library
+                        && self.exile_top_offer_paid_cast(item.controller, library)
+                    {
                         return;
                     }
                 }
@@ -5400,8 +5569,20 @@ impl Game {
                 Instruction::ExileRandomGraveyardPlayThisTurn => {
                     self.exile_random_graveyard_play(item.controller)
                 }
+                Instruction::CopyRandomGraveyardPermanentUntilNonland => {
+                    self.stage_random_graveyard_copy(item.controller);
+                }
                 Instruction::CounterRelatedUnlessPayLife(amount) => {
-                    if self.start_resolution_life(&item, amount) {
+                    if self.start_resolution_life(&item, i128::from(amount)) {
+                        return;
+                    }
+                }
+                Instruction::CounterUnlessPayCosts {
+                    subject,
+                    costs,
+                    exile,
+                } => {
+                    if self.start_resolution_costs(&item, Some(subject), costs, exile, 0) {
                         return;
                     }
                 }
@@ -5609,7 +5790,7 @@ impl Game {
                         MillAmount::Fixed(amount),
                         item.controller,
                     );
-                    if milled == usize::from(amount) {
+                    if milled >= usize::from(amount) {
                         let item = self.state.resolving.as_ref().unwrap().item.clone();
                         self.queue_reflexive_objects(
                             &item,
@@ -5654,6 +5835,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::LookTopOneToHandThenLandsTapped(amount) => {
+                    if self.start_top_hand_then_lands(&item, amount) {
+                        return;
+                    }
+                }
                 Instruction::RefillEmptyLibraryFromGraveyard(amount) => {
                     if self.refill_empty_library_from_graveyard(&item, amount) {
                         return;
@@ -5678,6 +5864,10 @@ impl Game {
                 }
                 Instruction::CastLibraryTopUpToAttackingPower(amount) => {
                     self.cast_library_by_attacking_power(&item, amount);
+                    return;
+                }
+                Instruction::CastHandFreeUpTo(amount) => {
+                    self.offer_hand_free_cast(item.controller, self.item_amount(amount, &item));
                     return;
                 }
                 Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
@@ -5854,7 +6044,51 @@ impl Game {
                     recipient,
                     required_subtype,
                 } => {
-                    if self.may_attach_controlled_equipment(&item, recipient, required_subtype) {
+                    if self.may_attach_controlled_equipment(
+                        &item,
+                        recipient,
+                        return_attachment::ControlledEquipmentSelection::One(required_subtype),
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::MayAttachAnyControlledEquipment { recipient } => {
+                    if self.may_attach_controlled_equipment(
+                        &item,
+                        recipient,
+                        return_attachment::ControlledEquipmentSelection::Any,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::MayAttachControlledEquipmentUntilNextEndStep {
+                    recipient,
+                    ability,
+                } => {
+                    if self.may_attach_controlled_equipment(
+                        &item,
+                        recipient,
+                        return_attachment::ControlledEquipmentSelection::UntilNextEndStep(ability),
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::AttachPriorSourceEquipment { recipient } => {
+                    if self.attach_prior_source_equipment(&item, recipient) {
+                        return;
+                    }
+                }
+                Instruction::MayAttachReflexiveEquipment { recipient_subtype } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::ReflexiveEquipmentRecipient {
+                            subtype: recipient_subtype,
+                        },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
                         return;
                     }
                 }
@@ -5864,6 +6098,18 @@ impl Game {
                     ability,
                 } => {
                     if self.attach_groups_reflexive(&item, equipment, recipient, ability) {
+                        return;
+                    }
+                }
+                Instruction::MayDestroyAttachedEquipment { recipient } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::AttachedEquipmentToDestroy { recipient },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
                         return;
                     }
                 }
@@ -5951,6 +6197,30 @@ impl Game {
                                 .object,
                             target,
                         );
+                    }
+                }
+                Instruction::MayAttachSource { recipient, skip } => {
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    if self.new_source_attachment_pair(&item, recipient).is_some() {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::AttachSourceToControlledCreature => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::EquipmentRecipient,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
                     }
                 }
                 Instruction::EnsureJaceToken => self.ensure_jace_token(item.controller),
@@ -6118,6 +6388,37 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MaySacrificeAnyNumber(filter) => {
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::SacrificeSelection,
+                        PlayerSet::Controller,
+                        filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::ChooseOpposingCreatureForDeparture {
+                    other_power,
+                    other_toughness,
+                } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::LinkedCreature {
+                            other_power,
+                            other_toughness,
+                        },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::CreateNonlegendaryCopyTokens { subject, amount } => {
                     if let Some(mut recipe) = self.recipe_for_subject(&item, subject) {
                         recipe.overrides = Some(CopyOverrides {
@@ -6203,6 +6504,16 @@ impl Game {
                         self.stage_temporary_copy_creation(&item, recipe);
                     }
                 }
+                Instruction::CreateHastyCopyWithSagaLore { maximum } => {
+                    if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
+                        self.stage_copy_creation_inner(
+                            item.controller,
+                            recipe,
+                            1,
+                            replacements::TokenCompletion::CopiedSagaLore { maximum },
+                        );
+                    }
+                }
                 Instruction::CreateTemporaryArtifactCopy => {
                     if let Some(recipe) = self.recipe_for_subject(&item, Subject::Targets) {
                         self.stage_temporary_copy_creation(
@@ -6243,8 +6554,23 @@ impl Game {
                     filters,
                     kind,
                     amount,
+                }
+                | Instruction::PutLegendaryPermanentCountersScaled {
+                    filters,
+                    kind,
+                    amount,
                 } => {
-                    self.put_permanent_counters_scaled(&item, filters, kind, amount);
+                    let legendary_only = matches!(
+                        instruction,
+                        Instruction::PutLegendaryPermanentCountersScaled { .. }
+                    );
+                    self.put_permanent_counters_scaled(
+                        &item,
+                        filters,
+                        kind,
+                        amount,
+                        legendary_only,
+                    );
                 }
                 Instruction::CreateCopyToken { subject, amount }
                 | Instruction::CreateCopyTokenWithExceptions {
@@ -6296,18 +6622,14 @@ impl Game {
                     }
                 }
                 Instruction::SacrificeSourceReflexive { ability } => {
-                    if self.try_sacrifice_exact_source(&item) {
-                        // Departure refreshes the saved packet's LKI, including
-                        // keywords gained after the historical threshold event.
-                        let sacrificed = self.state.resolving.as_ref().unwrap().item.clone();
-                        self.queue_reflexive_objects(
-                            &sacrificed,
-                            ability,
-                            sacrificed.reflexive_action_objects(),
-                        );
-                    }
+                    self.sacrifice_source_reflexive(&item, ability);
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
+                Instruction::ExileAndCopyCreatureAs {
+                    base,
+                    color,
+                    subtype,
+                } => self.exile_and_copy_creature_as(&item, base, color, subtype),
                 Instruction::ExileOtherNightmares => self.exile_other_nightmares(item.controller),
                 Instruction::DamageDivided { .. } | Instruction::DamageDividedScaled(_) => {
                     self.damage_divided(&item)
@@ -6356,13 +6678,23 @@ impl Game {
                     }
                 }
                 Instruction::CopyTargetAbility { group } => {
-                    if self.copy_target_ability(&item, group) {
+                    if self.copy_target_ability(&item, group, 1) {
+                        return;
+                    }
+                }
+                Instruction::CopyTargetAbilityX { group } => {
+                    if self.copy_target_ability(&item, group, u64::from(item.x.unwrap_or(0))) {
                         return;
                     }
                 }
                 Instruction::CopyCapturedActivatedAbility => {
                     if self.copy_captured_activated_ability(&item) {
                         return;
+                    }
+                }
+                Instruction::IfCoinFlipWon { skip } => {
+                    if self.flip_coins(item.controller, 1) == 0 {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::FlipCoinsSkipTurns { coins } => {
@@ -6446,6 +6778,7 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::AdditionalEndStepIfFirst => self.add_end_step_if_first(),
                 Instruction::AdditionalCombatsAfterCurrentMain(count) => {
                     self.add_combats_after_current_main(count)
                 }
@@ -6460,8 +6793,13 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
+                Instruction::RequireTargetsBlocked { group } => {
+                    self.require_targets_blocked(&item, group);
+                }
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::ActivationX
+                | Instruction::ActivationXWithMinimum { .. }
+                | Instruction::ActivationCannotBeCopied
                 | Instruction::ActivationNonmanaX
                 | Instruction::ActivationLifeX
                 | Instruction::TargetsExactlyX
@@ -6591,6 +6929,23 @@ impl Game {
                 } => {
                     self.create_tokens_with_counters(&item, token, amount, kind, counters);
                 }
+                Instruction::CreateTokensThenCounters {
+                    token,
+                    amount,
+                    kind,
+                    counters,
+                } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::PostEntryCounters {
+                            kind,
+                            amount: counters,
+                        },
+                    );
+                }
                 Instruction::CreateTokensWithGraveyardGroups {
                     token,
                     amount,
@@ -6642,6 +6997,13 @@ impl Game {
                         self.apply_damage_batch(&[damage]);
                     }
                 }
+                Instruction::CreaturePowerDamageBatch { source, recipients } => {
+                    self.creature_power_damage_batch(&item, source, recipients);
+                }
+                Instruction::PermanentsDealPowerDamage {
+                    filters,
+                    exclude_source,
+                } => self.permanents_deal_power_damage(&item, filters, exclude_source),
                 Instruction::SacrificeTarget { group } => {
                     let id = item.targets.iter().find_map(|bound| {
                         (bound.group == group && self.same_target_object(*bound))
@@ -6751,13 +7113,16 @@ impl Game {
                         | ManaProduction::DistinctCreaturePowers
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::SourcePower { .. }
+                        | ManaProduction::SourcePowerSplit { .. }
                         | ManaProduction::TapSourcePowerChoice { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)
                         }
                         production @ (ManaProduction::Choice { .. }
-                        | ManaProduction::Combination { .. }) => {
+                        | ManaProduction::Combination { .. }
+                        | ManaProduction::Split(_)) => {
+                            self.require_mana_split_capacity(item.controller, production);
                             self.state.pending = Pending::EffectMana {
                                 player: item.controller,
                                 production,
@@ -6843,8 +7208,13 @@ impl Game {
                     self.start_zone_search(&item, filter, counter, haste_at);
                     return;
                 }
-                Instruction::SearchLibraryAndOrGraveyardToHand(filter) => {
-                    self.start_zone_hand_search(&item, filter);
+                Instruction::SearchLibraryAndOrGraveyardToHand(filter)
+                | Instruction::SearchRequiredLibraryAndOrGraveyardToHand(filter) => {
+                    let may_decline = matches!(
+                        instruction,
+                        Instruction::SearchLibraryAndOrGraveyardToHand(_)
+                    );
+                    self.start_zone_hand_search(&item, filter, may_decline);
                     return;
                 }
                 Instruction::SearchHandAndOrLibrary(filter) => {
@@ -7167,8 +7537,18 @@ impl Game {
                 }
                 Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
                 Instruction::RevealTopMoveIfPermanent => self.reveal_top_move_if_permanent(&item),
+                Instruction::RevealTopToHandLoseManaValue => {
+                    self.reveal_top_to_hand_lose_mana_value(&item)
+                }
                 Instruction::ExileSourceReturnTransformed { counter } => {
                     self.exile_source_return_transformed(&item, counter)
+                }
+                Instruction::ExileBattlefieldSourceReturn {
+                    transformed,
+                    under_owner,
+                } => self.exile_battlefield_source_return(&item, transformed, under_owner),
+                Instruction::ReturnGraveyardSourceTransformed => {
+                    self.return_graveyard_source_transformed(&item)
                 }
                 Instruction::ReturnCraftedSourceTransformed => {
                     self.return_crafted_source_transformed(&item)
@@ -7246,17 +7626,34 @@ impl Game {
                     let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
                 }
-                Instruction::ExileTopLibrary { players, amount } => {
+                Instruction::ExileTopLibrary { players, amount }
+                | Instruction::ExileTopLibraryRemember { players, amount } => {
                     let count = self.item_amount(amount, &item);
                     let ids = self
                         .program_players(players, &item)
                         .flat_map(|player| exile::top_library_cards(self, player, count))
                         .collect::<Vec<_>>();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
+                    if matches!(instruction, Instruction::ExileTopLibraryRemember { .. }) {
+                        self.state.resolving.as_mut().unwrap().milled = events
+                            .iter()
+                            .filter(|event| event.moved && event.destination == Zone::Exile)
+                            .map(|event| event.after)
+                            .collect();
+                    }
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::ExileEachTopPlayOwnAndLesserFree => {
+                    self.exile_each_top_play_own_and_lesser_free(item.controller);
                 }
                 Instruction::ExileTopPlayUntilNextEndStep(amount) => {
                     self.exile_top_play_until_next_end_step(item.controller, u128::from(amount));
+                }
+                Instruction::ExileTopPlayOnSourceLoreTurns => {
+                    self.exile_top_play_on_source_lore_turns(&item);
+                }
+                Instruction::ExileTopPlayWhileSourceControlled => {
+                    self.exile_top_play_while_source_controlled(&item);
                 }
                 Instruction::ExileTopPlay { amount, next_turn } => {
                     self.exile_top_play(item.controller, u128::from(amount), next_turn);
@@ -7286,6 +7683,11 @@ impl Game {
                         assert!(skip_to <= resolution.program.len());
                         resolution.pc = skip_to;
                     }
+                }
+                Instruction::RememberCount(value) => {
+                    let count = u64::try_from(self.item_amount(value, &item))
+                        .capacity("saved resolution count exhausted");
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(count);
                 }
                 Instruction::IfAmountAtLeast {
                     value,
@@ -7363,19 +7765,47 @@ impl Game {
                         );
                     }
                 }
-                Instruction::PlayHideawayIfCoven => {
-                    self.play_hideaway_if_coven(&item);
-                    if self.state.resolution_free_casts.is_some() {
+                Instruction::PlayHideawayIfCoven | Instruction::PlayHideaway => {
+                    let allowed =
+                        instruction == Instruction::PlayHideaway || self.has_coven(item.controller);
+                    if allowed && self.play_hideaway(&item) {
                         return;
                     }
                 }
                 Instruction::SelectLibraryThenMayTransform(effect) => {
-                    if self.start_library_selection_completion(&item, effect, true) {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::MayTransform,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryThenReflexiveEquipment { effect, ability } => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::ReflexiveEquipment(ability),
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::AlternateRevealedLibraryPicks(look) => {
+                    if self.start_alternating_library_picks(&item, look) {
                         return;
                     }
                 }
                 Instruction::SelectLibraryTo(effect) => {
                     if self.start_library_selection_to(&item, effect) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryToHandRememberCount(effect) => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::RememberHandCount,
+                    ) {
                         return;
                     }
                 }
@@ -7484,7 +7914,7 @@ impl Game {
                             .mana_payment
                             .as_mut()
                             .unwrap()
-                            .life = Some(life);
+                            .life = Some(i128::from(life));
                         return;
                     }
                 }
@@ -7492,6 +7922,10 @@ impl Game {
                     self.state.pending = Pending::ResolutionX {
                         player: item.controller,
                     };
+                    return;
+                }
+                Instruction::MayPayCosts { costs, skip } => {
+                    self.start_resolution_costs(&item, None, costs, false, skip);
                     return;
                 }
                 Instruction::MayPayMana { cost, skip } => {
@@ -7862,9 +8296,14 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::May { skip } => {
+                Instruction::May { skip } | Instruction::MayDraw { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
+                    if matches!(instruction, Instruction::MayDraw { .. }) && self.draws_prohibited()
+                    {
+                        self.state.resolving.as_mut().unwrap().pc = skip_to;
+                        continue;
+                    }
                     self.state.pending = Pending::EffectOptional {
                         player: item.controller,
                         skip_to,
@@ -7895,9 +8334,12 @@ impl Game {
                 Instruction::ExileTargetsAndTopPlayForOwners => {
                     self.exile_targets_play(&item, true, true, true)
                 }
+                Instruction::ExileDepartedSource => {
+                    self.exile_departed_source(&item);
+                }
                 Instruction::MayExileDepartedSource { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
-                    if self.departed_source_in_graveyard(&item).is_some() {
+                    if self.departed_source_in_graveyard(&item).next().is_some() {
                         self.state.pending = Pending::EffectOptional {
                             player: item.controller,
                             skip_to,
@@ -7907,8 +8349,7 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
                 Instruction::ExileDepartedSourceReflexive { ability } => {
-                    if let Some(id) = self.departed_source_in_graveyard(&item) {
-                        self.move_object(id, Zone::Exile);
+                    if self.exile_departed_source(&item) {
                         self.queue_reflexive(&item, ability, None);
                     }
                 }
@@ -7942,6 +8383,9 @@ impl Game {
                 }
                 Instruction::AddCastEntryCounters { kind, amount } => {
                     self.add_cast_entry_counters(&item, kind, amount)
+                }
+                Instruction::AddCastEntryCountersForControlledSubtypes { kind, subtypes } => {
+                    self.add_cast_entry_counters_for_subtypes(&item, kind, subtypes)
                 }
                 Instruction::Recruit { token } => {
                     let player = item.controller;
@@ -8112,6 +8556,14 @@ impl Game {
                         ),
                     );
                 }
+                Instruction::DiscardThenDrawForTypes { players, amount } => {
+                    for player in self.program_players(players, &item) {
+                        self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                            usize::from(amount);
+                    }
+                    self.state.resolving.as_mut().unwrap().discard_after =
+                        Some(discard_events::DiscardAfter::DrawCardTypes(item.controller));
+                }
                 Instruction::Discard(set, _) | Instruction::DiscardScaled(set, _) => {
                     let amount = match instruction {
                         Instruction::Discard(_, n) => usize::from(n),
@@ -8135,6 +8587,13 @@ impl Game {
                 Instruction::EndTurn => {
                     self.end_turn_effect();
                     return;
+                }
+                Instruction::WinGame => {
+                    self.try_win_game(item.controller);
+                    if self.state.outcome.is_some() {
+                        self.state.resolving = None;
+                        return;
+                    }
                 }
                 Instruction::WinIfLibraryEmpty => {
                     if self.library_card_count(item.controller) == 0 {
@@ -8160,7 +8619,9 @@ impl Game {
                     for player in self.program_players(set, &item) {
                         lost[player.index()] = true;
                     }
-                    self.commit_game_losses(self.allowed_game_losses(lost));
+                    let lost = self.allowed_game_losses(lost);
+                    self.chosen_player_loss_triggers(lost);
+                    self.commit_game_losses(lost);
                     if self.state.outcome.is_some() {
                         self.state.resolving = None;
                         self.state.pending = Pending::Terminal;
@@ -8185,9 +8646,12 @@ impl Game {
                         }
                         _ => unreachable!(),
                     };
-                    let players: Vec<_> = self.program_players(set, &item).collect();
-                    for player in players {
-                        self.gain_life(player, amount);
+                    let gains: Vec<_> = self
+                        .program_players(set, &item)
+                        .map(|player| (player, self.plan_life_gain(player, amount)))
+                        .collect();
+                    for (player, gain) in gains {
+                        self.commit_life_gain(player, gain);
                     }
                 }
                 Instruction::LoseLifeTargetController(amount)
@@ -8342,6 +8806,10 @@ impl Game {
                 }
                 Instruction::GrantLandManaUntilSourceCast => {
                     self.grant_land_mana_until_paid_source_cast(&item)
+                }
+                Instruction::TapPermanentGroup(filters) => {
+                    let recipients = self.battlefield_group(&item, filters);
+                    self.tap_objects(&recipients);
                 }
                 Instruction::UntapPermanentGroup(filters) => {
                     let recipients = self.battlefield_group(&item, filters);
@@ -8500,18 +8968,7 @@ impl Game {
                     let events: Vec<_> = [Player::P0, Player::P1]
                         .into_iter()
                         .map(|player| {
-                            let amount = self
-                                .state
-                                .objects
-                                .iter()
-                                .enumerate()
-                                .filter(|(id, object)| {
-                                    object.zone == Zone::Battlefield
-                                        && object.controller == player
-                                        && self.current_kinds(*id as CardId) & 2 != 0
-                                        && !object.card.is_basic_land()
-                                })
-                                .count();
+                            let amount = self.nonbasic_land_count(player);
                             DamageEvent {
                                 preventable: true,
                                 source,
@@ -8930,6 +9387,11 @@ impl Game {
                 Instruction::GrantCastCreatureKeywords(keywords) => {
                     self.grant_cast_creature_keywords(&item, keywords);
                 }
+                Instruction::GrantCastSpellHaste => {
+                    if let Some(spell) = self.live_cast_spell(&item) {
+                        self.grant_stack_keywords(spell, Keywords::HASTE);
+                    }
+                }
                 Instruction::RegisterEarthbendReturn => self.register_earthbend_return(&item),
                 Instruction::AnimateEarthbendTargets => self.animate_earthbend_targets(&item),
                 Instruction::GrantWarpedTargetsKeywords(keywords) => {
@@ -8990,7 +9452,8 @@ impl Game {
                         .object;
                     self.grant_keyword_effects(&affected, source, keywords);
                 }
-                Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
+                Instruction::GrantRememberedCreatures(keywords)
+                | Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
                     let objects = self
                         .state
                         .resolving
@@ -9011,12 +9474,16 @@ impl Game {
                         .source
                         .expect("instruction requires an object source")
                         .object;
-                    self.grant_keywords_until_next_turn(
-                        &affected,
-                        source,
-                        item.controller,
-                        keywords,
-                    );
+                    if matches!(instruction, Instruction::GrantRememberedCreatures(_)) {
+                        self.grant_keyword_effects(&affected, source, keywords);
+                    } else {
+                        self.grant_keywords_until_next_turn(
+                            &affected,
+                            source,
+                            item.controller,
+                            keywords,
+                        );
+                    }
                 }
                 Instruction::SnapshotDoubleCreatures(filter) => {
                     // Snapshot every operand before changing any derived characteristic.
@@ -9281,6 +9748,18 @@ impl Game {
                 Instruction::PutPowerExcessCounters { filter } => {
                     self.put_power_excess_counters(&item, filter);
                 }
+                Instruction::PutPermanentGroupCounters {
+                    filters,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .battlefield_group(&item, filters)
+                        .into_iter()
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::DoubleCounterKind { subject, kind } => {
                     let changes = self
                         .keyword_subjects(&item, subject)
@@ -9501,6 +9980,13 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::RemoveCounter { subject, kind } => {
+                    for id in self.keyword_subjects(&item, subject) {
+                        if self.on_battlefield(id) && self.counter_count(id, kind) > 0 {
+                            self.pay_counters(id, &Counters::of(kind, 1));
+                        }
+                    }
+                }
                 Instruction::RemoveAllCountersFrom(subject) => {
                     let ids = if subject == Subject::Attached {
                         self.attached_permanent(&item).into_iter().collect()
@@ -9688,6 +10174,12 @@ impl Game {
                 Instruction::RemoveTargetAbilitiesUntilEndOfTurn => {
                     self.remove_target_abilities_until_end_of_turn(&item);
                 }
+                Instruction::BlankTargetLandWhileBlighted => {
+                    self.resolve_source_linked_effect(
+                        &item,
+                        SourceLinkedEffectKind::BlankLandWhileBlighted,
+                    );
+                }
                 Instruction::RemoveTargetAbilitiesUntilSourceLeaves => {
                     self.resolve_source_linked_effect(
                         &item,
@@ -9811,10 +10303,31 @@ impl Game {
                     self.stage_entries(moves, None);
                 }
                 Instruction::ReturnToBattlefieldWithCounters(amounts) => {
-                    self.return_targets_with_counter_events(&item, amounts, false);
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Graveyard,
+                        false,
+                        false,
+                    );
+                }
+                Instruction::ReturnExiledTargetTappedWithCounters(amounts) => {
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Exile,
+                        true,
+                        false,
+                    );
                 }
                 Instruction::ReturnToBattlefieldThenCounters(amounts) => {
-                    self.return_targets_with_counter_events(&item, amounts, true);
+                    self.return_targets_with_counter_events(
+                        &item,
+                        amounts,
+                        Zone::Graveyard,
+                        false,
+                        true,
+                    );
                 }
                 Instruction::ReturnToBattlefieldWithCounter(counter) => {
                     let moves = item
@@ -9937,7 +10450,15 @@ impl Game {
                     }
                     self.move_target_batch(&targets, Zone::Hand);
                 }
-                Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                Instruction::ReturnCreaturesWithoutSubtype(_)
+                | Instruction::ReturnCreaturesWithoutSubtypes(_) => {
+                    let subtypes = match &instruction {
+                        Instruction::ReturnCreaturesWithoutSubtype(subtype) => {
+                            std::slice::from_ref(subtype)
+                        }
+                        Instruction::ReturnCreaturesWithoutSubtypes(subtypes) => *subtypes,
+                        _ => unreachable!(),
+                    };
                     let ids: Vec<_> = self
                         .state
                         .objects
@@ -9946,7 +10467,9 @@ impl Game {
                         .filter(|(id, object)| {
                             object.zone == Zone::Battlefield
                                 && self.is_creature(*id as CardId)
-                                && !self.has_subtype(*id as CardId, subtype)
+                                && !subtypes
+                                    .iter()
+                                    .any(|name| self.has_subtype(*id as CardId, name))
                         })
                         .map(|(id, _)| id as CardId)
                         .collect();

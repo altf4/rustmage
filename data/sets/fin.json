@@ -1,0 +1,2793 @@
+{
+  "schema": 1,
+  "set": "FIN",
+  "xmage_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "table": {
+    "source": "Mage.Sets/src/mage/sets/FinalFantasy.java",
+    "sha256": "ffb9d082514605fa9fcba43a7b4a18aaf473a91303b8418637c67b1606fe4000",
+    "printing_count": 594
+  },
+  "scope": "All physical set card identities, including reprints and starter products; cosmetic printings counted once",
+  "card_count": 312,
+  "cards": [
+    {
+      "name": "A Realm Reborn",
+      "oracle_id": "fd230ab5-874e-4827-9b5c-6d39d079cee6",
+      "facts_sha256": "eb39040482956dc6f38a1cf16797454e20735df924d53a515d806b44f02fe695",
+      "printings": [
+        "196",
+        "344",
+        "566"
+      ]
+    },
+    {
+      "name": "Absolute Virtue",
+      "oracle_id": "d4fddf20-6b3a-42c3-a245-002dacbb4725",
+      "facts_sha256": "78f4440bf20d96d65d8f42a9326139190cc885f7675504fa88d381eb8f72905d",
+      "printings": [
+        "212",
+        "476"
+      ]
+    },
+    {
+      "name": "Adelbert Steiner",
+      "oracle_id": "657a4500-4b47-4c78-945b-a7791af7d10e",
+      "facts_sha256": "5bfc1e8770a5a4e5c8494ba57fca9e5b95525618dace29a61b0a511eae9cdbde",
+      "printings": [
+        "3",
+        "422"
+      ]
+    },
+    {
+      "name": "Adventurer's Airship",
+      "oracle_id": "e3016295-00f7-4daf-91b0-57653733b103",
+      "facts_sha256": "9a69179fd07fd78a705f94caf69cb4542df18e710b3bd8053c31949cee0fa980",
+      "printings": [
+        "252"
+      ]
+    },
+    {
+      "name": "Adventurer's Inn",
+      "oracle_id": "232bd88c-ecdb-43dd-b34a-d381cb3bedf2",
+      "facts_sha256": "cecd110be4948b51b45793626c08c59fcf9d6ebb505ecf56b3330c0a385035ea",
+      "printings": [
+        "271"
+      ]
+    },
+    {
+      "name": "Aerith Gainsborough",
+      "oracle_id": "dd9a6f6b-f9b7-4292-bc80-b7da326de032",
+      "facts_sha256": "53908307c236ea54a8e704de67a819c3e48bdfa1e74c76309152861c127bcdd4",
+      "printings": [
+        "374",
+        "4",
+        "423",
+        "519"
+      ]
+    },
+    {
+      "name": "Aerith Rescue Mission",
+      "oracle_id": "14c3e48b-4c4e-4787-8c50-0e3aee19aa23",
+      "facts_sha256": "00df6a12f84e063533783ac889dca4e08b089208a3fe43ae3300cf965c35166f",
+      "printings": [
+        "5"
+      ]
+    },
+    {
+      "name": "Aettir and Priwen",
+      "oracle_id": "19d8937e-23fb-4758-a306-0e7af9bb44c4",
+      "facts_sha256": "0b4d63caaecab8f909ba4f09b1fed75ec0df035d44a96e2b4e2ab23ae6e546a4",
+      "printings": [
+        "253",
+        "350"
+      ]
+    },
+    {
+      "name": "Ahriman",
+      "oracle_id": "37d1d507-25dc-4cd0-b51e-2f1e9b24832c",
+      "facts_sha256": "2aa6076a8c183c6e9f1a4f142330958614f8db3f89451be4495345528be4903c",
+      "printings": [
+        "87"
+      ]
+    },
+    {
+      "name": "Airship Crash",
+      "oracle_id": "72a0e0f1-e8be-441a-bcaf-029fb1bd1fd2",
+      "facts_sha256": "2649ff6116d77310db234e5f832bc91e15575b494eb222bad791973055fd696c",
+      "printings": [
+        "171"
+      ]
+    },
+    {
+      "name": "Al Bhed Salvagers",
+      "oracle_id": "43f81514-e812-4e17-9b1a-704c136d8ffd",
+      "facts_sha256": "fc8845f65b8692a8236d032340713410d72e9c20d36c3e4fc81bdc7c2809f364",
+      "printings": [
+        "88"
+      ]
+    },
+    {
+      "name": "Ambrosia Whiteheart",
+      "oracle_id": "2bcc9f11-5b12-433e-9680-0f4b18aa521c",
+      "facts_sha256": "71ad8415fc959f61f16e529a1c58d4e1d72e4f46216317bfb9dcf02081e68677",
+      "printings": [
+        "325",
+        "424",
+        "6"
+      ]
+    },
+    {
+      "name": "Ancient Adamantoise",
+      "oracle_id": "e6873252-653a-47a8-99b7-b2ef70aa1f7f",
+      "facts_sha256": "ead0d04c5d3d517a1616171f2f31cf1898eb1d174b43adc3644e0d223debb4e1",
+      "printings": [
+        "172"
+      ]
+    },
+    {
+      "name": "Ardyn, the Usurper",
+      "oracle_id": "9ae13026-960a-4d31-b775-d47209a1e313",
+      "facts_sha256": "2fecf2e69015de4fc7117b6d7184b85c6ded678dda052cb2d17a9600173f91b9",
+      "printings": [
+        "315",
+        "379",
+        "444",
+        "524",
+        "89"
+      ]
+    },
+    {
+      "name": "Ashe, Princess of Dalmasca",
+      "oracle_id": "db75577d-1001-4088-999f-40684218a07f",
+      "facts_sha256": "89f58dd5299d26022793fbcc578b0a454685baf458b04418c60b297c55fbc6d7",
+      "printings": [
+        "425",
+        "7"
+      ]
+    },
+    {
+      "name": "Astrologian's Planisphere",
+      "oracle_id": "4dcd0583-cee0-46a6-ba43-93bca5eb0428",
+      "facts_sha256": "34c203f4efb1e630ab38610e59015797d6d44c2c1c9ea9a1856ca2ea1c61cf2d",
+      "printings": [
+        "46",
+        "581"
+      ]
+    },
+    {
+      "name": "Auron's Inspiration",
+      "oracle_id": "53a4d9ee-6dfa-4a8b-a1e4-7f671a666188",
+      "facts_sha256": "cb514eabfcf10bb8e4fd6df9fabaaba0ea6dd51f3dfd049fac53f455c41aae3d",
+      "printings": [
+        "8"
+      ]
+    },
+    {
+      "name": "Balamb Garden, SeeD Academy // Balamb Garden, Airborne",
+      "oracle_id": "8b84fec5-617c-4088-8250-2ba1f1f9479a",
+      "facts_sha256": "d7ea6b107d97742b9da16b08e3832b970fc3e49364e532fb99e76b1400961e55",
+      "printings": [
+        "272",
+        "354"
+      ]
+    },
+    {
+      "name": "Balamb T-Rexaur",
+      "oracle_id": "3f678f76-3863-4ab5-a4fd-9b76a282b1a8",
+      "facts_sha256": "84b73fb5742d2473abc7f577658b07ccdd7199ba6e81f3aee146c213ba08048b",
+      "printings": [
+        "173"
+      ]
+    },
+    {
+      "name": "Balthier and Fran",
+      "oracle_id": "570cb560-c246-4652-b230-ab34f966c78a",
+      "facts_sha256": "98f67582a94dc0e7500866ff6f07a39db8cd34d9e7b5cbb9db239239f9b311b8",
+      "printings": [
+        "213",
+        "319",
+        "393",
+        "477",
+        "538"
+      ]
+    },
+    {
+      "name": "Bard's Bow",
+      "oracle_id": "4aceb786-960d-4719-9de8-79dffd491a51",
+      "facts_sha256": "b64c498931346ca6d7d6064938a5ae5b2fe51d7d8f410fae5945143ce6203cc8",
+      "printings": [
+        "174"
+      ]
+    },
+    {
+      "name": "Baron, Airship Kingdom",
+      "oracle_id": "cc710da0-5a2e-4bc4-8fdd-d90e7bc1f224",
+      "facts_sha256": "f0c40bcccaba6e81fee72aca55b61d5377bbe87ab8f0d3763d646e36dbcb526b",
+      "printings": [
+        "273"
+      ]
+    },
+    {
+      "name": "Barret Wallace",
+      "oracle_id": "913672bc-cc88-4964-a331-7dbce40f2bda",
+      "facts_sha256": "bbd8ed1d2dab281a26b8861054d06dc30eb41fe076db1cd1b00ecb89dbbe99ca",
+      "printings": [
+        "129",
+        "457",
+        "584"
+      ]
+    },
+    {
+      "name": "Bartz and Boko",
+      "oracle_id": "2d995c47-e548-4fc4-9182-fef46af20ca5",
+      "facts_sha256": "9b7d2db2d054058ac3232db204cd154dcef0a7d2c65c1325ae114c23f4305400",
+      "printings": [
+        "175",
+        "469"
+      ]
+    },
+    {
+      "name": "Battle Menu",
+      "oracle_id": "8af57b80-bbc6-47ce-83f6-34ae8e2f5bd5",
+      "facts_sha256": "5efc34fda148c6f649035433c232bb88383171a5870e7d6ee8289a5dc1579312",
+      "printings": [
+        "9"
+      ]
+    },
+    {
+      "name": "Beatrix, Loyal General",
+      "oracle_id": "2f24637d-8d8e-49de-b229-4cdb97595ed7",
+      "facts_sha256": "4d8814db5df395724eabcd40f0c829e0f7a3fb952a8ec9e1d903a13e3c2d9d7c",
+      "printings": [
+        "426",
+        "554"
+      ]
+    },
+    {
+      "name": "Black Mage's Rod",
+      "oracle_id": "909b3d90-5762-461b-b49a-004a9e72733d",
+      "facts_sha256": "5da78fe49b897ec8a24d6bb5540a6664290e24191de8c319b8fafeb3e86896e6",
+      "printings": [
+        "90"
+      ]
+    },
+    {
+      "name": "Black Waltz No. 3",
+      "oracle_id": "9c84c681-40c1-4ff3-86e6-48b4ab7491e5",
+      "facts_sha256": "c835bd52666e0997dc9a7523a696f47069d732b85d173127d47be0d7f4e8f8b7",
+      "printings": [
+        "214",
+        "478"
+      ]
+    },
+    {
+      "name": "Blazing Bomb",
+      "oracle_id": "088acd15-029b-4091-960a-d5060a364ca9",
+      "facts_sha256": "161ba8f954ca7fd2a1f2c5372fb28787086cf5e9d20aa18ddec77a5faa4ed4ce",
+      "printings": [
+        "130"
+      ]
+    },
+    {
+      "name": "Blitzball",
+      "oracle_id": "75719f87-ce1a-40d6-ac5a-5ebf0c936c84",
+      "facts_sha256": "f0413f50797598fb6a72a137082bc4a6c178139ba056de24d69e8c9c4e32e981",
+      "printings": [
+        "254"
+      ]
+    },
+    {
+      "name": "Blitzball Shot",
+      "oracle_id": "c99779b7-a271-416e-bdc2-0f9ba6ceb144",
+      "facts_sha256": "45bb3c2e892fe3e3abe3cf94695bc8477db263a9c924a32c5f382b97b3f22da3",
+      "printings": [
+        "176"
+      ]
+    },
+    {
+      "name": "Buster Sword",
+      "oracle_id": "5e060d58-4d6e-425c-b7d4-727669fcce5b",
+      "facts_sha256": "c68d14b2b8d84d1f4559444a574a0cdf03a445eb23013c9d053170ccd5b06234",
+      "printings": [
+        "255",
+        "351"
+      ]
+    },
+    {
+      "name": "Cactuar",
+      "oracle_id": "3e61d7c4-263f-4077-bdbc-d79020f2a479",
+      "facts_sha256": "8a1adcf97069890af1830fd7894269d4cb3db3603d5cc65aad3152585c844042",
+      "printings": [
+        "177"
+      ]
+    },
+    {
+      "name": "Call the Mountain Chocobo",
+      "oracle_id": "a0dd3eb4-f6f1-4bfb-935c-032dd5af3811",
+      "facts_sha256": "172f9230545b8062ab203d4918b26cce42db6dc68af05338c688c43d0b9c1bfd",
+      "printings": [
+        "131"
+      ]
+    },
+    {
+      "name": "Capital City",
+      "oracle_id": "2c96ab90-155b-4bf4-acc9-65a2f0cd3189",
+      "facts_sha256": "191c39a862169e4d73cd2b5d5ce66e4eb68e778b1f809e9b131d41aa5b74812b",
+      "printings": [
+        "274"
+      ]
+    },
+    {
+      "name": "Cargo Ship",
+      "oracle_id": "93e336e3-2be7-4581-8ab3-9bea422d81c3",
+      "facts_sha256": "372cec3ad9c6b982ef73c69544fc610217d02829cfd5f4ec4a61099ea86189d7",
+      "printings": [
+        "47"
+      ]
+    },
+    {
+      "name": "Cecil, Dark Knight // Cecil, Redeemed Paladin",
+      "oracle_id": "e4719557-d94e-490f-8a56-c1867a01d2ef",
+      "facts_sha256": "4b3d06186f8d58a98d14a587cd648a5107e76377f8f43281b2ca08b57af7493c",
+      "printings": [
+        "380",
+        "445",
+        "525",
+        "91"
+      ]
+    },
+    {
+      "name": "Choco, Seeker of Paradise",
+      "oracle_id": "7979bf83-5091-4e62-8885-ca1833a97306",
+      "facts_sha256": "1cd7f612fd80312831cbfd63681bd7d8f4e86ce61a3142ceee05c41eafe1e3d8",
+      "printings": [
+        "215",
+        "479",
+        "569"
+      ]
+    },
+    {
+      "name": "Choco-Comet",
+      "oracle_id": "07b28ed7-eab8-4560-9994-3befcba876d3",
+      "facts_sha256": "9068a308cd6e85f6a2c502afae0acaa54f91f2fd5fa9aa77822b087e08f8f607",
+      "printings": [
+        "132"
+      ]
+    },
+    {
+      "name": "Chocobo Kick",
+      "oracle_id": "aa00c18b-8719-4095-940a-8e35a57b46c2",
+      "facts_sha256": "70211b29ad0da0a08fd8ab5f87a9629a05896c1912e7dc696b7e229bc400f24f",
+      "printings": [
+        "178"
+      ]
+    },
+    {
+      "name": "Chocobo Racetrack",
+      "oracle_id": "7522f7fd-6fda-4ed3-9131-21bf91616a73",
+      "facts_sha256": "0a703390add02c0cecdef138d04d0839c1bca9caeef23168a20672c9f18a1b38",
+      "printings": [
+        "179"
+      ]
+    },
+    {
+      "name": "Cid, Timeless Artificer",
+      "oracle_id": "87050537-99c9-4993-a770-4329b2e749e4",
+      "facts_sha256": "d89d73975596625e206a996cfddce351c500cd04b676cb9b787beb090663749b",
+      "printings": [
+        "216",
+        "407",
+        "408",
+        "409",
+        "410",
+        "411",
+        "412",
+        "413",
+        "414",
+        "415",
+        "416",
+        "417",
+        "418",
+        "419",
+        "420",
+        "480"
+      ]
+    },
+    {
+      "name": "Circle of Power",
+      "oracle_id": "2d41fd1f-4a98-45dd-a3c5-f7c5e0152109",
+      "facts_sha256": "bd3bdd3db41bdc5200362673b76e9681d4815574f5fba4f4dfeed480066e3f3f",
+      "printings": [
+        "583",
+        "92"
+      ]
+    },
+    {
+      "name": "Clash of the Eikons",
+      "oracle_id": "b1c38b70-575d-4d87-bc50-0b77b48ee823",
+      "facts_sha256": "be0f6b3edeae7ebbb3ecc2df5e4ebcd76c8f9297f445031c7504f93f2d6a592e",
+      "printings": [
+        "180",
+        "341"
+      ]
+    },
+    {
+      "name": "Clive's Hideaway",
+      "oracle_id": "283f743f-6e79-49de-b7ed-08e6ffb64cc6",
+      "facts_sha256": "f4dc087674a11d3f03ec2e11b9ee0bca792ab505f554a20f152f0cb51ab5467e",
+      "printings": [
+        "275"
+      ]
+    },
+    {
+      "name": "Clive, Ifrit's Dominant // Ifrit, Warden of Inferno",
+      "oracle_id": "ceba3d03-be5a-4dd7-b829-7db216a0f44e",
+      "facts_sha256": "6c0c31d83f19d69984cad8c9f05176f5250cc64b931bd238576d67c631f03ec0",
+      "printings": [
+        "133",
+        "318",
+        "385",
+        "458",
+        "530"
+      ]
+    },
+    {
+      "name": "Cloud of Darkness",
+      "oracle_id": "525f57df-7d4d-4089-9003-4b01005558dc",
+      "facts_sha256": "0a9acbf00cf7696a56defbccb6ddddad222233490c3666ca732b46a568af4d30",
+      "printings": [
+        "217",
+        "481"
+      ]
+    },
+    {
+      "name": "Cloud, Midgar Mercenary",
+      "oracle_id": "33d2584b-bf29-4c22-bd45-14ba2fb98c0e",
+      "facts_sha256": "9eabfd3d3d3ee547f12f1764a2b03bc99a1277feb0d5f586c5c393889f3da906",
+      "printings": [
+        "10",
+        "375",
+        "427",
+        "520",
+        "564"
+      ]
+    },
+    {
+      "name": "Cloud, Planet's Champion",
+      "oracle_id": "8512bd08-ecba-4e0e-b65c-8209764a65e5",
+      "facts_sha256": "205ed6ee774f8d66d786ef7812ad92eb13e5efc505d2e845c5a0b089f0ee6027",
+      "printings": [
+        "482",
+        "552"
+      ]
+    },
+    {
+      "name": "Cloudbound Moogle",
+      "oracle_id": "f718b520-d79d-4b91-9d85-de1f1c90c176",
+      "facts_sha256": "3d0031755579dceabdfd6f90677c881bf65e48b90d0f87b73e3f86dbf9b25835",
+      "printings": [
+        "11"
+      ]
+    },
+    {
+      "name": "Coeurl",
+      "oracle_id": "00d1596a-c3e2-4109-86da-388934a0c652",
+      "facts_sha256": "5d93389f85b88b94a7fd304f636e2f216a216d18d4f03483a4b709b3e05067ab",
+      "printings": [
+        "12"
+      ]
+    },
+    {
+      "name": "Coliseum Behemoth",
+      "oracle_id": "076cf4f1-b3d4-4175-b976-938ad851cc0e",
+      "facts_sha256": "1d87deb1887ec05bb89b90238a230feaae4614e1f743422d8d4e676a89b3ce6b",
+      "printings": [
+        "181"
+      ]
+    },
+    {
+      "name": "Combat Tutorial",
+      "oracle_id": "2a483d95-ff99-40b4-9071-6e78585090d5",
+      "facts_sha256": "b2a4138349cc292466c9777791a482042adb7ae0a15ba7b2cb3332a873990988",
+      "printings": [
+        "48"
+      ]
+    },
+    {
+      "name": "Commune with Beavers",
+      "oracle_id": "9108fffb-90f4-444e-8d3e-46a3d4ff3681",
+      "facts_sha256": "8e7d20e68ec135e4d3cc2eb6c0b55dca846bf6c03f0928b46fb895dbe11fbd9d",
+      "printings": [
+        "182"
+      ]
+    },
+    {
+      "name": "Coral Sword",
+      "oracle_id": "d4f0dd14-bc2a-4c6d-bfd5-bc5838ab18a5",
+      "facts_sha256": "1899df74dc3e462ce98e453ec419afc00a9f2c258e3a99096eab1defc77cbc06",
+      "printings": [
+        "134"
+      ]
+    },
+    {
+      "name": "Cornered by Black Mages",
+      "oracle_id": "68a58e0b-1506-492e-8ca3-016e520c10ba",
+      "facts_sha256": "e5c18631ea93be3e60d057c3fc3af70ecab89f2505f5fdd2f42833ffa9434579",
+      "printings": [
+        "93"
+      ]
+    },
+    {
+      "name": "Crossroads Village",
+      "oracle_id": "b26cfeb0-7bbe-4d93-8eed-e832f175a80c",
+      "facts_sha256": "80c2ee53705b1483b3cf775b11de5f248326df038e8f0724673d9ba68055bfaf",
+      "printings": [
+        "276"
+      ]
+    },
+    {
+      "name": "Crystal Fragments // Summon: Alexander",
+      "oracle_id": "b291d046-7649-4a05-98c4-224ecaece912",
+      "facts_sha256": "2d005582a28ea329000c88e54565b7bba55701d657e9aa594fcf9189ff2ca23f",
+      "printings": [
+        "13",
+        "357"
+      ]
+    },
+    {
+      "name": "Dark Confidant",
+      "oracle_id": "2068185c-1b50-47d0-aa3f-bf505d199428",
+      "facts_sha256": "7742cd431e1b4eba148664d2825932e24ee7fe4aff88f25fb8b9b84f5fb67ca5",
+      "printings": [
+        "334",
+        "94"
+      ]
+    },
+    {
+      "name": "Dark Knight's Greatsword",
+      "oracle_id": "eda09ed4-7509-4d1e-b169-2b7c1c87e936",
+      "facts_sha256": "d1ee2579a62fcfe60451767044b0ee55afdb8d961508b1f6c401f3f77af74601",
+      "printings": [
+        "95"
+      ]
+    },
+    {
+      "name": "Deadly Embrace",
+      "oracle_id": "32ad99a9-b5ed-41a1-8060-22265f7c5da1",
+      "facts_sha256": "cf5c4e5fd99b2f7a1e3b90ddf1f9d91a8574ea78bf1bba9f9fc5e11c85a97b4d",
+      "printings": [
+        "557"
+      ]
+    },
+    {
+      "name": "Delivery Moogle",
+      "oracle_id": "60043b87-6008-4cfa-9d8f-6ee6e3f70766",
+      "facts_sha256": "a1cf0554bbd552919e1f4c64952525b08fd9bc1a9372c9ceaa35619ed9a77d67",
+      "printings": [
+        "15"
+      ]
+    },
+    {
+      "name": "Demon Wall",
+      "oracle_id": "077b5ed2-05c2-4a16-b5eb-794884ee1c21",
+      "facts_sha256": "a4d0dff102fb4f2692779c5072b60526b0f74c00efb8d60a45350d8e95516b6e",
+      "printings": [
+        "97"
+      ]
+    },
+    {
+      "name": "Diamond Weapon",
+      "oracle_id": "3beba02f-4d50-4a93-a13b-78d4595bfbfc",
+      "facts_sha256": "c12498c4b109220e31d7ced782298298280524d8d661d76f631b4a691f0b760d",
+      "printings": [
+        "183",
+        "470"
+      ]
+    },
+    {
+      "name": "Dion, Bahamut's Dominant // Bahamut, Warden of Light",
+      "oracle_id": "4a0cc2a2-3711-473a-b2c5-b1e52b34e4fb",
+      "facts_sha256": "1a2954b32b5e442734df593a779d76645fce8daf6fc6505b8294293c6a1feab6",
+      "printings": [
+        "16",
+        "376",
+        "428",
+        "521"
+      ]
+    },
+    {
+      "name": "Dragoon's Lance",
+      "oracle_id": "a66c35fc-d5db-4cfd-9b85-d70b001d83d3",
+      "facts_sha256": "7a65e49428effbf571e01ea04e789a9a2cf739815140067f44d1947fc39174ee",
+      "printings": [
+        "17"
+      ]
+    },
+    {
+      "name": "Dragoon's Wyvern",
+      "oracle_id": "f328012f-4696-47bb-ab43-247bdcb13f03",
+      "facts_sha256": "15d8a6a28a009fc59e0f92d16e250e65b2197289e92c3a18f233f5e3e88ac186",
+      "printings": [
+        "49"
+      ]
+    },
+    {
+      "name": "Dreams of Laguna",
+      "oracle_id": "e060bf7a-f266-40b4-9772-e243dcbf965b",
+      "facts_sha256": "ea1faa47ef564c15fb775e36081d4d914e098b531dd551b829d348e2b6ea5ef5",
+      "printings": [
+        "50"
+      ]
+    },
+    {
+      "name": "Dwarven Castle Guard",
+      "oracle_id": "b51e0ae3-126b-4b7e-9dd1-818a5b8e512a",
+      "facts_sha256": "6afb5efd94eb35da3ec5a95b8543b5c325b5445d475a489225a9fb045cd26c87",
+      "printings": [
+        "18"
+      ]
+    },
+    {
+      "name": "Eden, Seat of the Sanctum",
+      "oracle_id": "84856b92-5ce8-47f3-9a1c-78d6a3e26aca",
+      "facts_sha256": "ac2fc2d297373f91dc27f8f93f049d46e3d44abe418ea523a9ec9c093de09dc2",
+      "printings": [
+        "277",
+        "355"
+      ]
+    },
+    {
+      "name": "Edgar, King of Figaro",
+      "oracle_id": "264efed9-65ab-40ad-877f-c6c25ca0281e",
+      "facts_sha256": "cbb915123134a4d3cc24a8b47d7b5a43904c1082f72cab317debd36637462367",
+      "printings": [
+        "436",
+        "51"
+      ]
+    },
+    {
+      "name": "Eject",
+      "oracle_id": "9a18fb98-796a-43b1-8157-e3afca53a1c0",
+      "facts_sha256": "2f236f0fe85f1ca2c3883187ee46a7789c0db32332b6c732aed3e97b468543f5",
+      "printings": [
+        "52"
+      ]
+    },
+    {
+      "name": "Elixir",
+      "oracle_id": "3e978db3-77ef-4b93-8f8f-e414e27254bd",
+      "facts_sha256": "c4f4907c229e448b08dd8419ea27c605f51aa9e8cbb10a5c4fa6435ce491a424",
+      "printings": [
+        "256"
+      ]
+    },
+    {
+      "name": "Emet-Selch, Unsundered // Hades, Sorcerer of Eld",
+      "oracle_id": "3b102ccc-7629-457c-aba6-e9b00fd50c85",
+      "facts_sha256": "b9191e105062bf1e8cf824775a04fcba641dea606fdf6c282a92cc6da2794818",
+      "printings": [
+        "218",
+        "394",
+        "483",
+        "539"
+      ]
+    },
+    {
+      "name": "Esper Origins // Summon: Esper Maduin",
+      "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
+      "facts_sha256": "d2e53f0dfac6ad5d4ede05d53efe6e5b9826ff0590199098085ef025282262ce",
+      "printings": [
+        "185",
+        "370"
+      ]
+    },
+    {
+      "name": "Ether",
+      "oracle_id": "566533af-5e67-463f-ac33-dfcf1ec735c9",
+      "facts_sha256": "21bb6dc5b38b9bb62edf2dfa75734d44d97ad4f689007ef5d4f512e43e2be6d1",
+      "printings": [
+        "53"
+      ]
+    },
+    {
+      "name": "Evil Reawakened",
+      "oracle_id": "264f944b-386b-4378-9764-4a8bde246809",
+      "facts_sha256": "e846aca0566477096033a439454931ee6cd8e64607a9b5658d05164cc2bee895",
+      "printings": [
+        "98"
+      ]
+    },
+    {
+      "name": "Excalibur II",
+      "oracle_id": "bfb6651c-e0b3-4dbd-b26a-3eeb690985fc",
+      "facts_sha256": "58c46b6c9a4804881851175381f183aeef46cd82612a61382f766b61e1b6308e",
+      "printings": [
+        "257",
+        "352"
+      ]
+    },
+    {
+      "name": "Exdeath, Void Warlock // Neo Exdeath, Dimension's End",
+      "oracle_id": "98c9d798-8c48-4a2d-a076-ce17d31df6f5",
+      "facts_sha256": "938404c1362fd7fd256370248251a279d4d549bc1e746787402332f2ac3496de",
+      "printings": [
+        "220",
+        "485"
+      ]
+    },
+    {
+      "name": "Fang, Fearless l'Cie",
+      "oracle_id": "04ac8b2c-95e9-40e9-8cc0-af9b075a94c0",
+      "facts_sha256": "9c6736c28132974d88093924dd093ce1880c7ca3859cdfd82c56d53b5d1c2f26",
+      "printings": [
+        "381",
+        "446",
+        "526",
+        "99"
+      ]
+    },
+    {
+      "name": "Fate of the Sun-Cryst",
+      "oracle_id": "0ffeec93-89d7-42c2-8abf-802e9f6dc992",
+      "facts_sha256": "a242b74263b72b6649c93005411844d1c51b931e84c45e85327848fecdba7203",
+      "printings": [
+        "19"
+      ]
+    },
+    {
+      "name": "Fight On!",
+      "oracle_id": "4ab42daa-8726-4973-947d-1d6c32f0ba61",
+      "facts_sha256": "a3c898ff7f4a86bd7d12e41051a4d97dd5cba208920a0705d90bfc67d8b192d0",
+      "printings": [
+        "100"
+      ]
+    },
+    {
+      "name": "Fire Magic",
+      "oracle_id": "c87db803-3490-41bc-af7a-78f99bcd77c8",
+      "facts_sha256": "6baebf5ae8dcb147ed2ee02007f3785fc405af2019fa80454ffb5eebd572469d",
+      "printings": [
+        "136"
+      ]
+    },
+    {
+      "name": "Firion, Wild Rose Warrior",
+      "oracle_id": "df42c768-34ca-4ebf-8f66-eaccf7261f70",
+      "facts_sha256": "2e4c349f5dca72cbbd834e7ade032f8b4cdf49650ee965c9e492a9f2dbb5dc05",
+      "printings": [
+        "137",
+        "386",
+        "459",
+        "531"
+      ]
+    },
+    {
+      "name": "Forest",
+      "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+      "facts_sha256": "191d17171bc11d7b26d625ceb8f828799439304fc668127c733de3e0f65bdbd6",
+      "printings": [
+        "306",
+        "307",
+        "308",
+        "576"
+      ]
+    },
+    {
+      "name": "Freya Crescent",
+      "oracle_id": "7e3085d8-9d46-41e0-ad9d-54c44d9ef267",
+      "facts_sha256": "5d801e332549662156b1b38317e5f2fd416fc226a591f45518a4661fc711a6eb",
+      "printings": [
+        "138",
+        "460"
+      ]
+    },
+    {
+      "name": "From Father to Son",
+      "oracle_id": "87864421-505c-4bdb-b1e3-3e44e05f2beb",
+      "facts_sha256": "d14a82e24bcd48ce9ef29a8192c5ef7a88b951ac2e5edcc0d5891d66cf435ddc",
+      "printings": [
+        "20"
+      ]
+    },
+    {
+      "name": "G'raha Tia",
+      "oracle_id": "0c4603be-d71a-4d33-b62c-04ead1987dbe",
+      "facts_sha256": "3ddeab1c21598f1c8c322fcaa8260f4889535134d669faa3cc9947d622cbbc5c",
+      "printings": [
+        "21",
+        "429"
+      ]
+    },
+    {
+      "name": "Gaelicat",
+      "oracle_id": "34bdeca4-b1e0-4fa3-afe4-bec743a080b8",
+      "facts_sha256": "6ca2102f24235a7a69cf23ff50405cf57b588ed8208f43ad0270063cd9b9a518",
+      "printings": [
+        "22"
+      ]
+    },
+    {
+      "name": "Gaius van Baelsar",
+      "oracle_id": "86d2a45a-e452-4241-8ab4-28a2bb808ffa",
+      "facts_sha256": "abedde2db6d450ac3de858d589604e44e0f3e42c2391cdde8a1e76291f3165be",
+      "printings": [
+        "102",
+        "447"
+      ]
+    },
+    {
+      "name": "Galuf's Final Act",
+      "oracle_id": "9268d369-173e-4325-98f6-348beeb8ba62",
+      "facts_sha256": "43b9e5b83e353c417d14bbaeadf8fa5285776eb30601c6362be36c618194505c",
+      "printings": [
+        "186"
+      ]
+    },
+    {
+      "name": "Garland, Knight of Cornelia // Chaos, the Endless",
+      "oracle_id": "75e930dd-32e9-4c39-81a7-d833a3976b8d",
+      "facts_sha256": "12efb0a96b21c31f05edc2f412c50f32e3c926815d62d3b5240abde2491d6d24",
+      "printings": [
+        "221",
+        "486"
+      ]
+    },
+    {
+      "name": "Garnet, Princess of Alexandria",
+      "oracle_id": "8c709873-84b5-46c2-bb29-85b041a6df88",
+      "facts_sha256": "f1201158b4e28d30475d96a35719ef2454c778975e6872a5be32d8ae9b5e195b",
+      "printings": [
+        "222",
+        "487"
+      ]
+    },
+    {
+      "name": "Genji Glove",
+      "oracle_id": "8242cd78-6675-43b5-8924-0a88c3aa6f76",
+      "facts_sha256": "3c2f665edbf1df12061b53177a5fb425103a912955117d32b130b2f1e73cbfe7",
+      "printings": [
+        "258"
+      ]
+    },
+    {
+      "name": "Gigantoad",
+      "oracle_id": "fa5e4aa5-e2cb-4c8c-91cb-554bec0f21d4",
+      "facts_sha256": "61cfa6a9717846643ddd2c939568ae1d5600834fa8c9a7a1416bebe2554e513e",
+      "printings": [
+        "187"
+      ]
+    },
+    {
+      "name": "Gilgamesh, Master-at-Arms",
+      "oracle_id": "c9432e87-38f6-4889-8f07-ae7cd045e532",
+      "facts_sha256": "e50a57d56511794376602dc8ed1139b71568ece2326815e703b6d2f8891cc153",
+      "printings": [
+        "139",
+        "338",
+        "461"
+      ]
+    },
+    {
+      "name": "Giott, King of the Dwarves",
+      "oracle_id": "c629fa91-e13c-494b-a95f-a91b7c52035a",
+      "facts_sha256": "78a516163066a23939adba7099ead706ca9d0e20d9f4003d9bd044a2ed4beedc",
+      "printings": [
+        "223",
+        "488"
+      ]
+    },
+    {
+      "name": "Gladiolus Amicitia",
+      "oracle_id": "fb5a05d1-baa5-459d-a2e5-438f4a60b82f",
+      "facts_sha256": "24e6b18b6ba9ec3cdab4b76da495ef3057054ac8fd46687adeac3d9fa0f8fb54",
+      "printings": [
+        "224",
+        "489"
+      ]
+    },
+    {
+      "name": "Gogo, Master of Mimicry",
+      "oracle_id": "61586052-7d69-489c-84c4-0359228d131b",
+      "facts_sha256": "196b5bce6a67d2daa6613b76475efd4e80bb3f191ca3c20f1ee2afef1691ea74",
+      "printings": [
+        "377",
+        "437",
+        "522",
+        "54"
+      ]
+    },
+    {
+      "name": "Gohn, Town of Ruin",
+      "oracle_id": "13fbd525-c9ee-4bd6-b269-94fb264024b6",
+      "facts_sha256": "ac367df1d2abb3cd71c409146372125f3ff123547aaa5aa829e848fa4bd58018",
+      "printings": [
+        "278"
+      ]
+    },
+    {
+      "name": "Golbez, Crystal Collector",
+      "oracle_id": "533d5bf9-0912-451f-a3f4-3842b0a75b1d",
+      "facts_sha256": "8b0a21e109918d60cdbb891ac99b7a51e8fe710cea2ad45bf52fb18a90325c8c",
+      "printings": [
+        "225",
+        "395",
+        "490",
+        "540"
+      ]
+    },
+    {
+      "name": "Gongaga, Reactor Town",
+      "oracle_id": "ac4e1818-4873-4143-9b99-46f205d006d9",
+      "facts_sha256": "6ae591af3f6e4632d693d613a0aeeb09b047d6bdf315980ea04da43510d98cc0",
+      "printings": [
+        "280"
+      ]
+    },
+    {
+      "name": "Goobbue Gardener",
+      "oracle_id": "b5c64331-2ba5-43ad-b77c-979875cc39e3",
+      "facts_sha256": "383b6d964b1448c25c8e5ecbf80b3dfe45e22a877da572daae334e97ffc7bafa",
+      "printings": [
+        "188"
+      ]
+    },
+    {
+      "name": "Gran Pulse Ochu",
+      "oracle_id": "09b71c95-7b5d-4cee-a505-e0dda72715b7",
+      "facts_sha256": "5512c65f177a7646c2b6bd078c3d0585a06b8d20dabcd131f2ffe5b8b710e4ce",
+      "printings": [
+        "189"
+      ]
+    },
+    {
+      "name": "Guadosalam, Farplane Gateway",
+      "oracle_id": "849c97e4-df15-4ecb-bdf8-283bb497d90c",
+      "facts_sha256": "d1acf9d25e7c69356cdacdafa0dbdfb1b671f9bcfd381ed5576304f337625da6",
+      "printings": [
+        "281"
+      ]
+    },
+    {
+      "name": "Gysahl Greens",
+      "oracle_id": "eddfe7d7-6868-4b81-b46c-d0765e5210e7",
+      "facts_sha256": "06c5072a9fc6a1df813fd4875244cac65f2826d254a22a5bfdbc9d11562cc724",
+      "printings": [
+        "190"
+      ]
+    },
+    {
+      "name": "Haste Magic",
+      "oracle_id": "5249dd0d-3bda-452e-ac6e-774c0ebc2e41",
+      "facts_sha256": "bcd683d8652e5c0cb8e1e40db249223180a2cb52e79a7ff9062b0dec65d90be0",
+      "printings": [
+        "140"
+      ]
+    },
+    {
+      "name": "Hecteyes",
+      "oracle_id": "7a11b4ed-430d-4ef8-b0c1-6a022f12448c",
+      "facts_sha256": "bb1c53d9f8e16cc864ffe4d531591e1ff9e48de6c72b820e718976fb6e89a0e3",
+      "printings": [
+        "103"
+      ]
+    },
+    {
+      "name": "Hill Gigas",
+      "oracle_id": "137594f7-2422-461b-a3ae-7ce3c135e0c7",
+      "facts_sha256": "fddd6dd151a0bcd22aa191dc0facf1a353ca801b479a2d12d4b443e280df425b",
+      "printings": [
+        "141"
+      ]
+    },
+    {
+      "name": "Hope Estheim",
+      "oracle_id": "187a110c-032a-42e1-be2d-3cfaaa9495f8",
+      "facts_sha256": "6a852924b9cbf7b789923048496dd0e5d5931e9c6425d34eb9d185acc94bf729",
+      "printings": [
+        "226",
+        "396",
+        "491",
+        "541"
+      ]
+    },
+    {
+      "name": "Ice Flan",
+      "oracle_id": "3b7120a6-700b-4c61-bea4-a835f0cc0bcb",
+      "facts_sha256": "687d40089e80db907b794da0bda83a5bffe0c86548b3ca1f70ec3f2e40c5680b",
+      "printings": [
+        "55"
+      ]
+    },
+    {
+      "name": "Ice Magic",
+      "oracle_id": "88b0bd3b-d832-4059-b0d9-04630917ae94",
+      "facts_sha256": "a64b1830d066fb3101dfa9c1cc2510ea2a9f6f42bdf23d620edd26547fb7a08b",
+      "printings": [
+        "56"
+      ]
+    },
+    {
+      "name": "Ignis Scientia",
+      "oracle_id": "23320d55-80cb-4da3-a53c-8c75abdc8c8f",
+      "facts_sha256": "0a2204a072857d249deabcb7a20b5969060c59d29d45eda0a56386eb918f5c9a",
+      "printings": [
+        "227",
+        "492"
+      ]
+    },
+    {
+      "name": "Il Mheg Pixie",
+      "oracle_id": "c2c47e13-b581-41a8-a4af-542557a6249a",
+      "facts_sha256": "6903792828df2e92555b92ece55cc5d6dcce0322199ec3177d2ad69634d4ecea",
+      "printings": [
+        "57"
+      ]
+    },
+    {
+      "name": "Insomnia, Crown City",
+      "oracle_id": "b7140f72-91b6-4be4-8d71-c019e64c2351",
+      "facts_sha256": "5e4cd77282a8a5ad320e9935aed013765b912e576cd9b869f372fe04d09c1fd9",
+      "printings": [
+        "282"
+      ]
+    },
+    {
+      "name": "Instant Ramen",
+      "oracle_id": "2283e409-c6c7-4de9-899b-2b3caea5f35e",
+      "facts_sha256": "fde06a6277caae9d726e9f6dcf79fc156ec03c3f9627a85347f0d161d6cd3b40",
+      "printings": [
+        "259"
+      ]
+    },
+    {
+      "name": "Iron Giant",
+      "oracle_id": "325b4288-fe1b-4e29-ae13-72924b4db3dd",
+      "facts_sha256": "0c3f16e6910b3ab9c8eceb43b10bfe052820dca098aebd0c32e45e3b84a0712e",
+      "printings": [
+        "260"
+      ]
+    },
+    {
+      "name": "Ishgard, the Holy See // Faith & Grief",
+      "oracle_id": "4f4358cb-59df-46d9-be27-69929f5a615c",
+      "facts_sha256": "3a4d6c33b0245757dda04733ef6b3de153b110911d74051c3310456c4a5c9cc9",
+      "printings": [
+        "283",
+        "310"
+      ]
+    },
+    {
+      "name": "Island",
+      "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+      "facts_sha256": "9663433a19f0b70520d2598600be1ddac39dd97fd02f80811dcce06dd0cbaf26",
+      "printings": [
+        "297",
+        "298",
+        "299",
+        "573"
+      ]
+    },
+    {
+      "name": "Item Shopkeep",
+      "oracle_id": "7532f0ea-9d13-43ca-9b7d-2d22f2a66017",
+      "facts_sha256": "ff0b7f2a355849ecef6c4f1d5bc875866a735150cb28532982d3e0f4cc47ab2b",
+      "printings": [
+        "142"
+      ]
+    },
+    {
+      "name": "Jecht, Reluctant Guardian // Braska's Final Aeon",
+      "oracle_id": "b6cebf8d-37e1-42de-b3f1-1c174ab17ac8",
+      "facts_sha256": "8d6f7506705d329e67758d1adb6c2ad2c99842e0305d54f34e5c3da02456845b",
+      "printings": [
+        "104",
+        "363",
+        "448"
+      ]
+    },
+    {
+      "name": "Jenova, Ancient Calamity",
+      "oracle_id": "9370f6bf-d6a0-4c5b-828f-7229f563cc07",
+      "facts_sha256": "465e198db59e24a16822b03fe3344b2ca11ac36901d3761e9aadb61295552ce0",
+      "printings": [
+        "228",
+        "346",
+        "493"
+      ]
+    },
+    {
+      "name": "Jidoor, Aristocratic Capital // Overture",
+      "oracle_id": "bd513d9d-5aa2-4860-bd86-8b5d9430f133",
+      "facts_sha256": "8952da60b9bfb6361f4d66e8018a4553ee9ef691973217f5d0a36dd75062b74c",
+      "printings": [
+        "284",
+        "311"
+      ]
+    },
+    {
+      "name": "Jill, Shiva's Dominant // Shiva, Warden of Ice",
+      "oracle_id": "c6655e05-9e31-4a74-a97d-1eeb473fe900",
+      "facts_sha256": "ba1267a4e77af4592ee9569579497610007f589b92a83d0ba6a005ca7eec1c15",
+      "printings": [
+        "378",
+        "438",
+        "523",
+        "58"
+      ]
+    },
+    {
+      "name": "Joshua, Phoenix's Dominant // Phoenix, Warden of Fire",
+      "oracle_id": "f4629329-a79b-4460-a1bc-9ae0f59adf5a",
+      "facts_sha256": "7aa7574ccead851e54e3e091d0b9eb7bf772bd9b2930cc2879443c1bb5aede51",
+      "printings": [
+        "229",
+        "397",
+        "494",
+        "542"
+      ]
+    },
+    {
+      "name": "Judge Magister Gabranth",
+      "oracle_id": "1a846ad6-15c9-4bf9-9127-612018a557b9",
+      "facts_sha256": "7d814473cfe83d337ffeffe6fd0efed851387807617884ec6e09649683552a86",
+      "printings": [
+        "230",
+        "495"
+      ]
+    },
+    {
+      "name": "Judgment Bolt",
+      "oracle_id": "aad9f9f2-4c6b-48d0-80bd-77b73a9ea5f1",
+      "facts_sha256": "682a27858383c062a104bbd44a407b6cf3690d0243e19dabf1e4d8be4fce705c",
+      "printings": [
+        "559"
+      ]
+    },
+    {
+      "name": "Jumbo Cactuar",
+      "oracle_id": "e0bdfbb4-3060-4492-bd9b-0c47e719400a",
+      "facts_sha256": "0f8ba740cf92970998ff6f76eac9a8d534ff5573e4e832ad37e1c1d2be861f3e",
+      "printings": [
+        "191",
+        "343"
+      ]
+    },
+    {
+      "name": "Kain, Traitorous Dragoon",
+      "oracle_id": "70fbb378-d905-47cf-8c54-cc166a7867b3",
+      "facts_sha256": "eb4991e85318485d3fa787176614ea20f71244c0567d4c2fe4d004f477b0e1c2",
+      "printings": [
+        "105",
+        "316",
+        "449"
+      ]
+    },
+    {
+      "name": "Kefka, Court Mage // Kefka, Ruler of Ruin",
+      "oracle_id": "6d3ca5cb-781d-4608-b7f1-38c020536376",
+      "facts_sha256": "f234cfd5c1380cb2831baa13bb2b50a3398003e01d1f106354dccb80ed7ee2d9",
+      "printings": [
+        "231",
+        "322",
+        "398",
+        "496",
+        "543"
+      ]
+    },
+    {
+      "name": "Kuja, Genome Sorcerer // Trance Kuja, Fate Defied",
+      "oracle_id": "3998a60d-9521-4100-8d41-3e612972a3de",
+      "facts_sha256": "8bf62faf7d3a072367f4b564a5229df2adcff8ebb86afbe78e5fd2b187dc6665",
+      "printings": [
+        "232",
+        "399",
+        "497",
+        "544"
+      ]
+    },
+    {
+      "name": "Laughing Mad",
+      "oracle_id": "4f65e6a9-0d90-44b9-9b76-00814db2dbd8",
+      "facts_sha256": "6efcde55baffa5e323b74ee6f7a197ff190a3f3e2974e083de09b6ad0e43396c",
+      "printings": [
+        "143",
+        "585"
+      ]
+    },
+    {
+      "name": "Light of Judgment",
+      "oracle_id": "932177b8-70f8-4908-a48f-fe03204daddc",
+      "facts_sha256": "d0b72639808ac6b839af683995a3c250b89c9828a77a79637e6220d28c742068",
+      "printings": [
+        "144"
+      ]
+    },
+    {
+      "name": "Lightning, Army of One",
+      "oracle_id": "585eb5bc-5a3d-44d8-b593-1ff0d67f96a7",
+      "facts_sha256": "453d6da476b665d66fad826dc5e23f666edc2401b172d1968b1bcb44726278ef",
+      "printings": [
+        "233",
+        "320",
+        "400",
+        "498",
+        "545"
+      ]
+    },
+    {
+      "name": "Lightning, Security Sergeant",
+      "oracle_id": "e1626880-0fa3-441a-9978-b293fc87c418",
+      "facts_sha256": "9b8372092f5e74726189b2e0de79afd074adab906db6a5590acc228f489e679e",
+      "printings": [
+        "462",
+        "560"
+      ]
+    },
+    {
+      "name": "Lindblum, Industrial Regency // Mage Siege",
+      "oracle_id": "4cc014f3-05e0-442e-9dee-03eab1aa65a3",
+      "facts_sha256": "226f8c52e558e7409217cfb8e6b730c5864548fa7aede3ff93c7676dbeb29cc1",
+      "printings": [
+        "285",
+        "312"
+      ]
+    },
+    {
+      "name": "Lion Heart",
+      "oracle_id": "bd4151cc-743a-40f0-9e51-1f67555d9ab3",
+      "facts_sha256": "cb5caf3b4b96bb6a8a2dab544ff5f040d2ad633f2db5cb4fec7c0b0dc03a4d6c",
+      "printings": [
+        "261"
+      ]
+    },
+    {
+      "name": "Locke Cole",
+      "oracle_id": "bdcb7aed-3595-4c7e-b9da-543e92de919a",
+      "facts_sha256": "50a0d1e8c8a07318466353a24be41363950a996ec02509a12282ca2073360d0d",
+      "printings": [
+        "234",
+        "499"
+      ]
+    },
+    {
+      "name": "Loporrit Scout",
+      "oracle_id": "24630190-a630-4dd3-a8f7-82f129c881e3",
+      "facts_sha256": "92a4cb407b9cdbc0b164b1da01c4cc6bc9574b58def18f871de44a45d4a15ec2",
+      "printings": [
+        "192"
+      ]
+    },
+    {
+      "name": "Louisoix's Sacrifice",
+      "oracle_id": "42d8ab49-703a-4fd3-84d0-0a3ac1eafca8",
+      "facts_sha256": "6e51d104f3cce853e4696b41f819825b63220f3f9e35c7b905b8098779a70f8f",
+      "printings": [
+        "59"
+      ]
+    },
+    {
+      "name": "Lunatic Pandora",
+      "oracle_id": "34c65c7f-33ab-4f91-84ce-d0c8f4fc5832",
+      "facts_sha256": "10ff35a305ba822f020ad3d8b27e3a501e528e1031766b2bc3191576d57c7b46",
+      "printings": [
+        "262"
+      ]
+    },
+    {
+      "name": "Machinist's Arsenal",
+      "oracle_id": "e7fff34e-9b80-4a67-a917-fd9efddb5a1f",
+      "facts_sha256": "58abac055d29de41c6e3ec5f2bbb56064e28c4a9a37666d3d1bf234517331cbd",
+      "printings": [
+        "23"
+      ]
+    },
+    {
+      "name": "Magic Damper",
+      "oracle_id": "ada82f93-dc93-4a95-a13f-42b5942b3413",
+      "facts_sha256": "c158baf52aeee03417a8865f928b397b32cb56243f50a850f89547b877f35645",
+      "printings": [
+        "61"
+      ]
+    },
+    {
+      "name": "Magic Pot",
+      "oracle_id": "caed9999-74b8-43e3-a319-fa505c04c71c",
+      "facts_sha256": "d5b66ab2ca3ea0126fa726a40657bba3d76d07911591310709bef6d0b70589ec",
+      "printings": [
+        "263"
+      ]
+    },
+    {
+      "name": "Magitek Armor",
+      "oracle_id": "0e9d8e12-b9da-4452-a758-5caffd8a752e",
+      "facts_sha256": "d192c0bbf65e8f17dead1aae1cc1d08367a6c3550c04fb28e1c2336f796166ab",
+      "printings": [
+        "24"
+      ]
+    },
+    {
+      "name": "Magitek Infantry",
+      "oracle_id": "563992ff-6fdf-45a0-afc2-7c73c2ec6f74",
+      "facts_sha256": "f036e94848e3c5648829356b59c1889b6003bc7becfe777f9ad1ae9bb0ccc919",
+      "printings": [
+        "25"
+      ]
+    },
+    {
+      "name": "Magitek Scythe",
+      "oracle_id": "0d5bbde7-6f33-4708-b3ab-34d4528af649",
+      "facts_sha256": "036ecdf4c561ea34a399d648ed1ae0b8c774059d81fac1924607bbacb63df3cb",
+      "printings": [
+        "562"
+      ]
+    },
+    {
+      "name": "Malboro",
+      "oracle_id": "6804e329-800b-4aa4-9a00-b9a1f4b9537b",
+      "facts_sha256": "f9f5092674b80a726d7df382c6789f19dab1b1be981f5bf19be4cedb2fb545d3",
+      "printings": [
+        "106"
+      ]
+    },
+    {
+      "name": "Matoya, Archon Elder",
+      "oracle_id": "ef6c0054-3a89-4fac-b822-37c7d2514489",
+      "facts_sha256": "c1ba3b5957db683795604948bf61d9ab28fb74808dd530d73dd353e4c10bc595",
+      "printings": [
+        "439",
+        "62"
+      ]
+    },
+    {
+      "name": "Memories Returning",
+      "oracle_id": "6cdc6548-cb32-437f-850a-9002542ad3d5",
+      "facts_sha256": "3aef9a863f29d6c37620d8e43d2437d03b043d04d8e4b7907dbf4e25994f4f07",
+      "printings": [
+        "331",
+        "63"
+      ]
+    },
+    {
+      "name": "Midgar, City of Mako // Reactor Raid",
+      "oracle_id": "4e34a49d-f031-48ac-a458-97b79124b76c",
+      "facts_sha256": "dafcac34c6d5bb3d88d7ae82c40dec77d17c39478db2c977e668677349c16c79",
+      "printings": [
+        "286",
+        "313"
+      ]
+    },
+    {
+      "name": "Minwu, White Mage",
+      "oracle_id": "31ca9e12-8ad0-472e-8b2a-b7df26370d8c",
+      "facts_sha256": "198fb2def783323cb223d425e8f54688af861eb17db6cb546c5550d3e249dd31",
+      "printings": [
+        "26",
+        "430"
+      ]
+    },
+    {
+      "name": "Monk's Fist",
+      "oracle_id": "1b524149-340e-4f94-9520-6a5258fabb00",
+      "facts_sha256": "9cc6e9899d5cd2d7bbf79f753f318a26f997a365f02133195878e92aab825345",
+      "printings": [
+        "265"
+      ]
+    },
+    {
+      "name": "Moogles' Valor",
+      "oracle_id": "9627ed9a-5ade-412d-bf8d-f0705b1c9405",
+      "facts_sha256": "76c20c92f3c0cfd4e4d35561bdc00abd949023f3b7d79049d0db3b655fc6ee42",
+      "printings": [
+        "27",
+        "326"
+      ]
+    },
+    {
+      "name": "Mountain",
+      "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+      "facts_sha256": "dc8fd7c2b9340114200a1478f7e78bc91e28a0949ef1353a3bb0b2e39e65f366",
+      "printings": [
+        "303",
+        "304",
+        "305",
+        "575"
+      ]
+    },
+    {
+      "name": "Mysidian Elder",
+      "oracle_id": "10039992-d51a-47e7-9a70-02fe2227c163",
+      "facts_sha256": "8ea634d40e5bb5daf365dfa887a41f005460fe7850001297ffe5570b946759d4",
+      "printings": [
+        "145"
+      ]
+    },
+    {
+      "name": "Namazu Trader",
+      "oracle_id": "3d01c351-6dbd-4d63-9843-3aa1a3c039a6",
+      "facts_sha256": "80bb356f1110ef264a26286b94aa37ac7824a2f825974ad3f1eab56fe5cb2285",
+      "printings": [
+        "107"
+      ]
+    },
+    {
+      "name": "Nibelheim Aflame",
+      "oracle_id": "eab5eef8-d180-4b08-a770-6b3a1df03745",
+      "facts_sha256": "59bae8680ffc040df96848293afe47b3ba4290a3cdc513e61d8bf1be6d647681",
+      "printings": [
+        "146",
+        "339"
+      ]
+    },
+    {
+      "name": "Ninja's Blades",
+      "oracle_id": "cdaffb13-c2a4-4bc5-a9d6-c1a0d1686a81",
+      "facts_sha256": "4602e8779b68795a394868507970dcffdba8b009bef1954e240f93890e2650d5",
+      "printings": [
+        "108"
+      ]
+    },
+    {
+      "name": "Noctis, Prince of Lucis",
+      "oracle_id": "2d44bdd2-aa31-415a-be71-d9e98ef12334",
+      "facts_sha256": "b9d397b44885f10a29f04d0483d70072a1f52a75de7b5ecf9054f92aa692f0aa",
+      "printings": [
+        "235",
+        "401",
+        "500",
+        "546"
+      ]
+    },
+    {
+      "name": "Omega, Heartless Evolution",
+      "oracle_id": "3173ca98-d46a-4de3-a95e-3eaad28d4017",
+      "facts_sha256": "edca8c39cc6a23ef26028ed04f14c407b70b1224c7edfdbda0afbcfeff42dce4",
+      "printings": [
+        "236",
+        "347",
+        "501"
+      ]
+    },
+    {
+      "name": "Opera Love Song",
+      "oracle_id": "22f259b3-9de1-44a1-a89d-f2f1b1249d4d",
+      "facts_sha256": "97aeee8fda42999c3c990603454144ed6c1cfe5cbb68af6c63a858a3b78ee867",
+      "printings": [
+        "147"
+      ]
+    },
+    {
+      "name": "Overkill",
+      "oracle_id": "571cb4b6-b4e5-40a2-a970-42c1ab65c8a9",
+      "facts_sha256": "dcb8490a5803c04a148cbe5ab41d3dc81c1583f633c79c513e1ce09d2bad2989",
+      "printings": [
+        "109"
+      ]
+    },
+    {
+      "name": "Paladin's Arms",
+      "oracle_id": "22076484-e9d5-4f33-8cf3-b9b427436b05",
+      "facts_sha256": "36404d574c26ea0f192b1cd026e39b4feb10a8751e78379a798fc19dfcec6a5a",
+      "printings": [
+        "28"
+      ]
+    },
+    {
+      "name": "Phantom Train",
+      "oracle_id": "a0c4eb78-bee0-42c6-ab1e-64bacde87960",
+      "facts_sha256": "8dd101d37463e31faa82b5b5b72bcf994308969320ca868a985c72ea71384976",
+      "printings": [
+        "110"
+      ]
+    },
+    {
+      "name": "Phoenix Down",
+      "oracle_id": "8cc7e418-cc5e-4aef-9757-874223fccd74",
+      "facts_sha256": "3af72548af6827adad1043d41157e76ba0d2c9d44e504efd5cbd9c566aed564c",
+      "printings": [
+        "29",
+        "578"
+      ]
+    },
+    {
+      "name": "Plains",
+      "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+      "facts_sha256": "a46fdb7aed01739b4f3c48497e4bf8b5ded78b5a5cf67d3fe57a045f47ee35c1",
+      "printings": [
+        "294",
+        "295",
+        "296",
+        "572"
+      ]
+    },
+    {
+      "name": "Poison the Waters",
+      "oracle_id": "2c9bf40b-ddcb-4f46-a81e-56b91dfc784f",
+      "facts_sha256": "fe518158db5156c2a0d6baeb310d4eeb7e2f3f2ed9389c0f8f34a6e1ed486ae9",
+      "printings": [
+        "111"
+      ]
+    },
+    {
+      "name": "Prishe's Wanderings",
+      "oracle_id": "bc92988c-d628-45ea-8606-516a1211cef3",
+      "facts_sha256": "d7a2e18e3e5c1b229b5dd79484fae03c48938e6d0106f938fff5b269860ede30",
+      "printings": [
+        "193"
+      ]
+    },
+    {
+      "name": "Prompto Argentum",
+      "oracle_id": "e13d7600-0924-42eb-9d65-aa18548624a7",
+      "facts_sha256": "0a62ff6a3f27372f6dfbdaac2de195b405e1266c5b1122710aa4809069819de7",
+      "printings": [
+        "148",
+        "387",
+        "463",
+        "532"
+      ]
+    },
+    {
+      "name": "PuPu UFO",
+      "oracle_id": "b1412eda-e3a4-41b2-932e-795a0ba0f7f8",
+      "facts_sha256": "adfa1be62e8b2574b43942ce8b18ca4573bdfaec33a2626183541f9991d404cd",
+      "printings": [
+        "266"
+      ]
+    },
+    {
+      "name": "Qiqirn Merchant",
+      "oracle_id": "560cb970-1c1b-4ba7-8352-bc67b4ea7843",
+      "facts_sha256": "70e6a6388437715cf51521ca5bce87c00e366bd33c20148a6c25e5570d172423",
+      "printings": [
+        "65"
+      ]
+    },
+    {
+      "name": "Queen Brahne",
+      "oracle_id": "0527b7b5-a55d-4720-af1f-17fc1178f4a6",
+      "facts_sha256": "5292be24dd5abdc3922aa6fac634dbdb6430487cc16dfc3ad3808c72f162c271",
+      "printings": [
+        "149",
+        "464"
+      ]
+    },
+    {
+      "name": "Quina, Qu Gourmet",
+      "oracle_id": "2acb15bd-6c89-4ff3-ab32-beac67e9c88a",
+      "facts_sha256": "5e161534582e985fbf10461bfdfe32335277586689709258aa9ce4f441fe3c24",
+      "printings": [
+        "194",
+        "471"
+      ]
+    },
+    {
+      "name": "Quistis Trepe",
+      "oracle_id": "821e8648-222c-4b33-a8bd-e8bfff7dcd9e",
+      "facts_sha256": "0fff85ba4a0d3ec8c18d6e5560ffeca3fcb92a83995fbe2de50ebf8a22cbe0e5",
+      "printings": [
+        "440",
+        "66"
+      ]
+    },
+    {
+      "name": "Qutrub Forayer",
+      "oracle_id": "500ccb61-83b0-4b1f-ada6-65850ed5a825",
+      "facts_sha256": "705b7f8d702b77e60f4d846551f39f01909de7505127c881a6537aa31ee9aa0d",
+      "printings": [
+        "112"
+      ]
+    },
+    {
+      "name": "Rabanastre, Royal City",
+      "oracle_id": "bd39e333-b0b8-4a85-8645-d77f4a3941db",
+      "facts_sha256": "128f4bf84ab3f037f343c3d7447352df83f6a19f24cf50c875d732c953c3e324",
+      "printings": [
+        "287"
+      ]
+    },
+    {
+      "name": "Ragnarok, Divine Deliverance",
+      "oracle_id": "14b839ef-80b1-4e7d-b2fd-38e973899cde",
+      "facts_sha256": "6250a54ec3c988fb68cea91c1eb98b59677229a1e3877cf28ef642e38d3623cc",
+      "printings": [
+        "381b",
+        "446b",
+        "526b",
+        "99b"
+      ]
+    },
+    {
+      "name": "Random Encounter",
+      "oracle_id": "324493fc-a205-4177-aa94-cf4672844c81",
+      "facts_sha256": "f159dd440d52150f11c8a13e9f26156e72227f7e858aa54c4e38272c00865246",
+      "printings": [
+        "150"
+      ]
+    },
+    {
+      "name": "Raubahn, Bull of Ala Mhigo",
+      "oracle_id": "d81d5749-ab4d-42c5-8903-0b400f10fe33",
+      "facts_sha256": "18a5fa58675681d7bc07f0a065822fe329b99c8ec04707dc3fb715d7aac60b24",
+      "printings": [
+        "151",
+        "388",
+        "465",
+        "533"
+      ]
+    },
+    {
+      "name": "Reach the Horizon",
+      "oracle_id": "14bc29ee-4f84-4e62-8ede-5741b99414c9",
+      "facts_sha256": "f66e5c864d51d5b15a9b9be844eb662141051f2c3c518590a82b57a349121d82",
+      "printings": [
+        "195"
+      ]
+    },
+    {
+      "name": "Red Mage's Rapier",
+      "oracle_id": "35ad9e15-3e00-4bd2-96cf-36a6ef49059f",
+      "facts_sha256": "03adc5751690e114ceea82ad330134c335127240862ab3ae13e8fe7c0ef98d50",
+      "printings": [
+        "152"
+      ]
+    },
+    {
+      "name": "Relentless X-ATM092",
+      "oracle_id": "50994df7-300d-4e30-897a-0974dc0820ee",
+      "facts_sha256": "43c97856cbe31c6855a2217a5d5d08f795c96f1727d4ecac891a4da3954eb71f",
+      "printings": [
+        "268"
+      ]
+    },
+    {
+      "name": "Relm's Sketching",
+      "oracle_id": "dd6601c6-810d-4883-89d2-5d31419fb1cc",
+      "facts_sha256": "9d63007b23e76cb47d13aaa2cc656e7fa363603271576aeb57126ee416d6a292",
+      "printings": [
+        "67"
+      ]
+    },
+    {
+      "name": "Reno and Rude",
+      "oracle_id": "f749a6d6-2c55-439f-bb02-e95fa54c2ef3",
+      "facts_sha256": "04754d94e64f60e56fea7dea7464a014ba85b8d9d9eafeb1ca88b1c5db93f202",
+      "printings": [
+        "113",
+        "450"
+      ]
+    },
+    {
+      "name": "Resentful Revelation",
+      "oracle_id": "71d6aa12-4888-458d-9dc8-9954b247a246",
+      "facts_sha256": "730172d4c2e11c583cbad6b49a347c0cffb626fd64a222ddb229df60b6b5d5e2",
+      "printings": [
+        "114"
+      ]
+    },
+    {
+      "name": "Restoration Magic",
+      "oracle_id": "ddbe0d17-5cac-417c-afc0-e4aebae83205",
+      "facts_sha256": "9eea516bb6fe9d15c1e7dc00564a2062dd1a632da03dfded8347753dd28984ff",
+      "printings": [
+        "30"
+      ]
+    },
+    {
+      "name": "Retrieve the Esper",
+      "oracle_id": "9d6fdbd4-ba51-4df1-b383-9b709b36a8d7",
+      "facts_sha256": "f4bab7a46061911b8a3b142a08ac85ff13dd58f12b14078cfae676095dc76842",
+      "printings": [
+        "68"
+      ]
+    },
+    {
+      "name": "Ride the Shoopuf",
+      "oracle_id": "81b67745-0b1f-4433-963d-9b9653fb4d95",
+      "facts_sha256": "24eb6b43caa3a7781f897ce73fe1d5373a340905e4ae3a67b812ffa049ddf56c",
+      "printings": [
+        "197"
+      ]
+    },
+    {
+      "name": "Ring of the Lucii",
+      "oracle_id": "d37e595f-afe7-4ad9-87db-b9ceb3f435e8",
+      "facts_sha256": "4682fa29641a1a5ef2abf8e59209c31d9bd79aa7aba26c604a8562e215390f04",
+      "printings": [
+        "269"
+      ]
+    },
+    {
+      "name": "Rinoa Heartilly",
+      "oracle_id": "8896c74b-d466-4c25-94cf-82b5e2b1fdef",
+      "facts_sha256": "5e46f33c29a7103cfd9cd4e4f8c8c6d09b02e3e8e3882e85da21ffd7018a387b",
+      "printings": [
+        "237",
+        "502"
+      ]
+    },
+    {
+      "name": "Rook Turret",
+      "oracle_id": "c5a6d752-9975-4059-8552-55c6ffb3ab68",
+      "facts_sha256": "1a725c85b4a6857117ede048cb032a3bb0338c0a08e2e5584eecc1fed43cdd45",
+      "printings": [
+        "69"
+      ]
+    },
+    {
+      "name": "Rosa, Resolute White Mage",
+      "oracle_id": "9c4fdd20-0396-40b7-8687-43b1035b6956",
+      "facts_sha256": "e9746d4b77fcb0bd20a5525f7b3efe1493c03707f1c0154322c53b8329e6d9a7",
+      "printings": [
+        "431",
+        "555"
+      ]
+    },
+    {
+      "name": "Rufus Shinra",
+      "oracle_id": "0caeb396-e574-4e80-a1f6-79988fe9ba19",
+      "facts_sha256": "f9b2aff52d339b8172059afeacde63b14847edc207032419d5648ed4c429423c",
+      "printings": [
+        "238",
+        "503"
+      ]
+    },
+    {
+      "name": "Rydia's Return",
+      "oracle_id": "0d007479-c5e8-4aa1-b53e-fa962783deee",
+      "facts_sha256": "9aa08b5aba520de770abb9373efa3cbb95feab50c529f40f59c2ed7c3d46653a",
+      "printings": [
+        "198"
+      ]
+    },
+    {
+      "name": "Rydia, Summoner of Mist",
+      "oracle_id": "a08f79b7-d66f-47da-9670-afd7409c0c5c",
+      "facts_sha256": "1d99c861a87863a5ec8da8fbf790eaaefd1fe56106f6cca47303ba934d99605f",
+      "printings": [
+        "239",
+        "504"
+      ]
+    },
+    {
+      "name": "Sabotender",
+      "oracle_id": "65385311-1158-4e94-892a-683997706ca8",
+      "facts_sha256": "93a96a1254a9bafb1cf587f5fc38d0bf6800f31314b4b328c0076f1aa1c8609e",
+      "printings": [
+        "153"
+      ]
+    },
+    {
+      "name": "Sage's Nouliths",
+      "oracle_id": "97248734-6e99-42a2-8f11-f3337b25f8ab",
+      "facts_sha256": "21c6778b63eaf5d3b51bf1ee1384b4efc3bc51daa1ec771816c3377556d2e533",
+      "printings": [
+        "582",
+        "70"
+      ]
+    },
+    {
+      "name": "Sahagin",
+      "oracle_id": "24310f49-2156-4c0d-b3b1-40ca3182474f",
+      "facts_sha256": "450ceec99a3c5fac31562db36ada7550c585e77df1977658a33a3e0c7126c4ab",
+      "printings": [
+        "71"
+      ]
+    },
+    {
+      "name": "Samurai's Katana",
+      "oracle_id": "9b8b5812-73bd-453e-bdff-aad1fafa9226",
+      "facts_sha256": "6fe7aa4720152f82bd157234864aef14bb6897b2ada571964724a1f21ffdb57c",
+      "printings": [
+        "154"
+      ]
+    },
+    {
+      "name": "Sandworm",
+      "oracle_id": "e92185f8-579c-4645-9cb8-ef5deb9eebc8",
+      "facts_sha256": "ab67032362837db20819ac26752ad265266cd421fa72bd4fffc78fba73993ca9",
+      "printings": [
+        "155"
+      ]
+    },
+    {
+      "name": "Sazh Katzroy",
+      "oracle_id": "0e5b40dc-debf-48a1-8398-5ea00b5a5166",
+      "facts_sha256": "6d3abac98936d5be36ee05c8f359dead29a4d70e74b1cd49299834c5a8c6a203",
+      "printings": [
+        "199",
+        "472"
+      ]
+    },
+    {
+      "name": "Sazh's Chocobo",
+      "oracle_id": "c2b082b4-5d9c-4125-b353-d1cf4f334720",
+      "facts_sha256": "a455454a1999c5d06cb5989a2a73db851855684befdaf66ac938791ae565e2d0",
+      "printings": [
+        "200"
+      ]
+    },
+    {
+      "name": "Scorpion Sentinel",
+      "oracle_id": "5e53fe9f-9995-47ff-85e9-f09b70d7af15",
+      "facts_sha256": "aeda1a15db61f23d89cc938b80b71badf21b61aaa55954f57ce6bf23be6a3984",
+      "printings": [
+        "72"
+      ]
+    },
+    {
+      "name": "Seifer Almasy",
+      "oracle_id": "7088a901-0489-41c3-9f2f-633939514de8",
+      "facts_sha256": "48ad8d0793d0545433be7673f9804676122e9a1c7b10dd8421100baee33cb4b5",
+      "printings": [
+        "156",
+        "389",
+        "466",
+        "534"
+      ]
+    },
+    {
+      "name": "Self-Destruct",
+      "oracle_id": "98bf6311-bc9b-4bf8-ac83-c041973b86d0",
+      "facts_sha256": "c8c053ec294f63a896bdff3cdcf88cf1fb297dd570c7c51a9cb59af3d2278a30",
+      "printings": [
+        "157"
+      ]
+    },
+    {
+      "name": "Sephiroth's Intervention",
+      "oracle_id": "94ac2990-58a5-43d4-bdac-ec2f6daf0b51",
+      "facts_sha256": "182673fc01dbf62ae75e37dd23600eac63b48d44b17de19f25fa36032d5abb03",
+      "printings": [
+        "116"
+      ]
+    },
+    {
+      "name": "Sephiroth, Fabled SOLDIER // Sephiroth, One-Winged Angel",
+      "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+      "facts_sha256": "61d8d58e6eb2c44954643179efa7438b8deaac09a6534c3144bbd9907aa01ea3",
+      "printings": [
+        "115",
+        "317",
+        "382",
+        "451",
+        "527"
+      ]
+    },
+    {
+      "name": "Sephiroth, Planet's Heir",
+      "oracle_id": "6af71c5a-2c1b-4120-b3c9-c3c70d94a5c9",
+      "facts_sha256": "7ace1c6d20f32f70db3b6ed72cc4a550fbedc127b63ed3694e29ebfc5a7e9318",
+      "printings": [
+        "505",
+        "553"
+      ]
+    },
+    {
+      "name": "Serah Farron // Crystallized Serah",
+      "oracle_id": "a8a7a3b7-015c-4fbd-8b90-e0ddf71663e4",
+      "facts_sha256": "8f428ed4d1775efed12a3ff6387e747235f64a4010811bff05f805f8c45477fd",
+      "printings": [
+        "240",
+        "506"
+      ]
+    },
+    {
+      "name": "Seymour Flux",
+      "oracle_id": "7312efc2-8a02-47cd-874b-c3338241435e",
+      "facts_sha256": "60e071d7bff50214b0b2197ac04e1ad5c13cf2ff7a1c1d1060e998c1826a7b30",
+      "printings": [
+        "452",
+        "558"
+      ]
+    },
+    {
+      "name": "Shambling Cie'th",
+      "oracle_id": "d3f4aa87-a89e-43f8-abc3-712e6bf08889",
+      "facts_sha256": "04cda6ca832ac2cf78e39ad6bdf3eff00d565dce3ffd4b8be3d6c5b1ea73a018",
+      "printings": [
+        "117"
+      ]
+    },
+    {
+      "name": "Shantotto, Tactician Magician",
+      "oracle_id": "381df197-5fb7-44ab-a31f-96c4993a0e53",
+      "facts_sha256": "8202140eeb00fd61b3cfee8414ecfa26db9dcc74353a3c03d771ef6d9d662dd5",
+      "printings": [
+        "241",
+        "507"
+      ]
+    },
+    {
+      "name": "Sharlayan, Nation of Scholars",
+      "oracle_id": "564bdbdd-8392-4ee1-a132-1a17a67b2110",
+      "facts_sha256": "33ae8692ffe49e3551ad399784f828d1146bedafa0c732f0369bae3d8b0bf813",
+      "printings": [
+        "288"
+      ]
+    },
+    {
+      "name": "Shinra Reinforcements",
+      "oracle_id": "6cfe63ac-3581-461b-8ed3-3e231851e3f8",
+      "facts_sha256": "b3ceaa9d9c3ab96e87febb7795c08a996036732ebe45b501fdbbe13ce6bc3b30",
+      "printings": [
+        "118"
+      ]
+    },
+    {
+      "name": "Sidequest: Card Collection // Magicked Card",
+      "oracle_id": "0c2095b0-478d-45b4-a34d-b19eb77cea4c",
+      "facts_sha256": "08c97aca7e8f1a40f2c21442d3129a024b69e634ba4469c545f07a015bf528c0",
+      "printings": [
+        "73"
+      ]
+    },
+    {
+      "name": "Sidequest: Catch a Fish // Cooking Campsite",
+      "oracle_id": "bd7c328e-0380-46f8-bb85-7bf4e201b7ac",
+      "facts_sha256": "cabab541ea790ff33aa368f8c5cccdf0d0b8a80634a8bcedbf19eb86edef1c8a",
+      "printings": [
+        "31"
+      ]
+    },
+    {
+      "name": "Sidequest: Hunt the Mark // Yiazmat, Ultimate Mark",
+      "oracle_id": "d74f9a18-8dab-4549-be3f-9697ff68d73c",
+      "facts_sha256": "e0dc6388a13541d3818346ccbde73b5d33428877e2fea155eeab68a9bc4a5ed3",
+      "printings": [
+        "119",
+        "453"
+      ]
+    },
+    {
+      "name": "Sidequest: Play Blitzball // World Champion, Celestial Weapon",
+      "oracle_id": "9c0255ff-6579-4ce4-810d-01df9922ab33",
+      "facts_sha256": "1bd4fec7af98df88f7e7737d775c5a94403324c79b5cd1be23b145f702367324",
+      "printings": [
+        "158"
+      ]
+    },
+    {
+      "name": "Sidequest: Raise a Chocobo // Black Chocobo",
+      "oracle_id": "aebeaf0b-4df1-4c34-919b-740bfab19e56",
+      "facts_sha256": "48adc03c42e3847f3357a5d313e7109d161b393cc9ce603e58d5a5e8788ea060",
+      "printings": [
+        "201"
+      ]
+    },
+    {
+      "name": "Sin, Spira's Punishment",
+      "oracle_id": "3bcc378c-4470-4757-a0d5-025a32c918ea",
+      "facts_sha256": "319d83f0eba215729dc0b0745516e0ff1854260ccdd757bffcb0a3a15a1b1df5",
+      "printings": [
+        "242",
+        "348",
+        "508"
+      ]
+    },
+    {
+      "name": "Slash of Light",
+      "oracle_id": "3cc4d6f4-79b2-4210-84de-a0febf81eb67",
+      "facts_sha256": "08f3d82903b826b481f144cbf7a3312f66809d9b4bac29390545ea277e79fce9",
+      "printings": [
+        "32"
+      ]
+    },
+    {
+      "name": "Sleep Magic",
+      "oracle_id": "33d6f4f0-e1ad-4363-a012-46a1bd9daeb7",
+      "facts_sha256": "9490a57ffe1a628d5b148a8cc2f9b0379f0e8308d26d69c41876355515b3be06",
+      "printings": [
+        "74"
+      ]
+    },
+    {
+      "name": "Snow Villiers",
+      "oracle_id": "01cdaf69-f53a-4735-92f2-ef149de4d5c9",
+      "facts_sha256": "25f7c3fa7a20ddb80daddf9fba6879e6bc03752d24728db991853c4dbda481f2",
+      "printings": [
+        "33",
+        "432"
+      ]
+    },
+    {
+      "name": "Sorceress's Schemes",
+      "oracle_id": "945e56b9-709f-4bb3-8a6b-0a04d9202a03",
+      "facts_sha256": "9bf66888d69e31ba5a4d8cfa8fe8e72d850d7b046ded71173df2475464d6dc8e",
+      "printings": [
+        "159"
+      ]
+    },
+    {
+      "name": "Squall, SeeD Mercenary",
+      "oracle_id": "e2348e0e-eeca-47b5-9417-bf4470ec29bb",
+      "facts_sha256": "ec0c7793c54a49ada698fe832c2e0de7f07591a76e686c97b5b26a2cda66b9f8",
+      "printings": [
+        "243",
+        "402",
+        "509",
+        "547"
+      ]
+    },
+    {
+      "name": "Starting Town",
+      "oracle_id": "d04e0975-f401-41b8-a9db-9bcf9cbbce66",
+      "facts_sha256": "f5dbf8c3658b9755a2be9b17d76f6e5f6d15ae3d0bb57094c26250e480403691",
+      "printings": [
+        "289"
+      ]
+    },
+    {
+      "name": "Stiltzkin, Moogle Merchant",
+      "oracle_id": "958c2a27-9fb1-42b4-a0ef-296584763a98",
+      "facts_sha256": "5cdc89045202f2bdc0998d3bca4e01f76d4cb4e06b666a51f9a9dbe5e73d87cb",
+      "printings": [
+        "327",
+        "34",
+        "433",
+        "565"
+      ]
+    },
+    {
+      "name": "Stolen Uniform",
+      "oracle_id": "17c0cf45-a031-40e8-a37f-eda98a8f785b",
+      "facts_sha256": "addae8a2794cdd671c1bb0bc4d6f74afb95cbec48d92a9963d5122ba2e876b13",
+      "printings": [
+        "332",
+        "75"
+      ]
+    },
+    {
+      "name": "Stuck in Summoner's Sanctum",
+      "oracle_id": "84d308ce-c3c5-4612-accc-6e6cc68a33be",
+      "facts_sha256": "2e38c4ce6b46b7b044e9400cf302205e244d7a29bf46ad0005aa119d4c322136",
+      "printings": [
+        "76"
+      ]
+    },
+    {
+      "name": "Summon: Anima",
+      "oracle_id": "0990e57f-279e-4348-a049-e06187cc38d4",
+      "facts_sha256": "b864187da05d7c0d8158629244edffbf3ad92ae48deea647d9810cc84a1bc7d1",
+      "printings": [
+        "120",
+        "364"
+      ]
+    },
+    {
+      "name": "Summon: Bahamut",
+      "oracle_id": "fe9f6825-597b-4d80-ab7c-f4ee4e824b6f",
+      "facts_sha256": "9ef3a87fef0530fca25d35043239a0da5f79d809f45a08bd016f96cf8d1cf77e",
+      "printings": [
+        "1",
+        "356"
+      ]
+    },
+    {
+      "name": "Summon: Brynhildr",
+      "oracle_id": "bab5e9ce-6d55-4d1e-a9ac-c2b954191be9",
+      "facts_sha256": "905c2f950a2545463217f40467101f5d4f304b99379316f18bdb62f6a1b94897",
+      "printings": [
+        "160",
+        "366"
+      ]
+    },
+    {
+      "name": "Summon: Choco/Mog",
+      "oracle_id": "8b4bfdc5-8c0a-40c3-abbf-ada4a536dc34",
+      "facts_sha256": "48657f3101381f1ab61d97dc27a4e25aad97019b2c69809118907b427c99f7af",
+      "printings": [
+        "35",
+        "358"
+      ]
+    },
+    {
+      "name": "Summon: Esper Ramuh",
+      "oracle_id": "0d054301-8465-4a4c-91e7-9a28dda92e57",
+      "facts_sha256": "f0c8abf3ff4379716d7f86a8b390d0311304206b155872a99c4cb4ae138ca2a1",
+      "printings": [
+        "161",
+        "367"
+      ]
+    },
+    {
+      "name": "Summon: Fat Chocobo",
+      "oracle_id": "b5d2f8e7-89d3-4015-ab99-ba4d66918e37",
+      "facts_sha256": "58f73f96059b94551c7b1a7ebe7eca202a47de6f2fe1e5e26330f7e52bbc7c1f",
+      "printings": [
+        "202",
+        "371"
+      ]
+    },
+    {
+      "name": "Summon: Fenrir",
+      "oracle_id": "3509171e-8d7d-4e9e-97a1-58e6c7d225ed",
+      "facts_sha256": "3b1f9490631992935ebb8af1a36fa9c7cbd10eaed3231d5bd5ace2dedcf4e370",
+      "printings": [
+        "203",
+        "372"
+      ]
+    },
+    {
+      "name": "Summon: G.F. Cerberus",
+      "oracle_id": "b6b22bac-853a-45a8-a74d-9904ec2b34fd",
+      "facts_sha256": "0ad4855f1f98398ec5759374538cc8bf883de6700889b4a7aa1996d5ae9e4bb6",
+      "printings": [
+        "162",
+        "368"
+      ]
+    },
+    {
+      "name": "Summon: G.F. Ifrit",
+      "oracle_id": "96d1bfc1-b80f-466f-b07d-df1ab361e8e0",
+      "facts_sha256": "1a9a0a10b818c0220df1af3895146d10d240185e0a05e1e5b6bea1815d839150",
+      "printings": [
+        "163",
+        "369"
+      ]
+    },
+    {
+      "name": "Summon: Knights of Round",
+      "oracle_id": "73122880-d7f4-422f-a336-18773bcb7bfe",
+      "facts_sha256": "721fba13c8c941b5731b7e3d54482a6f95aba55a931b390dd0047baaf9557301",
+      "printings": [
+        "359",
+        "36"
+      ]
+    },
+    {
+      "name": "Summon: Leviathan",
+      "oracle_id": "b38d1811-64d7-4a35-a86c-3291eecd8391",
+      "facts_sha256": "59bacc59e44452a6fb1598a2f1c53afbbc6de1ce54493f8ed052bac46d9cc755",
+      "printings": [
+        "361",
+        "77"
+      ]
+    },
+    {
+      "name": "Summon: Primal Garuda",
+      "oracle_id": "aaf9e711-94e1-4869-81b0-baa6380ee873",
+      "facts_sha256": "828990085ad442810b17ce403ac48385c9e018d75ee0df9fb00a16d1aaad2e95",
+      "printings": [
+        "360",
+        "37"
+      ]
+    },
+    {
+      "name": "Summon: Primal Odin",
+      "oracle_id": "032f59c3-9f47-4db3-a43c-065a99ed7efe",
+      "facts_sha256": "637092584c960bbc5adb551413b8c18daee40cfb6091778da4be54d928772f28",
+      "printings": [
+        "121",
+        "365"
+      ]
+    },
+    {
+      "name": "Summon: Shiva",
+      "oracle_id": "5846718c-7d31-4d2c-80a2-b1534e2aebc1",
+      "facts_sha256": "9c225e5a1185d4507d4a0624e54363ea1c347aa0618722994777c6ec996dc572",
+      "printings": [
+        "362",
+        "78"
+      ]
+    },
+    {
+      "name": "Summon: Titan",
+      "oracle_id": "66ce0c60-f406-4ece-915f-675da4e8b16d",
+      "facts_sha256": "d2f22f64b58d937db36a8042d732cd99228c4b4019a2ef661c7cd0e24afda13a",
+      "printings": [
+        "204",
+        "373"
+      ]
+    },
+    {
+      "name": "Summoner's Grimoire",
+      "oracle_id": "d4453b3e-733e-4038-81da-135a6a03079c",
+      "facts_sha256": "f489ac390b93685afdc34357dba04efe23321df1c8bf335c9eb22046ac604413",
+      "printings": [
+        "205"
+      ]
+    },
+    {
+      "name": "Suplex",
+      "oracle_id": "2d1bbeda-2e81-4aaa-9494-094ec3dd6c3b",
+      "facts_sha256": "fbd71cc940fbb1df26b37b610272b4976a3560ef05394576a1baba1f20f5ad1a",
+      "printings": [
+        "164"
+      ]
+    },
+    {
+      "name": "Swallowed by Leviathan",
+      "oracle_id": "1a8185ed-636b-49ad-bf24-2ab02c7fb91e",
+      "facts_sha256": "129a1984564c7eb56d4c55e74c2c2b3c47ebdd474cb743370fe10e5ee57a8069",
+      "printings": [
+        "79"
+      ]
+    },
+    {
+      "name": "Swamp",
+      "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+      "facts_sha256": "0ddffcfeb10574ceab2d19fcaad90b912eb08a51601bfa0d51ceb993dcfc04e5",
+      "printings": [
+        "300",
+        "301",
+        "302",
+        "574"
+      ]
+    },
+    {
+      "name": "Syncopate",
+      "oracle_id": "318f7f70-e374-40ef-8afb-3389c10461d8",
+      "facts_sha256": "32d850964588debe4f57a49c59647c54d4a25b76eb4a99ce46e67ce50658da54",
+      "printings": [
+        "80"
+      ]
+    },
+    {
+      "name": "Tellah, Great Sage",
+      "oracle_id": "1a080b26-c766-4f7c-9198-4974d2133f75",
+      "facts_sha256": "95876ab400de87e546edf1540c7bf0bdd58413f3c8381a4be355253be6936476",
+      "printings": [
+        "244",
+        "349",
+        "510"
+      ]
+    },
+    {
+      "name": "Terra, Magical Adept // Esper Terra",
+      "oracle_id": "54ca5904-9099-497a-9684-101656025487",
+      "facts_sha256": "d122bdbfe15619c2442872944e3ad8af4f2640bc7aeb5c392d9dc92b80614940",
+      "printings": [
+        "245",
+        "323",
+        "511"
+      ]
+    },
+    {
+      "name": "The Crystal's Chosen",
+      "oracle_id": "df4ef2f8-2591-4be3-b905-4f9ff9c538ea",
+      "facts_sha256": "93a50195946a419f51d08ef0cd08fbbfb82792f5002dd69e06cb97da227c6ef0",
+      "printings": [
+        "14"
+      ]
+    },
+    {
+      "name": "The Darkness Crystal",
+      "oracle_id": "660f370a-b25b-4ea5-b765-7abf96899c1c",
+      "facts_sha256": "76606c9541758a224da343c8bc58e526b9c96706ec0e3426d66795667548e50a",
+      "printings": [
+        "335",
+        "96"
+      ]
+    },
+    {
+      "name": "The Earth Crystal",
+      "oracle_id": "5e7ef7fe-968b-4ada-9fe4-6fda0541aafc",
+      "facts_sha256": "b9dd9aabe2b078fe058b5352434369866cffd6dbeb8c0e75f0b232f6a98f0004",
+      "printings": [
+        "184",
+        "342"
+      ]
+    },
+    {
+      "name": "The Emperor of Palamecia // The Lord Master of Hell",
+      "oracle_id": "042c01ec-9f1f-432b-bea9-d64d822cd91e",
+      "facts_sha256": "3eee6ddb68f91d6bec8a82e238e990bb2dc469dbd73483327fd8f831bee64c9e",
+      "printings": [
+        "219",
+        "484"
+      ]
+    },
+    {
+      "name": "The Final Days",
+      "oracle_id": "f2b88031-bfb7-46c4-abdd-3b6b5f5acfa4",
+      "facts_sha256": "e117810806a29505c209d658dac76479747e694f4b90eb1465023344dbba4af8",
+      "printings": [
+        "101"
+      ]
+    },
+    {
+      "name": "The Fire Crystal",
+      "oracle_id": "57276db8-9d8d-4587-ae88-dfdc44343f17",
+      "facts_sha256": "58e7e950cdf51502c997a09a25a50537d078aee9cc23763e78911d7c20e2faa0",
+      "printings": [
+        "135",
+        "337"
+      ]
+    },
+    {
+      "name": "The Gold Saucer",
+      "oracle_id": "93e38650-ce22-4ab9-b79d-cc7b6477c075",
+      "facts_sha256": "1384127b84f179c05bcb0233fdd27d32f31bb104b66a2c925eacae79b77a8501",
+      "printings": [
+        "279"
+      ]
+    },
+    {
+      "name": "The Lunar Whale",
+      "oracle_id": "13b4aeac-4530-4e09-a547-548b4884bb2f",
+      "facts_sha256": "ada48d0d7649d90892f1a76d57d16ba25c6a6797813a50b916e3cfb7f0fca5b7",
+      "printings": [
+        "60"
+      ]
+    },
+    {
+      "name": "The Masamune",
+      "oracle_id": "89eb4c39-35ae-405b-8af4-779880cb11c9",
+      "facts_sha256": "d427f5ba748addf6110b4ce4ec046a874295e08c2e44f1e4a639d3a1467c11bd",
+      "printings": [
+        "264",
+        "353"
+      ]
+    },
+    {
+      "name": "The Prima Vista",
+      "oracle_id": "a09d9754-a321-4018-a237-e613e915b642",
+      "facts_sha256": "ba18b310f9650b34be0afcae736e0afaebc6ae95b3e12095bc023b0e0a098871",
+      "printings": [
+        "64"
+      ]
+    },
+    {
+      "name": "The Regalia",
+      "oracle_id": "27a7610e-acbe-4a2b-9f61-81b383eb20a5",
+      "facts_sha256": "3f056b43e0f360df791e831a6bf33458aa64bbcb08ac9d675a6d491fad7aaddd",
+      "printings": [
+        "267"
+      ]
+    },
+    {
+      "name": "The Wandering Minstrel",
+      "oracle_id": "e6e6e3d2-f2fb-46a1-8798-13a2f2efe8cc",
+      "facts_sha256": "056c89a61bae4f57b524f5b451591375f2d28ccf8b123e9bc93c70367405b309",
+      "printings": [
+        "249",
+        "403",
+        "515",
+        "548"
+      ]
+    },
+    {
+      "name": "The Water Crystal",
+      "oracle_id": "f8d2a94f-7be1-4b17-8556-398dde531360",
+      "facts_sha256": "bbe31cd6c967dff82436e2efd42a2f856f2cbe9e880b58bca60df146c6cf37ee",
+      "printings": [
+        "333",
+        "85"
+      ]
+    },
+    {
+      "name": "The Wind Crystal",
+      "oracle_id": "240f0835-36af-4ad8-9336-d6d3d816d293",
+      "facts_sha256": "2fdd0e3e2e01fe04923f3c8035d001cdfe242b984caebb82b0fcc6b3d16f9c75",
+      "printings": [
+        "330",
+        "43"
+      ]
+    },
+    {
+      "name": "Thief's Knife",
+      "oracle_id": "4bf589ed-58f8-40ad-bcee-50cb99da02ca",
+      "facts_sha256": "f51aba10caa399bce7f5792a19e7b8ca0ebb758653eb1501124b9b7e14517bff",
+      "printings": [
+        "81"
+      ]
+    },
+    {
+      "name": "Thunder Magic",
+      "oracle_id": "623c1873-cd83-4a5f-b391-fd0d2bb89061",
+      "facts_sha256": "7053d911db3aa80ecb596be3dfc3b9a810f7a2908fec8e27c543768735ec1789",
+      "printings": [
+        "165"
+      ]
+    },
+    {
+      "name": "Tidus, Blitzball Star",
+      "oracle_id": "ef827c62-a5c5-4a7a-92a8-edefb081fae8",
+      "facts_sha256": "d29bc4e6a386e34e19efffb4c6acfda85941a7d97d1e367d01eb9c164025e10d",
+      "printings": [
+        "246",
+        "512"
+      ]
+    },
+    {
+      "name": "Tifa Lockhart",
+      "oracle_id": "878df304-9d6d-4ce9-b65b-1439c251f3e0",
+      "facts_sha256": "32ff6d9ee0194743359a7a21d6dca8f545dfbaa1d8513a07f1dd8f04762c8e7a",
+      "printings": [
+        "206",
+        "391",
+        "473",
+        "536",
+        "567"
+      ]
+    },
+    {
+      "name": "Tifa's Limit Break",
+      "oracle_id": "d0d90dd8-0642-489f-9afc-11c307f258f2",
+      "facts_sha256": "e0a5fbb9fecadcd7c3118cfca43bf22f3631baa411fbe969d0a3c8ecf018edc2",
+      "printings": [
+        "207"
+      ]
+    },
+    {
+      "name": "Tonberry",
+      "oracle_id": "a26f3cbb-39b5-4688-92f7-26534613a9f3",
+      "facts_sha256": "c66b0bb5fc5e7fcfc5d6c60783058bbda3d4c8cbe0f89026c2b38ee36c689ba5",
+      "printings": [
+        "122"
+      ]
+    },
+    {
+      "name": "Torgal, A Fine Hound",
+      "oracle_id": "9d6ab594-aea9-4f13-8802-f3794ee45425",
+      "facts_sha256": "5cf7367d6113cd98c1de86141795f2918c7cac88e3bf461e55cd0f076ab6e2fc",
+      "printings": [
+        "208",
+        "345",
+        "474"
+      ]
+    },
+    {
+      "name": "Town Greeter",
+      "oracle_id": "9dc61ef6-da22-42a8-b348-dfd5722deadf",
+      "facts_sha256": "cfe98e55fe38922042359da2d89ee0412ff23b5235135163cb025035927c889d",
+      "printings": [
+        "209"
+      ]
+    },
+    {
+      "name": "Travel the Overworld",
+      "oracle_id": "61e3709e-7ecd-4a59-bca1-019d16795740",
+      "facts_sha256": "95db85eaa69523bb2a21f48757b9b8fab45db3a9ff965a434061768c1c236125",
+      "printings": [
+        "82"
+      ]
+    },
+    {
+      "name": "Traveling Chocobo",
+      "oracle_id": "2e5675d3-3fb0-43b5-a65c-95aacbe48bf9",
+      "facts_sha256": "595b73aa409a5c8f43c7f69687066bbfc407c2d9adbd794eb92beedc984d41d6",
+      "printings": [
+        "551a",
+        "551b",
+        "551c",
+        "551d",
+        "551f",
+        "210",
+        "406",
+        "551",
+        "568"
+      ]
+    },
+    {
+      "name": "Treno, Dark City",
+      "oracle_id": "6d5bb714-1bf4-4f75-9ea8-bdbd18b0425b",
+      "facts_sha256": "1af1c2fd4574ba2485dea9ed986a16893175e95de753feb16557af94ec792527",
+      "printings": [
+        "290"
+      ]
+    },
+    {
+      "name": "Triple Triad",
+      "oracle_id": "9567d963-4815-466b-a319-6d138b6a0cd2",
+      "facts_sha256": "d14603d29abc3668375c34020fc6c8973604971313c905c67bb8bb0bad7537af",
+      "printings": [
+        "166",
+        "340"
+      ]
+    },
+    {
+      "name": "Ultima",
+      "oracle_id": "c9a45c28-826e-4e6e-8adc-1368ea1af11a",
+      "facts_sha256": "7eefc087b44df70edf015577593f19f35fb295df43f76d008b0c7c832ab30b60",
+      "printings": [
+        "328",
+        "38"
+      ]
+    },
+    {
+      "name": "Ultima Weapon",
+      "oracle_id": "0dc4bf39-67d6-44e5-8993-dd18b20cfdee",
+      "facts_sha256": "689c737f3f986e2a7fdb345edaff786f2accb3f2d5cddca9056b71aba242cf89",
+      "printings": [
+        "563"
+      ]
+    },
+    {
+      "name": "Ultima, Origin of Oblivion",
+      "oracle_id": "baa337ce-edc6-4ee5-a898-68e9dbb4ab93",
+      "facts_sha256": "f903361b2e0fd25fd26a27bdd6d5a7a12bba4bc0028fb497eb51a73abee224a2",
+      "printings": [
+        "2",
+        "324",
+        "421"
+      ]
+    },
+    {
+      "name": "Ultimecia, Temporal Threat",
+      "oracle_id": "5a8e7e35-e9ea-4808-8aa7-7580a23b9d9d",
+      "facts_sha256": "3f2718c72222c70e43d53c309a28f407e4513d00fd321a371cadd17b9c778964",
+      "printings": [
+        "441",
+        "556"
+      ]
+    },
+    {
+      "name": "Ultimecia, Time Sorceress // Ultimecia, Omnipotent",
+      "oracle_id": "70773879-b773-4e81-99ca-8f4bba478962",
+      "facts_sha256": "bd7cae53925fc595bab08d77b1c34e97d3a8a9d821a300edca91d4f373e1f33c",
+      "printings": [
+        "247",
+        "513"
+      ]
+    },
+    {
+      "name": "Ultros, Obnoxious Octopus",
+      "oracle_id": "b6f4b524-1081-4263-b7e4-9aee93131b31",
+      "facts_sha256": "03bd29a90dbcbe560d67f48a54148e385474b8208e3176cbb5b4ea811828edbc",
+      "printings": [
+        "442",
+        "83"
+      ]
+    },
+    {
+      "name": "Undercity Dire Rat",
+      "oracle_id": "f09811d0-c5da-4061-aaa7-835ccee3b05a",
+      "facts_sha256": "9a81b7b67625164739cbf03d0b5c2a8c9dab247f96bea757d2b44063b962e490",
+      "printings": [
+        "123"
+      ]
+    },
+    {
+      "name": "Unexpected Request",
+      "oracle_id": "f4497af5-8b81-46b3-bb52-eaed1999809b",
+      "facts_sha256": "ca61c0613ef3175d92f1e27f115bb8d95c54c1cc4513daee4bc1c9e558baf239",
+      "printings": [
+        "167"
+      ]
+    },
+    {
+      "name": "Vaan, Street Thief",
+      "oracle_id": "24fd1f47-bb15-45c6-a7b1-ba8eb3bb8b1d",
+      "facts_sha256": "bb92dc00a72cf72e50915b04b8a791d683db287b55059fda8a1e658f0f351574",
+      "printings": [
+        "168",
+        "390",
+        "467",
+        "535"
+      ]
+    },
+    {
+      "name": "Valkyrie Aerial Unit",
+      "oracle_id": "1333d690-a6dc-4ef8-8c57-2ba16727c0a5",
+      "facts_sha256": "e56058ca88f40f62e97ba97aae4d56d3319f3b8160e8dff253c50b19a7b250ae",
+      "printings": [
+        "84"
+      ]
+    },
+    {
+      "name": "Vanille, Cheerful l'Cie",
+      "oracle_id": "577725ae-290f-4081-8352-3317521a096f",
+      "facts_sha256": "6040b0b4193b112ddc08a11a6b19e76c588d7f8b283cb63d7f30d8cb29536d28",
+      "printings": [
+        "211",
+        "392",
+        "475",
+        "537"
+      ]
+    },
+    {
+      "name": "Vayne's Treachery",
+      "oracle_id": "93af8f9d-6877-4cb8-a744-c89186db22e1",
+      "facts_sha256": "211ad151edbcaad4eb2f05ef0dbbc370cbd3c613fb045cc0bda2a9dc48ef0d7a",
+      "printings": [
+        "124"
+      ]
+    },
+    {
+      "name": "Vector, Imperial Capital",
+      "oracle_id": "8dcba63c-4701-4dc9-81f5-ca8e8933a3ba",
+      "facts_sha256": "a306c96e352f7bac2bcfebe038d39effe01856aac81fc069260e78bccba624ab",
+      "printings": [
+        "291"
+      ]
+    },
+    {
+      "name": "Venat, Heart of Hydaelyn // Hydaelyn, the Mothercrystal",
+      "oracle_id": "2e5adbcf-6b5c-4ded-a339-8757040ef878",
+      "facts_sha256": "4c6c10191ac5817b93e963230ff8b261a35e59ca45d4031d6297e75542ac47c4",
+      "printings": [
+        "329",
+        "39",
+        "434"
+      ]
+    },
+    {
+      "name": "Vincent Valentine // Galian Beast",
+      "oracle_id": "f40e6bbf-1fed-4ec5-869d-18c2dd396d14",
+      "facts_sha256": "a4823d15b16a6738733272af50ce7dc755a2fa4e65c066a485255efa4c31a4c9",
+      "printings": [
+        "125",
+        "383",
+        "454",
+        "528"
+      ]
+    },
+    {
+      "name": "Vincent's Limit Break",
+      "oracle_id": "814679b4-51bd-4b07-a7b8-d3375d36ff45",
+      "facts_sha256": "f63ad431cfdf83a4e1cd5d33dcf9324e934c5a1be9b229770c3a5482b847b7ea",
+      "printings": [
+        "126"
+      ]
+    },
+    {
+      "name": "Vivi Ornitier",
+      "oracle_id": "0452be2a-e97a-4269-a9e3-b616265ecb2e",
+      "facts_sha256": "1e75a13ef090ae3a1ebd5dbc7acc4786a0ef46eee2c7c8ef5af3290ae540915f",
+      "printings": [
+        "248",
+        "321",
+        "514",
+        "570"
+      ]
+    },
+    {
+      "name": "Warrior's Sword",
+      "oracle_id": "a339961e-3555-467f-a4f8-c5eaac7e7ed1",
+      "facts_sha256": "142d8a021b09a6a9fb5df99181f8ae8671ff75b323c9e7450bbb3653f7dec9bb",
+      "printings": [
+        "169"
+      ]
+    },
+    {
+      "name": "Wastes",
+      "oracle_id": "05d24b0c-904a-46b6-b42a-96a4d91a0dd4",
+      "facts_sha256": "90beb0469a99b1f2fac342de16c1d718c7b1820d30bb340c53fad787a7194e75",
+      "printings": [
+        "309"
+      ]
+    },
+    {
+      "name": "Weapons Vendor",
+      "oracle_id": "bd0a7a86-a567-4145-b1d8-e0b72091db84",
+      "facts_sha256": "7e9f8181b8b60a978fd1a2b387f4f6c38d38cb471a0bb0ced2cc7851fc251143",
+      "printings": [
+        "40"
+      ]
+    },
+    {
+      "name": "White Auracite",
+      "oracle_id": "6022608a-6cf2-45bd-adec-63211710a5ed",
+      "facts_sha256": "8f2e8e1275dfc3385207f2b8f53ba03ca4a324e124ff2c7c4882333c47c7a948",
+      "printings": [
+        "41",
+        "579"
+      ]
+    },
+    {
+      "name": "White Mage's Staff",
+      "oracle_id": "af1acf07-39e2-441e-a1e0-1db535535e2e",
+      "facts_sha256": "d207c5f4465150fe241686d8735c4c175ecddf1a30ff6a2fa6e1ce3d4a122b51",
+      "printings": [
+        "42"
+      ]
+    },
+    {
+      "name": "Windurst, Federation Center",
+      "oracle_id": "e198126a-f280-47f7-8bd0-3dc9f5ff05a0",
+      "facts_sha256": "ba279cfdb3b9830b5ec2572882280947659f40a45fe2e28c351e3381094f32dc",
+      "printings": [
+        "292"
+      ]
+    },
+    {
+      "name": "World Map",
+      "oracle_id": "51d4f95e-aad2-4e5f-9f15-a68bbdf9ab3e",
+      "facts_sha256": "b12218e84bea1cfa22f5b14018fd69c9b6c6357842432351ea918936ca67633c",
+      "printings": [
+        "270"
+      ]
+    },
+    {
+      "name": "Xande, Dark Mage",
+      "oracle_id": "36b5c793-30f6-4f21-8bf6-c18d1c46d732",
+      "facts_sha256": "cc184f3425af78f6deb36ce9ab5da3830004404045a7091fdc8b4850601aa05b",
+      "printings": [
+        "516",
+        "561"
+      ]
+    },
+    {
+      "name": "Y'shtola Rhul",
+      "oracle_id": "a6a7bf77-0560-4572-a826-3bc9df1f78d1",
+      "facts_sha256": "12f341247494f88e56ffdcacc2c652bcf71acc9063d5b817f9a2d9a92deb07e2",
+      "printings": [
+        "443",
+        "577",
+        "86"
+      ]
+    },
+    {
+      "name": "You're Not Alone",
+      "oracle_id": "9dbc2fc8-ed42-4534-9676-bf0695cd518c",
+      "facts_sha256": "69d3129def48666eaca8a1520dd1e4ce480f89d66ff01d75267a6016d0061437",
+      "printings": [
+        "44"
+      ]
+    },
+    {
+      "name": "Yuna, Hope of Spira",
+      "oracle_id": "3dee768a-612c-4960-bad2-2fe5b83a70c3",
+      "facts_sha256": "10ad4d1ec8896e3e5e7de2fdd0fceed4309f410ea9aa766d41d9532a9f470345",
+      "printings": [
+        "250",
+        "404",
+        "517",
+        "549",
+        "571"
+      ]
+    },
+    {
+      "name": "Zack Fair",
+      "oracle_id": "e84d146a-1c67-49df-b062-622794e45c42",
+      "facts_sha256": "5611951fa8e08aafb89cff67c9efd8decb6f79aad0882209aad66c74adeaaec2",
+      "printings": [
+        "435",
+        "45",
+        "580"
+      ]
+    },
+    {
+      "name": "Zanarkand, Ancient Metropolis // Lasting Fayth",
+      "oracle_id": "5f2b3ea8-99ee-47a4-8a1c-4b27478d524c",
+      "facts_sha256": "f130a9088d0d8067a5091b8b4023a2eed2e4117452d75b05599aaa180ff44fd3",
+      "printings": [
+        "293",
+        "314"
+      ]
+    },
+    {
+      "name": "Zell Dincht",
+      "oracle_id": "f207ce73-e4cd-4dfc-b3b9-5704f5148959",
+      "facts_sha256": "be0689095ae8de7f8aeba3b0194487ef651e42f73864690a50a19554feb921ee",
+      "printings": [
+        "170",
+        "468"
+      ]
+    },
+    {
+      "name": "Zenos yae Galvus // Shinryu, Transcendent Rival",
+      "oracle_id": "8f52fc65-a914-421a-9426-21eb520d55d5",
+      "facts_sha256": "1af3d3340a00c7b840bab900742343265cde0b12ddefce62cf0ae8d33b65b577",
+      "printings": [
+        "127",
+        "384",
+        "455",
+        "529"
+      ]
+    },
+    {
+      "name": "Zidane, Tantalus Thief",
+      "oracle_id": "f267fb54-1881-464c-81af-9e03c3f3b41d",
+      "facts_sha256": "5bd41ca062fad83814bedb8d1ed9d65fea617907499d684367850140f682a24b",
+      "printings": [
+        "251",
+        "405",
+        "518",
+        "550"
+      ]
+    },
+    {
+      "name": "Zodiark, Umbral God",
+      "oracle_id": "f1190fb9-72a2-48f8-bc2d-61240f1e9119",
+      "facts_sha256": "261c80d45349a03ce4e27a7172501be1e78469caba804bf6c524e70ae83d540e",
+      "printings": [
+        "128",
+        "336",
+        "456"
+      ]
+    }
+  ],
+  "unresolved": []
+}

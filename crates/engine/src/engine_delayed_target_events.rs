@@ -21,7 +21,13 @@ impl Game {
     ) {
         let definition = item.trigger_definition();
         let trigger = &definition.triggers()[usize::from(ability)];
-        assert_eq!(trigger.condition, TriggerCondition::DelayedTargetEvent);
+        let condition = match event {
+            DelayedTargetEvent::ControlLostWhileAttached => {
+                TriggerCondition::DelayedTargetControlLostWhileAttached
+            }
+            _ => TriggerCondition::DelayedTargetEvent,
+        };
+        assert_eq!(trigger.condition, condition);
         assert!(
             !trigger.targets.has_targets(),
             "delayed target template must be untargeted"
@@ -85,7 +91,8 @@ impl Game {
                     event.destination == Zone::Graveyard
                         && event.before.controller == row.packet.controller
                 }
-                DelayedTargetEvent::CombatDamageToPlayer => false,
+                DelayedTargetEvent::CombatDamageToPlayer
+                | DelayedTargetEvent::ControlLostWhileAttached => false,
             };
             if matches {
                 let mut packet = row.packet;
@@ -107,6 +114,33 @@ impl Game {
         }
         if !retained.is_empty() {
             self.state.delayed_target_events = Some(Box::new(retained));
+        }
+    }
+    pub(super) fn delayed_target_control_losses(
+        &mut self,
+        losses: &[(ObjectRef, Player)],
+        attached_before: &[(ObjectRef, Player)],
+    ) {
+        if attached_before.is_empty() {
+            return;
+        }
+        let packets: Vec<_> = self
+            .state
+            .delayed_target_events
+            .iter()
+            .flat_map(|rows| rows.iter())
+            .filter(|row| {
+                let loss = (row.subject, row.packet.controller);
+                row.event == DelayedTargetEvent::ControlLostWhileAttached
+                    && row.expires_turn == self.state.turn
+                    && losses.contains(&loss)
+                    && attached_before.contains(&loss)
+            })
+            .map(|row| row.packet.clone())
+            .collect();
+        for mut packet in packets {
+            packet.id = self.next_stack_id();
+            self.state.pending_triggers.push(packet);
         }
     }
     pub(super) fn delayed_target_combat_damage(&mut self, events: &[DamageEvent]) {

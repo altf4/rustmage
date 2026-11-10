@@ -3,10 +3,14 @@
   "catalogue_id": 3344,
   "oracle_id": "14b839ef-80b1-4e7d-b2fd-38e973899cde",
   "facts_sha256": "6250a54ec3c988fb68cea91c1eb98b59677229a1e3877cf28ef642e38d3623cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "220002e748855e6354c9ef133724b3bd5d0a1e0d3b6164b93606e509ea99325c"
   },
-  "physical_metadata_sha256": "ea1ce32622e3bd27a64e1cfde540d141389ee938fdece674fd08d742e6c96012"
+  "physical_metadata_sha256": "b7b2c3f3fafa5f4359abfd1e71c6e955e2e4dc1870b1cca2919ffba5b8b24a0b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RagnarokDivineDeliverance.java",
+  "java_sha256": "3c996216a784e81ed024bd4110f082f5c46ac145e50780ec741dc871ce5b0ff8",
+  "rules_tests": "tests/fin_cards_157_234.rs"
 }

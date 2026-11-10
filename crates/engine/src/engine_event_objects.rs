@@ -33,6 +33,10 @@ pub enum EventObjectFacts {
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
+    /// Frozen amount this exact event object dealt in one simultaneous damage event.
+    DamageDealt {
+        amount: u128,
+    },
     /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
@@ -151,7 +155,7 @@ impl SpellView {
             event.destination,
             Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Exile | Zone::Command
         ) {
-            self.refer_objects([event.after]);
+            self.refer_objects(event.objects_after());
         }
     }
     pub(super) fn refer_objects(&mut self, objects: impl IntoIterator<Item = ObjectRef>) {
@@ -317,7 +321,9 @@ impl Game {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
-                    EventObjectFacts::DeathCounters(_) | EventObjectFacts::CopiableGroup(_) => {
+                    EventObjectFacts::DeathCounters(_)
+                    | EventObjectFacts::CopiableGroup(_)
+                    | EventObjectFacts::DamageDealt { .. } => {
                         continue;
                     }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
@@ -430,8 +436,10 @@ impl Game {
         let p = self.state.pending_triggers.last_mut().unwrap();
         p.source_quantity_lki = Some(Box::new(SourceQuantityView {
             chosen_creature_type: None,
+            power: None,
             toughness: None,
             equipment_count: None,
+            attached_equipment: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
         }));
         p.set_event_object(EventObjectView {

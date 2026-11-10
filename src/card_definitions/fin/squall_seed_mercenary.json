@@ -3,10 +3,21 @@
   "catalogue_id": 4078,
   "oracle_id": "e2348e0e-eeca-47b5-9417-bf4470ec29bb",
   "facts_sha256": "ec0c7793c54a49ada698fe832c2e0de7f07591a76e686c97b5b26a2cda66b9f8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a494574fd2d49e90f0e71cd29521e9375792235300cb9e8b8c3abc498488a692"
   },
-  "physical_metadata_sha256": "68d9900df08084cc7f88e33779597f07fbb1266674b704b3118dd8e6518e73ab"
+  "physical_metadata_sha256": "68d9900df08084cc7f88e33779597f07fbb1266674b704b3118dd8e6518e73ab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SquallSeeDMercenary.java",
+  "java_sha256": "d8cb15062d74ea48d6ff89002cec0d3ec7da8569c4dfd6fba7fb1b59ba604ea6",
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    }
+  ]
 }

@@ -1,6 +1,59 @@
 //! Owned recipe and choices for mana whose costs may change its quantity.
 use super::*;
+use crate::cards::{ChoiceColor, ManaSplit};
 use ability_world::CharacteristicWorld;
+
+/// Exact capacity bounds for one color. The other receives the remaining amount.
+/// A guided payment additionally requires checked membership in the enclosing
+/// payment. The legal subset of a guided range may be noncontiguous.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ManaSplitChoiceView {
+    pub first: ChoiceColor,
+    pub second: ChoiceColor,
+    pub total: u64,
+    pub minimum_first: u32,
+    pub maximum_first: u32,
+    pub guided: bool,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaSplitChoiceView {
+    fn split(self) -> ManaSplit {
+        ManaSplit {
+            first: self.first,
+            second: self.second,
+            total: self.total,
+        }
+    }
+    /// Checks the allocation and storage bounds. Use the game membership query
+    /// to also check any guided payment.
+    pub fn contains_allocation(self, production: Mana) -> bool {
+        let amount = production[self.first.index()];
+        (self.minimum_first..=self.maximum_first).contains(&amount)
+            && self.split().contains(production)
+    }
+}
+
+/// Try a closed range without materializing its individual choices. A range
+/// whose componentwise upper supplies cannot fund the goal can be discarded.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn visit_split_range(
+    split: ManaSplit,
+    minimum: u32,
+    maximum: u32,
+    possible: &mut impl FnMut(Mana) -> bool,
+    emit: &mut impl FnMut(Mana) -> bool,
+) -> bool {
+    let mut upper = split.production(minimum);
+    upper[split.first.index()] = maximum;
+    if !possible(upper) {
+        return false;
+    }
+    let middle = minimum + (maximum - minimum) / 2;
+    emit(split.production(middle))
+        || minimum < middle && visit_split_range(split, minimum, middle - 1, possible, emit)
+        || middle < maximum && visit_split_range(split, middle + 1, maximum, possible, emit)
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -51,7 +104,11 @@ impl ManaOutput {
                         .then_some(ManaOutputChoice::Color(color as u8))
                 })
             }
-            ManaProduction::Combination { .. } if selected != [0; 6] => {
+            ManaProduction::Combination { .. }
+            | ManaProduction::SourcePowerSplit { .. }
+            | ManaProduction::Split(_)
+                if selected != [0; 6] =>
+            {
                 Some(ManaOutputChoice::Allocation(selected))
             }
             _ => None,
@@ -104,9 +161,34 @@ impl ManaOutput {
                     }
                 }
             }
+            ManaProduction::SourcePowerSplit { first, second } if !live => {
+                ManaProduction::split_for_power(
+                    first,
+                    second,
+                    world.departed_source_power(source).unwrap_or(fallback),
+                )
+            }
             recipe => recipe.in_world_for_controller(world, source.card, self.controller),
         }
     }
+    pub(super) fn unselected_split<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        fallback: i128,
+    ) -> Option<ManaSplit> {
+        if self.choice.is_none()
+            && matches!(
+                self.recipe,
+                ManaProduction::SourcePowerSplit { .. } | ManaProduction::Split(_)
+            )
+            && let ManaProduction::Split(split) = self.domain(world, fallback)
+        {
+            Some(split)
+        } else {
+            None
+        }
+    }
+
     pub(super) fn visit<W: CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
@@ -124,7 +206,13 @@ impl ManaOutput {
                 ManaProduction::Fixed(mana) if mana == [0; 6] => emit(mana),
                 _ => false,
             },
-            Some(ManaOutputChoice::Allocation(mana)) => domain.visit(|m| m == mana && emit(m)),
+            Some(ManaOutputChoice::Allocation(mana)) => {
+                if let ManaProduction::Split(split) = domain {
+                    split.contains(mana) && emit(mana)
+                } else {
+                    domain.visit(|m| m == mana && emit(m))
+                }
+            }
             None => domain.visit(emit),
         }
     }
@@ -145,6 +233,8 @@ impl ManaProduction {
                 | Self::AnyColorChangingSource(_)
                 | Self::ChoiceStat { .. }
                 | Self::Combination { .. }
+                | Self::SourcePowerSplit { .. }
+                | Self::Split(_)
                 | Self::TapSourcePowerChoice { .. }
                 | Self::DistinctCreaturePowers
         )
@@ -158,6 +248,9 @@ impl ManaProduction {
         late_fixed: bool,
         mut emit: impl FnMut(Mana) -> bool,
     ) -> bool {
+        if matches!(self.base(), Self::SourcePowerSplit { .. } | Self::Split(_)) {
+            return emit([0; 6]);
+        }
         let mut zero = false;
         if self.in_world(world, source).visit(|mana| {
             zero |= mana == [0; 6];
@@ -184,12 +277,124 @@ impl ManaProduction {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn mana_output_escaping(&self) -> bool {
+        self.foreign_cast_choice_pending()
+            && self
+                .state
+                .cast_rollback
+                .as_ref()
+                .is_some_and(|r| r.capture.is_some())
+    }
+
+    fn mana_split_capacity(&self, player: Player) -> Mana {
+        self.state.players[player.index()]
+            .mana
+            .map(|pool| u32::MAX - pool)
+    }
+
+    pub(super) fn require_mana_split_capacity(&self, player: Player, production: ManaProduction) {
+        if let ManaProduction::Split(split) = production {
+            split
+                .bounds(self.mana_split_capacity(player))
+                .capacity("mana representation exhausted");
+        }
+    }
+
+    pub fn mana_split_choice(&self) -> Option<ManaSplitChoiceView> {
+        let Pending::EffectMana {
+            player,
+            production: ManaProduction::Split(split),
+            ..
+        } = self.state.pending
+        else {
+            return None;
+        };
+        let (minimum_first, maximum_first) = split.bounds(self.mana_split_capacity(player))?;
+        Some(ManaSplitChoiceView {
+            first: split.first,
+            second: split.second,
+            total: split.total,
+            minimum_first,
+            maximum_first,
+            guided: !self.mana_output_escaping() && self.mana_output_parent_goal().is_some(),
+        })
+    }
+
+    /// Exact membership for the current split, including any enclosing payment.
+    pub fn mana_split_production_legal(&self, production: Mana) -> bool {
+        self.mana_split_choice().is_some_and(|choice| {
+            choice.contains_allocation(production)
+                && (!choice.guided || self.mana_output_choice_fundable(production))
+        })
+    }
+
+    fn visit_mana_split_choices(
+        &self,
+        choice: ManaSplitChoiceView,
+        mut emit: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let split = choice.split();
+        let min = choice.minimum_first;
+        let max = choice.maximum_first;
+        let legal = |mana| !choice.guided || self.mana_output_choice_fundable(mana);
+        if max - min < 64 {
+            return (min..=max).any(|amount| {
+                let mana = split.production(amount);
+                legal(mana) && emit(mana)
+            });
+        }
+        let preferred = self.mana_output_parent_goal().map_or(min, |goal| {
+            goal.required[split.first.index()]
+                .saturating_sub(self.state.players[goal.actor.index()].mana[split.first.index()])
+                .clamp(min, max)
+        });
+        let points = [min, min + (max - min) / 2, max, preferred];
+        let mut offered = false;
+        for (index, &amount) in points.iter().enumerate() {
+            if points[..index].contains(&amount) {
+                continue;
+            }
+            let mana = split.production(amount);
+            if legal(mana) {
+                offered = true;
+                if emit(mana) {
+                    return true;
+                }
+            }
+        }
+        if offered || !choice.guided {
+            return false;
+        }
+        // Filter-dependent payment routes can make the valid subset disjoint.
+        // Find an exact witness when representative points miss all of it.
+        let mut accepted = false;
+        visit_split_range(
+            split,
+            min,
+            max,
+            &mut |upper| self.mana_split_output_may_fund(upper),
+            &mut |mana| {
+                if !legal(mana) {
+                    return false;
+                }
+                accepted = emit(mana);
+                true
+            },
+        );
+        accepted
+    }
+
     /// One domain for the observation and checked raw/index actions. Only an
     /// owned paid activation has an enclosing payment promise to preserve.
     pub(super) fn visit_effect_mana_choices(&self, mut emit: impl FnMut(Mana) -> bool) -> bool {
         let Pending::EffectMana { production, .. } = self.state.pending else {
             return false;
         };
+        if matches!(production, ManaProduction::Split(_)) {
+            return self
+                .mana_split_choice()
+                .is_some_and(|choice| self.visit_mana_split_choices(choice, emit));
+        }
         let owned = self
             .state
             .announcing
@@ -197,12 +402,7 @@ impl Game {
             .is_some_and(|a| a.mana_output.is_some());
         // A foreign choice can already have stranded the parent. CR605 requires
         // finishing this captured child before the existing rollback/replay.
-        let escaping = self.foreign_cast_choice_pending()
-            && self
-                .state
-                .cast_rollback
-                .as_ref()
-                .is_some_and(|r| r.capture.is_some());
+        let escaping = self.mana_output_escaping();
         production.visit(|mana| {
             if self.mana_tap_bonus_active() {
                 return (escaping || self.tap_bonus_choice_fundable(mana)) && emit(mana);
@@ -292,9 +492,12 @@ impl Game {
         if output.choice.is_none()
             && matches!(
                 domain,
-                ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+                ManaProduction::Choice { .. }
+                    | ManaProduction::Combination { .. }
+                    | ManaProduction::Split(_)
             )
         {
+            self.require_mana_split_capacity(a.item.controller, domain);
             self.state.pending = Pending::EffectMana {
                 player: a.item.controller,
                 production: domain,
@@ -316,7 +519,7 @@ impl Game {
         self.add_quality_mana(a.item.controller, production, output.quality);
         self.apply_mana_color_change(output.recipe, output.instance.source, production);
         self.finish_mana_tap_bonus(a.item.controller, a.item.tap_mana_bonus(self), production);
-        self.committed_mana_reflexive(&a.item);
+        self.committed_mana_followups(&a.item);
         if self.restore_mana_announcement() {
             self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);
             return;

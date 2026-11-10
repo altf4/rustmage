@@ -435,7 +435,7 @@ struct FundingKey {
     source_linked_effects: Vec<SourceLinkedEffectView>,
     resolved_ability_modifications: Vec<ResolvedAbilityModificationView>,
     entries: Option<EntryFundingKey>,
-    histories: Option<(u64, [bool; 2], i128)>,
+    histories: Option<(u64, [bool; 2], i128, [bool; 2])>,
     controlled_creature_deaths: [u64; 2],
     borrowed_uses: Vec<(ObjectRef, u64)>,
     self_grant_uses: Vec<(ObjectRef, u64)>,
@@ -585,14 +585,11 @@ fn concrete_payment(payment: [u64; 6]) -> Mana {
     payment.map(|n| u32::try_from(n).capacity("mana payment exhausted"))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn reserve_obligations(
+fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
+    world: &W,
     goal: &FundingGoal,
     object: Option<&Object>,
-    kinds: u16,
-    mana_value: u64,
-    keywords: Keywords,
-    subtypes: GrantedSubtypes,
-    name: &str,
+    keywords: impl FnOnce(CardId) -> Keywords,
 ) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
         object.is_some_and(|o| {
@@ -603,7 +600,15 @@ fn reserve_obligations(
                         .as_ref()
                         .is_some_and(|(source, _, _, _, _)| o.attached_to == Some(*source)))
                 && Game::additional_object_matches(
-                    spec, goal.actor, o, kinds, mana_value, keywords, subtypes, name,
+                    spec,
+                    goal.actor,
+                    o,
+                    world.kinds(reference.card),
+                    world.mana_value(reference.card),
+                    keywords(reference.card),
+                    world.subtypes(reference.card),
+                    world.name(reference.card),
+                    || world.legendary(reference.card),
                 )
         })
     })
@@ -752,7 +757,7 @@ impl<'g> FundingState<'g> {
     // Paying costs can remove a negative modifier or change a scaling count.
     // Current power is not an upper bound on later production. Real moves still
     // evaluate exact borrowed-world power; only pruning uses this loose ceiling.
-    fn potential_land_mana(&self) -> impl Iterator<Item = ManaProduction> + '_ {
+    fn potential_static_tap_mana(&self) -> impl Iterator<Item = ManaProduction> + '_ {
         self.static_sources()
             .iter()
             .filter_map(|&id| {
@@ -762,9 +767,10 @@ impl<'g> FundingState<'g> {
             .flat_map(|card| card.static_ability_groups())
             .flat_map(|group| group.fragments)
             .filter_map(|fragment| match *fragment {
-                crate::cards::StaticAbilityFragment::LandMana { production, .. } => {
-                    Some(production)
-                }
+                crate::cards::StaticAbilityFragment::LandMana { production, .. }
+                | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(
+                    production,
+                ) => Some(production),
                 _ => None,
             })
     }
@@ -774,6 +780,19 @@ impl<'g> FundingState<'g> {
                 mask,
                 amount: u32::MAX,
             },
+            ManaProduction::SourcePowerSplit { first, second } => {
+                let mut mana = [0; 6];
+                mana[first.index()] = u32::MAX;
+                mana[second.index()] = u32::MAX;
+                ManaProduction::Fixed(mana)
+            }
+            ManaProduction::Split(split) => {
+                let mut mana = [0; 6];
+                let upper = split.total.min(u64::from(u32::MAX)) as u32;
+                mana[split.first.index()] = upper;
+                mana[split.second.index()] = upper;
+                ManaProduction::Fixed(mana)
+            }
             ManaProduction::DistinctCreaturePowers => ManaProduction::any_color(u32::MAX),
             ManaProduction::ChoiceStat { colors, .. } => ManaProduction::Choice {
                 mask: colors,
@@ -851,6 +870,15 @@ impl<'g> FundingState<'g> {
     }
     fn from_game(game: &'g Game, goal: &FundingGoal) -> Self {
         Self::from_game_with_convoke(game, goal, false)
+    }
+    fn active_melds(&self) -> impl Iterator<Item = &meld::MeldedPermanent> {
+        self.roles()
+            .into_iter()
+            .flat_map(|roles| &roles.melded_permanents)
+            .filter(move |row| {
+                self.object(row.object.card).zone == Zone::Battlefield
+                    && self.reference(row.object.card) == row.object
+            })
     }
     fn projected_face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.entry_projection.as_ref().map_or_else(
@@ -982,6 +1010,7 @@ impl<'g> FundingState<'g> {
                         power_sensitive |= matches!(
                             production.base(),
                             ManaProduction::SourcePower { .. }
+                                | ManaProduction::SourcePowerSplit { .. }
                                 | ManaProduction::TapSourcePowerChoice { .. }
                                 | ManaProduction::DistinctCreaturePowers
                         );
@@ -1043,11 +1072,11 @@ impl<'g> FundingState<'g> {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations()
-                            || object.card.attachment_bonus().is_some()
+                            || object.card.is_attachment_source()
                             || game.state.attachment_sources.iter().any(|&provider| game.state.objects[provider as usize].attached_to == Some(game.object_ref(*id as CardId)))
                             || !object.card.keyword_grants().is_empty()
                             || !object.card.counter_keyword_grants().is_empty()
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1307,6 +1336,7 @@ impl<'g> FundingState<'g> {
                             }),
                             ability_world::CharacteristicWorld::subtypes(self, r.card),
                             ability_world::CharacteristicWorld::name(self, r.card),
+                            || ability_world::CharacteristicWorld::legendary(self, r.card),
                         )
                 })
             }))
@@ -1356,17 +1386,9 @@ impl<'g> FundingState<'g> {
                     && (spec.kind.payment_kind() != EffectChoiceKind::DiscardMatchingLegendary
                         || additional_costs::legendary_name_match(self, goal.actor, r.card))
             })
-            && reserve_obligations(
-                goal,
-                reserve.map(|r| &r.object),
-                reserve.map_or(0, |r| self.kinds(r)),
-                reserve.map_or(0, |r| {
-                    ability_world::CharacteristicWorld::mana_value(self, r.id)
-                }),
-                reserve.map_or(Keywords::NONE, |r| self.keywords(r)),
-                reserve.map_or(GrantedSubtypes::default(), |r| self.granted_subtypes(r.id)),
-                reserve.map_or("", |r| ability_world::CharacteristicWorld::name(self, r.id)),
-            )
+            && reserve_obligations(self, goal, reserve.map(|r| &r.object), |_| {
+                self.keywords(reserve.expect("reserved resource"))
+            })
             && goal
                 .source
                 .as_ref()
@@ -1473,6 +1495,13 @@ impl<'g> FundingState<'g> {
                             {
                                 keywords = keywords.union(grant)
                             }
+                            crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
+                                if target.object.controller == source.object.controller
+                                    && self.kinds(target) & 1 != 0
+                                    && self.equipped(target.id) =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::ControlledTappedKeywords {
                                 other,
                                 keywords: grant,
@@ -1572,6 +1601,9 @@ impl<'g> FundingState<'g> {
             ActivationGuard::OpponentNoncombatDamageThisTurn => {
                 self.game.state.players[actor.other().index()].noncombat_damage_this_turn
             }
+            ActivationGuard::OpponentWasDealtLegendaryCombatDamageThisTurn => self
+                .game
+                .player_was_dealt_legendary_combat_damage(actor.other()),
             ActivationGuard::SourceSolved => self.game.case_solved(self.reference(source)),
             ActivationGuard::SourceAttackedThisTurn => self
                 .game
@@ -2277,6 +2309,19 @@ impl<'g> FundingState<'g> {
             p.roles.source_linked_effects = retained;
         }
     }
+    fn expire_projected_blighted_land(&mut self, recipient: ObjectRef) {
+        if source_linked_effects::blighted_land_expired(self, recipient) {
+            // Own the expired role before any later counter payment can add
+            // a blight counter back to the same exact land.
+            self.prepare_entry_projection();
+            self.entry_projection
+                .as_mut()
+                .unwrap()
+                .roles
+                .forget_blighted_land(recipient);
+            self.refresh_control_projection();
+        }
+    }
     fn remember_payment_departure(&mut self, id: CardId) {
         let reference = self.reference(id);
         if let Some(p) = &mut self.entry_projection {
@@ -2429,6 +2474,9 @@ impl<'g> FundingState<'g> {
             counters.pay(&step.counters);
             object.counters = counters.hot();
             live_counters::set(&mut self.named_counters, reference, counters.named);
+            if step.counters.get(CounterKind::Blight) != 0 {
+                self.expire_projected_blighted_land(reference);
+            }
             if cost.sacrifice || cost.exile_self || cost.discard {
                 departure = Some(if cost.exile_self {
                     Zone::Exile
@@ -2623,6 +2671,10 @@ impl<'g> FundingState<'g> {
         let Some(output) = &step.output else {
             return Some(step.production);
         };
+        if let Some(split) = output.unselected_split(self, output.source_power) {
+            let (min, max) = split.bounds(self.projected_mana_split_capacity())?;
+            return (min == max).then(|| split.production(min));
+        }
         let mut first = None;
         let mut multiple = false;
         output.visit(self, output.source_power, |production| {
@@ -2639,6 +2691,7 @@ impl<'g> FundingState<'g> {
         &self,
         step: &FundingMove,
         tap_bonus: ManaTapBonus,
+        goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         let mut finish = |production| {
@@ -2649,10 +2702,64 @@ impl<'g> FundingState<'g> {
             })
         };
         if let Some(output) = &step.output {
+            if let Some(split) = output.unselected_split(self, output.source_power) {
+                return self.visit_projected_mana_split(
+                    split,
+                    goal,
+                    output.quality,
+                    tap_bonus,
+                    finish,
+                );
+            }
             output.visit(self, output.source_power, finish)
         } else {
             finish(step.production)
         }
+    }
+    fn projected_mana_split_capacity(&self) -> Mana {
+        self.mana
+            .map(|pool| u32::MAX - pool.min(u128::from(u32::MAX)) as u32)
+    }
+
+    fn visit_projected_mana_split(
+        &self,
+        split: crate::cards::ManaSplit,
+        goal: Option<&FundingGoal>,
+        quality: Option<mana_lots::Quality>,
+        tap_bonus: ManaTapBonus,
+        mut finish: impl FnMut(Mana) -> bool,
+    ) -> bool {
+        let Some((min, max)) = split.bounds(self.projected_mana_split_capacity()) else {
+            return false;
+        };
+        if max - min < 64 {
+            return (min..=max).any(|amount| finish(split.production(amount)));
+        }
+        let preferred = goal.map_or(min, |goal| {
+            let first = split.first.index();
+            let available = mana_lots::available(self.mana, &self.lots, self.purpose);
+            u128::from(goal.required[first])
+                .saturating_sub(available[first])
+                .clamp(u128::from(min), u128::from(max)) as u32
+        });
+        if finish(split.production(preferred)) {
+            return true;
+        }
+        // The interval upper bound can add both component maxima for pruning.
+        // Only exact allocations reach the actual feasibility continuation.
+        let mut possible = |upper| {
+            goal.is_none_or(|goal| {
+                if tap_bonus.has_any() {
+                    return true;
+                }
+                let mut optimistic = self.clone();
+                optimistic.add_completed_mana(upper, quality, [0; 6]);
+                optimistic.optimistic(goal)
+            })
+        };
+        mana_output::visit_split_range(split, min, max, &mut possible, &mut |production| {
+            production[split.first.index()] != preferred && finish(production)
+        })
     }
     fn key(&self, goal: &FundingGoal) -> FundingKey {
         // Attachment edges distinguish otherwise interchangeable mana sources.
@@ -2759,6 +2866,12 @@ impl<'g> FundingState<'g> {
                                 .basic_land_types
                                 .iter()
                                 .any(|row| row.recipient.card == r.id)
+                            // The row remains a funding identity witness after
+                            // both cards take on their new incarnations.
+                            || roles
+                                .melded_permanents
+                                .iter()
+                                .any(|row| row.object.card == r.id || row.entry.companion.card == r.id)
                     })
                     || self.continuation.as_ref().is_some_and(|c| c.selects(r.id))
                     || self
@@ -2902,6 +3015,7 @@ impl<'g> FundingState<'g> {
                 self.creatures_died,
                 self.graveyard_left,
                 self.other_life,
+                self.life_gained,
             )),
             controlled_creature_deaths: self.controlled_creatures_died,
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
@@ -2998,6 +3112,10 @@ impl<'g> FundingState<'g> {
                         for (total, amount) in bonus.iter_mut().zip(mana) {
                             *total = total.saturating_add(u128::from(amount));
                         }
+                    }
+                    crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus => {
+                        // Conservatively allow any tap to make the required {C}.
+                        bonus[5] = bonus[5].saturating_add(1);
                     }
                     crate::cards::StaticAbilityFragment::AttachmentManaBonus(production) => {
                         // A fixed-control proof cannot tap an opposing land,
@@ -3129,7 +3247,7 @@ impl<'g> FundingState<'g> {
                 }
             }
             if !object.tapped {
-                for production in self.potential_land_mana() {
+                for production in self.potential_static_tap_mana() {
                     let mut maximum = 0;
                     self.production_upper(production).visit(|mana| {
                         maximum = maximum.max(mana.into_iter().map(u128::from).sum());
@@ -3295,7 +3413,7 @@ impl<'g> FundingState<'g> {
                 }
             }
             if !object.tapped {
-                for production in self.potential_land_mana() {
+                for production in self.potential_static_tap_mana() {
                     add(production, 1);
                 }
             }
@@ -3444,7 +3562,10 @@ impl<'g> FundingState<'g> {
                             StaticAbilityFragment::LandMana {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
-                            } => {
+                            }
+                            | StaticAbilityFragment::OtherControlledPermanentTapMana(
+                                ManaProduction::Tagged { quality, .. },
+                            ) => {
                                 !matches!(
                                     quality.restriction,
                                     ManaRestriction::CastFromExile
@@ -3648,6 +3769,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::AttachmentMana(_)
                                         | StaticAbilityFragment::AttachmentSacrificeMana(_)
                                         | StaticAbilityFragment::LandMana { .. }
+                                        | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 )
                             })
                 })
@@ -3753,6 +3875,11 @@ impl<'g> FundingState<'g> {
         }
         if self.fixed_mana_cannot_pay(goal) {
             return false;
+        }
+        // A departure may reveal off-battlefield abilities on either front or
+        // meet a zone-count guard. The current inventory cannot bound them.
+        if self.active_melds().next().is_some() {
+            return true;
         }
         // A virtual sacrifice can supply a previously absent graveyard mana
         // ability. The ordinary current-inventory upper bound is not conservative
@@ -4131,6 +4258,11 @@ impl<'g> FundingState<'g> {
                             })
                     })
                     .map(|r| u128::from(r.object.card.fixed_mana_value()))
+                    .sum::<u128>()
+                + self
+                    .active_melds()
+                    .flat_map(|row| row.entry.front_cards)
+                    .map(|card| u128::from(card.fixed_mana_value()))
                     .sum::<u128>();
             upper < u128::from(n)
         }) || !self.optimistic(goal)
@@ -4180,7 +4312,7 @@ impl<'g> FundingState<'g> {
                 )
             });
             for step in moves {
-                if self.visit_applied(&step, &mut |next| {
+                if self.visit_applied_for(&step, Some(goal), &mut |next| {
                     next.reachable_with_completion(goal, evidence, visited, completion)
                 }) {
                     return true;
@@ -4602,43 +4734,31 @@ impl Game {
         let reserve = goal
             .reserve
             .and_then(|(r, _)| self.state.objects.get(r.card as usize));
-        if !reserve_obligations(
-            &goal,
-            reserve,
-            reserve.map_or(0, |o| self.object_kinds(goal.reserve.unwrap().0.card, o)),
-            reserve.map_or(0, |_| {
-                ability_world::CharacteristicWorld::mana_value(self, goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or(Keywords::NONE, |_| {
-                self.keywords(goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or(GrantedSubtypes::default(), |_| {
-                self.granted_subtypes(goal.reserve.unwrap().0.card)
-            }),
-            reserve.map_or("", |_| self.object_name(goal.reserve.unwrap().0.card)),
-        ) || !source_obligations(
-            &goal,
-            object,
-            goal.source
-                .as_ref()
-                .map_or(CounterAmounts::default(), |(r, _, _, _, _)| {
-                    self.counter_amounts(r.card)
+        if !reserve_obligations(self, &goal, reserve, |card| self.keywords(card))
+            || !source_obligations(
+                &goal,
+                object,
+                goal.source
+                    .as_ref()
+                    .map_or(CounterAmounts::default(), |(r, _, _, _, _)| {
+                        self.counter_amounts(r.card)
+                    }),
+                object.map_or(0, |o| {
+                    self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
                 }),
-            object.map_or(0, |o| {
-                self.object_kinds(goal.source.as_ref().unwrap().0.card, o)
-            }),
-            || {
-                object.map_or(Keywords::NONE, |_| {
-                    ability_world::CharacteristicWorld::activation_keywords(
-                        self,
-                        goal.source.as_ref().unwrap().0.card,
-                    )
-                })
-            },
-            self.state.players[goal.actor.index()].life,
-            self.exhaust_reuse_authorized_for_goal(&goal),
-            self.self_granted_goal(&goal),
-        ) {
+                || {
+                    object.map_or(Keywords::NONE, |_| {
+                        ability_world::CharacteristicWorld::activation_keywords(
+                            self,
+                            goal.source.as_ref().unwrap().0.card,
+                        )
+                    })
+                },
+                self.state.players[goal.actor.index()].life,
+                self.exhaust_reuse_authorized_for_goal(&goal),
+                self.self_granted_goal(&goal),
+            )
+        {
             return false;
         }
         let adjusted = cast_origins::payment_goal(self, &goal, purpose);
@@ -4919,6 +5039,9 @@ impl Game {
         }
         if a.self_graveyard_cast_cost().is_some() {
             return self.self_graveyard_announcement_fundable(a, cost);
+        }
+        if a.has_ordered_life_cost() {
+            return self.behold_announcement_fundable(a, cost);
         }
         if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
             let mut selected = a.clone();
@@ -5878,6 +6001,7 @@ impl Game {
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
             || announcement.has_compound_sneak_cost()
             || announcement.self_graveyard_cast_cost().is_some()
+            || announcement.has_ordered_life_cost()
             || announcement.linked_origin_counter_cost().is_some()
             || announcement
                 .additional_cost()
@@ -5957,7 +6081,7 @@ impl Game {
         if state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| {
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
                     next.reachable_with_evidence(
                         &goal,
                         announcement.evidence.as_ref().map(|e| e.threshold),
@@ -6008,7 +6132,9 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
+                    next.reachable(&goal, &mut HashSet::new())
+                })
             },
             emit,
         )
@@ -6044,7 +6170,7 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| {
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
                     next.guided_mana_resume_fundable(&Pending::PlotPayment {
                         player: request.controller,
                     })
@@ -6053,6 +6179,19 @@ impl Game {
             emit,
         )
     }
+    pub(super) fn project_resolution_life(&self, payer: Player, amount: i128) -> FundingState<'_> {
+        let goal = FundingGoal {
+            actor: payer,
+            required: [0; 6],
+            generic: 0,
+            reserve: None,
+            source: None,
+        };
+        let mut world = FundingState::from_game(self, &goal);
+        world.pay_projected_life(payer, amount, &[]);
+        world
+    }
+
     pub(super) fn visit_resolution_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self
             .state
@@ -6088,47 +6227,50 @@ impl Game {
         if request.discard_only {
             return false;
         }
-        if request
-            .life
-            .is_some_and(|life| self.state.players[request.payer.index()].life < i128::from(life))
-        {
+        if self.visit_resolution_cost_selections(request, emit) {
+            return true;
+        }
+        let goal_for = |cost: ManaCost| FundingGoal {
+            reserve: None,
+            actor: request.payer,
+            required: cost.colored,
+            generic: cost.generic,
+            source: None,
+        };
+        let costs = || std::iter::once(request.cost).chain(request.alternatives.iter().copied());
+        let can_pay_life = self.resolution_life_available(request.payer, request.life);
+        if !can_pay_life && request.choices.is_none() {
             return false;
         }
-        for cost in std::iter::once(request.cost).chain(request.alternatives.iter().copied()) {
-            let goal = FundingGoal {
-                reserve: None,
-                actor: request.payer,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-            };
-            let state = FundingState::from_game(self, &goal);
-            if visit_funding_payments(
-                mana_lots::available(state.mana, &state.lots, state.purpose),
-                goal.required,
-                goal.generic,
-                |payment| {
-                    emit(Action::PayResolutionMana {
-                        payment: concrete_payment(payment),
-                    })
-                },
-            ) {
-                return true;
+        if request.route_selected() && can_pay_life && self.resolution_objects_ready(request) {
+            for goal in costs().map(goal_for) {
+                let state = FundingState::from_game(self, &goal);
+                if visit_funding_payments(
+                    mana_lots::available(state.mana, &state.lots, state.purpose),
+                    goal.required,
+                    goal.generic,
+                    |payment| {
+                        emit(Action::PayResolutionMana {
+                            payment: concrete_payment(payment),
+                        })
+                    },
+                ) {
+                    return true;
+                }
             }
         }
-        // A payment request grants a mana-ability window even if it is declined.
-        // Emit the shared window once regardless of the number of hybrid choices.
-        let Some(goal) = std::iter::once(request.cost)
-            .chain(request.alternatives.iter().copied())
-            .map(|cost| FundingGoal {
-                reserve: None,
-                actor: request.payer,
-                required: cost.colored,
-                generic: cost.generic,
-                source: None,
-            })
-            .find(FundingGoal::requires_mana)
-        else {
+        // An offered mana cost opens the same window before the final payment,
+        // including while its nonmana selections are still incomplete.
+        let goal = if let Some(choices) = &request.choices {
+            choices
+                .options
+                .iter()
+                .map(|choice| goal_for(choice.mana))
+                .find(FundingGoal::requires_mana)
+        } else {
+            costs().map(goal_for).find(FundingGoal::requires_mana)
+        };
+        let Some(goal) = goal else {
             return false;
         };
         let mut state = FundingState::from_game(self, &goal);
@@ -6286,7 +6428,7 @@ impl Game {
             if world.action(&step) != *action {
                 continue;
             }
-            if world.visit_applied(&step, &mut |next| {
+            if world.visit_applied_for(&step, Some(&goal), &mut |next| {
                 next.reachable_with_evidence(&goal, evidence, &mut HashSet::new())
             }) {
                 let allocation = step
@@ -6332,6 +6474,9 @@ impl FundingState<'_> {
         counters.remove(kind, 1);
         self.resources[index].object.counters = counters.hot();
         live_counters::set(&mut self.named_counters, r, counters.named);
+        if kind == CounterKind::Blight {
+            self.expire_projected_blighted_land(r);
+        }
         true
     }
     fn creature_counter_payment_possible(
@@ -6454,7 +6599,7 @@ impl FundingState<'_> {
                 self.moves(goal)
             };
             for step in moves {
-                if self.visit_applied(&step, &mut |next| {
+                if self.visit_applied_for(&step, Some(goal), &mut |next| {
                     next.fund_creature_counter_cost(goal, requirement, selected, visited)
                 }) {
                     return true;
@@ -6588,7 +6733,9 @@ impl Game {
         state.visit_distinct_actions(
             &goal,
             |step| {
-                state.visit_applied(step, &mut |next| next.reachable(&goal, &mut HashSet::new()))
+                state.visit_applied_for(step, Some(&goal), &mut |next| {
+                    next.reachable(&goal, &mut HashSet::new())
+                })
             },
             emit,
         )
@@ -6707,11 +6854,20 @@ impl FundingState<'_> {
             })
         };
         if let Some(output) = &a.mana_output {
-            output.visit(
-                self,
-                a.item.source.expect("mana source").facts.power,
-                finish,
-            )
+            let power = a.item.source.expect("mana source").facts.power;
+            if let Some(split) = output.unselected_split(self, power) {
+                if let Some(production) = selected {
+                    return split.contains(production) && finish(production);
+                }
+                return self.visit_projected_mana_split(
+                    split,
+                    self.game.mana_output_parent_goal().as_ref(),
+                    quality,
+                    bonus,
+                    finish,
+                );
+            }
+            output.visit(self, power, finish)
         } else if let Some(production) = a.production {
             finish(production)
         } else {
@@ -6848,6 +7004,37 @@ impl Game {
             world
         }
     }
+    pub(super) fn mana_output_parent_goal(&self) -> Option<FundingGoal> {
+        let a = self.state.announcing.as_ref()?;
+        let output = a.mana_output.as_ref()?;
+        self.state
+            .mana_announcement_stack
+            .as_deref()
+            .and_then(|frames| frames.last())
+            .map(|frame| self.funding_goal(&frame.announcement))
+            .or_else(|| {
+                output
+                    .resume
+                    .as_deref()
+                    .and_then(|pending| self.guided_mana_goal(pending))
+            })
+    }
+
+    pub(super) fn mana_split_output_may_fund(&self, upper: Mana) -> bool {
+        let Some(goal) = self.mana_output_parent_goal() else {
+            return true;
+        };
+        let a = self.state.announcing.as_ref().expect("paid split mana");
+        let output = a.mana_output.as_ref().expect("paid split output");
+        let mut world = self.paid_mana_parent_world(a);
+        if a.item.tap_mana_bonus(&world).has_any() {
+            return true;
+        }
+        world.add_completed_mana(upper, output.quality, [0; 6]);
+        world.project_paid_mana_use(&a.item);
+        world.optimistic(&goal)
+    }
+
     pub(super) fn mana_output_choice_fundable(&self, production: Mana) -> bool {
         let a = self
             .state

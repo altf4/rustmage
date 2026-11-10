@@ -236,8 +236,9 @@ impl GrantedSubtypes {
         self.additional_creature_types = CreatureTypeSet::default();
         self.creature_types = Some(types);
     }
-    fn apply_copy_types(&mut self, types: Option<CopyTypes>) {
-        if let Some(types) = types {
+    fn apply_copy_subtypes(&mut self, recipe: Option<CopyRecipe>) {
+        if let Some(recipe) = recipe {
+            let types = recipe.copy_types();
             if types.replace {
                 *self = Self::default();
                 self.set_flag(SUPPRESS_PRINTED, true);
@@ -263,6 +264,9 @@ impl GrantedSubtypes {
             }
             if types.mutant {
                 self.insert("Mutant");
+            }
+            if let Some(subtype) = recipe.replacement_subtype {
+                self.insert(subtype.name());
             }
         }
     }
@@ -594,7 +598,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         generation: target.generation,
     };
     let recipe = world.recipe(id);
-    mask.apply_copy_types(Some(recipe.copy_types()));
+    mask.apply_copy_subtypes(Some(recipe));
     // A keyword added by the copy exception is itself copiable (CR707.9).
     // Changeling contributes types in layer four before later type changes.
     if recipe
@@ -954,7 +958,7 @@ pub(super) fn native_basic_lands<W: super::ability_world::CharacteristicWorld + 
     id: CardId,
 ) -> u8 {
     let mut mask = GrantedSubtypes::default();
-    mask.apply_copy_types(Some(world.recipe(id).copy_types()));
+    mask.apply_copy_subtypes(Some(world.recipe(id)));
     crate::cards::BasicLandType::ALL
         .into_iter()
         .filter(|kind| mask.has(world.definition(id), kind.name()))
@@ -989,6 +993,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
         Land(bool),
         Add(crate::cards::BasicLandType),
         Set(crate::cards::BasicLandType),
+        Clear,
     }
     let object = world.object(id);
     let reference = world.reference(id);
@@ -1003,6 +1008,18 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             .flat_map(|state| &state.basic_land_types)
             .filter(|row| row.recipient == reference)
             .map(|row| (row.timestamp, Event::Add(row.kind))),
+    );
+    events.extend(
+        world
+            .roles()
+            .into_iter()
+            .flat_map(|state| &state.source_linked_effects)
+            .filter(|row| {
+                row.recipient == reference
+                    && row.kind == SourceLinkedEffectKind::BlankLandWhileBlighted
+                    && source_linked_effects::active(world, row)
+            })
+            .map(|row| (row.timestamp, Event::Clear)),
     );
     if object.card.static_ability_groups().iter().any(|group| {
         group
@@ -1069,6 +1086,11 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                 present = 1 << kind.index();
                 lost_original_types = true;
                 ability_changes.push((*time, BasicLandAbilityChange::Set(kind)));
+            }
+            Event::Clear => {
+                present = 0;
+                lost_original_types = true;
+                // The same timestamp's layer-six removal clears every ability.
             }
             Event::Add(_) | Event::Set(_) => {}
         }
@@ -1219,7 +1241,7 @@ impl Game {
             return GrantedSubtypes::food_only();
         }
         let mut result = GrantedSubtypes::default();
-        result.apply_copy_types(m.before.copy_recipe.map(CopyRecipe::copy_types));
+        result.apply_copy_subtypes(m.before.copy_recipe);
         if m.before
             .copy_recipe
             .and_then(|recipe| recipe.overrides)

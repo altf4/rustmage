@@ -294,6 +294,8 @@ impl Game {
                 self.register_battlefield_sources(id);
                 events.push(ZoneChange {
                     was_card: false,
+                    linked_exile_life: None,
+                    melded_after: None,
                     shuffled_in_place: false,
                     cast_event: None,
                     entry_counter_player: Some(controller),

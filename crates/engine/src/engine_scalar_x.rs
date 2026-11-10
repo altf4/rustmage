@@ -268,6 +268,11 @@ impl Game {
         intervals
     }
     fn activation_x_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let StackKind::ActivatedAbility { ability } = a.item.kind else {
+            unreachable!("activation X announcement")
+        };
+        let source = a.item.source.expect("activation source");
+        let minimum = source.card.activation(ability).minimum_x();
         let fundable = |value: u32| {
             let mut probe = a.clone();
             probe.item.x = Some(value);
@@ -275,10 +280,10 @@ impl Game {
                 .cost_options()
                 .any(|cost| self.announcement_cost_fundable(&probe, cost))
         };
-        if !fundable(0) {
+        if !fundable(minimum) {
             return Vec::new();
         }
-        let (mut low, mut high) = (0u32, u32::MAX);
+        let (mut low, mut high) = (minimum, u32::MAX);
         while low < high {
             let mid = low + (high - low).div_ceil(2);
             if fundable(mid) {
@@ -288,7 +293,7 @@ impl Game {
             }
         }
         vec![XInterval {
-            minimum: 0,
+            minimum,
             maximum: low,
         }]
     }
@@ -349,8 +354,8 @@ impl Game {
         let a = self.state.announcing.as_ref()?;
         let mut intervals = if a.blight_x_cost() {
             self.blight_x_intervals(a)
-        } else if a.nonmana_x() {
-            self.nonmana_x_intervals(a)
+        } else if a.declares_target_value_x() {
+            self.target_value_x_intervals(a)
         } else if a.item.kind == StackKind::Spell
             && a.item
                 .source
@@ -403,13 +408,13 @@ impl Game {
             AmountValue::DiscardEventAmount => item
                 .discard_event
                 .map_or(0, |event| u128::from(event.amount)),
-            AmountValue::MovedCount => u128::from(
+            AmountValue::MovedCount | AmountValue::RememberedCount => u128::from(
                 self.state
                     .resolving
                     .as_ref()
                     .unwrap()
                     .moved_count
-                    .expect("quantity requires remembered move result"),
+                    .expect("quantity requires a saved resolution count"),
             ),
             AmountValue::TargetPlayerLibraryToGraveyardThisTurn => item
                 .targets
@@ -573,7 +578,12 @@ impl Game {
                     .expect("damage-received amount requires its frozen packet")
                     .amount
             }
-            AmountValue::DamageEventAmount => item.damage_event.expect("saved damage event").amount,
+            AmountValue::DamageEventAmount => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::DamageDealt { amount }) => *amount,
+                    _ => item.damage_event.expect("saved damage event").amount,
+                }
+            }
             AmountValue::CreatureCombatDamageAmount => {
                 item.creature_combat_event
                     .as_ref()
@@ -599,12 +609,24 @@ impl Game {
                         .map_or(0, |fact| u128::from(fact.count))
                 }),
             AmountValue::SourceToughness => self.source_toughness(item),
+            AmountValue::EquippedCreaturesYouControl => {
+                self.equipped_creature_count(item.controller)
+            }
+            AmountValue::DeclaredAttackerCount => item
+                .reflexive_subject
+                .as_deref()
+                .filter(|subjects| !subjects.action)
+                .map_or(0, |subjects| 1 + subjects.additional_objects.len() as u128),
             AmountValue::SourceEquipmentCount => self.source_equipment_quantity(item),
             AmountValue::SourcePower => item.source.map_or(0, |source| {
                 if self.on_battlefield(source.id) && self.object_ref(source.id) == source.object {
                     self.stats(source.id).power.max(0) as u128
                 } else {
-                    source.facts.power.max(0) as u128
+                    item.source_quantity_lki
+                        .as_ref()
+                        .and_then(|facts| facts.power)
+                        .unwrap_or(source.facts.power)
+                        .max(0) as u128
                 }
             }),
             AmountValue::LifeEventAmount => {

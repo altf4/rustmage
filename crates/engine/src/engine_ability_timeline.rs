@@ -43,6 +43,26 @@ pub struct KeywordEffectView {
     pub expires_turn: Option<u32>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl roles::RoleState {
+    /// CR 400.7a preserves effects that modify a spell's characteristics on entry.
+    pub(super) fn continue_stack_keywords(
+        &mut self,
+        before: ObjectRef,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if destination == Zone::Battlefield {
+            for row in &mut self.keyword_effects {
+                if row.recipient == before {
+                    row.recipient = after;
+                }
+            }
+        } else {
+            self.keyword_effects.retain(|row| row.recipient != before);
+        }
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Card {
     pub(super) fn has_layer6_provider(self) -> bool {
         self.role().is_some()
@@ -73,6 +93,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | StaticAbilityFragment::SourceMaxSpeedActivation(..)
@@ -82,15 +103,22 @@ impl Card {
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
+                            | StaticAbilityFragment::AttachmentAttackingKeywords(..)
+                            | StaticAbilityFragment::AdditionalTriggers {
+                                scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
+                                ..
+                            }
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
+                            | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentActivation { .. }
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
+                            | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)
                             | StaticAbilityFragment::CounterKeywordOwnTurn(..)
@@ -180,7 +208,7 @@ impl Game {
             });
         }
     }
-    /// A cast-spending effect follows only this spell's actual stack-to-battlefield move.
+    /// A temporary grant applies to this spell and follows its actual stack-to-battlefield move.
     pub(super) fn grant_stack_keywords(&mut self, spell: ObjectRef, keywords: Keywords) {
         self.grant_stack_keywords_expiring(spell, keywords, Some(self.state.turn));
     }
@@ -217,15 +245,7 @@ impl Game {
         destination: Zone,
     ) {
         if let Some(state) = &mut self.state.roles {
-            if destination == Zone::Battlefield {
-                for row in &mut state.keyword_effects {
-                    if row.recipient == before {
-                        row.recipient = after;
-                    }
-                }
-            } else {
-                state.keyword_effects.retain(|row| row.recipient != before);
-            }
+            state.continue_stack_keywords(before, after, destination);
         }
     }
     pub(super) fn grant_keyword_effects(

@@ -279,7 +279,7 @@ impl Game {
             };
             true
         } else {
-            self.grant_exiled_result_cast_any_type(item.controller);
+            self.grant_exiled_result_flexible_play(item.controller, true);
             false
         }
     }
@@ -306,29 +306,13 @@ impl Game {
                 );
             }
         } else {
-            self.grant_exiled_result_cast_any_type(item.controller);
+            self.grant_exiled_result_flexible_play(item.controller, true);
         }
     }
-    fn grant_exiled_result_cast_any_type(&mut self, player: Player) {
+    pub(super) fn grant_exiled_result_flexible_play(&mut self, player: Player, cast_only: bool) {
         let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
         for object in objects {
-            if self.object_ref(object.card) != object
-                || self.state.objects[object.card as usize].zone != Zone::Exile
-            {
-                continue;
-            }
-            self.grant_exile_play_permission(player, object, false);
-            // Modify only the newly inserted permission; unrelated grants retain their routes.
-            let row = self
-                .state
-                .exile_permissions
-                .iter_mut()
-                .find(|p| {
-                    p.object == object && p.player == player && !p.spend_any_mana && !p.cast_only
-                })
-                .unwrap();
-            row.spend_any_mana = true;
-            row.cast_only = true;
+            self.grant_flexible_exile_permission_this_turn(player, object, cast_only);
         }
     }
 }

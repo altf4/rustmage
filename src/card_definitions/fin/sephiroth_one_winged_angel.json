@@ -1,0 +1,24 @@
+{
+  "name": "Sephiroth, One-Winged Angel",
+  "catalogue_id": 5515,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "753cc0cbe6cfe0974f7c700584819e2d13b6f912beda8173a4baa0d116f3393a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SephirothFabledSOLDIER.java",
+  "java_sha256": "c3e53b87c69dfe96e5018142f06614b1da569597eda75fd11e7191ae0254d9be",
+  "oracle_face": {
+    "oracle_id": "70113003-be5e-406a-9aec-cb480468c36d",
+    "index": 1,
+    "sha256": "9c1696e7795efe8087c0a5d200a0f2289946b262b4d6ef6afb6ed5fca4bfafd9"
+  },
+  "rules_tests": "tests/fin_cards_157_234.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/command/emblems/SephirothOneWingedAngelEmblem.java",
+      "sha256": "0b333ff8e4a4ab48128f350d55e2c9ed90d040093fdb2553b8ab603f20d86ae0"
+    }
+  ]
+}

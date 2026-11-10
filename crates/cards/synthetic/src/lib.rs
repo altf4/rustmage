@@ -1837,9 +1837,51 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_mutavault.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5531 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_fin_wizard_black.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5532 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_fin_robot_warrior_blue.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5533 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_fin_angelo.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5534 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_fin_darkstar.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5535 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/emblem_fin_sephiroth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5536 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_fin_horror_black.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 261] = [
+pub static ENTRIES: [CatalogueEntry; 267] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Meager Meal", oracle_id: Some("0296d57e-e5b9-456f-bb21-eb584adefb4c"), mana_cost: "{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5183::RULES.keywords, deck_limit: authored::card_5183::RULES.deck_limit }, effect: authored::card_5183::RULES.checked_effect(), triggers: authored::card_5183::RULES.triggers, activated: authored::card_5183::RULES.activated, enters: authored::card_5183::RULES.enters, entry: authored::card_5183::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5183::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Seek Thrills", oracle_id: Some("06374e6d-62fa-4833-81cd-b4d0a35e7365"), mana_cost: "{2}{G}{U}{R}", type_line: "Instant — Adventure", oracle_keywords: &["Mill"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5184::RULES.keywords, deck_limit: authored::card_5184::RULES.deck_limit }, effect: authored::card_5184::RULES.checked_effect(), triggers: authored::card_5184::RULES.triggers, activated: authored::card_5184::RULES.activated, enters: authored::card_5184::RULES.enters, entry: authored::card_5184::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 1, 1, 0], generic: 2 }, rules: &authored::card_5184::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Twice the Rage", oracle_id: Some("0f222f3d-f02b-42b9-aedf-fb7ed92d4889"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5185::RULES.keywords, deck_limit: authored::card_5185::RULES.deck_limit }, effect: authored::card_5185::RULES.checked_effect(), triggers: authored::card_5185::RULES.triggers, activated: authored::card_5185::RULES.activated, enters: authored::card_5185::RULES.enters, entry: authored::card_5185::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5185::RULES },
@@ -2101,6 +2143,12 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/servo_1
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/tdm-reliquary-dragon", oracle_id: None, mana_cost: "", type_line: "Creature — Dragon", oracle_keywords: &["Flying", "Lifelink"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5488::RULES.keywords, deck_limit: authored::card_5488::RULES.deck_limit }, effect: authored::card_5488::RULES.checked_effect(), triggers: authored::card_5488::RULES.triggers, activated: authored::card_5488::RULES.activated, enters: authored::card_5488::RULES.enters, entry: authored::card_5488::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5488::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/shapeshifter_1_1_colorless_changeling", oracle_id: None, mana_cost: "", type_line: "Creature — Shapeshifter", oracle_keywords: &["Changeling"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5493::RULES.keywords, deck_limit: authored::card_5493::RULES.deck_limit }, effect: authored::card_5493::RULES.checked_effect(), triggers: authored::card_5493::RULES.triggers, activated: authored::card_5493::RULES.activated, enters: authored::card_5493::RULES.enters, entry: authored::card_5493::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5493::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mutavault", oracle_id: None, mana_cost: "", type_line: "Land", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5494::RULES.keywords, deck_limit: authored::card_5494::RULES.deck_limit }, effect: authored::card_5494::RULES.checked_effect(), triggers: authored::card_5494::RULES.triggers, activated: authored::card_5494::RULES.activated, enters: authored::card_5494::RULES.enters, entry: authored::card_5494::RULES.entry, kind: 2, basic: false, mana_color: Some(5), colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5494::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/fin-wizard-black", oracle_id: None, mana_cost: "", type_line: "Creature — Wizard", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5531::RULES.keywords, deck_limit: authored::card_5531::RULES.deck_limit }, effect: authored::card_5531::RULES.checked_effect(), triggers: authored::card_5531::RULES.triggers, activated: authored::card_5531::RULES.activated, enters: authored::card_5531::RULES.enters, entry: authored::card_5531::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5531::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/fin-robot-warrior-blue", oracle_id: None, mana_cost: "", type_line: "Artifact Creature — Robot Warrior", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5532::RULES.keywords, deck_limit: authored::card_5532::RULES.deck_limit }, effect: authored::card_5532::RULES.checked_effect(), triggers: authored::card_5532::RULES.triggers, activated: authored::card_5532::RULES.activated, enters: authored::card_5532::RULES.enters, entry: authored::card_5532::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5532::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/fin-angelo", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Dog", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: true, keywords: authored::card_5533::RULES.keywords, deck_limit: authored::card_5533::RULES.deck_limit }, effect: authored::card_5533::RULES.checked_effect(), triggers: authored::card_5533::RULES.triggers, activated: authored::card_5533::RULES.activated, enters: authored::card_5533::RULES.enters, entry: authored::card_5533::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5533::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/fin-darkstar", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Dog", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: true, keywords: authored::card_5534::RULES.keywords, deck_limit: authored::card_5534::RULES.deck_limit }, effect: authored::card_5534::RULES.checked_effect(), triggers: authored::card_5534::RULES.triggers, activated: authored::card_5534::RULES.activated, enters: authored::card_5534::RULES.enters, entry: authored::card_5534::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5534::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@emblem/fin-sephiroth", oracle_id: None, mana_cost: "", type_line: "", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5535::RULES.keywords, deck_limit: authored::card_5535::RULES.deck_limit }, effect: authored::card_5535::RULES.checked_effect(), triggers: authored::card_5535::RULES.triggers, activated: authored::card_5535::RULES.activated, enters: authored::card_5535::RULES.enters, entry: authored::card_5535::RULES.entry, kind: 0, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5535::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/fin-horror-black", oracle_id: None, mana_cost: "", type_line: "Creature — Horror", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5536::RULES.keywords, deck_limit: authored::card_5536::RULES.deck_limit }, effect: authored::card_5536::RULES.checked_effect(), triggers: authored::card_5536::RULES.triggers, activated: authored::card_5536::RULES.activated, enters: authored::card_5536::RULES.enters, entry: authored::card_5536::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5536::RULES },
 ];
 }
 pub use cards::ENTRIES;

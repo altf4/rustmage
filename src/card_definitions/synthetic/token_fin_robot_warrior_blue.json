@@ -1,0 +1,11 @@
+{
+  "name": "@token/fin-robot-warrior-blue",
+  "catalogue_id": 5532,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "6c4cf0d8deb7ad884066e8a6aade77f7086a035cb184c788e45f89d8f058e8e7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/RobotBlueToken.java",
+  "java_sha256": "253bbefbd8b5c59e24808a5ae1246dd8c71f2c38dbdf413b21a1e6caafd0d8c8"
+}
