@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "e33403bc7f031de4d8c05f08b62da186217d0bd924bfb08677bff09b3b60057d",
+  "catalogue_version": "ee3a1a6db328d6095bf07ff7a1ea483c103042be30ed45c6d07a363dd76a7d2e",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4126,
-  "implemented_total": 4138,
+  "implemented_standard_cards": 4127,
+  "implemented_total": 4139,
   "token_definitions": 176,
   "emblem_definitions": 12,
   "adventure_definitions": 73,
@@ -182,8 +182,7 @@
     },
     "woe": {
       "total": 258,
-      "complete": 257,
-      "gated": 1
+      "complete": 258
     },
     "znr": {
       "total": 1,
@@ -28082,8 +28081,8 @@
     {
       "name": "Restless Fortress",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_fortress.rs",
       "set": "woe"
     },
