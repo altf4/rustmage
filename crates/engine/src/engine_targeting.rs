@@ -2204,6 +2204,29 @@ impl Game {
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
                     TargetPredicate::Equipped => world.equipped(id),
+                    TargetPredicate::Enchanted => {
+                        let recipient = world.reference(id);
+                        object.zone == Zone::Battlefield
+                            && world.attachment_sources().iter().any(|&aura| {
+                                let source = world.object(aura);
+                                source.zone == Zone::Battlefield
+                                    && source.attached_to == Some(recipient)
+                                    && world.is_aura(aura)
+                            })
+                    }
+                    TargetPredicate::NoOtherControlledSameName { tokens_only } => {
+                        let name = world.name(id);
+                        name.is_empty()
+                            || !(0..self.state.objects.len()).any(|other| {
+                                let other = other as CardId;
+                                let candidate = world.object(other);
+                                other != id
+                                    && candidate.zone == Zone::Battlefield
+                                    && candidate.controller == controller
+                                    && (!tokens_only || candidate.is_token())
+                                    && crate::card_names::same_name(name, world.name(other))
+                            })
+                    }
                     TargetPredicate::Modified => {
                         world.kinds(id) & 1 != 0 && world.has_modification(id)
                     }

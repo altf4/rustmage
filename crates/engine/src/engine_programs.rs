@@ -8906,6 +8906,9 @@ impl Game {
                         replacements::TokenCompletion::AttackThisCombat,
                     );
                 }
+                Instruction::CreateTokenBatch(groups) => {
+                    self.stage_fixed_token_batch(item.controller, groups);
+                }
                 Instruction::CreateTokens {
                     token,
                     amount,
@@ -11315,6 +11318,16 @@ impl Game {
                         .count();
                     self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::DestroyThenDrawIfControlledOrToken => {
+                    let events = self.destroy_targets_outcome(&item.targets);
+                    if events.iter().any(|event| {
+                        event.moved
+                            && (event.before.controller == item.controller
+                                || event.before.is_token())
+                    }) {
+                        self.draw_many(item.controller, 1);
+                    }
                 }
                 Instruction::Exile
                 | Instruction::Destroy

@@ -4,6 +4,7 @@
 use super::*;
 use crate::cards::{
     ActivationGenericReduction, ActivationReductionAmount, LiveStatRecipients, LiveStaticEffect,
+    StaticAbilityFragment,
 };
 
 #[cfg(feature = "test-support")]

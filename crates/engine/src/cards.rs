@@ -426,6 +426,12 @@ pub enum TargetPredicate {
     Permanent,
     /// A live Equipment is attached to this exact battlefield object.
     Equipped,
+    /// A live Aura, regardless of its controller, is attached to this object.
+    Enchanted,
+    /// Exclude a target sharing a rules name with another controlled permanent.
+    NoOtherControlledSameName {
+        tokens_only: bool,
+    },
     /// The current creature has a counter, Equipment, or its controller's Aura.
     Modified,
     Attacking,
@@ -2824,6 +2830,8 @@ pub enum Instruction {
     },
     /// Compare current target mana values at this instruction, after prior effects.
     DestroyTargetsAtMostManaValue(AmountValue),
+    /// Draw once if any actual destruction was a token or a permanent you controlled.
+    DestroyThenDrawIfControlledOrToken,
     /// Reward once if an actual destruction included a creature controlled by this packet.
     DestroyTargetsThenSourceCountersIfOwnCreature {
         kind: CounterKind,
@@ -4267,6 +4275,8 @@ pub enum Instruction {
         token: Card,
         amount: u16,
     },
+    /// Create heterogeneous fixed token groups as a single replacement event.
+    CreateTokenBatch(&'static [crate::engine::replacements::TokenGroupView]),
     CreateTokens {
         token: Card,
         amount: u16,

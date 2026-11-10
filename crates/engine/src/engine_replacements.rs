@@ -2917,6 +2917,23 @@ impl Game {
         }));
     }
 
+    pub(super) fn stage_fixed_token_batch(&mut self, player: Player, groups: &[TokenGroupView]) {
+        self.stage_copy_token_batch(TokenBatch {
+            first_this_turn: None,
+            optional: None,
+            recipes: Vec::new(),
+            player,
+            groups: groups
+                .iter()
+                .copied()
+                .filter(|group| group.amount > 0)
+                .collect(),
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        });
+    }
+
     pub(super) fn stage_token_creation(
         &mut self,
         player: Player,
