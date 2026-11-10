@@ -4,9 +4,13 @@
   "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
   "facts_sha256": "b063b900fe5473bcc6fa193e5a58df41b87f798a88b5c2aec1aa3d57b53ea9d6",
   "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3fb72f5f36a1746b5904042b863c561aab8563a43873fedb667d116f88119a10"
-  },
-  "physical_metadata_sha256": "c8dc49eb5fa9d6c6a9a36dd5e2a734f6448ea823e2b3d3a05b370f069890578d"
+  "physical_metadata_sha256": "7f4f57aa6108f0715b222f36e91273fd85b9958b475a37e3396f77df65c96217",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PeterParker.java",
+  "java_sha256": "94370949264f4f97ce74593646fa7caeebad79db4e38499f1446069fc0f20ccf",
+  "oracle_face": {
+    "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
+    "index": 0,
+    "sha256": "d6b1c2c8ccb7f37cdc42dec63599524aec2d5a56008ddca03eaf537385d22673"
+  }
 }

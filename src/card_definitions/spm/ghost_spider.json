@@ -1,0 +1,16 @@
+{
+  "name": "Ghost-Spider",
+  "catalogue_id": 5540,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "8ef6648d356d1189b63758395623c8efc39c74cc3d4151050e22d93035e3e224",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GwenStacy.java",
+  "java_sha256": "a000d7e8382035949008c7cf541501d3b700d1ff7165a398903f79aead68c83f",
+  "oracle_face": {
+    "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
+    "index": 1,
+    "sha256": "243945dae9675f3d8a10595c138c7f16746e5d81773dfcb93b5b8eff8273ed40"
+  }
+}

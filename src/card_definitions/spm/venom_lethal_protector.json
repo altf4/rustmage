@@ -1,0 +1,16 @@
+{
+  "name": "Venom, Lethal Protector",
+  "catalogue_id": 5539,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "086d22e5bb8ae99fcc41c498f2944f0327802e29fd2ec53be94dc31de68515f3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EddieBrock.java",
+  "java_sha256": "17a2b2877955c530a3ad2f6dad8af6c962e0f1e99842257db2ef0a816f4e6d08",
+  "oracle_face": {
+    "oracle_id": "fe01c96b-eb78-4477-bec2-944b2a28c778",
+    "index": 1,
+    "sha256": "29e370fcce6e12beea3b90f313027313a2607891fe64cc8e9a2734727e7c1861"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Amazing Spider-Man",
+  "catalogue_id": 5543,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "8e5ecfaf974673b9816b99af229660c9405a52c91266a88bb3d26ccc9b309053",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PeterParker.java",
+  "java_sha256": "94370949264f4f97ce74593646fa7caeebad79db4e38499f1446069fc0f20ccf",
+  "oracle_face": {
+    "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
+    "index": 1,
+    "sha256": "df6f21c0411c2e2479aab49a907fd1438235cc914b0f2c84eb10e2588e68b273"
+  }
+}

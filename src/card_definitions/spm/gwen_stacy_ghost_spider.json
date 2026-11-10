@@ -4,9 +4,13 @@
   "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
   "facts_sha256": "0104afdce4d342e45061b68a1991dfe24a986176309e233d9bb520137b6a3d48",
   "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3e10c08303d0e4171cda7b1012efedce059fa9ccc62dc6ae8b3142d4dad82b8f"
-  },
-  "physical_metadata_sha256": "e93d2e0fd08fea7a6f2597dd3cb764bc645484f9956fe7d8fa54fe537f1ca95d"
+  "physical_metadata_sha256": "8fabb43c91f477277b5b612d55bb930be683d10d7dc0a6d98a042bc3b9632855",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GwenStacy.java",
+  "java_sha256": "a000d7e8382035949008c7cf541501d3b700d1ff7165a398903f79aead68c83f",
+  "oracle_face": {
+    "oracle_id": "5f143d87-35fb-40e3-94ae-f85cfff9adb5",
+    "index": 0,
+    "sha256": "fd91f8abb8b367de3cdf0f02962f17e296da25bea7fc27163c4d555e0898669c"
+  }
 }

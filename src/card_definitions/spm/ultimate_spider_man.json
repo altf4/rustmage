@@ -1,0 +1,16 @@
+{
+  "name": "Ultimate Spider-Man",
+  "catalogue_id": 5541,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "07d047b681068ce5ca5e07c232f44ef2db75fb994aa72a3c7b965aedb9577a5c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MilesMorales.java",
+  "java_sha256": "315fb3817140ecf09c35f5d80d13e7dfbaed7257530118df600c36b0af735256",
+  "oracle_face": {
+    "oracle_id": "be48c721-bdc6-4f2c-96d6-82d934b31615",
+    "index": 1,
+    "sha256": "ea1422d03d056eb3d8d79b9b718804d53cae422e8ade60cccfdf91ec76c5c999"
+  }
+}

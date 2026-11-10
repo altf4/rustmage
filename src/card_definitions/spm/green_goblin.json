@@ -1,0 +1,16 @@
+{
+  "name": "Green Goblin",
+  "catalogue_id": 5542,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "1e256f760f348ec94d3796db81f11270071981136dd41d97f45bd7d9bf45ec0f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NormanOsborn.java",
+  "java_sha256": "6c516ae9f1f667671a50985bebb91dd4e4a05b3a7999641c111e4d9c5bc3ce43",
+  "oracle_face": {
+    "oracle_id": "aa5b06a4-90c3-45e7-ab83-cb5c96ded21d",
+    "index": 1,
+    "sha256": "f065226dce4eead13fd3821afa717036516fdeb98580598cff3f072d4e3d2fed"
+  }
+}

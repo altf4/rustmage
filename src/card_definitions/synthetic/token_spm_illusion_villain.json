@@ -1,0 +1,11 @@
+{
+  "name": "@token/spm-illusion-villain",
+  "catalogue_id": 5545,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "d4b155511e4b20c09137187f7b9de622d5bb0997c97b129848caaa2ca0629a6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/IllusionVillainToken.java",
+  "java_sha256": "1ef1fc9d640f2ccc22efde9159fc872eff38faa4d1af54eb753af5bec2a81780"
+}
