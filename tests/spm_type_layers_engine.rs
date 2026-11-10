@@ -6,6 +6,11 @@ use rustmage_core::cards::*;
 use rustmage_core::engine::*;
 use support::*;
 
+const ARTIFACT_CREATURE: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    keywords: Keywords::HASTE,
+    ..CardRules::EMPTY
+};
 const LEGENDARY: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
@@ -132,9 +137,13 @@ fn pass_pair(game: &mut Game) {
 
 #[test]
 fn legendary_and_added_creature_types_preserve_other_types_and_are_not_copied() {
-    let _rules = fixture_rules::activate(&[(definition("Opt"), &LEGENDARY)]);
+    let gingerbrute = definition("Gingerbrute");
+    let _rules = fixture_rules::activate(&[
+        (definition("Opt"), &LEGENDARY),
+        (gingerbrute, &ARTIFACT_CREATURE),
+    ]);
     let mut game = scenario(Player::P0);
-    let recipient = put(&mut game, Player::P0, "Gingerbrute", Zone::Battlefield);
+    let recipient = spawn(&mut game, Player::P0, gingerbrute, Zone::Battlefield);
     let spell = put(&mut game, Player::P0, "Opt", Zone::Hand);
     cast(&mut game, spell, Some(Target::Card(recipient)));
     settle(&mut game);
@@ -168,12 +177,14 @@ fn legendary_and_added_creature_types_preserve_other_types_and_are_not_copied() 
 
 #[test]
 fn setting_creature_form_removes_other_card_types_but_preserves_the_permanents_identity() {
+    let gingerbrute = definition("Gingerbrute");
     let _rules = fixture_rules::activate(&[
         (definition("Savannah Lions"), &LIZARD_FORM),
         (definition("Opt"), &LEGENDARY),
+        (gingerbrute, &ARTIFACT_CREATURE),
     ]);
     let mut game = scenario(Player::P0);
-    let target = put(&mut game, Player::P1, "Gingerbrute", Zone::Battlefield);
+    let target = spawn(&mut game, Player::P1, gingerbrute, Zone::Battlefield);
     let legend = put(&mut game, Player::P0, "Opt", Zone::Hand);
     cast(&mut game, legend, Some(Target::Card(target)));
     settle(&mut game);

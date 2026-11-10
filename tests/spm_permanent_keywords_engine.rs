@@ -72,6 +72,10 @@ fn other_spiders_include_effective_noncreature_subtypes_and_freeze_on_resolution
         })
         .unwrap()
         .reference;
+    let lands = [
+        put(&mut game, player, "Plains", Zone::Battlefield),
+        put(&mut game, player, "Plains", Zone::Battlefield),
+    ];
     for _ in 0..12 {
         if game.state.step == Step::BeginCombat && !game.state.stack.is_empty() {
             break;
@@ -93,6 +97,9 @@ fn other_spiders_include_effective_noncreature_subtypes_and_freeze_on_resolution
     assert!(!game.has_subtype(kindred, "Spider"));
     assert!(game.keywords(kindred).contains(GRANT));
     let old_spider = game.object_ref(spider);
+    for card in lands {
+        act(&mut game, Action::TapMana { card });
+    }
     let blink = put(&mut game, player, "Personify", Zone::Hand);
     cast(&mut game, blink, Some(Target::Card(spider)));
     settle(&mut game);

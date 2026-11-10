@@ -185,9 +185,6 @@ fn mana_window_can_create_the_missing_counter_on_a_noncreature_artifact() {
     assert_eq!(game.counter_count(artifact, CounterKind::PlusOne), 2);
     assert!(game.object_view(artifact).tapped);
     pay(&mut game);
-    choose(&mut game, |action| {
-        matches!(action, Action::ChooseCastCost { .. })
-    });
     let object = game.object_ref(artifact);
     act(&mut game, remove(object));
     act(&mut game, remove(object));
