@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c54ff4e4d35953c0291e1dbccbe0811870b62fa6ff199d6c2552be3a12623be0"
   },
-  "physical_metadata_sha256": "c641248c8838ccf5d637771b2b6630652f7b33d2a665d3f9459993b33631e8ca"
+  "physical_metadata_sha256": "c641248c8838ccf5d637771b2b6630652f7b33d2a665d3f9459993b33631e8ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheApprenticesFolly.java",
+  "java_sha256": "de6232ec11c8b484ab80007226f8d883d52d607922bcdfe23841c03a161267bc",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllControllerEffect.java",
+      "sha256": "62b5197ff989454059616355fa07afe098361d30d02db49fb28a8ce2f6b561ab"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ]
 }

@@ -96,7 +96,7 @@ fn archivist_tracks_independent_entry_quotas_and_confectioner_observes_sacrifice
     let aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
     let second_aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
     let next_aura = put(&mut game, player, "Bestial Bloodline", Zone::Hand);
-    let trail = put(&mut game, player, "Candy Trail", Zone::Hand);
+    let later_artifact = put(&mut game, player, "Gingerbrute", Zone::Hand);
     let forests = [0; 3].map(|_| put(&mut game, player, "Forest", Zone::Battlefield));
     announce(&mut game, archivist, &[]);
     settle(&mut game);
@@ -133,7 +133,7 @@ fn archivist_tracks_independent_entry_quotas_and_confectioner_observes_sacrifice
     for card in forests {
         act(&mut game, Action::TapMana { card });
     }
-    announce(&mut game, trail, &[]);
+    announce(&mut game, later_artifact, &[]);
     settle(&mut game);
     assert_eq!(game.counter_count(archivist, CounterKind::PlusOne), 4);
     cast(&mut game, next_aura, Some(Target::Card(archivist)));
@@ -195,10 +195,11 @@ fn faerie_dreamthief_surveils_then_pays_to_exile_itself_from_the_graveyard() {
         let top = game.top_library_card(player).unwrap();
         announce(&mut game, dreamthief, &[]);
         pass_pair(&mut game);
-        assert!(game
-            .object_view(dreamthief)
-            .keywords
-            .contains(Keywords::FLYING));
+        assert!(
+            game.object_view(dreamthief)
+                .keywords
+                .contains(Keywords::FLYING)
+        );
         reject(&mut game, activate(dreamthief, 0));
         pass_pair(&mut game);
         let view = game.observe(player).library_choice.unwrap();

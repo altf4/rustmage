@@ -1,16 +1,36 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 1 },
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 0,
+                max: 1,
+            }),
+            program: &[Instruction::ExileTargetsLinkedToSource],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 2 },
+            targets: one(TargetRule::creature_you_control()),
+            program: &[
+                Instruction::Grow {
+                    subject: Subject::Targets,
+                    power: 2,
+                    toughness: 2,
+                },
+                Instruction::GrantKeywords {
+                    subject: Subject::Targets,
+                    keywords: Keywords::FLYING,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Chapter { number: 3 },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ReturnLinkedExileToBattlefield],
+        },
+    ],
     ..CardRules::EMPTY
 };

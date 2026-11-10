@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "998fd9ba858b29453469fb83a1047467980fe2f8aa23fc626f669969fc73982e"
   },
-  "physical_metadata_sha256": "54183e4f5bb59f168a458cf8b437518c1b0f8c2e449d353f4f1b86d493bdaa45"
+  "physical_metadata_sha256": "54183e4f5bb59f168a458cf8b437518c1b0f8c2e449d353f4f1b86d493bdaa45",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThunderousDebut.java",
+  "java_sha256": "2f41305c5126cc9e19a1cb360fc09fc4146cdd2c252858a6afbf7cc95ca7f786",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    }
+  ]
 }

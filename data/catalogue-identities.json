@@ -5573,7 +5573,8 @@
     2,
     1,
     4,
-    16
+    16,
+    1
   ],
   "aliases": [
     [
@@ -6743,6 +6744,10 @@
     [
       "@token/woe-hylda-elemental",
       5547
+    ],
+    [
+      "@token/woe-mouse",
+      5568
     ],
     [
       "A Killer Among Us",
@@ -29927,6 +29932,12 @@
       "name": "Elemental Token",
       "subtypes": "Elemental",
       "colors": 3
+    },
+    {
+      "factory_identity": "@token/woe-mouse",
+      "name": "Mouse Token",
+      "subtypes": "Mouse",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -190129,6 +190140,33 @@
         0
       ],
       "generic": 0
+    },
+    {
+      "index": 5568,
+      "module": "card_5568",
+      "path": "synthetic/token_woe_mouse.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/woe-mouse",
+      "mana_cost": "",
+      "type_line": "Creature — Mouse",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
     }
   ]
 }

@@ -2482,3 +2482,448 @@ fn yenna_requires_unique_owned_enchantments_and_continues_only_after_an_aura_cop
     assert!(!game.object_view(yenna).tapped);
     assert_eq!(gone.object_view(yenna).zone, Zone::Hand);
 }
+
+#[test]
+fn sentinel_offers_each_legal_mode_set_and_keeps_surviving_target_groups() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let sentinel = candidate(&mut game, player, "Sentinel of Lost Lore", Zone::Hand);
+    let own = put(&mut game, player, "Beanstalk Wurm", Zone::Exile);
+    let foreign = put(&mut game, opponent, "Beanstalk Wurm", Zone::Exile);
+    let plain = put(&mut game, player, "Bear Cub", Zone::Exile);
+    let graveyard =
+        ["Forest", "Bear Cub"].map(|name| put(&mut game, opponent, name, Zone::Graveyard));
+    let own_grave = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    cast(&mut game, sentinel, None);
+    pass_pair(&mut game);
+    assert_eq!(stats(&game, sentinel), (3, 4));
+    let mut available: Vec<_> = game
+        .legal_actions()
+        .into_iter()
+        .filter_map(|action| match action {
+            Action::ChooseMode { mode } => Some(mode),
+            _ => None,
+        })
+        .collect();
+    available.sort_unstable();
+    assert_eq!(available, (0..7).collect::<Vec<_>>());
+
+    for (mode, (recover, bottom, clear)) in [
+        (true, false, false),
+        (false, true, false),
+        (false, false, true),
+        (true, true, false),
+        (true, false, true),
+        (false, true, true),
+        (true, true, true),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let mut branch = game.clone();
+        act(&mut branch, Action::ChooseMode { mode: mode as u16 });
+        if recover {
+            reject(&mut branch, target(plain));
+            reject(&mut branch, target(foreign));
+            act(&mut branch, target(own));
+        }
+        if bottom {
+            reject(&mut branch, target(own));
+            act(&mut branch, target(foreign));
+        }
+        if clear {
+            act(
+                &mut branch,
+                Action::ChooseTarget {
+                    target: Target::Player(opponent),
+                },
+            );
+        }
+
+        if mode == 6 {
+            let mut stale = branch.clone();
+            stale.move_object(own, Zone::Graveyard);
+            settle(&mut stale);
+            assert_eq!(stale.object_view(own).zone, Zone::Graveyard);
+            assert_eq!(stale.object_view(foreign).zone, Zone::Library);
+            assert_eq!(stale.object_view(graveyard[0]).zone, Zone::Exile);
+        }
+
+        settle(&mut branch);
+        assert_eq!(
+            branch.object_view(own).zone,
+            if recover { Zone::Hand } else { Zone::Exile }
+        );
+        assert_eq!(
+            branch.object_view(foreign).zone,
+            if bottom { Zone::Library } else { Zone::Exile }
+        );
+        if bottom {
+            assert_eq!(
+                branch.state.players[opponent.index()].library.first(),
+                Some(&foreign)
+            );
+        }
+        for card in graveyard {
+            assert_eq!(
+                branch.object_view(card).zone,
+                if clear { Zone::Exile } else { Zone::Graveyard }
+            );
+        }
+        assert_eq!(branch.object_view(own_grave).zone, Zone::Graveyard);
+        assert_eq!(branch.object_view(plain).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn apprentices_folly_makes_nonlegendary_hasty_reflections_and_sacrifices_controlled_reflections() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = candidate(&mut game, player, "The Apprentice's Folly", Zone::Hand);
+    let legendary = put(&mut game, player, "Fynn, the Fangbearer", Zone::Battlefield);
+    let original = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let shapeshifter = put(&mut game, player, "Changeling Wayfinder", Zone::Battlefield);
+    let other_shapeshifter = put(
+        &mut game,
+        opponent,
+        "Changeling Wayfinder",
+        Zone::Battlefield,
+    );
+    game.add_counter(legendary, CounterKind::PlusOne, 1);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    reject(&mut game, target(other_shapeshifter));
+    act(&mut game, target(legendary));
+    settle(&mut game);
+
+    let reflection = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield
+                && object.is_token()
+                && object.controller == player
+                && object.name() == "Fynn, the Fangbearer"
+        })
+        .unwrap();
+    assert!(reflection.has_subtype("Reflection") && reflection.has_subtype("Human"));
+    assert!(
+        reflection
+            .keywords
+            .contains(Keywords::HASTE.union(Keywords::DEATHTOUCH))
+    );
+    assert!(!reflection.is_legendary());
+    assert_eq!(stats(&game, reflection.id), (1, 3));
+    assert_eq!(game.counter_count(reflection.id, CounterKind::PlusOne), 0);
+    assert!(game.object_view(legendary).is_legendary());
+
+    pass_to_later_main(&mut game, player);
+    reject(&mut game, target(legendary));
+    reject(&mut game, target(reflection.id));
+    act(&mut game, target(original));
+    settle(&mut game);
+    let bear_copy = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield
+                && object.is_token()
+                && object.controller == player
+                && object.name() == "Bear Cub"
+        })
+        .unwrap();
+    assert!(bear_copy.has_subtype("Reflection") && bear_copy.has_subtype("Bear"));
+    assert!(bear_copy.keywords.contains(Keywords::HASTE));
+
+    pass_to_later_main(&mut game, player);
+    settle(&mut game);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    for card in [reflection.id, bear_copy.id, shapeshifter] {
+        assert_ne!(game.object_view(card).zone, Zone::Battlefield);
+    }
+    for card in [legendary, original, other_shapeshifter] {
+        assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn the_princess_returns_both_linked_exiles_to_their_owners_after_its_flying_chapter() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = candidate(&mut game, player, "The Princess Takes Flight", Zone::Hand);
+    let visions = put(&mut game, player, "Virtue of Knowledge", Zone::Hand);
+    let stolen = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let exile_second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let protected = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let disenchant = put(&mut game, opponent, "Disenchant", Zone::Hand);
+    let plains = [0; 2].map(|_| put(&mut game, opponent, "Plains", Zone::Battlefield));
+    game.change_controller(game.object_ref(stolen), player);
+    cast(&mut game, saga, None);
+    pass_pair(&mut game);
+    let mut no_exile = game.clone();
+    act(&mut no_exile, Action::FinishTargets);
+    settle(&mut no_exile);
+    assert_eq!(no_exile.object_view(stolen).zone, Zone::Battlefield);
+    assert_eq!(no_exile.object_view(exile_second).zone, Zone::Battlefield);
+
+    act(&mut game, target(stolen));
+    let first = game.state.stack.last().unwrap().id;
+    cast_adventure(&mut game, visions, Some(Target::Stack(first)));
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::SetStackTarget {
+            index: 0,
+            target: Target::Card(exile_second),
+        },
+    );
+    act(&mut game, Action::FinishStackTargets);
+    settle(&mut game);
+    assert_eq!(game.object_view(stolen).zone, Zone::Exile);
+    assert_eq!(game.object_view(exile_second).zone, Zone::Exile);
+
+    pass_to_later_main(&mut game, player);
+    reject(&mut game, target(foreign));
+    act(&mut game, target(protected));
+    settle(&mut game);
+    assert_eq!(stats(&game, protected), (4, 4));
+    assert!(
+        game.object_view(protected)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    pass_to_later_main(&mut game, player);
+    assert_eq!(stats(&game, protected), (2, 2));
+    assert!(
+        !game
+            .object_view(protected)
+            .keywords
+            .contains(Keywords::FLYING)
+    );
+    assert_eq!(game.state.stack.len(), 1);
+
+    let mut destroyed = game.clone();
+    act(&mut destroyed, Action::Pass);
+    for card in plains {
+        act(&mut destroyed, Action::TapMana { card });
+    }
+    cast(&mut destroyed, disenchant, Some(Target::Card(saga)));
+    for branch in [&mut game, &mut destroyed] {
+        settle(branch);
+        assert_eq!(branch.object_view(saga).zone, Zone::Graveyard);
+        assert_eq!(branch.object_view(stolen).zone, Zone::Battlefield);
+        assert_eq!(branch.object_view(stolen).controller, opponent);
+        assert_eq!(branch.object_view(exile_second).zone, Zone::Battlefield);
+        assert_eq!(branch.object_view(exile_second).controller, player);
+    }
+}
+
+#[test]
+fn three_blind_mice_creates_a_mouse_copies_controlled_tokens_and_temporarily_boosts_creatures() {
+    use rustmage_core::engine::replacements::TokenGroupView;
+
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let saga = candidate(&mut game, player, "Three Blind Mice", Zone::Hand);
+    let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let food = Card::from_catalogue_id(5246);
+    let own_food = spawn(&mut game, player, food, Zone::Battlefield);
+    let their_food = spawn(&mut game, opponent, food, Zone::Battlefield);
+    let first_ref = game.object_ref(first);
+    let role = Card::from_catalogue_id(5248);
+    let _ = game.create_token_groups_attached(
+        player,
+        &[TokenGroupView {
+            token: role,
+            amount: 1,
+            tapped: false,
+        }],
+        None,
+        true,
+        Some(first_ref),
+    );
+    let own_role = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| object.zone == Zone::Battlefield && object.card == role)
+        .unwrap()
+        .id;
+    cast(&mut game, saga, None);
+    settle(&mut game);
+    let mouse = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield
+                && object.is_token()
+                && object.controller == player
+                && object.has_subtype("Mouse")
+        })
+        .unwrap();
+    assert_eq!((mouse.power, mouse.toughness, mouse.colors), (1, 1, 1));
+
+    pass_to_later_main(&mut game, player);
+    reject(&mut game, target(their_food));
+    reject(&mut game, target(first));
+    act(&mut game, target(own_food));
+    settle(&mut game);
+    assert_eq!(
+        game.observe(player)
+            .objects
+            .iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.card == food
+            })
+            .count(),
+        2
+    );
+
+    pass_to_later_main(&mut game, player);
+    act(&mut game, target(own_role));
+    pass_pair(&mut game);
+    let second_ref = game.object_ref(second);
+    act(
+        &mut game,
+        Action::ChooseAuraAttachment { object: second_ref },
+    );
+    settle(&mut game);
+    assert!(game.observe(player).objects.iter().any(|object| {
+        object.zone == Zone::Battlefield
+            && object.controller == player
+            && object.card == role
+            && object.id != own_role
+            && object.attached_to == Some(second_ref)
+    }));
+    assert_eq!(stats(&game, first), (3, 3));
+    assert_eq!(stats(&game, second), (3, 3));
+
+    pass_to_later_main(&mut game, player);
+    settle(&mut game);
+    assert_eq!(game.object_view(saga).zone, Zone::Graveyard);
+    for (card, expected) in [(first, (4, 4)), (second, (4, 4)), (mouse.id, (2, 2))] {
+        assert_eq!(stats(&game, card), expected);
+        assert!(
+            game.object_view(card)
+                .keywords
+                .contains(Keywords::VIGILANCE)
+        );
+    }
+    assert_eq!(stats(&game, enemy), (2, 2));
+    assert!(
+        !game
+            .object_view(enemy)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
+    pass_to_later_main(&mut game, opponent);
+    assert_eq!(stats(&game, mouse.id), (1, 1));
+    assert!(
+        !game
+            .object_view(mouse.id)
+            .keywords
+            .contains(Keywords::VIGILANCE)
+    );
+}
+
+#[test]
+fn thunderous_debut_privately_looks_twenty_and_reveals_up_to_two_before_moving_and_shuffling() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let debut = candidate(&mut game, player, "Thunderous Debut", Zone::Hand);
+    let candy = put(&mut game, player, "Candy Trail", Zone::Battlefield);
+    let outside = put(&mut game, player, "Bear Cub", Zone::Library);
+    for _ in 0..16 {
+        put(&mut game, player, "Forest", Zone::Library);
+    }
+    let spare = put(&mut game, player, "Bear Cub", Zone::Library);
+    let invalid = put(&mut game, player, "Opt", Zone::Library);
+    let angel = put(&mut game, player, "Serra Angel", Zone::Library);
+    let giada = put(&mut game, player, "Giada, Font of Hope", Zone::Library);
+    let original = game.state.players[player.index()].library.clone();
+
+    for bargained in [false, true] {
+        let mut branch = game.clone();
+        act(&mut branch, Action::AnnounceCast { card: debut });
+        let sacrifice = bargained.then(|| branch.object_ref(candy));
+        act(&mut branch, Action::ChooseBargain { sacrifice });
+        act(
+            &mut branch,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 2, 6],
+            },
+        );
+        assert_eq!(
+            branch.object_view(candy).zone,
+            if bargained {
+                Zone::Graveyard
+            } else {
+                Zone::Battlefield
+            }
+        );
+        pass_pair(&mut branch);
+        let view = branch.observe(player).library_selection.unwrap();
+        assert_eq!((view.minimum, view.maximum), (0, 2));
+        assert_eq!(view.remaining.len(), 20);
+        assert!(view.reveal && !view.public);
+        assert!(branch.observe(opponent).library_selection.is_none());
+        assert_eq!(
+            view.candidates
+                .iter()
+                .map(|object| object.card)
+                .collect::<Vec<_>>(),
+            [giada, angel, spare]
+        );
+        for card in [outside, invalid] {
+            reject(&mut branch, Action::SelectLibrary { card });
+        }
+
+        let mut none = branch.clone();
+        act(&mut none, Action::FinishLibrarySelection);
+        settle(&mut none);
+        let shuffled = &none.state.players[player.index()].library;
+        assert_ne!(shuffled, &original);
+        let mut same_cards = shuffled.clone();
+        same_cards.sort_unstable();
+        assert_eq!(same_cards, original);
+
+        act(&mut branch, Action::SelectLibrary { card: giada });
+        act(&mut branch, Action::SelectLibrary { card: angel });
+        reject(&mut branch, Action::SelectLibrary { card: spare });
+        act(&mut branch, Action::FinishLibrarySelection);
+        settle(&mut branch);
+        let zone = if bargained {
+            Zone::Battlefield
+        } else {
+            Zone::Hand
+        };
+        for card in [giada, angel] {
+            assert_eq!(branch.object_view(card).zone, zone);
+        }
+        assert_eq!(branch.object_view(spare).zone, Zone::Library);
+        assert_eq!(branch.object_view(outside).zone, Zone::Library);
+        let expected: Vec<_> = original
+            .iter()
+            .copied()
+            .filter(|card| *card != giada && *card != angel)
+            .collect();
+        assert_ne!(branch.state.players[player.index()].library, expected);
+        if bargained {
+            assert_eq!(stats(&branch, angel), (4, 4));
+            assert_eq!(branch.counter_count(angel, CounterKind::PlusOne), 0);
+        }
+    }
+}
