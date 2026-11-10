@@ -525,6 +525,7 @@ pub(super) trait CharacteristicWorld {
             .and_then(|value| value.legendary)
             .unwrap_or_else(|| self.definition(id).is_legendary());
         intrinsic
+            || characteristic_layers::grants_legendary(self, id)
             || self.object(id).zone == Zone::Battlefield
                 && self.attachment_sources().iter().any(|&source| {
                     let aura = self.object(source);

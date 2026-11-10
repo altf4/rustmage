@@ -3492,6 +3492,8 @@ pub enum Instruction {
     ChangeSourceCreatureForm(AnimationSpec),
     /// Change targets' creature form without adding a card type.
     ChangeTargetCreatureForm(AnimationSpec),
+    /// Set creature as the card type, retaining supertypes and the CR205.1a exceptions.
+    ReplaceTargetCreatureForm(AnimationSpec),
     /// Set target colors, creature subtypes and scaled base stats, retaining card types.
     SetCreatureForm {
         types: &'static [&'static str],
@@ -3817,6 +3819,11 @@ pub enum Instruction {
     },
     /// Permanent additive creature subtypes on the exact selected subjects.
     AddCreatureTypes {
+        subject: Subject,
+        types: &'static [&'static str],
+    },
+    /// Give the exact recipient legendary and add the indicated creature types.
+    AddLegendaryCreatureTypes {
         subject: Subject,
         types: &'static [&'static str],
     },

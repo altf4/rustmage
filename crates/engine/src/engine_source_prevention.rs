@@ -105,6 +105,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::GrowScaled { subject, .. }
         | Instruction::GrowResolved { subject, .. }
         | Instruction::AddCreatureTypes { subject, .. }
+        | Instruction::AddLegendaryCreatureTypes { subject, .. }
         | Instruction::AddBasicLandType { subject, .. }
         | Instruction::SetCreatureTypes { subject, .. }
         | Instruction::GrantKeywords { subject, .. }

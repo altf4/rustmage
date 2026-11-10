@@ -7568,6 +7568,11 @@ impl Game {
                     spec,
                     characteristic_layers::AnimationTypeMode::PreserveCardTypes,
                 ),
+                Instruction::ReplaceTargetCreatureForm(spec) => self.change_targets_form(
+                    &item,
+                    spec,
+                    characteristic_layers::AnimationTypeMode::ReplaceWithCreature,
+                ),
                 Instruction::AnimateSubject { subject, spec } => {
                     self.animate_subject(&item, subject, spec)
                 }
@@ -9777,6 +9782,9 @@ impl Game {
                 }
                 Instruction::AddCreatureTypes { subject, types } => {
                     self.add_creature_types(&item, subject, types)
+                }
+                Instruction::AddLegendaryCreatureTypes { subject, types } => {
+                    self.grant_legendary_creature_types(&item, subject, types)
                 }
                 Instruction::GrantAllCreatureTypes(subject) => {
                     self.grant_all_creature_types(&item, subject)

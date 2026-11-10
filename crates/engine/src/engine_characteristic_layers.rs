@@ -17,6 +17,10 @@ pub struct AnimationView {
     #[serde(skip_serializing_if = "is_false")]
     /// Preserve existing card types; artifact may still be added independently.
     pub preserve_card_types: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub creature_only: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub legendary: bool,
     /// Replace all card types/subtypes with Artifact — Food, without removing abilities.
     #[serde(skip_serializing_if = "is_false")]
     pub food_only: bool,
@@ -46,6 +50,8 @@ pub(super) enum AnimationTypeMode {
     AddCreature,
     AddCreatureAndLand,
     PreserveCardTypes,
+    ReplaceWithCreature,
+    AddLegendary,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn aura_effects<W: CharacteristicWorld + ?Sized>(
@@ -94,6 +100,12 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .into_iter()
         .flat_map(|r| &r.animations)
         .filter(move |row| Some(row.object) == recipient)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn grants_legendary<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
+    world.roles().is_some_and(|r| !r.animations.is_empty())
+        && animations(world, id).any(|row| row.legendary)
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -195,7 +207,11 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
         events.push((change.timestamp, false));
     }
     events.extend(animations(world, id).filter_map(|row| {
-        if row.food_only || row.artifact_noncreature || row.enchantment_noncreature {
+        if row.food_only
+            || row.artifact_noncreature
+            || row.enchantment_noncreature
+            || row.creature_only
+        {
             Some((row.timestamp, false))
         } else if row.land && (!row.preserve_card_types || row.artifact) {
             Some((row.timestamp, true))
@@ -288,8 +304,14 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             changes.push((row.timestamp, 16, false));
             continue;
         }
-        if row.artifact_noncreature || row.enchantment_noncreature {
-            let kind = if row.enchantment_noncreature { 32 } else { 16 };
+        if row.artifact_noncreature || row.enchantment_noncreature || row.creature_only {
+            let kind = if row.creature_only {
+                1
+            } else if row.enchantment_noncreature {
+                32
+            } else {
+                16
+            };
             changes.push((row.timestamp, kind | (result & (4 | 8)), false));
             continue;
         }
@@ -671,6 +693,25 @@ impl Game {
             }
         }
     }
+    pub(super) fn grant_legendary_creature_types(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        types: &'static [&'static str],
+    ) {
+        assert!(types.iter().all(|t| crate::cards::is_creature_type(t)));
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Additional(types),
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        };
+        for id in self.keyword_subjects(item, subject) {
+            self.change_object_form(self.object_ref(id), spec, AnimationTypeMode::AddLegendary);
+        }
+    }
+
     pub(super) fn grant_all_creature_types(&mut self, item: &SpellView, subject: Subject) {
         let spec = AnimationSpec {
             artifact: false,
@@ -724,7 +765,12 @@ impl Game {
             timestamp,
             artifact: spec.artifact,
             land: matches!(type_mode, AnimationTypeMode::AddCreatureAndLand),
-            preserve_card_types: matches!(type_mode, AnimationTypeMode::PreserveCardTypes),
+            preserve_card_types: matches!(
+                type_mode,
+                AnimationTypeMode::PreserveCardTypes | AnimationTypeMode::AddLegendary
+            ),
+            creature_only: matches!(type_mode, AnimationTypeMode::ReplaceWithCreature),
+            legendary: matches!(type_mode, AnimationTypeMode::AddLegendary),
             food_only: false,
             artifact_noncreature: false,
             enchantment_noncreature: false,
@@ -817,6 +863,8 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         artifact: true,
         land: false,
         preserve_card_types: false,
+        creature_only: false,
+        legendary: false,
         food_only: true,
         artifact_noncreature: false,
         enchantment_noncreature: false,
@@ -926,6 +974,8 @@ impl AnimationView {
             artifact: false,
             land: false,
             preserve_card_types: true,
+            creature_only: false,
+            legendary: false,
             food_only: false,
             artifact_noncreature: false,
             enchantment_noncreature: false,

@@ -192,6 +192,8 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             artifact: false,
             land: false,
             preserve_card_types: true,
+            creature_only: false,
+            legendary: false,
             food_only: false,
             artifact_noncreature: false,
             enchantment_noncreature: false,
