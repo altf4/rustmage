@@ -1745,3 +1745,333 @@ fn lich_knights_conquest_reopens_the_graveyard_after_sacrifice_and_returns_exact
         assert_ne!(game.object_view(offering).zone, Zone::Battlefield);
     }
 }
+
+#[test]
+fn gruff_triplets_copies_only_the_nontoken_and_shares_exact_death_power() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let gruff = candidate(&mut game, player, "Gruff Triplets");
+        let unrelated = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let foreign = spawn(
+            &mut game,
+            opponent,
+            Card::from_name("Gruff Triplets").unwrap(),
+            Zone::Battlefield,
+        );
+        let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+        let murder = put(&mut game, opponent, "Murder", Zone::Hand);
+        announce(&mut game, gruff, &[]);
+        settle(&mut game);
+        let copies: Vec<_> = game
+            .observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| {
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token()
+                    && object.name() == "Gruff Triplets"
+            })
+            .collect();
+        assert_eq!(copies.len(), 2);
+        for copy in &copies {
+            assert_eq!((copy.power, copy.toughness), (3, 3));
+            assert!(copy.keywords.contains(Keywords::TRAMPLE));
+        }
+
+        cast(&mut game, growth, Some(Target::Card(gruff)));
+        settle(&mut game);
+        assert_eq!(stats(&game, gruff), (6, 6));
+        act(&mut game, Action::Pass);
+        cast(&mut game, murder, Some(Target::Card(gruff)));
+        settle(&mut game);
+        assert_eq!(game.object_view(gruff).zone, Zone::Graveyard);
+        for copy in &copies {
+            assert_eq!(game.counter_count(copy.id, CounterKind::PlusOne), 6);
+        }
+        assert_eq!(game.counter_count(foreign, CounterKind::PlusOne), 0);
+        assert_eq!(game.counter_count(unrelated, CounterKind::PlusOne), 0);
+    }
+}
+
+fn pay_hylda(game: &mut Game) {
+    assert!(game.observe(game.actor().unwrap()).mode_choices.is_empty());
+    act(
+        game,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 1],
+        },
+    );
+    assert_eq!(game.observe(game.actor().unwrap()).mode_choices.len(), 3);
+}
+
+#[test]
+fn hylda_pays_once_per_actual_opposing_tap_and_offers_all_three_outcomes() {
+    const ELEMENTAL: Card = Card::from_catalogue_id(5547);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let hylda = candidate(&mut game, player, "Hylda of the Icy Crown");
+        let cold = put(&mut game, player, "Succumb to the Cold", Zone::Hand);
+        let elf = put(&mut game, opponent, "Llanowar Elves", Zone::Battlefield);
+        let bear = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let draw = put(&mut game, player, "Island", Zone::Library);
+        let bottom = put(&mut game, player, "Forest", Zone::Library);
+        announce(&mut game, hylda, &[]);
+        settle(&mut game);
+        announce(&mut game, cold, &[Target::Card(elf), Target::Card(bear)]);
+
+        let mut self_tap = game.clone();
+        act(&mut self_tap, Action::Pass);
+        act(&mut self_tap, Action::TapMana { card: elf });
+        for _ in 0..3 {
+            if self_tap.object_view(cold).zone != Zone::Stack {
+                break;
+            }
+            act(&mut self_tap, Action::Pass);
+        }
+        assert_eq!(self_tap.object_view(cold).zone, Zone::Graveyard);
+        assert_eq!(self_tap.state.stack.len(), 1);
+        pass_twice(&mut self_tap);
+        act(&mut self_tap, Action::DeclineResolutionMana);
+        settle(&mut self_tap);
+        assert!(tokens(&self_tap, player, ELEMENTAL).is_empty());
+
+        pass_twice(&mut game);
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+        assert_eq!(game.state.stack.len(), 2);
+        pass_twice(&mut game);
+        pay_hylda(&mut game);
+        let mut scry = game.clone();
+        act(&mut scry, Action::ChooseMode { mode: 2 });
+        pass_twice(&mut scry);
+        assert_eq!(
+            scry.observe(player).library_choice.unwrap().remaining.len(),
+            2
+        );
+        assert!(scry.observe(opponent).library_choice.is_none());
+        for (card, destination) in [
+            (bottom, LibraryDestination::Bottom),
+            (draw, LibraryDestination::Top),
+        ] {
+            act(&mut scry, Action::ArrangeLibrary { card, destination });
+        }
+        assert_eq!(scry.object_view(draw).zone, Zone::Hand);
+        pass_twice(&mut scry);
+        act(&mut scry, Action::DeclineResolutionMana);
+        settle(&mut scry);
+
+        act(&mut game, Action::ChooseMode { mode: 0 });
+        pass_twice(&mut game);
+        let elementals = tokens(&game, player, ELEMENTAL);
+        assert_eq!(elementals.len(), 1);
+        let elemental = game.object_view(elementals[0]);
+        assert!(elemental.is_token() && elemental.has_subtype("Elemental"));
+        assert_eq!(
+            (elemental.power, elemental.toughness, elemental.colors),
+            (4, 4, 0b00011)
+        );
+        pass_twice(&mut game);
+        pay_hylda(&mut game);
+        act(&mut game, Action::ChooseMode { mode: 1 });
+        settle(&mut game);
+        assert_eq!(game.counter_count(hylda, CounterKind::PlusOne), 1);
+        assert_eq!(game.counter_count(elementals[0], CounterKind::PlusOne), 1);
+        assert_eq!(game.counter_count(bear, CounterKind::PlusOne), 0);
+    }
+}
+
+#[test]
+fn hyldas_crown_prices_its_tap_by_turn_and_draws_for_live_opposing_creatures() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let crown = candidate(&mut game, player, "Hylda's Crown of Winter");
+        let island = put(&mut game, player, "Island", Zone::Battlefield);
+        let target = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        let still_tapped = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let bounce = put(&mut game, opponent, "Unsummon", Zone::Hand);
+        game.state.objects[own as usize].tapped = true;
+        game.state.objects[still_tapped as usize].tapped = true;
+        announce(&mut game, crown, &[]);
+        settle(&mut game);
+        let activate = |ability| Action::AnnounceActivate {
+            card: crown,
+            ability,
+            counter_payment: Counters::default(),
+        };
+
+        let mut off_turn = game.clone();
+        end_scenario_turn(&mut off_turn);
+        act(&mut off_turn, Action::Pass);
+        act(&mut off_turn, activate(0));
+        choose_target(&mut off_turn, Target::Card(target));
+        reject(&mut off_turn, Action::PayCosts { payment: [0; 6] });
+        act(&mut off_turn, Action::TapMana { card: island });
+        act(
+            &mut off_turn,
+            Action::PayCosts {
+                payment: [0, 1, 0, 0, 0, 0],
+            },
+        );
+        settle(&mut off_turn);
+        assert!(off_turn.object_view(crown).tapped);
+        assert!(off_turn.object_view(target).tapped);
+
+        act(&mut game, activate(0));
+        choose_target(&mut game, Target::Card(target));
+        act(&mut game, Action::PayCosts { payment: [0; 6] });
+        settle(&mut game);
+        assert!(game.object_view(crown).tapped);
+        assert!(game.object_view(target).tapped);
+
+        act(&mut game, activate(1));
+        pay(&mut game);
+        assert_eq!(game.object_view(crown).zone, Zone::Graveyard);
+        act(&mut game, Action::Pass);
+        cast(&mut game, bounce, Some(Target::Card(target)));
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+        assert_eq!(game.object_view(target).zone, Zone::Hand);
+        assert!(game.object_view(still_tapped).tapped);
+        assert!(game.object_view(own).tapped);
+    }
+}
+
+#[test]
+fn icewrought_sentry_pays_before_targeting_and_grows_only_for_actual_taps() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let sentry = candidate(&mut game, player, "Icewrought Sentry");
+        let islands = [0; 2].map(|_| put(&mut game, player, "Island", Zone::Battlefield));
+        let fresh = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let already = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+        announce(&mut game, sentry, &[]);
+        settle(&mut game);
+        next_own_main(&mut game, player);
+        game.state.objects[already as usize].tapped = true;
+        pass_twice(&mut game);
+        pass_twice(&mut game);
+        act(&mut game, Action::Attack { card: sentry });
+        act(&mut game, Action::FinishAttackers);
+        assert!(!game.object_view(sentry).tapped);
+        for card in islands {
+            act(&mut game, Action::TapMana { card });
+        }
+        pass_twice(&mut game);
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(fresh),
+            },
+        );
+        let mut declined = game.clone();
+        act(&mut declined, Action::DeclineResolutionMana);
+        settle(&mut declined);
+        assert_eq!(stats(&declined, sentry), (2, 3));
+        assert!(!declined.object_view(fresh).tapped);
+
+        act(
+            &mut game,
+            Action::PayResolutionMana {
+                payment: [0, 2, 0, 0, 0, 0],
+            },
+        );
+        let mut redundant = game.clone();
+        choose_target(&mut redundant, Target::Card(already));
+        settle(&mut redundant);
+        assert_eq!(stats(&redundant, sentry), (2, 3));
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(sentry),
+            },
+        );
+        choose_target(&mut game, Target::Card(fresh));
+        settle(&mut game);
+        assert!(game.object_view(fresh).tapped);
+        assert_eq!(stats(&game, sentry), (4, 4));
+    }
+}
+
+#[test]
+fn likeness_looter_draws_and_discards_then_retains_only_its_paid_copy_ability() {
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let looter = candidate(&mut game, player, "Likeness Looter");
+        let bear = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+        let giant = put(&mut game, player, "Hill Giant", Zone::Hand);
+        let foreign = put(&mut game, opponent, "Bear Cub", Zone::Graveyard);
+        let lands = [0; 4].map(|_| put(&mut game, player, "Forest", Zone::Battlefield));
+        announce(&mut game, looter, &[]);
+        settle(&mut game);
+        assert_eq!(stats(&game, looter), (1, 1));
+        assert!(game.object_view(looter).keywords.contains(Keywords::FLYING));
+
+        next_own_main(&mut game, player);
+        let drawn = put(&mut game, player, "Island", Zone::Library);
+        let activate = |ability| Action::AnnounceActivate {
+            card: looter,
+            ability,
+            counter_payment: Counters::default(),
+        };
+        act(&mut game, activate(0));
+        if matches!(game.state.pending, Pending::PayCosts { .. }) {
+            pay(&mut game);
+        }
+        assert!(game.object_view(looter).tapped);
+        pass_twice(&mut game);
+        assert_eq!(game.object_view(drawn).zone, Zone::Hand);
+        act(&mut game, Action::Discard { card: giant });
+        settle(&mut game);
+        assert_eq!(game.object_view(giant).zone, Zone::Graveyard);
+
+        let exact = game.object_ref(looter);
+        act(&mut game, activate(1));
+        act(&mut game, Action::ChooseX { value: 2 });
+        for card in [foreign, giant] {
+            reject(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(card),
+                },
+            );
+        }
+        choose_target(&mut game, Target::Card(bear));
+        for card in &lands[..2] {
+            act(&mut game, Action::TapMana { card: *card });
+        }
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_ref(looter), exact);
+        assert_eq!(game.object_view(looter).name(), "Bear Cub");
+        assert_eq!(stats(&game, looter), (2, 2));
+        assert!(game.object_view(looter).keywords.contains(Keywords::FLYING));
+
+        next_own_main(&mut game, player);
+        assert!(!game.object_view(looter).tapped);
+        assert_eq!(game.object_view(looter).name(), "Bear Cub");
+        reject(&mut game, activate(0));
+        act(
+            &mut game,
+            Action::AnnounceRetainedCopyAbility { source: exact },
+        );
+        act(&mut game, Action::ChooseX { value: 4 });
+        choose_target(&mut game, Target::Card(giant));
+        for card in lands {
+            act(&mut game, Action::TapMana { card });
+        }
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_ref(looter), exact);
+        assert_eq!(game.object_view(looter).name(), "Hill Giant");
+        assert_eq!(stats(&game, looter), (3, 3));
+        assert!(game.object_view(looter).keywords.contains(Keywords::FLYING));
+    }
+}
