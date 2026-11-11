@@ -6,11 +6,7 @@ impl Game {
     /// The target list was filtered at resolution. Commit one frozen zone batch,
     /// then copy only cards whose actual move reached exile. The copy belongs to
     /// the resolving ability's controller, regardless of its owner's identity.
-    pub(super) fn exile_targets_copy_free_with_budget(
-        &mut self,
-        item: &SpellView,
-        mana_value: u64,
-    ) -> bool {
+    fn exile_graveyard_targets_and_copy(&mut self, item: &SpellView) -> Vec<ObjectRef> {
         let ids: Vec<_> = item
             .targets
             .iter()
@@ -39,19 +35,28 @@ impl Game {
             })
             .map(|event| self.copiable_recipe(event.after))
             .collect();
-        if recipes.is_empty() {
-            return false;
-        }
-        let remaining = recipes
+        recipes
             .into_iter()
             .map(|recipe| {
                 let copy = self.allocate_card_copy(recipe.definition, item.controller);
                 self.set_copy_recipe(copy, recipe);
                 copy
             })
-            .collect();
+            .collect()
+    }
+
+    pub(super) fn exile_targets_copy_free_with_budget(
+        &mut self,
+        item: &SpellView,
+        mana_value: u64,
+    ) -> bool {
+        let remaining = self.exile_graveyard_targets_and_copy(item);
+        if remaining.is_empty() {
+            return false;
+        }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
@@ -71,6 +76,15 @@ impl Game {
         };
         true
     }
+    pub(super) fn exile_target_copy_offer_paid_cast(&mut self, item: &SpellView) -> bool {
+        let remaining = self.exile_graveyard_targets_and_copy(item);
+        if remaining.is_empty() {
+            return false;
+        }
+        self.offer_exiled_cards_paid_cast(item.controller, remaining);
+        true
+    }
+
     pub(super) fn graveyard_symbol_total(&self, cards: &[ObjectRef], color: ChoiceColor) -> u128 {
         cards
             .iter()
@@ -143,6 +157,7 @@ impl Game {
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,

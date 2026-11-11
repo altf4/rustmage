@@ -47,6 +47,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::GrantCastPlotOnResolution => !cave_only,
         Instruction::UpToTargets(value)
         | Instruction::DiscoverScaled(value)
+        | Instruction::CastHandPermanentFreeUpTo(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }

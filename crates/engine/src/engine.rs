@@ -7706,7 +7706,10 @@ impl Game {
                     && resolution.pc > 0
                     && matches!(
                         resolution.program[resolution.pc - 1],
-                        Instruction::ExileTopMayCastPaid | Instruction::ExileTopMayCastPaidFrom(_)
+                        Instruction::ExileTopMayCastPaid
+                            | Instruction::ExileTopMayCastPaidFrom(_)
+                            | Instruction::ExileTargetCopyCastPaid
+                            | Instruction::CastHandPermanentFreeUpTo(_)
                     )
                 {
                     resolution.moved_count = Some(u64::from(

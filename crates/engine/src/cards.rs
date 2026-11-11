@@ -2646,6 +2646,12 @@ pub enum Instruction {
     ExileTopMayCastPaid,
     /// Exile the specified player's top card, then offer the controller one cast.
     ExileTopMayCastPaidFrom(PlayerSet),
+    /// Exile the exact targeted graveyard card and optionally cast its copy by paying.
+    ExileTargetCopyCastPaid,
+    /// Skip the following instructions if that offered cast did not commit.
+    IfOfferedCastDeclined {
+        skip: usize,
+    },
     /// Skip the following instructions if that offered cast committed.
     IfOfferedCastCommitted {
         skip: usize,
@@ -3594,6 +3600,8 @@ pub enum Instruction {
     CastLibraryTopUpToAttackingPower(u16),
     /// Privately offer one immediate free spell from hand with at most this mana value.
     CastHandFreeUpTo(AmountValue),
+    /// Privately offer one immediate free permanent spell from hand up to this mana value.
+    CastHandPermanentFreeUpTo(AmountValue),
     /// The cast face must have this permanent type.
     CastHandFreeUpToOfType {
         maximum: AmountValue,

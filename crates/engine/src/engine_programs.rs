@@ -6419,6 +6419,17 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileTargetCopyCastPaid => {
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if self.exile_target_copy_offer_paid_cast(&item) {
+                        return;
+                    }
+                }
+                Instruction::IfOfferedCastDeclined { skip } => {
+                    if self.state.resolving.as_ref().unwrap().moved_count == Some(0) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::IfOfferedCastCommitted { skip } => {
                     if self.state.resolving.as_ref().unwrap().moved_count == Some(1) {
                         self.state.resolving.as_mut().unwrap().pc += skip;
@@ -6738,11 +6749,18 @@ impl Game {
                     self.cast_library_by_attacking_power(&item, amount);
                     return;
                 }
-                Instruction::CastHandFreeUpTo(maximum) => {
+                Instruction::CastHandFreeUpTo(maximum)
+                | Instruction::CastHandPermanentFreeUpTo(maximum) => {
+                    let permanent_spell_only =
+                        matches!(instruction, Instruction::CastHandPermanentFreeUpTo(_));
+                    if permanent_spell_only {
+                        self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    }
                     self.offer_hand_free_cast(
                         item.controller,
                         self.item_amount(maximum, &item),
                         None,
+                        permanent_spell_only,
                     );
                     return;
                 }
@@ -6754,6 +6772,7 @@ impl Game {
                         item.controller,
                         self.item_amount(maximum, &item),
                         Some(permanent_type),
+                        false,
                     );
                     return;
                 }
