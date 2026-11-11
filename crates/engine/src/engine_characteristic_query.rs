@@ -615,9 +615,15 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return keywords;
         }
         // The ability that grants this spell flash functions on the stack (CR 113.6e).
-        if self.state.players[target.controller.index()].committed_crime_this_turn
-            && self.effective_spell_card(id).self_cast_timing()
-                == Some(crate::cards::SelfCastTiming::FlashAfterCrime)
+        if let Some(
+            condition @ (crate::cards::SelfCastTiming::FlashAfterCrime
+            | crate::cards::SelfCastTiming::FlashWhileControlSubtype(_)),
+        ) = self.effective_spell_card(id).self_cast_timing()
+            && super::cast_timing::self_cast_timing_applies(
+                self.world,
+                target.controller,
+                condition,
+            )
         {
             keywords = keywords.union(Keywords::FLASH);
         }

@@ -1,9 +1,45 @@
 //! Committed cast origins, per-turn casting limits, and exact zone cost increases.
 mod support;
 use rustmage as _;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
+
+const SUBTYPE_FLASH: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    extras: &CardExtras {
+        self_cast_timing: Some(SelfCastTiming::FlashWhileControlSubtype("Desert")),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const AS_THOUGH_FLASH: CardRules = CardRules {
+    extras: &CardExtras {
+        self_cast_timing: Some(SelfCastTiming::ControlSubtype("Desert")),
+        ..CardExtras::EMPTY
+    },
+    ..SUBTYPE_FLASH
+};
+
+#[test]
+fn conditional_flash_and_as_though_timing_use_the_same_live_subtype_condition() {
+    for (has_flash, rules) in [(true, &SUBTYPE_FLASH), (false, &AS_THOUGH_FLASH)] {
+        let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, rules)]);
+        let player = Player::P0;
+        let mut game = scenario(player);
+        game.state.active = player.other();
+        game.state.step = Step::Upkeep;
+        let spell = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+        reject(&mut game, Action::AnnounceCast { card: spell });
+        let desert = put(&mut game, player, "Bristling Backwoods", Zone::Battlefield);
+        cast(&mut game, spell, None);
+        assert_eq!(game.keywords(spell).contains(Keywords::FLASH), has_flash);
+        game.move_object(desert, Zone::Graveyard);
+        assert!(!game.keywords(spell).contains(Keywords::FLASH));
+        settle(&mut game);
+        assert!(game.on_battlefield(spell));
+    }
+}
 
 const HAND_HISTORY: CardRules = CardRules {
     effect: Effect::Permanent,
