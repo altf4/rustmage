@@ -77,11 +77,7 @@ fn stack_exile_plots_an_uncounterable_card_for_its_owner_but_never_a_copy() {
         pay(&mut game);
         let template = game.state.stack.last().unwrap().clone();
         assert_eq!(template.controller, caster);
-        assert!(
-            game.observe(owner)
-                .uncounterable_spell_ids
-                .contains(&template.id)
-        );
+        assert!(!game.stack_item_is_counterable(&template));
         let target = if copy {
             let packet = game.allocate_spell_copy(&template, caster);
             let id = packet.id;
