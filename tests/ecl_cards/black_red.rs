@@ -6907,12 +6907,10 @@ fn lavaleaper_mixed_mana_choice_resumes_an_existing_cast_payment_window() {
         let bonus = tap.with_event_effects(&g, p, Some(tapped_land));
         g.finish_mana_tap_bonus(p, bonus, production);
         assert!(g.advance_mana_tap_bonus());
-        checked(
-            &mut g,
-            Action::ChooseMana {
-                production: [1, 0, 0, 0, 0, 1],
-            },
-        );
+        for production in [[1, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 1]] {
+            assert!(matches!(g.state.pending, Pending::EffectMana { .. }));
+            checked(&mut g, Action::ChooseMana { production });
+        }
         assert!(matches!(g.state.pending, Pending::PayCosts { .. }));
         for card in forests {
             checked(&mut g, Action::TapMana { card });

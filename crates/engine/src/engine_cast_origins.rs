@@ -1038,16 +1038,11 @@ impl Game {
                         true,
                         false,
                     )
-                    && emit(
-                        if free.origin == Zone::Hand
-                            || free.paid.is_none()
-                                && matches!(free.origin, Zone::Graveyard | Zone::Command)
-                        {
-                            Action::CastFreeDuringResolution { object, face }
-                        } else {
-                            Action::CastExiledDuringResolution { object, face }
-                        },
-                    )
+                    && emit(if free.origin == Zone::Hand {
+                        Action::CastFreeDuringResolution { object, face }
+                    } else {
+                        Action::CastExiledDuringResolution { object, face }
+                    })
                 {
                     return true;
                 }
