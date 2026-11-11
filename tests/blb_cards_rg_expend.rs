@@ -65,7 +65,8 @@ fn expending_four_resolves_each_printed_reward_and_only_crosses_once() {
         assert_eq!(game.counter_count(overflow, CounterKind::Stash), 2);
         assert_eq!(stats(&game, recipient), (3, 3));
         assert!(game.keywords(recipient).contains(Keywords::TRAMPLE));
-        assert_eq!(stats(&game, baker), (3, 3));
+        assert_eq!(stats(&game, baker), (4, 4));
+        assert!(game.keywords(baker).contains(Keywords::VIGILANCE));
         assert!(game.keywords(boxer).contains(Keywords::INDESTRUCTIBLE));
         assert_eq!(stats(&game, raccoon), (3, 3));
         assert!(game.keywords(raccoon).contains(Keywords::VIGILANCE));
