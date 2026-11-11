@@ -3,10 +3,31 @@
   "catalogue_id": 533,
   "oracle_id": "f93dc9cc-3dd2-4e2b-b972-217ab9d89dfe",
   "facts_sha256": "5abd6ed4f2c6f6a150b230760971e0b64ceda153420dea8691bc561800130a19",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "196cb3487d5e4b1191fd0e040c24c6c8137cccf5f519dd35a2f504d27fdcb792"
   },
-  "physical_metadata_sha256": "7fc80cbe61e82d1cbcebd3fb01e62e2de9bfaea7ec66cb45c77586e3737ef3d7"
+  "physical_metadata_sha256": "7fc80cbe61e82d1cbcebd3fb01e62e2de9bfaea7ec66cb45c77586e3737ef3d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrazenCollector.java",
+  "java_sha256": "1aaabdc135ca959381794c91ab4ed670e95a2678ae92f8ed168f729f94906fcc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/UntilEndOfTurnManaEffect.java",
+      "sha256": "f56a0fca61a7d8a095d421213a59692e2ee9aaafe8138837ec632bbe3239e779"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_events.rs"
 }

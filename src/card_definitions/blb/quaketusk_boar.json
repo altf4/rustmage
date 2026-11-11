@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "61b5745b690f8e1c2f15c6bf0609029d8c4ac24545a4ce2d86ec76d121c46162"
   },
-  "physical_metadata_sha256": "f69e50fedf8ba4ef185b458a30d4633c1f07e3b3ad3e39d9ec8690ce8ebdf34a"
+  "physical_metadata_sha256": "f69e50fedf8ba4ef185b458a30d4633c1f07e3b3ad3e39d9ec8690ce8ebdf34a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuaketuskBoar.java",
+  "java_sha256": "ce497e62286312e6791bb45cbf5adb26d4b8be748273fc35d219b55a9cd099b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_events.rs"
 }

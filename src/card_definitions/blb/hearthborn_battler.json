@@ -3,10 +3,41 @@
   "catalogue_id": 1981,
   "oracle_id": "beb02f49-95a6-49bf-b176-4e4b2ab5b651",
   "facts_sha256": "bc556d8a5cdce86764e186b36b12858311b48222e1ba37ceec275adee735e63a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "336e710f3652e0ba9e5ea7dd7291aa6d3894487f438d5372efa0d7a7631b82f3"
   },
-  "physical_metadata_sha256": "4ba633dcf2eab0e77be2599bcc4eb1bc4145979016f698c1008b159cbc06a31f"
+  "physical_metadata_sha256": "4ba633dcf2eab0e77be2599bcc4eb1bc4145979016f698c1008b159cbc06a31f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HearthbornBattler.java",
+  "java_sha256": "85bcda309b747e88e6f846ef4d4cc91c9d14c811279805981ec2f9c220905e59",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_events.rs"
 }

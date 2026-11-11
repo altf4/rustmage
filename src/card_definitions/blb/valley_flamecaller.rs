@@ -1,16 +1,20 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
+const DAMAGE: ReplacementSpec = ReplacementSpec::ControlledSubtypeDamagePlus {
+    subtypes: &["Lizard", "Mouse", "Otter", "Raccoon"],
+    amount: 1,
+};
+const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::Replacement(0, DAMAGE)],
+}];
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(3, 3),
+    static_groups: GROUPS,
+    extras: &CardExtras {
+        static_ability_groups: GROUPS,
+        replacement_effects: &[DAMAGE],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };
