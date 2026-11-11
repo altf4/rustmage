@@ -3,10 +3,81 @@
   "catalogue_id": 2172,
   "oracle_id": "915b75d1-b5e3-4aca-a54c-beaccef0a2e4",
   "facts_sha256": "a9163d7ce151136a048f5f65fb4f01f1b1cf44092e8f5a9913a6827236b2f9fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9e23933ef0426f39227e607a1205a050dd2fdd45f060baca2d7e42e1e328f804"
   },
-  "physical_metadata_sha256": "0b2e3fbc6dc4b2069b94313319811cd51e0706bafdb95c02dc6689843683651b"
+  "physical_metadata_sha256": "0b2e3fbc6dc4b2069b94313319811cd51e0706bafdb95c02dc6689843683651b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InnkeepersTalent.java",
+  "java_sha256": "1f8cfa23ec437abd243392ba9499a281b7fa0bd646a1c8e9bcca6803859184fe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainClassAbilitySourceEffect.java",
+      "sha256": "bc5041794cf52d768818df17da1cd5ba5813a11a4135e92a01349b4f1d8347ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassLevelAbility.java",
+      "sha256": "fb46d20a239b9dc3f6afb4f16ebebe9502ee5d8bd5c34fd8f1bd43c039748d28"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassReminderAbility.java",
+      "sha256": "8dc32040fc68007c96ef75000bf14278cdaa04bb0998d663f2f80b86f2411ea4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_classes.rs"
 }
