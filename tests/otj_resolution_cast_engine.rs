@@ -12,7 +12,7 @@ const COPY_OFFER: CardRules = CardRules {
             base: &TargetRule::Object {
                 zone: TargetZone::Graveyard,
                 kinds: 0,
-                relation: 0,
+                relation: -1,
                 other: false,
                 nonland: false,
                 tapped: false,
