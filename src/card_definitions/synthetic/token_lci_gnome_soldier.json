@@ -3,7 +3,7 @@
   "catalogue_id": 5573,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "d32709d0ff2f2573f5fd6c5fb6aa4b25d3deccbc90479ef8d82223f04e47bfd9",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/GnomeSoldierStarStarToken.java",
