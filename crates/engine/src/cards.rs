@@ -6427,6 +6427,7 @@ pub enum StepGuard {
     YourCombatPhase,
     SourcePowerAtLeast(u16),
     SourceCreature,
+    SourceNoncreature,
     SourceToughnessAtMost(u16),
     Outlaw,
     Always,

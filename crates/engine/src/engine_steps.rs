@@ -503,10 +503,10 @@ impl Game {
                     && matches!(self.state.step, Step::Main1 | Step::Main2);
             }
             StepGuard::YourCombatPhase => return self.attacking_return_combat(player),
-            StepGuard::SourceCreature => {
+            StepGuard::SourceCreature | StepGuard::SourceNoncreature => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && world.kinds(source.card) & 1 != 0;
+                    && (world.kinds(source.card) & 1 != 0) == (guard == StepGuard::SourceCreature);
             }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)

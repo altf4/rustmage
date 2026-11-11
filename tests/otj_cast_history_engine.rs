@@ -19,6 +19,46 @@ const HAND_HISTORY: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const NONCREATURE_HISTORY: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            guard: StepGuard::SourceNoncreature,
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::NoSpellCastFromOwnHandThisTurn,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AnimateSource(AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Named(&["Spirit"]),
+            base: Some((3, 3)),
+            keywords: Keywords::FLYING,
+            duration: AnimationDuration::Permanent,
+        })],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AnimateSource(AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Named(&["Construct"]),
+            base: Some((2, 2)),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        })],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    ..CardRules::EMPTY
+};
+
 const CAST_LIMIT: CardRules = CardRules {
     effect: Effect::Permanent,
     static_groups: &[StaticAbilityGroup {
@@ -92,6 +132,45 @@ fn own_hand_history_ignores_lands_plotting_and_exile_casts_and_rechecks() {
         settle(&mut game);
         assert_eq!(game.state.players[player.index()].life, 23);
     }
+}
+
+#[test]
+fn noncreature_condition_uses_current_type_at_trigger_and_resolution() {
+    let _rules = fixture_rules::activate(&[(fixture_card(), &NONCREATURE_HISTORY)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let animate = |game: &mut Game| {
+        choose(
+            game,
+            |action| matches!(action, Action::Activate { card, ability: 0, .. } if *card == source),
+        );
+        settle(game);
+    };
+    let start_end_step = |game: &mut Game| {
+        game.begin_step(Step::End);
+        game.give_priority();
+        game.prepare_triggers();
+    };
+
+    let mut animated_before = game.clone();
+    animate(&mut animated_before);
+    start_end_step(&mut animated_before);
+    assert!(animated_before.state.stack.is_empty());
+    assert_eq!(animated_before.object_view(source).power, 2);
+
+    start_end_step(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    let mut animated_in_response = game.clone();
+    animate(&mut animated_in_response);
+    let response = animated_in_response.object_view(source);
+    assert_eq!((response.power, response.toughness), (2, 2));
+    assert!(!response.keywords.contains(Keywords::FLYING));
+
+    settle(&mut game);
+    let resolved = game.object_view(source);
+    assert_eq!((resolved.power, resolved.toughness), (3, 3));
+    assert!(resolved.keywords.contains(Keywords::FLYING));
 }
 
 #[test]
