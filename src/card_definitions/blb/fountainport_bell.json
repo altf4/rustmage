@@ -3,10 +3,56 @@
   "catalogue_id": 1609,
   "oracle_id": "ea4c5b8f-a5ff-47dd-8e47-5ae7b21926b4",
   "facts_sha256": "3e6a27d595ca4e9e1e95305cd25fe180760b514c291df0ac75d323d0a2f15263",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "702e34643656666cbd97ef76f74f745500dac054e38dcadf423df33c428018f1"
   },
-  "physical_metadata_sha256": "902c381756cbd41240d6e750f8b96b45d65c597297a3eaedc77e8ea554f95282"
+  "physical_metadata_sha256": "902c381756cbd41240d6e750f8b96b45d65c597297a3eaedc77e8ea554f95282",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FountainportBell.java",
+  "java_sha256": "c94c7a18698496227058d489cc154a5fa808e33bc90abc23908aba641cb75af1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOnLibraryEffect.java",
+      "sha256": "743cf7facece5aca87d59348f3bb7d8655aa46d3852e9e437f6672c29535e782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_artifacts.rs"
 }
