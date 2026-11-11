@@ -203,7 +203,11 @@ impl Announcement {
         }) {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
-        if self.nonmana_x() || self.sacrifice_discount_count().is_some_and(|count| count != 0) {
+        if self.nonmana_x()
+            || self
+                .sacrifice_discount_count()
+                .is_some_and(|count| count != 0)
+        {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
         if self.item.cast.is_some_and(|cast| cast.beheld == Some(true)) {
@@ -305,9 +309,11 @@ impl Announcement {
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
-        if self.cast_costs.is_some() && self.additional_cost().is_some_and(|spec| {
-            spec.kind != EffectChoiceKind::SacrificeForGenericReduction
-        }) {
+        if self.cast_costs.is_some()
+            && self
+                .additional_cost()
+                .is_some_and(|spec| spec.kind != EffectChoiceKind::SacrificeForGenericReduction)
+        {
             self.add_cast_cost_clause(CastCostClause::Additional);
         }
     }

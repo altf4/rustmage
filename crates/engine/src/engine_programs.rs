@@ -2874,7 +2874,10 @@ impl Game {
                     Any,
                     Keyword(Keywords),
                     Counter(CounterKind),
-                    Subtype { subtype: &'static str, exclude: bool },
+                    Subtype {
+                        subtype: &'static str,
+                        exclude: bool,
+                    },
                     AnySubtype(&'static [&'static str]),
                 }
                 let each_attacker = match condition {
@@ -7071,9 +7074,9 @@ impl Game {
                 }
                 Instruction::RevealTargetHandExileNonland
                 | Instruction::RevealTargetHandExileNonlandCastIfGift => {
-                    let cast_while_exiled =
-                        instruction == Instruction::RevealTargetHandExileNonlandCastIfGift
-                            && item.gift_context().is_some();
+                    let cast_while_exiled = instruction
+                        == Instruction::RevealTargetHandExileNonlandCastIfGift
+                        && item.gift_context().is_some();
                     if self.start_revealed_hand_exile_nonland(&item, cast_while_exiled) {
                         return;
                     }
@@ -8483,11 +8486,19 @@ impl Game {
                         }
                     }
                 }
-                Instruction::AddManaSplitScaled { first, second, amount } => {
+                Instruction::AddManaSplitScaled {
+                    first,
+                    second,
+                    amount,
+                } => {
                     let total = u64::try_from(self.item_amount(amount, &item))
                         .capacity("split mana quantity exhausted");
                     if total != 0 {
-                        let production = ManaProduction::Split(crate::cards::ManaSplit { first, second, total });
+                        let production = ManaProduction::Split(crate::cards::ManaSplit {
+                            first,
+                            second,
+                            total,
+                        });
                         self.require_mana_split_capacity(item.controller, production);
                         self.state.pending = Pending::EffectMana {
                             player: item.controller,
@@ -8957,10 +8968,12 @@ impl Game {
                     if let Some(recipient) = self.captured_entry_result()
                         && !self.object_view(recipient.card).is_legendary()
                     {
-                        let recipe = self.copiable_recipe(recipient).with_exceptions(CopyExceptions {
-                            base: Some(base),
-                            ..CopyExceptions::NONE
-                        });
+                        let recipe =
+                            self.copiable_recipe(recipient)
+                                .with_exceptions(CopyExceptions {
+                                    base: Some(base),
+                                    ..CopyExceptions::NONE
+                                });
                         self.stage_copy_recipes(item.controller, vec![recipe], false);
                     }
                 }
@@ -10128,14 +10141,19 @@ impl Game {
                 Instruction::ExileUntilSourceLeaves
                 | Instruction::ExileUntilSourceLeavesRememberPowerAtMost(_) => {
                     let events = self.exile_until_source_leaves(&item);
-                    if let Instruction::ExileUntilSourceLeavesRememberPowerAtMost(maximum) = instruction {
-                        let count = events.iter().filter(|event| {
-                            event.moved
-                                && event.destination == Zone::Exile
-                                && event.before.zone == Zone::Battlefield
-                                && event.before.kinds & 1 != 0
-                                && event.before.power <= i128::from(maximum)
-                        }).count();
+                    if let Instruction::ExileUntilSourceLeavesRememberPowerAtMost(maximum) =
+                        instruction
+                    {
+                        let count = events
+                            .iter()
+                            .filter(|event| {
+                                event.moved
+                                    && event.destination == Zone::Exile
+                                    && event.before.zone == Zone::Battlefield
+                                    && event.before.kinds & 1 != 0
+                                    && event.before.power <= i128::from(maximum)
+                            })
+                            .count();
                         self.state.resolving.as_mut().unwrap().moved_count =
                             Some(count.try_into().capacity("exiled creature count exhausted"));
                     }
@@ -11334,7 +11352,9 @@ impl Game {
                     );
                 }
                 Instruction::GrantControlledTokenKeywordsUntilNextTurn(keywords) => {
-                    let ids = self.controlled_token_ids(item.controller).collect::<Vec<_>>();
+                    let ids = self
+                        .controlled_token_ids(item.controller)
+                        .collect::<Vec<_>>();
                     self.grant_keywords_until_next_turn(
                         &ids,
                         item.source.expect("keyword grant has a source").object,
@@ -11718,7 +11738,11 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
-                Instruction::PutCreatureGroupCounters { filters, kind, amount } => {
+                Instruction::PutCreatureGroupCounters {
+                    filters,
+                    kind,
+                    amount,
+                } => {
                     let source = item.source.expect("creature group source").object;
                     let query = self.characteristic_query();
                     let changes = (0..self.state.objects.len())
@@ -11738,7 +11762,10 @@ impl Game {
                         item.controller,
                         filters,
                         effect,
-                        matches!(instruction, Instruction::ChangeNewlyEnteredPermanentGroupCounters { .. }),
+                        matches!(
+                            instruction,
+                            Instruction::ChangeNewlyEnteredPermanentGroupCounters { .. }
+                        ),
                     );
                 }
                 Instruction::DoubleCounterKind { subject, kind } => {

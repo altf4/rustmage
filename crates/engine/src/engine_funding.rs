@@ -712,7 +712,8 @@ fn source_obligations(
         readiness.exhaust = false;
     }
     if independent_use
-        || definition.activation(*index).lifetime_use_limit() && definition.grants_activation(*index)
+        || definition.activation(*index).lifetime_use_limit()
+            && definition.grants_activation(*index)
     {
         readiness.exhaust = false;
         readiness.once_per_turn = false;
@@ -2435,9 +2436,9 @@ impl<'g> FundingState<'g> {
                     }
                     ready_object.used_abilities = 0;
                 }
-                if borrowed.is_some_and(|a| {
-                    a.used && (a.once_per_turn || readiness.has_use_limit())
-                }) || !self.guard_available(ability.guard, entry.id, goal.actor)
+                if borrowed
+                    .is_some_and(|a| a.used && (a.once_per_turn || readiness.has_use_limit()))
+                    || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
                         ability_world::CharacteristicWorld::counter_amounts(self, entry.id),
@@ -5667,7 +5668,10 @@ impl Game {
             {
                 last.maximum = count;
             } else {
-                intervals.push(XInterval { minimum: count, maximum: count });
+                intervals.push(XInterval {
+                    minimum: count,
+                    maximum: count,
+                });
             }
         }
         intervals
@@ -5684,9 +5688,14 @@ impl Game {
             proposal.cost = cost;
         }
         proposal.declare_sacrifice_discount_count(count);
-        let total = self.provisional_target_cost(&proposal, Self::announcement_base_cost(&proposal));
+        let total =
+            self.provisional_target_cost(&proposal, Self::announcement_base_cost(&proposal));
         proposal.total_cost = Some(total);
-        let definition = proposal.item.source.expect("sacrifice discount source").card;
+        let definition = proposal
+            .item
+            .source
+            .expect("sacrifice discount source")
+            .card;
         let convoke = convoke::cost_potential(self, definition);
         proposal.initialize_cast_costs(convoke);
         let goal = self.funding_goal(&proposal);
@@ -5698,14 +5707,17 @@ impl Game {
 
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
         if a.item.kind == StackKind::Spell
-            && (a.sacrifice_discount_count().is_some() || a.printed_additional_cost().is_some_and(|spec| {
-                spec.kind == EffectChoiceKind::SacrificeForGenericReduction
-            }))
+            && (a.sacrifice_discount_count().is_some()
+                || a.printed_additional_cost().is_some_and(|spec| {
+                    spec.kind == EffectChoiceKind::SacrificeForGenericReduction
+                }))
         {
             return a.sacrifice_discount_count().map_or_else(
-                || (0..=self.sacrifice_discount_limit()).any(|count| {
-                    self.sacrifice_discount_announcement_fundable(a, Some(cost), count)
-                }),
+                || {
+                    (0..=self.sacrifice_discount_limit()).any(|count| {
+                        self.sacrifice_discount_announcement_fundable(a, Some(cost), count)
+                    })
+                },
                 |count| self.sacrifice_discount_announcement_fundable(a, Some(cost), count),
             );
         }
@@ -6858,7 +6870,9 @@ impl Game {
                 .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.nonmana_x()
-            || announcement.sacrifice_discount_count().is_some_and(|count| count != 0)
+            || announcement
+                .sacrifice_discount_count()
+                .is_some_and(|count| count != 0)
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))

@@ -411,13 +411,9 @@ impl Game {
     }
     pub(super) fn expire_base_stats(&mut self) {
         if let Some(state) = &mut self.state.roles {
-            state
-                .base_stats
-                .retain(|effect| {
-                    effect.static_source
-                        || effect.permanent
-                        || effect.expires_at_next_turn_of.is_some()
-                });
+            state.base_stats.retain(|effect| {
+                effect.static_source || effect.permanent || effect.expires_at_next_turn_of.is_some()
+            });
             // Legal cleanup cannot begin with an unresolved stack or announcement.
             state.stat_subjects.clear();
         }

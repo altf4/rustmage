@@ -117,7 +117,8 @@ impl Game {
                     && row.ability == index
                     && row.origin == origin
             })
-        }) && (readiness.lifetime_use_limit() || ability.once_per_turn && used.turn == self.state.turn)
+        }) && (readiness.lifetime_use_limit()
+            || ability.once_per_turn && used.turn == self.state.turn)
         {
             return None;
         }

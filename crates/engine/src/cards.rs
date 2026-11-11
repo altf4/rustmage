@@ -4036,7 +4036,11 @@ pub enum Instruction {
         skip: usize,
     },
     /// A resolving effect divides this quantity between two distinct colors.
-    AddManaSplitScaled { first: ChoiceColor, second: ChoiceColor, amount: AmountValue },
+    AddManaSplitScaled {
+        first: ChoiceColor,
+        second: ChoiceColor,
+        amount: AmountValue,
+    },
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -5174,7 +5178,9 @@ pub enum AmountValue {
     /// Current creatures controlled by the surviving player in the selected target group.
     TargetPlayerCreatureCount,
     /// Current creatures the resolving ability's controller controls at or above this power.
-    ControlledCreaturePowerCount { minimum: u32 },
+    ControlledCreaturePowerCount {
+        minimum: u32,
+    },
     /// Exact cards retained by a delayed step packet and still in exile.
     DelayedExiledCardCount,
     Sum(&'static [AmountValue]),

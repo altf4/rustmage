@@ -1840,8 +1840,9 @@ impl FundingState<'_> {
             | EffectChoiceKind::RemovePermanentCounters { .. } => {
                 counters = spec.kind.counter_requirement();
             }
-            EffectChoiceKind::BeholdMany(n)
-            | EffectChoiceKind::SacrificeDifferentNames(n) => amount = usize::from(n),
+            EffectChoiceKind::BeholdMany(n) | EffectChoiceKind::SacrificeDifferentNames(n) => {
+                amount = usize::from(n)
+            }
             EffectChoiceKind::SacrificePermanents(n) | EffectChoiceKind::TapPermanents(n) => {
                 amount = n as usize;
             }
@@ -1925,8 +1926,10 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        if matches!(spec.kind.payment_kind(), EffectChoiceKind::SacrificePermanents(_))
-            && candidates.len() < amount
+        if matches!(
+            spec.kind.payment_kind(),
+            EffectChoiceKind::SacrificePermanents(_)
+        ) && candidates.len() < amount
         {
             return false;
         }
@@ -2800,18 +2803,21 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (extra.contains(&CastCostClause::Mana) || additional.is_some_and(|s| {
-                        matches!(
-                            s.kind,
-                            EffectChoiceKind::BeholdMany(_)
-                                | EffectChoiceKind::BeholdAndExile
-                                | EffectChoiceKind::ChooseControlledOrWarpedCreature
-                        )
-                    }) || current.is_some_and(|a| {
-                        a.conspire
-                            .as_deref()
-                            .is_some_and(|rows| rows.iter().any(|r| r.pay))
-                    }) || convoke::potential(self, spell.card)
+                    mana: (extra.contains(&CastCostClause::Mana)
+                        || additional.is_some_and(|s| {
+                            matches!(
+                                s.kind,
+                                EffectChoiceKind::BeholdMany(_)
+                                    | EffectChoiceKind::BeholdAndExile
+                                    | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                            )
+                        })
+                        || current.is_some_and(|a| {
+                            a.conspire
+                                .as_deref()
+                                .is_some_and(|rows| rows.iter().any(|r| r.pay))
+                        })
+                        || convoke::potential(self, spell.card)
                         || improvise::potential(self, spell.card)
                         || delve::potential(self))
                     .then_some(ManaCost {

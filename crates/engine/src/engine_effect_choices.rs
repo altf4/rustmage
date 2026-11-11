@@ -855,7 +855,10 @@ impl Game {
     pub(super) fn start_repeated_life_choice(&mut self, repetitions: u128, life: u16) {
         if repetitions != 0 {
             self.state.resolving.as_mut().unwrap().repeated_life_choice =
-                Some(Box::new(RepeatedLifeChoice { remaining: repetitions, life }));
+                Some(Box::new(RepeatedLifeChoice {
+                    remaining: repetitions,
+                    life,
+                }));
         }
     }
     pub(super) fn advance_repeated_life_choice(&mut self) -> bool {
@@ -1930,7 +1933,10 @@ impl Game {
             let object = choice.selected[player.index()][0];
             self.state.resolving.as_mut().unwrap().choice = None;
             let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
-            assert_eq!(entry.before.reference, object, "selected exact deployment card");
+            assert_eq!(
+                entry.before.reference, object,
+                "selected exact deployment card"
+            );
             entry.controller = player;
             entry.effect_counter = Some((counter, 1));
             self.stage_entries(vec![entry], None);

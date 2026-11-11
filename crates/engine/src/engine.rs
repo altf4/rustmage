@@ -5602,14 +5602,19 @@ impl Game {
                 }
             }
             Pending::ResolutionPermanentType { .. } => {
-                let resolution = s.resolving.as_ref().expect("permanent type choice resolution");
+                let resolution = s
+                    .resolving
+                    .as_ref()
+                    .expect("permanent type choice resolution");
                 let Instruction::DestroyAllOfChosenPermanentType(types) =
                     resolution.program[resolution.pc - 1]
                 else {
                     unreachable!("permanent type choice instruction");
                 };
                 for &kind in types {
-                    if emit(Action::ChoosePermanentType { permanent_type: kind }) {
+                    if emit(Action::ChoosePermanentType {
+                        permanent_type: kind,
+                    }) {
                         return true;
                     }
                 }
@@ -7759,7 +7764,12 @@ impl Game {
                 self.choose_resolution_cost_object(object)
             }
             Action::ChooseAdditionalCost { object }
-                if self.state.announcing.as_ref().unwrap().paying_origin_discard() =>
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .unwrap()
+                    .paying_origin_discard() =>
             {
                 self.pay_origin_discard_clause(object)
             }
@@ -8628,11 +8638,8 @@ impl Game {
                 target,
                 payment,
             } => {
-                let purpose = self.spell_mana_purpose_for_card(
-                    actor,
-                    card,
-                    self.effective_spell_card(card),
-                );
+                let purpose =
+                    self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card));
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
@@ -8904,9 +8911,17 @@ impl Game {
                 }
             }
             Action::ChooseX { value }
-                if self.state.announcing.as_ref().is_some_and(Announcement::needs_sacrifice_discount_count) =>
+                if self
+                    .state
+                    .announcing
+                    .as_ref()
+                    .is_some_and(Announcement::needs_sacrifice_discount_count) =>
             {
-                self.state.announcing.as_mut().unwrap().declare_sacrifice_discount_count(value);
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .declare_sacrifice_discount_count(value);
                 self.continue_announcement_choices(false);
             }
             Action::ChooseX { value } => {
@@ -9116,7 +9131,9 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
-            Action::ChoosePermanentType { permanent_type: kind } => {
+            Action::ChoosePermanentType {
+                permanent_type: kind,
+            } => {
                 self.destroy_permanents_of_type(kind);
                 self.run_program();
             }
@@ -10699,7 +10716,10 @@ impl Game {
                 .as_mut()
                 .and_then(|resolution| resolution.target_card_facts.as_mut())
             {
-                for target in facts.iter_mut().filter(|fact| fact.object == before.reference) {
+                for target in facts
+                    .iter_mut()
+                    .filter(|fact| fact.object == before.reference)
+                {
                     target.controller = before.controller;
                 }
             }
@@ -13349,7 +13369,9 @@ impl Game {
                 std::mem::size_of::<Vec<EntryTurnFact>>()
                     + rows.len() * std::mem::size_of::<EntryTurnFact>()
             })
-            + s.entered_creature_types.as_ref().map_or(0, |rows| std::mem::size_of_val(&**rows))
+            + s.entered_creature_types
+                .as_ref()
+                .map_or(0, |rows| std::mem::size_of_val(&**rows))
             + s.creature_entry_history.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CreatureEntryHistoryView>>()
                     + rows.len() * std::mem::size_of::<CreatureEntryHistoryView>()
@@ -13573,7 +13595,10 @@ impl Game {
                             .map_or(0, |f| f.owned_bytes())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
-                        + resolution.repeated_life_choice.as_deref().map_or(0, std::mem::size_of_val)
+                        + resolution
+                            .repeated_life_choice
+                            .as_deref()
+                            .map_or(0, std::mem::size_of_val)
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())

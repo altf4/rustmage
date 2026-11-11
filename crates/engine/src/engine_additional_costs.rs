@@ -528,7 +528,8 @@ impl Game {
                     false,
                     &[],
                     &[CastCostClause::Mana],
-                ).expect("a declared sacrifice discount always previews an ordered mana cost")
+                )
+                .expect("a declared sacrifice discount always previews an ordered mana cost")
             });
         }
         if let Some(result) = self.preview_optional_cast_costs(
@@ -600,10 +601,18 @@ impl Game {
         })
     }
     pub(super) fn sacrifice_discount_limit(&self) -> u32 {
-        let battlefield = self.state.objects.iter().filter(|object| object.zone == Zone::Battlefield).count();
+        let battlefield = self
+            .state
+            .objects
+            .iter()
+            .filter(|object| object.zone == Zone::Battlefield)
+            .count();
         // A mana ability may immediately return a linked permanent, or change
         // the control or types of a permanent already on the battlefield.
-        let linked_returns = self.state.exile_links.iter()
+        let linked_returns = self
+            .state
+            .exile_links
+            .iter()
             .filter(|link| link.return_zone == Zone::Battlefield)
             .count();
         u32::try_from(battlefield.saturating_add(linked_returns)).unwrap_or(u32::MAX)
@@ -624,9 +633,12 @@ impl Game {
             return self.can_fund_symbol_cost_group(goal, purpose, spec, source, chosen);
         }
         let amount = match spec.kind.payment_kind() {
-            EffectChoiceKind::BeholdMany(n)
-            | EffectChoiceKind::ExileGraveyardCards(n) => usize::from(n),
-            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificePermanents(n) => n as usize,
+            EffectChoiceKind::BeholdMany(n) | EffectChoiceKind::ExileGraveyardCards(n) => {
+                usize::from(n)
+            }
+            EffectChoiceKind::TapPermanents(n) | EffectChoiceKind::SacrificePermanents(n) => {
+                n as usize
+            }
             _ => unreachable!("group cost"),
         };
         let Some(needed) = amount.checked_sub(chosen.len()) else {
@@ -1232,7 +1244,8 @@ impl Game {
             }));
             let sacrifices: Vec<_> = group.iter().map(|r| (a.item.controller, r.card)).collect();
             if a.sacrifice_discount_count().is_some() {
-                let paid = self.sacrifice_cost_batch_outcome(&sacrifices)
+                let paid = self
+                    .sacrifice_cost_batch_outcome(&sacrifices)
                     .expect("legal sacrifice discount group");
                 a.item.paid_additional_cost = Some(Box::new(paid));
             } else if matches!(spec.kind, EffectChoiceKind::SacrificePermanents(_)) {

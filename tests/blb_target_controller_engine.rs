@@ -81,9 +81,7 @@ fn select_twice(game: &mut Game, player: Player, first: CardId, second: CardId) 
 }
 
 fn drawn(game: &Game, player: Player) -> u64 {
-    game.state.players[player.index()]
-        .cards_drawn_this_turn
-        .into()
+    game.state.players[player.index()].cards_drawn_this_turn
 }
 
 #[test]
