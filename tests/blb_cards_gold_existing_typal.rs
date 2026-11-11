@@ -381,3 +381,45 @@ fn vinereap_rewards_entry_and_death_but_vren_replaces_death_and_builds_scaling_r
         assert_eq!(stats(&game, rat), (3, 3));
     }
 }
+
+#[test]
+fn valiant_observes_the_first_target_of_each_controller_on_the_same_incarnation() {
+    let owner = Player::P0;
+    for (name, scries) in [("Seedglaive Mentor", false), ("Veteran Guardmouse", true)] {
+        let mut game = scenario(owner);
+        let creature = put(&mut game, owner, name, Zone::Battlefield);
+        let reference = game.object_ref(creature);
+        for controller in [owner, owner.other()] {
+            if controller != owner {
+                game.change_controller(reference, controller);
+                assert_eq!(game.object_ref(creature), reference);
+            }
+            if game.actor() != Some(controller) {
+                act(&mut game, Action::Pass);
+            }
+            let top = *game.state.players[controller.index()]
+                .library
+                .last()
+                .unwrap();
+            let pump = put(&mut game, controller, "Giant Growth", Zone::Hand);
+            cast(&mut game, pump, Some(Target::Card(creature)));
+            if scries {
+                next(&mut game);
+                next(&mut game);
+                assert!(game.observe(controller).library_choice.is_some());
+                assert!(game.observe(controller.other()).library_choice.is_none());
+                act(
+                    &mut game,
+                    Action::ArrangeLibrary {
+                        card: top,
+                        destination: LibraryDestination::Top,
+                    },
+                );
+            }
+            idle(&mut game);
+        }
+        if !scries {
+            assert_eq!(game.counter_count(creature, CounterKind::PlusOne), 2);
+        }
+    }
+}

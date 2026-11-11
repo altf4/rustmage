@@ -30451,7 +30451,7 @@
     },
     {
       "factory_identity": "@token/blb-sword",
-      "name": "Sword Token",
+      "name": "Sword",
       "subtypes": "Equipment",
       "colors": 0
     },

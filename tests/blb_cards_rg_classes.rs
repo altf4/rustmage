@@ -95,6 +95,7 @@ fn blacksmiths_talent_creates_and_attaches_sword_and_grants_own_turn_keywords() 
         })
         .unwrap();
     assert_eq!(sword.card, Card::from_catalogue_id(5620));
+    assert_eq!(sword.card.name(), "Sword");
     assert_eq!(sword.attached_to, None);
     level(&mut game, talent, 2);
     level(&mut game, talent, 3);

@@ -1,11 +1,7 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 4),
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::OncePerTurn(&TriggerCondition::SelfTargeted {
-            relation: CastRelation::You,
-            spells_only: false,
-        }),
+        condition: TriggerCondition::FirstTargetedByController,
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[
             Instruction::Grow {
