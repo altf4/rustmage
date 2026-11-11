@@ -16,13 +16,15 @@ pub(super) struct Preparation {
     pub done: bool,
     pub recipe: Option<CopyRecipe>,
     pub exile: Option<EntryCopyExile>,
-    applied: Vec<Card>,
+    /// The exact donor of the replacement currently printed on the entrant.
+    origin: Option<ObjectRef>,
+    applied: Vec<ObjectRef>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Preparation {
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.applied.len() * std::mem::size_of::<Card>()
+        std::mem::size_of::<Self>() + self.applied.len() * std::mem::size_of::<ObjectRef>()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -46,7 +48,7 @@ pub(super) fn needs_copy(movement: &entries::EntryMove) -> bool {
         && movement
             .copy_preparation
             .as_ref()
-            .is_none_or(|copy| !copy.done && !copy.applied.contains(&definition))
+            .is_none_or(|copy| !copy.done)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: CopyRecipe) {
@@ -171,9 +173,11 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn apply_choice(
     movement: &mut entries::EntryMove,
+    object: ObjectRef,
     (recipe, exile): (CopyRecipe, Option<EntryCopyExile>),
 ) {
     let definition = movement.before.card;
+    let entrant = movement.before.reference;
     movement.tapped |= matches!(
         definition.entry_copy_options().source,
         EntryCopySource::GraveyardLand { tapped: true }
@@ -181,10 +185,20 @@ pub(super) fn apply_choice(
     apply_blueprint(movement, recipe);
     let preparation = movement.copy_preparation.as_mut().unwrap();
     preparation.exile = exile;
+    // The same replacement has one opportunity per entry (CR614.5). A
+    // replacement copied from another exact object can still apply (CR707.5).
     if recipe.definition.entry_copy().is_some() {
-        // CR614.5: an intrinsic replacement already applied to this event
-        // cannot apply again when it is present on the selected blueprint.
-        preparation.applied.push(definition);
+        let used = preparation.origin.replace(object).unwrap_or(entrant);
+        if matches!(
+            definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) {
+            preparation.applied.push(used);
+        }
+        preparation.done = matches!(
+            recipe.definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) && preparation.applied.contains(&object);
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -237,6 +251,7 @@ impl Game {
                 chosen_blueprint(self, definition, object, || self.copiable_recipe(object));
             apply_choice(
                 &mut self.state.entry_batch.as_mut().unwrap().moves[index],
+                object,
                 choice,
             );
         } else {

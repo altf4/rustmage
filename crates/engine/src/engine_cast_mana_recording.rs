@@ -42,6 +42,7 @@ impl Game {
             kind,
             production,
             tap_bonus: [0; 6],
+            tap_bonus_lots: Vec::new(),
             recolor: None,
             time_removal: None,
             quality: None,
@@ -205,7 +206,11 @@ impl Game {
             capture.event.recolor = Some(colors);
         }
     }
-    pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, mana: Mana) {
+    pub(super) fn record_cast_mana_bonus(
+        &mut self,
+        actor: Player,
+        bonus: &mana_tap_bonus::TapBonusOutput,
+    ) {
         if let Some(capture) = self
             .state
             .cast_rollback
@@ -213,7 +218,8 @@ impl Game {
             .and_then(|r| r.capture.as_mut())
         {
             assert_eq!(capture.event.actor, actor);
-            for (amount, added) in capture.event.tap_bonus.iter_mut().zip(mana) {
+            capture.event.tap_bonus_lots.extend_from_slice(&bonus.lots);
+            for (amount, added) in capture.event.tap_bonus.iter_mut().zip(bonus.total) {
                 *amount = amount
                     .checked_add(added)
                     .capacity("triggered mana receipt exhausted");

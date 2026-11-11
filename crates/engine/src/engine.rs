@@ -1885,7 +1885,7 @@ impl SpellView {
     fn tap_mana_bonus<W: ability_world::CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
-    ) -> ManaTapBonus {
+    ) -> mana_tap_bonus::ManaTapReceipt {
         let source = self.mana_activation_key().and_then(|key| {
             key.definition
                 .activation(key.ability)
@@ -4081,6 +4081,9 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mana_split: Option<ManaSplitChoiceView>,
     pub mana_choices: Vec<Mana>,
+    /// Exact public provider of the current triggered mana choice.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mana_tap_bonus_source: Option<ObjectRef>,
     pub mode_choices: Vec<ModeChoiceView>,
     pub cost_choices: Vec<SpellCostChoiceView>,
     pub announcing_cost: Option<ManaCost>,
@@ -12667,6 +12670,7 @@ impl Game {
                 Vec::new()
             },
             mana_split: owns_choice.then(|| self.mana_split_choice()).flatten(),
+            mana_tap_bonus_source: self.mana_tap_bonus_source(),
             mana_choices: {
                 let mut options = Vec::new();
                 if owns_choice {

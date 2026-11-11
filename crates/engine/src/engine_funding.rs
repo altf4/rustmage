@@ -589,7 +589,6 @@ fn funding_cost_payments(
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn funding_allocations(
-    game: &Game,
     pool: [u128; 6],
     lots: &[mana_lots::Lot],
     purpose: mana_lots::Purpose,
@@ -600,7 +599,7 @@ fn funding_allocations(
     if deferred.is_some() {
         emit(Vec::new());
     } else {
-        mana_lots::visit_allocations(game, pool, lots, purpose, payment, emit);
+        mana_lots::visit_allocations(pool, lots, purpose, payment, emit);
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2119,7 +2118,6 @@ impl<'g> FundingState<'g> {
                                 return;
                             }
                             funding_allocations(
-                                self.game,
                                 self.mana,
                                 &self.lots,
                                 purpose,
@@ -2215,7 +2213,6 @@ impl<'g> FundingState<'g> {
                                 return;
                             }
                             funding_allocations(
-                                self.game,
                                 self.mana,
                                 &self.lots,
                                 purpose,
@@ -2457,7 +2454,6 @@ impl<'g> FundingState<'g> {
                                     return;
                                 }
                                 funding_allocations(
-                                    self.game,
                                     self.mana,
                                     &self.lots,
                                     purpose,
@@ -2937,15 +2933,15 @@ impl<'g> FundingState<'g> {
     fn add_funding_output(
         &mut self,
         step: &FundingMove,
-        tap_bonus: Mana,
+        tap_bonus: &mana_tap_bonus::TapBonusOutput,
         production: Mana,
         time_removal: Option<ObjectRef>,
     ) {
         self.add_completed_mana(
             production,
             step.output.as_ref().map_or(step.quality, |o| o.quality),
-            tap_bonus,
         );
+        self.add_funding_tap_bonus(tap_bonus);
         if let Some(output) = &step.output {
             self.project_mana_color_change(output, production);
         }
@@ -2953,12 +2949,7 @@ impl<'g> FundingState<'g> {
             self.project_mana_time_removal(source);
         }
     }
-    fn add_completed_mana(
-        &mut self,
-        production: Mana,
-        quality: Option<mana_lots::Quality>,
-        tap_bonus: Mana,
-    ) {
+    fn add_completed_mana(&mut self, production: Mana, quality: Option<mana_lots::Quality>) {
         for (pool, produced) in self.mana.iter_mut().zip(production) {
             *pool = pool
                 .checked_add(u128::from(produced))
@@ -2967,10 +2958,13 @@ impl<'g> FundingState<'g> {
         if let Some(quality) = quality {
             mana_lots::add_lot(&mut self.lots, quality, production.map(u128::from));
         }
-        for (pool, amount) in self.mana.iter_mut().zip(tap_bonus) {
-            *pool = pool
-                .checked_add(u128::from(amount))
-                .capacity("mana representation exhausted");
+    }
+    fn add_funding_tap_bonus(&mut self, bonus: &mana_tap_bonus::TapBonusOutput) {
+        if bonus.total != [0; 6] {
+            self.add_completed_mana(bonus.total, None);
+            for &(quality, mana) in &bonus.lots {
+                mana_lots::add_lot(&mut self.lots, quality, mana.map(u128::from));
+            }
         }
     }
     fn completed_mana_fits(&self, production: Mana, tap_bonus: Mana) -> bool {
@@ -2985,7 +2979,11 @@ impl<'g> FundingState<'g> {
     }
     /// The ordinary fixed path adds to the already owned cost world directly.
     /// Dynamic choices keep a separate branch for every distinct concrete result.
-    fn singleton_output(&self, step: &FundingMove, receipt: ManaTapBonus) -> Option<Mana> {
+    fn singleton_output(
+        &self,
+        step: &FundingMove,
+        receipt: &mana_tap_bonus::ManaTapReceipt,
+    ) -> Option<Mana> {
         let Some(output) = &step.output else {
             return Some(step.production);
         };
@@ -3008,7 +3006,7 @@ impl<'g> FundingState<'g> {
     fn visit_output(
         &self,
         step: &FundingMove,
-        tap_bonus: ManaTapBonus,
+        tap_bonus: &mana_tap_bonus::ManaTapReceipt,
         time_removal: Option<ObjectRef>,
         goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
@@ -3018,7 +3016,7 @@ impl<'g> FundingState<'g> {
                 return false;
             };
             tap_bonus.visit(production, |bonus| {
-                if !self.completed_mana_fits(replaced, bonus) {
+                if !self.completed_mana_fits(replaced, bonus.total) {
                     return false;
                 }
                 let mut next = self.clone();
@@ -3041,7 +3039,7 @@ impl<'g> FundingState<'g> {
             finish(step.production)
         }
     }
-    fn projected_mana_split_capacity(&self, receipt: ManaTapBonus) -> Mana {
+    fn projected_mana_split_capacity(&self, receipt: &mana_tap_bonus::ManaTapReceipt) -> Mana {
         let available = self
             .mana
             .map(|pool| u32::MAX - pool.min(u128::from(u32::MAX)) as u32);
@@ -3053,7 +3051,7 @@ impl<'g> FundingState<'g> {
         split: crate::cards::ManaSplit,
         goal: Option<&FundingGoal>,
         quality: Option<mana_lots::Quality>,
-        tap_bonus: ManaTapBonus,
+        tap_bonus: &mana_tap_bonus::ManaTapReceipt,
         mut finish: impl FnMut(Mana) -> bool,
     ) -> bool {
         let Some((min, max)) = split.bounds(self.projected_mana_split_capacity(tap_bonus)) else {
@@ -3085,7 +3083,7 @@ impl<'g> FundingState<'g> {
                     return true;
                 };
                 let mut optimistic = self.clone();
-                optimistic.add_completed_mana(replaced, quality, [0; 6]);
+                optimistic.add_completed_mana(replaced, quality);
                 optimistic.optimistic(goal)
             })
         };
@@ -4907,7 +4905,6 @@ impl<'g> FundingState<'g> {
                     return;
                 }
                 mana_lots::visit_allocations(
-                    world.game,
                     world.mana,
                     &world.lots,
                     purpose,
@@ -7600,11 +7597,12 @@ impl FundingState<'_> {
                 return false;
             };
             bonus.visit(production, |bonus| {
-                if !self.completed_mana_fits(replaced, bonus) {
+                if !self.completed_mana_fits(replaced, bonus.total) {
                     return false;
                 }
                 let mut next = self.clone();
-                next.add_completed_mana(replaced, quality, bonus);
+                next.add_completed_mana(replaced, quality);
+                next.add_funding_tap_bonus(bonus);
                 if let Some(output) = &a.mana_output {
                     next.project_mana_color_change(output, production);
                 }
@@ -7628,7 +7626,7 @@ impl FundingState<'_> {
                     split,
                     self.game.mana_output_parent_goal().as_ref(),
                     quality,
-                    bonus,
+                    &bonus,
                     finish,
                 );
             }
@@ -7799,7 +7797,7 @@ impl Game {
         let Some(replaced) = receipt.replace_production(upper) else {
             return true;
         };
-        world.add_completed_mana(replaced, output.quality, [0; 6]);
+        world.add_completed_mana(replaced, output.quality);
         world.project_paid_mana_use(&a.item);
         world.optimistic(&goal)
     }
@@ -7858,22 +7856,40 @@ impl Game {
                     .as_ref()
                     .and_then(|m| m.announcement_quality.as_ref().map(|(_, q)| q)),
             );
-            world.add_completed_mana([0; 6], None, bonus);
-            world.reachable_with_evidence(
-                &goal,
-                a.evidence.as_ref().map(|e| e.threshold),
-                &mut HashSet::new(),
-            )
+            choice.visit_output(bonus, |output| {
+                if !world.completed_mana_fits([0; 6], output.total) {
+                    return false;
+                }
+                let mut completed = world.clone();
+                completed.add_funding_tap_bonus(output);
+                completed.reachable_with_evidence(
+                    &goal,
+                    a.evidence.as_ref().map(|e| e.threshold),
+                    &mut HashSet::new(),
+                )
+            })
         } else if let Some(goal) = choice
             .previous
             .as_ref()
             .and_then(|pending| self.guided_mana_goal(pending))
         {
-            let mut world = FundingState::from_game(self, &goal);
-            world.add_completed_mana([0; 6], None, bonus);
-            world.reachable_with_evidence(&goal, None, &mut HashSet::new())
+            let world = FundingState::from_game(self, &goal);
+            choice.visit_output(bonus, |output| {
+                if !world.completed_mana_fits([0; 6], output.total) {
+                    return false;
+                }
+                let mut completed = world.clone();
+                completed.add_funding_tap_bonus(output);
+                completed.reachable_with_evidence(&goal, None, &mut HashSet::new())
+            })
         } else {
-            true
+            choice.visit_output(bonus, |output| {
+                self.state.players[choice.player.index()]
+                    .mana
+                    .into_iter()
+                    .zip(output.total)
+                    .all(|(pool, addition)| pool.checked_add(addition).is_some())
+            })
         }
     }
 }

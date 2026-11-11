@@ -1339,12 +1339,24 @@ pub(super) trait CharacteristicWorld {
         &self,
         id: CardId,
     ) -> Vec<(ability_order::GrantedAbilityKey, u16)> {
-        if self.object(id).zone != Zone::Battlefield
-            || !self.static_sources().iter().any(|&id| {
-                self.object(id).zone == Zone::Battlefield
-                    && self.definition(id).controlled_subtype_mana_activation(None)
-            })
-        {
+        let recipient = self.object(id);
+        if recipient.zone != Zone::Battlefield {
+            return Vec::new();
+        }
+        let mut subtypes = None;
+        let potential = self.static_sources().iter().copied().any(|provider| {
+            let source = self.object(provider);
+            provider != id
+                && source.zone == Zone::Battlefield
+                && source.controller == recipient.controller
+                && self.definition(provider).static_ability_groups().iter()
+                    .flat_map(|group| group.fragments)
+                    .any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { subtype, .. }
+                            if subtypes.get_or_insert_with(|| self.subtypes(id)).has(recipient.card, subtype))
+                    })
+        });
+        if !potential {
             return Vec::new();
         }
         ability_evaluation::evaluate_abilities(self).result.objects[id as usize]

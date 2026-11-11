@@ -665,9 +665,7 @@ impl Game {
             ability_world::CharacteristicWorld::controlled_subtype_mana_grants(self, card)
         {
             let rules = grant.granting_card.activation(ability);
-            if self.state.players[actor.index()].life < i128::from(rules.cost.life)
-                || self.named_activation_prohibited(card)
-            {
+            if self.state.players[actor.index()].life < i128::from(rules.cost.life) {
                 continue;
             }
             let source = self.object_ref(card);

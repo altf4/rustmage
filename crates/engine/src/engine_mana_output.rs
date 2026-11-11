@@ -305,12 +305,14 @@ impl Game {
         }
     }
 
-    fn mana_split_tap_receipt(&self) -> ManaTapBonus {
+    fn mana_split_tap_receipt(&self) -> mana_tap_bonus::ManaTapReceipt {
         self.state
             .announcing
             .as_ref()
             .filter(|a| a.mana_output.is_some())
-            .map_or_else(ManaTapBonus::default, |a| a.item.tap_mana_bonus(self))
+            .map_or_else(mana_tap_bonus::ManaTapReceipt::default, |a| {
+                a.item.tap_mana_bonus(self)
+            })
     }
 
     pub fn mana_split_choice(&self) -> Option<ManaSplitChoiceView> {

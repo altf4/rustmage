@@ -54,85 +54,19 @@ impl ManaTapBonus {
     pub(super) fn has_trigger_bonuses(self) -> bool {
         self.fixed != [0; 6] || self.amount != 0 || self.colorless != 0
     }
-    pub(super) fn replace_production(self, mut production: Mana) -> Option<Mana> {
-        if self.multiplier != 1 {
-            for amount in &mut production {
-                *amount = u32::try_from(u128::from(*amount) * u128::from(self.multiplier)).ok()?;
-            }
-        }
-        Some(production)
-    }
-    pub(super) fn unreplaced_capacity(self, available: Mana) -> Mana {
-        if self.multiplier == 1 {
-            return available;
-        }
-        available.map(|amount| (u64::from(amount) / self.multiplier) as u32)
-    }
-    pub(super) fn unreplaced_required(self, amount: u128) -> u128 {
-        amount.div_ceil(u128::from(self.multiplier))
-    }
-    pub(super) fn domain(self, production: Mana) -> ManaProduction {
-        let mask = production
-            .iter()
-            .enumerate()
-            .fold(0, |m, (i, n)| m | if *n != 0 { 1 << i } else { 0 });
-        if self.amount == 0 || mask == 0 {
-            ManaProduction::Fixed([0; 6])
-        } else {
-            ManaProduction::Combination {
-                mask,
-                amount: self.amount,
-            }
-        }
-    }
-    fn fixed_for(self, production: Mana) -> Mana {
-        let mut fixed = self.fixed;
-        if production[5] != 0 {
-            fixed[5] = fixed[5]
-                .checked_add(self.colorless)
-                .capacity("mana representation exhausted");
-        }
-        fixed
-    }
-    pub(super) fn visit(self, production: Mana, mut emit: impl FnMut(Mana) -> bool) -> bool {
-        // CR106.12a: tapping for mana must actually produce mana. A captured
-        // fixed-color trigger does not fire for an ability that produces zero.
-        if production == [0; 6] {
-            return emit([0; 6]);
-        }
-        let fixed = self.fixed_for(production);
-        self.domain(production).visit(|mana| {
-            let bonus = std::array::from_fn(|i| {
-                fixed[i]
-                    .checked_add(mana[i])
-                    .capacity("mana representation exhausted")
-            });
-            emit(bonus)
-        })
-    }
-    pub(super) fn singleton(self, production: Mana) -> Option<Mana> {
-        let mut result = None;
-        let mut multiple = false;
-        self.visit(production, |bonus| {
-            if result.is_some() {
-                multiple = true;
-                return true;
-            }
-            result = Some(bonus);
-            false
-        });
-        if multiple { None } else { result }
-    }
-
     pub(super) fn with_event_effects<W: CharacteristicWorld + ?Sized>(
-        mut self,
+        self,
         world: &W,
         actor: Player,
         source: Option<ObjectRef>,
-    ) -> Self {
-        let Some(land) = source else { return self };
+    ) -> ManaTapReceipt {
+        let mut receipt = ManaTapReceipt {
+            base: self,
+            sources: Vec::new(),
+        };
+        let Some(land) = source else { return receipt };
         if world.static_sources().is_empty() {
-            return self;
+            return receipt;
         }
         // CR106.12: check the providers as the mana ability produces mana,
         // after paying its activation costs. Retain a departed land's identity.
@@ -145,7 +79,7 @@ impl ManaTapBonus {
             self.land_at_tap
         };
         let Some(land_kind) = land_kind else {
-            return self;
+            return receipt;
         };
         let query = characteristic_query::CharacteristicQuery::in_world(world);
         for &source in world.static_sources() {
@@ -171,8 +105,10 @@ impl ManaTapBonus {
                         if available() {
                             // Each replacement applies once. A saturated factor is
                             // already larger than any representable positive output.
-                            self.multiplier =
-                                self.multiplier.saturating_mul(u64::from(factor.max(1)));
+                            receipt.base.multiplier = receipt
+                                .base
+                                .multiplier
+                                .saturating_mul(u64::from(factor.max(1)));
                         }
                         continue;
                     }
@@ -203,46 +139,182 @@ impl ManaTapBonus {
                     continue;
                 }
                 let count = trigger_count(&query, source);
-                self.amount = self
-                    .amount
-                    .checked_add(
-                        amount
-                            .checked_mul(count)
-                            .capacity("mana representation exhausted"),
-                    )
-                    .capacity("mana representation exhausted");
-                self.colorless = self
-                    .colorless
-                    .checked_add(
-                        colorless
-                            .checked_mul(count)
-                            .capacity("mana representation exhausted"),
-                    )
-                    .capacity("mana representation exhausted");
-                let Some(production) = production else {
-                    continue;
-                };
                 let mut fixed = None;
-                production.in_world(world, source).visit(|mana| {
-                    assert!(
-                        fixed.is_none(),
-                        "attachment bonus requires fixed or chosen-color mana"
-                    );
-                    fixed = Some(mana);
-                    false
-                });
-                for (total, amount) in self.fixed.iter_mut().zip(fixed.unwrap_or_default()) {
-                    *total = total
-                        .checked_add(
-                            amount
-                                .checked_mul(count)
-                                .capacity("mana representation exhausted"),
-                        )
-                        .capacity("mana representation exhausted");
+                if let Some(production) = production {
+                    production.in_world(world, source).visit(|mana| {
+                        assert!(
+                            fixed.is_none(),
+                            "attachment bonus requires fixed or chosen-color mana"
+                        );
+                        fixed = Some(mana);
+                        false
+                    });
+                }
+                let scaled = |value: u32| {
+                    value
+                        .checked_mul(count)
+                        .capacity("mana representation exhausted")
+                };
+                let fixed = fixed.unwrap_or_default().map(scaled);
+                if fixed != [0; 6] || amount != 0 || colorless != 0 {
+                    receipt.sources.push(TapBonusSource {
+                        quality: mana_lots::Quality::ORDINARY.with_producer(world, source),
+                        fixed,
+                        amount: scaled(amount),
+                        colorless: scaled(colorless),
+                    });
                 }
             }
         }
-        self
+        receipt
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Default)]
+pub(super) struct ManaTapReceipt {
+    base: ManaTapBonus,
+    sources: Vec<TapBonusSource>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct TapBonusSource {
+    quality: mana_lots::Quality,
+    fixed: Mana,
+    amount: u32,
+    colorless: u32,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Default)]
+pub(super) struct TapBonusOutput {
+    pub total: Mana,
+    pub lots: Vec<(mana_lots::Quality, Mana)>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TapBonusOutput {
+    fn add(&mut self, mana: Mana, quality: Option<mana_lots::Quality>) {
+        for (total, amount) in self.total.iter_mut().zip(mana) {
+            *total = total
+                .checked_add(amount)
+                .capacity("mana representation exhausted");
+        }
+        if let Some(quality) = quality
+            && mana != [0; 6]
+        {
+            self.lots.push((quality, mana));
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct TapBonusOption {
+    production: ManaProduction,
+    quality: Option<mana_lots::Quality>,
+}
+
+fn visit_bonus_options(
+    output: &mut TapBonusOutput,
+    options: &[TapBonusOption],
+    emit: &mut impl FnMut(&TapBonusOutput) -> bool,
+) -> bool {
+    let Some((current, rest)) = options.split_first() else {
+        return emit(output);
+    };
+    let total = output.total;
+    let lot_count = output.lots.len();
+    current.production.visit(|mana| {
+        output.add(mana, current.quality);
+        let found = visit_bonus_options(output, rest, emit);
+        output.total = total;
+        output.lots.truncate(lot_count);
+        found
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManaTapReceipt {
+    pub(super) fn has_trigger_bonuses(&self) -> bool {
+        self.base.has_trigger_bonuses() || !self.sources.is_empty()
+    }
+    pub(super) fn replace_production(&self, mut production: Mana) -> Option<Mana> {
+        if self.base.multiplier != 1 {
+            for amount in &mut production {
+                *amount =
+                    u32::try_from(u128::from(*amount) * u128::from(self.base.multiplier)).ok()?;
+            }
+        }
+        Some(production)
+    }
+    pub(super) fn unreplaced_capacity(&self, available: Mana) -> Mana {
+        if self.base.multiplier == 1 {
+            return available;
+        }
+        available.map(|amount| (u64::from(amount) / self.base.multiplier) as u32)
+    }
+    pub(super) fn unreplaced_required(&self, amount: u128) -> u128 {
+        amount.div_ceil(u128::from(self.base.multiplier))
+    }
+    fn output(&self, production: Mana) -> (TapBonusOutput, Vec<TapBonusOption>) {
+        let mut output = TapBonusOutput::default();
+        let mut options = Vec::new();
+        // CR106.12a: tapping for mana must actually produce mana.
+        if production == [0; 6] || !self.has_trigger_bonuses() {
+            return (output, options);
+        }
+        let mask = production
+            .iter()
+            .enumerate()
+            .fold(0u8, |mask, (color, &amount)| {
+                mask | (u8::from(amount != 0) << color)
+            });
+        let mut add = |mut fixed: Mana, amount, colorless, quality| {
+            if production[5] != 0 {
+                fixed[5] = fixed[5]
+                    .checked_add(colorless)
+                    .capacity("mana representation exhausted");
+            }
+            if amount != 0 {
+                if mask.count_ones() == 1 {
+                    let color = mask.trailing_zeros() as usize;
+                    fixed[color] = fixed[color]
+                        .checked_add(amount)
+                        .capacity("mana representation exhausted");
+                } else {
+                    options.push(TapBonusOption {
+                        production: ManaProduction::Combination { mask, amount },
+                        quality,
+                    });
+                }
+            }
+            output.add(fixed, quality);
+        };
+        add(self.base.fixed, self.base.amount, self.base.colorless, None);
+        for source in &self.sources {
+            add(
+                source.fixed,
+                source.amount,
+                source.colorless,
+                Some(source.quality),
+            );
+        }
+        (output, options)
+    }
+
+    pub(super) fn visit(
+        &self,
+        production: Mana,
+        mut emit: impl FnMut(&TapBonusOutput) -> bool,
+    ) -> bool {
+        let (mut output, options) = self.output(production);
+        visit_bonus_options(&mut output, &options, &mut emit)
+    }
+
+    pub(super) fn singleton(&self, production: Mana) -> Option<TapBonusOutput> {
+        let (output, options) = self.output(production);
+        options.is_empty().then_some(output)
     }
 }
 
@@ -276,15 +348,34 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct TapBonusChoice {
     pub player: Player,
-    pub production: ManaProduction,
+    options: Vec<TapBonusOption>,
+    at: usize,
     pub previous: Option<Pending>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TapBonusChoice {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.options.len() * std::mem::size_of::<TapBonusOption>()
+            + self.previous.as_ref().map_or(0, Pending::owned_bytes)
+    }
+
+    pub(super) fn visit_output(
+        &self,
+        production: Mana,
+        mut emit: impl FnMut(&TapBonusOutput) -> bool,
+    ) -> bool {
+        let mut output = TapBonusOutput::default();
+        output.add(production, self.options[self.at].quality);
+        visit_bonus_options(&mut output, &self.options[self.at + 1..], &mut emit)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn add_mana_tap_event(
         &mut self,
         actor: Player,
-        receipt: ManaTapBonus,
+        receipt: ManaTapReceipt,
         production: Mana,
         quality: Option<mana_lots::Quality>,
     ) {
@@ -298,21 +389,21 @@ impl Game {
     pub(super) fn finish_mana_tap_bonus(
         &mut self,
         actor: Player,
-        receipt: ManaTapBonus,
+        receipt: ManaTapReceipt,
         production: Mana,
     ) {
-        if let Some(bonus) = receipt.singleton(production) {
-            self.produce_tap_mana_bonus(actor, bonus);
-            return;
+        let (output, options) = receipt.output(production);
+        self.produce_tap_mana_bonus(actor, &output);
+        if !options.is_empty() {
+            let state = self.state.mana_lots.get_or_insert_default();
+            assert!(state.tap_bonus.is_none(), "one mana event at a time");
+            state.tap_bonus = Some(Box::new(TapBonusChoice {
+                player: actor,
+                options,
+                at: 0,
+                previous: None,
+            }));
         }
-        self.produce_tap_mana_bonus(actor, receipt.fixed_for(production));
-        let state = self.state.mana_lots.get_or_insert_default();
-        assert!(state.tap_bonus.is_none(), "one mana event at a time");
-        state.tap_bonus = Some(Box::new(TapBonusChoice {
-            player: actor,
-            production: receipt.domain(production),
-            previous: None,
-        }));
     }
     pub(super) fn mana_tap_bonus_pending(&self) -> bool {
         self.state
@@ -326,6 +417,11 @@ impl Game {
             .as_ref()
             .and_then(|s| s.tap_bonus.as_ref())
             .is_some_and(|c| c.previous.is_some())
+    }
+    pub(super) fn mana_tap_bonus_source(&self) -> Option<ObjectRef> {
+        let choice = self.state.mana_lots.as_ref()?.tap_bonus.as_ref()?;
+        choice.previous.as_ref()?;
+        choice.options.get(choice.at)?.quality?.producer
     }
     pub(super) fn advance_mana_tap_bonus(&mut self) -> bool {
         let Some(choice) = self
@@ -341,13 +437,13 @@ impl Game {
         }
         self.state.pending = Pending::EffectMana {
             player: choice.player,
-            production: choice.production,
+            production: choice.options[choice.at].production,
             recipients: std::array::from_fn(|i| i == choice.player.index()),
         };
         true
     }
     pub(super) fn choose_mana_tap_bonus(&mut self, production: Mana) {
-        let choice = self
+        let mut choice = self
             .state
             .mana_lots
             .as_mut()
@@ -355,8 +451,15 @@ impl Game {
             .tap_bonus
             .take()
             .unwrap();
-        self.produce_tap_mana_bonus(choice.player, production);
-        self.state.pending = choice.previous.expect("active bonus choice");
-        self.compact_mana_lots();
+        let mut output = TapBonusOutput::default();
+        output.add(production, choice.options[choice.at].quality);
+        self.produce_tap_mana_bonus(choice.player, &output);
+        choice.at += 1;
+        if choice.at == choice.options.len() {
+            self.state.pending = choice.previous.expect("active bonus choice");
+            self.compact_mana_lots();
+        } else {
+            self.state.mana_lots.as_mut().unwrap().tap_bonus = Some(choice);
+        }
     }
 }

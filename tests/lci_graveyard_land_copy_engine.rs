@@ -182,6 +182,8 @@ fn simultaneous_graveyard_entries_and_self_copy_match_projected_entry() {
     let mut game = scenario(player);
     let land = put(&mut game, player, "Promising Vein", Zone::Graveyard);
     let donor = put(&mut game, player.other(), "Forest", Zone::Graveyard);
+    let another = put(&mut game, player.other(), "Promising Vein", Zone::Graveyard);
+    let third = put(&mut game, player, "Promising Vein", Zone::Graveyard);
     let moves = vec![
         game.entry_move(land, Zone::Battlefield, false),
         game.entry_move(donor, Zone::Battlefield, false),
@@ -213,6 +215,42 @@ fn simultaneous_graveyard_entries_and_self_copy_match_projected_entry() {
     assert_eq!(same_definition.state.pending, Pending::Priority);
     assert_eq!(same_definition.object_view(land).card, definition());
     assert!(same_definition.object_view(land).tapped);
+
+    let mut copied_again = game.clone();
+    let another = copied_again.object_ref(another);
+    act(&mut copied_again, copy(another));
+    assert!(matches!(
+        copied_again.state.pending,
+        Pending::EntryCopy { .. }
+    ));
+    let forest = copied_again.object_ref(donor);
+    act(&mut copied_again, copy(forest));
+    assert_eq!(copied_again.object_view(land).card, Card::Forest);
+
+    for through_third in [false, true] {
+        let mut repeated = game.clone();
+        act(&mut repeated, copy(another));
+        if through_third {
+            let third_ref = repeated.object_ref(third);
+            act(&mut repeated, copy(third_ref));
+        }
+        assert!(matches!(repeated.state.pending, Pending::EntryCopy { .. }));
+        let repeated_copy = copy(another);
+        let index = repeated
+            .legal_actions()
+            .iter()
+            .position(|action| *action == repeated_copy)
+            .unwrap();
+        let mut indexed = repeated.clone();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut repeated, repeated_copy);
+        assert_eq!(repeated.snapshot(), indexed.snapshot());
+        assert_eq!(repeated.state.pending, Pending::Priority);
+        assert_eq!(repeated.object_view(land).card, definition());
+        assert!(repeated.object_view(land).tapped);
+    }
 
     let donor_ref = game.object_ref(donor);
     act(&mut game, copy(donor_ref));

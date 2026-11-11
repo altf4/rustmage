@@ -371,12 +371,9 @@ fn a_public_source_remains_a_choice_when_paying_an_unrelated_activated_ability()
     let range = g.observe(p).mana_lot_spend.unwrap();
     assert_eq!((range.minimum, range.maximum), (0, 1));
     assert_eq!(g.observe(p).mana_lots[0].lot, range.lot);
-    assert_eq!(
-        g.observe(p).mana_lots[0].producer,
-        Some(g.object_ref(source))
-    );
+    assert_eq!(g.observe(p).mana_lots[0].producer, Some(g.object_ref(land)));
     assert!(g.observe(p.other()).mana_lot_spend.is_none());
-    act(&mut g, Action::ChooseManaLotSpend { amount: 0 });
+    act(&mut g, Action::ChooseManaLotSpend { amount: 1 });
     quiet(&mut g);
     assert_eq!(g.observe(p).mana_lots[0].amounts, WHITE_TWO);
 }
@@ -512,8 +509,10 @@ fn equivalent_tagged_producers_share_one_spending_choice_and_keep_exact_receipts
 
 #[test]
 fn neutral_exact_producer_rows_share_one_funding_allocation() {
+    let _fixture = fixture_rules::activate(&[(card("Short Bow"), &SOURCE)]);
     let player = Player::P0;
     let mut game = scenario(player);
+    put(&mut game, player, "Short Bow", Zone::Battlefield);
     game.state.players[player.index()].mana = [0; 6];
     for _ in 0..12 {
         let land = put(&mut game, player, "Plains", Zone::Battlefield);
@@ -521,10 +520,10 @@ fn neutral_exact_producer_rows_share_one_funding_allocation() {
     }
     let lots = game.mana_lots(player);
     assert_eq!(lots.len(), 12);
+    assert_eq!(game.observe(player).mana_lots.len(), 12);
     assert!(game.funding_lot_key(lots).is_empty());
     let mut plans = Vec::new();
     mana_lots::visit_allocations(
-        &game,
         [12, 0, 0, 0, 0, 0],
         lots,
         mana_lots::Purpose::Other,
@@ -607,38 +606,61 @@ fn spending_before_a_transform_can_preserve_its_exact_producer() {
     let back = front.back_face().unwrap();
     let _fixture = fixture_rules::activate(&[(front, &FRONT), (back, &SOURCE)]);
     let player = Player::P0;
-    let mut parent = scenario(player);
-    parent.state.players[player.index()].mana = [0; 6];
-    let ordinary = put(&mut parent, player, "Plains", Zone::Battlefield);
-    let source = spawn(&mut parent, player, front, Zone::Battlefield);
-    let source_ref = parent.object_ref(source);
-    let creature = put(&mut parent, player, "Bear Cub", Zone::Battlefield);
-    act(&mut parent, Action::TapMana { card: ordinary });
-    choose(
-        &mut parent,
-        |a| matches!(a, Action::ActivateMana { card, .. } if *card == source),
-    );
-    let spell = put(&mut parent, player, "Acrobatic Leap", Zone::Hand);
-    cast(&mut parent, spell, Some(Target::Card(creature)));
-    assert!(parent.state.cast_sources.is_empty());
-    let public = parent.observe(player);
-    let spend = public.mana_lot_spend.unwrap();
-    assert_eq!((spend.minimum, spend.maximum), (0, 1));
-    assert_eq!(public.mana_lots[0].producer, Some(source_ref));
-    for amount in [0, 1] {
-        let mut branch = parent.clone();
-        act(&mut branch, Action::ChooseManaLotSpend { amount });
-        quiet(&mut branch);
-        branch.transform_permanent(source_ref);
-        assert_eq!(branch.object_ref(source), source_ref);
-        assert_eq!(branch.object_view(source).card, back);
-        let spell = put(&mut branch, player, "Healer's Hawk", Zone::Hand);
-        cast(&mut branch, spell, None);
-        quiet(&mut branch);
+    for produce_from_front in [false, true] {
+        let mut parent = scenario(player);
+        parent.state.players[player.index()].mana = [0; 6];
+        let ordinary = put(&mut parent, player, "Plains", Zone::Battlefield);
+        let source = spawn(&mut parent, player, front, Zone::Battlefield);
+        let source_ref = parent.object_ref(source);
+        let creature = put(&mut parent, player, "Bear Cub", Zone::Battlefield);
+        act(&mut parent, Action::TapMana { card: ordinary });
+        let producer = if produce_from_front {
+            choose(
+                &mut parent,
+                |a| matches!(a, Action::ActivateMana { card, .. } if *card == source),
+            );
+            source_ref
+        } else {
+            let land = put(&mut parent, player, "Plains", Zone::Battlefield);
+            act(&mut parent, Action::TapMana { card: land });
+            parent.object_ref(land)
+        };
+        let spell = put(&mut parent, player, "Acrobatic Leap", Zone::Hand);
+        cast(&mut parent, spell, Some(Target::Card(creature)));
+        assert!(parent.state.cast_sources.is_empty());
+        let public = parent.observe(player);
+        let spend = public.mana_lot_spend.unwrap();
+        assert_eq!((spend.minimum, spend.maximum), (0, 1));
         assert_eq!(
-            branch.state.players[player.index()].life,
-            if amount == 0 { 21 } else { 20 }
+            public.mana_lots[0].producer,
+            Some(parent.object_ref(ordinary))
         );
+        assert_eq!(public.mana_lots[1].producer, Some(producer));
+        for spend_land in [0, 1] {
+            let mut branch = parent.clone();
+            act(
+                &mut branch,
+                Action::ChooseManaLotSpend { amount: spend_land },
+            );
+            quiet(&mut branch);
+            branch.transform_permanent(source_ref);
+            assert_eq!(branch.object_ref(source), source_ref);
+            assert_eq!(branch.object_view(source).card, back);
+            if !produce_from_front {
+                branch.apply_temporary_copy(
+                    producer,
+                    CopyRecipe::new(back),
+                    CopyDeadline::EndOfTurn,
+                );
+            }
+            let spell = put(&mut branch, player, "Healer's Hawk", Zone::Hand);
+            cast(&mut branch, spell, None);
+            quiet(&mut branch);
+            assert_eq!(
+                branch.state.players[player.index()].life,
+                if spend_land == 1 { 21 } else { 20 }
+            );
+        }
     }
 }
 
@@ -703,13 +725,17 @@ fn a_pending_public_copy_can_preserve_its_producers_mana_for_the_copied_ability(
     let instant = put(&mut parent, player, "Acrobatic Leap", Zone::Hand);
     cast(&mut parent, instant, Some(Target::Card(other)));
     let public = parent.observe(player);
-    assert_eq!(public.mana_lots[0].producer, Some(producer));
+    assert_eq!(public.mana_lots[0].producer, Some(parent.object_ref(land)));
+    assert_eq!(public.mana_lots[1].producer, Some(producer));
     let spend = public.mana_lot_spend.unwrap();
     assert_eq!((spend.minimum, spend.maximum), (0, 1));
 
-    for amount in [0, 1] {
+    for spend_land in [0, 1] {
         let mut branch = parent.clone();
-        act(&mut branch, Action::ChooseManaLotSpend { amount });
+        act(
+            &mut branch,
+            Action::ChooseManaLotSpend { amount: spend_land },
+        );
         let choose_copy = Action::ChooseEffectObject {
             object: branch.object_ref(copy_from),
         };
@@ -723,15 +749,174 @@ fn a_pending_public_copy_can_preserve_its_producers_mana_for_the_copied_ability(
 
         let spell = put(&mut branch, player, "Healer's Hawk", Zone::Hand);
         cast(&mut branch, spell, None);
-        if amount == 0 {
+        if spend_land == 1 {
             assert_ne!(branch.state.pending, Pending::ManaLotSpend { player });
         } else {
-            act(&mut branch, Action::ChooseManaLotSpend { amount: 0 });
+            act(&mut branch, Action::ChooseManaLotSpend { amount: 1 });
         }
         quiet(&mut branch);
         assert_eq!(
             branch.state.players[player.index()].life,
-            if amount == 0 { 21 } else { 20 }
+            if spend_land == 1 { 21 } else { 20 }
         );
+    }
+}
+
+#[test]
+fn a_targeted_copy_can_observe_its_recipients_retained_mana() {
+    const PRODUCER: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[producer(true, false)],
+        ..CardRules::EMPTY
+    };
+    let _fixture = fixture_rules::activate(&[
+        (card("Short Bow"), &SOURCE),
+        (card("Goldvein Pick"), &PRODUCER),
+    ]);
+    let player = Player::P0;
+    let mut parent = scenario(player);
+    parent.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
+    let shuri = put(
+        &mut parent,
+        player,
+        "Shuri, Wakandan Inventor",
+        Zone::Battlefield,
+    );
+    let land = put(&mut parent, player, "Plains", Zone::Battlefield);
+    let from = put(&mut parent, player, "Short Bow", Zone::Battlefield);
+    let recipient = put(&mut parent, player, "Goldvein Pick", Zone::Battlefield);
+    let exact = parent.object_ref(recipient);
+    act(
+        &mut parent,
+        Action::AnnounceActivate {
+            card: shuri,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    for target in [recipient, from] {
+        act(
+            &mut parent,
+            Action::ChooseTarget {
+                target: Target::Card(target),
+            },
+        );
+    }
+    if parent.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut parent, Action::FinishTargets);
+    }
+    pay(&mut parent);
+
+    act(&mut parent, Action::TapMana { card: land });
+    generate(&mut parent, recipient);
+    let spell = put(&mut parent, player, "Acrobatic Leap", Zone::Hand);
+    cast(&mut parent, spell, Some(Target::Card(shuri)));
+    assert_eq!(parent.state.pending, Pending::ManaLotSpend { player });
+    assert_eq!(parent.observe(player).mana_lots[1].producer, Some(exact));
+
+    for spend_land in [0, 1] {
+        let mut branch = parent.clone();
+        act(
+            &mut branch,
+            Action::ChooseManaLotSpend { amount: spend_land },
+        );
+        quiet(&mut branch);
+        assert_eq!(branch.object_view(recipient).reference, exact);
+        assert_eq!(branch.object_view(recipient).card, card("Short Bow"));
+        let spell = put(&mut branch, player, "Healer's Hawk", Zone::Hand);
+        cast(&mut branch, spell, None);
+        if spend_land == 0 {
+            act(&mut branch, Action::ChooseManaLotSpend { amount: 1 });
+        }
+        quiet(&mut branch);
+        assert_eq!(
+            branch.state.players[player.index()].life,
+            if spend_land == 1 { 21 } else { 20 }
+        );
+    }
+}
+
+#[test]
+fn guided_converter_keeps_exact_producer_choices_without_duplicate_actions() {
+    let _fixture = fixture_rules::activate(&[(card("Short Bow"), &SOURCE)]);
+    let player = Player::P0;
+    let mut parent = scenario(player);
+    parent.state.players[player.index()].mana = [0; 6];
+    put(&mut parent, player, "Short Bow", Zone::Battlefield);
+    let lands: Vec<_> = (0..8)
+        .map(|_| {
+            let land = put(&mut parent, player, "Plains", Zone::Battlefield);
+            act(&mut parent, Action::TapMana { card: land });
+            parent.object_ref(land)
+        })
+        .collect();
+    assert_eq!(parent.observe(player).mana_lots.len(), lands.len());
+    let converter = put(&mut parent, player, "Crystal Grotto", Zone::Battlefield);
+    let spell = put(&mut parent, player, "Shock", Zone::Hand);
+    act(&mut parent, Action::AnnounceCast { card: spell });
+    act(
+        &mut parent,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    if parent.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut parent, Action::FinishTargets);
+    }
+    let actions = parent.legal_actions();
+    let mut matches = actions.iter().enumerate().filter(|(_, action)| {
+        matches!(action,
+            Action::ActivateMana {
+                card,
+                payment: [1, 0, 0, 0, 0, 0],
+                production: [0, 0, 0, 1, 0, 0],
+                ..
+            } if *card == converter
+        )
+    });
+    let (index, action) = matches.next().unwrap();
+    assert!(matches.next().is_none());
+    let mut indexed = parent.clone();
+    act(&mut parent, action.clone());
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    let saved = parent.snapshot();
+    assert_eq!(saved, indexed.snapshot());
+
+    for row in 0..2 {
+        let mut branch = parent.clone();
+        for (step, land) in lands.iter().take(row + 1).enumerate() {
+            let view = branch.observe(player);
+            let choice = view.mana_lot_spend.unwrap();
+            assert_eq!((choice.minimum, choice.maximum), (0, 1));
+            assert_eq!(view.mana_lots[choice.lot].producer, Some(*land));
+            act(
+                &mut branch,
+                Action::ChooseManaLotSpend {
+                    amount: u32::from(row == step),
+                },
+            );
+        }
+        assert_eq!(
+            branch.state.players[player.index()].mana,
+            [7, 0, 0, 1, 0, 0]
+        );
+        assert!(
+            !branch
+                .mana_lots(player)
+                .iter()
+                .any(|lot| lot.quality.producer == Some(lands[row]))
+        );
+        assert!(
+            branch
+                .mana_lots(player)
+                .iter()
+                .any(|lot| lot.quality.producer == Some(lands[1 - row]))
+        );
+        pay(&mut branch);
+        quiet(&mut branch);
+        assert_eq!(branch.state.players[player.other().index()].life, 18);
+        indexed.restore(&saved).unwrap();
     }
 }

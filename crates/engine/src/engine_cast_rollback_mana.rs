@@ -55,8 +55,9 @@ pub(super) struct ManaEvent {
     pub actor: Player,
     pub kind: ManaEventKind,
     pub production: Mana,
-    /// Unrestricted mana produced by triggered mana abilities after this event.
+    /// Mana produced by triggered mana abilities after this event.
     pub tap_bonus: Mana,
+    pub tap_bonus_lots: Vec<(mana_lots::Quality, Mana)>,
     pub recolor: Option<u8>,
     /// The source actually lost a Time counter after this mana was produced.
     pub time_removal: Option<ObjectRef>,
@@ -89,7 +90,8 @@ impl ManaEvent {
                 .chain(&self.delayed_stack_triggers)
                 .map(|item| std::mem::size_of::<SpellView>() + item.owned_bytes())
                 .sum::<usize>()
-            + self.spent_lots.len() * std::mem::size_of::<(mana_lots::Quality, Mana)>()
+            + (self.spent_lots.len() + self.tap_bonus_lots.len())
+                * std::mem::size_of::<(mana_lots::Quality, Mana)>()
             + self
                 .counter_costs
                 .iter()
@@ -580,6 +582,9 @@ impl Game {
         self.add_quality_mana(event.actor, event.production, event.quality);
         if event.tap_bonus != [0; 6] {
             self.add_mana(event.actor, event.tap_bonus);
+            for &(quality, mana) in &event.tap_bonus_lots {
+                self.add_produced_mana_lot(event.actor, mana, quality);
+            }
         }
         if event
             .time_removal

@@ -164,7 +164,7 @@ impl Quality {
         cave_source: false,
         treasure_source: false,
     };
-    fn with_producer<W: ability_world::CharacteristicWorld + ?Sized>(
+    pub(super) fn with_producer<W: ability_world::CharacteristicWorld + ?Sized>(
         mut self,
         world: &W,
         source: CardId,
@@ -541,7 +541,7 @@ pub(super) struct SpendRequest {
     purpose: Purpose,
     payment: Mana,
     lots: SharedVec<Lot>,
-    viable: Option<Vec<Vec<Mana>>>,
+    guide: Option<Box<SpendGuide>>,
     ordinary: [u128; 6],
     /// Public spending rules can group multiple exact producer receipts.
     groups: Vec<SpendingLot>,
@@ -549,13 +549,60 @@ pub(super) struct SpendRequest {
     fungible: [u128; 6],
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn group_spent(plan: &[Mana], group_by_lot: &[Option<usize>], group: usize, color: usize) -> u32 {
-    plan.iter()
-        .zip(group_by_lot)
-        .filter(|(_, slot)| **slot == Some(group))
-        .map(|(allocation, _)| allocation[color])
-        .sum()
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct SpendGuide {
+    /// Each row gives a viable total debit per projected quality. Slot zero
+    /// includes ordinary mana, including units without a producer receipt.
+    totals: Vec<Vec<Mana>>,
+    group_class: Vec<usize>,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpendGuide {
+    fn new(request: &SpendRequest, witnesses: Vec<Vec<Mana>>) -> Self {
+        let (classes, class_by_lot) = group_lots(&request.lots, |_| false);
+        let class = |row: usize| class_by_lot[row].map_or(0, |index| index + 1);
+        let group_class = request
+            .groups
+            .iter()
+            .map(|group| class(group.first))
+            .collect();
+        let totals = witnesses
+            .into_iter()
+            .map(|witness| {
+                debug_assert_eq!(witness.len(), request.lots.len());
+                let mut totals = vec![[0; 6]; classes.len() + 1];
+                totals[0] = request.payment;
+                for (row, paid) in witness.into_iter().enumerate() {
+                    let class = class(row);
+                    if class != 0 {
+                        for (color, amount) in paid.into_iter().enumerate() {
+                            totals[class][color] += amount;
+                            totals[0][color] -= amount;
+                        }
+                    }
+                }
+                totals
+            })
+            .collect();
+        Self {
+            totals,
+            group_class,
+        }
+    }
+
+    fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.group_class.len() * std::mem::size_of::<usize>()
+            + self.totals.len() * std::mem::size_of::<Vec<Mana>>()
+            + self
+                .totals
+                .iter()
+                .map(|plan| plan.len() * std::mem::size_of::<Mana>())
+                .sum::<usize>()
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpendRequest {
     fn bounds(&self, position: usize, color: usize, remaining: u128) -> (u32, u32) {
@@ -576,12 +623,6 @@ impl SpendRequest {
     }
 
     fn concrete_allocation(&self, spent: &[Mana], mut remaining: [u128; 6]) -> Vec<Mana> {
-        if let Some(plans) = &self.viable {
-            return plans
-                .first()
-                .expect("guided allocation is feasible")
-                .clone();
-        }
         for (left, ordinary) in remaining.iter_mut().zip(self.ordinary) {
             *left = left.saturating_sub(ordinary);
         }
@@ -599,13 +640,11 @@ impl SpendRequest {
     fn default_allocation(&self) -> Vec<Mana> {
         let mut spent = vec![[0; 6]; self.groups.len()];
         let mut remaining = self.payment.map(u128::from);
-        if self.viable.is_none() {
-            for (position, group) in spent.iter_mut().enumerate() {
-                for (color, left) in remaining.iter_mut().enumerate() {
-                    let (minimum, _) = self.bounds(position, color, *left);
-                    group[color] = minimum;
-                    *left -= u128::from(minimum);
-                }
+        for (position, group) in spent.iter_mut().enumerate() {
+            for (color, left) in remaining.iter_mut().enumerate() {
+                let (minimum, _) = self.bounds(position, color, *left);
+                group[color] = minimum;
+                *left -= u128::from(minimum);
             }
         }
         self.concrete_allocation(&spent, remaining)
@@ -623,18 +662,85 @@ pub(super) struct SpendChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpendChoice {
+    fn guided_capacity(
+        &self,
+        guide: &SpendGuide,
+        position: usize,
+        color: usize,
+    ) -> (usize, u128, u128) {
+        let class = guide.group_class[position];
+        let paid = self.spent[..position]
+            .iter()
+            .zip(&guide.group_class)
+            .filter(|(_, group)| **group == class)
+            .map(|(amount, _)| u128::from(amount[color]))
+            .sum();
+        let later = self.request.groups[position + 1..]
+            .iter()
+            .zip(&guide.group_class[position + 1..])
+            .filter(|(_, group)| **group == class)
+            .map(|(group, _)| group.lot.amounts[color])
+            .sum::<u128>();
+        let ordinary = if class == 0 {
+            self.request.fungible[color]
+        } else {
+            0
+        };
+        (class, paid, later + ordinary)
+    }
+
+    fn constrain_guide(&mut self, position: usize, color: usize, amount: u32) {
+        let Some(guide) = &self.request.guide else {
+            return;
+        };
+        let (class, paid, later) = self.guided_capacity(guide, position, color);
+        let paid = paid + u128::from(amount);
+        let guide = self.request.guide.as_mut().unwrap();
+        guide
+            .totals
+            .retain(|plan| (paid..=paid + later).contains(&u128::from(plan[class][color])));
+        debug_assert!(!guide.totals.is_empty());
+    }
+
     fn bounds(&self, position: usize, color: usize) -> (u32, u32, Option<Vec<u32>>) {
-        if let Some(plans) = &self.request.viable {
-            let mut values: Vec<_> = plans
+        if let Some(guide) = &self.request.guide {
+            let (class, paid, later) = self.guided_capacity(guide, position, color);
+            let capacity = self.request.groups[position].lot.amounts[color];
+            let mut ranges: Vec<_> = guide
+                .totals
                 .iter()
-                .map(|plan| group_spent(plan, &self.request.group_by_lot, position, color))
+                .map(|plan| {
+                    let debit = u128::from(plan[class][color]) - paid;
+                    let minimum =
+                        u32::try_from(debit.saturating_sub(later)).expect("concrete payment");
+                    let maximum = u32::try_from(debit.min(capacity)).expect("concrete payment");
+                    debug_assert!(minimum <= maximum);
+                    (minimum, maximum)
+                })
                 .collect();
-            values.sort_unstable();
-            values.dedup();
-            let minimum = *values.first().expect("guided allocation remains feasible");
-            let maximum = *values.last().unwrap();
-            let holes = u64::from(maximum - minimum) + 1 != values.len() as u64;
-            return (minimum, maximum, holes.then_some(values));
+            ranges.sort_unstable();
+            let mut joined: Vec<(u32, u32)> = Vec::new();
+            for (lower, upper) in ranges {
+                if let Some((_, previous)) = joined.last_mut()
+                    && lower <= previous.saturating_add(1)
+                {
+                    *previous = (*previous).max(upper);
+                } else {
+                    joined.push((lower, upper));
+                }
+            }
+            let minimum = joined
+                .first()
+                .expect("guided allocation remains feasible")
+                .0;
+            let maximum = joined.last().unwrap().1;
+            let values = (joined.len() > 1).then(|| {
+                joined
+                    .into_iter()
+                    .flat_map(|(lower, upper)| lower..=upper)
+                    .collect()
+            });
+            return (minimum, maximum, values);
         }
         let (minimum, maximum) = self.request.bounds(position, color, self.remaining[color]);
         (minimum, maximum, None)
@@ -881,10 +987,17 @@ impl Game {
             .capacity("mana representation exhausted");
         mana
     }
-    pub(super) fn produce_tap_mana_bonus(&mut self, actor: Player, mana: Mana) {
-        if mana != [0; 6] {
-            self.record_cast_mana_bonus(actor, mana);
-            self.add_mana(actor, mana);
+    pub(super) fn produce_tap_mana_bonus(
+        &mut self,
+        actor: Player,
+        bonus: &mana_tap_bonus::TapBonusOutput,
+    ) {
+        if bonus.total != [0; 6] {
+            self.record_cast_mana_bonus(actor, bonus);
+            self.add_mana(actor, bonus.total);
+            for &(quality, mana) in &bonus.lots {
+                self.add_produced_mana_lot(actor, mana, quality);
+            }
         }
     }
     pub(super) fn add_announced_mana(&mut self, item: &SpellView, mana: Mana) {
@@ -899,10 +1012,12 @@ impl Game {
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);
         self.add_mana(actor, mana);
-        if let Some(quality) = quality
-            && quality != Quality::ORDINARY
-            && mana != [0; 6]
-        {
+        if let Some(quality) = quality {
+            self.add_produced_mana_lot(actor, mana, quality);
+        }
+    }
+    pub(super) fn add_produced_mana_lot(&mut self, actor: Player, mana: Mana, quality: Quality) {
+        if quality != Quality::ORDINARY && mana != [0; 6] {
             let state = self.state.mana_lots.get_or_insert_default();
             add_lot(
                 &mut state.pools[actor.index()],
@@ -1055,13 +1170,16 @@ impl Game {
         })
     }
 
-    fn observes_mana_producer(&self, producer: ObjectRef) -> bool {
+    fn observes_mana_producer(&self, producer: ObjectRef, copyable_trigger: bool) -> bool {
         if !self.on_battlefield(producer.card) || self.object_ref(producer.card) != producer {
             return false;
         }
+        // Copy effects can put a public source-mana trigger on another
+        // permanent without changing its identity as a mana producer.
+        if copyable_trigger {
+            return true;
+        }
         let card = self.state.objects[producer.card as usize].card;
-        // A transform keeps the exact producer. Preserve its payment choice
-        // while the publicly known other face can observe it this step.
         if !self.is_face_down(producer)
             && (Self::has_source_mana_trigger(card, false)
                 || self
@@ -1071,25 +1189,9 @@ impl Game {
         {
             return true;
         }
-        if self.state.cast_sources.iter().any(|&id| {
+        self.state.cast_sources.iter().any(|&id| {
             Self::has_source_mana_trigger(self.state.objects[id as usize].card, true)
                 && self.attachment_recipient(id) == Some(producer)
-        }) {
-            return true;
-        }
-        // A public pending copy of an existing permanent can also leave a
-        // future observer on this same object. Neither identity depends on a
-        // concealed card or an unannounced action.
-        self.state.stack.iter().any(|item| {
-            item.source.is_some_and(|source| source.object == producer)
-                && item.program().is_some_and(|(_, program)| {
-                    program.iter().any(|instruction| {
-                        matches!(instruction, Instruction::CopySourceFromRememberedPermanent)
-                    })
-                })
-        }) && self.state.cast_sources.iter().any(|&id| {
-            !self.is_face_down(self.object_ref(id))
-                && Self::has_source_mana_trigger(self.state.objects[id as usize].card, false)
         })
     }
 
@@ -1101,48 +1203,29 @@ impl Game {
     }
 
     fn spending_lots(&self, lots: &[Lot]) -> (Vec<SpendingLot>, Vec<Option<usize>>) {
-        let mut groups: Vec<SpendingLot> = Vec::new();
-        let mut by_lot = Vec::with_capacity(lots.len());
-        for (index, lot) in lots.iter().enumerate() {
-            let key = Quality {
-                producer: lot
-                    .quality
-                    .producer
-                    .filter(|&source| self.observes_mana_producer(source)),
-                ..lot.quality
-            };
-            if key == Quality::ORDINARY {
-                by_lot.push(None);
-                continue;
-            }
-            if let Some(group) = groups
-                .iter()
-                .position(|group| group.lot.quality.same_rules(key))
-            {
-                let row = &mut groups[group];
-                row.count += 1;
-                for (total, amount) in row.lot.amounts.iter_mut().zip(lot.amounts) {
-                    *total += amount;
+        let copyable_trigger = !lots.is_empty()
+            && (self.state.cast_sources.iter().any(|&id| {
+                !self.is_face_down(self.object_ref(id))
+                    && Self::has_source_mana_trigger(self.state.objects[id as usize].card, false)
+            }) || self.state.objects.iter().enumerate().any(|(id, object)| {
+                if object.zone != Zone::Battlefield {
+                    return false;
                 }
-                by_lot.push(Some(group));
-            } else {
-                by_lot.push(Some(groups.len()));
-                groups.push(SpendingLot {
-                    first: index,
-                    count: 1,
-                    lot: Lot {
-                        quality: key,
-                        amounts: lot.amounts,
-                    },
-                });
-            }
-        }
-        (groups, by_lot)
+                let source = self.object_ref(id as CardId);
+                !self.is_face_down(source)
+                    && self
+                        .physical_copy_faces(source)
+                        .turned()
+                        .is_some_and(|(_, face)| Self::has_source_mana_trigger(face, false))
+            }));
+        group_lots(lots, |source| {
+            self.observes_mana_producer(source, copyable_trigger)
+        })
     }
 
-    /// Search only distinguishes mana with different public spending rules.
+    /// Project only differences that can change a later funding action.
     pub(super) fn funding_lot_key(&self, lots: &[Lot]) -> Vec<Lot> {
-        self.spending_lots(lots)
+        group_lots(lots, |_| false)
             .0
             .into_iter()
             .map(|group| group.lot)
@@ -1258,12 +1341,7 @@ impl Game {
         choice.spent[position][range.color] = amount;
         choice.remaining[range.color] -= u128::from(amount);
         choice.cursor += 1;
-        if let Some(plans) = &mut choice.request.viable {
-            plans.retain(|plan| {
-                group_spent(plan, &choice.request.group_by_lot, position, range.color) == amount
-            });
-            debug_assert!(!plans.is_empty());
-        }
+        choice.constrain_guide(position, range.color, amount);
         if choice.range().is_some() {
             self.state.mana_lots.as_mut().unwrap().choice = Some(choice);
             self.revision = self.revision.checked_add(1).capacity("revision exhausted");
@@ -1430,8 +1508,8 @@ impl Game {
             }
             let state = self.state.mana_lots.as_mut().unwrap();
             assert!(state.trace.is_none(), "one committed payment per action");
-            let request = SpendRequest {
-                viable: state.prepared.take(),
+            let mut request = SpendRequest {
+                guide: None,
                 actor,
                 purpose,
                 payment,
@@ -1441,7 +1519,13 @@ impl Game {
                 group_by_lot,
                 fungible,
             };
-            let selected = request.default_allocation();
+            let selected = if let Some(witnesses) = state.prepared.take() {
+                let witness = witnesses.first().expect("validated guided payment").clone();
+                request.guide = Some(Box::new(SpendGuide::new(&request, witnesses)));
+                witness
+            } else {
+                request.default_allocation()
+            };
             if !request.groups.is_empty() {
                 state.trace = Some(request);
             }
@@ -1584,6 +1668,47 @@ impl Game {
     }
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn group_lots(
+    lots: &[Lot],
+    mut keep_producer: impl FnMut(ObjectRef) -> bool,
+) -> (Vec<SpendingLot>, Vec<Option<usize>>) {
+    let mut groups: Vec<SpendingLot> = Vec::new();
+    let mut by_lot = Vec::with_capacity(lots.len());
+    for (index, lot) in lots.iter().enumerate() {
+        let key = Quality {
+            producer: lot.quality.producer.filter(|&source| keep_producer(source)),
+            ..lot.quality
+        };
+        if key == Quality::ORDINARY {
+            by_lot.push(None);
+            continue;
+        }
+        if let Some(group) = groups
+            .iter()
+            .position(|group| group.lot.quality.same_rules(key))
+        {
+            let row = &mut groups[group];
+            row.count += 1;
+            for (total, amount) in row.lot.amounts.iter_mut().zip(lot.amounts) {
+                *total += amount;
+            }
+            by_lot.push(Some(group));
+        } else {
+            by_lot.push(Some(groups.len()));
+            groups.push(SpendingLot {
+                first: index,
+                count: 1,
+                lot: Lot {
+                    quality: key,
+                    amounts: lot.amounts,
+                },
+            });
+        }
+    }
+    (groups, by_lot)
+}
+
 /// Assign the payment of each group to real producer rows in stable order.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn lift_spending_allocation(
@@ -1613,7 +1738,6 @@ fn lift_spending_allocation(
 /// spending group. The common empty-pool case emits without recursion.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn visit_allocations(
-    game: &Game,
     pool: [u128; 6],
     lots: &[Lot],
     purpose: Purpose,
@@ -1662,7 +1786,7 @@ pub(super) fn visit_allocations(
             remaining[color] += amount;
         }
     }
-    let (groups, group_by_lot) = game.spending_lots(lots);
+    let (groups, group_by_lot) = group_lots(lots, |_| false);
     let grouped: Vec<_> = groups.into_iter().map(|group| group.lot).collect();
     let unattributed = ordinary(pool, lots);
     let mut lift = |grouped_spend: Vec<[u64; 6]>| {
@@ -1776,10 +1900,10 @@ impl Game {
             return 0;
         };
         std::mem::size_of::<ManaState>()
-            + state.tap_bonus.as_ref().map_or(0, |choice| {
-                std::mem::size_of::<mana_tap_bonus::TapBonusChoice>()
-                    + choice.previous.as_ref().map_or(0, Pending::owned_bytes)
-            })
+            + state
+                .tap_bonus
+                .as_ref()
+                .map_or(0, |choice| choice.owned_bytes())
             + state.inert_copy_sources.as_ref().map_or(0, |roots| {
                 std::mem::size_of::<Vec<ObjectRef>>()
                     + roots.len() * std::mem::size_of::<ObjectRef>()
@@ -1801,7 +1925,11 @@ impl Game {
                     + choice.request.groups.len() * std::mem::size_of::<SpendingLot>()
                     + choice.request.group_by_lot.len() * std::mem::size_of::<Option<usize>>()
                     + choice.request.lots.len() * std::mem::size_of::<Lot>()
-                    + plans_bytes(&choice.request.viable)
+                    + choice
+                        .request
+                        .guide
+                        .as_ref()
+                        .map_or(0, |guide| guide.owned_bytes())
                     + match &choice.action {
                         Action::Activate {
                             counter_payment, ..

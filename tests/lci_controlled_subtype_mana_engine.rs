@@ -1,6 +1,7 @@
 //! An external tap-mana template pays life from the exact receiving source.
 mod support;
 use rustmage as _;
+use rustmage_core::CardName;
 use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
@@ -67,6 +68,13 @@ fn fixture() -> (Card, Card) {
     )
 }
 
+fn prohibit_nonmana_activations(game: &mut Game, source: CardId, owner: Player) {
+    let spyglass = put(game, owner, "Sorcerous Spyglass", Zone::Battlefield);
+    let name = CardName::from_name(game.object_view(source).card.name()).unwrap();
+    game.set_entry_value(game.object_ref(spyglass), EntryChoiceValue::CardName(name));
+    assert!(game.named_activation_prohibited(source));
+}
+
 #[test]
 fn only_other_controlled_caves_get_the_exact_life_cost() {
     let (monument, cave) = fixture();
@@ -83,7 +91,9 @@ fn only_other_controlled_caves_get_the_exact_life_cost() {
         let action = grant(&game, ineligible, provider, BLUE);
         reject(&mut game, action);
     }
+    prohibit_nonmana_activations(&mut game, source, p.other());
     let action = grant(&game, source, provider, BLUE);
+    assert!(game.legal_actions().contains(&action));
     let mut stripped = game.clone();
     stripped.remove_abilities_exact(
         &[game.object_ref(source)],
@@ -128,6 +138,7 @@ fn nested_cast_funding_charges_each_life_payment_and_restores_exact_branches() {
     let provider = spawn(&mut game, p, monument, Zone::Battlefield);
     let first = spawn(&mut game, p, cave, Zone::Battlefield);
     let second = spawn(&mut game, p, cave, Zone::Battlefield);
+    prohibit_nonmana_activations(&mut game, first, p.other());
     let spell = put(&mut game, p, "Pond Prophet", Zone::Hand);
     let cast = Action::AnnounceCast { card: spell };
     let mut insufficient = game.clone();
@@ -172,4 +183,37 @@ fn nested_cast_funding_charges_each_life_payment_and_restores_exact_branches() {
     act(&mut indexed, action);
     pay(&mut indexed);
     assert_eq!(indexed.state.players[p.index()].life, 2);
+}
+
+#[test]
+fn unrelated_permanents_skip_the_full_grant_layer_evaluation() {
+    let (monument, cave) = fixture();
+    let _scope = fixture_rules::activate(&[(monument, &MONUMENT), (cave, &CAVE)]);
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let provider = spawn(&mut game, p, monument, Zone::Battlefield);
+    let enemy = spawn(&mut game, p.other(), cave, Zone::Battlefield);
+    let recipient = spawn(&mut game, p, cave, Zone::Battlefield);
+    let mut ineligible = vec![provider, enemy];
+    for _ in 0..20 {
+        ineligible.push(put(&mut game, p, "Forest", Zone::Battlefield));
+    }
+    let before = ability_evaluation::EVALUATION_COUNT.with(std::cell::Cell::get);
+    for id in ineligible {
+        assert!(
+            ability_world::CharacteristicWorld::controlled_subtype_mana_grants(&game, id)
+                .is_empty()
+        );
+    }
+    assert_eq!(
+        ability_evaluation::EVALUATION_COUNT.with(std::cell::Cell::get),
+        before
+    );
+    let grants =
+        ability_world::CharacteristicWorld::controlled_subtype_mana_grants(&game, recipient);
+    assert_eq!(grants.len(), 1);
+    assert_eq!(
+        ability_evaluation::EVALUATION_COUNT.with(std::cell::Cell::get),
+        before + 1
+    );
 }

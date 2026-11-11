@@ -2446,7 +2446,7 @@ impl Game {
                         *object,
                         || entry_copies::blueprint_in_world(&world, object.card),
                     );
-                    entry_copies::apply_choice(movement, choice);
+                    entry_copies::apply_choice(movement, *object, choice);
                 } else {
                     batch.moves[index]
                         .copy_preparation
@@ -2692,15 +2692,15 @@ impl<'g> FundingState<'g> {
             let mut next = self.clone();
             let (bonus, tap_source) = next.apply(step, false);
             let receipt = bonus.with_event_effects(&next, self.actor, tap_source);
-            if let Some(production) = next.singleton_output(step, receipt)
+            if let Some(production) = next.singleton_output(step, &receipt)
                 && let Some(replaced) = receipt.replace_production(production)
                 && let Some(bonus) = receipt.singleton(production)
-                && next.completed_mana_fits(replaced, bonus)
+                && next.completed_mana_fits(replaced, bonus.total)
             {
-                next.add_funding_output(step, bonus, replaced, time_removal);
+                next.add_funding_output(step, &bonus, replaced, time_removal);
                 return emit(&next);
             }
-            return next.visit_output(step, receipt, time_removal, goal, emit);
+            return next.visit_output(step, &receipt, time_removal, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2771,7 +2771,7 @@ impl<'g> FundingState<'g> {
                 external,
                 &mut |world| {
                     let bonus = bonus.with_event_effects(world, self.actor, tap_source);
-                    world.visit_output(step, bonus, time_removal, goal, emit)
+                    world.visit_output(step, &bonus, time_removal, goal, emit)
                 },
             )
         })
@@ -3054,144 +3054,134 @@ impl<'g> FundingState<'g> {
             if found {
                 return;
             }
-            mana_lots::visit_allocations(
-                self.game,
-                self.mana,
-                &self.lots,
-                purpose,
-                payment,
-                |allocation| {
-                    if found {
-                        return;
-                    }
-                    use additional_costs::ManaCostObjects;
-                    let mut finish = |external| {
-                        let step = FundingMove {
-                            resource,
-                            ability: Some(ability),
-                            grantor: a.item.attachment_trigger.as_ref().and_then(|grant| {
-                                grant
-                                    .granting_card
-                                    .controlled_subtype_mana_activation(Some(ability))
-                                    .then_some(grant.grantor)
-                            }),
-                            borrowed: None,
-                            self_grant: a.item.self_granted_activation.as_ref().map(|g| {
-                                (
-                                    a.item.source.expect("self-granted source").card,
-                                    g.grant_timestamp,
-                                )
-                            }),
-                            payment,
-                            counters: a.counter_payment.clone(),
-                            production,
-                            quality: current.quality.copied(),
-                            allocation: allocation.clone(),
-                            external,
-                            output: a.mana_output.clone(),
-                            frozen: Some(Box::new((
-                                a.item
+            mana_lots::visit_allocations(self.mana, &self.lots, purpose, payment, |allocation| {
+                if found {
+                    return;
+                }
+                use additional_costs::ManaCostObjects;
+                let mut finish = |external| {
+                    let step = FundingMove {
+                        resource,
+                        ability: Some(ability),
+                        grantor: a.item.attachment_trigger.as_ref().and_then(|grant| {
+                            grant
+                                .granting_card
+                                .controlled_subtype_mana_activation(Some(ability))
+                                .then_some(grant.grantor)
+                        }),
+                        borrowed: None,
+                        self_grant: a.item.self_granted_activation.as_ref().map(|g| {
+                            (
+                                a.item.source.expect("self-granted source").card,
+                                g.grant_timestamp,
+                            )
+                        }),
+                        payment,
+                        counters: a.counter_payment.clone(),
+                        production,
+                        quality: current.quality.copied(),
+                        allocation: allocation.clone(),
+                        external,
+                        output: a.mana_output.clone(),
+                        frozen: Some(Box::new((
+                            a.item
+                                .source
+                                .expect("cost announcement has object source")
+                                .card,
+                            a.item.borrowed_slot,
+                        ))),
+                    };
+                    // A visited-world memo answers one existential question, not
+                    // every physical plan. Distinct allocations may converge on the
+                    // same successful suffix; retain that suffix independently for
+                    // each plan while preserving pruning within its boolean query.
+                    let query = independent_plans.then(|| {
+                        let mut query = self.clone();
+                        query.continuation_memo = None;
+                        query.scoped_continuation_query().unwrap_or(query)
+                    });
+                    let query = query.as_ref().unwrap_or(self);
+                    let viable = query.visit_applied(&step, &mut |w| {
+                        let Some((parent, outer)) = parent else {
+                            return a
+                                .mana_output
+                                .as_ref()
+                                .and_then(|o| o.resume.as_deref())
+                                .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
+                        };
+                        let mut next = w.clone();
+                        if a.additional_cost().is_some_and(|spec| {
+                            matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                        }) {
+                            // The child's exact tap was just paid. Its reservation
+                            // cannot survive as a fresh unpaid parent cost. The
+                            // parent's own selections are installed below.
+                            next.cost_group = None;
+                        }
+                        next.set_funding_continuation(
+                            &parent.announcement,
+                            outer,
+                            parent.quality.as_ref().map(|(_, q)| q),
+                        );
+                        next.continuation_memo = query.continuation_memo.clone();
+                        next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
+                        next.convoke = parent.announcement.item.kind == StackKind::Spell
+                            && convoke::potential(
+                                self,
+                                parent
+                                    .announcement
+                                    .item
                                     .source
                                     .expect("cost announcement has object source")
                                     .card,
-                                a.item.borrowed_slot,
-                            ))),
-                        };
-                        // A visited-world memo answers one existential question, not
-                        // every physical plan. Distinct allocations may converge on the
-                        // same successful suffix; retain that suffix independently for
-                        // each plan while preserving pruning within its boolean query.
-                        let query = independent_plans.then(|| {
-                            let mut query = self.clone();
-                            query.continuation_memo = None;
-                            query.scoped_continuation_query().unwrap_or(query)
-                        });
-                        let query = query.as_ref().unwrap_or(self);
-                        let viable = query.visit_applied(&step, &mut |w| {
-                            let Some((parent, outer)) = parent else {
-                                return a
-                                    .mana_output
-                                    .as_ref()
-                                    .and_then(|o| o.resume.as_deref())
-                                    .is_some_and(|pending| w.guided_mana_resume_fundable(pending));
-                            };
-                            let mut next = w.clone();
-                            if a.additional_cost().is_some_and(|spec| {
-                                matches!(
-                                    spec.kind.payment_kind(),
-                                    EffectChoiceKind::TapPermanents(_)
-                                )
-                            }) {
-                                // The child's exact tap was just paid. Its reservation
-                                // cannot survive as a fresh unpaid parent cost. The
-                                // parent's own selections are installed below.
-                                next.cost_group = None;
-                            }
-                            next.set_funding_continuation(
-                                &parent.announcement,
-                                outer,
-                                parent.quality.as_ref().map(|(_, q)| q),
                             );
-                            next.continuation_memo = query.continuation_memo.clone();
-                            next.set_purpose(self.game.purpose_for_item(&parent.announcement.item));
-                            next.convoke = parent.announcement.item.kind == StackKind::Spell
-                                && convoke::potential(
-                                    self,
-                                    parent
-                                        .announcement
-                                        .item
-                                        .source
-                                        .expect("cost announcement has object source")
-                                        .card,
-                                );
-                            next.set_payment_context(&parent.announcement);
-                            next.reachable_with_evidence(
-                                parent_goal.as_ref().expect("parent goal"),
-                                parent.announcement.evidence.as_ref().map(|e| e.threshold),
-                                &mut HashSet::new(),
-                            )
+                        next.set_payment_context(&parent.announcement);
+                        next.reachable_with_evidence(
+                            parent_goal.as_ref().expect("parent goal"),
+                            parent.announcement.evidence.as_ref().map(|e| e.threshold),
+                            &mut HashSet::new(),
+                        )
+                    });
+                    viable && emit(&step.allocation)
+                };
+                let spec = a.additional_cost().filter(|_| !a.additional_paid);
+                if let Some(spec) = spec
+                    && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                {
+                    let source = a.item.source.unwrap().object;
+                    let rules = a.item.source.unwrap().card.activation(ability);
+                    let prefix = a.additional_group.as_deref().map_or(&[][..], Vec::as_slice);
+                    // The projected candidate prefix can extend a saved announcement.
+                    let prefix = self
+                        .cost_group
+                        .as_ref()
+                        .filter(|(cost, group)| *cost == spec && group.starts_with(prefix))
+                        .map_or(prefix, |(_, group)| group.as_slice());
+                    found = self.visit_tap_mana_cost_groups(
+                        spec,
+                        source,
+                        prefix,
+                        |object| {
+                            (rules.cost.tap || rules.cost.sacrifice || rules.cost.exile_self)
+                                && object == source
+                        },
+                        &mut |objects| {
+                            finish(Some(ExternalManaCost {
+                                selection: ManaCostObjects::from_slice(objects),
+                                kind: spec.kind,
+                            }))
+                        },
+                    );
+                } else {
+                    let external = spec
+                        .zip(a.additional)
+                        .map(|(spec, object)| ExternalManaCost {
+                            selection: ManaCostObjects::One(object),
+                            kind: spec.kind,
                         });
-                        viable && emit(&step.allocation)
-                    };
-                    let spec = a.additional_cost().filter(|_| !a.additional_paid);
-                    if let Some(spec) = spec
-                        && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                    {
-                        let source = a.item.source.unwrap().object;
-                        let rules = a.item.source.unwrap().card.activation(ability);
-                        let prefix = a.additional_group.as_deref().map_or(&[][..], Vec::as_slice);
-                        // The projected candidate prefix can extend a saved announcement.
-                        let prefix = self
-                            .cost_group
-                            .as_ref()
-                            .filter(|(cost, group)| *cost == spec && group.starts_with(prefix))
-                            .map_or(prefix, |(_, group)| group.as_slice());
-                        found = self.visit_tap_mana_cost_groups(
-                            spec,
-                            source,
-                            prefix,
-                            |object| {
-                                (rules.cost.tap || rules.cost.sacrifice || rules.cost.exile_self)
-                                    && object == source
-                            },
-                            &mut |objects| {
-                                finish(Some(ExternalManaCost {
-                                    selection: ManaCostObjects::from_slice(objects),
-                                    kind: spec.kind,
-                                }))
-                            },
-                        );
-                    } else {
-                        let external =
-                            spec.zip(a.additional)
-                                .map(|(spec, object)| ExternalManaCost {
-                                    selection: ManaCostObjects::One(object),
-                                    kind: spec.kind,
-                                });
-                        found = finish(external);
-                    }
-                },
-            );
+                    found = finish(external);
+                }
+            });
         });
         found
     }
@@ -3278,12 +3268,12 @@ impl FundingState<'_> {
             .into_iter()
             .filter(|&id| entry_copies::candidate(self, movement, &moves, id))
             .map(|id| {
-                entry_copies::chosen_blueprint(
-                    self,
-                    movement.before.card,
-                    self.reference(id),
-                    || entry_copies::blueprint_in_world(self, id),
-                )
+                let object = self.reference(id);
+                let choice =
+                    entry_copies::chosen_blueprint(self, movement.before.card, object, || {
+                        entry_copies::blueprint_in_world(self, id)
+                    });
+                (object, choice)
             })
             .collect::<Vec<_>>();
         if spec.optional || candidates.is_empty() {
@@ -3296,7 +3286,7 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        for choice in candidates {
+        for (object, choice) in candidates {
             // The deferred exile does not resolve inside funding. Repeated choices
             // with an identical blueprint can share this existential search branch.
             let key = (index, choice.0);
@@ -3304,7 +3294,7 @@ impl FundingState<'_> {
                 continue;
             }
             let mut branch = moves.clone();
-            entry_copies::apply_choice(&mut branch[index], choice);
+            entry_copies::apply_choice(&mut branch[index], object, choice);
             seen.push(key);
             if self.visit_entry_copy_choices(branch, seen, emit) {
                 return true;
