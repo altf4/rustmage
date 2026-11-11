@@ -11,6 +11,7 @@ pub(super) struct OriginAlternative {
     pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
     pub library_top: Option<LibraryTopCastPermission>,
+    pub resolution_discard: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -581,6 +582,7 @@ impl Game {
             linked_exile_paid,
             paid_graveyard,
             library_top,
+            resolution_discard,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -815,7 +817,6 @@ impl Game {
             activation_reductions: None,
             limited_cast_permission: linked_exile_paid
                 .map(LimitedCastPermission::LinkedExilePaid)
-                .or_else(|| paid_graveyard.map(LimitedCastPermission::PaidGraveyard))
                 .or_else(|| library_top.map(LimitedCastPermission::LibraryTop))
                 .map(Box::new),
             origin_counter_cost,
@@ -849,6 +850,12 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
+        if let Some(permission) = paid_graveyard {
+            a.set_paid_graveyard_cast_permission(permission);
+        }
+        if resolution_discard {
+            a.add_origin_discard_cost();
+        }
         let life = warp
             .map(|spec| spec.life)
             .filter(|&life| life != 0)
@@ -863,6 +870,7 @@ impl Game {
                 | CastMethod::WebSlinging
         ) || origin_additional_cost.is_some()
             || life.is_some() && warp.is_none()
+            || resolution_discard
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }

@@ -744,6 +744,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(Keywords::RIOT)
                         }
+                        StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
+                            condition,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && self.is_creature(id)
+                            && self.equipped(id)
+                            && self.world.value(condition, source) != 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                             if target.controller == object.controller
                                 && self.is_creature(id)

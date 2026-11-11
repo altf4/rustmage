@@ -96,7 +96,10 @@ pub(super) struct LayerSixGrant {
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
     Remove,
-    RemoveKeywords(Keywords),
+    RemoveKeywordsAndGrant {
+        keywords: Keywords,
+        grants: Vec<LayerSixGrant>,
+    },
     /// Losing the land card type removes its subtype-derived abilities only.
     RemoveSubtypeMana,
     GrantSelf(u64),
@@ -285,7 +288,23 @@ pub(super) fn apply_layer_six(
                 object.mana.clear();
             }
         }
+        if let LayerSixAction::RemoveKeywordsAndGrant { keywords, .. } = &effect.action {
+            for &recipient in &effect.recipients {
+                let object = &mut objects[recipient as usize];
+                object.keywords = object.keywords.without(*keywords);
+                object.granted_keywords = object.granted_keywords.without(*keywords);
+                if keywords.contains(Keywords::DECAYED) {
+                    object.decayed_instances = 0;
+                    object.granted_decayed_instances = 0;
+                }
+                if keywords.contains(Keywords::RIOT) {
+                    object.riot_instances = 0;
+                    object.granted_riot_instances = 0;
+                }
+            }
+        }
         if let LayerSixAction::GrantEach(rows)
+        | LayerSixAction::RemoveKeywordsAndGrant { grants: rows, .. }
         | LayerSixAction::RemoveAndGrant(rows)
         | LayerSixAction::RemovePrintedAndGrant(rows) = &effect.action
         {
@@ -314,19 +333,8 @@ pub(super) fn apply_layer_six(
                 LayerSixAction::GrantEach(_)
                 | LayerSixAction::RemoveAndGrant(_)
                 | LayerSixAction::RemovePrintedAndGrant(_)
+                | LayerSixAction::RemoveKeywordsAndGrant { .. }
                 | LayerSixAction::SelfGrantedMana { .. } => unreachable!(),
-                LayerSixAction::RemoveKeywords(keywords) => {
-                    object.keywords = object.keywords.without(*keywords);
-                    object.granted_keywords = object.granted_keywords.without(*keywords);
-                    if keywords.contains(Keywords::DECAYED) {
-                        object.decayed_instances = 0;
-                        object.granted_decayed_instances = 0;
-                    }
-                    if keywords.contains(Keywords::RIOT) {
-                        object.riot_instances = 0;
-                        object.granted_riot_instances = 0;
-                    }
-                }
                 LayerSixAction::RemoveSubtypeMana => {
                     object.mana.retain(|ability| !ability.subtype_derived);
                 }

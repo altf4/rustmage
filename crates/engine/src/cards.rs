@@ -67,6 +67,8 @@ pub struct CopyExceptions {
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub shapeshifter_rogue: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub bird: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub reflection: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub cave: bool,
@@ -100,6 +102,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         shapeshifter_rogue: false,
+        bird: false,
         reflection: false,
         cave: false,
     };
@@ -117,6 +120,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         shapeshifter_rogue: false,
+        bird: false,
         reflection: false,
         cave: false,
     };
@@ -138,6 +142,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         shapeshifter_rogue: false,
+        bird: false,
         reflection: false,
         cave: false,
     };
@@ -190,6 +195,7 @@ impl CopyExceptions {
             embalm: self.embalm || other.embalm,
             spider_human_hero: self.spider_human_hero || other.spider_human_hero,
             shapeshifter_rogue: self.shapeshifter_rogue || other.shapeshifter_rogue,
+            bird: self.bird || other.bird,
             reflection: self.reflection || other.reflection,
             cave: self.cave || other.cave,
         }
@@ -452,6 +458,11 @@ pub enum TargetPredicate {
     CrewedSourceThisTurn,
     SaddledSourceThisTurn,
     ManaValueAtMostLifeGained,
+    /// Compare with the exact entering or departing object named by the trigger.
+    /// When required, exclude the same physical card even after its zone change.
+    ManaValueLessThanEvent {
+        other: bool,
+    },
     OtherThanSource,
     /// Exclude the source's physical card even after it changes zones.
     OtherThanPhysicalSource,
@@ -545,22 +556,32 @@ pub enum TargetPlan {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TargetPlan {
     pub(crate) fn reads_source_creature_type(self) -> bool {
-        fn reads(rule: TargetRule) -> bool {
+        self.reads_target_predicate(|predicate| {
+            predicate == TargetPredicate::SourceChosenCreatureType
+        })
+    }
+    pub(crate) fn reads_event_mana_value(self) -> bool {
+        self.reads_target_predicate(|predicate| {
+            matches!(predicate, TargetPredicate::ManaValueLessThanEvent { .. })
+        })
+    }
+    fn reads_target_predicate(self, matches: impl Fn(TargetPredicate) -> bool + Copy) -> bool {
+        fn reads(rule: TargetRule, matches: impl Fn(TargetPredicate) -> bool + Copy) -> bool {
             match rule {
                 TargetRule::Filtered { base, predicate } => {
-                    *predicate == TargetPredicate::SourceChosenCreatureType || reads(*base)
+                    matches(*predicate) || reads(*base, matches)
                 }
                 TargetRule::Grouped { base, .. }
                 | TargetRule::OtherThanEventObject { base, .. }
                 | TargetRule::ManaValueExactly { base, .. }
-                | TargetRule::ManaValueAtMost { base, .. } => reads(*base),
-                TargetRule::Union(rules) => rules.iter().copied().any(reads),
+                | TargetRule::ManaValueAtMost { base, .. } => reads(*base, matches),
+                TargetRule::Union(rules) => rules.iter().copied().any(|rule| reads(rule, matches)),
                 _ => false,
             }
         }
         match self {
-            Self::Single(spec) => reads(spec.rule),
-            Self::Groups(groups) => groups.iter().any(|spec| reads(spec.rule)),
+            Self::Single(spec) => reads(spec.rule, matches),
+            Self::Groups(groups) => groups.iter().any(|spec| reads(spec.rule, matches)),
         }
     }
     pub const NONE: Self = Self::Single(TargetSpec::NONE);
@@ -1147,6 +1168,8 @@ pub enum LibrarySelectionCount {
         maximum_total: u16,
     },
     Fixed(u16),
+    /// This spell's declared X, limited to the eligible looked cards.
+    ChosenX,
     /// Any number of the eligible cards in the looked group.
     All,
     /// One uniformly random eligible card, without a player selection.
@@ -1374,6 +1397,11 @@ pub enum EffectChoiceKind {
     HandCreatures {
         maximum: u16,
     },
+    /// Optional nontargeting deployment. Hand candidates are private.
+    DeployFromHandOrGraveyard {
+        filter: SearchFilter,
+        counter: CounterKind,
+    },
     /// Count actual moves of another permanent with this effective subtype.
     ReturnToHandCountingOtherSubtype(&'static str),
     MoveFaceUpExileToGraveyard {
@@ -1483,7 +1511,9 @@ pub enum EffectChoiceKind {
     /// Optionally choose a creature card captured by an exile-batch trigger.
     CopyExiledTriggerCreature,
     SacrificeDifferentNames(u16),
-    SacrificePermanents(u16),
+    SacrificePermanents(u32),
+    /// Declare how many permanents to sacrifice. Each reduces the generic spell cost by one.
+    SacrificeForGenericReduction,
     /// Incremental non-target selection; the group is explicitly finished before payment.
     SacrificeRange {
         minimum: u16,
@@ -2112,6 +2142,9 @@ pub struct EntryCopySpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EntryCopySource {
     Battlefield,
+    /// Filter the live battlefield blueprint by the entrant's actual cast
+    /// payment. An uncast entrant or spell copy has zero mana spent.
+    BattlefieldAtMostManaSpent,
     /// Select a creature card in any graveyard, then use the linked trigger template.
     GraveyardCreature {
         exile_trigger: u16,
@@ -2202,6 +2235,11 @@ pub enum Instruction {
     RemoveAbilities {
         subject: Subject,
         duration: AnimationDuration,
+    },
+    /// Remove abilities from surviving targets and set base stats only on those currently creatures.
+    RemoveAbilitiesAndSetCreatureBaseUntilNextTurn {
+        power: i128,
+        toughness: i128,
     },
     /// Remove the abilities of the selected players' exact current creatures.
     RemovePlayerCreatureAbilities {
@@ -2418,6 +2456,8 @@ pub enum Instruction {
     /// Allow playing the preceding exact exile results with any type of mana until
     /// your next end step begins.
     GrantExiledResultFlexiblePlayUntilNextEndStep,
+    /// Ordinary paid play of the remembered exile results until your next end step.
+    GrantExiledResultPlayUntilNextEndStep,
     /// Allow paid spells only from the preceding exact exiles through cleanup.
     GrantExiledResultFlexibleCast,
     ExileTopPlayScaled {
@@ -2577,6 +2617,12 @@ pub enum Instruction {
     BlinkUntilEndStep {
         under_owner: bool,
     },
+    /// Schedule an owner-controlled return with one entry counter for each
+    /// resulting card. A chosen permanent can leave an empty delayed return.
+    BlinkUntilEndStepWithCounter {
+        counter: CounterKind,
+        actual_exile_only: bool,
+    },
     ReturnDeathCard(ReturnKind),
     ResolveDelayedReturn,
     CaptureDelayedReturnTarget,
@@ -2588,6 +2634,12 @@ pub enum Instruction {
     },
     /// Schedule one independent triggered program for the next matching step.
     ScheduleStep {
+        step: TriggerStep,
+        relation: CastRelation,
+        ability: u16,
+    },
+    /// Schedule a step trigger owning this resolution's exact remembered exile batch.
+    ScheduleStepWithExiledResult {
         step: TriggerStep,
         relation: CastRelation,
         ability: u16,
@@ -3257,6 +3309,12 @@ pub enum Instruction {
         amount: u16,
         exceptions: CopyExceptions,
     },
+    /// Copy the subject and schedule an exile trigger for the actual created group.
+    CreateCopyTokenUntilNextEndStep {
+        subject: Subject,
+        amount: u16,
+        ability: u16,
+    },
     CreateCounteredCopyToken {
         subject: Subject,
         exceptions: CopyExceptions,
@@ -3469,6 +3527,8 @@ pub enum Instruction {
         maximum: AmountValue,
         remember: bool,
     },
+    /// Destroy all creatures, remembering the controller's creature cards actually put into their graveyard.
+    DestroyAllCreaturesRememberOwned,
     /// Simultaneously return the controller's nonland permanent cards.
     ReturnOwnedGraveyardNonlandPermanents,
     /// Simultaneously return every land card in the controller's graveyard tapped.
@@ -3700,6 +3760,12 @@ pub enum Instruction {
     /// Privately choose any number of the resolving controller's hand permanents,
     /// then put the exact chosen cards onto the battlefield simultaneously.
     DeployHandPermanents,
+    /// Privately choose up to one qualifying creature card in your hand or
+    /// graveyard and put it onto the battlefield with the given counter.
+    MayDeployFromHandOrGraveyard {
+        filter: SearchFilter,
+        counter: CounterKind,
+    },
     ReturnExiledResultToHands,
     ExileDamagedLibraryUntilNonland,
     MayCounterSourceOtherwiseCast,
@@ -3755,6 +3821,7 @@ pub enum Instruction {
     /// Reveal the targeted player's entire hand, then exile one nonland if able.
     /// The packet controller chooses; any land type excludes a card from selection.
     RevealTargetHandExileNonland,
+    RevealTargetHandExileNonlandCastIfGift,
     RevealHandDiscard {
         excluded_kinds: u16,
     },
@@ -3947,6 +4014,8 @@ pub enum Instruction {
     IfSacrificedOutlaw {
         skip: usize,
     },
+    /// A resolving effect divides this quantity between two distinct colors.
+    AddManaSplitScaled { first: ChoiceColor, second: ChoiceColor, amount: AmountValue },
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -4064,6 +4133,15 @@ pub enum Instruction {
     },
     /// Capture the first attempted entry of the next entry operation, including failure/decline.
     CaptureEntryResult,
+    /// Continue only if an exact successful entrant has any listed subtype.
+    IfEntryResultSubtype {
+        subtypes: &'static [&'static str],
+        skip: usize,
+    },
+    /// Copy the exact successful nonlegendary entrant with fixed copiable power and toughness.
+    CopyNonlegendaryEntryResult {
+        base: (i16, i16),
+    },
     AnimateEntryResultIfSubtype {
         subtype: &'static str,
         spec: AnimationSpec,
@@ -4148,6 +4226,11 @@ pub enum Instruction {
     SelectLibraryToExileRemember(LibrarySelectionEffect),
     /// Offer a free cast of the exact card saved by the preceding selection.
     CastRememberedExileFree,
+    /// Optionally cast one of the exact exiles free after at least this many actual exiles.
+    /// Put the exact remaining exiled cards into hand after the offer.
+    CastOneRememberedExileFreeThenRestToHand {
+        minimum: u16,
+    },
     /// Privately choose cards from the targeted player's top group, then
     /// exile the selection face down and put the rest on the bottom at random.
     SelectTargetLibraryFaceDownPlay {
@@ -4199,6 +4282,9 @@ pub enum Instruction {
         maximum_total_stats: u64,
     },
     ExileNonlandLifeFreeCast,
+    /// Exile through the first actual nonland exile and offer that card now
+    /// with a discard as the alternative to its mana cost.
+    ExileUntilNonlandCastByDiscarding,
     MarkCastDreamExile,
     CastOwnedDreamCard,
     ExileUntilManaValueFreeCast {
@@ -4354,6 +4440,10 @@ pub enum Instruction {
         entry_counter: Option<CounterKind>,
         additional_types: &'static [&'static str],
     },
+    /// Repeated creature casts this turn with an independent forage cost.
+    GrantCreatureGraveyardForageThisTurn {
+        entry_counter: Option<CounterKind>,
+    },
     /// Give the exact recipient legendary and add the indicated creature types.
     AddLegendaryCreatureTypes {
         subject: Subject,
@@ -4503,6 +4593,8 @@ pub enum Instruction {
     /// Each physical card exiled this way can be played by its owner until it leaves exile.
     ExileTargetsPlayForOwnersWhileExiled,
     ExileUntilSourceLeaves,
+    /// Save the number of creatures exiled this way with last-known power at most this value.
+    ExileUntilSourceLeavesRememberPowerAtMost(i32),
     /// Exile the exact graveyard incarnation captured by this source's death trigger.
     ExileDepartedSource,
     MayExileDepartedSource {
@@ -4658,6 +4750,11 @@ pub enum Instruction {
     },
     /// Apply one simultaneous counter event to the union of the live clauses.
     ChangeControlledPermanentGroupCounters {
+        filters: &'static [ControlledPermanentFilter],
+        effect: PermanentGroupCounters,
+    },
+    /// Filter by the current permanent and its exact entry in the current turn.
+    ChangeNewlyEnteredPermanentGroupCounters {
         filters: &'static [ControlledPermanentFilter],
         effect: PermanentGroupCounters,
     },
@@ -4817,6 +4914,8 @@ pub enum Instruction {
         ability: u16,
     },
     ExileDelayedCreatedTokens,
+    /// Exile the exact battlefield incarnations named by the delayed step packet.
+    ExileDelayedBattlefieldObjects,
     /// Actual created tokens must attack only the current combat if able.
     CreateTokensAttackThisCombat {
         token: Card,
@@ -4874,6 +4973,11 @@ pub enum Instruction {
     },
     /// Each affected player chooses whether to discard a card. Resolve the
     /// discards together before players who did not discard lose life.
+    /// Repeat a fresh choice to discard, sacrifice a nonland permanent, or lose life.
+    OpponentSacrificeDiscardOrLoseLife {
+        repetitions: AmountValue,
+        life: u16,
+    },
     MayDiscardOrLoseLife {
         players: PlayerSet,
         amount: u16,
@@ -5034,6 +5138,10 @@ pub enum AmountValue {
     TargetPlayerLibraryToGraveyardThisTurn,
     /// Current creatures controlled by the surviving player in the selected target group.
     TargetPlayerCreatureCount,
+    /// Current creatures the resolving ability's controller controls at or above this power.
+    ControlledCreaturePowerCount { minimum: u32 },
+    /// Exact cards retained by a delayed step packet and still in exile.
+    DelayedExiledCardCount,
     Sum(&'static [AmountValue]),
     ManaSpent,
     ColorsSpent,
@@ -5323,6 +5431,8 @@ pub enum StatValue {
     TotalManaValue(CountFilter),
     DistinctNames(CountFilter),
     DistinctManaValues(CountFilter),
+    /// Controlled creatures with the source's exact chosen creature type.
+    CreaturesOfChosenType,
     CountUnion(&'static [CountFilter]),
     Colors(CountFilter),
     CardTypes(CountFilter),
@@ -6644,6 +6754,8 @@ pub enum DepartureSubject {
     Any,
     Other,
     SelfOnly,
+    /// The source itself, or another object that meets the pre-event filters.
+    SelfOrOtherMatching,
 }
 
 /// Conditions evaluated immediately before a battlefield object moves.
@@ -6653,6 +6765,8 @@ pub struct DepartureRule {
     pub kinds: u16,
     /// A required effective pre-event subtype, independent of the destination.
     pub subtype: Option<&'static str>,
+    /// All of these effective abilities must be present before the departure.
+    pub keywords: Keywords,
     pub relation: CastRelation,
     pub subject: DepartureSubject,
     /// Actual destinations after replacement effects. Empty allows all destinations.
@@ -6668,6 +6782,7 @@ impl DepartureRule {
     pub const ANY: Self = Self {
         kinds: 0,
         subtype: None,
+        keywords: Keywords::NONE,
         relation: CastRelation::Any,
         subject: DepartureSubject::Any,
         destinations: &[],
@@ -7465,6 +7580,7 @@ pub enum ActivationGuard {
     /// Both starting restrictions must already hold before announcement.
     OwnTurnAfterGraveyardDeparture,
     ControlSubtypeAny(&'static [&'static str]),
+    SubtypeEnteredUnderYourControl(&'static [&'static str]),
     ControlLandsAtLeast(u16),
     ControlledPlaneswalkerSubtypeLoyaltyAtLeast {
         subtype: &'static str,
@@ -7509,7 +7625,7 @@ impl ActivationGuard {
             | Self::StatAtLeast { .. }
             | Self::GraveyardCardsAtLeast { .. }
             | Self::LifeAboveStarting(_) => &[],
-            Self::ControlSubtypeAny(types) => types,
+            Self::ControlSubtypeAny(types) | Self::SubtypeEnteredUnderYourControl(types) => types,
         }
     }
 }

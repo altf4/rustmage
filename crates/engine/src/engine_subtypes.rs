@@ -105,17 +105,24 @@ const _: () = assert!(JOB_TYPES.len() + 15 <= u32::BITS as usize);
 const CREATURE_TYPE_WORDS: usize = crate::cards::CREATURE_TYPES.len().div_ceil(64);
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct CreatureTypeSet([u64; CREATURE_TYPE_WORDS]);
+pub(super) struct CreatureTypeSet([u64; CREATURE_TYPE_WORDS]);
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CreatureTypeSet {
-    fn is_empty(self) -> bool {
+    pub(super) fn is_empty(self) -> bool {
         self.0 == [0; CREATURE_TYPE_WORDS]
     }
     fn insert(&mut self, typ: crate::cards::CreatureType) {
-        let index = typ.index();
+        self.insert_index(typ.index());
+    }
+    fn insert_index(&mut self, index: usize) {
         self.0[index / 64] |= 1 << (index % 64);
     }
-    fn contains(self, name: &str) -> bool {
+    pub(super) fn union(&mut self, other: Self) {
+        for (word, extra) in self.0.iter_mut().zip(other.0) {
+            *word |= extra;
+        }
+    }
+    pub(super) fn contains(self, name: &str) -> bool {
         !self.is_empty()
             && crate::cards::CREATURE_TYPES
                 .binary_search(&name)
@@ -252,6 +259,30 @@ impl GrantedSubtypes {
             card.has_subtype(subtype) || self.contains(subtype)
         }
     }
+    pub(super) fn creature_type_set(self, card: Card) -> CreatureTypeSet {
+        let mut result = CreatureTypeSet::default();
+        if self == Self::default() && !card.keywords().contains(Keywords::CHANGELING) {
+            if let Some((_, types)) = card.info().type_line.split_once(" — ") {
+                let mut words = types.split_whitespace().peekable();
+                while let Some(mut word) = words.next() {
+                    if word == "Time" && words.next_if_eq(&"Lord").is_some() {
+                        word = "Time Lord";
+                    }
+                    if let Some(typ) = crate::cards::CreatureType::from_name(word) {
+                        result.insert(typ);
+                    }
+                }
+            }
+            return result;
+        }
+        for (index, subtype) in crate::cards::CREATURE_TYPES.iter().enumerate() {
+            if self.has(card, subtype) {
+                result.insert_index(index);
+            }
+        }
+        result
+    }
+
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
         self.added &= FLAGS_MASK | ADDED_ARTIFACT_SUBTYPES;
         self.chosen = None;
@@ -301,6 +332,9 @@ impl GrantedSubtypes {
             if recipe.exceptions.shapeshifter_rogue {
                 self.insert("Shapeshifter");
                 self.insert("Rogue");
+            }
+            if recipe.exceptions.bird && recipe.kinds() & CREATURE_OR_KINDRED != 0 {
+                self.insert("Bird");
             }
             if let Some(subtype) = recipe.replacement_subtype {
                 self.insert(subtype.name());

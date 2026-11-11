@@ -388,6 +388,9 @@ impl Game {
                     .count()
                     >= usize::from(minimum)
             }
+            ActivationGuard::SubtypeEnteredUnderYourControl(types) => {
+                self.subtype_entered_under_control(actor, types)
+            }
             ActivationGuard::ControlSubtypeAny(_) => {
                 self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.zone == Zone::Battlefield

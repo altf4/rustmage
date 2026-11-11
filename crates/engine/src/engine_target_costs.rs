@@ -656,7 +656,10 @@ impl Game {
                 ),
             )
             .is_some_and(|total| {
-                if a.item.cast.is_some_and(|c| c.method.is_harmonize()) {
+                if a.item.cast.is_some_and(|c| c.method.is_harmonize())
+                    || a.has_ordered_origin_payment()
+                    || a.has_ordered_life_cost()
+                {
                     return self.harmonize_proposal_fundable(a, a.harmonizer.flatten(), total);
                 }
                 self.spell_can_fund_total(

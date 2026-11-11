@@ -91,7 +91,12 @@ impl Game {
         self.destroy_objects_outcome(objects);
     }
 
-    pub(super) fn destroy_creatures_by_toughness(&mut self, maximum: i128, remember: bool) {
+    pub(super) fn destroy_creatures_recording_graveyard(
+        &mut self,
+        maximum_toughness: Option<i128>,
+        remember: bool,
+        owner: Option<Player>,
+    ) {
         // Freeze the full group before any destruction changes derived toughness.
         let query = self.characteristic_query();
         let mut ids = self
@@ -103,8 +108,8 @@ impl Game {
                 let id = id as CardId;
                 (object.zone == Zone::Battlefield
                     && self.is_creature(id)
-                    && query.stats(id).toughness <= maximum)
-                    .then_some(id)
+                    && maximum_toughness.is_none_or(|maximum| query.stats(id).toughness <= maximum))
+                .then_some(id)
             })
             .collect::<Vec<_>>();
         ids.retain(|&id| !self.effect_destruction_prevented(id));
@@ -117,7 +122,10 @@ impl Game {
                     event.moved && event.was_card && event.destination == Zone::Graveyard
                 })
                 .flat_map(ZoneChange::objects_after)
-                .filter(|object| self.state.objects[object.card as usize].card.is_creature())
+                .filter(|object| {
+                    let card = &self.state.objects[object.card as usize];
+                    card.card.is_creature() && owner.is_none_or(|owner| card.owner == owner)
+                })
                 .collect();
             receipts.sort_unstable();
             self.state.resolving.as_mut().unwrap().remembered_objects =

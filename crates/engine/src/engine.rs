@@ -949,7 +949,8 @@ define_actions! {
         method: CastMethod,
         flash_surcharge: bool,
         life: u32,
-        entry_counter: CounterKind,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        entry_counter: Option<CounterKind>,
     },
     // One counter for a distributed payment. Keep the existing wire tag.
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
@@ -2002,6 +2003,9 @@ impl SpellView {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCopyTokenWithExceptions {
+                        subject: Subject::Source,
+                        ..
+                    } | Instruction::CreateCopyTokenUntilNextEndStep {
                         subject: Subject::Source,
                         ..
                     } | Instruction::CreateCounteredCopyToken {
@@ -3191,6 +3195,7 @@ struct State {
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
     entered_this_turn: Option<SharedVec<EntryTurnFact>>,
+    entered_creature_types: Option<std::sync::Arc<[subtypes::CreatureTypeSet; 2]>>,
     creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
     power_up_uses: power_up::Rows,
     copy_recipes: copies::Rows,
@@ -3484,7 +3489,7 @@ struct EntryIdentity {
 struct ZoneObservers {
     graveyard: Option<std::sync::Arc<[ObjectView]>>,
     returned_hand: Option<std::sync::Arc<[ObjectView]>>,
-    battlefield_departure: Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
+    battlefield_departure: Option<std::sync::Arc<battlefield_departures::DepartureObservers>>,
 }
 
 /// A single zone transition with the departing object's last-known characteristics.
@@ -3508,7 +3513,7 @@ pub struct ZoneChange {
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) battlefield_departure_observers:
-        Option<std::sync::Arc<[battlefield_departures::DepartureObserver]>>,
+        Option<std::sync::Arc<battlefield_departures::DepartureObservers>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,
     pub(super) cast_origin: Option<Zone>,
@@ -4530,6 +4535,7 @@ impl Game {
                 cast_entry_counters: None,
                 entry_values: None,
                 entered_this_turn: None,
+                entered_creature_types: None,
                 creature_entry_history: None,
                 power_up_uses: None,
                 copy_recipes: None,
@@ -5699,6 +5705,7 @@ impl Game {
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+                            | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
                             | EffectChoiceKind::RememberPermanents { .. }
                     ) {
@@ -5727,6 +5734,7 @@ impl Game {
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+                            | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
                             | EffectChoiceKind::RememberPermanents { .. }
                             | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::ReturnAttachmentRecipient { .. }
@@ -5829,6 +5837,9 @@ impl Game {
                 }
             }
             Pending::AdditionalCost { .. } => {
+                if s.announcing.as_ref().unwrap().paying_origin_discard() {
+                    return self.visit_origin_discard_cost(&mut emit);
+                }
                 if self.variable_cost_selection_complete()
                     && emit(Action::FinishAdditionalCostGroup)
                 {
@@ -7724,6 +7735,11 @@ impl Game {
             {
                 self.choose_resolution_cost_object(object)
             }
+            Action::ChooseAdditionalCost { object }
+                if self.state.announcing.as_ref().unwrap().paying_origin_discard() =>
+            {
+                self.pay_origin_discard_clause(object)
+            }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::FinishAdditionalCostGroup => self.finish_additional_cost_group(),
             Action::FinishCraftMaterials => self.finish_craft_materials(),
@@ -8858,6 +8874,12 @@ impl Game {
                     );
                 }
             }
+            Action::ChooseX { value }
+                if self.state.announcing.as_ref().is_some_and(Announcement::needs_sacrifice_discount_count) =>
+            {
+                self.state.announcing.as_mut().unwrap().declare_sacrifice_discount_count(value);
+                self.continue_announcement_choices(false);
+            }
             Action::ChooseX { value } => {
                 self.state.announcing.as_mut().unwrap().item.x = Some(value);
                 let a = self.state.announcing.as_mut().unwrap();
@@ -9699,7 +9721,11 @@ impl Game {
         let battlefield_departure = plans
             .iter()
             .any(|(view, _)| view.zone == Zone::Battlefield)
-            .then(|| self.freeze_battlefield_departure_observers())
+            .then(|| {
+                self.freeze_battlefield_departure_observers(
+                    plans.iter().map(|(view, _)| view.reference),
+                )
+            })
             .flatten();
         let control_watch = self.freeze_control_watch();
         let events = plans
@@ -9841,7 +9867,8 @@ impl Game {
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let graveyard_observers = self.freeze_exile_batch_observers();
-        let battlefield_departure = self.freeze_battlefield_departure_observers();
+        let battlefield_departure = self
+            .freeze_battlefield_departure_observers(plans.iter().map(|(view, _)| view.reference));
         let control_watch = self.freeze_control_watch();
         let mut events: Vec<_> = plans
             .into_iter()
@@ -9971,7 +9998,11 @@ impl Game {
         let battlefield_departure = ids
             .iter()
             .any(|&id| self.on_battlefield(id))
-            .then(|| self.freeze_battlefield_departure_observers())
+            .then(|| {
+                self.freeze_battlefield_departure_observers(
+                    planned.iter().map(|(view, _, _)| view.reference),
+                )
+            })
             .flatten();
         let control_watch = self.freeze_control_watch();
         let events = planned
@@ -10262,7 +10293,7 @@ impl Game {
             None
         };
         let battlefield_departure = (before.zone == Zone::Battlefield)
-            .then(|| self.freeze_battlefield_departure_observers())
+            .then(|| self.freeze_battlefield_departure_observers([before.reference]))
             .flatten();
         self.commit_planned_zone_move(
             before,
@@ -10426,7 +10457,10 @@ impl Game {
         }
         let granted_departure_mana_value =
             if before.zone == Zone::Battlefield && destination != Zone::Battlefield {
-                self.granted_departure_mana_value(&before)
+                battlefield_departure_observers
+                    .as_ref()
+                    .and_then(|observers| observers.mana_value(before.reference))
+                    .unwrap_or_else(|| self.granted_departure_mana_value(&before))
             } else {
                 0
             };
@@ -11087,7 +11121,7 @@ impl Game {
                 .damage_doublers
                 .retain(|effect| effect.controller != self.state.active);
         }
-        self.expire_source_land_forms(self.state.active);
+        self.expire_next_turn_source_effects(self.state.active);
         self.expire_next_turn_stats(self.state.active);
         self.expire_next_turn_keywords(self.state.active);
         let active = self.state.active.index();
@@ -11113,6 +11147,7 @@ impl Game {
         }
         self.prune_modal_history();
         self.state.entered_this_turn = None;
+        self.state.entered_creature_types = None;
         self.state.creature_entry_history = None;
         let objects = &self.state.objects;
         let active_player = self.state.active;
@@ -13267,6 +13302,7 @@ impl Game {
                 std::mem::size_of::<Vec<EntryTurnFact>>()
                     + rows.len() * std::mem::size_of::<EntryTurnFact>()
             })
+            + s.entered_creature_types.as_ref().map_or(0, |rows| std::mem::size_of_val(&**rows))
             + s.creature_entry_history.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CreatureEntryHistoryView>>()
                     + rows.len() * std::mem::size_of::<CreatureEntryHistoryView>()
@@ -13490,6 +13526,7 @@ impl Game {
                             .map_or(0, |f| f.owned_bytes())
                         + resolution.target_library.as_ref().map_or(0, |f| f.bytes())
                         + resolution.forage.as_ref().map_or(0, |f| f.bytes())
+                        + resolution.repeated_life_choice.as_deref().map_or(0, std::mem::size_of_val)
                         + resolution.evidence.as_ref().map_or(0, |f| f.bytes())
                         + resolution.connive.as_ref().map_or(0, |c| c.bytes())
                         + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
@@ -13517,7 +13554,7 @@ impl Game {
                         + resolution
                             .search_result
                             .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<search::SearchResult>())
+                            .map_or(0, |result| result.owned_bytes())
                         + resolution
                             .library
                             .as_ref()

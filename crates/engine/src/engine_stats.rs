@@ -387,6 +387,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
+                            | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithPowerAtLeast(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
@@ -440,6 +441,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
+                            | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)

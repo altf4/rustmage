@@ -281,7 +281,6 @@ impl Game {
             }
             LibrarySelectionCompletion::RememberExile => {
                 assert_eq!(effect.destination, LibraryPickDestination::Exile);
-                assert_eq!(effect.spec.count, LibrarySelectionCount::Fixed(1));
                 self.state.resolving.as_mut().unwrap().milled.clear();
             }
             LibrarySelectionCompletion::MayTransform
@@ -440,6 +439,9 @@ impl Game {
                 kinds.count_ones() as usize
             }
             LibrarySelectionCount::Fixed(n) => usize::from(n),
+            LibrarySelectionCount::ChosenX => {
+                usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX)
+            }
             LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
                 assert!(spec.optional, "budgeted selection requires an up-to count");
                 usize::from(maximum_cards)

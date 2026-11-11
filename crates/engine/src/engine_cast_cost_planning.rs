@@ -25,6 +25,7 @@ pub(super) struct CostContext {
     additional: Option<AdditionalCost>,
     additional_life: bool,
     forage: Option<ForageRoute>,
+    origin_forage: Option<forage::ForageSelection>,
     selected: Vec<ObjectRef>,
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
@@ -115,6 +116,7 @@ impl CostContext {
             additional: a.printed_additional_cost(),
             additional_life: a.additional_life,
             forage: a.forage.as_ref().and_then(|v| v.route),
+            origin_forage: c.origin_forage.as_deref().cloned(),
             selected,
             exact,
             counters: a
@@ -246,6 +248,8 @@ impl FundingState<'_> {
         for row in &c.clauses {
             match row.clause {
                 CastCostClause::OriginCounters(_)
+                | CastCostClause::OriginForage
+                | CastCostClause::OriginDiscard(_)
                 | CastCostClause::Additional
                 | CastCostClause::CraftSource
                 | CastCostClause::Mana
@@ -302,8 +306,10 @@ impl FundingState<'_> {
             | EffectChoiceKind::ReturnUnblockedAttacker
             | EffectChoiceKind::ReturnToHand => battlefield > 0,
             EffectChoiceKind::SacrificeRange { minimum: n }
-            | EffectChoiceKind::SacrificeDifferentNames(n)
-            | EffectChoiceKind::SacrificePermanents(n) => battlefield >= usize::from(n),
+            | EffectChoiceKind::SacrificeDifferentNames(n) => battlefield >= usize::from(n),
+            EffectChoiceKind::SacrificePermanents(n) => {
+                battlefield.saturating_add(self.game.state.exile_links.len()) >= n as usize
+            }
             EffectChoiceKind::TapPermanents(n) => battlefield >= n as usize,
             EffectChoiceKind::ExileGraveyard => potential_graveyard > 0,
             EffectChoiceKind::ExileGraveyardCards(n)
@@ -1257,6 +1263,20 @@ impl FundingState<'_> {
                         }
                     }
                 }
+                CastCostClause::OriginDiscard(selected) => {
+                    let mut payment = c.clone();
+                    payment.additional = Some(equip_costs::discard_cost());
+                    payment.selected = selected.into_iter().collect();
+                    payment.exact = selected.is_some();
+                    if self.complete_additional(&payment, &later, &rest) {
+                        return true;
+                    }
+                }
+                CastCostClause::OriginForage => {
+                    if self.complete_origin_forage(c, &later, &rest) {
+                        return true;
+                    }
+                }
                 CastCostClause::Additional => {
                     if self.complete_additional(c, &later, &rest) {
                         return true;
@@ -1691,6 +1711,38 @@ impl FundingState<'_> {
             false
         }
     }
+    fn complete_origin_forage(
+        &self,
+        current: &CostContext,
+        later: &CostContext,
+        remaining: &[usize],
+    ) -> bool {
+        let mut payment = current.clone();
+        payment.additional = Some(AdditionalCost {
+            kind: EffectChoiceKind::Forage,
+            filter: forage::food_cost().filter,
+        });
+        payment.selected.clear();
+        payment.exact = false;
+        if let Some(choice) = &current.origin_forage {
+            payment.selected.clone_from(&choice.selected);
+            payment.exact = choice.complete();
+        }
+        let chosen_route = current
+            .origin_forage
+            .as_ref()
+            .and_then(|choice| choice.route);
+        [ForageRoute::Food, ForageRoute::ExileThree]
+            .into_iter()
+            .any(|route| {
+                if chosen_route.is_some_and(|chosen| chosen != route) {
+                    return false;
+                }
+                payment.forage = Some(route);
+                self.complete_additional(&payment, later, remaining)
+            })
+    }
+
     fn complete_additional(
         &self,
         c: &CostContext,
@@ -1789,9 +1841,10 @@ impl FundingState<'_> {
                 counters = spec.kind.counter_requirement();
             }
             EffectChoiceKind::BeholdMany(n)
-            | EffectChoiceKind::SacrificeDifferentNames(n)
-            | EffectChoiceKind::SacrificePermanents(n) => amount = usize::from(n),
-            EffectChoiceKind::TapPermanents(n) => amount = n as usize,
+            | EffectChoiceKind::SacrificeDifferentNames(n) => amount = usize::from(n),
+            EffectChoiceKind::SacrificePermanents(n) | EffectChoiceKind::TapPermanents(n) => {
+                amount = n as usize;
+            }
             EffectChoiceKind::ExileGraveyard
             | EffectChoiceKind::BeholdAndExile
             | EffectChoiceKind::ExileControlled
@@ -1845,6 +1898,8 @@ impl FundingState<'_> {
             .filter_map(|v| {
                 let r = self.reference(v.id);
                 (self.cost_object(spec, r, c.source)
+                    && (!any_graveyard
+                        || r != c.source && !self.graveyard_exile_prohibited(r.card))
                     && !(c.source_tap_reserved
                         && r == c.source
                         && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))))
@@ -1870,8 +1925,16 @@ impl FundingState<'_> {
                 return true;
             }
         }
+        if matches!(spec.kind.payment_kind(), EffectChoiceKind::SacrificePermanents(_))
+            && candidates.len() < amount
+        {
+            return false;
+        }
         if remaining.is_empty()
-            && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+            && matches!(
+                spec.kind.payment_kind(),
+                EffectChoiceKind::TapPermanents(_) | EffectChoiceKind::SacrificePermanents(_)
+            )
         {
             return c.selected.len() <= amount
                 && (!c.exact || c.selected.len() == amount)
@@ -2127,6 +2190,7 @@ impl Game {
             additional: Some(spec),
             additional_life: false,
             forage: None,
+            origin_forage: None,
             selected: Vec::new(),
             exact: false,
             counters: Vec::new(),
@@ -2236,6 +2300,28 @@ impl Game {
         }
         false
     }
+    pub(in crate::engine) fn visit_origin_discard_cost(
+        &self,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let a = self.state.announcing.as_ref().unwrap();
+        let world = self.cast_cost_world(a);
+        for (id, card) in self.state.objects.iter().enumerate() {
+            if card.zone != Zone::Hand || card.owner != a.item.controller || !card.is_card() {
+                continue;
+            }
+            let object = self.object_ref(id as CardId);
+            let mut choice = world.clone();
+            let costs = choice.cast_costs.as_mut().unwrap();
+            let active = usize::from(costs.active.unwrap());
+            costs.clauses[active].clause = CastCostClause::OriginDiscard(Some(object));
+            if choice.cost_completion() && emit(Action::ChooseAdditionalCost { object }) {
+                return true;
+            }
+        }
+        false
+    }
+
     pub(in crate::engine) fn visit_sneak_return_cost(
         &self,
         emit: &mut impl FnMut(Action) -> bool,
@@ -2347,8 +2433,12 @@ impl Game {
         let a = self.state.announcing.as_ref().unwrap();
         let mut world = self.cast_cost_world(a);
         let c = world.cast_costs.as_mut().unwrap();
-        c.selected = selected.to_vec();
-        c.exact = exact;
+        if let Some(origin) = &mut c.origin_forage {
+            origin.selected = selected.to_vec();
+        } else {
+            c.selected = selected.to_vec();
+            c.exact = exact;
+        }
         world.cost_completion()
     }
     pub(in crate::engine) fn cast_cost_counters_fundable(
@@ -2503,6 +2593,7 @@ impl Game {
                 additional: None,
                 additional_life: false,
                 forage: None,
+                origin_forage: None,
                 selected: Vec::new(),
                 exact: false,
                 counters: Vec::new(),
@@ -2709,7 +2800,7 @@ impl Game {
                         .map_or_else(Vec::new, |c| c.teammates.clone()),
                     teamwork_exact: false,
                     actor: goal.actor,
-                    mana: (additional.is_some_and(|s| {
+                    mana: (extra.contains(&CastCostClause::Mana) || additional.is_some_and(|s| {
                         matches!(
                             s.kind,
                             EffectChoiceKind::BeholdMany(_)
@@ -2740,6 +2831,7 @@ impl Game {
                     additional,
                     additional_life: current.is_some_and(|a| a.additional_life),
                     forage: chosen_route,
+                    origin_forage: None,
                     selected: selected.to_vec(),
                     exact,
                     counters: counters.to_vec(),
@@ -2804,6 +2896,7 @@ impl Game {
             additional: Some(spec),
             additional_life: false,
             forage: None,
+            origin_forage: None,
             selected: selected.to_vec(),
             exact: false,
             counters: Vec::new(),

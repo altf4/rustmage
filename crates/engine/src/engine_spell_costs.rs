@@ -226,7 +226,7 @@ impl Game {
                 .bargain_reduction()
         } else {
             0
-        })
+        }) + u64::from(a.sacrifice_discount_count().unwrap_or(0))
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
@@ -491,6 +491,13 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
+        if a.has_ordered_origin_payment() || a.has_ordered_life_cost() {
+            let mut proposal = a.clone();
+            proposal.item.cast.as_mut().unwrap().offspring = Some(pay);
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
         let card = a
             .item
             .source

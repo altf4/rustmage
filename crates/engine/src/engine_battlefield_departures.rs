@@ -42,14 +42,22 @@ impl DepartureRule {
     }
 
     fn matches(self, source: &ObjectView, event: &ZoneChange) -> bool {
+        if !self.destinations.is_empty() && !self.destinations.contains(&event.destination) {
+            return false;
+        }
         let before = &event.before;
+        if self.subject == DepartureSubject::SelfOrOtherMatching
+            && source.reference == before.reference
+        {
+            return true;
+        }
         let related = match self.relation {
             CastRelation::You => source.controller == before.controller,
             CastRelation::Opponent => source.controller != before.controller,
             CastRelation::Any => true,
         };
         let subject_matches = match self.subject {
-            DepartureSubject::Any => true,
+            DepartureSubject::Any | DepartureSubject::SelfOrOtherMatching => true,
             DepartureSubject::Other => source.reference != before.reference,
             DepartureSubject::SelfOnly => source.reference == before.reference,
         };
@@ -61,7 +69,7 @@ impl DepartureRule {
         related
             && subject_matches
             && counters_match
-            && (self.destinations.is_empty() || self.destinations.contains(&event.destination))
+            && before.keywords.contains(self.keywords)
             && (!self.nontoken || !before.is_token())
             && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
@@ -71,6 +79,21 @@ impl DepartureRule {
             && self
                 .minimum_power
                 .is_none_or(|power| before.is_creature() && before.power >= i128::from(power))
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Debug, PartialEq, Eq)]
+pub(super) struct DepartureObservers {
+    sources: Vec<DepartureObserver>,
+    mana_values: Vec<(ObjectRef, u64)>,
+}
+
+impl DepartureObservers {
+    pub(super) fn mana_value(&self, object: ObjectRef) -> Option<u64> {
+        self.mana_values
+            .iter()
+            .find_map(|&(reference, value)| (object == reference).then_some(value))
     }
 }
 
@@ -113,7 +136,8 @@ impl Game {
 
     pub(super) fn freeze_battlefield_departure_observers(
         &self,
-    ) -> Option<Arc<[DepartureObserver]>> {
+        departing: impl IntoIterator<Item = ObjectRef>,
+    ) -> Option<Arc<DepartureObservers>> {
         let mut greatest_power = None;
         let sources: Vec<_> = self
             .state
@@ -183,7 +207,33 @@ impl Game {
                 })
             })
             .collect();
-        (!sources.is_empty()).then(|| sources.into())
+        if sources.is_empty() {
+            return None;
+        }
+        let reads_mana_value = sources.iter().any(|observer| {
+            observer.source.card.triggers().iter().any(|trigger| {
+                matches!(
+                    trigger.condition.event(),
+                    TriggerCondition::BattlefieldDeparture(_)
+                        | TriggerCondition::BattlefieldDepartureBatch(_)
+                ) && trigger.targets.reads_event_mana_value()
+            })
+        });
+        let mana_values = if reads_mana_value {
+            departing
+                .into_iter()
+                .filter(|&object| {
+                    self.on_battlefield(object.card) && self.object_ref(object.card) == object
+                })
+                .map(|object| (object, self.object_mana_value(object.card)))
+                .collect()
+        } else {
+            Vec::new()
+        };
+        Some(Arc::new(DepartureObservers {
+            sources,
+            mana_values,
+        }))
     }
 
     pub(super) fn battlefield_departure_triggers(&mut self, event: &ZoneChange) {
@@ -191,7 +241,7 @@ impl Game {
             return;
         };
         let before = &event.before;
-        for observer in sources.iter() {
+        for observer in &sources.sources {
             let source = &observer.source;
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
@@ -224,7 +274,7 @@ impl Game {
     }
 
     pub(super) fn battlefield_departure_batch_triggers(&mut self, events: &[ZoneChange]) {
-        let mut dispatched: Vec<&Arc<[DepartureObserver]>> = Vec::new();
+        let mut dispatched: Vec<&Arc<DepartureObservers>> = Vec::new();
         for observers in events
             .iter()
             .filter_map(|event| event.battlefield_departure_observers.as_ref())
@@ -235,7 +285,7 @@ impl Game {
             }
             dispatched.push(observers);
 
-            for observer in observers.iter() {
+            for observer in &observers.sources {
                 let source = &observer.source;
                 for (index, ability) in source.card.triggers().iter().enumerate() {
                     let TriggerCondition::BattlefieldDepartureBatch(rule) =

@@ -35,6 +35,7 @@ impl Card {
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
                         | StaticAbilityFragment::GrantManaCostMayhem
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
+                        | StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn { .. }
                         | StaticAbilityFragment::SpendAnyManaForCreatures
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
@@ -666,6 +667,8 @@ pub struct ResolutionPaidCast {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionFreeCasts {
     #[serde(skip_serializing_if = "is_false")]
+    pub discard_instead_of_mana: bool,
+    #[serde(skip_serializing_if = "is_false")]
     pub uncast_to_hand: bool,
     #[serde(skip_serializing_if = "is_false")]
     pub siege_transformed: bool,
@@ -701,22 +704,55 @@ impl Game {
             return;
         };
         if offer.uncast_to_hand {
-            for object in offer.remaining {
-                if self.object_ref(object.card) == object
-                    && self.state.objects[object.card as usize].zone == Zone::Exile
-                {
-                    let event = self.move_object(object.card, Zone::Hand);
-                    if event.moved
-                        && event.destination == Zone::Hand
-                        && !self.state.known_hand.contains(&event.after)
-                    {
-                        self.state.known_hand.push(event.after);
-                    }
-                }
-            }
+            self.move_exact_exiles_to_hand(&offer.remaining);
         }
     }
-    pub(super) fn exile_nonland_life_free_cast(&mut self, player: Player) -> bool {
+
+    fn move_exact_exiles_to_hand(&mut self, exiled: &[ObjectRef]) {
+        let ids: Vec<_> = exiled
+            .iter()
+            .filter_map(|&object| {
+                (self.object_ref(object.card) == object
+                    && self.state.objects[object.card as usize].zone == Zone::Exile)
+                    .then_some(object.card)
+            })
+            .collect();
+        if ids.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Hand);
+        for event in &events {
+            if event.moved
+                && event.destination == Zone::Hand
+                && !self.state.known_hand.contains(&event.after)
+            {
+                self.state.known_hand.push(event.after);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
+    pub(super) fn cast_one_remembered_exile_free_then_rest_to_hand(
+        &mut self,
+        player: Player,
+        minimum: u16,
+    ) -> bool {
+        let exiled = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
+        if exiled.is_empty() || exiled.len() < usize::from(minimum) {
+            self.move_exact_exiles_to_hand(&exiled);
+            return false;
+        }
+        let pending = self.state.pending.clone();
+        self.offer_exact_free_casts(player, exiled, Zone::Exile, None, true);
+        if self.visit_resolution_casts(player, &mut |action| action != Action::FinishResolutionCasts) {
+            return true;
+        }
+        self.state.pending = pending;
+        self.finish_resolution_free_casts();
+        false
+    }
+
+    fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {
         let cards = exile::top_library_cards(self, player, u128::MAX);
         for id in cards {
             if self.state.objects[id as usize].zone != Zone::Library {
@@ -724,30 +760,51 @@ impl Game {
             }
             let event = self.move_object(id, Zone::Exile);
             if event.moved && event.destination == Zone::Exile && event.before.kinds & 2 == 0 {
-                self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
-                    permanent_type: None,
-                    permanent_spell_only: false,
-                    uncast_to_hand: true,
-                    siege_transformed: false,
-                    paid: None,
-                    casts_remaining: Some(1),
-                    pending_cast: None,
-                    remaining_mana_value: None,
-                    alternative_cost: None,
-                    maximum_mana_value: u64::try_from(
-                        self.state.players[player.index()].life_gained_this_turn,
-                    )
-                    .ok()
-                    .and_then(|value| value.checked_add(1)),
-                    origin: Zone::Exile,
-                    exile_on_graveyard: false,
-                    allow_lands: false,
-                    player,
-                    remaining: vec![event.after],
-                }));
-                self.state.pending = Pending::ResolutionCasts { player };
-                return true;
+                return Some(event.after);
             }
+        }
+        None
+    }
+
+    pub(super) fn offer_first_exiled_nonland_for_discard(&mut self, player: Player) -> bool {
+        let Some(object) = self.exile_until_first_nonland(player) else {
+            return false;
+        };
+        self.offer_exact_free_cast(player, object, Zone::Exile, None);
+        self.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .discard_instead_of_mana = true;
+        true
+    }
+
+    pub(super) fn exile_nonland_life_free_cast(&mut self, player: Player) -> bool {
+        if let Some(object) = self.exile_until_first_nonland(player) {
+            self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+                discard_instead_of_mana: false,
+                permanent_type: None,
+                permanent_spell_only: false,
+                uncast_to_hand: true,
+                siege_transformed: false,
+                paid: None,
+                casts_remaining: Some(1),
+                pending_cast: None,
+                remaining_mana_value: None,
+                alternative_cost: None,
+                maximum_mana_value: u64::try_from(
+                    self.state.players[player.index()].life_gained_this_turn,
+                )
+                .ok()
+                .and_then(|value| value.checked_add(1)),
+                origin: Zone::Exile,
+                exile_on_graveyard: false,
+                allow_lands: false,
+                player,
+                remaining: vec![object],
+            }));
+            self.state.pending = Pending::ResolutionCasts { player };
+            return true;
         }
         false
     }
@@ -769,6 +826,7 @@ impl Game {
         remaining: Vec<ObjectRef>,
     ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -828,10 +886,22 @@ impl Game {
         origin: Zone,
         remaining_mana_value: Option<u64>,
     ) {
+        self.offer_exact_free_casts(player, vec![object], origin, remaining_mana_value, false);
+    }
+
+    fn offer_exact_free_casts(
+        &mut self,
+        player: Player,
+        remaining: Vec<ObjectRef>,
+        origin: Zone,
+        remaining_mana_value: Option<u64>,
+        uncast_to_hand: bool,
+    ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
-            uncast_to_hand: false,
+            uncast_to_hand,
             siege_transformed: false,
             paid: None,
             casts_remaining: Some(1),
@@ -843,7 +913,7 @@ impl Game {
             exile_on_graveyard: false,
             allow_lands: false,
             player,
-            remaining: vec![object],
+            remaining,
         }));
         self.state.pending = Pending::ResolutionCasts { player };
     }
@@ -867,6 +937,7 @@ impl Game {
             .collect();
         // An empty choice still uses the same public resolution step.
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type,
             permanent_spell_only,
             uncast_to_hand: false,
@@ -902,6 +973,7 @@ impl Game {
             .map(|(id, _)| self.object_ref(id as CardId))
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -947,6 +1019,7 @@ impl Game {
             return false;
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -981,6 +1054,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -1110,7 +1184,7 @@ impl Game {
                 }
                 if (free.paid.is_none()
                     || definition.is_some_and(|card| !card.info().mana_cost.is_empty()))
-                    && self.permitted_cast_available(
+                    && self.permitted_cast_with_alternative(
                         player,
                         object.card,
                         if free.paid.is_some() {
@@ -1123,6 +1197,14 @@ impl Game {
                         face,
                         true,
                         false,
+                        None,
+                        None,
+                        None,
+                        false,
+                        cast_permissions::OriginAlternative {
+                            resolution_discard: free.discard_instead_of_mana,
+                            ..Default::default()
+                        },
                     )
                     && emit(if free.origin == Zone::Hand {
                         Action::CastFreeDuringResolution { object, face }
@@ -1242,7 +1324,9 @@ impl Game {
         method_override: Option<CastMethod>,
         web_slinging_cost: Option<ManaCost>,
     ) {
-        let paid = self.state.resolution_free_casts.as_ref().unwrap().paid;
+        let offer = self.state.resolution_free_casts.as_ref().unwrap();
+        let paid = offer.paid;
+        let discard_instead_of_mana = offer.discard_instead_of_mana;
         let alternative_cost = self
             .state
             .resolution_free_casts
@@ -1314,7 +1398,17 @@ impl Game {
                 |announcement| announcement.origin_alternative_cost = Some(cost),
             );
         } else {
-            self.open_payment_announcement(item, Counters::default(), None);
+            self.open_payment_announcement_configured(
+                item,
+                Counters::default(),
+                None,
+                None,
+                |announcement| {
+                    if discard_instead_of_mana {
+                        announcement.add_origin_discard_cost();
+                    }
+                },
+            );
         }
     }
 }
@@ -1379,6 +1473,7 @@ impl Game {
             .ok()
             .and_then(|value| value.checked_add(1));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -1433,6 +1528,7 @@ impl Game {
             .collect();
         self.finish_zone_events(&events, &[]);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,

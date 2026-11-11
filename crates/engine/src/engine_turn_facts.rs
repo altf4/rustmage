@@ -206,6 +206,7 @@ impl Game {
         // Every simultaneous newcomer/provider/attachment is installed already.
         self.refresh_controllers();
         let mut facts = [TurnFactsView::default(); 2];
+        let mut entered_types = [subtypes::CreatureTypeSet::default(); 2];
         for event in events {
             if !event.moved
                 || event.destination != Zone::Battlefield
@@ -232,6 +233,9 @@ impl Game {
                 entry.zombie = zombie;
             }
             let kinds = self.current_kinds(id);
+            if kinds & (1 | 128) != 0 {
+                entered_types[controller.index()].union(subtypes.creature_type_set(object.card));
+            }
             facts[controller.index()].artifact_entered |= kinds & 16 != 0;
             if kinds & 2 != 0 {
                 let count = &mut self.state.players[controller.index()].lands_entered_this_turn;
@@ -240,10 +244,30 @@ impl Game {
                     .capacity("land entry history exhausted");
             }
         }
+        if entered_types.iter().any(|types| !types.is_empty()) {
+            let history = std::sync::Arc::make_mut(
+                self.state
+                    .entered_creature_types
+                    .get_or_insert_with(Default::default),
+            );
+            for (record, new) in history.iter_mut().zip(entered_types) {
+                record.union(new);
+            }
+        }
         for (player, event) in self.state.players.iter_mut().zip(facts) {
             player.turn_facts.artifact_entered |= event.artifact_entered;
             player.turn_facts.hero_entered |= event.hero_entered;
         }
+    }
+    pub(super) fn subtype_entered_under_control(&self, player: Player, types: &[&str]) -> bool {
+        self.state
+            .entered_creature_types
+            .as_ref()
+            .is_some_and(|rows| {
+                types
+                    .iter()
+                    .any(|subtype| rows[player.index()].contains(subtype))
+            })
     }
     pub(super) fn record_attack_turn_facts(
         &mut self,

@@ -102,6 +102,11 @@ impl Announcement {
             for &object in &costs.teammates {
                 add(object);
             }
+            if let Some(selection) = &costs.origin_forage {
+                for &object in &selection.selected {
+                    add(object);
+                }
+            }
             for row in &costs.clauses {
                 match row.clause {
                     CastCostClause::Blight {
@@ -243,6 +248,7 @@ impl EntryProjection {
                 timestamp,
                 static_source: true,
                 permanent: false,
+                expires_at_next_turn_of: None,
             });
         }
         if !card.live_static_effects().is_empty() {
@@ -2014,6 +2020,7 @@ impl FundingState<'_> {
                     timestamp,
                     static_source: false,
                     permanent: true,
+                    expires_at_next_turn_of: None,
                 });
             }
         }

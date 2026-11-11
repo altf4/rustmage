@@ -49,6 +49,8 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    /// The live entrant's value, refreshed immediately before it departs.
+    BattlefieldManaValue(u64),
     DiscardedManaValue(u64),
     /// Frozen threshold of the completed discovery, independent of its result.
     DiscoverAmount(u64),
@@ -84,6 +86,25 @@ pub struct EventObjectView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EventObjectView {
+    pub(super) fn target_mana_value<W: ability_world::CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+    ) -> Option<u64> {
+        match self.facts {
+            EventObjectFacts::DepartureManaValue(value) => Some(value),
+            EventObjectFacts::BattlefieldManaValue(last_value) => {
+                if world.reference(self.object.card) == self.object
+                    && world.object(self.object.card).zone == Zone::Battlefield
+                {
+                    Some(world.mana_value(self.object.card))
+                } else {
+                    Some(last_value)
+                }
+            }
+            _ => None,
+        }
+    }
+
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.semantic_objects.as_ref().map_or(0, |rows| {
@@ -324,6 +345,7 @@ impl Game {
                     v.copy_recipe.unwrap_or_else(|| CopyRecipe::new(v.card)),
                     v.zone,
                     &v.counters,
+                    (v.zone == Zone::Battlefield).then(|| self.object_mana_value(v.id)),
                 )
             })
             .collect();
@@ -366,15 +388,16 @@ impl Game {
             }
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _, _, _)) = facts.iter().find(|(r, _, _, _, zone, _)| {
-                    *zone != Zone::Exile && p.source.is_some_and(|source| *r == source.object)
-                })
+                && let Some((_, stats, _, _, _, _, _)) =
+                    facts.iter().find(|(r, _, _, _, zone, _, _)| {
+                        *zone != Zone::Exile && p.source.is_some_and(|source| *r == source.object)
+                    })
             {
                 q.creature_comparison = Some(*stats);
             }
             if let Some(e) = &mut p.event_object
-                && let Some((_, stats, damage, recipe, zone, counters)) =
-                    facts.iter().find(|(r, _, _, _, _, _)| *r == e.object)
+                && let Some((_, stats, damage, recipe, zone, counters, mana_value)) =
+                    facts.iter().find(|(r, _, _, _, _, _, _)| *r == e.object)
             {
                 if matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)) {
                     e.facts = EventObjectFacts::ChosenCostCreaturePower(if stats.creature {
@@ -402,6 +425,9 @@ impl Game {
                     | EventObjectFacts::CountersPlaced { .. } => {
                         continue;
                     }
+                    EventObjectFacts::BattlefieldManaValue(old) => {
+                        EventObjectFacts::BattlefieldManaValue(mana_value.unwrap_or(old))
+                    }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
                     EventObjectFacts::CounterTotal(_) => {
                         EventObjectFacts::CounterTotal(counters.total())
@@ -420,6 +446,33 @@ impl Game {
             }
         }
     }
+    pub(super) fn bind_zone_event_mana_value(&mut self, event: &ZoneChange) {
+        let (object, facts) = if event.destination == Zone::Battlefield {
+            (
+                event.after,
+                EventObjectFacts::BattlefieldManaValue(self.object_mana_value(event.after.card)),
+            )
+        } else if event.before.zone == Zone::Battlefield {
+            (
+                event.before.reference,
+                EventObjectFacts::DepartureManaValue(event.granted_departure_mana_value),
+            )
+        } else {
+            return;
+        };
+        self.state
+            .pending_triggers
+            .last_mut()
+            .unwrap()
+            .set_event_object(EventObjectView {
+                object,
+                facts,
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+    }
+
     /// Programs that connive or endure the exact event object own controller facts.
     /// Other packets retain their existing payload and departure work.
     pub(super) fn bind_entering_conniver(

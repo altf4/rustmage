@@ -650,6 +650,19 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::CreaturesOfChosenType => {
+                let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
+                    return 0;
+                };
+                objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && kinds(id, object) & 1 != 0
+                            && subtypes(id).has(object.card, typ.name())
+                    })
+                    .count() as i128
+            }
             StatValue::DistinctManaValues(filter) => {
                 let mut values: Vec<_> = objects()
                     .filter(|&(id, o)| {
@@ -795,6 +808,21 @@ impl Game {
                 .into_iter()
                 .map(|object| u128::from(self.object_mana_value(object.card)))
                 .sum(),
+            AmountValue::ControlledCreaturePowerCount { minimum } => {
+                let query = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        let id = *id as CardId;
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && ability_world::CharacteristicWorld::kinds(&query, id) & 1 != 0
+                            && query.stats(id).power >= i128::from(minimum)
+                    })
+                    .count() as u128
+            }
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
             AmountValue::Devotion(color) => self
@@ -870,6 +898,7 @@ impl Game {
             | AmountValue::TargetPlayerHandSize
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
+            | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
             | AmountValue::RememberedCount

@@ -91,6 +91,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::Mill(_, MillAmount::Amount(value))
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
+            | Instruction::OpponentSacrificeDiscardOrLoseLife {
+                repetitions: value, ..
+            }
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)

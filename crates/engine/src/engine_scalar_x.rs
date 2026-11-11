@@ -387,7 +387,9 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let intervals = if a.blight_x_cost() {
+        let intervals = if a.needs_sacrifice_discount_count() {
+            self.sacrifice_discount_intervals(a)
+        } else if a.blight_x_cost() {
             self.blight_x_intervals(a)
         } else if a.declares_target_value_x() {
             self.target_value_x_intervals(a)
@@ -468,6 +470,7 @@ impl Game {
                     }
                 })
                 .unwrap_or(0),
+            AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
             AmountValue::TargetPlayerCreatureCount => item
                 .targets
                 .iter()

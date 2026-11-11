@@ -767,9 +767,9 @@ impl Game {
         })
     }
 
-    pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
+    pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) -> Vec<ZoneChange> {
         let Some(source) = item.source else {
-            return;
+            return Vec::new();
         };
         let objects = item
             .targets
@@ -782,7 +782,7 @@ impl Game {
             source.object,
             &objects,
             item.source_ability_origin,
-        );
+        )
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
@@ -803,9 +803,9 @@ impl Game {
         source: ObjectRef,
         objects: &[ObjectRef],
         ability_origin: Option<u64>,
-    ) {
+    ) -> Vec<ZoneChange> {
         if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
-            return;
+            return Vec::new();
         }
         let ids: Vec<_> = objects
             .iter()
@@ -826,6 +826,7 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        events
     }
 
     pub(super) fn linked_exile_to_graveyard_tokens(&mut self, item: &SpellView, token: Card) {

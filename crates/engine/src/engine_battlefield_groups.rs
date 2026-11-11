@@ -283,6 +283,7 @@ impl Game {
         controller: Player,
         filters: &[ControlledPermanentFilter],
         effect: PermanentGroupCounters,
+        entered_this_turn: bool,
     ) {
         use ability_world::CharacteristicWorld;
         let changes = self
@@ -294,6 +295,7 @@ impl Game {
                 let id = id as CardId;
                 if object.zone != Zone::Battlefield
                     || object.controller != controller
+                    || (entered_this_turn && !self.entered_this_turn(self.object_ref(id)))
                     || !filters.iter().any(|filter| {
                         (filter.all_kinds == 0
                             || self.current_kinds(id) & filter.all_kinds == filter.all_kinds)

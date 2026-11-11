@@ -14,6 +14,8 @@ pub enum SourceLinkedEffectKind {
     LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
     RemoveAbilitiesUntilEndOfTurn,
+    /// Source-independent removal ending at the captured controller's next actual turn.
+    RemoveAbilitiesUntilNextTurn,
     /// Lose all land subtypes and abilities, then gain a colorless mana ability.
     BlankLandWhileBlighted,
     GrantHexproof,
@@ -34,6 +36,7 @@ impl SourceLinkedEffectKind {
             Self::RemoveAbilities
                 | Self::Treasure
                 | Self::RemoveAbilitiesUntilEndOfTurn
+                | Self::RemoveAbilitiesUntilNextTurn
                 | Self::BlankLandWhileBlighted
         )
     }
@@ -45,6 +48,7 @@ impl SourceLinkedEffectKind {
             self,
             Self::ReturnedTreasure
                 | Self::RemoveAbilitiesUntilEndOfTurn
+                | Self::RemoveAbilitiesUntilNextTurn
                 | Self::BlankLandWhileBlighted
                 | Self::GrantTwoColorlessUntilSourceCast
                 | Self::PreventActivationsUntilUntapped
@@ -578,12 +582,15 @@ impl Game {
             SourceLinkedEffectKind::LandUntilControllerNextTurn,
         );
     }
-    pub(super) fn expire_source_land_forms(&mut self, player: Player) {
+    pub(super) fn expire_next_turn_source_effects(&mut self, player: Player) {
         let changed = self.state.roles.as_mut().is_some_and(|roles| {
             let before = roles.source_linked_effects.len();
             roles.source_linked_effects.retain(|row| {
-                row.kind != SourceLinkedEffectKind::LandUntilControllerNextTurn
-                    || row.controller != player
+                !matches!(
+                    row.kind,
+                    SourceLinkedEffectKind::LandUntilControllerNextTurn
+                        | SourceLinkedEffectKind::RemoveAbilitiesUntilNextTurn
+                ) || row.controller != player
             });
             before != roles.source_linked_effects.len()
         });

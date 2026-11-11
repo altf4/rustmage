@@ -1241,7 +1241,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_) | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_) | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -1673,6 +1673,16 @@ impl<'g> FundingState<'g> {
                             {
                                 keywords = keywords.union(Keywords::RIOT)
                             }
+                            crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
+                                condition,
+                                keywords: grant,
+                            } if target.object.controller == source.object.controller
+                                && self.kinds(target) & 1 != 0
+                                && self.equipped(target.id)
+                                && self.value(condition, source.id) != 0 =>
+                            {
+                                keywords = keywords.union(grant)
+                            }
                             crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                                 if target.object.controller == source.object.controller
                                     && self.kinds(target) & 1 != 0
@@ -1880,6 +1890,9 @@ impl<'g> FundingState<'g> {
                     })
                     .count()
                     >= usize::from(minimum)
+            }
+            ActivationGuard::SubtypeEnteredUnderYourControl(types) => {
+                self.game.subtype_entered_under_control(actor, types)
             }
             ActivationGuard::ControlSubtypeAny(_) => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
@@ -5630,7 +5643,59 @@ impl Game {
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
     }
+    pub(super) fn sacrifice_discount_intervals(&self, a: &Announcement) -> Vec<XInterval> {
+        let mut intervals: Vec<XInterval> = Vec::new();
+        for count in 0..=self.sacrifice_discount_limit() {
+            if !self.sacrifice_discount_announcement_fundable(a, a.cost, count) {
+                continue;
+            }
+            if let Some(last) = intervals.last_mut()
+                && last.maximum.checked_add(1) == Some(count)
+            {
+                last.maximum = count;
+            } else {
+                intervals.push(XInterval { minimum: count, maximum: count });
+            }
+        }
+        intervals
+    }
+
+    fn sacrifice_discount_announcement_fundable(
+        &self,
+        a: &Announcement,
+        cost: Option<ManaCost>,
+        count: u32,
+    ) -> bool {
+        let mut proposal = a.clone();
+        if cost.is_some() {
+            proposal.cost = cost;
+        }
+        proposal.declare_sacrifice_discount_count(count);
+        let total = self.provisional_target_cost(&proposal, Self::announcement_base_cost(&proposal));
+        proposal.total_cost = Some(total);
+        let definition = proposal.item.source.expect("sacrifice discount source").card;
+        let convoke = convoke::cost_potential(self, definition);
+        proposal.initialize_cast_costs(convoke);
+        let goal = self.funding_goal(&proposal);
+        let mut world = FundingState::from_game_with_convoke(self, &goal, convoke);
+        world.set_purpose(self.purpose_for_item(&proposal.item));
+        world.set_payment_context(&proposal);
+        world.reachable(&goal, &mut HashSet::new())
+    }
+
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.item.kind == StackKind::Spell
+            && (a.sacrifice_discount_count().is_some() || a.printed_additional_cost().is_some_and(|spec| {
+                spec.kind == EffectChoiceKind::SacrificeForGenericReduction
+            }))
+        {
+            return a.sacrifice_discount_count().map_or_else(
+                || (0..=self.sacrifice_discount_limit()).any(|count| {
+                    self.sacrifice_discount_announcement_fundable(a, Some(cost), count)
+                }),
+                |count| self.sacrifice_discount_announcement_fundable(a, Some(cost), count),
+            );
+        }
         if a.item.kind == StackKind::Spell
             && a.additional_cost().is_some_and(|s| {
                 matches!(
@@ -6780,6 +6845,7 @@ impl Game {
                 .is_some_and(|c| c.method.is_harmonize() || c.blight == Some(true))
             || announcement.ordered_craft()
             || announcement.nonmana_x()
+            || announcement.sacrifice_discount_count().is_some_and(|count| count != 0)
             || announcement
                 .additional_cost()
                 .is_some_and(|s| matches!(s.kind.payment_kind(), EffectChoiceKind::BlightCost(_)))
@@ -6794,6 +6860,7 @@ impl Game {
             })
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement.has_ordered_life_cost()
+            || announcement.has_ordered_origin_payment()
             || announcement.linked_origin_counter_cost().is_some()
             || announcement
                 .additional_cost()

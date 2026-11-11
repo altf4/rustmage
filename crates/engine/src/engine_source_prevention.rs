@@ -91,6 +91,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Suspect { subject }
         | Instruction::CreateRole { subject, .. }
         | Instruction::CreateCopyTokenWithExceptions { subject, .. }
+        | Instruction::CreateCopyTokenUntilNextEndStep { subject, .. }
         | Instruction::CreateCounteredCopyToken { subject, .. }
         | Instruction::IfSubject { subject, .. }
         | Instruction::IfSubjectSubtype { subject, .. }

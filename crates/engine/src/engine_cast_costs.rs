@@ -12,6 +12,8 @@ pub enum CastCostClause {
     Conspire(u16),
     Additional,
     OriginCounters(u16),
+    OriginForage,
+    OriginDiscard(Option<ObjectRef>),
     SneakReturn(Option<ObjectRef>),
     WebSlingingReturn(Option<ObjectRef>),
     /// Exile the activated craft source as its own ordered cost component.
@@ -36,9 +38,14 @@ pub struct CastCostTransaction {
     pub mana_paid: bool,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub teammates: Vec<ObjectRef>,
+    /// Declared sacrifice count, independent of spell X and final zone-move results.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) sacrifice_discount_count: Option<u32>,
     pub mana_closed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) target_mana_value: Option<u64>,
+    #[serde(skip)]
+    pub(super) origin_forage: Option<Box<forage::ForageSelection>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastCostTransaction {
@@ -46,10 +53,47 @@ impl CastCostTransaction {
         std::mem::size_of::<Self>()
             + self.clauses.len() * std::mem::size_of::<CastCostRow>()
             + self.teammates.len() * std::mem::size_of::<ObjectRef>()
+            + self
+                .origin_forage
+                .as_ref()
+                .map_or(0, |selection| selection.bytes())
+    }
+
+    pub(super) fn paying_origin_forage(&self) -> bool {
+        self.active.is_some_and(|index| {
+            self.clauses[usize::from(index)].clause == CastCostClause::OriginForage
+        })
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn has_ordered_origin_payment(&self) -> bool {
+        self.cast_costs.as_ref().is_some_and(|costs| {
+            costs.clauses.iter().any(|row| {
+                matches!(
+                    row.clause,
+                    CastCostClause::OriginForage | CastCostClause::OriginDiscard(_)
+                )
+            })
+        })
+    }
+
+    pub(super) fn paying_origin_discard(&self) -> bool {
+        self.cast_costs.as_ref().is_some_and(|costs| {
+            costs.active.is_some_and(|index| {
+                matches!(
+                    costs.clauses[usize::from(index)].clause,
+                    CastCostClause::OriginDiscard(_)
+                )
+            })
+        })
+    }
+
+    pub(super) fn add_origin_discard_cost(&mut self) {
+        self.add_cast_cost_clause(CastCostClause::Mana);
+        self.add_cast_cost_clause(CastCostClause::OriginDiscard(None));
+    }
+
     /// The initial craft consumers have exactly a mana cost, source exile, and
     /// one material cost. Other activation shapes retain their existing path.
     pub(super) fn ordered_craft(&self) -> bool {
@@ -159,7 +203,7 @@ impl Announcement {
         }) {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
-        if self.nonmana_x() {
+        if self.nonmana_x() || self.sacrifice_discount_count().is_some_and(|count| count != 0) {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
         if self.item.cast.is_some_and(|cast| cast.beheld == Some(true)) {
@@ -261,7 +305,9 @@ impl Announcement {
         {
             self.add_cast_cost_clause(CastCostClause::Mana);
         }
-        if self.cast_costs.is_some() && self.additional_cost().is_some() {
+        if self.cast_costs.is_some() && self.additional_cost().is_some_and(|spec| {
+            spec.kind != EffectChoiceKind::SacrificeForGenericReduction
+        }) {
             self.add_cast_cost_clause(CastCostClause::Additional);
         }
     }
@@ -300,6 +346,7 @@ impl Game {
                 CastCostClause::Additional
                     | CastCostClause::Mana
                     | CastCostClause::OriginCounters(_)
+                    | CastCostClause::OriginForage
             ));
             costs.clauses[usize::from(index)].paid = true;
             costs.active = None;
@@ -312,6 +359,19 @@ impl Game {
                 assert_eq!(selected.len(), usize::from(amount));
                 self.pay_selected_creature_counters(&mut a.item, &selected);
                 a.additional = None;
+            }
+            if clause == CastCostClause::OriginForage {
+                let selected = a
+                    .cast_costs
+                    .as_mut()
+                    .unwrap()
+                    .origin_forage
+                    .take()
+                    .expect("origin forage selected");
+                self.commit_forage(a.item.controller, &selected);
+                if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+                    return true;
+                }
             }
             if clause == CastCostClause::Additional {
                 a.additional_paid = true;
@@ -478,11 +538,33 @@ impl Game {
                     self.state.announcing = Some(a);
                 }
             }
+            CastCostClause::OriginDiscard(_) => {
+                self.state.pending = Pending::AdditionalCost {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
+            CastCostClause::OriginForage => {
+                a.cast_costs.as_mut().unwrap().origin_forage =
+                    Some(Box::new(forage::ForageSelection {
+                        route: None,
+                        selected: Vec::new(),
+                        skip_to: 0,
+                    }));
+                self.state.pending = Pending::Forage {
+                    player: a.item.controller,
+                };
+                self.state.announcing = Some(a);
+            }
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();
                 let p = a.item.controller;
-                let selected =
-                    a.additional.is_some() || a.additional_group_complete || a.additional_life;
+                let selected = a.additional.is_some()
+                    || a.additional_group_complete
+                    || a.additional_life
+                    || a.forage
+                        .as_ref()
+                        .is_some_and(|selection| selection.complete());
                 self.state.announcing = Some(a);
                 if selected {
                     self.state.pending = Pending::PayCosts { player: p };
@@ -499,6 +581,23 @@ impl Game {
             }
         }
     }
+    pub(super) fn pay_origin_discard_clause(&mut self, object: ObjectRef) {
+        let costs = self
+            .state
+            .announcing
+            .as_mut()
+            .unwrap()
+            .cast_costs
+            .as_mut()
+            .unwrap();
+        let active = costs.active.take().unwrap();
+        costs.clauses[usize::from(active)].paid = true;
+        self.discard_batch(&[object.card], None);
+        if self.state.entry_batch.is_none() && self.state.replacements.is_none() {
+            self.finish_announcement();
+        }
+    }
+
     pub(super) fn pay_conspire_clause(&mut self, objects: [ObjectRef; 2]) {
         let Pending::ConspirePayment { instance, .. } = self.state.pending else {
             unreachable!()

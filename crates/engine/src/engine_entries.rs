@@ -1067,7 +1067,15 @@ impl Game {
         let battlefield_departure = moves
             .iter()
             .any(|(m, _)| m.before.zone == Zone::Battlefield)
-            .then(|| self.freeze_battlefield_departure_observers())
+            .then(|| {
+                self.freeze_battlefield_departure_observers(moves.iter().map(|(movement, _)| {
+                    movement
+                        .source_before
+                        .as_deref()
+                        .unwrap_or(&movement.before)
+                        .reference
+                }))
+            })
             .flatten();
         self.capture_event_object_facts(moves.iter().map(|(movement, _)| {
             movement
@@ -1468,6 +1476,7 @@ impl Game {
                     timestamp,
                     static_source: false,
                     permanent: true,
+                    expires_at_next_turn_of: None,
                 });
             }
         }

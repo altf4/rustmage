@@ -27,6 +27,7 @@ pub enum TokenCleanup {
     OwnEndStepSacrifice,
     NextOwnTurnEndStepSacrifice,
     NextEndStepDestroy,
+    NextEndStepExile { ability: u16 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {

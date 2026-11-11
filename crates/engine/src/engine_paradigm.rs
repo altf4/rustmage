@@ -176,6 +176,7 @@ impl Game {
             .get_or_insert_with(Default::default)
             .ephemeral = Some(object);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
@@ -227,6 +228,7 @@ impl Game {
             }
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,

@@ -112,7 +112,7 @@ fn noctis_makes_an_exact_additional_life_route_and_finality_applies_to_noncreatu
         method: CastMethod::Normal,
         flash_surcharge: false,
         life: 3,
-        entry_counter: CounterKind::Finality,
+        entry_counter: Some(CounterKind::Finality),
     };
     assert!(game.keywords(noctis).contains(Keywords::LIFELINK));
     let forbidden = route(&game, rival);

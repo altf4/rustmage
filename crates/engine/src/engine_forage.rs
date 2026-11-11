@@ -116,7 +116,11 @@ impl Game {
 
     fn forage_selection(&self) -> &ForageSelection {
         if let Some(a) = &self.state.announcing {
-            a.forage.as_deref().expect("forage declaration")
+            a.cast_costs
+                .as_ref()
+                .and_then(|costs| costs.origin_forage.as_deref())
+                .or(a.forage.as_deref())
+                .expect("forage declaration")
         } else {
             self.state
                 .resolving
@@ -129,7 +133,11 @@ impl Game {
     }
     fn forage_selection_mut(&mut self) -> &mut ForageSelection {
         if let Some(a) = &mut self.state.announcing {
-            a.forage.as_deref_mut().unwrap()
+            a.cast_costs
+                .as_mut()
+                .and_then(|costs| costs.origin_forage.as_deref_mut())
+                .or(a.forage.as_deref_mut())
+                .expect("forage declaration")
         } else {
             self.state
                 .resolving
@@ -176,7 +184,16 @@ impl Game {
         self.state
             .objects
             .iter()
-            .filter(|o| o.zone == Zone::Graveyard && o.owner == player && o.is_card())
+            .enumerate()
+            .filter(|&(id, o)| {
+                o.zone == Zone::Graveyard
+                    && o.owner == player
+                    && o.is_card()
+                    && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        id as CardId,
+                    )
+            })
             .take(3)
             .count()
     }
@@ -251,6 +268,42 @@ impl Game {
     fn forage_route_available(&self, route: ForageRoute) -> bool {
         let p = self.semantic_actor().unwrap();
         if let Some(a) = &self.state.announcing {
+            if a.cast_costs
+                .as_ref()
+                .is_some_and(|costs| costs.paying_origin_forage())
+            {
+                if route == ForageRoute::Black {
+                    return false;
+                }
+                let mut proposal = a.clone();
+                proposal
+                    .cast_costs
+                    .as_mut()
+                    .unwrap()
+                    .origin_forage
+                    .as_mut()
+                    .unwrap()
+                    .route = Some(route);
+                return self.cast_cost_world(&proposal).cost_completion();
+            }
+            if matches!(self.state.pending, Pending::ForageMethod { .. })
+                && (a.has_ordered_origin_payment() || a.has_ordered_life_cost())
+            {
+                if route == ForageRoute::Black
+                    && a.additional_cost().unwrap().kind != EffectChoiceKind::ForageOrBlack
+                {
+                    return false;
+                }
+                let mut proposal = a.clone();
+                proposal.forage = Some(Box::new(ForageSelection {
+                    route: Some(route),
+                    selected: Vec::new(),
+                    skip_to: 0,
+                }));
+                return proposal
+                    .cost_options()
+                    .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+            }
             if a.production.is_some()
                 && a.additional_cost()
                     .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
@@ -340,11 +393,15 @@ impl Game {
             proposal.forage.as_mut().unwrap().selected.push(r);
             return self.activation_total_fundable(&proposal);
         }
+        let can_exile = || {
+            o.zone == Zone::Graveyard
+                && o.owner == p
+                && o.is_card()
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, r.card)
+        };
         if self.cast_costs_mana_paid() {
             let valid = match f.route {
-                Some(ForageRoute::ExileThree) => {
-                    o.zone == Zone::Graveyard && o.owner == p && o.is_card()
-                }
+                Some(ForageRoute::ExileThree) => can_exile(),
                 Some(ForageRoute::Food) => self.additional_candidate(food_cost(), p, r, r),
                 _ => false,
             };
@@ -356,9 +413,7 @@ impl Game {
             return self.cast_cost_group_fundable(&selected, false);
         }
         match f.route {
-            Some(ForageRoute::ExileThree) => {
-                o.zone == Zone::Graveyard && o.owner == p && o.is_card()
-            }
+            Some(ForageRoute::ExileThree) => can_exile(),
             Some(ForageRoute::Food) => {
                 self.additional_candidate(food_cost(), p, r, r)
                     && self.state.announcing.as_ref().is_none_or(|a| {
@@ -520,7 +575,12 @@ impl Game {
             .state
             .announcing
             .as_ref()
-            .and_then(|a| a.forage.as_deref())
+            .and_then(|a| {
+                a.cast_costs
+                    .as_ref()
+                    .and_then(|costs| costs.origin_forage.as_deref())
+                    .or(a.forage.as_deref())
+            })
             .or_else(|| {
                 self.state
                     .resolving
@@ -534,11 +594,12 @@ impl Game {
         Some(ForageView {
             player,
             optional: self.state.announcing.is_none(),
-            paid: self
-                .state
-                .announcing
-                .as_ref()
-                .is_some_and(|a| a.additional_paid),
+            paid: self.state.announcing.as_ref().is_some_and(|a| {
+                a.additional_paid
+                    && a.cast_costs
+                        .as_ref()
+                        .is_none_or(|costs| !costs.paying_origin_forage())
+            }),
             routes: if picking_route {
                 [
                     ForageRoute::ExileThree,

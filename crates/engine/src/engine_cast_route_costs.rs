@@ -64,7 +64,7 @@ impl Game {
     pub(super) fn graveyard_life_cast_rules(
         &self,
         actor: Player,
-    ) -> Vec<(CastFilter, u32, CounterKind)> {
+    ) -> Vec<(CastFilter, u32, Option<CounterKind>)> {
         let mut rules = Vec::new();
         for &id in &self.state.static_sources {
             let provider = &self.state.objects[id as usize];
@@ -77,16 +77,20 @@ impl Game {
                 .iter()
                 .flat_map(|g| g.fragments)
             {
-                let StaticAbilityFragment::CastFromGraveyardWithLife {
-                    filter,
-                    life,
-                    entry_counter,
-                } = *fragment
-                else {
-                    continue;
+                let rule = match *fragment {
+                    StaticAbilityFragment::CastFromGraveyardWithLife {
+                        filter,
+                        life,
+                        entry_counter,
+                    } => (filter, life, Some(entry_counter)),
+                    StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn {
+                        filter,
+                        life,
+                    } if self.state.active == actor => (filter, life, None),
+                    _ => continue,
                 };
                 if self.continuous_fragment_available(id, |found| std::ptr::eq(found, fragment)) {
-                    rules.push((filter, life, entry_counter));
+                    rules.push(rule);
                 }
             }
         }
@@ -98,7 +102,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
-        rules: &[(CastFilter, u32, CounterKind)],
+        rules: &[(CastFilter, u32, Option<CounterKind>)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -192,7 +196,7 @@ impl Game {
         face: CastFace,
         method: CastMethod,
         flash_surcharge: bool,
-        (life, entry_counter): (u32, CounterKind),
+        (life, entry_counter): (u32, Option<CounterKind>),
     ) {
         let mut item = self.cast_item(actor, card, [0; 6]);
         self.set_cast_face(&mut item, face);
@@ -204,7 +208,9 @@ impl Game {
         } else if method == CastMethod::Free && item.source.unwrap().card.x_symbols() != 0 {
             item.x = Some(0);
         }
-        self.record_cast_entry_counters(item.source.unwrap().object, entry_counter, 1);
+        if let Some(counter) = entry_counter {
+            self.record_cast_entry_counters(item.source.unwrap().object, counter, 1);
+        }
         self.open_payment_announcement_with_origin_rules(
             item,
             Counters::default(),

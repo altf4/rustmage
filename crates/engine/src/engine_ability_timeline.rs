@@ -74,6 +74,7 @@ impl Card {
                         StaticAbilityFragment::BorrowGraveyardActivations(..)
                             | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                             | StaticAbilityFragment::RemoveAttachedAbilities
+                            | StaticAbilityFragment::RemoveAttachedKeywords(_)
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::AttachedChosenColor
@@ -98,6 +99,7 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
+                            | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)

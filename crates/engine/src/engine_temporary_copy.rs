@@ -252,6 +252,7 @@ impl Game {
             recipe.replacement_subtype = None;
             recipe.exceptions.spider_human_hero = false;
             recipe.exceptions.shapeshifter_rogue = false;
+            recipe.exceptions.bird = false;
             recipe.exceptions.reflection = false;
         }
         let types = incoming

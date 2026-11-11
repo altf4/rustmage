@@ -79,6 +79,9 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: Cop
         .intrinsic_keywords()
         .union(recipe.overrides.map_or(Keywords::NONE, |o| o.keywords));
     movement.before.copy_recipe = Some(recipe);
+    // CR107.3j: X in the newly acquired entry abilities is independent of
+    // the original spell's declared X. Its cast and payment receipts survive.
+    movement.x = 0;
     movement.exile_preparation = None;
     movement.devour_preparation = None;
     movement.choice = None;
@@ -111,8 +114,9 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> bool {
     let definition = movement.before.card;
-    match definition.entry_copy_options().source {
-        EntryCopySource::Battlefield => {
+    let source = definition.entry_copy_options().source;
+    match source {
+        EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
             !batch
                 .iter()
                 .any(|m| m.before.id == id && m.before.zone != Zone::Battlefield)
@@ -129,6 +133,11 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
                             id,
                         )
                     })
+                && (source != EntryCopySource::BattlefieldAtMostManaSpent
+                    || world.mana_value(id)
+                        <= movement
+                            .cast_payment
+                            .map_or(0, |mana| mana.into_iter().map(u64::from).sum()))
         }
         source => {
             // Simultaneous entrants are still in the graveyard during this choice.
@@ -140,7 +149,9 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
                         object.card.front_face().is_creature()
                     }
                     EntryCopySource::GraveyardLand { .. } => object.card.front_face().is_land(),
-                    EntryCopySource::Battlefield => unreachable!(),
+                    EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
+                        unreachable!()
+                    }
                 }
         }
     }
@@ -154,7 +165,9 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
     battlefield_recipe: impl FnOnce() -> CopyRecipe,
 ) -> (CopyRecipe, Option<EntryCopyExile>) {
     match definition.entry_copy_options().source {
-        EntryCopySource::Battlefield => (battlefield_recipe(), None),
+        EntryCopySource::Battlefield | EntryCopySource::BattlefieldAtMostManaSpent => {
+            (battlefield_recipe(), None)
+        }
         EntryCopySource::GraveyardCreature { exile_trigger } => (
             CopyRecipe::new(world.definition(object.card).front_face()),
             Some(EntryCopyExile {

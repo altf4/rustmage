@@ -256,6 +256,11 @@ pub enum StaticAbilityFragment {
         life: u32,
         entry_counter: CounterKind,
     },
+    /// Cast a matching spell from your graveyard on your turn with additional life payment.
+    CastFromGraveyardWithLifeDuringOwnTurn {
+        filter: CastFilter,
+        life: u32,
+    },
     SpendAnyManaForCreatures,
     /// Actual mana can meet WUBRG requirements of controlled creatures' activations.
     SpendAnyColorForCreatureActivations,
@@ -330,6 +335,10 @@ pub enum StaticAbilityFragment {
     },
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
+    ConditionalEquippedCreatureKeywords {
+        condition: StatValue,
+        keywords: Keywords,
+    },
     /// Live grant to tapped controlled creatures, including virtual payment taps.
     ControlledTappedKeywords {
         other: bool,
@@ -410,6 +419,7 @@ pub enum StaticAbilityFragment {
     /// Predefined Cursed Role sets both axes in layer 7b.
     PredefinedRoleBase,
     RemoveAttachedAbilities,
+    RemoveAttachedKeywords(Keywords),
     AttachedUntap(UntapRestriction),
     /// Prevent counters on the enchanted/equipped permanent.
     AttachedCounterProhibition,
@@ -640,6 +650,7 @@ pub enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    CannotBeBlockedByCreaturesWithPowerAtLeast(i128),
     /// This permanent can block only attacking creatures with flying.
     CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.

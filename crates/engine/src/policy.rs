@@ -63,6 +63,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
                 | Instruction::CreateCopyTokenWithExceptions { .. }
+                | Instruction::CreateCopyTokenUntilNextEndStep { .. }
                 | Instruction::CreateCounteredCopyToken { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..

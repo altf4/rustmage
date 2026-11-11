@@ -11,6 +11,8 @@ pub struct BaseStatsEffectView {
     pub timestamp: u64,
     pub static_source: bool,
     pub permanent: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_at_next_turn_of: Option<Player>,
 }
 /// A layer-7c modifier lasting until the specified player's next actual turn.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -89,6 +91,9 @@ impl Game {
             roles
                 .until_next_turn_stats
                 .retain(|row| row.controller != player);
+            roles
+                .base_stats
+                .retain(|row| row.expires_at_next_turn_of != Some(player));
         }
     }
     pub(super) fn set_base_stats_from_source(&mut self, item: &SpellView, subject: Subject) {
@@ -262,7 +267,7 @@ impl Game {
         if p.is_some_and(|value| value.is_none()) || t.is_some_and(|value| value.is_none()) {
             return;
         }
-        self.set_base_stats_recipients(item, recipients, p.flatten(), t.flatten());
+        self.set_base_stats_recipients(item, recipients, p.flatten(), t.flatten(), None);
     }
     pub(super) fn set_resolved_base_stats(
         &mut self,
@@ -296,6 +301,7 @@ impl Game {
                 timestamp,
                 static_source: true,
                 permanent: false,
+                expires_at_next_turn_of: None,
             });
     }
     pub(super) fn set_base_stats(
@@ -338,14 +344,41 @@ impl Game {
                 })
                 .collect(),
         };
-        self.set_base_stats_recipients(item, recipients, power, toughness);
+        self.set_base_stats_recipients(item, recipients, power, toughness, None);
     }
+
+    pub(super) fn suppress_targets_and_set_creature_base_until_next_turn(
+        &mut self,
+        item: &SpellView,
+        power: i128,
+        toughness: i128,
+    ) {
+        self.resolve_source_linked_effect(
+            item,
+            SourceLinkedEffectKind::RemoveAbilitiesUntilNextTurn,
+        );
+        let creatures = self
+            .keyword_subjects(item, Subject::Targets)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id) && self.is_creature(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        self.set_base_stats_recipients(
+            item,
+            creatures,
+            Some(power),
+            Some(toughness),
+            Some(item.controller),
+        );
+    }
+
     fn set_base_stats_recipients(
         &mut self,
         item: &SpellView,
         recipients: Vec<ObjectRef>,
         power: Option<i128>,
         toughness: Option<i128>,
+        expires_at_next_turn_of: Option<Player>,
     ) {
         if recipients.is_empty() {
             return;
@@ -364,6 +397,7 @@ impl Game {
                 timestamp,
                 static_source: false,
                 permanent: false,
+                expires_at_next_turn_of,
             });
         }
     }
@@ -379,7 +413,11 @@ impl Game {
         if let Some(state) = &mut self.state.roles {
             state
                 .base_stats
-                .retain(|effect| effect.static_source || effect.permanent);
+                .retain(|effect| {
+                    effect.static_source
+                        || effect.permanent
+                        || effect.expires_at_next_turn_of.is_some()
+                });
             // Legal cleanup cannot begin with an unresolved stack or announcement.
             state.stat_subjects.clear();
         }
