@@ -3,7 +3,7 @@
   "catalogue_id": 3351,
   "oracle_id": "6a47865c-8fa2-4cb2-aebf-8009c065395f",
   "facts_sha256": "ef26a4d1cb16ce582b36ad58939ce1562bf30edc25ea952e55f27f4a5aa6fa15",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "62809bf524919bcd0069accd8ba00a3a65efd9097e31e1e268cf998d15f10c64"
@@ -63,5 +63,6 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
     }
-  ]
+  ],
+  "rules_tests": "otj_cards_m_r"
 }
