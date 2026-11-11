@@ -9,6 +9,21 @@ pub(super) struct SaddlePayment {
     pub selected: Vec<ObjectRef>,
     pub complete: bool,
 }
+/// A designation is independent of who tapped to pay its activation cost.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct SaddleHistory {
+    mount: ObjectRef,
+    saddled: bool,
+    contributors: Vec<ObjectRef>,
+}
+
+impl SaddleHistory {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.contributors.len() * std::mem::size_of::<ObjectRef>()
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct SaddleChoiceView {
@@ -85,7 +100,46 @@ impl Game {
         ability_world::CharacteristicWorld::crew_saddle_contribution(self, card, subject, subtype)
     }
     pub(super) fn is_saddled(&self, object: ObjectRef) -> bool {
-        self.state.saddled.contains(&object)
+        self.source_saddled(object)
+            && self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+    }
+
+    fn saddle_history(&self, mount: ObjectRef) -> Option<&SaddleHistory> {
+        self.state
+            .saddle_history
+            .iter()
+            .find(|row| row.mount == mount)
+    }
+
+    /// An old exact incarnation retains the designation it had at departure.
+    pub(super) fn source_saddled(&self, mount: ObjectRef) -> bool {
+        self.saddle_history(mount).is_some_and(|row| row.saddled)
+    }
+
+    #[cfg(feature = "test-support")]
+    pub(super) fn saddle_contributors(&self, mount: ObjectRef) -> &[ObjectRef] {
+        self.saddle_history(mount)
+            .map_or(&[], |row| row.contributors.as_slice())
+    }
+
+    fn saddle_history_mut(&mut self, mount: ObjectRef) -> &mut SaddleHistory {
+        let history = &mut self.state.saddle_history;
+        let index = history
+            .iter()
+            .position(|row| row.mount == mount)
+            .unwrap_or_else(|| {
+                history
+                    .try_reserve(1)
+                    .capacity("Saddle history capacity exhausted");
+                history.push(SaddleHistory {
+                    mount,
+                    saddled: false,
+                    contributors: Vec::new(),
+                });
+                history.len() - 1
+            });
+        &mut history[index]
     }
     fn saddle_eligible(&self, source: ObjectRef, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
@@ -234,15 +288,19 @@ impl Game {
         self.state.pending = Pending::PayCosts { player: actor };
     }
     pub(super) fn finish_paid_saddle(&mut self, item: SpellView, selected: Vec<ObjectRef>) {
+        let mount = item.source.expect("Saddle has an object source").object;
+        if !selected.is_empty() {
+            // CR 702.171c: the tap cost relates the two incarnations even
+            // when the activation never resolves or the mount leaves play.
+            let history = &mut self.saddle_history_mut(mount).contributors;
+            crew_participants::remember_paid_contributors(history, &selected);
+        }
         self.tap_objects_as(
             item.controller,
             &selected.iter().map(|r| r.card).collect::<Vec<_>>(),
         );
         let participants = self.capture_crew_saddle_participants(&selected);
-        self.queue_crew_saddle_participant_triggers(
-            participants,
-            item.source.expect("Saddle has an object source").object,
-        );
+        self.queue_crew_saddle_participant_triggers(participants, mount);
         self.state.priority = item.controller;
         self.push_stack_item(item);
         self.state.pending = Pending::Priority;
@@ -266,11 +324,9 @@ impl Game {
         if !self.on_battlefield(recipient.card) || self.object_ref(recipient.card) != recipient {
             return;
         }
-        let first = !self.is_saddled(recipient);
-        if first {
-            self.state.saddled.push(recipient);
-        }
-        if first {
+        let history = self.saddle_history_mut(recipient);
+        if !history.saddled {
+            history.saddled = true;
             let source = self.object_view(recipient.card);
             for (index, a) in source.card.triggers().iter().enumerate() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {

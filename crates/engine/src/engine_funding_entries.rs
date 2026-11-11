@@ -537,6 +537,7 @@ impl FundingState<'_> {
             }
             StepGuard::OpponentLostLife => self.lost_life(player.other()),
             StepGuard::CommittedCrimeThisTurn => state.committed_crime_this_turn,
+            StepGuard::SourceSaddled => self.game.source_saddled(source),
             StepGuard::CardExiledThisTurn => {
                 self.game.state.cards_exiled_this_turn
                     || self.resources.iter().any(|r| {

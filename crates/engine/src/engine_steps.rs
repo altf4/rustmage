@@ -545,6 +545,7 @@ impl Game {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }
             StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
+            StepGuard::SourceSaddled => return self.source_saddled(source),
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {

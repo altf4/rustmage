@@ -6233,6 +6233,8 @@ pub enum StepGuard {
     OpponentControlledCreatureDied,
     OpponentLostLife,
     CommittedCrimeThisTurn,
+    /// The source's current designation, or the one it had as it left the battlefield.
+    SourceSaddled,
     GainedLife,
     ScriedOrSurveilledThisTurn,
     LoyaltyAbilityActivatedThisTurn,

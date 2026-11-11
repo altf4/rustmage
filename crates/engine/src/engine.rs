@@ -3101,7 +3101,7 @@ struct State {
     earthbend_returns: Option<Box<Vec<earthbend::EarthbendReturn>>>,
     mobilize: Option<Box<mobilize::MobilizePlan>>,
     exertions: exert::Rows,
-    saddled: Vec<ObjectRef>,
+    saddle_history: Vec<saddle::SaddleHistory>,
     saddle_payment: Option<Box<saddle::SaddlePayment>>,
     crew: Option<Box<crew::CrewState>>,
     objects: SharedVec<Object>,
@@ -4515,7 +4515,7 @@ impl Game {
                 earthbend_returns: None,
                 mobilize: None,
                 exertions: None,
-                saddled: Vec::new(),
+                saddle_history: Vec::new(),
                 saddle_payment: None,
                 crew: None,
                 last_target_library_move: None,
@@ -10360,7 +10360,6 @@ impl Game {
             self.capture_stat_subject_departure(&before);
             self.forget_vehicle_animation(before.reference);
             self.forget_exertions(before.reference);
-            self.state.saddled.retain(|r| *r != before.reference);
         }
         self.forget_adventure(before.reference);
         let generation = before
@@ -11202,7 +11201,7 @@ impl Game {
             player.extra_land_plays_granted = 0;
         }
         let expired_vehicles = self.expire_vehicle_animation();
-        self.state.saddled.clear();
+        self.state.saddle_history.clear();
         self.state.exile_permissions.retain(
             |p| !matches!(p.expiry, ExilePlayExpiry::Turn(turn) if turn <= self.state.turn),
         );
@@ -12977,7 +12976,11 @@ impl Game {
             + std::mem::size_of::<Vec<Object>>()
             + std::mem::size_of::<Vec<ObjectRef>>()
             + s.combat_rules.as_ref().map_or(0, |r| r.owned_bytes())
-            + (s.attacked_this_turn.len() + s.saddled.len()) * std::mem::size_of::<ObjectRef>()
+            + s.attacked_this_turn.len() * std::mem::size_of::<ObjectRef>()
+            + s.saddle_history
+                .iter()
+                .map(saddle::SaddleHistory::owned_bytes)
+                .sum::<usize>()
             + s.saddle_payment.as_ref().map_or(0, |f| {
                 std::mem::size_of::<saddle::SaddlePayment>()
                     + f.selected.len() * std::mem::size_of::<ObjectRef>()

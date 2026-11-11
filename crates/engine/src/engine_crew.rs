@@ -492,14 +492,7 @@ impl Game {
                 state.history.len() - 1
             });
         let history = &mut state.history[at].contributors;
-        for &r in &context.contributors {
-            if !history.contains(&r) {
-                history
-                    .try_reserve(1)
-                    .capacity("Crew history capacity exhausted");
-                history.push(r)
-            }
-        }
+        crew_participants::remember_paid_contributors(history, &context.contributors);
         self.tap_objects_as(
             item.controller,
             &context
