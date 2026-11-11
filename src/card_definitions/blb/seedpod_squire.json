@@ -3,10 +3,41 @@
   "catalogue_id": 3764,
   "oracle_id": "e2f57e48-ff5b-4a42-9b7c-1bd23b0d78ed",
   "facts_sha256": "cb4c7c840a25bb0afafa4d43845ac94f11ebd7f242a19aadd7382e6b2364769d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "be3b215f98c6aa804d8bf4aa4738d1ffe8f02ad8b16eec1772e51c044eeff272"
   },
-  "physical_metadata_sha256": "81a6adc9b665dc7e8cdd0f62430dc198878cd782211845f23dd6f2ee41ef650b"
+  "physical_metadata_sha256": "81a6adc9b665dc7e8cdd0f62430dc198878cd782211845f23dd6f2ee41ef650b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeedpodSquire.java",
+  "java_sha256": "e864e8d67dc603a3e381290f66d203269ab4fde0ac1ad81af5206f56ecbd2058",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_combat.rs"
 }

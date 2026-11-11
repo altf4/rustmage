@@ -1,16 +1,44 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const NONCREATURE: TriggerCondition = TriggerCondition::SpellCast {
+    relation: CastRelation::You,
+    filter: CastFilter::Noncreature,
+    ordinal: None,
+};
+const PROWESS: &[Instruction] = &[Instruction::Grow {
+    subject: Subject::Source,
+    power: 1,
+    toughness: 1,
+}];
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 3),
+    triggers: &[
+        TriggeredAbility {
+            condition: NONCREATURE,
+            targets: TargetPlan::NONE,
+            program: PROWESS,
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Granted(&NONCREATURE),
+            targets: TargetPlan::NONE,
+            program: PROWESS,
+        },
+        TriggeredAbility {
+            condition: NONCREATURE,
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+            program: &[Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::CANT_BE_BLOCKED,
+            }],
+        },
+    ],
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledCreatureTrigger {
+            ability: 1,
+            other: true,
+            nontoken: false,
+        }],
+    }],
     ..CardRules::EMPTY
 };
