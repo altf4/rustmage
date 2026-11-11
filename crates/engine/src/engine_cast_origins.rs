@@ -592,10 +592,17 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ResolutionPaidCast {
-    pub kinds: u8,
+    pub kinds: u16,
     pub exile_instants_sorceries: bool,
     #[serde(skip_serializing_if = "is_false")]
     pub spend_any_mana: bool,
+}
+impl ResolutionPaidCast {
+    pub(super) const ANY_KINDS: u16 = u8::MAX as u16;
+
+    fn allows_kinds(self, kinds: u16) -> bool {
+        self.kinds == Self::ANY_KINDS || self.kinds & kinds != 0
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -709,7 +716,7 @@ impl Game {
             uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
-                kinds: u8::MAX,
+                kinds: ResolutionPaidCast::ANY_KINDS,
                 exile_instants_sorceries: false,
                 spend_any_mana: false,
             }),
@@ -842,7 +849,7 @@ impl Game {
             uncast_to_hand: false,
             siege_transformed: false,
             paid: Some(ResolutionPaidCast {
-                kinds,
+                kinds: u16::from(kinds),
                 exile_instants_sorceries,
                 spend_any_mana: false,
             }),
@@ -996,9 +1003,7 @@ impl Game {
             // A paid permission permits a card's alternative disguise cost.
             // Disguise is a creature spell with mana value zero regardless of
             // the printed face; free-cast permissions cannot pay this cost.
-            if free
-                .paid
-                .is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+            if free.paid.is_some_and(|paid| paid.allows_kinds(1))
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
                 && self.disguise_mana_fundable(player, object.card)
@@ -1030,9 +1035,9 @@ impl Game {
                         && free
                             .permanent_type
                             .is_none_or(|kind| card.kind_mask() & kind.mask() != 0)
-                        && free.paid.is_none_or(|paid| {
-                            paid.kinds == u8::MAX || card.kind_mask() & u16::from(paid.kinds) != 0
-                        })
+                        && free
+                            .paid
+                            .is_none_or(|paid| paid.allows_kinds(card.kind_mask()))
                         && free
                             .maximum_mana_value
                             .is_none_or(|maximum| card.fixed_mana_value() < maximum)

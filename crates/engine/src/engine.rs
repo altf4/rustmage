@@ -2326,6 +2326,37 @@ impl SpellView {
                 let a = &self.trigger_definition().triggers()[ability as usize];
                 let targets = match a.targets {
                     TargetPlan::Single(mut spec)
+                        if spec.rule == TargetRule::DamagedPlayerNonlandPermanentCard =>
+                    {
+                        const fn graveyard_rule(relation: i8) -> TargetRule {
+                            TargetRule::Object {
+                                zone: TargetZone::Graveyard,
+                                kinds: 0,
+                                relation,
+                                other: false,
+                                nonland: true,
+                                tapped: false,
+                                min_mana: 0,
+                                max_mana: u32::MAX,
+                            }
+                        }
+                        const OWN: TargetRule = graveyard_rule(0);
+                        const OPPONENT: TargetRule = graveyard_rule(1);
+                        let player = self
+                            .damage_event
+                            .expect("damage-bound target requires event")
+                            .player;
+                        spec.rule = TargetRule::Filtered {
+                            base: if player == self.controller {
+                                &OWN
+                            } else {
+                                &OPPONENT
+                            },
+                            predicate: &crate::cards::TargetPredicate::Permanent,
+                        };
+                        TargetPlan::Single(spec)
+                    }
+                    TargetPlan::Single(mut spec)
                         if matches!(
                             spec.rule,
                             TargetRule::DamagedPlayerPermanent { .. }

@@ -352,6 +352,8 @@ pub enum TargetRule {
         zone: TargetZone,
         kinds: u8,
     },
+    /// A nonland permanent card in the damaged player's graveyard.
+    DamagedPlayerNonlandPermanentCard,
     CreatureOrVehicle {
         relation: i8,
     },
@@ -2702,6 +2704,10 @@ pub enum Instruction {
     CastTargetedGraveyardPaid {
         spend_any_mana: bool,
         exile_on_graveyard: bool,
+    },
+    /// Offer a paid graveyard cast only if the selected face is a permanent spell.
+    CastTargetedGraveyardPermanentPaid {
+        spend_any_mana: bool,
     },
     /// Optional paid cast from the controller’s graveyard, during resolution.
     CastGraveyard {

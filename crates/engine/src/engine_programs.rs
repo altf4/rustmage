@@ -6431,12 +6431,16 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::CastTargetedGraveyardPaid {
-                    spend_any_mana,
-                    exile_on_graveyard,
-                } => {
+                Instruction::CastTargetedGraveyardPaid { spend_any_mana, .. }
+                | Instruction::CastTargetedGraveyardPermanentPaid { spend_any_mana } => {
+                    let (kinds, exile_on_graveyard) = match instruction {
+                        Instruction::CastTargetedGraveyardPaid {
+                            exile_on_graveyard, ..
+                        } => (ResolutionPaidCast::ANY_KINDS, exile_on_graveyard),
+                        _ => (crate::cards::PERMANENT_KINDS & !2, false),
+                    };
                     let paid = ResolutionPaidCast {
-                        kinds: u8::MAX,
+                        kinds,
                         exile_instants_sorceries: false,
                         spend_any_mana,
                     };
