@@ -86,6 +86,9 @@ impl Game {
                         .iter()
                         .any(|subtype| dealer.facts.has_subtype(subtype))
             }
+            DamageSubject::ControlledLegendaryCreatures => {
+                dealer.controller == source.controller && dealer.facts.legendary_creature
+            }
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {
                 source.attached_to == Some(dealer.reference)

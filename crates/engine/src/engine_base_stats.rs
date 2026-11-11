@@ -140,7 +140,7 @@ impl Game {
                 } | Instruction::GrowResolved {
                     value: ResolvedStatValue::EnteringPower,
                     ..
-                }
+                } | Instruction::DamageByEnteringPower
             )
         });
         if !reads_power {
@@ -162,7 +162,11 @@ impl Game {
         if let Some(state) = &mut self.state.roles {
             for fact in &mut state.stat_subjects {
                 if fact.object == before.reference && fact.departure_power.is_none() {
-                    fact.departure_power = Some(before.power);
+                    fact.departure_power = Some(if before.is_creature() {
+                        before.power
+                    } else {
+                        0
+                    });
                 }
             }
         }
@@ -220,7 +224,11 @@ impl Game {
                 } else if self.on_battlefield(subject.card)
                     && self.object_ref(subject.card) == subject
                 {
-                    Some(self.object_view(subject.card).power)
+                    Some(if self.is_creature(subject.card) {
+                        self.stats(subject.card).power
+                    } else {
+                        0
+                    })
                 } else {
                     None
                 }

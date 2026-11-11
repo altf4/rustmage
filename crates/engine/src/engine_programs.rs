@@ -1078,6 +1078,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::CreaturesFromGraveyardEnterYou { .. }
+                    | TriggerCondition::CreaturesEnterYouWithoutManaSpent
                     | TriggerCondition::NontokenCreaturesEnterFromExile
                     | TriggerCondition::SelfBecomesPlotted
                     | TriggerCondition::SelfTransforms
@@ -10396,6 +10397,7 @@ impl Game {
                 Instruction::Damage(_)
                 | Instruction::DamageRememberPlayers(_)
                 | Instruction::DamageScaled(_)
+                | Instruction::DamageByEnteringPower
                 | Instruction::DamagePlayers(_, _)
                 | Instruction::DamagePlayersScaled(_, _)
                 | Instruction::DamageDiscardAmount(_) => {
@@ -10408,6 +10410,10 @@ impl Game {
                             i128::try_from(self.item_amount(value, &item))
                                 .capacity("damage amount representation exhausted")
                         }
+                        Instruction::DamageByEnteringPower => self
+                            .resolved_stat_value(&item, ResolvedStatValue::EnteringPower)
+                            .unwrap_or(0)
+                            .max(0),
                         Instruction::DamageDiscardAmount(_) => i128::from(
                             item.discard_event
                                 .expect("discard-sized effect requires event")

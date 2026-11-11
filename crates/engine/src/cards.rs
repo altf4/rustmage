@@ -4042,6 +4042,8 @@ pub enum Instruction {
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
     DamageScaled(AmountValue),
+    /// The resolving ability's source deals damage equal to the entrant's current or last power.
+    DamageByEnteringPower,
     DamagePlayerCreatures {
         players: PlayerSet,
         amount: u16,
@@ -6312,6 +6314,7 @@ pub enum DamageSubject {
     ControlledNoncombatSources,
     /// Controlled battlefield sources with any of these effective subtypes at the event.
     ControlledSubtypes(&'static [&'static str]),
+    ControlledLegendaryCreatures,
     Source,
     Attached,
     Creatures {
@@ -6744,6 +6747,9 @@ pub enum TriggerCondition {
     /// One event for a simultaneous batch with any nontoken creature that
     /// enters directly from exile or resolves after being cast from exile.
     NontokenCreaturesEnterFromExile,
+    /// The exact source and/or other controlled nontoken creatures enter together.
+    /// None of the qualifying entrants were cast using mana.
+    CreaturesEnterYouWithoutManaSpent,
     SelfTransforms,
     SelfOffspring,
     SelfKicked,

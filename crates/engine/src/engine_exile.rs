@@ -983,7 +983,7 @@ impl Game {
                 }
             })
         };
-        self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
+        self.batch_creature_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();
