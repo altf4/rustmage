@@ -3519,7 +3519,7 @@ pub struct ZoneChange {
     pub(super) entry_counter_player: Option<Player>,
     pub(super) graveyard_observers: Option<std::sync::Arc<[ObjectView]>>,
     pub(super) returned_hand_observers: Option<std::sync::Arc<[ObjectView]>>,
-    pub(super) battlefield_departure_observers:
+    battlefield_departure_observers:
         Option<std::sync::Arc<battlefield_departures::DepartureObservers>>,
     pub gift: Option<Box<GiftContext>>,
     pub was_cast: bool,

@@ -1785,14 +1785,14 @@ fn ecl_green_gathering_costs_reduce_kindred_noncreatures_and_follow_live_source_
             before - 2
         );
         settle(&mut g);
-        assert_eq!(g.spell_reduction(p, bear), 0);
-        assert_eq!(g.spell_reduction(p, cavalry), 1);
+        assert_eq!(g.direct_spell_reduction(p, bear, true).generic, 0);
+        assert_eq!(g.direct_spell_reduction(p, cavalry, true).generic, 1);
         let blank = named(&mut g, p, "Stop Cold", Zone::Hand);
         cast(&mut g, blank, None, &[Target::Card(stone)]);
         settle(&mut g);
-        assert_eq!(g.spell_reduction(p, cavalry), 0);
+        assert_eq!(g.direct_spell_reduction(p, cavalry, true).generic, 0);
         g.move_object(blank, Zone::Graveyard);
-        assert_eq!(g.spell_reduction(p, cavalry), 1);
+        assert_eq!(g.direct_spell_reduction(p, cavalry, true).generic, 1);
         let offering = named(&mut g, p, "Harmless Offering", Zone::Hand);
         cast(
             &mut g,
@@ -1803,10 +1803,10 @@ fn ecl_green_gathering_costs_reduce_kindred_noncreatures_and_follow_live_source_
         settle(&mut g);
         assert_eq!(g.object_view(stone).controller, p.other());
         let their = named(&mut g, p.other(), "Safewright Cavalry", Zone::Hand);
-        assert_eq!(g.spell_reduction(p, cavalry), 0);
-        assert_eq!(g.spell_reduction(p.other(), their), 1);
+        assert_eq!(g.direct_spell_reduction(p, cavalry, true).generic, 0);
+        assert_eq!(g.direct_spell_reduction(p.other(), their, true).generic, 1);
         g.move_object(stone, Zone::Graveyard);
-        assert_eq!(g.spell_reduction(p.other(), their), 0);
+        assert_eq!(g.direct_spell_reduction(p.other(), their, true).generic, 0);
     }
 }
 #[test]

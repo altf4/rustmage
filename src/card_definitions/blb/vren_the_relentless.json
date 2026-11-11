@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/v/VrenTheRelentless.java",
   "java_sha256": "92991b20449626b4ea28dd1acd244bfac90772e9aff6deb0b602e1c00ddd4ec0",
-  "rules_tests": "src/assurance/hartford_replacements.rs",
+  "rules_tests": "tests/blb_cards_gold_existing_typal.rs::vinereap_rewards_entry_and_death_but_vren_replaces_death_and_builds_scaling_rats",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

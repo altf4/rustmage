@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EssenceChanneler.java",
   "java_sha256": "0f54b486fe75e7c2aaca64844e701547eb0ba8501cd88178563f0b01699f9121",
-  "rules_tests": "src/assurance/requested_essence.rs",
+  "rules_tests": "tests/blb_cards_wu_inherited_white.rs::serra_redeemer_counts_small_entries_and_channeler_transfers_all_its_counters",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

@@ -338,6 +338,7 @@ fn ecl_twinflame_intrinsic_copy_end_step_triggers_double_but_delayed_and_reflexi
         TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker,
         0,
         false,
+        None,
     );
     g.combat_turn_callback_events(&[DamageEvent {
         preventable: true,

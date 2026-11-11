@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/l/LunarConvocation.java",
   "java_sha256": "e053d0324c7075a25bac9ad33d19fff0f56fdb8d02c3778c1d9039df21f12d76",
-  "rules_tests": "src/assurance/requested_lunar.rs",
+  "rules_tests": "tests/blb_cards_gold_existing_payoffs.rs::lunar_convocation_has_independent_life_history_gates_and_an_actual_paid_draw",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

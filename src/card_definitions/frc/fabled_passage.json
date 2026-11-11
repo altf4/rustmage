@@ -24,5 +24,6 @@
       "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
     }
   ],
-  "remaining_obligations": []
+  "remaining_obligations": [],
+  "rules_tests": "tests/blb_cards_gold_existing_lands.rs::fabled_passage_untaps_only_the_found_basic_if_it_is_the_fourth_land"
 }

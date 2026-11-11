@@ -29,5 +29,6 @@
       "url": "https://media.wizards.com/2024/downloads/FDN_Release_Notes_dPeeQG7XyE/EN_FDN%20Release%20Notes%2008282024.pdf",
       "used_for": "Departed targets retain last-known controller for relational legality; same-controller targets are both illegal at resolution."
     }
-  ]
+  ],
+  "rules_tests": "tests/ecl_cards/white_blue_inherited.rs"
 }

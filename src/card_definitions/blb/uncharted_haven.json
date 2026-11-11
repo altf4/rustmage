@@ -78,5 +78,6 @@
       "path": "Mage/src/main/java/mage/choices/ChoiceColor.java",
       "sha256": "1db540710d45621c881502405d5dbcf85ce255f78239ac71fe8c4669f31b6ccd"
     }
-  ]
+  ],
+  "rules_tests": "tests/blb_cards_gold_existing_lands.rs::uncharted_haven_enters_tapped_and_uses_the_color_of_its_current_incarnation"
 }

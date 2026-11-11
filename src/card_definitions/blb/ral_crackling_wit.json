@@ -33,5 +33,6 @@
       "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
       "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
     }
-  ]
+  ],
+  "rules_tests": "tests/blb_cards_gold_existing_payoffs.rs::ral_uses_all_three_loyalty_abilities_and_the_emblem_copies_later_instants"
 }
