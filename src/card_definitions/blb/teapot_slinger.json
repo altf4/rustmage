@@ -3,10 +3,31 @@
   "catalogue_id": 4352,
   "oracle_id": "5ba19dbe-9dbb-4cc9-81a3-18c26f27bd0f",
   "facts_sha256": "d04bc0bcf1c6517d6afea0c8bc31d4b4b0eda2e30478b59e513b601d8f999a50",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "baaae7c489f47159c53c191656083fbc79b7b81368871cd2f2e2ca1136a4e0d8"
   },
-  "physical_metadata_sha256": "4287066d31013460861fea5c2c7a1c526ac8e370b18329b6989ff370a08ad253"
+  "physical_metadata_sha256": "4287066d31013460861fea5c2c7a1c526ac8e370b18329b6989ff370a08ad253",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeapotSlinger.java",
+  "java_sha256": "83cff7e868b84faf2b2f08f76f227bd6f60833f1b2a0fc704fc3f7a46842fa32",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_expend.rs"
 }

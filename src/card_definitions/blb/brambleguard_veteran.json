@@ -3,10 +3,41 @@
   "catalogue_id": 525,
   "oracle_id": "bc9c7e1a-5155-431a-be21-fcbd18718980",
   "facts_sha256": "108269f5c7de03cb3670f07cb26ff524a3f3531eb9a4a14d6a86e8e370383bf2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e2943fe59f959666a13fccd33b5bf779ba3fd2fd313f1e55a4d67e719a0966c8"
   },
-  "physical_metadata_sha256": "388b66f8ea23cd29b6f74ad0644b7bc2fbbf399bd6f5d1c90464d35530878b10"
+  "physical_metadata_sha256": "388b66f8ea23cd29b6f74ad0644b7bc2fbbf399bd6f5d1c90464d35530878b10",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrambleguardVeteran.java",
+  "java_sha256": "640138c6dfdad7fed3ce717a65bfc13c3baedf207fccfe0308affb60ec9474a0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_expend.rs"
 }

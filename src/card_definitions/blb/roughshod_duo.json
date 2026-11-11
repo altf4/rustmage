@@ -3,10 +3,46 @@
   "catalogue_id": 3596,
   "oracle_id": "0cc89c15-5a48-4998-b6df-21791b6ed9a3",
   "facts_sha256": "2bb8cbdf4c4e6b638a644075e01525694e71ad476639e4c7170bc8206fc44682",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "37832ab26ae29e1d9b078962096a4eccf6bbec27268adc9a3112b5612f2624d3"
   },
-  "physical_metadata_sha256": "51268e5f02e3721c6c7165b4fe93779bf591fbc59181b7d59b8bb7621f4a3a98"
+  "physical_metadata_sha256": "51268e5f02e3721c6c7165b4fe93779bf591fbc59181b7d59b8bb7621f4a3a98",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoughshodDuo.java",
+  "java_sha256": "3ae2b97281ad0635b2cac12714b6a11ac96da8225c88d863e6900fbe0c6533f5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_expend.rs"
 }
