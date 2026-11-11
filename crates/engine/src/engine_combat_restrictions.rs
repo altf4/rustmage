@@ -273,7 +273,7 @@ impl Game {
             return true;
         }
         self.after_attacker_taps(|preview| {
-            preview.attack_tax_fundable(actor, preview.selected_attack_tax())
+            preview.combat_tax_fundable(actor, preview.selected_attack_tax())
         })
     }
     /// Shared eligibility for declaration candidates and mandatory-attack checks.

@@ -1,6 +1,6 @@
 //! Live casting-origin and mana-type permissions, shared by real and funding worlds.
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{CastFilter, StaticAbilityFragment};
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn is_false(value: &bool) -> bool {
     !*value
