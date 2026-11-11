@@ -1147,6 +1147,8 @@ pub struct LibrarySelectionSpec {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryPickDestination {
     ExileCastThisTurn,
+    /// Exile the selected physical card face up and mark the actual exile plotted.
+    ExilePlotted,
     /// The selector can look at and play each exact face-down exile result.
     ExileFaceDownPlay {
         spend_any_mana: bool,
@@ -2572,6 +2574,10 @@ pub enum Instruction {
     ResolveSuspendTick,
     ResolveSuspendCast,
     GrantCastRebound,
+    /// Exile and plot only when the exact triggering spell would finish resolving into its graveyard.
+    GrantCastPlotOnResolution,
+    /// Exile the exact target spell, even if it cannot be countered. Plot the physical arrival.
+    ExileTargetSpellPlotted,
     ResolveReboundCast,
     CopyCastSpell {
         prior_spells: bool,
@@ -6028,6 +6034,7 @@ pub enum CastFilter {
     Outlaw,
     AnyOf(&'static [CastFilter]),
     Multicolored,
+    MulticoloredInstantSorcery,
     Colors {
         filter: &'static CastFilter,
         mask: u8,
@@ -6093,6 +6100,9 @@ impl CastFilter {
             | Self::NonCreatureOrdinal(_)
             | Self::FirstQualifiedCreature(_) => false,
             Self::Multicolored => card.colors().count_ones() >= 2,
+            Self::MulticoloredInstantSorcery => {
+                Self::InstantSorcery.matches(card) && card.colors().count_ones() >= 2
+            }
             Self::Colors { filter, mask } => {
                 card.colors() & mask != 0
                     && filter.matches_mana_value_with(card, mana_value, has_subtype)

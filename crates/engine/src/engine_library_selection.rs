@@ -908,6 +908,7 @@ impl Game {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
             LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
             LibraryPickDestination::Exile
+            | LibraryPickDestination::ExilePlotted
             | LibraryPickDestination::ExileCastThisTurn
             | LibraryPickDestination::ExileFaceDownPlay { .. } => {
                 self.move_objects_raw(&ids, Zone::Exile)
@@ -963,6 +964,11 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        if f.destination == LibraryPickDestination::ExilePlotted {
+            for event in &events {
+                self.commit_plotted_move(event);
+            }
+        }
         if f.destination == LibraryPickDestination::Top {
             let library = &mut self.state.players[owner.index()].library;
             library.retain(|id| !ids.contains(id));
@@ -1252,6 +1258,7 @@ impl Game {
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",
+                LibraryPickDestination::ExilePlotted => "exile_plotted",
                 LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
                 LibraryPickDestination::ExileFaceDownPlay { .. } => "exile_face_down_play",
             },

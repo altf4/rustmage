@@ -81,6 +81,34 @@ impl Game {
         self.state.priority = pending.controller;
         self.state.passes = 0;
     }
+    pub(super) fn exile_target_spell_plotted(&mut self, item: &SpellView) {
+        let source = item.targets.iter().find_map(|target| {
+            let spell = self.bound_stack_item(target)?;
+            spell.source.filter(|source| {
+                spell.kind == StackKind::Spell
+                    && self.state.objects[source.id as usize].zone == Zone::Stack
+                    && self.object_ref(source.id) == source.object
+            })
+        });
+        if let Some(source) = source {
+            let event = self.move_object(source.id, Zone::Exile);
+            self.commit_plotted_move(&event);
+        }
+    }
+
+    pub(super) fn grant_cast_plot_on_resolution(&mut self, item: &SpellView) {
+        let Some(spell) = self.live_cast_spell(item) else {
+            return;
+        };
+        if !self.state.objects[spell.card as usize].is_card() {
+            return;
+        }
+        let marks = &mut self.state.zone_rules.get_or_insert_default().plot_spells;
+        if !marks.contains(&spell) {
+            marks.push(spell);
+        }
+    }
+
     pub(super) fn commit_plotted_move(&mut self, event: &ZoneChange) {
         if event.moved && event.destination == Zone::Exile && event.was_card {
             self.remember_plotted(event.before.owner, event.after);

@@ -2307,6 +2307,13 @@ impl Game {
                             cast_event
                                 .as_ref()
                                 .is_some_and(|event| self.cast_matches_entry_number(&source, event))
+                        } else if filter == CastFilter::MulticoloredInstantSorcery {
+                            CastFilter::InstantSorcery.matches(card)
+                                && stack
+                                    .and_then(|i| self.state.stack[i].source)
+                                    .map_or(card.colors(), |source| source.facts.colors)
+                                    .count_ones()
+                                    >= 2
                         } else if filter == CastFilter::Colorless {
                             stack
                                 .and_then(|i| self.state.stack[i].source)
@@ -4560,6 +4567,8 @@ impl Game {
                 }
                 Instruction::ResolveSuspendTick => self.resolve_suspend_tick(&item),
                 Instruction::GrantCastRebound => self.grant_cast_rebound(&item),
+                Instruction::GrantCastPlotOnResolution => self.grant_cast_plot_on_resolution(&item),
+                Instruction::ExileTargetSpellPlotted => self.exile_target_spell_plotted(&item),
                 Instruction::ResolveReboundCast => {
                     if self.resolve_rebound_cast(&item) {
                         return;

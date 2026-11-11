@@ -3866,6 +3866,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
     pub dream_exiles: Vec<DreamExileView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub plot_on_resolution: Vec<ObjectRef>,
     pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub linked_free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
     pub mana_lots: Vec<ManaLotView>,
@@ -11830,6 +11832,10 @@ impl Game {
                 .zone_rules
                 .as_ref()
                 .map_or_else(Vec::new, |s| s.dream_exiles.clone()),
+            plot_on_resolution: s
+                .zone_rules
+                .as_ref()
+                .map_or_else(Vec::new, |rules| rules.plot_spells.to_vec()),
             linked_free_cast_uses: s
                 .linked_choices
                 .as_ref()

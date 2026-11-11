@@ -110,6 +110,11 @@ impl Game {
                     self.schedule_rebound(before, object, player);
                 }
             }
+            zone_replacements::ZoneMoveCompletion::Plot => {
+                if was_card {
+                    self.remember_plotted(before.owner, object);
+                }
+            }
             zone_replacements::ZoneMoveCompletion::Adventure(player) => {
                 let card = self.state.objects[object.card as usize].card;
                 self.state
