@@ -252,6 +252,82 @@
           "released_at": "2024-04-19"
         }
       }
+    },
+    {
+      "facts_sha256": "248afee8f1ab730c868ea4fc7d843b858fe891e1bacc342ca2c0601dc678013c",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/blb/138",
+      "source_response_sha256": "b8109b948e01282f906c851b6aa56496548155ce70ee73afa9655a6fca57bf51",
+      "facts": {
+        "oracle_id": "49e1e202-37bf-46ed-93d1-1adb13726039",
+        "name": "Heartfire Hero",
+        "layout": "normal",
+        "mana_cost": "{R}",
+        "cmc": 1.0,
+        "type_line": "Creature — Mouse Soldier",
+        "oracle_text": "Valiant — Whenever this creature becomes the target of a spell or ability you control for the first time each turn, put a +1/+1 counter on it.\nWhen this creature dies, it deals damage equal to its power to each opponent.",
+        "power": "1",
+        "toughness": "1",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Valiant"
+        ],
+        "reference_printing": {
+          "id": "48ace959-66b2-40c8-9bff-fd7ed9c99a82",
+          "set": "blb",
+          "collector_number": "138",
+          "released_at": "2024-08-02"
+        }
+      }
+    },
+    {
+      "facts_sha256": "b6a78d7c7a73f15f385eb2bb3c26bf13cb361caf47e6d8639f7939060a652765",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/blb/75",
+      "source_response_sha256": "4388f3b7afc7d4e0604ec1ec12b342b740987a5eae7a4175b3dbd27f00f53d41",
+      "facts": {
+        "oracle_id": "00c1788d-c52f-4839-9cd8-11fb86c418b6",
+        "name": "Stormchaser's Talent",
+        "layout": "class",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Enchantment — Class",
+        "oracle_text": "(Gain the next level as a sorcery to add its ability.)\nWhen this Class enters, create a 1/1 blue and red Otter creature token with prowess.\n{3}{U}: Level 2\nWhen this Class becomes level 2, return target instant or sorcery card from your graveyard to your hand.\n{5}{U}: Level 3\nWhenever you cast an instant or sorcery spell, create a 1/1 blue and red Otter creature token with prowess.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "all_parts": [
+          {
+            "id": "a36e682d-b43d-4e08-bf5b-70d7e924dbe5",
+            "component": "combo_piece",
+            "name": "Stormchaser's Talent",
+            "type_line": "Enchantment — Class"
+          },
+          {
+            "id": "e6b2c465-c446-4dee-9101-763105dcf813",
+            "component": "token",
+            "name": "Otter",
+            "type_line": "Token Creature — Otter"
+          }
+        ],
+        "reference_printing": {
+          "id": "a36e682d-b43d-4e08-bf5b-70d7e924dbe5",
+          "set": "blb",
+          "collector_number": "75",
+          "released_at": "2024-08-02"
+        }
+      }
     }
   ]
 }

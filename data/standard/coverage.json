@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "e0d509fa6ddc843773a3ed0df7954ee4e3f057486cede9890d1599a0091d18c7",
+  "catalogue_version": "a9b6a9a72e52c6c03ef926a5c07fb2679faf0fda151f10ae0285e351f551a1b0",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4469,
   "implemented_total": 4483,
-  "token_definitions": 193,
+  "token_definitions": 196,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
   "omen_definitions": 13,
@@ -16009,8 +16009,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/heartfire_hero.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/blb/heartfire_hero.rs",
+      "set": "blb"
     },
     {
       "name": "Heartfire Immolator",
@@ -33577,8 +33577,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/stormchaser_s_talent.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/blb/stormchaser_s_talent.rs",
+      "set": "blb"
     },
     {
       "name": "Stormkeld Prowler",

@@ -2187,9 +2187,30 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_otj_flying_spirit.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5619 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_blb_cragflame.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5620 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_blb_sword.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5621 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/synthetic/token_blb_snail.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 311] = [
+pub static ENTRIES: [CatalogueEntry; 314] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Meager Meal", oracle_id: Some("0296d57e-e5b9-456f-bb21-eb584adefb4c"), mana_cost: "{B}", type_line: "Sorcery — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5183::RULES.keywords, deck_limit: authored::card_5183::RULES.deck_limit }, effect: authored::card_5183::RULES.checked_effect(), triggers: authored::card_5183::RULES.triggers, activated: authored::card_5183::RULES.activated, enters: authored::card_5183::RULES.enters, entry: authored::card_5183::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5183::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Seek Thrills", oracle_id: Some("06374e6d-62fa-4833-81cd-b4d0a35e7365"), mana_cost: "{2}{G}{U}{R}", type_line: "Instant — Adventure", oracle_keywords: &["Mill"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5184::RULES.keywords, deck_limit: authored::card_5184::RULES.deck_limit }, effect: authored::card_5184::RULES.checked_effect(), triggers: authored::card_5184::RULES.triggers, activated: authored::card_5184::RULES.activated, enters: authored::card_5184::RULES.enters, entry: authored::card_5184::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 1, 1, 0], generic: 2 }, rules: &authored::card_5184::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Twice the Rage", oracle_id: Some("0f222f3d-f02b-42b9-aedf-fb7ed92d4889"), mana_cost: "{1}{R}", type_line: "Instant — Adventure", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5185::RULES.keywords, deck_limit: authored::card_5185::RULES.deck_limit }, effect: authored::card_5185::RULES.checked_effect(), triggers: authored::card_5185::RULES.triggers, activated: authored::card_5185::RULES.activated, enters: authored::card_5185::RULES.enters, entry: authored::card_5185::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5185::RULES },
@@ -2501,6 +2522,9 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/otj-sco
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/otj-blue-bird", oracle_id: None, mana_cost: "", type_line: "Creature — Bird", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5616::RULES.keywords, deck_limit: authored::card_5616::RULES.deck_limit }, effect: authored::card_5616::RULES.checked_effect(), triggers: authored::card_5616::RULES.triggers, activated: authored::card_5616::RULES.activated, enters: authored::card_5616::RULES.enters, entry: authored::card_5616::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5616::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/otj-meteorite", oracle_id: None, mana_cost: "", type_line: "Artifact", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5617::RULES.keywords, deck_limit: authored::card_5617::RULES.deck_limit }, effect: authored::card_5617::RULES.checked_effect(), triggers: authored::card_5617::RULES.triggers, activated: authored::card_5617::RULES.activated, enters: authored::card_5617::RULES.enters, entry: authored::card_5617::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5617::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/otj-flying-spirit", oracle_id: None, mana_cost: "", type_line: "Creature — Spirit", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5618::RULES.keywords, deck_limit: authored::card_5618::RULES.deck_limit }, effect: authored::card_5618::RULES.checked_effect(), triggers: authored::card_5618::RULES.triggers, activated: authored::card_5618::RULES.activated, enters: authored::card_5618::RULES.enters, entry: authored::card_5618::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5618::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-cragflame", oracle_id: None, mana_cost: "", type_line: "Legendary Artifact — Equipment", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: false, keywords: authored::card_5619::RULES.keywords, deck_limit: authored::card_5619::RULES.deck_limit }, effect: authored::card_5619::RULES.effect, triggers: authored::card_5619::RULES.triggers, activated: authored::card_5619::RULES.activated, enters: authored::card_5619::RULES.enters, entry: authored::card_5619::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5619::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-sword", oracle_id: None, mana_cost: "", type_line: "Artifact — Equipment", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5620::RULES.keywords, deck_limit: authored::card_5620::RULES.deck_limit }, effect: authored::card_5620::RULES.effect, triggers: authored::card_5620::RULES.triggers, activated: authored::card_5620::RULES.activated, enters: authored::card_5620::RULES.enters, entry: authored::card_5620::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5620::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/blb-snail", oracle_id: None, mana_cost: "", type_line: "Creature — Snail", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5621::RULES.keywords, deck_limit: authored::card_5621::RULES.deck_limit }, effect: authored::card_5621::RULES.effect, triggers: authored::card_5621::RULES.triggers, activated: authored::card_5621::RULES.activated, enters: authored::card_5621::RULES.enters, entry: authored::card_5621::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5621::RULES },
 ];
 }
 pub use cards::ENTRIES;

@@ -1,12 +1,12 @@
 {
   "name": "Stormchaser's Talent",
   "catalogue_id": 4173,
-  "oracle_id": null,
-  "facts_sha256": null,
+  "oracle_id": "00c1788d-c52f-4839-9cd8-11fb86c418b6",
+  "facts_sha256": "b6a78d7c7a73f15f385eb2bb3c26bf13cb361caf47e6d8639f7939060a652765",
   "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b3d339e174159629ce31f16074fe4faf6d4e1653d5854b2f88fd02bf08ca55e2"
   },
-  "physical_metadata_sha256": "21f9e73ea63cd4a858e156668409efafd5527046a07926b7159b1ea73eba810b"
+  "physical_metadata_sha256": "d953741e268a5d27bc04fa3189d3db127cd56d2f43ab3d297461b8431a833e37"
 }

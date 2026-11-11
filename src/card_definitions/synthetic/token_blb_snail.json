@@ -1,0 +1,11 @@
+{
+  "name": "@token/blb-snail",
+  "catalogue_id": 5621,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "b7f1c6708c03ce65a94f65b79c7895af7513ef7f2cad70bc1eccac4e6b52d133",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/SnailToken.java",
+  "java_sha256": "5f9f8ac105bfe592521919ab54e35aaf04b02cb19402e989f58d89cb174b777a"
+}

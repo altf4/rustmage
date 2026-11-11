@@ -1,0 +1,204 @@
+{
+  "decks": [
+    {
+      "id": "bird-fliers",
+      "name": "White-blue Birds",
+      "cards": [
+        {"name": "Plains", "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99", "count": 10},
+        {"name": "Island", "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373", "count": 10},
+        {"name": "Lilypad Village", "oracle_id": "5bb06e6f-e3af-4caa-b66d-77248ad46b61", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Jackdaw Savior", "oracle_id": "9e31ef54-b2f2-4f3f-9779-151b74470ce4", "count": 4},
+        {"name": "Finch Formation", "oracle_id": "76c2e0b4-d4fa-4e98-b363-0a76eb481304", "count": 4},
+        {"name": "Plumecreed Escort", "oracle_id": "04669a6f-6299-465b-a26e-6cae37cdc081", "count": 4},
+        {"name": "Plumecreed Mentor", "oracle_id": "0eb8983e-4e44-4bfe-81dd-ddb41007a166", "count": 4},
+        {"name": "Seedpod Squire", "oracle_id": "e2f57e48-ff5b-4a42-9b7c-1bd23b0d78ed", "count": 4},
+        {"name": "Kastral, the Windcrested", "oracle_id": "ced5fe9a-4237-4c89-9dd6-b133b966ebcc", "count": 4},
+        {"name": "Parting Gust", "oracle_id": "367bb252-41e1-4f98-9d22-442dd332cccf", "count": 4},
+        {"name": "Into the Flood Maw", "oracle_id": "8cb36a67-9206-4665-a03f-64f52ba559c4", "count": 4},
+        {"name": "Whiskervale Forerunner", "oracle_id": "861e427f-cbb4-4ed5-8356-747ac638ac34", "count": 4}
+      ]
+    },
+    {
+      "id": "rat-threshold",
+      "name": "Blue-black Rats and threshold",
+      "cards": [
+        {"name": "Island", "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373", "count": 10},
+        {"name": "Swamp", "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68", "count": 10},
+        {"name": "Mudflat Village", "oracle_id": "aeeab1df-0b8b-4bc4-a5f9-aac413449bec", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Shoreline Looter", "oracle_id": "c15cad77-e70f-42cc-a9f5-50e1fd8c9c96", "count": 4},
+        {"name": "Thought Shucker", "oracle_id": "33f4fcd5-4eea-4146-a564-da5511a8ee0a", "count": 4},
+        {"name": "Nightwhorl Hermit", "oracle_id": "99007c40-1eb5-4c3a-9889-6d12417d8191", "count": 4},
+        {"name": "Tidecaller Mentor", "oracle_id": "e75e40a5-a9ae-4789-96c1-0e19d1ce59c5", "count": 4},
+        {"name": "Vren, the Relentless", "oracle_id": "1216900e-93e3-41a4-b354-9c81938639c2", "count": 4},
+        {"name": "Savor", "oracle_id": "dfc1dc36-0cc2-47cc-b0dd-1cc7c31057aa", "count": 4},
+        {"name": "Daggerfang Duo", "oracle_id": "43ccc568-2509-49b6-99d7-c56900d1565a", "count": 4},
+        {"name": "Lightshell Duo", "oracle_id": "ef8fab12-d7d2-4c21-8b8c-41627048ac8b", "count": 4},
+        {"name": "Stargaze", "oracle_id": "db8b4869-f898-40ad-bbad-62390a02d1b1", "count": 4}
+      ]
+    },
+    {
+      "id": "lizard-life-loss",
+      "name": "Black-red Lizards and life loss",
+      "cards": [
+        {"name": "Swamp", "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68", "count": 10},
+        {"name": "Mountain", "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685", "count": 10},
+        {"name": "Rockface Village", "oracle_id": "7e103748-3f76-42ce-a063-d0256b2dce2b", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Hired Claw", "oracle_id": "031cfc7d-8bda-454b-b88a-15d3f5fe47e2", "count": 4},
+        {"name": "Flamecache Gecko", "oracle_id": "d767463b-0fc9-43fc-a85f-e60f030f9b96", "count": 4},
+        {"name": "Fireglass Mentor", "oracle_id": "b173245e-2009-48ff-ac42-5f28d12aec79", "count": 4},
+        {"name": "Cindering Cutthroat", "oracle_id": "46e8bec0-1a09-4e6e-b78a-7ba161686ca9", "count": 4},
+        {"name": "Agate-Blade Assassin", "oracle_id": "381a3e8e-71dd-48e4-ab62-53478bde4a14", "count": 4},
+        {"name": "The Infamous Cruelclaw", "oracle_id": "e229d55c-9513-437d-bd67-015ac46aaa18", "count": 4},
+        {"name": "Gev, Scaled Scorch", "oracle_id": "77b832a8-a3af-44fe-bc67-72510d292667", "count": 4},
+        {"name": "Nocturnal Hunger", "oracle_id": "ed7f64d1-69ba-40f5-9863-3edba10e23c7", "count": 4},
+        {"name": "Scales of Shale", "oracle_id": "655a2b78-6a6c-4b9e-b7c0-48d3768978f5", "count": 4}
+      ]
+    },
+    {
+      "id": "raccoon-expend",
+      "name": "Red-green Raccoons and expend",
+      "cards": [
+        {"name": "Mountain", "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685", "count": 10},
+        {"name": "Forest", "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6", "count": 10},
+        {"name": "Oakhollow Village", "oracle_id": "177b7fe4-8565-4631-b4d9-8b2b4282f3ac", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Muerra, Trash Tactician", "oracle_id": "c115159c-6991-4812-b3b6-6ed80221cab4", "count": 4},
+        {"name": "Wandertale Mentor", "oracle_id": "9d14c7bd-7802-401c-b02b-c7f3c51b007f", "count": 4},
+        {"name": "Raccoon Rallier", "oracle_id": "50c038a4-6546-4a15-a117-176849edaa3d", "count": 4},
+        {"name": "Bark-Knuckle Boxer", "oracle_id": "08e173e3-4c28-49d2-bb57-ccf533f20daf", "count": 4},
+        {"name": "Brambleguard Veteran", "oracle_id": "bc9c7e1a-5155-431a-be21-fcbd18718980", "count": 4},
+        {"name": "Junkblade Bruiser", "oracle_id": "0a2fbdd3-4940-4bbf-ae19-f6d00d7ff294", "count": 4},
+        {"name": "Teapot Slinger", "oracle_id": "5ba19dbe-9dbb-4cc9-81a3-18c26f27bd0f", "count": 4},
+        {"name": "Season of the Bold", "oracle_id": "5fe29c25-a7ad-4c79-a5a5-da1bbc832141", "count": 4},
+        {"name": "Overprotect", "oracle_id": "c8c3a293-ae6d-4c52-be2d-2d4b6a8edb66", "count": 4}
+      ]
+    },
+    {
+      "id": "rabbit-tokens",
+      "name": "Green-white Rabbit tokens",
+      "cards": [
+        {"name": "Forest", "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6", "count": 10},
+        {"name": "Plains", "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99", "count": 10},
+        {"name": "Blossoming Sands", "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd", "count": 4},
+        {"name": "Burrowguard Mentor", "oracle_id": "f293da27-e42d-4e87-8b61-d3c27e4c6d71", "count": 4},
+        {"name": "Finneas, Ace Archer", "oracle_id": "69924636-138e-4baa-a378-0fd7df5b847d", "count": 4},
+        {"name": "Pawpatch Recruit", "oracle_id": "50ab0194-c7dc-4f11-abc0-1a82393cc42e", "count": 4},
+        {"name": "Warren Elder", "oracle_id": "33fcb05b-246d-4b82-8b0f-44d5f891b612", "count": 4},
+        {"name": "Flowerfoot Swordmaster", "oracle_id": "523d075d-b577-4f24-8c14-9a76761a2eaf", "count": 4},
+        {"name": "Hop to It", "oracle_id": "e8a9350a-07c1-47ed-8c4f-88e4b3b17545", "count": 4},
+        {"name": "Intrepid Rabbit", "oracle_id": "7ed4afc9-959a-4868-8f4a-2221bea1ba32", "count": 4},
+        {"name": "Carrot Cake", "oracle_id": "5fe3aabd-3271-41bf-ae50-f6efaba7c4ae", "count": 4},
+        {"name": "Innkeeper's Talent", "oracle_id": "915b75d1-b5e3-4aca-a54c-beaccef0a2e4", "count": 4}
+      ]
+    },
+    {
+      "id": "bat-lifegain",
+      "name": "White-black Bats and life gain",
+      "cards": [
+        {"name": "Plains", "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99", "count": 10},
+        {"name": "Swamp", "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68", "count": 10},
+        {"name": "Lupinflower Village", "oracle_id": "b6c7c708-5212-4100-b954-b77855b27915", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Essence Channeler", "oracle_id": "1473580d-7cb2-48f5-a77d-08f49244c5e8", "count": 4},
+        {"name": "Lifecreed Duo", "oracle_id": "63686c6b-9051-4002-aa8e-da8a3021330f", "count": 4},
+        {"name": "Starscape Cleric", "oracle_id": "8d72ddb3-ef6e-4847-b6d4-5d85b1dd5802", "count": 4},
+        {"name": "Moonrise Cleric", "oracle_id": "d8067f42-68c0-42da-a1d6-859953939555", "count": 4},
+        {"name": "Lunar Convocation", "oracle_id": "cb68d1e4-36aa-4a00-b671-8959e7d526d4", "count": 4},
+        {"name": "Zoraline, Cosmos Caller", "oracle_id": "5a775f50-20f8-4a8f-868c-8907305bfad6", "count": 4},
+        {"name": "Season of Loss", "oracle_id": "31b5d0ad-3a4d-4f43-b0a9-c9f7a362680f", "count": 4},
+        {"name": "Sonar Strike", "oracle_id": "d8c582bc-47de-47ec-8bf9-b2c848e27ab8", "count": 4},
+        {"name": "Dewdrop Cure", "oracle_id": "07634620-a83a-4ca0-8a60-2a21368a2661", "count": 4}
+      ]
+    },
+    {
+      "id": "otter-spells",
+      "name": "Blue-red Otters and spells",
+      "cards": [
+        {"name": "Island", "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373", "count": 10},
+        {"name": "Mountain", "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685", "count": 10},
+        {"name": "Swiftwater Cliffs", "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531", "count": 4},
+        {"name": "Coruscation Mage", "oracle_id": "88bb91b5-2ccd-4ce9-8cd4-e54d63c12abf", "count": 4},
+        {"name": "Kitsa, Otterball Elite", "oracle_id": "16414460-11ce-481d-ab54-6f0e0ea7d83d", "count": 4},
+        {"name": "Tempest Angler", "oracle_id": "60ac490c-b489-4ad2-bcc2-3babaabf8ccb", "count": 4},
+        {"name": "Stormcatch Mentor", "oracle_id": "b2252471-01ca-4d58-aa99-4ab0aa5eae12", "count": 4},
+        {"name": "Alania, Divergent Storm", "oracle_id": "63d50d5e-56de-44c4-b906-b2a21a56e3f3", "count": 4},
+        {"name": "Might of the Meek", "oracle_id": "19b5c94b-b4fa-41a9-b649-51c4e6f03602", "count": 4},
+        {"name": "Otterball Antics", "oracle_id": "43a6de3e-152e-4af1-acec-53405742425c", "count": 4},
+        {"name": "Ral, Crackling Wit", "oracle_id": "3c970f43-17da-4187-a084-efd53b579067", "count": 4},
+        {"name": "Portent of Calamity", "oracle_id": "0d49187a-1c37-4c3a-afc2-fac2bbc6b29a", "count": 4}
+      ]
+    },
+    {
+      "id": "squirrel-forage",
+      "name": "Black-green Squirrels and forage",
+      "cards": [
+        {"name": "Swamp", "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68", "count": 10},
+        {"name": "Forest", "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6", "count": 10},
+        {"name": "Oakhollow Village", "oracle_id": "177b7fe4-8565-4631-b4d9-8b2b4282f3ac", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Bakersbane Duo", "oracle_id": "ecd9a0a4-1dfa-4d91-8339-062e2be4e5d9", "count": 4},
+        {"name": "Bonecache Overseer", "oracle_id": "be3c7e4c-81fd-49e7-8fb5-5eb83994dafd", "count": 4},
+        {"name": "Vinereap Mentor", "oracle_id": "db649e15-24ca-4fd8-9f0b-f1df28c9c57d", "count": 4},
+        {"name": "Thornvault Forager", "oracle_id": "7b18cfad-a1cf-46c2-bcdd-7762c13d50e5", "count": 4},
+        {"name": "Camellia, the Seedmiser", "oracle_id": "312c7a7b-2084-42b0-9b13-0a6d3e43a73d", "count": 4},
+        {"name": "Bushy Bodyguard", "oracle_id": "5436bb0d-b5c7-43a9-8b3f-67cdc0dd0381", "count": 4},
+        {"name": "Honored Dreyleader", "oracle_id": "44bffa3e-4d31-4f9b-829c-e2066ab2f641", "count": 4},
+        {"name": "Cache Grab", "oracle_id": "06ccec61-27d2-4079-80b5-29ebd3a980ee", "count": 4},
+        {"name": "Savor", "oracle_id": "dfc1dc36-0cc2-47cc-b0dd-1cc7c31057aa", "count": 4}
+      ]
+    },
+    {
+      "id": "mouse-valiant",
+      "name": "Red-white Mice and valiant",
+      "cards": [
+        {"name": "Mountain", "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685", "count": 10},
+        {"name": "Plains", "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99", "count": 10},
+        {"name": "Rockface Village", "oracle_id": "7e103748-3f76-42ce-a063-d0256b2dce2b", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Emberheart Challenger", "oracle_id": "5b4b21ed-c24e-4038-83fb-bd7f3c3426cd", "count": 4},
+        {"name": "Manifold Mouse", "oracle_id": "b254ca74-2a96-4590-91bc-650f407daf5d", "count": 4},
+        {"name": "Mabel, Heir to Cragflame", "oracle_id": "4b11e435-5888-4e3b-a255-db817392163f", "count": 4},
+        {"name": "Seedglaive Mentor", "oracle_id": "f50bbe5e-a839-40e1-ba79-1e96f91bd218", "count": 4},
+        {"name": "Whiskerquill Scribe", "oracle_id": "cb1e1acc-3805-418b-bed1-65838ddb1d62", "count": 4},
+        {"name": "Mouse Trapper", "oracle_id": "5b0a4530-6e19-41a2-9ea6-e4c8cf85b6c4", "count": 4},
+        {"name": "Might of the Meek", "oracle_id": "19b5c94b-b4fa-41a9-b649-51c4e6f03602", "count": 4},
+        {"name": "Crumb and Get It", "oracle_id": "93596258-bb44-4aa3-833d-9a0ab16b5ec1", "count": 4},
+        {"name": "Veteran Guardmouse", "oracle_id": "2313a3f9-3eac-4684-a25e-6a6ae445a723", "count": 4}
+      ]
+    },
+    {
+      "id": "frog-entries",
+      "name": "Green-blue Frog entries",
+      "cards": [
+        {"name": "Forest", "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6", "count": 10},
+        {"name": "Island", "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373", "count": 10},
+        {"name": "Lilypad Village", "oracle_id": "5bb06e6f-e3af-4caa-b66d-77248ad46b61", "count": 2},
+        {"name": "Fabled Passage", "oracle_id": "0c85b8f7-0bd0-4680-9ec5-d4b110460a54", "count": 2},
+        {"name": "Mistbreath Elder", "oracle_id": "bf9221f5-a4b2-4074-901c-0fa3c2bda80c", "count": 4},
+        {"name": "Sunshower Druid", "oracle_id": "7a70faf5-cc04-402b-92e3-67746788f510", "count": 4},
+        {"name": "Three Tree Scribe", "oracle_id": "7d2a7741-1dff-4fac-92d8-abea24f23f97", "count": 4},
+        {"name": "Clement, the Worrywort", "oracle_id": "57ce5ebd-cfac-4bb9-b010-04d0c285be27", "count": 4},
+        {"name": "Pond Prophet", "oracle_id": "6eabebdf-c1a3-4789-a67f-859f0957c5df", "count": 4},
+        {"name": "Dour Port-Mage", "oracle_id": "cf58e309-00e8-438e-813e-2e1c1002db23", "count": 4},
+        {"name": "Lilysplash Mentor", "oracle_id": "20194297-f2a4-4473-95bc-7c6835e5b6b3", "count": 4},
+        {"name": "Splash Lasher", "oracle_id": "0d0c4c91-683a-4563-a0b0-39f3c04f6307", "count": 4},
+        {"name": "Polliwallop", "oracle_id": "efd2a4ca-1bd0-4762-a997-f099326b1746", "count": 4}
+      ]
+    }
+  ],
+  "pairings": [
+    {"p0": "bird-fliers", "p1": "lizard-life-loss", "runs": [{"seed": 11, "starting_player": 0}, {"seed": 29, "starting_player": 1}]},
+    {"p0": "rat-threshold", "p1": "rabbit-tokens", "runs": [{"seed": 25, "starting_player": 0}, {"seed": 43, "starting_player": 1}]},
+    {"p0": "raccoon-expend", "p1": "bat-lifegain", "runs": [{"seed": 39, "starting_player": 0}, {"seed": 57, "starting_player": 1}]},
+    {"p0": "otter-spells", "p1": "squirrel-forage", "runs": [{"seed": 53, "starting_player": 0}, {"seed": 71, "starting_player": 1}]},
+    {"p0": "mouse-valiant", "p1": "frog-entries", "runs": [{"seed": 67, "starting_player": 0}, {"seed": 85, "starting_player": 1}]},
+    {"p0": "squirrel-forage", "p1": "bird-fliers", "runs": [{"seed": 81, "starting_player": 0}, {"seed": 99, "starting_player": 1}]},
+    {"p0": "lizard-life-loss", "p1": "rat-threshold", "runs": [{"seed": 95, "starting_player": 0}, {"seed": 113, "starting_player": 1}]},
+    {"p0": "rabbit-tokens", "p1": "raccoon-expend", "runs": [{"seed": 109, "starting_player": 0}, {"seed": 127, "starting_player": 1}]},
+    {"p0": "bat-lifegain", "p1": "mouse-valiant", "runs": [{"seed": 123, "starting_player": 0}, {"seed": 141, "starting_player": 1}]},
+    {"p0": "frog-entries", "p1": "otter-spells", "runs": [{"seed": 137, "starting_player": 0}, {"seed": 155, "starting_player": 1}]}
+  ]
+}

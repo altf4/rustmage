@@ -1,0 +1,11 @@
+{
+  "name": "@token/blb-sword",
+  "catalogue_id": 5620,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "231990c13abd9c52d02577c493a7eeb8dd540ca77d215185942ce353ffd101e7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/SwordToken.java",
+  "java_sha256": "0a4adf87a40e2fa9d52eac07e78f84ff584328ea48b45c0f06396228c68eb840"
+}
