@@ -152,10 +152,10 @@ fn starfall_returns_one_of_the_owners_actual_destroyed_cards_only_with_gift() {
         if promise {
             for ineligible in [prior, enemy, doomed] {
                 let object = game.object_ref(ineligible);
-                reject(&mut game, Action::ChooseEffectObject { object });
+                reject(&mut game, Action::SelectGraveyardReturn { object });
             }
             let object = game.object_ref(own);
-            act(&mut game, Action::ChooseEffectObject { object });
+            act(&mut game, Action::SelectGraveyardReturn { object });
         }
         drain(&mut game);
         assert_eq!(
