@@ -484,6 +484,22 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
+        if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
+            return o.zone == Zone::Hand
+                && o.owner == player
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && choice.selected[player.index()].len() < usize::from(maximum);
+        }
+        if choice.kind == EffectChoiceKind::BlinkControlledCreatures {
+            return o.zone == Zone::Battlefield
+                && o.controller == player
+                && self.is_creature(object.card)
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind.payment_kind()
             && o.zone == Zone::Hand
         {
@@ -881,6 +897,55 @@ impl Game {
             false,
             None,
         )
+    }
+    pub(super) fn start_hand_creatures(&mut self, item: &SpellView, maximum: u16) -> bool {
+        maximum > 0
+            && self.start_effect_choice_inner(
+                item,
+                EffectChoiceKind::HandCreatures { maximum },
+                PlayerSet::Controller,
+                evidence::cost(0).filter,
+                0,
+                None,
+                false,
+                None,
+            )
+    }
+    pub(super) fn finish_hand_creatures(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let moves = choice.selected[player.index()]
+            .iter()
+            .map(|reference| {
+                let mut movement = self.entry_move(reference.card, Zone::Battlefield, false);
+                movement.controller = player;
+                movement
+            })
+            .collect::<Vec<_>>();
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
+        }
+    }
+    pub(super) fn finish_repeat_blink_choice(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let ids = choice.selected[player.index()]
+            .iter()
+            .map(|reference| reference.card)
+            .collect::<Vec<_>>();
+        let remaining = resolution
+            .repeat_blink_remaining
+            .take()
+            .expect("repeat blink count");
+        if remaining > 0 {
+            resolution.repeat_blink_remaining = Some(remaining - 1);
+            resolution.pc -= 1;
+        }
+        if !ids.is_empty() {
+            self.blink_battlefield_objects_immediately(&ids);
+        }
     }
     pub(super) fn start_hand_permanent(
         &mut self,
@@ -1434,6 +1499,9 @@ impl Game {
                 "any-number resolution choice finishes with any subset"
             );
         }
+        if matches!(kind, EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)) {
+            self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+        }
         let resolution = self.state.resolving.as_ref().unwrap();
         let pc = resolution.pc;
         if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
@@ -1699,6 +1767,15 @@ impl Game {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if choice.selected[player.index()].len() >= usize::from(maximum) {
                 self.complete_name_search();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
+        if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= usize::from(maximum) {
+                self.finish_hand_creatures();
                 return false;
             }
             self.state.pending = Pending::EffectChoice { player };
@@ -2148,7 +2225,9 @@ impl Game {
         }
         if matches!(
             choice.kind.payment_kind(),
-            EffectChoiceKind::ReturnToHand | EffectChoiceKind::ReturnGraveyardToHand { .. }
+            EffectChoiceKind::ReturnToHand
+                | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
             self.return_effect_choice_to_hand(*choice);
             return false;
@@ -2559,6 +2638,18 @@ impl Game {
             .collect();
         if !ids.is_empty() {
             let events = self.move_objects_raw(&ids, Zone::Hand);
+            if let EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) = choice.kind {
+                let count = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.destination == Zone::Hand
+                            && event.before.reference != choice.source
+                            && event.before.has_subtype(subtype)
+                    })
+                    .count();
+                self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
+            }
             self.finish_zone_events(&events, &[]);
         }
     }
@@ -2837,6 +2928,7 @@ impl Game {
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
+                | EffectChoiceKind::HandCreatures { .. }
         ) && !self.shares_information(viewer, actor)
         {
             return None;
@@ -2893,6 +2985,7 @@ impl Game {
                 || matches!(
                     choice.kind,
                     EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                        | EffectChoiceKind::HandCreatures { .. }
                         | EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne)
                 ),
             required: choice.required,

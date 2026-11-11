@@ -5553,6 +5553,7 @@ impl Game {
                     return true;
                 }
                 if (choice.kind.any_number_selection()
+                    || matches!(choice.kind, EffectChoiceKind::HandCreatures { .. })
                     || choice.kind
                         == EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne))
                     && emit(Action::FinishEffectChoice)
@@ -5636,6 +5637,8 @@ impl Game {
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
                             | EffectChoiceKind::RememberPermanents { .. }
                             | EffectChoiceKind::SaddleRider(_)
+                            | EffectChoiceKind::BlinkControlledCreatures
+                            | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -5660,7 +5663,8 @@ impl Game {
                             EffectChoiceKind::HandExileCopy
                             | EffectChoiceKind::HandCreature
                             | EffectChoiceKind::HandCreatureAttacking { .. }
-                            | EffectChoiceKind::HandCreatureHasteSacrifice { .. } => {
+                            | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
+                            | EffectChoiceKind::HandCreatures { .. } => {
                                 Action::PutHandCreature { object }
                             }
                             EffectChoiceKind::HandCreatureAndLand
@@ -7365,8 +7369,11 @@ impl Game {
             Pending::EffectLibrarySelection { .. } => {
                 let f = s.resolving.as_ref().unwrap().selection.as_ref().unwrap();
                 if f.ordering {
-                    if f.spec.remainder == crate::cards::LibraryRemainder::OptionalGraveyard
-                        && emit(Action::FinishLibrarySelection)
+                    if matches!(
+                        f.spec.remainder,
+                        crate::cards::LibraryRemainder::OptionalGraveyard
+                            | crate::cards::LibraryRemainder::OptionalBottom
+                    ) && emit(Action::FinishLibrarySelection)
                     {
                         return true;
                     }
@@ -9031,6 +9038,8 @@ impl Game {
                         self.finish_lore_counter_selection();
                     }
                     EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    EffectChoiceKind::BlinkControlledCreatures => self.finish_repeat_blink_choice(),
+                    EffectChoiceKind::HandCreatures { .. } => self.finish_hand_creatures(),
                     EffectChoiceKind::SaddleRider(effect) => {
                         self.finish_saddle_rider_choice(effect)
                     }

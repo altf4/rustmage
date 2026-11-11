@@ -39,6 +39,7 @@ pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     pub immediate_blink_return: Option<Box<return_links::ImmediateBlink>>,
+    pub repeat_blink_remaining: Option<u32>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<explore::ExploreSequence>>,
@@ -73,6 +74,7 @@ pub(super) struct Resolution {
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
     pub return_attachment: Option<Box<super::return_attachment::ReturnAttachment>>,
     pub search: Option<Box<super::search::SearchChoice>>,
+    pub deferred_search_shuffle: bool,
     pub search_result: Option<Box<super::search::SearchResult>>,
     /// The target's controller and name before exile, awaiting any linked entries.
     pub exile_name_search: Option<Box<(Player, &'static str)>>,
@@ -3825,6 +3827,7 @@ impl Game {
             sacrificed_power: None,
             sacrificed_mana_value: None,
             immediate_blink_return: None,
+            repeat_blink_remaining: None,
             explore: None,
             evidence: None,
             connive: None,
@@ -3855,6 +3858,7 @@ impl Game {
             return_attachment: None,
             target_library: None,
             search: None,
+            deferred_search_shuffle: false,
             search_result: None,
             exile_name_search: None,
             optional_searches: None,
@@ -5672,6 +5676,35 @@ impl Game {
                 }
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
+                }
+                Instruction::BlinkControlledCreaturesRepeated => {
+                    let remaining = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .repeat_blink_remaining;
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .repeat_blink_remaining =
+                        Some(remaining.unwrap_or_else(|| item.x.unwrap_or(0)));
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::BlinkControlledCreatures,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                    self.state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .repeat_blink_remaining = None;
                 }
                 Instruction::IfMayhemPaid { paid, skip } => {
                     if item.cast.is_some_and(|cast| cast.method.is_mayhem()) != paid {
@@ -8398,6 +8431,7 @@ impl Game {
                         u64::try_from(self.item_amount(maximum, &item)).unwrap_or(u64::MAX);
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
+                            defer_shuffle: false,
                             spec: SearchSpec {
                                 filter: crate::SearchFilter::KindsManaValue {
                                     kinds: 1,
@@ -8424,6 +8458,7 @@ impl Game {
                 }
                 Instruction::SearchFor { spec, .. }
                 | Instruction::Search(spec)
+                | Instruction::SearchWithoutShuffle(spec)
                 | Instruction::SearchDistinctColors { spec, .. }
                 | Instruction::SearchCreaturesUpToChosenX(spec)
                 | Instruction::SearchScaled { spec, .. }
@@ -8524,6 +8559,10 @@ impl Game {
                     };
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
+                            defer_shuffle: matches!(
+                                instruction,
+                                Instruction::SearchWithoutShuffle(_)
+                            ),
                             spec,
                             entry_counters: match instruction {
                                 Instruction::SearchTargetControllerWithEntryCounters {
@@ -8546,6 +8585,19 @@ impl Game {
                     self.state.pending = Pending::EffectSearch { player };
                     return;
                 }
+                Instruction::ShuffleAfterSearches => {
+                    if std::mem::take(
+                        &mut self
+                            .state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .deferred_search_shuffle,
+                    ) {
+                        self.forget_library_top(item.controller);
+                        self.shuffle_library_cards(item.controller);
+                    }
+                }
                 Instruction::SearchSacrificedManaValue { kinds, increment } => {
                     let Some(value) = item.sacrificed_mana_value.as_deref().copied() else {
                         continue;
@@ -8555,6 +8607,7 @@ impl Game {
                         .expect("sacrifice search mana value");
                     self.state.resolving.as_mut().unwrap().search =
                         Some(Box::new(search::SearchChoice {
+                            defer_shuffle: false,
                             spec: SearchSpec {
                                 filter: crate::SearchFilter::KindsManaValue {
                                     kinds,
@@ -9380,6 +9433,11 @@ impl Game {
                     let maximum =
                         u32::try_from(self.item_amount(maximum, &item)).unwrap_or(u32::MAX);
                     if self.start_land_selection(&item, maximum, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandCreatures { maximum } => {
+                    if self.start_hand_creatures(&item, maximum) {
                         return;
                     }
                 }
@@ -10857,7 +10915,10 @@ impl Game {
                         ),
                     );
                 }
-                Instruction::GrantCreatures { filter, keywords } => {
+                Instruction::GrantCreatures { filter, keywords }
+                | Instruction::GrantCreaturesWithPowerAtLeast {
+                    filter, keywords, ..
+                } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
                         .filter(|&id| {
@@ -10868,7 +10929,15 @@ impl Game {
                                     .expect("instruction requires an object source")
                                     .object,
                                 id,
-                            )
+                            ) && if let Instruction::GrantCreaturesWithPowerAtLeast {
+                                minimum,
+                                ..
+                            } = instruction
+                            {
+                                self.stats(id).power >= i128::from(minimum)
+                            } else {
+                                true
+                            }
                         })
                         .collect();
                     let source = item

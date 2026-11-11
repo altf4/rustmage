@@ -1089,6 +1089,7 @@ impl ManaProduction {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum LibraryRemainder {
     OptionalGraveyard,
+    OptionalBottom,
     /// Leave every unselected looked card in its existing position.
     Keep,
     /// Shuffle the entire library after selected entries finish.
@@ -1346,6 +1347,12 @@ pub enum EffectChoiceKind {
     /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
     SaddleRider(SaddleRiderEffect),
+    BlinkControlledCreatures,
+    HandCreatures {
+        maximum: u16,
+    },
+    /// Count actual moves of another permanent with this effective subtype.
+    ReturnToHandCountingOtherSubtype(&'static str),
     KeepSharedCreatureTypes,
     /// The ability controller saves one qualifying creature per controlling player.
     KeepCreaturesByPowerForEachPlayer(i128),
@@ -1649,6 +1656,7 @@ impl EffectChoiceKind {
                 | Self::SacrificeSelection
                 | Self::ExileGraveyardCreaturesReflexive { .. }
                 | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
+                | Self::BlinkControlledCreatures
         )
     }
     pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {
@@ -2463,6 +2471,7 @@ pub enum Instruction {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     },
+    BlinkControlledCreaturesRepeated,
     /// Exact historical cast origin; copied spells were not cast.
     IfCastFromGraveyard {
         skip: usize,
@@ -2888,6 +2897,9 @@ pub enum Instruction {
     PutHandLands {
         maximum: AmountValue,
         tapped: bool,
+    },
+    PutHandCreatures {
+        maximum: u16,
     },
     /// Optional resolution payment: selecting a legal filtered hand permanent pays
     /// before any replacement changes the resulting move. Decline skips a block.
@@ -3925,6 +3937,8 @@ pub enum Instruction {
         destination: SearchDestination,
     },
     Search(SearchSpec),
+    SearchWithoutShuffle(SearchSpec),
+    ShuffleAfterSearches,
     SearchScaled {
         spec: SearchSpec,
         maximum: AmountValue,
@@ -4304,6 +4318,11 @@ pub enum Instruction {
     },
     GrantCreatures {
         filter: CreatureFilter,
+        keywords: Keywords,
+    },
+    GrantCreaturesWithPowerAtLeast {
+        filter: CreatureFilter,
+        minimum: i32,
         keywords: Keywords,
     },
     /// Grant keywords to the remembered exact creature recipients until cleanup.

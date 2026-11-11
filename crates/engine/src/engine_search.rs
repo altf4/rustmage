@@ -17,6 +17,7 @@ pub(super) struct SearchResult {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct SearchChoice {
     pub spec: SearchSpec,
+    pub defer_shuffle: bool,
     pub entry_counters: &'static [(CounterKind, u64)],
     pub minimum: u64,
     pub different_names: bool,
@@ -184,6 +185,13 @@ impl Game {
             .take()
             .unwrap();
         let origin = choice.selected.first().map(|&id| self.object_ref(id));
+        if choice.defer_shuffle {
+            self.state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .deferred_search_shuffle = true;
+        }
         if let Some(frame) = self
             .state
             .resolving
@@ -197,6 +205,10 @@ impl Game {
             frame.closed = false;
         }
         if choice.spec.destination == SearchDestination::Top {
+            assert!(
+                !choice.defer_shuffle,
+                "a top search must shuffle before setting the top"
+            );
             // Searching does not change the found card's zone or incarnation.
             // Reveal and shuffle are one committed action; only the final known
             // top is public, never the rest of the private search/selection.
@@ -235,7 +247,9 @@ impl Game {
             }
             self.capture_search_result_entry(&events);
             self.finish_zone_events(&events, &[]);
-            self.shuffle_library_cards(player);
+            if !choice.defer_shuffle {
+                self.shuffle_library_cards(player);
+            }
             self.run_program();
             return;
         }
@@ -310,7 +324,7 @@ impl Game {
                 movement
             })
             .collect();
-        self.stage_entries(moves, Some(player));
+        self.stage_entries(moves, (!choice.defer_shuffle).then_some(player));
         if choice.spec.destination == SearchDestination::LinkedExile {
             self.remember_linked_exile(&choice.selected);
         }
@@ -416,6 +430,7 @@ impl Game {
         resolution.optional_searches.as_mut().unwrap().next += 1;
         if accept {
             resolution.search = Some(Box::new(SearchChoice {
+                defer_shuffle: false,
                 spec: SearchSpec {
                     filter: crate::SearchFilter::BasicLand,
                     maximum: 1,

@@ -1422,6 +1422,9 @@ impl Game {
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::SaddleRider(_)
+            | EffectChoiceKind::BlinkControlledCreatures
+            | EffectChoiceKind::HandCreatures { .. }
+            | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }

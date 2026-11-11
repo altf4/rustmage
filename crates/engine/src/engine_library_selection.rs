@@ -504,6 +504,7 @@ impl Game {
                 LibraryRemainder::BottomRandom
                     | LibraryRemainder::Shuffle
                     | LibraryRemainder::OptionalGraveyard
+                    | LibraryRemainder::OptionalBottom
             )
         {
             return self.finish_library_selection_internal();
@@ -789,8 +790,10 @@ impl Game {
             self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             return true;
         }
-        if f.spec.remainder == LibraryRemainder::OptionalGraveyard
-            && !f.remaining.is_empty()
+        if matches!(
+            f.spec.remainder,
+            LibraryRemainder::OptionalGraveyard | LibraryRemainder::OptionalBottom
+        ) && !f.remaining.is_empty()
             && !f.ordering
         {
             f.ordering = true;
@@ -1068,7 +1071,9 @@ impl Game {
                 let events = self.move_objects_raw(&ids, Zone::Hand);
                 self.finish_zone_events(&events, &[]);
             }
-            LibraryRemainder::BottomAny | LibraryRemainder::BottomRandom => {
+            LibraryRemainder::BottomAny
+            | LibraryRemainder::BottomRandom
+            | LibraryRemainder::OptionalBottom => {
                 if f.spec.remainder == LibraryRemainder::BottomRandom {
                     f.bottom = std::mem::take(&mut f.remaining);
                     self.state.rng.shuffle(&mut f.bottom);
@@ -1265,6 +1270,7 @@ impl Game {
             remainder: match f.spec.remainder {
                 LibraryRemainder::Keep => "keep",
                 LibraryRemainder::OptionalGraveyard => "optional_graveyard",
+                LibraryRemainder::OptionalBottom => "optional_bottom",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::Hand => "hand",
                 LibraryRemainder::Shuffle => "shuffle",
