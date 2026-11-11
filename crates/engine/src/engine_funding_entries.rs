@@ -630,7 +630,7 @@ impl FundingState<'_> {
                 minimum,
                 maximum,
             } => {
-                let v = self.value(value, source.card);
+                let v = self.game.stat_value_in_world(self, value, source, player);
                 minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n)
             }
             StepGuard::Threshold {
@@ -759,13 +759,23 @@ impl FundingState<'_> {
                     }
                 }
                 EntryCounterAmount::Fixed(n) => u64::from(n),
+                EntryCounterAmount::FixedCounters(amounts) => {
+                    for &(kind, amount) in amounts {
+                        counters.add(kind, amount);
+                    }
+                    continue;
+                }
                 EntryCounterAmount::WebSlingingReturnedManaValue => m
                     .cast_event
                     .as_ref()
                     .and_then(|cast| cast.web_slinging_return_mana_value)
                     .unwrap_or(0),
-                EntryCounterAmount::Stat(v) => u64::try_from(self.value(v, m.before.id).max(0))
-                    .capacity("entry counter amount exhausted"),
+                EntryCounterAmount::Stat(v) => u64::try_from(
+                    self.game
+                        .stat_value_in_world(self, v, m.before.reference, m.controller)
+                        .max(0),
+                )
+                .capacity("entry counter amount exhausted"),
             };
             counters.add(CounterKind::PlusOne, amount);
         }

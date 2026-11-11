@@ -2020,6 +2020,7 @@ impl ControlledPermanentFilter {
 pub enum PermanentGroupCounters {
     Add { kind: CounterKind, amount: u32 },
     DoubleEachKind,
+    DoubleKind(CounterKind),
 }
 
 /// Exile up to the entrant's chosen X own graveyard cards before its entry counters.
@@ -4997,6 +4998,7 @@ pub enum StatValue {
     ControllerTurn,
     Fixed(u16),
     TappedCount(CountFilter),
+    UntappedCount(CountFilter),
     Not(&'static StatValue),
     CardsDrawnThisTurn,
     PermanentsSacrificedThisTurn,
@@ -5275,7 +5277,7 @@ pub enum Subject {
     Attached,
 }
 
-/// Immutable +1/+1 counter replacements evaluated against the pre-entry world.
+/// Immutable counter replacements evaluated against the pre-entry world.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum EntryCounterAmount {
@@ -5288,6 +5290,8 @@ pub enum EntryCounterAmount {
     ManaSpent,
     IfNotCastOrZero(u16),
     Fixed(u16),
+    /// A mixed set of fixed counters placed as one entry event.
+    FixedCounters(&'static [(CounterKind, u64)]),
     Stat(StatValue),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

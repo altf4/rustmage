@@ -303,6 +303,9 @@ impl Game {
                         Counters::of(kind, u64::from(amount))
                     }
                     PermanentGroupCounters::DoubleEachKind => self.counter_amounts(id).to_owned(),
+                    PermanentGroupCounters::DoubleKind(kind) => {
+                        Counters::of(kind, self.counter_count(id, kind))
+                    }
                 };
                 Some((self.object_ref(id), counters))
             })

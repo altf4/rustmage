@@ -48,6 +48,7 @@ pub enum ActivationReductionAmount {
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
+    ControlledLegendaryCreature,
     OtherControlledSubtype(&'static str),
     /// Abilities of another creature with this provider's active entry choice.
     OtherControlledCreatureOfChosenType,

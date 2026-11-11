@@ -264,12 +264,17 @@ impl Game {
                         && legendary(*id)
                 })
                 .count() as i128,
-            StatValue::TappedCount(filter) => objects()
-                .filter(|&(id, o)| {
-                    o.tapped
-                        && Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
-                })
-                .count() as i128,
+            StatValue::TappedCount(filter) | StatValue::UntappedCount(filter) => {
+                let tapped = matches!(value, StatValue::TappedCount(_));
+                objects()
+                    .filter(|&(id, o)| {
+                        o.tapped == tapped
+                            && Self::count_object_matches(
+                                filter, source, owner, id, o, subtypes, kinds,
+                            )
+                    })
+                    .count() as i128
+            }
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
                     world,

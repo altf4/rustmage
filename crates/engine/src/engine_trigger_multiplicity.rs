@@ -123,6 +123,11 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                 AdditionalTriggerScope::ControlledCreatureSubtype(_)
                             ) || query.kinds(id) & 1 != 0)
                     }
+                    AdditionalTriggerScope::ControlledLegendaryCreature => {
+                        recipient.controller == object.controller
+                            && query.kinds(id) & 1 != 0
+                            && query.legendary(id)
+                    }
                     AdditionalTriggerScope::OtherControlledCreatureOfChosenType => {
                         id != provider
                             && recipient.controller == object.controller

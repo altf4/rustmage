@@ -978,6 +978,12 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::FixedCounters(amounts) => {
+                        for &(kind, amount) in amounts {
+                            counters.add(kind, amount);
+                        }
+                        continue;
+                    }
                     EntryCounterAmount::WebSlingingReturnedManaValue => {
                         returned_mana_value.unwrap_or(0)
                     }
