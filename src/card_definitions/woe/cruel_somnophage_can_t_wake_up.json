@@ -3,10 +3,51 @@
   "catalogue_id": 903,
   "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
   "facts_sha256": "5d275ff0f3fe2d605ce338b3f51220da1812e30f3224c1924c6cffa4b894d05a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "032c3fd3148d11038eeded48857ae20f87c62613c099d74b0e1caf72e7beb337"
   },
-  "physical_metadata_sha256": "2ed5102a7f00168ba0bdc71b0f7d0969d00a20f6961248927cd5aeb1c6f6b477"
+  "physical_metadata_sha256": "94e2ba6791457a686f2d2764d68b11b23130b06bc16d84a2de25541ace27617a",
+  "oracle_face": {
+    "oracle_id": "997bdec5-f67b-4822-a3ba-c636e2685e8a",
+    "index": 0,
+    "sha256": "31489ad720a4a089685c5bf36f3e9bd738b7bdb835b1e1a560badd334a682284"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CruelSomnophage.java",
+  "java_sha256": "5c1a743aeb81c18195677e9af2fccd4a91810c8db3f63e6a3d2525a2706c077c",
+  "rules_tests": "tests/woe_cards_a_d.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInAllGraveyardsCount.java",
+      "sha256": "e66953ca966104e841a2f9d902ccb1a2cade57169a0fa7303b53efa17874d51c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessSourceEffect.java",
+      "sha256": "278acb623e2d4c4db2efdc4764512cfe0a983770512e2eb2c73afb887a193fe3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ]
 }

@@ -500,7 +500,8 @@ impl Game {
                 history.push(r)
             }
         }
-        self.tap_objects(
+        self.tap_objects_as(
+            item.controller,
             &context
                 .contributors
                 .iter()

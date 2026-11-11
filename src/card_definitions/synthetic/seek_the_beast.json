@@ -1,0 +1,44 @@
+{
+  "name": "Seek the Beast",
+  "catalogue_id": 5560,
+  "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
+  "facts_sha256": "676f8f1173fad54996820e2688c4f01761c1524d0e6bb070a002d727d32c8cb9",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "555df32f-f8e9-49af-bc4a-1194ea325a97",
+    "index": 1,
+    "sha256": "c4611dbd477f72be2e945a3f19ded372e0cde2ee6ef92d38e1f25ad20ffbcfda"
+  },
+  "physical_metadata_sha256": "875524f1db2b75de7ddf712a8042ded00d8516123afcb3b788b46fb107a46f9c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/q/QuestingDruid.java",
+  "java_sha256": "8f20bfc1ecfb965aab13b6c6b2cf57fda2f5942fe58f20e445ad90a42ca27a4f",
+  "rules_tests": "tests/woe_cards_m_r.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/asthought/PlayFromNotOwnHandZoneTargetEffect.java",
+      "sha256": "b0c7526e10d0b679a49c28baeb8b43e44991343d7bd81ea88f966b126bb5b3ef"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/AdventureCard.java",
+      "sha256": "b9a7b04e6575138b44c3aae159b47b1c2e11bc221bb4f2a301cc4a944dc31b8b"
+    }
+  ]
+}

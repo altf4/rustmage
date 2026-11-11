@@ -300,6 +300,14 @@ impl Game {
         }
     }
 
+    fn mana_split_tap_receipt(&self) -> ManaTapBonus {
+        self.state
+            .announcing
+            .as_ref()
+            .filter(|a| a.mana_output.is_some())
+            .map_or_else(ManaTapBonus::default, |a| a.item.tap_mana_bonus(self))
+    }
+
     pub fn mana_split_choice(&self) -> Option<ManaSplitChoiceView> {
         let Pending::EffectMana {
             player,
@@ -309,7 +317,9 @@ impl Game {
         else {
             return None;
         };
-        let (minimum_first, maximum_first) = split.bounds(self.mana_split_capacity(player))?;
+        let receipt = self.mana_split_tap_receipt();
+        let capacity = receipt.unreplaced_capacity(self.mana_split_capacity(player));
+        let (minimum_first, maximum_first) = split.bounds(capacity)?;
         Some(ManaSplitChoiceView {
             first: split.first,
             second: split.second,
@@ -344,9 +354,12 @@ impl Game {
             });
         }
         let preferred = self.mana_output_parent_goal().map_or(min, |goal| {
-            goal.required[split.first.index()]
-                .saturating_sub(self.state.players[goal.actor.index()].mana[split.first.index()])
-                .clamp(min, max)
+            let first = split.first.index();
+            let missing = goal.required[first]
+                .saturating_sub(self.state.players[goal.actor.index()].mana[first]);
+            self.mana_split_tap_receipt()
+                .unreplaced_required(u128::from(missing))
+                .clamp(u128::from(min), u128::from(max)) as u32
         });
         let points = [min, min + (max - min) / 2, max, preferred];
         let mut offered = false;
@@ -465,17 +478,28 @@ impl Game {
         }
         self.suspend_mana_announcement();
         let mut a = self.payment_announcement(item, counters, Some(production), None);
-        let slot = a
-            .cost_options()
-            .position(|cost| {
-                payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
-                    && payment.into_iter().map(u64::from).sum::<u64>()
-                        == cost.colored.into_iter().map(u64::from).sum::<u64>()
-                            + u64::from(cost.generic)
+        let source = a.item.source.expect("activation source").object;
+        let total = (0..a.cost_options().count())
+            .find_map(|slot| {
+                a.select_cost(slot);
+                a.untargeted_activation_totals()
+                    .into_iter()
+                    .flatten()
+                    .find(|cost| {
+                        let cost = cast_origins::activation_payment_cost(
+                            self,
+                            a.item.controller,
+                            source,
+                            *cost,
+                        );
+                        payment.iter().zip(cost.colored).all(|(p, c)| *p >= c)
+                            && payment.into_iter().map(u64::from).sum::<u64>()
+                                == cost.colored.into_iter().map(u64::from).sum::<u64>()
+                                    + u64::from(cost.generic)
+                    })
             })
             .expect("legal direct mana payment has a cost option");
-        a.select_cost(slot);
-        a.total_cost = a.cost;
+        a.total_cost = Some(total);
         a.payment = Some(payment);
         a.mana_output = Some(output);
         self.state.pending = Pending::PayCosts {
@@ -497,7 +521,15 @@ impl Game {
                     | ManaProduction::Split(_)
             )
         {
-            self.require_mana_split_capacity(a.item.controller, domain);
+            if let ManaProduction::Split(split) = domain {
+                let capacity = a
+                    .item
+                    .tap_mana_bonus(self)
+                    .unreplaced_capacity(self.mana_split_capacity(a.item.controller));
+                split
+                    .bounds(capacity)
+                    .capacity("mana representation exhausted");
+            }
             self.state.pending = Pending::EffectMana {
                 player: a.item.controller,
                 production: domain,
@@ -516,9 +548,13 @@ impl Game {
     }
     pub(super) fn complete_mana_output(&mut self, a: &mut Announcement, production: Mana) {
         let output = a.mana_output.take().expect("owned paid mana output");
-        self.add_quality_mana(a.item.controller, production, output.quality);
+        self.add_mana_tap_event(
+            a.item.controller,
+            a.item.tap_mana_bonus(self),
+            production,
+            output.quality,
+        );
         self.apply_mana_color_change(output.recipe, output.instance.source, production);
-        self.finish_mana_tap_bonus(a.item.controller, a.item.tap_mana_bonus(self), production);
         self.committed_mana_followups(&a.item);
         if self.restore_mana_announcement() {
             self.reopen_evidence_after_mana_sacrifice(output.instance.source.card);

@@ -3,10 +3,31 @@
   "catalogue_id": 1403,
   "oracle_id": "744b7e93-c893-4770-a3bb-6a45b7f8e4f7",
   "facts_sha256": "bd101cb5c74bfbaaceea444bfed9b5f9cb5a1c60bede472ef71e47174f8d5df9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a36a360595677b87eed51b38fa904231bbff7c2158a708e3f6e333b31d6d1b26"
   },
-  "physical_metadata_sha256": "e415720ab9c1b4f990cb83d83a3448c40cdc52111f667eea22a98394b4946594"
+  "physical_metadata_sha256": "e415720ab9c1b4f990cb83d83a3448c40cdc52111f667eea22a98394b4946594",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExpelTheInterlopers.java",
+  "java_sha256": "db697079a02c893b6f1320b16fa4a80edd94de0722c1996f60caafaef0ba8f7e",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    }
+  ]
 }

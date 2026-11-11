@@ -10,6 +10,23 @@ pub(super) struct ActivationCostChoice {
     pub route: ActivationCostRoute,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum LimitedCastPermission {
+    FreeHand(ObjectRef),
+    LibraryTop(LibraryTopCastPermission),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl LimitedCastPermission {
+    pub(super) fn source(self) -> ObjectRef {
+        match self {
+            Self::FreeHand(source) => source,
+            Self::LibraryTop(permission) => permission.source,
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
@@ -33,8 +50,9 @@ pub(super) struct Announcement {
     pub activation_generic_increase: u32,
     /// Only explicit alternative choices allocate this cold pre-reduction receipt.
     pub activation_choice: Option<Box<ActivationCostChoice>>,
-    pub power_up_costs: Option<Box<power_up::PowerUpCosts>>,
-    pub free_hand_permission: Option<Box<ObjectRef>>,
+    pub activation_reductions: Option<Box<power_up::ActivationCostReductions>>,
+    /// The selected independent use becomes spent only when this cast commits.
+    pub limited_cast_permission: Option<Box<LimitedCastPermission>>,
     /// Mandatory nonmana cost belonging to the selected origin permission.
     pub origin_counter_cost: Option<u16>,
     /// Immutable definition supplying mandatory costs for the chosen origin route.
@@ -76,6 +94,13 @@ pub(super) struct Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
+    pub(super) fn library_top_cast_permission(&self) -> Option<LibraryTopCastPermission> {
+        match self.limited_cast_permission.as_deref().copied() {
+            Some(LimitedCastPermission::LibraryTop(permission)) => Some(permission),
+            _ => None,
+        }
+    }
+
     pub(super) fn linked_origin_counter_cost(&self) -> Option<u16> {
         self.item
             .cast
@@ -623,57 +648,36 @@ impl Announcement {
                 )
             })
             .flat_map(move |(cost, route, evoked)| {
-                const ZERO: [ManaCost; 1] = [ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                }];
-                self.power_up_costs
-                    .as_deref()
-                    .map_or(&ZERO[..], |r| r.reductions.as_slice())
+                let discounts = self
+                    .activation_discounts()
+                    .with_ordinary(match self.item.kind {
+                        StackKind::ActivatedAbility { ability } => {
+                            5 * u64::from(
+                                self.item
+                                    .source
+                                    .expect("activation source")
+                                    .card
+                                    .activation_target_color_discount(ability),
+                            )
+                        }
+                        _ => 0,
+                    });
+                power_up::ActivationCostReductions::options(self.activation_reductions.as_deref())
                     .iter()
                     .filter_map(move |&reduction| {
-                        power_up::reduce_wide(
-                            cost,
+                        let choice = ActivationCostChoice {
+                            base: cost,
                             reduction,
-                            u64::from(self.activation_discount)
-                                + match self.item.kind {
-                                    StackKind::ActivatedAbility { ability } => {
-                                        5 * u64::from(
-                                            self.item
-                                                .source
-                                                .expect("activation source")
-                                                .card
-                                                .activation_target_color_discount(ability),
-                                        )
-                                    }
-                                    _ => 0,
-                                },
-                            u64::from(self.activation_generic_increase)
-                                + if route == ActivationCostRoute::Printed {
-                                    u64::from(self.item.x.unwrap_or(0))
-                                        * u64::from(match self.item.kind {
-                                            StackKind::ActivatedAbility { ability } => self
-                                                .item
-                                                .source
-                                                .expect("announcement has object source")
-                                                .card
-                                                .activation_x_symbols(ability),
-                                            _ => 0,
-                                        })
-                                } else {
-                                    0
-                                },
-                        )
+                            route,
+                        };
+                        self.activation_totals(choice, discounts, self.activation_generic_increase)
+                            [0]
                         .map(|reduced| {
                             (
                                 reduced,
                                 route,
                                 matches!(self.item.kind, StackKind::ActivatedAbility { .. })
-                                    .then_some(ActivationCostChoice {
-                                        base: cost,
-                                        reduction,
-                                        route,
-                                    }),
+                                    .then_some(choice),
                                 evoked,
                             )
                         })
@@ -729,6 +733,64 @@ impl Announcement {
                     .map(|cost| (cost, route, choice, evoked))
             })
     }
+    pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
+        let reductions = self.activation_reductions.as_deref();
+        power_up::ActivationDiscounts {
+            ordinary: u64::from(self.activation_discount)
+                + reductions.map_or(0, |costs| costs.extra_ordinary),
+            leave_one: reductions.map_or(0, |costs| costs.leave_one),
+        }
+    }
+    pub(super) fn activation_totals(
+        &self,
+        choice: ActivationCostChoice,
+        discounts: power_up::ActivationDiscounts,
+        increase: u32,
+    ) -> [Option<ManaCost>; 2] {
+        let x = match self.item.kind {
+            StackKind::ActivatedAbility { ability }
+                if choice.route == ActivationCostRoute::Printed =>
+            {
+                u64::from(self.item.x.unwrap_or(0))
+                    * u64::from(
+                        self.item
+                            .source
+                            .expect("activation source")
+                            .card
+                            .activation_x_symbols(ability),
+                    )
+            }
+            _ => 0,
+        };
+        power_up::reduced_totals(
+            choice.base,
+            choice.reduction,
+            discounts,
+            x + u64::from(increase),
+        )
+    }
+    pub(super) fn untargeted_activation_totals(&self) -> [Option<ManaCost>; 2] {
+        self.activation_totals(
+            self.raw_activation_choice(),
+            self.activation_discounts(),
+            self.activation_generic_increase,
+        )
+    }
+    pub(super) fn activation_order_costs(&self) -> Option<[ManaCost; 2]> {
+        self.activation_reductions
+            .as_ref()
+            .and_then(|r| r.order_costs)
+    }
+    pub(super) fn cost_choices(&self) -> impl Iterator<Item = ManaCost> + '_ {
+        let order_costs = self.activation_order_costs();
+        order_costs.into_iter().flatten().chain(
+            order_costs
+                .is_none()
+                .then(|| self.cost_options())
+                .into_iter()
+                .flatten(),
+        )
+    }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
         self.cost_route_options().map(|(cost, _, _, _)| cost)
     }
@@ -743,7 +805,11 @@ impl Announcement {
         self.activation_choice = choice.map(Box::new);
     }
     pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
-        self.cost_route_options().nth(index).expect("cost option").1
+        if self.activation_order_costs().is_some() {
+            self.activation_cost_route
+        } else {
+            self.cost_route_options().nth(index).expect("cost option").1
+        }
     }
     pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
         self.activation_choice
@@ -947,9 +1013,6 @@ impl Game {
             };
             assert_eq!(spec.min, 0);
             spec.max = usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX);
-            if item.division_total().is_some_and(|total| total > 0) {
-                spec.min = 1;
-            }
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
@@ -1667,8 +1730,20 @@ impl Game {
     }
     pub(super) fn choose_mana_cost(&mut self, index: u16) {
         let a = self.state.announcing.as_mut().unwrap();
-        a.select_cost(index as usize);
-        self.continue_announcement_choices(false);
+        if let Some(totals) = a
+            .activation_reductions
+            .as_mut()
+            .and_then(|r| r.order_costs.take())
+        {
+            a.total_cost = Some(totals[usize::from(index)]);
+            self.state.pending = Pending::Targets {
+                player: a.item.controller,
+            };
+            self.finish_announcement();
+        } else {
+            a.select_cost(index as usize);
+            self.continue_announcement_choices(false);
+        }
     }
 
     pub(super) fn choose_mode(&mut self, mode: u16) {
@@ -1700,7 +1775,9 @@ impl Game {
 
     pub(super) fn declare_mode(&mut self, mode: u16, plan: TargetPlan) {
         let item = &self.state.announcing.as_ref().unwrap().item;
-        if let Some(key) = modal_history::key(item) {
+        if matches!(item.kind, StackKind::TriggeredAbility { .. })
+            && let Some(key) = modal_history::key(item)
+        {
             self.record_modal_choice(key, mode);
         }
         let announcement = self.state.announcing.as_mut().unwrap();
@@ -2021,6 +2098,18 @@ impl Game {
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
                     && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
             }
+            TargetRule::FaceUpExiledCard { owner } => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
+                    object.zone == Zone::Exile
+                        && object.is_card()
+                        && !self.exiled_face_down(world.reference(id))
+                        && match owner {
+                            CastRelation::Any => true,
+                            CastRelation::You => object.owner == controller,
+                            CastRelation::Opponent => object.owner != controller,
+                        }
+                ));
+            }
             TargetRule::OwnedExileWithFlashback => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone == Zone::Exile && o.is_card() && o.owner == controller
@@ -2138,6 +2227,7 @@ impl Game {
                 // The base rule validates the object index and zone before this lookup.
                 let object = world.object(id);
                 return match *predicate {
+                    TargetPredicate::HasAdventure => self.is_adventurer_card(id, object),
                     TargetPredicate::SourceChosenCreatureType => {
                         let chosen = qualification
                             .and_then(|row| row.chosen_creature_type)
@@ -2192,6 +2282,29 @@ impl Game {
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
                     TargetPredicate::Equipped => world.equipped(id),
+                    TargetPredicate::Enchanted => {
+                        let recipient = world.reference(id);
+                        object.zone == Zone::Battlefield
+                            && world.attachment_sources().iter().any(|&aura| {
+                                let source = world.object(aura);
+                                source.zone == Zone::Battlefield
+                                    && source.attached_to == Some(recipient)
+                                    && world.is_aura(aura)
+                            })
+                    }
+                    TargetPredicate::NoOtherControlledSameName { tokens_only } => {
+                        let name = world.name(id);
+                        name.is_empty()
+                            || !(0..self.state.objects.len()).any(|other| {
+                                let other = other as CardId;
+                                let candidate = world.object(other);
+                                other != id
+                                    && candidate.zone == Zone::Battlefield
+                                    && candidate.controller == controller
+                                    && (!tokens_only || candidate.is_token())
+                                    && crate::card_names::same_name(name, world.name(other))
+                            })
+                    }
                     TargetPredicate::Modified => {
                         world.kinds(id) & 1 != 0 && world.has_modification(id)
                     }
@@ -2587,6 +2700,7 @@ impl Game {
                 face: CastFace::Normal,
                 payment,
                 treasure_mana_spent: false,
+                controlled_subtype_at_cast: false,
                 origin,
                 stash_origin: self.foreign_stash(actor, card),
                 method: CastMethod::Normal,
@@ -2692,12 +2806,13 @@ impl Game {
             return false;
         }
         assert!(self.state.announcing.is_none());
+        let (activation_discount, activation_reductions) = self.capture_activation_discounts(&item);
         self.state.announcing = Some(Announcement {
             behold_required: false,
             equip_zero_available: false,
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
-            activation_discount: self.item_activation_discount(&item),
+            activation_discount,
             activation_generic_increase: item
                 .source
                 .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
@@ -2708,8 +2823,8 @@ impl Game {
                 }),
             activation_choice: None,
             mana_output: None,
-            power_up_costs: self.item_power_up_costs(&item),
-            free_hand_permission: None,
+            activation_reductions,
+            limited_cast_permission: None,
             origin_counter_cost: None,
             origin_additional_cost: None,
             origin_alternative_cost: self.origin_alternative_cost_for(&item),
@@ -2861,7 +2976,11 @@ impl Game {
                 || source
                     .card
                     .kicked_targets()
-                    .is_some_and(|plan| { self.item_targets_available(&item, plan) })
+                    .is_some_and(|plan| self.item_targets_available(&item, plan))
+                || source
+                    .card
+                    .bargain_targets()
+                    .is_some_and(|plan| self.item_targets_available(&item, plan))
         );
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         let mut announcement =
@@ -2922,13 +3041,14 @@ impl Game {
         let casualty = self.casualty_declarations(&item);
         let conspire = self.conspire_declarations(&item);
         let mana_output = production.and_then(|selected| self.mana_output(&item, selected));
+        let (activation_discount, activation_reductions) = self.capture_activation_discounts(&item);
         Announcement {
             behold_required: self.behold_timing_required(&item),
             equip_zero_available: self.item_first_equip_zero_available(&item)
                 && counters == Counters::default(),
             exhaust_reuse_authorized: self.item_exhaust_reuse_available(&item),
             activation_cost_route: ActivationCostRoute::Printed,
-            activation_discount: self.item_activation_discount(&item),
+            activation_discount,
             activation_generic_increase: item
                 .source
                 .filter(|_| matches!(item.kind, StackKind::ActivatedAbility { .. }))
@@ -2939,8 +3059,8 @@ impl Game {
                 }),
             activation_choice: None,
             mana_output,
-            power_up_costs: self.item_power_up_costs(&item),
-            free_hand_permission: None,
+            activation_reductions,
+            limited_cast_permission: None,
             origin_counter_cost,
             origin_additional_cost: None,
             origin_alternative_cost: self.origin_alternative_cost_for(&item),
@@ -2976,7 +3096,9 @@ impl Game {
         if self.start_target_amounts() {
             return;
         }
-        self.freeze_activation_total();
+        if self.freeze_activation_total() {
+            return;
+        }
         if let Some(a) = &mut self.state.announcing
             && a.additional_cost()
                 .is_some_and(|cost| cost.kind == EffectChoiceKind::DiscardHand)
@@ -3283,8 +3405,14 @@ impl Game {
                 return;
             }
         } else {
-            if let Some(permission) = announcement.free_hand_permission.take() {
-                self.use_free_hand_permission(*permission);
+            if let Some(permission) = announcement.limited_cast_permission.take() {
+                match *permission {
+                    LimitedCastPermission::FreeHand(source) => {
+                        self.use_free_hand_permission(source)
+                    }
+                    LimitedCastPermission::LibraryTop(permission) => self
+                        .use_library_top_cast_permission(announcement.item.controller, permission),
+                }
             }
             self.queue_casualty_copies(&announcement);
             self.queue_conspire_copies(&announcement);
@@ -3361,7 +3489,7 @@ impl Game {
                                 crate::cards::GraveyardCastKind::Flashback
                                     | crate::cards::GraveyardCastKind::Harmonize
                             )
-                            && row.expires_turn >= self.state.turn
+                            && row.available_at(self.state.turn)
                     })
                 })
     }

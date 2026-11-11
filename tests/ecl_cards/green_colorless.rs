@@ -2814,29 +2814,29 @@ fn ecl_green_growth_multiple_providers_timestamps_and_exact_land_at_production()
         let old = g.object_ref(land);
         let tap = g.mana_tap_bonuses(p, land);
         assert_eq!(
-            tap.with_trigger_bonuses(&g, p, Some(old)).fixed,
+            tap.with_event_effects(&g, p, Some(old)).fixed,
             [0, 1, 0, 0, 0, 0]
         );
         let snapshot = g.snapshot();
         g.move_object(land, Zone::Graveyard);
-        let departed_bonus = tap.with_trigger_bonuses(&g, p, Some(old));
+        let departed_bonus = tap.with_event_effects(&g, p, Some(old));
         assert_eq!(departed_bonus.fixed, [0; 6]);
         g.finish_mana_tap_bonus(p, departed_bonus, [0, 0, 0, 0, 1, 0]);
         assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 1, 0]);
         g.move_object(land, Zone::Battlefield);
         let newer = g.object_ref(land);
         assert_ne!(newer, old);
-        assert_eq!(tap.with_trigger_bonuses(&g, p, Some(old)).fixed, [0; 6]);
+        assert_eq!(tap.with_event_effects(&g, p, Some(old)).fixed, [0; 6]);
         assert_eq!(
             g.mana_tap_bonuses(p, land)
-                .with_trigger_bonuses(&g, p, Some(newer))
+                .with_event_effects(&g, p, Some(newer))
                 .fixed,
             [0; 6]
         );
         assert_eq!(g.object_view(first).attached_to, Some(old));
         g.restore(&snapshot).unwrap();
         assert_eq!(
-            tap.with_trigger_bonuses(&g, p, Some(old)).fixed,
+            tap.with_event_effects(&g, p, Some(old)).fixed,
             [0, 1, 0, 0, 0, 0]
         );
     }

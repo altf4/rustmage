@@ -62,7 +62,7 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
                 .is_some_and(|rows| {
                     rows.iter().any(|row| {
                         row.recipient == world.reference(id)
-                            && matches!(row.kind, SelfGrantedAbilityKind::Activated { .. })
+                            && row.kind.activation().is_some()
                             && current.self_grants.contains(&row.timestamp)
                     })
                 })
@@ -199,9 +199,7 @@ impl Game {
             return chosen_cost_creature_matches(world, actor, object);
         }
         let o = world.object(object.card);
-        if spec.kind.payment_kind() == EffectChoiceKind::SacrificeAttachedEquipment
-            && o.attached_to != Some(source)
-        {
+        if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
             return false;
         }
         if !projected
@@ -247,6 +245,7 @@ impl Game {
                 | EffectChoiceKind::SacrificeDifferentNames(_)
                 | EffectChoiceKind::SacrificePermanents(_)
                 | EffectChoiceKind::SacrificeAttachedEquipment
+                | EffectChoiceKind::SacrificeAttachedPermanent
         ) && world.sacrifice_prohibited(object.card)
         {
             return false;
@@ -424,11 +423,8 @@ impl Game {
             o.owner
         }) == actor
             && o.zone == zone
-            && (!f.artifact_enchantment_or_token || kinds & 48 != 0 || o.is_token())
-            && (f.kinds == 0 || kinds & u16::from(f.kinds) != 0)
-            && (!f.nonland || kinds & 2 == 0)
+            && f.matches_kinds_and_token(kinds, o.is_token())
             && keywords.contains(f.keywords)
-            && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| subtypes.has(o.card, subtype))
     }
@@ -1247,7 +1243,10 @@ impl Game {
                     subtype_lki: None,
                 });
             }
-            self.tap_objects(&group.iter().map(|r| r.card).collect::<Vec<_>>());
+            self.tap_objects_as(
+                a.item.controller,
+                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
+            );
             a.additional_paid = true;
             return;
         }
@@ -1365,6 +1364,7 @@ impl Game {
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
+            | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
             | EffectChoiceKind::ExileSourceAndNamed { .. }
@@ -1405,6 +1405,7 @@ impl Game {
             | EffectChoiceKind::ExileCraftNonlands(_)
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment
+            | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
                 let event = self.move_object(object.card, Zone::Exile);

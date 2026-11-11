@@ -281,7 +281,7 @@ impl Game {
                     graveyard_left,
                 ) == 0,
             ),
-            StatValue::SourceEquipmentCount => {
+            StatValue::SourceEquipmentCount | StatValue::SourceAuraOrEquipmentCount => {
                 if !objects().any(|(id, object)| {
                     id == source.card
                         && object.generation == source.generation
@@ -291,9 +291,12 @@ impl Game {
                 }
                 objects()
                     .filter(|(id, object)| {
-                        object.zone == Zone::Battlefield
-                            && object.attached_to == Some(source)
-                            && subtypes(*id).has(object.card, "Equipment")
+                        object.zone == Zone::Battlefield && object.attached_to == Some(source) && {
+                            let types = subtypes(*id);
+                            types.has(object.card, "Equipment")
+                                || value == StatValue::SourceAuraOrEquipmentCount
+                                    && types.has(object.card, "Aura")
+                        }
                     })
                     .count() as i128
             }
@@ -331,6 +334,18 @@ impl Game {
                 i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
             }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
+            StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
+                object.zone == Zone::Exile
+                    && object.owner == owner
+                    && self.is_adventurer_card(id, object)
+            })),
+            StatValue::GraveyardInstantSorceryAdventure => {
+                adventure::graveyard_instant_sorcery_adventure_count(
+                    owner,
+                    objects().map(|(_, object)| object),
+                ) as i128
+            }
+            StatValue::ControllerTurn => i128::from(self.state.active == owner),
             StatValue::ControllerEndStep => {
                 i128::from(self.state.step == Step::End && self.state.active == owner)
             }
@@ -362,13 +377,20 @@ impl Game {
                         && (*id != source.card || o.generation != source.generation)
                 })
                 .count() as i128,
-            StatValue::AllAttackingCreatures => objects()
-                .filter(|(id, o)| {
-                    o.zone == Zone::Battlefield
-                        && kinds(*id, o) & 1 != 0
-                        && self.state.attackers.iter().any(|a| a.card == *id)
-                })
-                .count() as i128,
+            StatValue::AllAttackingCreatures | StatValue::AllAttackingSubtype(_) => {
+                let subtype = match value {
+                    StatValue::AllAttackingSubtype(subtype) => Some(subtype),
+                    _ => None,
+                };
+                objects()
+                    .filter(|(id, o)| {
+                        o.zone == Zone::Battlefield
+                            && kinds(*id, o) & 1 != 0
+                            && self.state.attackers.iter().any(|a| a.card == *id)
+                            && subtype.is_none_or(|subtype| subtypes(*id).has(o.card, subtype))
+                    })
+                    .count() as i128
+            }
             StatValue::SourceAttacking => i128::from(
                 attacking
                     && objects().any(|(id, o)| {
@@ -691,6 +713,7 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::SourceDamageReceivedThisTurn => self.damage_received_this_turn(source),
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
             AmountValue::Devotion(color) => self
@@ -762,6 +785,7 @@ impl Game {
             | AmountValue::PaidAdditionalCostCount
             | AmountValue::PaidAdditionalCostSelectionCount
             | AmountValue::ChosenX
+            | AmountValue::ReflexiveSubjectCount
             | AmountValue::ReflexiveTargetLimit
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount
@@ -801,6 +825,7 @@ impl Game {
             AmountValue::LifeGainedThisTurn => {
                 self.state.players[owner.index()].life_gained_this_turn
             }
+            AmountValue::LifeLostThisTurn => self.state.players[owner.index()].life_lost_this_turn,
             AmountValue::Divided { value, divisor } => {
                 self.amount_value(*value, source, owner) / u128::from(divisor.get())
             }

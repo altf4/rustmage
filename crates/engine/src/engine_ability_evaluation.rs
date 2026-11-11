@@ -115,6 +115,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::LandMana { .. }
         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+        | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
             let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -171,6 +172,35 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 recipient: id,
                 keywords,
                 abilities: vec![key(ward)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::SourceCelebrationCreatureForm {
+            keywords,
+            activation,
+            ..
+        } => {
+            if id != source.card || !world.celebrating(provider.controller) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords,
+                abilities: vec![key(activation)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(counter) => {
+            if !own || world.kinds(id) & 1 == 0 || world.counter_count(id, counter) == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    kind: GrantedAbilityKind::LinkedExileActivations,
+                    ..key(0)
+                }],
                 mana: Vec::new(),
             });
         }
@@ -263,11 +293,15 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             });
         }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
-        | StaticAbilityFragment::ControlledArtifactFood(ability) => {
-            let kinds = if matches!(fragment, StaticAbilityFragment::ControlledArtifactFood(_)) {
-                16
-            } else {
+        | StaticAbilityFragment::ControlledArtifactFood(ability)
+        | StaticAbilityFragment::ControlledArtifactActivation(ability) => {
+            let kinds = if matches!(
+                fragment,
+                StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+            ) {
                 64
+            } else {
+                16
             };
             if !own || world.kinds(id) & kinds == 0 {
                 return None;
@@ -484,6 +518,19 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> Option<AbilityEvaluation> {
     (world.has_ability_removal()
+        || world.game().state.self_granted_abilities.as_ref().is_some_and(|rows| {
+            rows.iter().any(|grant| {
+                if grant.kind != SelfGrantedAbilityKind::OwnTurnFirstStrike {
+                    return false;
+                }
+                let game = world.game();
+                let recipient = world.object(grant.recipient.card);
+                recipient.zone == Zone::Battlefield
+                    && recipient.controller == game.state.active
+                    && world.reference(grant.recipient.card) == grant.recipient
+                    && grant.expires_turn.is_none_or(|turn| turn == game.state.turn)
+            })
+        })
         || world.static_sources().iter().any(|&id| {
             let source = world.object(id);
             (source.zone == Zone::Battlefield
@@ -499,8 +546,17 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| matches!(
-                        fragment, StaticAbilityFragment::SourceEntryModeActivation { .. } | StaticAbilityFragment::SourceMaxSpeedActivation(_) | StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | StaticAbilityFragment::ControlledArtifactFood(_) | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
-                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider()))
+                        fragment,
+                        StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                            | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
+                            | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
+                    ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider())
+                        || (matches!(fragment, StaticAbilityFragment::SourceCelebrationCreatureForm { .. })
+                            && world.celebrating(source.controller)))
                 })
         })
         || world.static_sources().iter().any(|&id| {
@@ -693,6 +749,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::SourceCounterCreature { .. }
+                        | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachmentAttackingKeywords(..)
                         | StaticAbilityFragment::AdditionalTriggers {
@@ -706,12 +763,14 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                        | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)
@@ -726,6 +785,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledArtifactFood(_)
+                        | StaticAbilityFragment::ControlledArtifactActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
@@ -929,7 +989,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
     }
     if let Some(grants) = &game.state.self_granted_abilities {
         for grant in grants.iter() {
-            if world.object(grant.recipient.card).zone == Zone::Battlefield
+            let recipient = world.object(grant.recipient.card);
+            if recipient.zone == Zone::Battlefield
                 && world.reference(grant.recipient.card) == grant.recipient
                 && grant
                     .expires_turn
@@ -942,6 +1003,20 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     recipients: vec![grant.recipient.card],
                     action: LayerSixAction::GrantSelf(grant.timestamp),
                 });
+                if grant.kind == SelfGrantedAbilityKind::OwnTurnFirstStrike
+                    && recipient.controller == game.state.active
+                {
+                    effects.push(LayerSixEffect {
+                        provider: None,
+                        started_earlier: false,
+                        timestamp: grant.effect_timestamp.expect("self-granted static effect"),
+                        recipients: vec![grant.recipient.card],
+                        action: LayerSixAction::SelfGrantedKeywords {
+                            acquisition: grant.timestamp,
+                            keywords: Keywords::FIRST_STRIKE,
+                        },
+                    });
+                }
             }
         }
     }

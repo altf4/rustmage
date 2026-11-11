@@ -3,10 +3,46 @@
   "catalogue_id": 1797,
   "oracle_id": "0332f7b5-dad3-4fd0-b86c-78bd8301f59d",
   "facts_sha256": "a1d8b6c2dc5ef465e5ae36f064cfabee29fcb5775116547b817449b5bd2f1b69",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed3841368e5ea5b08e1fa77992c56c034c84332eb32c87b5da216a27b9d3476d"
   },
-  "physical_metadata_sha256": "f2d9b69a8342d1f57e6b73863b989511482b9ffce3fad34035755c68280d0e9e"
+  "physical_metadata_sha256": "f2d9b69a8342d1f57e6b73863b989511482b9ffce3fad34035755c68280d0e9e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GnawingCrescendo.java",
+  "java_sha256": "24b4279a5e5dc8dba8895ffe5775ce49d5b32e5ebbef152a0086db478198b23e",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+      "sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockSourceEffect.java",
+      "sha256": "8e20a86a1c2b5442b9281b9eb4910a3f341c30e5007204a29f1a68be3bdced20"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+      "sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+    }
+  ]
 }

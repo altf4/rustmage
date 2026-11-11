@@ -72,6 +72,7 @@ impl Card {
                     matches!(
                         fragment,
                         StaticAbilityFragment::BorrowGraveyardActivations(..)
+                            | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                             | StaticAbilityFragment::RemoveAttachedAbilities
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
@@ -79,6 +80,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
+                            | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | StaticAbilityFragment::AttachedAllCreatureTypes
@@ -102,6 +104,7 @@ impl Card {
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
@@ -123,6 +126,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)

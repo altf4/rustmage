@@ -1,4 +1,4 @@
-//! Triggered mana receipts retain the tap event while output types are chosen later.
+//! Tap receipts retain the event for mana replacement and triggered mana abilities.
 use super::*;
 use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
@@ -21,7 +21,7 @@ impl LandAtTap {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaTapBonus {
     pub fixed: Mana,
     /// One freely selected type actually produced by the land, per trigger.
@@ -31,14 +31,45 @@ pub struct ManaTapBonus {
     pub(super) colorless: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) land_at_tap: Option<LandAtTap>,
+    #[serde(skip)]
+    multiplier: u64,
+}
+
+impl Default for ManaTapBonus {
+    fn default() -> Self {
+        Self {
+            fixed: [0; 6],
+            amount: 0,
+            colorless: 0,
+            land_at_tap: None,
+            multiplier: 1,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaTapBonus {
     pub(super) fn has_any(self) -> bool {
-        self.fixed != [0; 6]
-            || self.amount != 0
-            || self.colorless != 0
-            || self.land_at_tap.is_some()
+        self.has_trigger_bonuses() || self.land_at_tap.is_some() || self.multiplier != 1
+    }
+    pub(super) fn has_trigger_bonuses(self) -> bool {
+        self.fixed != [0; 6] || self.amount != 0 || self.colorless != 0
+    }
+    pub(super) fn replace_production(self, mut production: Mana) -> Option<Mana> {
+        if self.multiplier != 1 {
+            for amount in &mut production {
+                *amount = u32::try_from(u128::from(*amount) * u128::from(self.multiplier)).ok()?;
+            }
+        }
+        Some(production)
+    }
+    pub(super) fn unreplaced_capacity(self, available: Mana) -> Mana {
+        if self.multiplier == 1 {
+            return available;
+        }
+        available.map(|amount| (u64::from(amount) / self.multiplier) as u32)
+    }
+    pub(super) fn unreplaced_required(self, amount: u128) -> u128 {
+        amount.div_ceil(u128::from(self.multiplier))
     }
     pub(super) fn domain(self, production: Mana) -> ManaProduction {
         let mask = production
@@ -93,7 +124,7 @@ impl ManaTapBonus {
         if multiple { None } else { result }
     }
 
-    pub(super) fn with_trigger_bonuses<W: CharacteristicWorld + ?Sized>(
+    pub(super) fn with_event_effects<W: CharacteristicWorld + ?Sized>(
         mut self,
         world: &W,
         actor: Player,
@@ -103,8 +134,8 @@ impl ManaTapBonus {
         if world.static_sources().is_empty() {
             return self;
         }
-        // CR106.12a and 603.10: the mana event checks the providers after the
-        // activation costs. Keep the tapped land's identity if it left.
+        // CR106.12: check the providers as the mana ability produces mana,
+        // after paying its activation costs. Retain a departed land's identity.
         let live =
             world.reference(land.card) == land && world.object(land.card).zone == Zone::Battlefield;
         let land_kind = if live {
@@ -128,7 +159,23 @@ impl ManaTapBonus {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
+                let available = || {
+                    query.continuous_fragment_available(source, |candidate| {
+                        std::ptr::eq(candidate, fragment)
+                    })
+                };
                 let (production, amount, colorless) = match *fragment {
+                    StaticAbilityFragment::ControlledBasicLandManaMultiplier(factor)
+                        if provider.controller == actor && land_kind == LandAtTap::Basic =>
+                    {
+                        if available() {
+                            // Each replacement applies once. A saturated factor is
+                            // already larger than any representable positive output.
+                            self.multiplier =
+                                self.multiplier.saturating_mul(u64::from(factor.max(1)));
+                        }
+                        continue;
+                    }
                     StaticAbilityFragment::ControlledLandTapManaBonus(mana)
                         if provider.controller == actor =>
                     {
@@ -152,9 +199,7 @@ impl ManaTapBonus {
                     }
                     _ => continue,
                 };
-                if !query.continuous_fragment_available(source, |candidate| {
-                    std::ptr::eq(candidate, fragment)
-                }) {
+                if !available() {
                     continue;
                 }
                 let count = trigger_count(&query, source);
@@ -236,6 +281,20 @@ pub(super) struct TapBonusChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn add_mana_tap_event(
+        &mut self,
+        actor: Player,
+        receipt: ManaTapBonus,
+        production: Mana,
+        quality: Option<mana_lots::Quality>,
+    ) {
+        let replaced = receipt
+            .replace_production(production)
+            .capacity("mana representation exhausted");
+        self.add_quality_mana(actor, replaced, quality);
+        self.finish_mana_tap_bonus(actor, receipt, production);
+    }
+
     pub(super) fn finish_mana_tap_bonus(
         &mut self,
         actor: Player,

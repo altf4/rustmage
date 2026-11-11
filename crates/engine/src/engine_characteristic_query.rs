@@ -366,6 +366,18 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     {
                         stats += bonus;
                     }
+                    if let StaticAbilityFragment::ControlledCreatureKindBonus {
+                        kinds,
+                        stats: bonus,
+                    } = *fragment
+                        && object.controller == self.object(id).controller
+                        && self.current_kinds(id) & kinds == kinds
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        stats += bonus;
+                    }
                     if let StaticAbilityFragment::ConditionalCreatureModifier {
                         condition,
                         modifier,
@@ -495,11 +507,11 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (base, stats)
     }
     pub(super) fn attachment_bonus(&self, id: CardId) -> (Stats, Keywords) {
-        let mut stats = Stats::default();
         let mut keywords = Keywords::NONE;
         if !self.on_battlefield(id) {
-            return (stats, keywords);
+            return (Stats::default(), keywords);
         }
+        let mut stats = self.self_granted_equipment_bonus(id);
         let evaluation = self.evaluation.as_ref();
         let scale_by_attachments = |value: Stats| {
             let recipient = self.reference(id);
@@ -586,35 +598,39 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         (stats, keywords)
     }
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
-        let base = self.base_keywords(id);
+        let mut keywords = self.base_keywords(id);
         let target = self.object(id);
         if target.zone != Zone::Stack || self.kinds(id) & (4 | 8) == 0 {
-            return base;
+            return keywords;
         }
-        let grant = self.static_sources().iter().copied().any(|source| {
+        for &source in self.static_sources() {
             let object = self.object(source);
-            object.zone == Zone::Battlefield
-                && object.controller == target.controller
-                && object.card.static_ability_groups().iter().any(|g| {
-                    g.fragments.iter().any(|f| {
-                        matches!(
-                            f,
-                            StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                        )
+            if object.zone != Zone::Battlefield || object.controller != target.controller {
+                continue;
+            }
+            for fragment in object
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let grant = match *fragment {
+                    StaticAbilityFragment::ControlledInstantSorcerySplitSecond => {
+                        Keywords::SPLIT_SECOND
+                    }
+                    StaticAbilityFragment::ControlledInstantSorceryKeywords(grant) => grant,
+                    _ => continue,
+                };
+                if !keywords.contains(grant)
+                    && self.continuous_fragment_available(source, |candidate| {
+                        std::ptr::eq(candidate, fragment)
                     })
-                })
-                && self.continuous_fragment_available(source, |f| {
-                    matches!(
-                        f,
-                        StaticAbilityFragment::ControlledInstantSorcerySplitSecond
-                    )
-                })
-        });
-        if grant {
-            base.union(Keywords::SPLIT_SECOND)
-        } else {
-            base
+                {
+                    keywords = keywords.union(grant);
+                }
+            }
         }
+        keywords
     }
     fn base_keywords(&self, id: CardId) -> Keywords {
         if (matches!(self.object(id).zone, Zone::Battlefield | Zone::Stack)
@@ -1178,6 +1194,25 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 })
         })
     }
+    pub(super) fn linked_exile_activation_grant_available(
+        &self,
+        recipient: CardId,
+        provider: ObjectRef,
+        matches: impl Fn(&StaticAbilityFragment) -> bool,
+    ) -> bool {
+        if let Some(evaluation) = &self.evaluation {
+            evaluation.result.objects[recipient as usize]
+                .grants
+                .iter()
+                .any(|grant| {
+                    grant.source == provider
+                        && grant.kind == ability_order::GrantedAbilityKind::LinkedExileActivations
+                })
+        } else {
+            self.continuous_fragment_available(provider.card, matches)
+        }
+    }
+
     pub(super) fn ability_availability(&self, id: CardId) -> Option<Box<AbilityAvailabilityView>> {
         if !self.on_battlefield(id) {
             return None;
@@ -1189,6 +1224,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             grants: object
                 .grants
                 .iter()
+                .filter(|grant| {
+                    grant.kind != ability_order::GrantedAbilityKind::LinkedExileActivations
+                })
                 .map(|grant| GrantedAbilityView {
                     grantor: grant.source,
                     granting_card: grant.granting_card,

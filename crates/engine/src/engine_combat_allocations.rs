@@ -29,12 +29,18 @@ pub(super) struct CombatRulesState {
     )]
     pub begin_combat_this_turn: Option<Box<Vec<SpellView>>>,
     pub must_be_blocked: Vec<ObjectRef>,
+    pub blocker_power_limits: Vec<BlockerPowerLimitView>,
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub require_all_attack_until_next_turn: [usize; 2],
     pub damaged_players: Vec<CombatDamagePlayerView>,
     pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct BlockerPowerLimitView {
+    pub attacker: ObjectRef,
+    pub minimum: i32,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -66,6 +72,7 @@ impl CombatRulesState {
             })
             + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
                 * std::mem::size_of::<ObjectRef>()
+            + self.blocker_power_limits.len() * std::mem::size_of::<BlockerPowerLimitView>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
             + self.sneak_entries.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<ObjectRef>>()
@@ -415,6 +422,31 @@ impl Game {
             .collect();
         self.add_block_requirements(recipients);
     }
+    pub(super) fn restrict_blocker_power(&mut self, item: &SpellView, group: u16, minimum: i32) {
+        let recipients: Vec<_> = item
+            .targets
+            .iter()
+            .filter(|bound| bound.group == group && self.same_target_object(**bound))
+            .filter_map(|bound| bound.object)
+            .filter(|object| self.on_battlefield(object.card) && self.is_creature(object.card))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let limits = &mut self
+            .state
+            .combat_rules
+            .get_or_insert_with(Default::default)
+            .blocker_power_limits;
+        for attacker in recipients {
+            if let Some(limit) = limits.iter_mut().find(|row| row.attacker == attacker) {
+                limit.minimum = limit.minimum.min(minimum);
+            } else {
+                limits.push(BlockerPowerLimitView { attacker, minimum });
+            }
+        }
+    }
+
     pub(super) fn require_targets_blocked(&mut self, item: &SpellView, group: u16) {
         let recipients: Vec<_> = item
             .targets

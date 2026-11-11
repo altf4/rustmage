@@ -3,10 +3,56 @@
   "catalogue_id": 3787,
   "oracle_id": "683775ac-481e-4c26-ab2f-5d2813af0268",
   "facts_sha256": "9d78981508f80e61c778e84afceb301a96657570a940c985338bd43b8439243c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b59a2870f9c11fcdea603ba323779bdaa2efdd05d93370592b1b87f8dbdd99a5"
   },
-  "physical_metadata_sha256": "093f6a1eef7808532a58a6de09e0e17f8c3ac2a0887a5bc7dc11864fe2044d96"
+  "physical_metadata_sha256": "093f6a1eef7808532a58a6de09e0e17f8c3ac2a0887a5bc7dc11864fe2044d96",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SentinelOfLostLore.java",
+  "java_sha256": "26e42687df42a5c31d02dbcb31372a534e6afc3ea425ef822465665917bd5533",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileGraveyardAllTargetPlayerEffect.java",
+      "sha256": "00ecb735d7d17545879bbf4ebbee27d1c5ae7d835ed3e6ca6f0bf4fe127afee1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    }
+  ]
 }

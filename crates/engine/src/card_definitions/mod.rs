@@ -56,6 +56,9 @@ impl CardRules {
                 );
             }
         }
+        if let Some(EntryChoiceKind::NumberRange { minimum, maximum }) = self.extras.entry_choice {
+            assert!(minimum <= maximum, "empty entry number range");
+        }
         let mode_count = match self.extras.entry_choice {
             Some(EntryChoiceKind::NamedModes(names)) => {
                 assert!(!names.is_empty(), "named entry modes cannot be empty");
@@ -143,10 +146,34 @@ impl CardRules {
                             "mode activation needs battlefield source"
                         );
                     }
-                    StaticAbilityFragment::ControlledArtifactFood(ability) => {
+                    StaticAbilityFragment::SourceCelebrationCreatureForm { activation, .. } => {
                         assert!(
                             matches!(self.static_groups[group].first_layer, AbilityLayer::Type),
-                            "Food subtype grant begins in the type layer"
+                            "Celebration subtype replacement begins in the type layer"
+                        );
+                        assert!(
+                            (activation as usize) < self.activated.len()
+                                && matches!(
+                                    self.activated[activation as usize].origin,
+                                    ActivationOrigin::Battlefield
+                                ),
+                            "Celebration grant needs a battlefield activation slot"
+                        );
+                    }
+                    grant @ (StaticAbilityFragment::ControlledArtifactFood(ability)
+                    | StaticAbilityFragment::ControlledArtifactActivation(ability)) => {
+                        assert!(
+                            matches!(
+                                (grant, self.static_groups[group].first_layer),
+                                (
+                                    StaticAbilityFragment::ControlledArtifactFood(_),
+                                    AbilityLayer::Type
+                                ) | (
+                                    StaticAbilityFragment::ControlledArtifactActivation(_),
+                                    AbilityLayer::Ability
+                                )
+                            ),
+                            "artifact activation grant begins in the wrong layer"
                         );
                         assert!(
                             (ability as usize) < self.activated.len()
@@ -154,7 +181,7 @@ impl CardRules {
                                     self.activated[ability as usize].origin,
                                     ActivationOrigin::Battlefield
                                 ),
-                            "Food ability needs a battlefield activation slot"
+                            "artifact grant needs a battlefield activation slot"
                         );
                     }
                     _ => {}
@@ -332,6 +359,8 @@ pub struct CardExtras {
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
+    /// Subtype whose presence among the caster's permanents is recorded after costs.
+    pub cast_controlled_subtype: Option<&'static str>,
     /// Minimum cards in the caster's graveyard after this spell leaves its origin.
     pub cast_graveyard_minimum: u8,
     /// Cannot cast this spell during the caster's first three turns.
@@ -454,6 +483,8 @@ pub struct CardExtras {
     /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
     pub legacy_subtype_mana_activation: Option<u16>,
     pub kicked_targets: Option<TargetPlan>,
+    /// The spell's complete target plan when its optional Bargain cost was paid.
+    pub bargain_targets: Option<TargetPlan>,
     pub cast_entry_counters: &'static [(CounterKind, u64)],
     pub graveyard_cast_entry_counters: &'static [(CounterKind, u64)],
     pub hand_cast_entry_counters: &'static [(CounterKind, u64)],
@@ -482,6 +513,7 @@ impl CardExtras {
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
+        cast_controlled_subtype: None,
         cast_graveyard_minimum: 0,
         cast_after_first_three_turns: false,
         prepared_spell: None,
@@ -589,6 +621,7 @@ impl CardExtras {
         additional_mana_alternative: None,
         legacy_subtype_mana_activation: None,
         kicked_targets: None,
+        bargain_targets: None,
         entry_counter_rules: &[],
         starting_loyalty: 0,
         exhaust_mask: 0,

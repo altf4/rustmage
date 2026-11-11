@@ -1,16 +1,30 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::Single(TargetSpec {
+                rule: TargetRule::Creature,
+                min: 0,
+                max: usize::MAX,
+            }),
+            program: &[
+                Instruction::UpToTargets(AmountValue::ChosenX),
+                Instruction::ExileTargetsPlayForOwnersWhileExiled,
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::OncePerTurn(
+                &TriggerCondition::NontokenCreaturesEnterFromExile,
+            ),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        },
+    ],
+    extras: &CardExtras {
+        x_symbols: 2,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

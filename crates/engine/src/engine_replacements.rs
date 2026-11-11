@@ -30,7 +30,7 @@ pub struct DamageDoublerView {
     pub controller: Player,
     pub recipient: Player,
 }
-/// A resolved effect preventing damage to its controller's current creatures this turn.
+/// A resolved effect preventing damage to its controller or their current creatures this turn.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CreatureDamageShieldView {
@@ -38,6 +38,19 @@ pub struct CreatureDamageShieldView {
     pub source: ObjectRef,
     pub source_card: Card,
     pub controller: Player,
+    #[serde(skip_serializing_if = "CreatureDamageShieldScope::is_default")]
+    pub scope: CreatureDamageShieldScope,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CreatureDamageShieldScope {
+    ControlledCreatures,
+    PlayerAndCreaturesFromCreatures,
+}
+impl CreatureDamageShieldScope {
+    fn is_default(&self) -> bool {
+        *self == Self::ControlledCreatures
+    }
 }
 /// Damage prevention effects tracked separately from printed replacement slots.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -54,6 +67,7 @@ pub enum DamagePreventionKind {
     ChosenSource(u64),
     UntilNextTurn,
     ControlledCreaturesThisTurn(u64),
+    CreatureSourcesThisTurn(u64),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -278,6 +292,7 @@ pub(super) enum TokenCompletion {
     CollectSimultaneous,
     AttackThisCombat,
     CounterOtherWizards,
+    RecordCreatedAura,
     Counters {
         kind: CounterKind,
         amount: u64,
@@ -1207,7 +1222,11 @@ impl Game {
             recipient: event.player,
         });
     }
-    pub(super) fn prevent_controlled_creature_damage_this_turn(&mut self, item: &SpellView) {
+    pub(super) fn prevent_creature_damage_this_turn(
+        &mut self,
+        item: &SpellView,
+        scope: CreatureDamageShieldScope,
+    ) {
         let source = item.source.expect("prevention source");
         let roles = self.state.roles.get_or_insert_default();
         let id = roles.next_acquisition();
@@ -1218,6 +1237,7 @@ impl Game {
                 source: source.object,
                 source_card: source.card,
                 controller: item.controller,
+                scope,
             });
     }
     fn damage_recipient_controller(&self, event: &DamageEvent) -> Player {
@@ -1298,12 +1318,12 @@ impl Game {
                         })
                     }
                     ReplacementSpec::RedirectControlledDamageToSource => {
-                        self.can_receive_redirected_damage(id)
+                        self.can_receive_damage(id)
                             && match event.target {
                                 Target::Player(player) => player == object.controller,
                                 Target::Card(target) => {
                                     target != id
-                                        && self.can_receive_redirected_damage(target)
+                                        && self.can_receive_damage(target)
                                         && self.state.objects[target as usize].controller
                                             == object.controller
                                 }
@@ -1396,20 +1416,36 @@ impl Game {
             });
         }
         if let Some(roles) = &self.state.roles {
-            if !roles.creature_damage_shields.is_empty()
-                && let Target::Card(id) = event.target
-                && self.on_battlefield(id)
-                && self.is_creature(id)
-            {
-                let controller = self.state.objects[id as usize].controller;
+            if !roles.creature_damage_shields.is_empty() {
+                let creature_controller = match event.target {
+                    Target::Card(id) if self.on_battlefield(id) && self.is_creature(id) => {
+                        Some(self.state.objects[id as usize].controller)
+                    }
+                    _ => None,
+                };
+                let creature_source =
+                    event.source.facts.battlefield && event.source.facts.is_creature();
                 out.extend(roles.creature_damage_shields.iter().filter_map(|shield| {
-                    let kind = DamagePreventionKind::ControlledCreaturesThisTurn(shield.id);
-                    (shield.controller == controller && !used.contains(&(shield.source, kind)))
-                        .then_some(DamagePreventionView {
+                    let controlled_creature = creature_controller == Some(shield.controller);
+                    let (applies, kind) = match shield.scope {
+                        CreatureDamageShieldScope::ControlledCreatures => (
+                            controlled_creature,
+                            DamagePreventionKind::ControlledCreaturesThisTurn(shield.id),
+                        ),
+                        CreatureDamageShieldScope::PlayerAndCreaturesFromCreatures => (
+                            creature_source
+                                && (controlled_creature
+                                    || event.target == Target::Player(shield.controller)),
+                            DamagePreventionKind::CreatureSourcesThisTurn(shield.id),
+                        ),
+                    };
+                    (applies && !used.contains(&(shield.source, kind))).then_some(
+                        DamagePreventionView {
                             source: shield.source,
                             source_card: shield.source_card,
                             kind,
-                        })
+                        },
+                    )
                 }));
             }
             for shield in &roles.player_damage_shields {
@@ -1478,8 +1514,8 @@ impl Game {
         }
         out
     }
-    fn can_receive_redirected_damage(&self, id: CardId) -> bool {
-        // CR 614.9: a permanent endpoint must be able to take damage.
+    pub(super) fn can_receive_damage(&self, id: CardId) -> bool {
+        // CR 120.1a limits damage to these permanent types.
         self.on_battlefield(id)
             && self.current_kinds(id) & (1 | 64 | crate::cards::BATTLE_KIND) != 0
     }
@@ -1487,8 +1523,7 @@ impl Game {
     fn enchanted_damage_recipient(&self, aura: CardId) -> Option<CardId> {
         let recipient = self.state.objects[aura as usize].attached_to?;
         // CR 303.4m still identifies the exact attachment before the next SBA.
-        (self.can_receive_redirected_damage(recipient.card)
-            && self.object_ref(recipient.card) == recipient)
+        (self.can_receive_damage(recipient.card) && self.object_ref(recipient.card) == recipient)
             .then_some(recipient.card)
     }
 
@@ -1824,6 +1859,7 @@ impl Game {
                     CastRelation::Any,
                     context.ability,
                     objects,
+                    None,
                 );
             }
         }
@@ -2917,6 +2953,24 @@ impl Game {
         }));
     }
 
+    pub(super) fn stage_fixed_token_batch(&mut self, player: Player, groups: &[TokenGroupView]) {
+        let groups: Vec<_> = groups
+            .iter()
+            .copied()
+            .filter(|group| group.amount > 0)
+            .collect();
+        self.stage_copy_token_batch(TokenBatch {
+            first_this_turn: None,
+            optional: None,
+            recipes: vec![None; groups.len()],
+            player,
+            groups,
+            effect: true,
+            used: Vec::new(),
+            completion: TokenCompletion::None,
+        });
+    }
+
     pub(super) fn stage_token_creation(
         &mut self,
         player: Player,
@@ -3631,6 +3685,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::RecordCreatedAura
                                         | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::AnimateNoncreatures(_)
                                         | TokenCompletion::JobAttach(_)
@@ -3728,6 +3783,13 @@ impl Game {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == *object
             })
             .collect();
+        if matches!(completion, TokenCompletion::RecordCreatedAura) {
+            let any_aura = created.iter().any(|object| {
+                self.current_kinds(object.card) & 32 != 0 && self.has_subtype(object.card, "Aura")
+            });
+            self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(any_aura));
+            return;
+        }
         if let TokenCompletion::SourceDeparture { item, ability } = completion {
             self.register_created_token_departure(&item, ability, created);
             return;

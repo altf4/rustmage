@@ -33,6 +33,14 @@ pub struct StaticAbilityGroup {
     pub fragments: &'static [StaticAbilityFragment],
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ActivationReductionAmount {
+    Fixed(u32),
+    /// Sample this discount provider's live power before the cost is locked.
+    ProviderPower,
+}
+
 /// Qualifications belong to the ability's actual permanent source, not the
 /// immutable card which supplied a granted program.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -89,14 +97,24 @@ pub enum StaticAbilityFragment {
     /// Generic reduction for exhaust abilities of other controlled permanents.
     OtherControlledExhaustGenericReduction(u32),
     ArtifactTokenActivationReduction(u32),
+    /// Reduce mana for activations of matching battlefield permanents you control.
+    ControlledActivationReduction {
+        kinds: u16,
+        amount: ActivationReductionAmount,
+        leave_one_mana: bool,
+    },
     ControlledLandTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),
+    /// Multiply the original output when the controller taps a basic land for mana.
+    ControlledBasicLandManaMultiplier(u16),
     /// Controlled instant and sorcery spells have split second.
     ControlledInstantSorcerySplitSecond,
+    /// Grant keywords to controlled instant and sorcery spells on the stack.
+    ControlledInstantSorceryKeywords(Keywords),
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
@@ -126,6 +144,8 @@ pub enum StaticAbilityFragment {
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// Controlled creatures with this counter gain activated abilities from linked exiled creatures.
+    GrantLinkedExileCreatureActivationsWithCounter(CounterKind),
     /// This creature can attack despite defender after its controller scries or surveils.
     AttackWithoutDefenderIfScried,
     /// This exact source can attack despite defender while the live condition holds.
@@ -188,6 +208,8 @@ pub enum StaticAbilityFragment {
     CastCreatureFromLibraryTop,
     /// An ordinary cast from the current top, using the chosen spell face.
     CastFromLibraryTop(CastFilter),
+    /// Each controller may use this exact ability for one library-top spell per turn.
+    CastInstantSorceryFromLibraryTopOnceEachTurn,
     /// Ordinary land plays and spell casts after this exact source attacked.
     PlayFromLibraryTopAfterAttacking,
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
@@ -204,6 +226,8 @@ pub enum StaticAbilityFragment {
         entry_counter: CounterKind,
     },
     SpendAnyManaForCreatures,
+    /// Actual mana can meet WUBRG requirements of controlled creatures' activations.
+    SpendAnyColorForCreatureActivations,
     SpellImprovise(CastFilter),
     /// Controlled matching spells have delve while this provider's rule is available.
     SpellDelve(CastFilter),
@@ -391,6 +415,13 @@ pub enum StaticAbilityFragment {
         subtypes: &'static [&'static str],
         keywords: Keywords,
     },
+    /// On celebration, replace creature subtypes and grant a battlefield activation
+    /// and keywords to this source. Pair its base setter in the same type-layer group.
+    SourceCelebrationCreatureForm {
+        subtypes: &'static [&'static str],
+        keywords: Keywords,
+        activation: u16,
+    },
     /// One source-local conditional effect may span type and stat layers.
     SourceGraveyardAllTypes {
         kind: u16,
@@ -453,9 +484,16 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to controlled permanents with this effective subtype.
+    ControlledSubtypeTapMana {
+        subtype: &'static str,
+        production: ManaProduction,
+    },
     /// In layer four add Food to controlled artifacts. In layer six grant them
     /// this indexed activation template as part of the same continuous effect.
     ControlledArtifactFood(u16),
+    /// In layer six grant this indexed activation to controlled artifacts.
+    ControlledArtifactActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {
@@ -476,6 +514,11 @@ pub enum StaticAbilityFragment {
     },
     /// A layer-7c bonus to the source controller's current legendary creatures.
     ControlledLegendaryCreatureBonus(Stats),
+    /// A layer-7c bonus to controlled creatures with every listed card type.
+    ControlledCreatureKindBonus {
+        kinds: u16,
+        stats: Stats,
+    },
     /// Live earlier-layer predicate gates an ordinary creature-group bonus.
     ConditionalCreatureModifier {
         condition: StatValue,
@@ -519,6 +562,8 @@ pub enum StaticAbilityFragment {
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.
     FlyingCombatRestriction,
+    /// Creatures enchanted by an Aura you control cannot attack you or your planeswalkers.
+    AuraEnchantedCantAttackController,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
     ControlledSubtypeCannotBeBlockedByKeyword {

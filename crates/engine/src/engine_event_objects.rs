@@ -580,7 +580,7 @@ impl Game {
         self.comparison_facts(e.object, entrant)
             .greater_than(self.comparison_facts(identity.object, source))
     }
-    pub(super) fn attached_tap_triggers(&mut self, changed: &[CardId]) {
+    pub(super) fn attached_tap_triggers(&mut self, changed: &[(Player, CardId)]) {
         if changed.is_empty() || self.state.tap_sources.is_empty() {
             return;
         }
@@ -597,7 +597,9 @@ impl Game {
             let Some(recipient) = self.attachment_recipient(id) else {
                 continue;
             };
-            if !changed.contains(&recipient.card) || !self.is_creature(recipient.card) {
+            if !changed.iter().any(|&(_, id)| id == recipient.card)
+                || !self.is_creature(recipient.card)
+            {
                 continue;
             }
             let source = self.object_view(id);
@@ -779,6 +781,22 @@ impl Game {
             });
         Some(current.map_or(saved, |object| object.controller))
     }
+    pub(super) fn damage_to_event_object(&mut self, item: &SpellView, amount: i32) {
+        let Some(event) = item.event_object.as_ref() else {
+            return;
+        };
+        let object = event.object;
+        if self.object_ref(object.card) == object && self.can_receive_damage(object.card) {
+            self.apply_damage_batch(&[DamageEvent {
+                source: self.program_damage_source(item),
+                target: Target::Card(object.card),
+                amount: i128::from(amount),
+                combat: false,
+                preventable: true,
+            }]);
+        }
+    }
+
     pub(super) fn damage_event_object_controller(&mut self, item: &SpellView, amount: i32) {
         let controller = self
             .event_object_controller(item)

@@ -91,6 +91,7 @@ impl Game {
             || self.controlled_creature_block_forbidden(attacker, blocker)
             || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)
+            || self.blocker_power_forbidden(attacker, blocker)
             || keywords.contains(Keywords::CANT_BE_BLOCKED)
             || keywords.contains(Keywords::ONLY_HASTE_BLOCKERS)
                 && !self.keywords(blocker).contains(Keywords::HASTE)
@@ -136,6 +137,15 @@ impl Game {
             }
         }
         true
+    }
+
+    fn blocker_power_forbidden(&self, attacker: CardId, blocker: CardId) -> bool {
+        self.state.combat_rules.as_ref().is_some_and(|rules| {
+            let attacker = self.object_ref(attacker);
+            rules.blocker_power_limits.iter().any(|limit| {
+                limit.attacker == attacker && self.stats(blocker).power >= i128::from(limit.minimum)
+            })
+        })
     }
 
     pub(super) fn minimum_blockers(&self, attacker: CardId) -> usize {

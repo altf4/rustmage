@@ -174,13 +174,16 @@ fn positive_creature_counter_reduction_stays_locked_when_its_funder_leaves() {
     );
     assert_eq!(
         world.activation_generic_discount(source, Card::GoblinPiker, 0),
-        2
+        power_up::ActivationDiscounts {
+            ordinary: 2,
+            leave_one: 0,
+        }
     );
     assert!(
         world.cost_departures(&[exact_funder], Zone::Graveyard, &mut |next| {
             assert_eq!(
                 next.activation_generic_discount(source, Card::GoblinPiker, 0),
-                0
+                power_up::ActivationDiscounts::default()
             );
             true
         })

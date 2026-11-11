@@ -81,7 +81,9 @@ impl Game {
         self.register_live_static_source(id);
         self.register_ability_source(id);
         self.register_hand_size_source(id);
-        if self.state.objects[id as usize].card.is_attachment_source() {
+        if self.state.objects[id as usize].card.is_attachment_source()
+            || characteristic_layers::has_equipment_form(self, id)
+        {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);
@@ -107,6 +109,7 @@ impl Game {
                 TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
+                    | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
         }) {
             self.state.tap_sources.push(id);
@@ -144,6 +147,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
+                    | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
@@ -189,6 +193,7 @@ impl Game {
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
+                    | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtDamageAtLeast(_)
                     | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
@@ -284,6 +289,7 @@ impl Game {
                     matches!(
                         fragment,
                         crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
+                            | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::Storied
@@ -291,10 +297,12 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
                             | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_)
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
+                            | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
@@ -310,12 +318,15 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
                             | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
+                            | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | crate::cards::StaticAbilityFragment::SpellDelve(_)
                             | crate::cards::StaticAbilityFragment::OtherSubtypeEntryCounters(_)
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
@@ -323,6 +334,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
+                            | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)
@@ -369,6 +381,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConditionalCreatureModifier { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureCounterRule { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
@@ -453,10 +466,12 @@ impl Game {
                 group.fragments.iter().any(|fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::ControlledAttackWithoutDefender
                     | crate::cards::StaticAbilityFragment::ControlledCombatDamageByGreaterToughness
-                    | crate::cards::StaticAbilityFragment::ControlledStationWithGreaterToughness)))
+                    | crate::cards::StaticAbilityFragment::ControlledStationWithGreaterToughness
+                    | crate::cards::StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_))))
             || self.state.objects[id as usize].card.has_creature_count_free_hand_cast()
             || self.state.objects[id as usize].card.has_free_hand_cast()
             || self.state.objects[id as usize].card.has_storm_grant()
+            || self.state.objects[id as usize].card.has_activation_mana_flexibility()
             || self.state.objects[id as usize]
                 .card
                 .has_own_turn_free_hand_cast()

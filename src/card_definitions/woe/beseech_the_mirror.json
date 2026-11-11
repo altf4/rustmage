@@ -3,10 +3,41 @@
   "catalogue_id": 391,
   "oracle_id": "cbbe535b-12d6-4e6c-8b26-9220f06a1604",
   "facts_sha256": "9a0ebc7476ff783f87db82bb4f7819cd32ac9939219fb8cf71ddf7da22344891",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba66ade711b105a2072d74a616ea6b533818dfc5ff4ad8589863c64771c000b3"
   },
-  "physical_metadata_sha256": "bb721e3640f577b5a45ab1675874c786390674a591738580d93a69578a6ffd74"
+  "physical_metadata_sha256": "bb721e3640f577b5a45ab1675874c786390674a591738580d93a69578a6ffd74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BeseechTheMirror.java",
+  "java_sha256": "5f755c5d31f151a36365355fcc40ad2a45edae7e292c004f1eca43572b9ef1d4",
+  "rules_tests": "tests/woe_cards_a_d.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

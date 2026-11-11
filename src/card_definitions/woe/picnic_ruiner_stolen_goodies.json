@@ -3,10 +3,51 @@
   "catalogue_id": 3156,
   "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
   "facts_sha256": "248658ef56d64d3f0c5359aaa0c1d4931ab372a7c938b7e3e6d6d05b332074d3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce64b152b773d274cf5174e2a3d3af45b301bdde648a7cfe6a7fd7a87b20efce"
   },
-  "physical_metadata_sha256": "298a6cd681313169720f8f208c032e81b2c5d91c086fb2b5d4564e59842257dc"
+  "physical_metadata_sha256": "e5d47ef151689e2f49f7ecdab1146c87e490d133d53118260e6c7b49a7321552",
+  "oracle_face": {
+    "oracle_id": "334fba11-e500-40fd-a142-41ff553642b5",
+    "index": 0,
+    "sha256": "850c699215c8709309edfd3405493316bf1832dcbccd66fe40da730c07d84af3"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PicnicRuiner.java",
+  "java_sha256": "023d74c0ec45bd13aaf9a9923ad025cb07d2a838dba129cd6db3c0dd3918bdcc",
+  "rules_tests": "tests/woe_cards_m_r.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanentAmount.java",
+      "sha256": "39059e7727fb6a2d73dd37bf6e148419181fa315f60da40642d94c49adff7fb0"
+    }
+  ]
 }

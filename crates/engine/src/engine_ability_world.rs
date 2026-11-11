@@ -2,7 +2,10 @@
 //! The overlay decides presence, control, counters and life; no cached ability
 //! status from the real game is carried across a virtual sacrifice or payment.
 use super::*;
-use crate::cards::{ActivationGenericReduction, LiveStatRecipients, LiveStaticEffect};
+use crate::cards::{
+    ActivationGenericReduction, ActivationReductionAmount, LiveStatRecipients, LiveStaticEffect,
+    StaticAbilityFragment,
+};
 
 #[cfg(feature = "test-support")]
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -137,7 +140,66 @@ pub(super) trait CharacteristicWorld {
             || definition.activation_put_counter(index).is_some()
             || self.named_activation_generic_increase(source) != 0
     }
-    fn activation_generic_discount(&self, source: CardId, definition: Card, ability: u16) -> u32 {
+    fn controlled_activation_discounts(&self, source: CardId) -> power_up::ActivationDiscounts {
+        let subject = self.object(source);
+        let mut discounts = power_up::ActivationDiscounts::default();
+        if subject.zone != Zone::Battlefield {
+            return discounts;
+        }
+        let mut query = None;
+        for &id in self.static_sources() {
+            let provider = self.object(id);
+            if provider.zone != Zone::Battlefield || provider.controller != subject.controller {
+                continue;
+            }
+            for fragment in self
+                .definition(id)
+                .static_ability_groups()
+                .iter()
+                .flat_map(|g| g.fragments)
+            {
+                let StaticAbilityFragment::ControlledActivationReduction {
+                    kinds,
+                    amount,
+                    leave_one_mana,
+                } = *fragment
+                else {
+                    continue;
+                };
+                if kinds != 0 && self.kinds(source) & kinds == 0 {
+                    continue;
+                }
+                let query = query.get_or_insert_with(|| {
+                    characteristic_query::CharacteristicQuery::in_world(self)
+                });
+                if !query.continuous_fragment_available(id, |candidate| {
+                    std::ptr::eq(candidate, fragment)
+                }) {
+                    continue;
+                }
+                let amount = match amount {
+                    ActivationReductionAmount::Fixed(amount) => u64::from(amount),
+                    ActivationReductionAmount::ProviderPower => {
+                        u64::try_from(query.stats(id).power.max(0)).unwrap_or(u64::MAX)
+                    }
+                };
+                let total = if leave_one_mana {
+                    &mut discounts.leave_one
+                } else {
+                    &mut discounts.ordinary
+                };
+                *total = total.saturating_add(amount);
+            }
+        }
+        discounts
+    }
+
+    fn activation_generic_discount(
+        &self,
+        source: CardId,
+        definition: Card,
+        ability: u16,
+    ) -> power_up::ActivationDiscounts {
         let controller = self.object(source).controller;
         let authored = definition
             .activation_generic_reductions(ability)
@@ -227,7 +289,7 @@ pub(super) trait CharacteristicWorld {
                 0
             }
         });
-        exhaust::generic_discount(self, source, definition, ability)
+        let ordinary = exhaust::generic_discount(self, source, definition, ability)
             .saturating_add(authored)
             .saturating_add(equip)
             .saturating_add(power_up)
@@ -241,14 +303,16 @@ pub(super) trait CharacteristicWorld {
                             .try_into()
                             .unwrap_or(u32::MAX)
                     }),
-            )
+            );
+        self.controlled_activation_discounts(source)
+            .with_ordinary(u64::from(ordinary))
     }
     fn activation_power_up_costs(
         &self,
         object: ObjectRef,
         definition: Card,
         ability: u16,
-    ) -> Option<Box<power_up::PowerUpCosts>> {
+    ) -> Option<Box<power_up::ActivationCostReductions>> {
         if !definition.power_up_abilities().contains(&ability) {
             return None;
         }
@@ -264,7 +328,10 @@ pub(super) trait CharacteristicWorld {
                 generic: 0,
             }]
         };
-        Some(Box::new(power_up::PowerUpCosts { reductions }))
+        Some(Box::new(power_up::ActivationCostReductions {
+            reductions,
+            ..Default::default()
+        }))
     }
     fn projected_self_grant_used(&self, _source: ObjectRef, _timestamp: u64) -> bool {
         false
@@ -1158,6 +1225,9 @@ pub(super) trait CharacteristicWorld {
     fn subtypes(&self, id: CardId) -> GrantedSubtypes {
         subtypes::in_world(self, id)
     }
+    fn celebrating(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].nonland_permanents_entered_this_turn >= 2
+    }
     fn value(&self, value: StatValue, source: CardId) -> i128 {
         self.game().stat_value_in_world(
             self,
@@ -1228,7 +1298,8 @@ pub(super) trait CharacteristicWorld {
         let production = match fragment {
             StaticAbilityFragment::LandMana { production, .. }
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
-            | StaticAbilityFragment::ControlledPermanentTapMana { production, .. } => production,
+            | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
+            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
             _ => return None,
         };
         let provider = self.object(source.card);
@@ -1254,6 +1325,9 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::ControlledPermanentTapMana { kinds, .. } => {
                 own && self.kinds(id) & kinds != 0
             }
+            StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
+                own && self.subtypes(id).has(target.card, subtype)
+            }
             _ => unreachable!("static mana grant"),
         };
         qualifies.then_some(production)
@@ -1269,7 +1343,7 @@ pub(super) trait CharacteristicWorld {
         if object.zone != ability.source_zone()
             || !object.card.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| matches!(fragment,
-                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } if *slot == index))
+                    crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { ability: slot, .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { activation: slot, .. } if *slot == index))
             })
         {
             return false;
@@ -1282,6 +1356,10 @@ pub(super) trait CharacteristicWorld {
         let eligible = object.card.static_ability_groups().iter().any(|group| {
             entry_modes::group_enabled(self, self.reference(id), group)
                 && group.fragments.iter().any(|fragment| match *fragment {
+                    crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm {
+                        activation,
+                        ..
+                    } => activation == index && self.celebrating(controller),
                     crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(slot) => {
                         slot == index && self.game().state.players[controller.index()].speed >= 4
                     }

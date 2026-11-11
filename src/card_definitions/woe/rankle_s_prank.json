@@ -3,10 +3,36 @@
   "catalogue_id": 3373,
   "oracle_id": "052e8e1c-d006-4c9f-90da-deafbbf7fed3",
   "facts_sha256": "3eea71fcd0980996976751c0a34f6385cf076e409f31b5833d0f673f60cd8cc6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c046eacaebc2fd626708a4625342ed4f4eba18406d71a71900c16e82b2d1f9e"
   },
-  "physical_metadata_sha256": "b068fb4532e879546102ebc0512fc079c298aba00408f45286afb03c491d7dfd"
+  "physical_metadata_sha256": "b068fb4532e879546102ebc0512fc079c298aba00408f45286afb03c491d7dfd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RanklesPrank.java",
+  "java_sha256": "f8fded7ce1202297172ee0104be83ca0e52fa62cefb2446111f345c547e9973d",
+  "rules_tests": "tests/woe_cards_m_r.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeAllPlayersEffect.java",
+      "sha256": "8a6c60097cf05e798d15af38c93d29d53044b9aa7accfa79da31f82e3e12e4e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    }
+  ]
 }

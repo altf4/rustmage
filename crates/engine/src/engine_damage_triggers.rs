@@ -190,6 +190,73 @@ impl Game {
         }
     }
 
+    /// Count only the actual damage this instant or sorcery dealt to its sole
+    /// distinct creature target, after prevention and redirection.
+    pub(super) fn controlled_spell_target_damage_triggers(&mut self, events: &[DamageEvent]) {
+        if self.state.damage_sources.is_empty() {
+            return;
+        }
+        let Some(resolution) = self.state.resolving.as_ref() else {
+            return;
+        };
+        if !resolution.original_single_spell_card_target {
+            return;
+        }
+        let spell = &resolution.item;
+        let Some(target) = spell.targets.first().and_then(|bound| bound.object) else {
+            return;
+        };
+        let source = spell
+            .source
+            .expect("resolving instant or sorcery has a source");
+        let amount = events
+            .iter()
+            .filter(|event| {
+                event.amount > 0
+                    && event.source.reference == source.object
+                    && event.target == Target::Card(target.card)
+            })
+            .fold(0u128, |sum, event| {
+                sum.checked_add(u128::try_from(event.amount).expect("positive damage"))
+                    .capacity("spell target damage amount exhausted")
+            });
+        if amount == 0
+            || self.object_ref(target.card) != target
+            || !self.on_battlefield(target.card)
+            || !self.is_creature(target.card)
+        {
+            return;
+        }
+        let controller = spell.controller;
+        let spell_id = spell.id;
+        for (observer, grant) in self.indexed_trigger_sources(&self.state.damage_sources) {
+            if observer.controller != controller {
+                continue;
+            }
+            let definition = grant
+                .as_ref()
+                .map_or(observer.card, |grant| grant.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if ability.condition.event()
+                    == TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
+                    && self.queue_trigger_from(&observer, index, grant.map(Box::new))
+                {
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.set_event_object(EventObjectView {
+                        object: target,
+                        facts: EventObjectFacts::DamageDealt { amount },
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
+                    packet.refer_sources([DamageSourceRef::StackObject {
+                        stack_object: spell_id,
+                    }]);
+                }
+            }
+        }
+    }
+
     pub(super) fn player_damage_triggers(&mut self, events: &[DamageEvent]) {
         if self.state.damage_sources.is_empty() {
             return;

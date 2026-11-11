@@ -205,8 +205,12 @@ impl Game {
                 production,
                 quality,
             } => {
-                self.add_quality_mana(actor, production, quality);
-                self.finish_mana_tap_bonus(actor, payment.item.tap_mana_bonus(self), production);
+                self.add_mana_tap_event(
+                    actor,
+                    payment.item.tap_mana_bonus(self),
+                    production,
+                    quality,
+                );
                 self.committed_mana_followups(&payment.item);
                 self.reopen_evidence_after_mana_sacrifice(card);
             }
@@ -227,17 +231,20 @@ impl Game {
         source: CardId,
         definition: Card,
         ability: u16,
-    ) -> u32 {
+    ) -> power_up::ActivationDiscounts {
         ability_world::CharacteristicWorld::activation_generic_discount(
             self, source, definition, ability,
         )
     }
-    pub(super) fn item_activation_discount(&self, item: &SpellView) -> u32 {
-        match item.kind {
-            StackKind::ActivatedAbility { ability } => item.source.map_or(0, |source| {
+    pub(super) fn item_activation_discount(
+        &self,
+        item: &SpellView,
+    ) -> power_up::ActivationDiscounts {
+        match (item.kind, item.source) {
+            (StackKind::ActivatedAbility { ability }, Some(source)) => {
                 self.activation_generic_discount(source.id, source.card, ability)
-            }),
-            _ => 0,
+            }
+            _ => power_up::ActivationDiscounts::default(),
         }
     }
     pub(super) fn spend_mana(&mut self, actor: Player, payment: Mana) {
@@ -706,10 +713,7 @@ impl Game {
                                 )
                             })
                     };
-                    let modes = match ability.program.first() {
-                        Some(Instruction::Modal(modes)) => Some(*modes),
-                        _ => None,
-                    };
+                    let modes = ability.modes();
                     let targets_available = ability.declares_target_value_x()
                         || modes.map_or_else(
                             || {
@@ -720,12 +724,14 @@ impl Game {
                                 )
                             },
                             |modes| {
-                                modes.iter().any(|mode| {
-                                    self.targets_available(
-                                        mode.targets,
-                                        actor,
-                                        self.object_ref(card),
-                                    )
+                                let packet = self.activation_packet(actor, card, index as u16);
+                                modes.iter().enumerate().any(|(mode_index, mode)| {
+                                    self.modal_choice_unused(&packet, mode_index)
+                                        && self.targets_available(
+                                            mode.targets,
+                                            actor,
+                                            self.object_ref(card),
+                                        )
                                 })
                             },
                         );
@@ -805,6 +811,12 @@ impl Game {
                     let mut done = false;
                     let mut seen = std::collections::HashSet::new();
                     for cost in self.activation_mana_costs(card, object.card, index as u16, 0) {
+                        let cost = cast_origins::activation_payment_cost(
+                            self,
+                            actor,
+                            self.object_ref(card),
+                            cost,
+                        );
                         payments(
                             self.state.players[actor.index()].mana,
                             cost.colored,
@@ -1165,6 +1177,11 @@ impl Game {
             return;
         };
         let definition = source.card.activation(ability);
+        if let Some(mode) = item.mode
+            && let Some(key) = modal_history::key(item)
+        {
+            self.record_modal_choice(key, mode);
+        }
         if self.record_external_exhaust_use(item, ability) {
             return;
         }
@@ -1182,6 +1199,7 @@ impl Game {
                         matches!(fragment,
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
+                        | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         if *index == ability)
                     })
                 })
@@ -1233,10 +1251,10 @@ impl Game {
                 let bonus = self.mana_tap_bonuses(item.controller, source.id);
                 item.mana_tap_bonus = bonus.has_any().then(|| Box::new(bonus));
             }
-            self.tap_objects(&[source.id]);
+            self.tap_objects_as(item.controller, &[source.id]);
         }
         if let Some(grantor) = item.attached_activation_tap_cost() {
-            self.tap_objects(&[grantor.card]);
+            self.tap_objects_as(item.controller, &[grantor.card]);
         }
         if definition.exerts() {
             self.exert_source(source.object, item.controller);

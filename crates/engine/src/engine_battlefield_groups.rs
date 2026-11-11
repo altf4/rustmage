@@ -255,21 +255,18 @@ impl Game {
         filters: &[BattlefieldFilter],
         kind: CounterKind,
         amount: AmountValue,
-        legendary_only: bool,
+        qualifies: impl Fn(&Self, CardId) -> bool,
     ) {
         let count = u64::try_from(self.item_amount(amount, item))
             .capacity("group counter quantity exhausted");
+        if count == 0 {
+            return;
+        }
         let affected = self
             .battlefield_group(item, filters)
             .into_iter()
-            .filter(|&id| {
-                !legendary_only || ability_world::CharacteristicWorld::legendary(self, id)
-            })
-            .map(|id| {
-                let mut counters = Counters::default();
-                counters.add(kind, count);
-                (self.object_ref(id), counters)
-            })
+            .filter(|&id| qualifies(self, id))
+            .map(|id| (self.object_ref(id), Counters::of(kind, count)))
             .collect();
         self.effect_counters(affected, replacements::ResumeMode::Program);
     }
@@ -386,6 +383,7 @@ impl Game {
         filters: &[BattlefieldFilter],
         attacking: bool,
         players: Option<PlayerSet>,
+        count_opposing_controllers: bool,
     ) {
         // Resolve the player target first, but do not target any group member:
         // hexproof, ward and shroud on those permanents do not apply.
@@ -409,6 +407,20 @@ impl Game {
         // One frozen group preserves simultaneous departure/LKI. The existing
         // zone mover returns stolen objects to their owners and handles tokens.
         let events = self.move_objects_raw(&ids, Zone::Hand);
+        if count_opposing_controllers {
+            let controllers = events
+                .iter()
+                .filter(|event| {
+                    event.moved
+                        && event.destination == Zone::Hand
+                        && event.before.controller != item.controller
+                })
+                .fold(0u8, |mask, event| {
+                    mask | (1 << event.before.controller.index())
+                });
+            self.state.resolving.as_mut().unwrap().moved_count =
+                Some(u64::from(controllers.count_ones()));
+        }
         self.finish_zone_events(&events, &[]);
     }
     pub(super) fn program_damage_source(&self, item: &SpellView) -> DamageSource {

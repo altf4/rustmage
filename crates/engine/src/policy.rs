@@ -1,6 +1,6 @@
 //! Smoke policies for tests and benchmarks; not a training implementation.
 use crate::cards::{CounterKind, Effect, Instruction, PlayerSet};
-use crate::{Action, Game, Observation, StackKind, Target, Zone};
+use crate::{Action, CastMethod, Game, Observation, StackKind, Target, Zone};
 
 /// Deterministic simple policy: keep, play lands, cast, attack, block, tap, pass.
 /// Uses only the acting player's observation and the offered action list.
@@ -356,6 +356,11 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFree {
                 flash_surcharge: false,
                 ..
+            }
+            | Action::AnnounceLibraryTop {
+                method: CastMethod::Free,
+                flash_surcharge: false,
+                ..
             } => 81,
             Action::AnnounceFreeCounterGraveyard { .. }
             | Action::AnnounceFreeGraveyardPermanent { .. }
@@ -384,6 +389,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceLibraryLife { .. }
+            | Action::AnnounceLibraryTop { .. }
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceLinkedFree { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }
@@ -740,7 +746,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseToken { .. } => 10,
-            Action::ChooseKeyword { .. } | Action::ChooseResolutionColor { .. } => 10,
+            Action::ChooseKeyword { .. }
+            | Action::ChooseResolutionColor { .. }
+            | Action::ChoosePowerThreshold { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
             | Action::AbortFaceUpPayment => -100,

@@ -474,7 +474,7 @@ impl Game {
             && self.state.static_sources.is_empty()
             && self.affinity_grants(actor, definition) == 0
         {
-            return self.turn_artifact_spell_reduction(actor, definition);
+            return self.turn_spell_reduction(actor, definition);
         }
         if let Some(world) = self.cast_departure(self.object_ref(id), actor) {
             self.spell_reduction_in_world(&world, actor, id, mana_value, definition)
@@ -543,19 +543,10 @@ impl Game {
         };
         let amount = |rule: &crate::cards::SpellReduction, source: CardId| match rule.amount {
             crate::cards::SpellReductionAmount::GraveyardInstantSorceryAdventure => {
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .map(|(candidate, _)| world.object(candidate as CardId))
-                    .filter(|object| {
-                        object.zone == Zone::Graveyard
-                            && object.owner == actor
-                            && object.is_card()
-                            && (object.card.kind_mask() & (4 | 8) != 0
-                                || object.card.adventure_spell().is_some())
-                    })
-                    .count() as u64
+                adventure::graveyard_instant_sorcery_adventure_count(
+                    actor,
+                    (0..self.state.objects.len()).map(|id| world.object(id as CardId)),
+                ) as u64
             }
             crate::cards::SpellReductionAmount::CreaturePowerCount { minimum } => {
                 self.state
@@ -642,7 +633,7 @@ impl Game {
         };
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
-        let mut reduction = self.turn_artifact_spell_reduction(actor, definition);
+        let mut reduction = self.turn_spell_reduction(actor, definition);
         let affinity_grants = self.affinity_grants(actor, definition);
         if affinity_grants != 0 {
             let artifacts = (0..self.state.objects.len())

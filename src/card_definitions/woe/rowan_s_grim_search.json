@@ -3,10 +3,51 @@
   "catalogue_id": 3599,
   "oracle_id": "f60234e4-9b53-47a5-a21a-82c80b5af072",
   "facts_sha256": "ebc3ef6a70bc2dcc25d38478cf6cd285aac8c67c6d5397e153129394c59fb432",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "99f52ed421004c7447cbdc2ce1bea9cd5ad4c9e331058a85ed0de27770c8c09d"
   },
-  "physical_metadata_sha256": "ff250e4e9d6f140e377594f1df60d9bfc7e8949299ef3e71a5e9f484bb791802"
+  "physical_metadata_sha256": "ff250e4e9d6f140e377594f1df60d9bfc7e8949299ef3e71a5e9f484bb791802",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RowansGrimSearch.java",
+  "java_sha256": "d03c3af3efb9e023836f2f4085c7fac50b60916cb664c0fb846e8f4fb354add8",
+  "rules_tests": "tests/woe_cards_m_r.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/BargainedCondition.java",
+      "sha256": "b6403f9b4c3929fb0d5180aa27ec0b5a4301353143fb16cbc360cfee1a026bc5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryControllerEffect.java",
+      "sha256": "cc0bb76bbe72170384f1183391f2f0eb0195335400d7ab0e5c7c374a0cffe5f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BargainAbility.java",
+      "sha256": "e889139d24bea8b8d7a5eff4212bb7935c8d5133b9b88e70c21386dabf09413f"
+    }
+  ]
 }

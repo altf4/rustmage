@@ -93,7 +93,39 @@ impl Game {
             })
     }
 
+    fn aura_protects_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
+        let player = match defender {
+            CombatDefender::Player(player) => player,
+            CombatDefender::Planeswalker(object)
+                if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>
+            {
+                self.state.objects[object.card as usize].controller
+            }
+            CombatDefender::Planeswalker(_) | CombatDefender::Battle(_) => return false,
+        };
+        let attacker = self.object_ref(attacker);
+        self.state.attachment_sources.iter().any(|&id| {
+            let aura = &self.state.objects[id as usize];
+            aura.zone == Zone::Battlefield
+                && aura.controller == player
+                && aura.attached_to == Some(attacker)
+                && self.current_kinds(id) & 32 != 0
+                && self.has_subtype(id, "Aura")
+        }) && self.state.static_sources.iter().any(|&id| {
+            self.state.objects[id as usize].controller == player
+                && self.active_rule_fragment(id, |fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
+                    )
+                })
+        })
+    }
+
     pub(super) fn can_attack_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
+        if self.aura_protects_defender(attacker, defender) {
+            return false;
+        }
         if let CombatDefender::Planeswalker(walker) | CombatDefender::Battle(walker) = defender {
             let object = &self.state.objects[walker.card as usize];
             if object.zone == Zone::Battlefield

@@ -59,7 +59,7 @@ impl Game {
         self.track_excess_damage(self.damage_source(source), self.object_ref(recipient), None);
         self.creatures_deal_power_damage(source, recipient, true, 1);
     }
-    pub(super) fn group_power_damage(&mut self, item: &SpellView, source: u16, recipient: u16) {
+    pub(super) fn group_power_damage(&mut self, item: &SpellView, sources: &[u16], recipient: u16) {
         let Some(recipient) = self.damage_permanent_target(item, recipient, 1) else {
             return;
         };
@@ -67,7 +67,7 @@ impl Game {
             .targets
             .iter()
             .filter_map(|bound| {
-                if bound.group == source
+                if sources.contains(&bound.group)
                     && self.same_target_object(*bound)
                     && let Target::Card(id) = bound.target
                     && self.on_battlefield(id)

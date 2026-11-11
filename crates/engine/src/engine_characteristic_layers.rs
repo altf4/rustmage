@@ -27,6 +27,9 @@ pub struct AnimationView {
     /// Set artifact card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub artifact_noncreature: bool,
+    /// The name and Equipment subtype of a resolved artifact-only form.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub equipment_name: Option<&'static str>,
     /// Set enchantment card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub enchantment_noncreature: bool,
@@ -102,6 +105,10 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .filter(move |row| Some(row.object) == recipient)
 }
 
+pub(super) fn has_equipment_form<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
+    animations(world, id).any(|row| row.equipment_name.is_some())
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn grants_legendary<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
     world.roles().is_some_and(|r| !r.animations.is_empty())
@@ -143,7 +150,7 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         return None;
     }
     let roles = world.roles()?;
-    let (form, subtypes) = object
+    let (kinds, additive, subtypes) = object
         .card
         .static_ability_groups()
         .iter()
@@ -159,12 +166,22 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
             } if (!own_turn || object.controller == world.game().state.active)
                 && world.counter_count(id, kind) >= minimum =>
             {
-                Some((form, subtypes))
+                let (kinds, additive) = match form {
+                    SourceCreatureForm::Creature => (1, false),
+                    SourceCreatureForm::ArtifactCreature => (17, true),
+                    SourceCreatureForm::AddCreature => (1, true),
+                };
+                Some((kinds, additive, subtypes))
+            }
+            StaticAbilityFragment::SourceCelebrationCreatureForm { subtypes, .. }
+                if world.celebrating(object.controller) =>
+            {
+                Some((0, true, subtypes))
             }
             StaticAbilityFragment::SourceOffTurnCreature
                 if object.controller != world.game().state.active =>
             {
-                Some((SourceCreatureForm::ArtifactCreature, &[]))
+                Some((17, true, &[]))
             }
             _ => None,
         })?;
@@ -173,11 +190,6 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         .iter()
         .find(|row| row.source == world.reference(id))?
         .timestamp;
-    let (kinds, additive) = match form {
-        SourceCreatureForm::Creature => (1, false),
-        SourceCreatureForm::ArtifactCreature => (17, true),
-        SourceCreatureForm::AddCreature => (1, true),
-    };
     Some(SourceCreatureChange {
         timestamp,
         kinds,
@@ -240,7 +252,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .roles()
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
-        && source_conditional_creature(world, id).is_none()
+        && source_conditional_creature(world, id).is_none_or(|change| change.kinds == 0)
         && land_forms(world, id).next().is_none()
     {
         if world
@@ -293,7 +305,9 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
         })
         .collect();
-    if let Some(change) = source_conditional_creature(world, id) {
+    if let Some(change) = source_conditional_creature(world, id)
+        && change.kinds != 0
+    {
         let kinds = if change.additive {
             change.kinds
         } else {
@@ -382,9 +396,10 @@ pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
 pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
     let object = world.object(id);
     if object.zone != Zone::Battlefield
-        || world
-            .roles()
-            .is_none_or(|r| r.characteristic_sources.is_empty())
+        || world.roles().is_none_or(|r| {
+            r.characteristic_sources.is_empty()
+                && r.animations.iter().all(|row| row.equipment_name.is_none())
+        })
     {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).name()
@@ -399,6 +414,10 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
+        .chain(
+            animations(world, id)
+                .filter_map(|row| row.equipment_name.map(|name| (row.timestamp, name))),
+        )
         .max_by_key(|e| e.0)
         .map_or_else(|| world.copiable_name(id), |e| e.1)
 }
@@ -485,6 +504,7 @@ pub(super) enum SubtypeChange {
     BasicLand(crate::cards::BasicLandType),
     AddBasicLand(crate::cards::BasicLandType),
     FoodOnly,
+    EquipmentOnly,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -555,6 +575,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         .collect();
     if let Some(change) = source_conditional_creature(world, id)
         && (!change.additive || !change.subtypes.is_empty())
+        && (change.kinds != 0 || can_have_creature_subtypes(change.timestamp))
     {
         changes.push((
             change.timestamp,
@@ -565,6 +586,9 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));
+        }
+        if row.equipment_name.is_some() {
+            return Some((row.timestamp, SubtypeChange::EquipmentOnly));
         }
         // Artifact-only form filters correlated subtypes against final layer-four
         // card types in the shared subtype projection; later animation may restore them.
@@ -650,20 +674,65 @@ impl Game {
     pub(super) fn animate_source(&mut self, item: &SpellView, spec: AnimationSpec) {
         self.change_source_form(item, spec, AnimationTypeMode::AddCreature);
     }
+    pub(super) fn become_legendary_equipment(
+        &mut self,
+        item: &SpellView,
+        name: &'static str,
+        equip: u16,
+        power: i32,
+        toughness: i32,
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        let roles = self.state.roles.as_mut().unwrap();
+        roles.animations.push(AnimationView {
+            legendary: true,
+            equipment_name: Some(name),
+            ..artifact_noncreature_form(source, timestamp)
+        });
+        // At the shared timestamp the resolved removal precedes the acquired
+        // abilities in layer six. Later grants can still apply to this object.
+        roles
+            .resolved_ability_modifications
+            .push(ResolvedAbilityModificationView {
+                recipient: source,
+                source,
+                keywords: Keywords::NONE,
+                timestamp,
+            });
+        self.grant_recipient_ability(
+            source,
+            item.trigger_definition(),
+            SelfGrantedAbilityKind::EquipAndBoost {
+                equip,
+                power,
+                toughness,
+            },
+            timestamp,
+            None,
+        );
+        if !self.state.attachment_sources.contains(&source.card) {
+            self.state.attachment_sources.push(source.card);
+        }
+        self.refresh_copy_grant_availability();
+    }
     pub(super) fn animate_source_colored(
         &mut self,
         item: &SpellView,
         spec: AnimationSpec,
         colors: u8,
-    ) {
-        if let Some(source) = item.source {
-            self.change_object_form_colored(
-                source.object,
-                spec,
-                AnimationTypeMode::AddCreature,
-                Some(colors),
-            );
-        }
+    ) -> Option<AnimationView> {
+        self.change_object_form_colored(
+            item.source?.object,
+            spec,
+            AnimationTypeMode::AddCreature,
+            Some(colors),
+        )
     }
     pub(super) fn change_source_form(
         &mut self,
@@ -764,7 +833,7 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        self.change_object_form_colored(object, spec, type_mode, None);
+        let _ = self.change_object_form_colored(object, spec, type_mode, None);
     }
     fn change_object_form_colored(
         &mut self,
@@ -772,9 +841,9 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
         colors: Option<u8>,
-    ) {
+    ) -> Option<AnimationView> {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
-            return;
+            return None;
         }
         let timestamp = self.next_role_timestamp();
         let row = AnimationView {
@@ -790,6 +859,7 @@ impl Game {
             legendary: matches!(type_mode, AnimationTypeMode::AddLegendary),
             food_only: false,
             artifact_noncreature: false,
+            equipment_name: None,
             enchantment_noncreature: false,
             colors,
             creature_types: match spec.creature_types {
@@ -813,12 +883,13 @@ impl Game {
             .get_or_insert_with(Default::default)
             .animations
             .push(row);
+        Some(row)
     }
     pub(super) fn choose_source_color_and_hexproof(&mut self, color: crate::cards::ChoiceColor) {
         let Some(source) = self.state.resolving.as_ref().and_then(|r| r.item.source) else {
             return;
         };
-        self.change_object_form_colored(
+        let _ = self.change_object_form_colored(
             source.object,
             AnimationSpec {
                 artifact: false,
@@ -848,7 +919,7 @@ impl Game {
             duration: AnimationDuration::EndOfTurn,
         };
         for id in self.keyword_subjects(item, Subject::Targets) {
-            self.change_object_form_colored(
+            let _ = self.change_object_form_colored(
                 self.object_ref(id),
                 spec,
                 AnimationTypeMode::PreserveCardTypes,
@@ -884,6 +955,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         legendary: false,
         food_only: true,
         artifact_noncreature: false,
+        equipment_name: None,
         enchantment_noncreature: false,
         colors: None,
         creature_types: None,
@@ -995,6 +1067,7 @@ impl AnimationView {
             legendary: false,
             food_only: false,
             artifact_noncreature: false,
+            equipment_name: None,
             enchantment_noncreature: false,
             colors: Some(colors & 31),
             creature_types: None,

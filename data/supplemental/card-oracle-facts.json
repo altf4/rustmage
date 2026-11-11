@@ -89,6 +89,111 @@
           "released_at": "2025-06-13"
         }
       }
+    },
+    {
+      "facts_sha256": "57cd34e5f2244f4b24b932ad9621da221101ba010e61656b4ec5619ed7a37427",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/woe/95",
+      "source_response_sha256": "67bf4cfbb4cea69c070522b646ba3d500320cf8d4d625b6ead77e1d4b6b87d54",
+      "facts": {
+        "oracle_id": "5e63b69c-d901-4a01-8dfa-88e044856239",
+        "name": "Hopeless Nightmare",
+        "layout": "normal",
+        "mana_cost": "{B}",
+        "cmc": 1.0,
+        "type_line": "Enchantment",
+        "oracle_text": "When this enchantment enters, each opponent discards a card and loses 2 life.\nWhen this enchantment is put into a graveyard from the battlefield, scry 2.\n{2}{B}: Sacrifice this enchantment.",
+        "colors": [
+          "B"
+        ],
+        "color_identity": [
+          "B"
+        ],
+        "keywords": [
+          "Scry"
+        ],
+        "reference_printing": {
+          "id": "2c2ee817-9ca9-4f09-bc71-7994c19a9470",
+          "set": "woe",
+          "collector_number": "95",
+          "released_at": "2023-09-08"
+        }
+      }
+    },
+    {
+      "facts_sha256": "c13ba6dcd22e01ffc6f36388d753f917da96558ef2d0d1bbf40d162268dc4d78",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/named?exact=Monstrous%20Rage&set=woe",
+      "source_response_sha256": "8657898e3469a2f443969196cd9f46845b884c21d56660fb2fcf99fcef896102",
+      "facts": {
+        "oracle_id": "646a2371-54c0-4492-ac2f-20f109d6108c",
+        "name": "Monstrous Rage",
+        "layout": "normal",
+        "mana_cost": "{R}",
+        "cmc": 1.0,
+        "type_line": "Instant",
+        "oracle_text": "Target creature gets +2/+0 until end of turn. Create a Monster Role token attached to it. (If you control another Role on it, put that one into the graveyard. Enchanted creature gets +1/+1 and has trample.)",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Role token"
+        ],
+        "all_parts": [
+          {
+            "id": "eef5a0ae-5907-42c9-a097-3f973737e392",
+            "component": "combo_piece",
+            "name": "Monstrous Rage",
+            "type_line": "Instant"
+          },
+          {
+            "id": "6b8a810b-8538-41c3-a792-dbd1a1845faa",
+            "component": "token",
+            "name": "Monster // Sorcerer",
+            "type_line": "Token Enchantment — Aura Role // Token Enchantment — Aura Role"
+          }
+        ],
+        "reference_printing": {
+          "id": "eef5a0ae-5907-42c9-a097-3f973737e392",
+          "set": "woe",
+          "collector_number": "142",
+          "released_at": "2023-09-08"
+        }
+      }
+    },
+    {
+      "facts_sha256": "59175b40caf27adb76a05a0e9b83b5e62f34d72acd05dbab4c782de1b004357b",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/woe/195",
+      "source_response_sha256": "a117c39076ac35763561be457640db66e9efcd7ee93d9d8246876d358fa49cd9",
+      "facts": {
+        "oracle_id": "050f5733-7c0b-4991-9a6c-7ea12ccf0ca9",
+        "name": "Up the Beanstalk",
+        "layout": "normal",
+        "mana_cost": "{1}{G}",
+        "cmc": 2.0,
+        "type_line": "Enchantment",
+        "oracle_text": "When this enchantment enters and whenever you cast a spell with mana value 5 or greater, draw a card.",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "2d5e991f-23b2-4db0-a452-7755125b1fd2",
+          "set": "woe",
+          "collector_number": "195",
+          "released_at": "2023-09-08"
+        }
+      }
     }
   ]
 }

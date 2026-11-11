@@ -81,6 +81,9 @@ impl Game {
                     u16::try_from(index).expect("bounded entry modes"),
                 ))
             }),
+            EntryChoiceKind::NumberRange { minimum, maximum } => {
+                (minimum..=maximum).any(|number| emit(EntryChoiceValue::Number(number)))
+            }
             EntryChoiceKind::LandCardName => {
                 crate::CardName::lands().any(|name| emit(EntryChoiceValue::CardName(name)))
             }

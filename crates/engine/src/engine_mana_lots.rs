@@ -17,6 +17,7 @@ use crate::cards::{
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum ManaRestrictionView {
     SpellManaValueAtLeast(u64),
+    SpellManaValueAtLeastOrX(u64),
     ExceptCastFromHand,
     CastFromNonhand,
     CastFromExile,
@@ -153,6 +154,9 @@ impl Quality {
                 ManaRestriction::SpellManaValueAtLeast(minimum) => {
                     ManaRestrictionView::SpellManaValueAtLeast(minimum)
                 }
+                ManaRestriction::SpellManaValueAtLeastOrX(minimum) => {
+                    ManaRestrictionView::SpellManaValueAtLeastOrX(minimum)
+                }
                 ManaRestriction::ChosenSubtypeSpellOrActivation => {
                     match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
@@ -245,6 +249,10 @@ impl Quality {
         match self.restriction {
             ManaRestrictionView::SpellManaValueAtLeast(minimum) => {
                 matches!(purpose, Purpose::Spell(source) if source.mana_value >= minimum)
+            }
+            ManaRestrictionView::SpellManaValueAtLeastOrX(minimum) => {
+                matches!(purpose, Purpose::Spell(source)
+                    if source.mana_value >= minimum || source.card.x_symbols() != 0)
             }
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
@@ -343,6 +351,8 @@ pub(super) struct Source {
     pub cast_from_exile: bool,
     pub spend_any_mana: bool,
     pub linked_mana_source: Option<(ObjectRef, Option<u64>)>,
+    /// The live rules object for an activation's spending permissions.
+    pub activation_object: Option<ObjectRef>,
     pub equip: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -365,6 +375,7 @@ impl Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: Some(world.reference(id)),
             equip: false,
         }
     }
@@ -382,6 +393,7 @@ impl Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: None,
             equip: false,
         }
     }
@@ -399,6 +411,7 @@ impl From<DamageFacts> for Source {
             cast_from_exile: false,
             spend_any_mana: false,
             linked_mana_source: None,
+            activation_object: None,
             equip: false,
         }
     }
@@ -771,8 +784,7 @@ impl Game {
                 quality
             })
         });
-        self.add_quality_mana(item.controller, mana, quality);
-        self.finish_mana_tap_bonus(item.controller, item.tap_mana_bonus(self), mana);
+        self.add_mana_tap_event(item.controller, item.tap_mana_bonus(self), mana, quality);
     }
     pub(super) fn add_quality_mana(&mut self, actor: Player, mana: Mana, quality: Option<Quality>) {
         self.record_cast_mana_production(actor, mana, quality);

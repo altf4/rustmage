@@ -371,6 +371,21 @@ impl Game {
                 && crate::card_names::same_name(o.card.name(), name)
                 && !choice.selected[player.index()].contains(&object);
         }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
+        ) {
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                    self,
+                    object.card,
+                );
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::ExileGraveyard {
             if ability_world::CharacteristicWorld::graveyard_exile_prohibited(self, object.card) {
                 return false;
@@ -416,8 +431,18 @@ impl Game {
                 && o.card.is_creature()
                 && self.object_ref(object.card) == object
                 && !selected.contains(&object)
-                && selected.len() < usize::from(maximum)
-                && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent);
+                && selected.len() < maximum as usize
+                && o.card.fixed_mana_value() <= total_mana_value.saturating_sub(spent)
+                && (!self.target_graveyard_return_active()
+                    || self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .item
+                        .targets
+                        .iter()
+                        .any(|bound| bound.object == Some(object)));
         }
         if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
             return o.zone == Zone::Graveyard
@@ -438,7 +463,8 @@ impl Game {
             return o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && matches!(o.zone, Zone::Hand | Zone::Graveyard)
+                && (o.zone == Zone::Graveyard
+                    || o.zone == Zone::Hand && !self.graveyard_land_return_active())
                 && o.card.is_land()
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
@@ -562,9 +588,10 @@ impl Game {
             return false;
         }
         let f = choice.filter;
+        let kinds = self.current_kinds(object.card);
         if !choice.kind.cost_matches_any(
             o.card,
-            self.current_kinds(object.card),
+            kinds,
             self.granted_subtypes(object.card),
             o.is_token(),
             || ability_world::CharacteristicWorld::legendary(self, object.card),
@@ -583,12 +610,10 @@ impl Game {
             return false;
         }
         o.zone == Zone::Battlefield
+            && f.matches_kinds_and_token(kinds, o.is_token())
             && self.keywords(object.card).contains(f.keywords)
-            && (f.kinds == 0 || self.current_kinds(object.card) & u16::from(f.kinds) != 0)
             && (!f.source_only || object == choice.source)
-            && (!f.nonland || self.current_kinds(object.card) & 2 == 0)
             && (!f.other || object != choice.source)
-            && f.tokens.is_none_or(|token| o.is_token() == token)
             && f.subtype
                 .is_none_or(|subtype| self.has_subtype(object.card, subtype))
             && (!matches!(
@@ -888,8 +913,8 @@ impl Game {
     pub(super) fn start_graveyard_return_selection(
         &mut self,
         item: &SpellView,
-        maximum: u16,
-        total_mana_value: u64,
+        maximum: u32,
+        optional_mana_budget: Option<u64>,
     ) -> bool {
         if maximum == 0 {
             return false;
@@ -898,15 +923,86 @@ impl Game {
             item,
             EffectChoiceKind::GraveyardCreatures {
                 maximum,
-                total_mana_value,
+                total_mana_value: optional_mana_budget.unwrap_or(u64::MAX),
             },
             PlayerSet::Controller,
             evidence::cost(0).filter,
             0,
-            Some(0),
+            optional_mana_budget.map(|_| 0),
             false,
             None,
         )
+    }
+
+    fn target_graveyard_return_active(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution.program.get(resolution.pc.saturating_sub(1)),
+                Some(Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. })
+            )
+        })
+    }
+
+    fn graveyard_return_targets<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> impl Iterator<Item = ObjectRef> + 'a {
+        item.targets
+            .iter()
+            .filter_map(|bound| bound.object)
+            .filter(move |&object| {
+                let card = &self.state.objects[object.card as usize];
+                self.object_ref(object.card) == object
+                    && card.zone == Zone::Graveyard
+                    && card.owner == item.controller
+                    && card.is_card()
+            })
+    }
+
+    fn target_graveyard_return_entries(
+        &self,
+        item: &SpellView,
+        battlefield: Option<ObjectRef>,
+    ) -> Vec<entries::EntryMove> {
+        let mut moves = Vec::<entries::EntryMove>::new();
+        for object in self.graveyard_return_targets(item) {
+            if moves
+                .iter()
+                .any(|movement| movement.before.reference == object)
+            {
+                continue;
+            }
+            let destination = if battlefield == Some(object) {
+                Zone::Battlefield
+            } else {
+                Zone::Hand
+            };
+            let mut movement = self.entry_move(object.card, destination, false);
+            movement.controller = item.controller;
+            moves.push(movement);
+        }
+        moves
+    }
+
+    pub(super) fn start_target_graveyard_return(
+        &mut self,
+        item: &SpellView,
+        maximum_mana_value: u64,
+        bargain_only: bool,
+    ) -> bool {
+        if (!bargain_only || item.cast.is_some_and(|cast| cast.bargain == Some(true)))
+            && self.graveyard_return_targets(item).any(|object| {
+                let card = self.state.objects[object.card as usize].card;
+                card.is_creature() && card.fixed_mana_value() <= maximum_mana_value
+            })
+        {
+            return self.start_graveyard_return_selection(item, 1, Some(maximum_mana_value));
+        }
+        let moves = self.target_graveyard_return_entries(item, None);
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
+        }
+        false
     }
 
     pub(super) fn finish_graveyard_return_selection(&mut self) {
@@ -918,7 +1014,16 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let player = self.state.resolving.as_ref().unwrap().item.controller;
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        let player = item.controller;
+        if self.target_graveyard_return_active() {
+            let battlefield = choice.selected[player.index()].first().copied();
+            let moves = self.target_graveyard_return_entries(item, battlefield);
+            if !moves.is_empty() {
+                self.stage_entries(moves, None);
+            }
+            return;
+        }
         let movements = choice.selected[player.index()]
             .iter()
             .filter(|r| {
@@ -937,6 +1042,34 @@ impl Game {
         if !movements.is_empty() {
             self.stage_entries(movements, None);
         }
+    }
+
+    pub(super) fn graveyard_land_return_active(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution.program.get(resolution.pc.saturating_sub(1)),
+                Some(Instruction::ChooseOwnGraveyardLandReturn { .. })
+            )
+        })
+    }
+
+    pub(super) fn start_graveyard_land_return(&mut self, item: &SpellView, tapped: bool) -> bool {
+        if !self.state.objects.iter().any(|object| {
+            object.zone == Zone::Graveyard
+                && object.owner == item.controller
+                && object.is_card()
+                && object.card.is_land()
+        }) {
+            return false;
+        }
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::LandCards { maximum: 1, tapped },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            None,
+        )
     }
 
     pub(super) fn start_land_selection(
@@ -1043,7 +1176,8 @@ impl Game {
                         && self.current_kinds(reference.card) & 2 != 0
                 } else {
                     object.owner == player
-                        && matches!(object.zone, Zone::Hand | Zone::Graveyard)
+                        && (object.zone == Zone::Graveyard
+                            || object.zone == Zone::Hand && !self.graveyard_land_return_active())
                         && object.card.is_land()
                 });
                 let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
@@ -1342,6 +1476,35 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if let EffectChoiceKind::GraveyardCreatures {
+                maximum,
+                total_mana_value,
+            } = kind
+                && optional_skip.is_none()
+            {
+                assert_eq!(
+                    players,
+                    PlayerSet::Controller,
+                    "one exact graveyard return chooser"
+                );
+                assert_eq!(
+                    total_mana_value,
+                    u64::MAX,
+                    "exact count has no combined mana budget"
+                );
+                let count = u32::try_from(available.min(maximum as usize))
+                    .capacity("choice count exhausted");
+                if count == 0 {
+                    return false;
+                }
+                choice.amount = count;
+                choice.required[player.index()] = count;
+                choice.kind = EffectChoiceKind::GraveyardCreatures {
+                    maximum: count,
+                    total_mana_value,
+                };
+                continue;
+            }
             if available == 0 && (any_number || kind == EffectChoiceKind::PowerDifferenceBoost) {
                 return false;
             }
@@ -1476,7 +1639,7 @@ impl Game {
         }
         if let EffectChoiceKind::GraveyardCreatures { maximum, .. } = choice.kind.payment_kind() {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
-            if choice.selected[player.index()].len() >= usize::from(maximum) {
+            if choice.selected[player.index()].len() >= maximum as usize {
                 self.finish_graveyard_return_selection();
                 return false;
             }
@@ -2051,11 +2214,6 @@ impl Game {
             choice.kind.payment_kind(),
             EffectChoiceKind::TapPermanents(_)
         ) {
-            let ids: Vec<_> = choice
-                .selected
-                .iter()
-                .flat_map(|rows| rows.iter().map(|r| r.card))
-                .collect();
             if matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
@@ -2063,6 +2221,11 @@ impl Game {
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue
             ) {
+                let ids: Vec<_> = choice
+                    .selected
+                    .iter()
+                    .flat_map(|rows| rows.iter().map(|r| r.card))
+                    .collect();
                 let events = self.move_objects_raw(&ids, Zone::Exile);
                 if let EffectChoiceKind::ExileFromHandWithPlaySurcharge(surcharge) = choice.kind {
                     for event in &events {
@@ -2073,7 +2236,12 @@ impl Game {
                 }
                 self.finish_zone_events(&events, &[]);
             } else {
-                self.tap_objects(&ids);
+                let taps = [Player::P0, Player::P1].into_iter().flat_map(|player| {
+                    choice.selected[player.index()]
+                        .iter()
+                        .map(move |object| (player, object.card))
+                });
+                self.tap_objects_by(taps);
             }
         } else if matches!(
             choice.kind.payment_kind(),
@@ -2273,6 +2441,29 @@ impl Game {
         }
     }
 
+    pub(super) fn finish_reflexive_graveyard_exile(&mut self, ability: u16) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let ids: Vec<_> = choice.selected[player.index()]
+            .iter()
+            .map(|object| object.card)
+            .collect();
+        if ids.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.finish_zone_events(&events, &[]);
+        let item = self.state.resolving.as_ref().unwrap().item.clone();
+        self.queue_reflexive_objects(
+            &item,
+            ability,
+            events.iter().filter_map(|event| {
+                (event.moved && event.destination == Zone::Exile).then_some(event.after)
+            }),
+        );
+    }
+
     pub(super) fn finish_lore_counter_selection(&mut self) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
@@ -2387,6 +2578,39 @@ impl Game {
         self.run_program();
     }
 
+    pub(super) fn exile_then_search_same_name(&mut self, item: &SpellView) {
+        let [bound] = item.targets.as_slice() else {
+            return;
+        };
+        let Target::Card(id) = bound.target else {
+            return;
+        };
+        if !self.same_target_object(*bound) || !self.on_battlefield(id) {
+            return;
+        }
+        let owner = self.state.objects[id as usize].controller;
+        let name = self.object_name(id);
+        self.state.resolving.as_mut().unwrap().exile_name_search = Some(Box::new((owner, name)));
+        self.move_target_batch(&item.targets, Zone::Exile);
+    }
+
+    pub(super) fn resume_exile_name_search(&mut self) -> bool {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(search) = resolution.exile_name_search.take() else {
+            return false;
+        };
+        let (owner, name) = *search;
+        let item = resolution.item.clone();
+        self.start_effect_choice(
+            &item,
+            EffectChoiceKind::CoverUpSearch { owner, name },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            0,
+            None,
+        )
+    }
+
     pub(super) fn start_named_card_search(&mut self, item: &SpellView, maximum: u16) -> bool {
         let Some(owner) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
@@ -2430,6 +2654,9 @@ impl Game {
             _ => unreachable!(),
         };
         let player = self.state.resolving.as_ref().unwrap().item.controller;
+        if owner == player {
+            self.library_searched(player);
+        }
         let ids: Vec<_> = choice.selected[player.index()]
             .iter()
             .map(|reference| reference.card)

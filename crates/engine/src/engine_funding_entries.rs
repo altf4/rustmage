@@ -118,8 +118,8 @@ impl Announcement {
         if let Some(object) = self.harmonizer.flatten() {
             add(object);
         }
-        if let Some(object) = &self.free_hand_permission {
-            add(**object);
+        if let Some(permission) = &self.limited_cast_permission {
+            add(permission.source());
         }
         if let Some(grant) = &self.item.attachment_trigger {
             add(grant.grantor);
@@ -1192,6 +1192,9 @@ impl FundingState<'_> {
                             u16::try_from(index).expect("bounded entry modes"),
                         )
                     }))
+                }
+                crate::cards::EntryChoiceKind::NumberRange { minimum, maximum } => {
+                    choices.extend((minimum..=maximum).map(EntryChoiceValue::Number));
                 }
                 crate::cards::EntryChoiceKind::NoncreatureCardTypeAfterOpponentHand => choices
                     .extend(
@@ -2649,14 +2652,16 @@ impl<'g> FundingState<'g> {
         {
             let mut next = self.clone();
             let (bonus, tap_source) = next.apply(step, false);
-            let bonus = bonus.with_trigger_bonuses(&next, self.actor, tap_source);
-            if let Some(production) = next.singleton_output(step)
-                && let Some(bonus) = bonus.singleton(production)
+            let receipt = bonus.with_event_effects(&next, self.actor, tap_source);
+            if let Some(production) = next.singleton_output(step, receipt)
+                && let Some(replaced) = receipt.replace_production(production)
+                && let Some(bonus) = receipt.singleton(production)
+                && next.completed_mana_fits(replaced, bonus)
             {
-                next.add_funding_output(step, bonus, production);
+                next.add_funding_output(step, bonus, replaced);
                 return emit(&next);
             }
-            return next.visit_output(step, bonus, goal, emit);
+            return next.visit_output(step, receipt, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2726,7 +2731,7 @@ impl<'g> FundingState<'g> {
                 departed.then_some(destination),
                 external,
                 &mut |world| {
-                    let bonus = bonus.with_trigger_bonuses(world, self.actor, tap_source);
+                    let bonus = bonus.with_event_effects(world, self.actor, tap_source);
                     world.visit_output(step, bonus, goal, emit)
                 },
             )
@@ -3000,9 +3005,10 @@ impl<'g> FundingState<'g> {
         };
         let parent_goal = parent.map(|(parent, _)| self.game.funding_goal(&parent.announcement));
         let purpose = self.payment_purpose(goal);
+        let adjusted = cast_origins::payment_goal(self, goal, purpose);
         let mut found = false;
         let pool = mana_lots::available(self.mana, &self.lots, purpose);
-        funding_payments(pool, goal.required, goal.generic, |payment| {
+        funding_payments(pool, adjusted.required, adjusted.generic, |payment| {
             if forced_payment.is_some_and(|forced| concrete_payment(payment) != forced) {
                 return;
             }

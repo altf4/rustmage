@@ -199,18 +199,31 @@ class ValidatorTests(unittest.TestCase):
         self.assertEqual(receipt.read_text(), 'previous evidence')
 
     def test_native_suite_budget_fits_inside_parent_deadline(self):
-        status, _, report, commands = self.invoke()
-        self.assertEqual(status, 0)
-        index = next(i for i, (command, _) in enumerate(commands)
-                     if 'scripts/run_native_tests.py' in command)
-        command = commands[index][0]
-        compile_budget = int(command[command.index('--compile-timeout') + 1])
-        suite_budget = int(command[command.index('--suite-timeout') + 1])
-        self.assertEqual(compile_budget, 1800)
-        self.assertEqual(suite_budget, 480)
-        self.assertEqual(command[command.index('--test-timeout') + 1], '90')
-        self.assertEqual(self.command_timeouts[index], compile_budget + suite_budget + 20)
-        self.assertTrue(report['success'])
+        for platform, compile_budget, suite_budget, lint_budget, parent_budget in [
+            ('linux', 1800, 480, 600, 3600),
+            ('darwin', 1800, 720, 600, 3600),
+            ('win32', 2700, 720, 750, 4500),
+        ]:
+            with self.subTest(platform=platform), patch.object(validate.sys, 'platform', platform):
+                first_command = len(self.command_timeouts)
+                status, _, report, commands = self.invoke()
+                timeouts = self.command_timeouts[first_command:]
+                self.assertEqual(status, 0)
+                index = next(i for i, (command, _) in enumerate(commands)
+                             if 'scripts/run_native_tests.py' in command)
+                command = commands[index][0]
+                self.assertEqual(int(command[command.index('--compile-timeout') + 1]),
+                                 compile_budget)
+                self.assertEqual(int(command[command.index('--suite-timeout') + 1]),
+                                 suite_budget)
+                self.assertEqual(command[command.index('--test-timeout') + 1], '90')
+                self.assertEqual(timeouts[index], compile_budget + suite_budget + 20)
+                lint_index = next(i for i, (command, _) in enumerate(commands)
+                                  if command[:2] == ['cargo', 'clippy'])
+                self.assertEqual(timeouts[lint_index], lint_budget)
+                self.assertEqual(report['timeout_seconds'], parent_budget)
+                self.assertLess(timeouts[index], parent_budget)
+                self.assertTrue(report['success'])
 
     def test_environment_target_is_reused_and_explicit_target_takes_precedence(self):
         environment_target = self.directory/'environment-target'

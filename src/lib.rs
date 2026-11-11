@@ -13,12 +13,15 @@ pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
 pub use rustmage_core::cards::RetainedCopyActivation;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
-pub use rustmage_core::engine::combat_allocations::PlayerCombatDamageView;
+pub use rustmage_core::engine::combat_allocations::{
+    BlockerPowerLimitView, PlayerCombatDamageView,
+};
 pub use rustmage_core::engine::effect_choices::PowerDifferenceView;
 pub use rustmage_core::engine::exhaust::GrantedExhaustUseView;
 pub use rustmage_core::engine::replacements::CreatureDamageShieldView;
 pub use rustmage_core::engine::return_links::PlayerDamageShieldView;
 pub use rustmage_core::engine::temporary_copy::RetainedActivationOrigin;
+pub use rustmage_core::engine::turn_cast_grants::ColoredSpellReductionView;
 pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
@@ -50,34 +53,35 @@ pub use rustmage_core::engine::{
     HandSizeSourceView, HandSizeTimelineView, ImproviseChoiceView, KeepTypesView,
     KeywordChoiceView, KeywordEffectOrigin, KeywordEffectView, LegalActionSpace, LegendGroupView,
     LibraryCastLookView, LibraryChoiceView, LibraryDestination, LibraryPile, LibraryPilesView,
-    LibraryRevealEvent, LibrarySelectionView, LifeTriggerView, LinkedExileView,
-    LinkedFreeCastApprovalView, LinkedFreeCastUseView, LiveStaticSourceView, MainPhaseCombatView,
-    ManaAnnouncementView, ManaCopySource, ManaLotSpendRange, ManaLotView, ManaPaymentDomain,
-    ManaRestrictionView, ManaRollbackView, ManaSpellBonusView, ManaTapBonus, ManaValueParity,
-    ManifestChoiceView, ManifestDreadEvent, MilledSelectionView, MiracleChoiceView,
-    MobilizeChoiceView, ModalHistoryView, ModeChoiceView, NextTurnControlExpiry,
-    OBSERVATION_SCHEMA, ObjectRef, ObjectView, Observation, OptionalSearchSequence, Outcome,
-    OutsideEntryDestination, OutsideEntryProviderView, OutsideEntryReplacementView,
-    OutsideEntrySelfEffectView, OutsideGameConfig, OutsideGameMode, OwnTurnDeadline,
-    PaidAdditionalCostView, ParadigmView, PaymentRequestView, PendingPaymentView, Player,
-    PlayerCastGrantsView, PlayerControlView, PlayerCounterAmountView, PlayerCounterPlacementView,
-    PlayerView, PlotPaymentView, PlottedCard, PowerUpUseView, PreparationView,
-    ProliferateReplacementView, RecoveryChoiceView, ReflexiveSubjectView, ReplacementChoiceView,
-    ReplacementEffectView, ResolutionCostView, ResolutionFreeCasts, ResolutionPaidCast,
-    ResolutionPaymentView, ResolvedAbilityModificationView, ResolvedSpellNameView,
-    ResolvedStatSubjectView, RetargetView, ReturnCardView, ReturnLinkView, RevealedLibraryCard,
-    RoleGroupView, RoleTimestampView, SaddleChoiceView, SearchChoiceView,
-    SearchDestinationChoiceView, SearchDistributionView, SelfGrantedAbilityKind,
-    SelfGrantedAbilityView, SelfGrantedActivationContext, SelfPlayerCounterReplacement, Snapshot,
-    SourceCounterChoiceView, SourceCounterPaymentView, SourceCounterQuantityView, SourceLessRule,
-    SourceLinkedEffectKind, SourceLinkedEffectView, SourceQuantityView, SpellCharacteristicsView,
-    SpellCostChoiceView, SpellView, StackKind, StackLink, StackSourceView, Step, Target,
-    TargetAllocation, TargetAmountChoiceView, TargetCounterRemovalView, TargetLibraryMovement,
-    TargetLibraryView, TeamworkChoiceView, TemporaryAbilityView, TemporaryControlView,
-    TemporaryCopyView, TokenGroupView, TriggerSourceMoveView, TriggerUse, TurnCallbackView,
-    TurnFactsView, TurnScheduleView, UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView,
-    WebSlingingOrigin, XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView,
-    ZoneReplacementKind, ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
+    LibraryRevealEvent, LibrarySelectionView, LibraryTopCastPermission, LibraryTopCastUse,
+    LifeTriggerView, LinkedExileView, LinkedFreeCastApprovalView, LinkedFreeCastUseView,
+    LiveStaticSourceView, MainPhaseCombatView, ManaAnnouncementView, ManaCopySource,
+    ManaLotSpendRange, ManaLotView, ManaPaymentDomain, ManaRestrictionView, ManaRollbackView,
+    ManaSpellBonusView, ManaTapBonus, ManaValueParity, ManifestChoiceView, ManifestDreadEvent,
+    MilledSelectionView, MiracleChoiceView, MobilizeChoiceView, ModalHistoryView, ModeChoiceView,
+    NextTurnControlExpiry, OBSERVATION_SCHEMA, ObjectRef, ObjectView, Observation,
+    OptionalSearchSequence, Outcome, OutsideEntryDestination, OutsideEntryProviderView,
+    OutsideEntryReplacementView, OutsideEntrySelfEffectView, OutsideGameConfig, OutsideGameMode,
+    OwnTurnDeadline, PaidAdditionalCostView, ParadigmView, PaymentRequestView, PendingPaymentView,
+    PermanentDamageHistoryView, Player, PlayerCastGrantsView, PlayerControlView,
+    PlayerCounterAmountView, PlayerCounterPlacementView, PlayerView, PlotPaymentView, PlottedCard,
+    PowerUpUseView, PreparationView, ProliferateReplacementView, RecoveryChoiceView,
+    ReflexiveSubjectView, ReplacementChoiceView, ReplacementEffectView, ResolutionCostView,
+    ResolutionFreeCasts, ResolutionPaidCast, ResolutionPaymentView,
+    ResolvedAbilityModificationView, ResolvedSpellNameView, ResolvedStatSubjectView, RetargetView,
+    ReturnCardView, ReturnLinkView, RevealedLibraryCard, RoleGroupView, RoleTimestampView,
+    SaddleChoiceView, SearchChoiceView, SearchDestinationChoiceView, SearchDistributionView,
+    SelfGrantedAbilityKind, SelfGrantedAbilityView, SelfGrantedActivationContext,
+    SelfPlayerCounterReplacement, Snapshot, SourceCounterChoiceView, SourceCounterPaymentView,
+    SourceCounterQuantityView, SourceLessRule, SourceLinkedEffectKind, SourceLinkedEffectView,
+    SourceQuantityView, SpellCharacteristicsView, SpellCostChoiceView, SpellView, StackKind,
+    StackLink, StackSourceView, Step, Target, TargetAllocation, TargetAmountChoiceView,
+    TargetCounterRemovalView, TargetLibraryMovement, TargetLibraryView, TeamworkChoiceView,
+    TemporaryAbilityView, TemporaryControlView, TemporaryCopyView, TokenGroupView,
+    TriggerSourceMoveView, TriggerUse, TurnCallbackView, TurnFactsView, TurnScheduleView,
+    UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView, WebSlingingOrigin, XChoiceView,
+    XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
+    ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,

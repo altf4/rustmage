@@ -21,13 +21,7 @@ impl ManaCapture {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn start_cast_mana_capture(
-        &mut self,
-        actor: Player,
-        kind: ManaEventKind,
-        production: Mana,
-        produced: bool,
-    ) {
+    fn start_cast_mana_capture(&mut self, actor: Player, kind: ManaEventKind, production: Mana) {
         let Some(mut rollback) = self.state.cast_rollback.take() else {
             return;
         };
@@ -65,7 +59,7 @@ impl Game {
             before: checkpoint.state,
             before_bytes,
             event,
-            produced,
+            produced: false,
         }));
         self.state.cast_rollback = Some(rollback);
     }
@@ -89,7 +83,6 @@ impl Game {
                         source: self.object_ref(card),
                     },
                     production,
-                    true,
                 );
             }
             Action::TapGrantedMana {
@@ -111,7 +104,6 @@ impl Game {
                         sacrifice,
                     },
                     production,
-                    false,
                 );
             }
             Action::ActivateMana {
@@ -131,7 +123,6 @@ impl Game {
                         source: self.object_ref(card),
                     },
                     production,
-                    false,
                 );
             }
             _ => {}
@@ -168,7 +159,6 @@ impl Game {
                 additional,
             },
             production,
-            false,
         );
     }
     pub(super) fn record_cast_mana_activation(

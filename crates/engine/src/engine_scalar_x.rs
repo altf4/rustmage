@@ -364,7 +364,7 @@ impl Game {
             return None;
         }
         let a = self.state.announcing.as_ref()?;
-        let mut intervals = if a.blight_x_cost() {
+        let intervals = if a.blight_x_cost() {
             self.blight_x_intervals(a)
         } else if a.declares_target_value_x() {
             self.target_value_x_intervals(a)
@@ -387,17 +387,6 @@ impl Game {
         } else {
             self.activation_x_intervals(a)
         };
-        if let Some((TargetPlan::Single(spec), program)) = a.item.program()
-            && program
-                .iter()
-                .any(|i| matches!(i, Instruction::DistributeCountersX { .. }))
-            && !self.visit_item_targets(&a.item, spec.rule, |_| true)
-        {
-            intervals.retain(|range| range.minimum == 0);
-            for range in &mut intervals {
-                range.maximum = 0;
-            }
-        }
         Some(XChoiceView {
             card: a
                 .item
@@ -420,6 +409,10 @@ impl Game {
             AmountValue::DiscardEventAmount => item
                 .discard_event
                 .map_or(0, |event| u128::from(event.amount)),
+            AmountValue::ReflexiveSubjectCount => item
+                .reflexive_subject
+                .as_ref()
+                .map_or(0, |row| 1 + row.additional_objects.len() as u128),
             AmountValue::MovedCount | AmountValue::RememberedCount => u128::from(
                 self.state
                     .resolving

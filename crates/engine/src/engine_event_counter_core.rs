@@ -7,8 +7,39 @@ pub struct CreatureDamageHistoryView {
     pub source: ObjectRef,
     pub recipient: ObjectRef,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct PermanentDamageHistoryView {
+    pub source: ObjectRef,
+    pub recipient: ObjectRef,
+    pub amount: u128,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct PermanentDamageRecord {
+    pub(super) view: PermanentDamageHistoryView,
+    /// The existing dealt-damage-to-a-creature predicate checks the type at the event.
+    pub(super) was_creature: bool,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn damage_received_this_turn(&self, object: ObjectRef) -> u128 {
+        self.state
+            .permanent_damage_history
+            .as_ref()
+            .into_iter()
+            .flat_map(|rows| rows.iter())
+            .filter(|row| row.view.recipient == object)
+            .fold(0, |total, row| {
+                total
+                    .checked_add(row.view.amount)
+                    .capacity("permanent damage amount exhausted")
+            })
+    }
+
     pub(super) fn creature_damage_events(&mut self, events: &[DamageEvent]) {
         self.combat_turn_callback_events(events);
         self.controlled_combat_damage_triggers(events);
@@ -73,19 +104,31 @@ impl Game {
             let Target::Card(id) = event.target else {
                 continue;
             };
-            if !self.on_battlefield(id) || !self.is_creature(id) {
+            if !self.on_battlefield(id) {
                 continue;
             }
-            let row = CreatureDamageHistoryView {
+            let view = PermanentDamageHistoryView {
                 source: event.source.reference,
                 recipient: self.object_ref(id),
+                amount: event.amount as u128,
             };
+            let was_creature = self.is_creature(id);
             let rows = self
                 .state
-                .creature_damage_history
+                .permanent_damage_history
                 .get_or_insert_with(|| Vec::new().into());
-            if !rows.contains(&row) {
-                rows.push(row);
+            if let Some(index) = rows.iter().position(|row| {
+                row.view.source == view.source && row.view.recipient == view.recipient
+            }) {
+                let row = &mut rows[index];
+                row.view.amount = row
+                    .view
+                    .amount
+                    .checked_add(view.amount)
+                    .capacity("permanent damage amount exhausted");
+                row.was_creature |= was_creature;
+            } else {
+                rows.push(PermanentDamageRecord { view, was_creature });
             }
         }
         // Each individual granted ability triggers once per simultaneous damage

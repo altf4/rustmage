@@ -723,3 +723,160 @@ fn a_death_instruction_bottoms_both_exact_meld_fronts_in_private_owner_order() {
         opposite.top_library_card(owner)
     );
 }
+
+fn wicked_attachments(game: &Game, creator: Player) -> Vec<ObjectRef> {
+    let mut recipients: Vec<_> = game
+        .state
+        .objects
+        .iter()
+        .filter(|object| {
+            object.zone == Zone::Battlefield && object.card.role() == Some(RoleKind::Wicked)
+        })
+        .map(|role| {
+            assert_eq!(role.owner, creator);
+            assert_eq!(role.controller, creator);
+            role.attached_to
+                .expect("a surviving Wicked Role is attached")
+        })
+        .collect();
+    recipients.sort_by_key(|recipient| recipient.card);
+    recipients
+}
+
+#[test]
+fn granted_return_tracks_both_meld_fronts_and_the_dying_creatures_controller() {
+    const QUIET_MELD: CardRules = CardRules {
+        triggers: &[],
+        ..COMBINED
+    };
+    let _rules = fixture_rules::activate(&[
+        (PAIR.source, &SOURCE),
+        (PAIR.partner, &PARTNER),
+        (PAIR.combined, &QUIET_MELD),
+    ]);
+    let owner = Player::P1;
+    let borrower = owner.other();
+    let (mut game, source, partner) = setup_pair(owner);
+    choose_partner(&mut game, partner);
+    let melded = game.object_ref(source);
+
+    resolve_targeting_spell(&mut game, owner, "Not Dead After All", source);
+    put(&mut game, borrower, "High Fae Trickster", Zone::Battlefield);
+    put(&mut game, borrower, "Quina, Qu Gourmet", Zone::Battlefield);
+    act(&mut game, Action::Pass);
+    resolve_targeting_spell(&mut game, borrower, "Goatnap", source);
+    assert_eq!(game.object_view(source).controller, borrower);
+
+    resolve_targeting_spell(&mut game, owner, "Murder", source);
+    let order = game.observe(owner).meld_ordering_choice.unwrap();
+    assert!(game.observe(borrower).meld_ordering_choice.is_none());
+    let action = Action::ChooseMeldOrder {
+        first: order.components[0],
+    };
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action)
+        .unwrap();
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    act(&mut game, action.clone());
+    indexed.apply_index(owner, revision, index).unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(game.state.stack.last().unwrap().controller, borrower);
+
+    // Either physical front can independently become stale while the ability
+    // is on the stack. Only the other exact card is still eligible to return.
+    for stale in [source, partner] {
+        let mut partial = game.clone();
+        partial.move_object(stale, Zone::Exile);
+        partial.move_object(stale, Zone::Graveyard);
+        let stale_ref = partial.object_ref(stale);
+        let survivor = if stale == source { partner } else { source };
+        settle(&mut partial);
+        assert_eq!(partial.object_view(stale).zone, Zone::Graveyard);
+        assert_eq!(partial.object_ref(stale), stale_ref);
+        assert_eq!(partial.object_view(survivor).zone, Zone::Battlefield);
+        assert_eq!(
+            wicked_attachments(&partial, borrower),
+            [partial.object_ref(survivor)]
+        );
+    }
+
+    for branch in [&mut game, &mut indexed] {
+        settle(branch);
+        for (id, front, expected_stats) in [
+            (source, PAIR.source, (4, 3)),
+            (partner, PAIR.partner, (3, 4)),
+        ] {
+            let returned = branch.object_view(id);
+            assert_eq!(returned.zone, Zone::Battlefield);
+            assert_eq!(returned.card, front);
+            assert_eq!(returned.controller, owner);
+            assert!(returned.tapped);
+            assert_eq!(stats(branch, id), expected_stats);
+        }
+        assert_ne!(branch.object_ref(source), melded);
+        assert_eq!(
+            wicked_attachments(branch, borrower),
+            [branch.object_ref(source), branch.object_ref(partner)],
+        );
+        // Quina sees one creation event even though it makes two Roles.
+        assert_eq!(
+            branch
+                .state
+                .objects
+                .iter()
+                .filter(|object| object.zone == Zone::Battlefield
+                    && object.controller == borrower
+                    && object.is_token()
+                    && object.card.has_subtype("Frog"))
+                .count(),
+            1,
+        );
+    }
+    assert_eq!(game.snapshot(), indexed.snapshot());
+}
+
+#[test]
+fn granted_return_keeps_manifested_spells_in_graveyard_and_returns_land_without_a_role() {
+    const MANIFEST: CardRules = CardRules {
+        effect: Effect::Spell(TargetPlan::NONE, &[Instruction::ManifestDread]),
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[(Card::from_name("Think Twice").unwrap(), &MANIFEST)]);
+    let owner = Player::P0;
+    for (name, destination) in [
+        ("Shock", Zone::Graveyard),
+        ("Divination", Zone::Graveyard),
+        ("Forest", Zone::Battlefield),
+    ] {
+        let mut game = scenario(owner);
+        let card = put(&mut game, owner, name, Zone::Library);
+        let manifest = put(&mut game, owner, "Think Twice", Zone::Hand);
+        cast(&mut game, manifest, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        let object = game.object_ref(card);
+        act(&mut game, Action::ChooseManifest { object });
+        settle(&mut game);
+        assert!(game.object_view(card).is_creature());
+
+        resolve_targeting_spell(&mut game, owner, "Not Dead After All", card);
+        resolve_targeting_spell(&mut game, owner, "Murder", card);
+        settle(&mut game);
+        let resolved = game.object_view(card);
+        assert_eq!(resolved.zone, destination);
+        assert_eq!(resolved.card, Card::from_name(name).unwrap());
+        assert!(!resolved.is_creature());
+        if destination == Zone::Battlefield {
+            assert!(resolved.tapped);
+            assert_eq!(resolved.controller, owner);
+        }
+        assert!(wicked_attachments(&game, owner).is_empty());
+    }
+}

@@ -103,7 +103,7 @@ impl Game {
         }
     }
     pub(super) fn return_granted_source_suspected(&mut self, item: &SpellView, tapped: bool) {
-        if let Some(mut movement) = self.granted_source_entry(item, None, None) {
+        if let Some(mut movement) = self.granted_source_entry(item) {
             movement.tapped =
                 tapped || self.enters_tapped_for(movement.before.id, movement.controller);
             movement.suspect_after = true;

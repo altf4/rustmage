@@ -675,7 +675,7 @@ impl Game {
         self.stage_entries(vec![movement], None);
         self.run_program();
     }
-    pub(super) fn return_linked_exile(&mut self, item: &SpellView) {
+    pub(super) fn return_linked_exile(&mut self, item: &SpellView, destination: Zone) {
         let source = item
             .source
             .expect("linked return has an object source")
@@ -685,7 +685,18 @@ impl Game {
         let linked = self.linked_exile_for_origin(source, item.source_ability_origin);
         let moves = linked
             .iter()
-            .map(|object| self.entry_move(object.card, Zone::Hand, false))
+            .filter_map(|object| {
+                let card = &self.state.objects[object.card as usize];
+                let permanent_kinds = 1 | 2 | 16 | 32 | 64 | crate::cards::BATTLE_KIND;
+                if destination == Zone::Battlefield
+                    && (!card.is_card() || card.card.kind_mask() & permanent_kinds == 0)
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(object.card, destination, false);
+                movement.controller = card.owner;
+                Some(movement)
+            })
             .collect();
         self.stage_entries(moves, None);
     }

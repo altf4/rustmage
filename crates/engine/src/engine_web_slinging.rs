@@ -22,6 +22,9 @@ pub(super) const RETURN_COST: AdditionalCost = AdditionalCost {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WebSlingingOrigin {
     Ordinary,
+    LibraryTop {
+        permission: LibraryTopCastPermission,
+    },
     GraveyardType {
         permission: ObjectRef,
         permanent_type: PermanentType,
@@ -96,7 +99,7 @@ impl Game {
             };
             let ordinary = match object.zone {
                 Zone::Hand => object.owner == actor,
-                Zone::Graveyard => self.has_graveyard_cast(actor, card, GraveyardCastKind::Cast),
+                Zone::Graveyard => self.has_graveyard_cast_face(actor, card, face),
                 Zone::Exile if face == CastFace::Normal => self.can_play_exiled(actor, card),
                 Zone::Exile => self.can_cast_exiled_card(actor, card),
                 Zone::Library => self.can_cast_library_face(actor, card, definition),
@@ -227,7 +230,7 @@ impl Game {
         let mut origin_life_cost = None;
         let mut exile_play_surcharge = None;
         match origin {
-            WebSlingingOrigin::Ordinary => {}
+            WebSlingingOrigin::Ordinary | WebSlingingOrigin::LibraryTop { .. } => {}
             WebSlingingOrigin::GraveyardType {
                 permission,
                 permanent_type,
@@ -285,6 +288,10 @@ impl Game {
             origin_counter_cost,
             |announcement| {
                 announcement.origin_alternative_cost = Some(cost);
+                if let WebSlingingOrigin::LibraryTop { permission } = origin {
+                    announcement.limited_cast_permission =
+                        Some(Box::new(LimitedCastPermission::LibraryTop(permission)));
+                }
                 announcement.origin_additional_cost = origin_additional_cost;
                 if let Some(life) = origin_life_cost {
                     announcement.add_origin_life_cost(life);

@@ -1,0 +1,39 @@
+{
+  "name": "Deathly Ride",
+  "catalogue_id": 5552,
+  "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+  "facts_sha256": "513db6199ecea0c340aa64f095a5a8fd678f8badf165c253dc384790ab628926",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "fab8d954-807b-426f-8057-99a5d2fec618",
+    "index": 1,
+    "sha256": "738fb72d4bb0da12ab7027a9881306c3a41b0005ae27dae98675e3f73d664c1e"
+  },
+  "physical_metadata_sha256": "7146ed016747c1ecb6ac4e0180481a70dc99f90396f2563caac9446c948eb0e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FellHorseman.java",
+  "java_sha256": "1d8c0365e08a8c95c82303d223c5017a687ce550f880996af0ed6aacf0041b25",
+  "rules_tests": "tests/woe_cards_e_l.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnLibraryTargetEffect.java",
+      "sha256": "951bc60cfe514018c30547444de577c478547e2baba34025f149064a25c04a7f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
+}

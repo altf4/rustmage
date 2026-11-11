@@ -13,6 +13,8 @@ pub(super) struct ManaAnnouncement {
 #[derive(Clone, Debug, Serialize)]
 pub struct ManaAnnouncementView {
     pub item: SpellView,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub library_top_cast_permission: Option<LibraryTopCastPermission>,
     pub group: Option<u16>,
     pub cost: Option<ManaCost>,
     pub counters: Option<Counters>,
@@ -99,6 +101,7 @@ impl Game {
                 let goal = owns.then(|| self.funding_goal(a));
                 ManaAnnouncementView {
                     item,
+                    library_top_cast_permission: a.library_top_cast_permission(),
                     group: owns.then_some(a.group),
                     cost: goal.map(|g| ManaCost {
                         colored: g.required,
@@ -128,14 +131,14 @@ impl Game {
                                 + a.activation_choice.as_ref().map_or(0, |_| {
                                     std::mem::size_of::<targeting::ActivationCostChoice>()
                                 })
-                                + a.free_hand_permission
+                                + a.limited_cast_permission
                                     .as_ref()
-                                    .map_or(0, |_| std::mem::size_of::<ObjectRef>())
+                                    .map_or(0, |_| std::mem::size_of::<LimitedCastPermission>())
                                 + casualty::bytes(&a.casualty)
                                 + conspire::bytes(&a.conspire)
                                 + a.cast_costs.as_ref().map_or(0, |c| c.bytes())
                                 + a.convoke.as_ref().map_or(0, |v| v.bytes())
-                                + a.power_up_costs.as_ref().map_or(0, |v| v.bytes())
+                                + a.activation_reductions.as_ref().map_or(0, |v| v.bytes())
                                 + a.evidence.as_ref().map_or(0, |v| v.bytes())
                                 + a.forage.as_ref().map_or(0, |v| v.bytes())
                                 + a.additional_group.as_ref().map_or(0, |v| {

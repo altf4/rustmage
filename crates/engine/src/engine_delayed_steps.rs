@@ -6,6 +6,8 @@ use super::*;
 pub struct DelayedStep {
     pub steps: &'static [Step],
     pub active_player: Option<Player>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expires_turn: Option<u32>,
     pub item: SpellView,
 }
 
@@ -18,6 +20,7 @@ impl Game {
         relation: CastRelation,
         ability: u16,
         objects: impl IntoIterator<Item = ObjectRef>,
+        expires_turn: Option<u32>,
     ) {
         let steps: &'static [Step] = match step {
             TriggerStep::Upkeep => &[Step::Upkeep],
@@ -52,6 +55,7 @@ impl Game {
             .push(DelayedStep {
                 steps,
                 active_player,
+                expires_turn,
                 item: packet,
             });
     }

@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "6d2559947553558cfed03966c35fea308b102cdb3e7387805d5d208c10285afb",
+  "catalogue_version": "24a0804143ab86deafe13620c5c71972d6a51cf79dd72b6590cb8d256c912378",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4005,
-  "implemented_total": 4014,
-  "token_definitions": 173,
+  "implemented_standard_cards": 4127,
+  "implemented_total": 4139,
+  "token_definitions": 176,
   "emblem_definitions": 12,
-  "adventure_definitions": 53,
+  "adventure_definitions": 73,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -71,8 +71,8 @@
     },
     "frc": {
       "total": 6,
-      "complete": 3,
-      "gated": 3
+      "complete": 4,
+      "gated": 2
     },
     "hob": {
       "total": 188,
@@ -140,8 +140,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 14,
-      "gated": 10
+      "complete": 19,
+      "gated": 5
     },
     "sos": {
       "total": 264,
@@ -153,8 +153,7 @@
     },
     "tdc": {
       "total": 15,
-      "complete": 14,
-      "gated": 1
+      "complete": 15
     },
     "tdm": {
       "total": 264,
@@ -183,8 +182,7 @@
     },
     "woe": {
       "total": 258,
-      "complete": 143,
-      "gated": 115
+      "complete": 258
     },
     "znr": {
       "total": 1,
@@ -851,24 +849,24 @@
     {
       "name": "Agatha of the Vile Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_of_the_vile_cauldron.rs",
       "set": "woe"
     },
     {
       "name": "Agatha's Champion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_s_champion.rs",
       "set": "woe"
     },
     {
       "name": "Agatha's Soul Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/agatha_s_soul_cauldron.rs",
       "set": "woe"
     },
@@ -2603,8 +2601,8 @@
     {
       "name": "Back for Seconds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/back_for_seconds.rs",
       "set": "woe"
     },
@@ -3323,8 +3321,8 @@
     {
       "name": "Beseech the Mirror",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/beseech_the_mirror.rs",
       "set": "woe"
     },
@@ -3595,8 +3593,8 @@
     {
       "name": "Bitter Chill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/bitter_chill.rs",
       "set": "woe"
     },
@@ -3979,8 +3977,8 @@
     {
       "name": "Blossoming Tortoise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/blossoming_tortoise.rs",
       "set": "woe"
     },
@@ -4435,8 +4433,8 @@
     {
       "name": "Brave the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/brave_the_wilds.rs",
       "set": "woe"
     },
@@ -4515,8 +4513,8 @@
     {
       "name": "Break the Spell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/break_the_spell.rs",
       "set": "woe"
     },
@@ -5891,8 +5889,8 @@
     {
       "name": "Chancellor of Tales",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/chancellor_of_tales.rs",
       "set": "woe"
     },
@@ -5971,8 +5969,8 @@
     {
       "name": "Charging Hooligan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/charging_hooligan.rs",
       "set": "woe"
     },
@@ -6043,8 +6041,8 @@
     {
       "name": "Cheeky House-Mouse // Squeak By",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cheeky_house_mouse_squeak_by.rs",
       "set": "woe"
     },
@@ -6939,8 +6937,8 @@
     {
       "name": "Cooped Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cooped_up.rs",
       "set": "woe"
     },
@@ -7419,8 +7417,8 @@
     {
       "name": "Cruel Somnophage // Can't Wake Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/cruel_somnophage_can_t_wake_up.rs",
       "set": "woe"
     },
@@ -8283,8 +8281,8 @@
     {
       "name": "Decadent Dragon // Expensive Taste",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/decadent_dragon_expensive_taste.rs",
       "set": "woe"
     },
@@ -8715,8 +8713,8 @@
     {
       "name": "Devouring Sugarmaw // Have for Dinner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/devouring_sugarmaw_have_for_dinner.rs",
       "set": "woe"
     },
@@ -8915,8 +8913,8 @@
     {
       "name": "Discerning Financier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/discerning_financier.rs",
       "set": "woe"
     },
@@ -9643,8 +9641,8 @@
     {
       "name": "Dream Spoilers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/dream_spoilers.rs",
       "set": "woe"
     },
@@ -9875,8 +9873,8 @@
     {
       "name": "Dutiful Griffin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/dutiful_griffin.rs",
       "set": "woe"
     },
@@ -10323,8 +10321,8 @@
     {
       "name": "Edgewall Inn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/edgewall_inn.rs",
       "set": "woe"
     },
@@ -10347,8 +10345,8 @@
     {
       "name": "Eerie Interference",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/eerie_interference.rs",
       "set": "woe"
     },
@@ -10371,8 +10369,8 @@
     {
       "name": "Ego Drain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/ego_drain.rs",
       "set": "woe"
     },
@@ -11035,8 +11033,8 @@
     {
       "name": "Eriette of the Charmed Apple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/eriette_of_the_charmed_apple.rs",
       "set": "soc"
     },
@@ -11051,8 +11049,8 @@
     {
       "name": "Eriette's Tempting Apple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/eriette_s_tempting_apple.rs",
       "set": "woe"
     },
@@ -11419,8 +11417,8 @@
     {
       "name": "Expel the Interlopers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tdc/expel_the_interlopers.rs",
       "set": "tdc"
     },
@@ -11515,8 +11513,8 @@
     {
       "name": "Extraordinary Journey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/extraordinary_journey.rs",
       "set": "woe"
     },
@@ -11611,16 +11609,16 @@
     {
       "name": "Faerie Fencing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faerie_fencing.rs",
       "set": "woe"
     },
     {
       "name": "Faerie Slumber Party",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faerie_slumber_party.rs",
       "set": "woe"
     },
@@ -11843,8 +11841,8 @@
     {
       "name": "Faunsbane Troll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/faunsbane_troll.rs",
       "set": "woe"
     },
@@ -12027,8 +12025,8 @@
     {
       "name": "Feed the Cauldron",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/feed_the_cauldron.rs",
       "set": "woe"
     },
@@ -12115,8 +12113,8 @@
     {
       "name": "Fell Horseman // Deathly Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/fell_horseman_deathly_ride.rs",
       "set": "woe"
     },
@@ -12155,8 +12153,8 @@
     {
       "name": "Feral Encounter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/feral_encounter.rs",
       "set": "woe"
     },
@@ -12651,8 +12649,8 @@
     {
       "name": "Flick a Coin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/flick_a_coin.rs",
       "set": "woe"
     },
@@ -12859,8 +12857,8 @@
     {
       "name": "Food Fight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/food_fight.rs",
       "set": "woe"
     },
@@ -13107,8 +13105,8 @@
     {
       "name": "Frantic Firebolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/frantic_firebolt.rs",
       "set": "woe"
     },
@@ -13475,8 +13473,8 @@
     {
       "name": "Gadwick's First Duel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gadwick_s_first_duel.rs",
       "set": "woe"
     },
@@ -14235,8 +14233,8 @@
     {
       "name": "Gingerbrute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gingerbrute.rs",
       "set": "woe"
     },
@@ -14571,8 +14569,8 @@
     {
       "name": "Gnawing Crescendo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gnawing_crescendo.rs",
       "set": "woe"
     },
@@ -14707,8 +14705,8 @@
     {
       "name": "Goddric, Cloaked Reveler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/goddric_cloaked_reveler.rs",
       "set": "woe"
     },
@@ -14899,8 +14897,8 @@
     {
       "name": "Graceful Takedown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/graceful_takedown.rs",
       "set": "woe"
     },
@@ -15203,8 +15201,8 @@
     {
       "name": "Greta, Sweettooth Scourge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/greta_sweettooth_scourge.rs",
       "set": "woe"
     },
@@ -15347,8 +15345,8 @@
     {
       "name": "Gruff Triplets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gruff_triplets.rs",
       "set": "woe"
     },
@@ -15459,8 +15457,8 @@
     {
       "name": "Gumdrop Poisoner // Tempt with Treats",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/gumdrop_poisoner_tempt_with_treats.rs",
       "set": "woe"
     },
@@ -16027,8 +16025,8 @@
     {
       "name": "Heartflame Duelist // Heartflame Slash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/heartflame_duelist_heartflame_slash.rs",
       "set": "woe"
     },
@@ -16771,16 +16769,16 @@
     {
       "name": "Hopeless Nightmare",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
-      "definition": "src/card_definitions/legacy/hopeless_nightmare.rs",
-      "set": "legacy"
+      "implemented": true,
+      "implementation": "typed_rust",
+      "definition": "src/card_definitions/woe/hopeless_nightmare.rs",
+      "set": "woe"
     },
     {
       "name": "Horned Loch-Whale // Lagoon Breach",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/horned_loch_whale_lagoon_breach.rs",
       "set": "woe"
     },
@@ -16891,8 +16889,8 @@
     {
       "name": "Howling Galefang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/howling_galefang.rs",
       "set": "woe"
     },
@@ -17107,16 +17105,16 @@
     {
       "name": "Hylda of the Icy Crown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hylda_of_the_icy_crown.rs",
       "set": "woe"
     },
     {
       "name": "Hylda's Crown of Winter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/hylda_s_crown_of_winter.rs",
       "set": "woe"
     },
@@ -17211,8 +17209,8 @@
     {
       "name": "Icewrought Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/icewrought_sentry.rs",
       "set": "woe"
     },
@@ -17347,8 +17345,8 @@
     {
       "name": "Imodane, the Pyrohammer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/imodane_the_pyrohammer.rs",
       "set": "woe"
     },
@@ -17531,8 +17529,8 @@
     {
       "name": "Ingenious Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/ingenious_prodigy.rs",
       "set": "soc"
     },
@@ -17795,8 +17793,8 @@
     {
       "name": "Into the Fae Court",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/into_the_fae_court.rs",
       "set": "woe"
     },
@@ -18459,8 +18457,8 @@
     {
       "name": "Johann, Apprentice Sorcerer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/johann_apprentice_sorcerer.rs",
       "set": "woe"
     },
@@ -18931,8 +18929,8 @@
     {
       "name": "Kellan, the Fae-Blooded // Birthright Boon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/kellan_the_fae_blooded_birthright_boon.rs",
       "set": "woe"
     },
@@ -20107,8 +20105,8 @@
     {
       "name": "Lich-Knights' Conquest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/lich_knights_conquest.rs",
       "set": "woe"
     },
@@ -20227,8 +20225,8 @@
     {
       "name": "Likeness Looter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/likeness_looter.rs",
       "set": "woe"
     },
@@ -20659,8 +20657,8 @@
     {
       "name": "Lord Skitter, Sewer King",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/lord_skitter_sewer_king.rs",
       "set": "woe"
     },
@@ -21355,8 +21353,8 @@
     {
       "name": "Malevolent Witchkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/malevolent_witchkite.rs",
       "set": "woe"
     },
@@ -22891,10 +22889,10 @@
     {
       "name": "Monstrous Rage",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
-      "definition": "src/card_definitions/legacy/monstrous_rage.rs",
-      "set": "legacy"
+      "implemented": true,
+      "implementation": "typed_rust",
+      "definition": "src/card_definitions/woe/monstrous_rage.rs",
+      "set": "woe"
     },
     {
       "name": "Monument to Endurance",
@@ -22971,8 +22969,8 @@
     {
       "name": "Moonshaker Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/moonshaker_cavalry.rs",
       "set": "soc"
     },
@@ -23067,8 +23065,8 @@
     {
       "name": "Mosswood Dreadknight // Dread Whispers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/mosswood_dreadknight_dread_whispers.rs",
       "set": "woe"
     },
@@ -23579,8 +23577,8 @@
     {
       "name": "Neva, Stalked by Nightmares",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/neva_stalked_by_nightmares.rs",
       "set": "woe"
     },
@@ -23675,8 +23673,8 @@
     {
       "name": "Night of the Sweets' Revenge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/night_of_the_sweets_revenge.rs",
       "set": "woe"
     },
@@ -24147,8 +24145,8 @@
     {
       "name": "Ogre Chitterlord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/ogre_chitterlord.rs",
       "set": "woe"
     },
@@ -24235,8 +24233,8 @@
     {
       "name": "Old Flitterfang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/old_flitterfang.rs",
       "set": "woe"
     },
@@ -25443,8 +25441,8 @@
     {
       "name": "Picnic Ruiner // Stolen Goodies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/picnic_ruiner_stolen_goodies.rs",
       "set": "woe"
     },
@@ -25779,8 +25777,8 @@
     {
       "name": "Pollen-Shield Hare // Hare Raising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/pollen_shield_hare_hare_raising.rs",
       "set": "woe"
     },
@@ -26675,8 +26673,8 @@
     {
       "name": "Questing Druid // Seek the Beast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/questing_druid_seek_the_beast.rs",
       "set": "woe"
     },
@@ -27179,8 +27177,8 @@
     {
       "name": "Rankle's Prank",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rankle_s_prank.rs",
       "set": "woe"
     },
@@ -27283,8 +27281,8 @@
     {
       "name": "Rat Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rat_out.rs",
       "set": "woe"
     },
@@ -27499,8 +27497,8 @@
     {
       "name": "Realm-Scorcher Hellkite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/realm_scorcher_hellkite.rs",
       "set": "woe"
     },
@@ -27707,8 +27705,8 @@
     {
       "name": "Redtooth Vanguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/redtooth_vanguard.rs",
       "set": "woe"
     },
@@ -28067,24 +28065,24 @@
     {
       "name": "Restless Bivouac",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_bivouac.rs",
       "set": "woe"
     },
     {
       "name": "Restless Cottage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_cottage.rs",
       "set": "woe"
     },
     {
       "name": "Restless Fortress",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_fortress.rs",
       "set": "woe"
     },
@@ -28115,8 +28113,8 @@
     {
       "name": "Restless Spire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/restless_spire.rs",
       "set": "frc"
     },
@@ -28131,8 +28129,8 @@
     {
       "name": "Restless Vinestalk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/restless_vinestalk.rs",
       "set": "woe"
     },
@@ -28219,8 +28217,8 @@
     {
       "name": "Return from the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/return_from_the_wilds.rs",
       "set": "woe"
     },
@@ -28939,8 +28937,8 @@
     {
       "name": "Rotisserie Elemental",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rotisserie_elemental.rs",
       "set": "woe"
     },
@@ -28987,16 +28985,16 @@
     {
       "name": "Rowan's Grim Search",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rowan_s_grim_search.rs",
       "set": "woe"
     },
     {
       "name": "Rowan, Scion of War",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/rowan_scion_of_war.rs",
       "set": "woe"
     },
@@ -30491,8 +30489,8 @@
     {
       "name": "Sentinel of Lost Lore",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/sentinel_of_lost_lore.rs",
       "set": "woe"
     },
@@ -30691,8 +30689,8 @@
     {
       "name": "Sharae of Numbing Depths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/sharae_of_numbing_depths.rs",
       "set": "woe"
     },
@@ -31323,8 +31321,8 @@
     {
       "name": "Skewer Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/skewer_slinger.rs",
       "set": "woe"
     },
@@ -31635,8 +31633,8 @@
     {
       "name": "Slumbering Keepguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/slumbering_keepguard.rs",
       "set": "woe"
     },
@@ -31723,8 +31721,8 @@
     {
       "name": "Snaremaster Sprite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/snaremaster_sprite.rs",
       "set": "woe"
     },
@@ -31875,8 +31873,8 @@
     {
       "name": "Solitary Sanctuary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/solitary_sanctuary.rs",
       "set": "woe"
     },
@@ -32179,8 +32177,8 @@
     {
       "name": "Specter of Mortality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/specter_of_mortality.rs",
       "set": "woe"
     },
@@ -32251,8 +32249,8 @@
     {
       "name": "Spell Stutter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spell_stutter.rs",
       "set": "woe"
     },
@@ -32283,8 +32281,8 @@
     {
       "name": "Spellscorn Coven // Take It Back",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spellscorn_coven_take_it_back.rs",
       "set": "woe"
     },
@@ -32339,8 +32337,8 @@
     {
       "name": "Spider Food",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/spider_food.rs",
       "set": "woe"
     },
@@ -33435,8 +33433,8 @@
     {
       "name": "Stockpiling Celebrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/stockpiling_celebrant.rs",
       "set": "woe"
     },
@@ -33515,8 +33513,8 @@
     {
       "name": "Stonesplitter Bolt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/stonesplitter_bolt.rs",
       "set": "woe"
     },
@@ -33635,8 +33633,8 @@
     {
       "name": "Storyteller Pixie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/storyteller_pixie.rs",
       "set": "woe"
     },
@@ -33803,8 +33801,8 @@
     {
       "name": "Succumb to the Cold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/succumb_to_the_cold.rs",
       "set": "woe"
     },
@@ -34667,8 +34665,8 @@
     {
       "name": "Syr Ginger, the Meal Ender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/syr_ginger_the_meal_ender.rs",
       "set": "woe"
     },
@@ -34795,16 +34793,16 @@
     {
       "name": "Talion's Messenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/talion_s_messenger.rs",
       "set": "woe"
     },
     {
       "name": "Talion, the Kindly Lord",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/talion_the_kindly_lord.rs",
       "set": "woe"
     },
@@ -34851,8 +34849,8 @@
     {
       "name": "Tangled Colony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tangled_colony.rs",
       "set": "woe"
     },
@@ -34947,8 +34945,8 @@
     {
       "name": "Tattered Ratter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tattered_ratter.rs",
       "set": "woe"
     },
@@ -35363,8 +35361,8 @@
     {
       "name": "Territorial Witchstalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/territorial_witchstalker.rs",
       "set": "woe"
     },
@@ -35547,8 +35545,8 @@
     {
       "name": "The Apprentice's Folly",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_apprentice_s_folly.rs",
       "set": "woe"
     },
@@ -35723,8 +35721,8 @@
     {
       "name": "The End",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_end.rs",
       "set": "woe"
     },
@@ -35803,8 +35801,8 @@
     {
       "name": "The Goose Mother",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/the_goose_mother.rs",
       "set": "soc"
     },
@@ -35835,8 +35833,8 @@
     {
       "name": "The Irencrag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_irencrag.rs",
       "set": "woe"
     },
@@ -36091,8 +36089,8 @@
     {
       "name": "The Princess Takes Flight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/the_princess_takes_flight.rs",
       "set": "woe"
     },
@@ -36707,16 +36705,16 @@
     {
       "name": "Three Blind Mice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/three_blind_mice.rs",
       "set": "woe"
     },
     {
       "name": "Three Bowls of Porridge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/three_bowls_of_porridge.rs",
       "set": "woe"
     },
@@ -36891,8 +36889,8 @@
     {
       "name": "Thunderous Debut",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/thunderous_debut.rs",
       "set": "woe"
     },
@@ -37331,16 +37329,16 @@
     {
       "name": "Totentanz, Swarm Piper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/totentanz_swarm_piper.rs",
       "set": "woe"
     },
     {
       "name": "Tough Cookie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/tough_cookie.rs",
       "set": "woe"
     },
@@ -37715,8 +37713,8 @@
     {
       "name": "Troyan, Gutsy Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/troyan_gutsy_explorer.rs",
       "set": "soc"
     },
@@ -37971,8 +37969,8 @@
     {
       "name": "Twining Twins // Swift Spiral",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/twining_twins_swift_spiral.rs",
       "set": "woe"
     },
@@ -38011,8 +38009,8 @@
     {
       "name": "Twisted Fealty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/twisted_fealty.rs",
       "set": "woe"
     },
@@ -38691,10 +38689,10 @@
     {
       "name": "Up the Beanstalk",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
-      "definition": "src/card_definitions/legacy/up_the_beanstalk.rs",
-      "set": "legacy"
+      "implemented": true,
+      "implementation": "typed_rust",
+      "definition": "src/card_definitions/woe/up_the_beanstalk.rs",
+      "set": "woe"
     },
     {
       "name": "Urban Retreat",
@@ -39435,40 +39433,40 @@
     {
       "name": "Virtue of Courage // Embereth Blaze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_courage_embereth_blaze.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Knowledge // Vantress Visions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_knowledge_vantress_visions.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Loyalty // Ardenvale Fealty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_loyalty_ardenvale_fealty.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Persistence // Locthwain Scorn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_persistence_locthwain_scorn.rs",
       "set": "woe"
     },
     {
       "name": "Virtue of Strength // Garenbrig Growth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/virtue_of_strength_garenbrig_growth.rs",
       "set": "woe"
     },
@@ -40475,8 +40473,8 @@
     {
       "name": "Werefox Bodyguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/werefox_bodyguard.rs",
       "set": "woe"
     },
@@ -40747,8 +40745,8 @@
     {
       "name": "Wildwood Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/wildwood_mentor.rs",
       "set": "woe"
     },
@@ -40763,8 +40761,8 @@
     {
       "name": "Will, Scion of Peace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/will_scion_of_peace.rs",
       "set": "woe"
     },
@@ -41291,8 +41289,8 @@
     {
       "name": "Yenna, Redtooth Regent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/woe/yenna_redtooth_regent.rs",
       "set": "woe"
     },

@@ -52,7 +52,7 @@ impl Game {
     pub(super) fn exile_targets_play(
         &mut self,
         item: &SpellView,
-        next_turn: bool,
+        expiry: ExilePlayExpiry,
         owners: bool,
         include_top: bool,
     ) {
@@ -91,7 +91,7 @@ impl Game {
                     item.controller
                 };
                 for exiled in event.objects_after() {
-                    self.grant_exile_play_permission(player, exiled, next_turn);
+                    self.grant_exile_play_permission_with_expiry(player, exiled, None, expiry);
                 }
             }
         }

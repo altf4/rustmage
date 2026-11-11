@@ -3,10 +3,26 @@
   "catalogue_id": 4344,
   "oracle_id": "ba36f27a-08fc-46a5-bc55-2a71091cebcc",
   "facts_sha256": "a7ccb18fb28535df4b57e3f93ec4a99efa3d1c2d675d74840102e44983d4e2ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "525e8948bdc0431b6f7d660fd2255e115761913b18e796efa7e41ef6243aa4ad"
   },
-  "physical_metadata_sha256": "7a352f70c7fdb782adcead4abb72ff5d0675d532585a95897a682fe433798faa"
+  "physical_metadata_sha256": "7a352f70c7fdb782adcead4abb72ff5d0675d532585a95897a682fe433798faa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TatteredRatter.java",
+  "java_sha256": "292518dc62287100a4b56be21b19458af0a4d848764bc2f7bf4fabefbe14c764",
+  "rules_tests": "tests/woe_cards_s_z.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesBlockedAllTriggeredAbility.java",
+      "sha256": "1df3a3737e5a3468fcd61c19938b329c702360c6a531167315e2666d1733fa79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

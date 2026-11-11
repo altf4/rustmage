@@ -7,6 +7,7 @@ use crate::SearchDestination;
 pub(super) struct SearchResult {
     pub origin: Option<ObjectRef>,
     pub entered: Option<ObjectRef>,
+    pub exiled: Option<ObjectRef>,
     pub put_in_hand: bool,
     pub capture_next_entry: bool,
     pub closed: bool,
@@ -192,6 +193,7 @@ impl Game {
             .as_mut()
         {
             frame.origin = origin;
+            frame.exiled = None;
             frame.closed = false;
         }
         if choice.spec.destination == SearchDestination::Top {
@@ -218,11 +220,24 @@ impl Game {
         }
         // A private search does not disclose whether the previously known top
         // was chosen or shuffled away. A singleton library is still deducible.
-        if choice.spec.destination == SearchDestination::Hand
-            && !choice.spec.reveal
+        if (choice.spec.destination == SearchDestination::ExileFaceDown
+            || choice.spec.destination == SearchDestination::Hand && !choice.spec.reveal)
             && self.state.players[player.index()].library.len() > 1
         {
             self.forget_library_top(player);
+        }
+        if choice.spec.destination == SearchDestination::ExileFaceDown {
+            let events = self.move_objects_raw(&choice.selected, Zone::Exile);
+            for event in &events {
+                if event.moved && event.destination == Zone::Exile {
+                    self.remember_face_down_exile(event.after, 1 << player.index(), None);
+                }
+            }
+            self.capture_search_result_entry(&events);
+            self.finish_zone_events(&events, &[]);
+            self.shuffle_library_cards(player);
+            self.run_program();
+            return;
         }
         let moves = choice
             .selected
@@ -234,6 +249,9 @@ impl Game {
                     }
                     SearchDestination::HandOrGraveyard => {
                         unreachable!("destination chosen before movement")
+                    }
+                    SearchDestination::ExileFaceDown => {
+                        unreachable!("face-down exile committed before entry moves")
                     }
                     SearchDestination::LinkedExile | SearchDestination::ExileFreeThisTurn => {
                         Zone::Exile
@@ -318,7 +336,23 @@ impl Game {
         frame.entered = movement
             .filter(|event| event.destination == Zone::Battlefield)
             .map(|event| event.after);
+        frame.exiled = movement
+            .filter(|event| event.destination == Zone::Exile)
+            .map(|event| event.after);
         frame.put_in_hand = movement.is_some_and(|event| event.destination == Zone::Hand);
+    }
+
+    pub(super) fn exiled_search_result(&self) -> Option<ObjectRef> {
+        self.state
+            .resolving
+            .as_ref()?
+            .search_result
+            .as_ref()?
+            .exiled
+            .filter(|object| {
+                self.object_ref(object.card) == *object
+                    && self.state.objects[object.card as usize].zone == Zone::Exile
+            })
     }
 }
 
