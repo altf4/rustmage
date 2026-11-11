@@ -19,7 +19,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         TriggeredAbility {
             condition: TriggerCondition::Reflexive,
             targets: TargetPlan::NONE,
-            program: &[Instruction::ExileDelayedCreatedTokens],
+            program: &[Instruction::ExileDelayedBattlefieldObjects],
         },
     ],
     ..CardRules::EMPTY
