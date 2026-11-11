@@ -33,7 +33,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
         targets: TargetPlan::NONE,
         program: &[
-            Instruction::DiscardHand(PlayerSet::Controller),
+            Instruction::DiscardHandRememberCount(PlayerSet::Controller),
             Instruction::DrawScaled(
                 PlayerSet::Controller,
                 AmountValue::SourceCounterQuantity(CounterKind::Stash),

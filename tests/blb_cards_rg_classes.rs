@@ -201,8 +201,8 @@ fn hunters_talent_damages_on_entry_and_checks_attack_and_end_step_levels() {
     step(&mut game, Step::End);
     let mut weakened = game.clone();
     weakened.state.players[player.index()].mana = [8; 6];
-    let disfigure = put(&mut weakened, player, "Disfigure", Zone::Hand);
-    cast(&mut weakened, disfigure, Some(Target::Card(giant)));
+    let savor = put(&mut weakened, player, "Savor", Zone::Hand);
+    cast(&mut weakened, savor, Some(Target::Card(giant)));
     settle(&mut weakened);
     assert_eq!(
         weakened.state.players[player.index()].cards_drawn_this_turn,
