@@ -1084,6 +1084,7 @@ impl Game {
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
+                    | TriggerCondition::CommittedCrime
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::NonmanaAbilityActivated
