@@ -1097,6 +1097,8 @@ impl Game {
                     | TriggerCondition::DelayedTargetEvent
                     | TriggerCondition::DelayedTargetControlLostWhileAttached
                     | TriggerCondition::OpponentTakesPermanent
+                    | TriggerCondition::ControlledAuraAttachesToOpponentNonland
+                    | TriggerCondition::SelfBecomesAttachedToCreature
                     | TriggerCondition::LoyaltyAbilityActivated
                     | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
                     | TriggerCondition::OpponentLoyaltyAbilityActivated
@@ -11724,6 +11726,9 @@ impl Game {
                 }
                 Instruction::GainControlTargetsUntilSourceLeaves => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Control);
+                }
+                Instruction::GainControlWhileEventAuraAttached => {
+                    self.gain_control_while_event_aura_attached(&item);
                 }
                 Instruction::RemoveTargetAbilitiesUntilEndOfTurn => {
                     self.remove_target_abilities_until_end_of_turn(&item);

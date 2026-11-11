@@ -124,6 +124,7 @@ impl Game {
                     timestamp,
                     expires_turn,
                     expires_after_next_turn: None,
+                    attachment: None,
                 });
         }
         self.refresh_controllers();

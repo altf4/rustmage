@@ -95,6 +95,7 @@ impl Game {
         {
             return false;
         }
+        self.forget_control_attachment(object);
         self.renew_copy_grant_origin(object, false);
         true
     }
@@ -106,13 +107,62 @@ impl Game {
             return false;
         }
         if self.state.objects[source.card as usize].attached_to != Some(target) {
+            self.forget_control_attachment(source);
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
+            self.state.objects[source.card as usize].attached_to = Some(target);
+            self.self_attachment_triggers(source, target);
         }
-        self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+
+    pub(super) fn queue_attachment_trigger(
+        &mut self,
+        observer: &ObjectView,
+        index: usize,
+        attachment: &ObjectView,
+        recipient: ObjectRef,
+    ) {
+        let event = AttachmentTriggerView {
+            grantor: attachment.reference,
+            granting_card: attachment.card,
+            recipient,
+            defender: None,
+            granted: false,
+            origin: None,
+        };
+        if self.queue_trigger_from(observer, index, Some(Box::new(event))) {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .refer_objects([attachment.reference, recipient]);
+        }
+    }
+
+    pub(super) fn self_attachment_triggers(&mut self, attachment: ObjectRef, recipient: ObjectRef) {
+        let card = self.state.objects[attachment.card as usize].card;
+        let observes = |ability: &TriggeredAbility| {
+            ability.condition.event() == TriggerCondition::SelfBecomesAttachedToCreature
+        };
+        if !card.triggers().iter().any(observes)
+            || !self.attachment_is_live(attachment, recipient)
+            || !self.is_creature(recipient.card)
+        {
+            return;
+        }
+        let source = self.object_view(attachment.card);
+        for (index, _) in card
+            .triggers()
+            .iter()
+            .enumerate()
+            .filter(|(_, ability)| observes(ability))
+        {
+            self.queue_attachment_trigger(&source, index, &source, recipient);
+        }
+    }
+
     pub(super) fn new_source_attachment_pair(
         &self,
         item: &SpellView,
@@ -231,12 +281,16 @@ impl Game {
             })
             .collect();
         for &source in &equipment {
+            self.forget_control_attachment(source);
             self.state.objects[source.card as usize].attached_to = Some(recipient);
         }
         for &source in &equipment {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
+        }
+        for &source in &equipment {
+            self.self_attachment_triggers(source, recipient);
         }
         equipment
     }

@@ -17,6 +17,7 @@ pub(super) struct ControlEffect {
     pub timestamp: u64,
     pub expires_turn: Option<u32>,
     pub expires_after_next_turn: Option<NextTurnControlExpiry>,
+    pub attachment: Option<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -52,6 +53,13 @@ impl Card {
         })
     }
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn attachment_matches(aura: &Object, source: ObjectRef, recipient: ObjectRef) -> bool {
+    aura.zone == Zone::Battlefield
+        && aura.generation == source.generation
+        && aura.attached_to == Some(recipient)
+}
+
 /// Re-evaluate using the supplied actual or speculative object facts. Layer-six
 /// removal cannot undo an effect that already started in layer two (CR613.6).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -75,7 +83,12 @@ pub(super) fn controllers<W: super::ability_world::CharacteristicWorld + ?Sized>
     let mut effects: Vec<_> = state
         .effects
         .iter()
-        .filter(|row| present(row.object))
+        .filter(|row| {
+            present(row.object)
+                && row.attachment.is_none_or(|source| {
+                    attachment_matches(&object(source.card), source, row.object)
+                })
+        })
         .map(|row| AppliedControl {
             object: row.object,
             controller: row.controller,
@@ -227,6 +240,23 @@ impl Game {
         expires_turn: Option<u32>,
         expires_after_next_turn: Option<NextTurnControlExpiry>,
     ) {
+        self.add_control_effect(
+            object,
+            controller,
+            expires_turn,
+            expires_after_next_turn,
+            None,
+        );
+    }
+
+    fn add_control_effect(
+        &mut self,
+        object: ObjectRef,
+        controller: Player,
+        expires_turn: Option<u32>,
+        expires_after_next_turn: Option<NextTurnControlExpiry>,
+        attachment: Option<ObjectRef>,
+    ) {
         self.ensure_control_base(object);
         let timestamp = self.next_role_timestamp();
         self.state
@@ -240,9 +270,71 @@ impl Game {
                 timestamp,
                 expires_turn,
                 expires_after_next_turn,
+                attachment,
             });
         self.refresh_controllers();
     }
+
+    pub(super) fn attachment_is_live(&self, source: ObjectRef, recipient: ObjectRef) -> bool {
+        self.on_battlefield(recipient.card)
+            && self.object_ref(recipient.card) == recipient
+            && attachment_matches(&self.state.objects[source.card as usize], source, recipient)
+    }
+
+    pub(super) fn aura_attachment_triggers(
+        &mut self,
+        aura: &ObjectView,
+        recipient: ObjectRef,
+        sources: &[ObjectView],
+    ) {
+        if !ability_world::CharacteristicWorld::is_aura(self, aura.id)
+            || !self.attachment_is_live(aura.reference, recipient)
+        {
+            return;
+        }
+        let mut qualifies = None;
+        for source in sources.iter().filter(|source| {
+            source.zone == Zone::Battlefield && source.controller == aura.controller
+        }) {
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event()
+                    != TriggerCondition::ControlledAuraAttachesToOpponentNonland
+                {
+                    continue;
+                }
+                if !*qualifies.get_or_insert_with(|| {
+                    self.current_kinds(recipient.card) & 2 == 0
+                        && self.state.objects[recipient.card as usize].controller != aura.controller
+                        && self.object_mana_value(recipient.card) <= self.object_mana_value(aura.id)
+                }) {
+                    return;
+                }
+                self.queue_attachment_trigger(source, index, aura, recipient);
+            }
+        }
+    }
+
+    pub(super) fn gain_control_while_event_aura_attached(&mut self, item: &SpellView) {
+        let Some(event) = item.attachment_trigger.as_deref() else {
+            return;
+        };
+        if self.attachment_is_live(event.grantor, event.recipient) {
+            self.add_control_effect(
+                event.recipient,
+                item.controller,
+                None,
+                None,
+                Some(event.grantor),
+            );
+        }
+    }
+
+    pub(super) fn forget_control_attachment(&mut self, source: ObjectRef) {
+        if let Some(state) = &mut self.state.controls {
+            state.effects.retain(|row| row.attachment != Some(source));
+        }
+    }
+
     pub(super) fn refresh_controllers(&mut self) {
         self.refresh_controllers_after(None);
     }
@@ -351,9 +443,15 @@ impl Game {
             })
             .map(|row| row.recipient)
             .collect();
+        let objects = &self.state.objects;
         let state = self.state.controls.as_mut().unwrap();
         state.bases.retain(|row| live.contains(&row.object));
-        state.effects.retain(|row| live.contains(&row.object));
+        state.effects.retain(|row| {
+            live.contains(&row.object)
+                && row.attachment.is_none_or(|source| {
+                    attachment_matches(&objects[source.card as usize], source, row.object)
+                })
+        });
         state.bases.retain(|row| {
             state
                 .effects
@@ -425,6 +523,7 @@ impl Game {
                 timestamp,
                 expires_turn: None,
                 expires_after_next_turn: None,
+                attachment: None,
             });
         }
         self.refresh_controllers();

@@ -975,6 +975,10 @@ impl Game {
         for event in events {
             if event.moved && event.destination == Zone::Battlefield {
                 let entered = self.object_view(event.after.card);
+                if let Some(recipient) = entered.attached_to {
+                    self.self_attachment_triggers(entered.reference, recipient);
+                    self.aura_attachment_triggers(&entered, recipient, &sources);
+                }
                 if entered.kinds & entry_suppression != 0 {
                     continue;
                 }

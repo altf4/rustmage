@@ -4531,6 +4531,8 @@ pub enum Instruction {
     },
     Tap,
     GainControlTargetsUntilSourceLeaves,
+    /// Take the untargeted event permanent while the exact event Aura remains attached.
+    GainControlWhileEventAuraAttached,
     /// Linked control plus combat prohibition, ending irreversibly when source control is lost.
     GainControlAndPreventCombatWhileSourceControlled,
     RemoveTargetAbilitiesUntilSourceLeaves,
@@ -6553,6 +6555,10 @@ pub enum TriggerCondition {
     DelayedTargetControlLostWhileAttached,
     /// The source's pre-event controller lost control of a permanent.
     OpponentTakesPermanent,
+    /// A controlled Aura attaches to an opposing nonland with at most the Aura's mana value.
+    ControlledAuraAttachesToOpponentNonland,
+    /// This permanent becomes attached to the exact event creature.
+    SelfBecomesAttachedToCreature,
     /// The controller committed an activation of a loyalty ability.
     LoyaltyAbilityActivated,
     /// Committed loyalty activation paid at least this many loyalty counters.
