@@ -3,10 +3,41 @@
   "catalogue_id": 4095,
   "oracle_id": "578ddb51-e128-43e5-a115-471f0cae1222",
   "facts_sha256": "fd22ed99b8c1d8a2ee855c6df82ad357223b2656b7febb18495d1f9b73e19c9c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5eaa62c60b9e72e620115ee32cbe0c1d082e7c9f6367ef3024c15adf72e6d584"
   },
-  "physical_metadata_sha256": "c3d51261893cf0c349c054d74c2cfc52c01739cd7b70c23915b7b543e3753a33"
+  "physical_metadata_sha256": "c3d51261893cf0c349c054d74c2cfc52c01739cd7b70c23915b7b543e3753a33",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarCharter.java",
+  "java_sha256": "cc424f7c9a37abbd0ef36cb190503170096d538bc12a58f023e88c4124437656",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouGainedOrLostLifeCondition.java",
+      "sha256": "25d3c8f6763f1b4aed3b766a37dc88ccbcecfbb5cc1eaed63a4c6284c85304d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PlayerGainedLifeWatcher.java",
+      "sha256": "675bf357c7d4ac2070d458899c0ff10c5dac7a6301b3ebd9e904b499453cc4b5"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_guards.rs"
 }
