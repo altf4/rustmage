@@ -667,3 +667,248 @@ fn explosive_derailment_inherited_spree_choices_use_distinct_or_shared_targets()
         assert_eq!(game.on_battlefield(artifact), !destroy);
     }
 }
+
+#[test]
+fn geyser_drake_discounts_only_instants_during_the_opponents_turn() {
+    let player = Player::P0;
+    let mut game = scenario(player.other());
+    let drake = put(&mut game, player, "Geyser Drake", Zone::Battlefield);
+    let strike = put(&mut game, player, "Lightning Strike", Zone::Hand);
+    let cow = put(&mut game, player, "Holy Cow", Zone::Hand);
+    assert!(game.keywords(drake).contains(Keywords::FLYING));
+    act(&mut game, Action::Pass);
+    game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
+    reject(&mut game, Action::AnnounceCast { card: cow });
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
+    let mut own_turn = game.clone();
+    own_turn.state.active = player;
+    reject(&mut own_turn, Action::AnnounceCast { card: strike });
+    cast(&mut game, strike, Some(Target::Player(player.other())));
+    resolve(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 17);
+}
+
+#[test]
+fn inherited_deserts_enter_tapped_and_deal_one_to_an_opponent_then_tap_for_either_color() {
+    for (name, colors) in [
+        ("Eroded Canyon", [1, 3]),
+        ("Festering Gulch", [2, 4]),
+        ("Forlorn Flats", [0, 2]),
+        ("Jagged Barrens", [2, 3]),
+        ("Lonely Arroyo", [0, 1]),
+        ("Lush Oasis", [1, 4]),
+    ] {
+        let player = Player::P1;
+        let mut game = scenario(player);
+        let land = put(&mut game, player, name, Zone::Hand);
+        act(&mut game, Action::PlayLand { card: land });
+        assert!(game.object_view(land).tapped);
+        assert!(game.object_view(land).has_subtype("Desert"));
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(player),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Player(player.other()),
+            },
+        );
+        resolve(&mut game);
+        assert_eq!(game.state.players[player.other().index()].life, 19);
+        game.state.objects[land as usize].tapped = false;
+        let available: Vec<_> = game
+            .legal_actions()
+            .into_iter()
+            .filter_map(|action| {
+                if let Action::ActivateMana {
+                    card, production, ..
+                } = action
+                    && card == land
+                {
+                    return production.iter().position(|amount| *amount == 1);
+                }
+                None
+            })
+            .collect();
+        assert_eq!(available, colors, "{name}");
+    }
+}
+
+#[test]
+fn eriettes_lullaby_gains_life_for_a_legal_tapped_indestructible_target() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(
+        &mut game,
+        player.other(),
+        "Kotis, the Fangkeeper",
+        Zone::Battlefield,
+    );
+    let lullaby = put(&mut game, player, "Eriette's Lullaby", Zone::Hand);
+    reject(&mut game, Action::AnnounceCast { card: lullaby });
+    game.state.objects[creature as usize].tapped = true;
+    cast(&mut game, lullaby, Some(Target::Card(creature)));
+    let mut untapped = game.clone();
+    untapped.state.objects[creature as usize].tapped = false;
+    resolve(&mut untapped);
+    assert_eq!(untapped.state.players[player.index()].life, 20);
+    resolve(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+    assert_eq!(game.state.players[player.index()].life, 22);
+}
+
+#[test]
+fn failed_fording_bounces_a_nonland_and_surveys_with_a_desert() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let desert = put(&mut game, player, "Eroded Canyon", Zone::Battlefield);
+    let creature = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let top = put(&mut game, player, "Forest", Zone::Library);
+    let spell = put(&mut game, player, "Failed Fording", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    let mut no_desert = game.clone();
+    no_desert.move_object(desert, Zone::Graveyard);
+    resolve(&mut no_desert);
+    assert_eq!(no_desert.object_view(creature).zone, Zone::Hand);
+    assert_eq!(no_desert.object_view(top).zone, Zone::Library);
+    choose_when_ready(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    assert_eq!(game.object_view(creature).zone, Zone::Hand);
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+}
+
+#[test]
+fn fake_your_own_death_returns_a_stolen_creature_tapped_to_its_owner() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let spell = put(&mut game, player, "Fake Your Own Death", Zone::Hand);
+    let original = game.object_ref(creature);
+    game.record_control(original, player, None);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    resolve(&mut game);
+    assert_eq!(stats(&game, creature), (4, 2));
+    game.move_object(creature, Zone::Graveyard);
+    resolve(&mut game);
+    let returned = game.object_view(creature);
+    assert_eq!(
+        (returned.zone, returned.controller, returned.tapped),
+        (Zone::Battlefield, player.other(), true)
+    );
+    assert_ne!(returned.reference, original);
+    assert_eq!(tokens(&game, player, TREASURE).len(), 1);
+    assert!(tokens(&game, player.other(), TREASURE).is_empty());
+}
+
+#[test]
+fn ferocification_selects_its_mode_and_own_target_as_combat_begins() {
+    let player = Player::P0;
+    for mode in 0..2 {
+        let mut game = scenario(player);
+        put(&mut game, player, "Ferocification", Zone::Battlefield);
+        let own = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        let rival = put(
+            &mut game,
+            player.other(),
+            "Grizzly Bears",
+            Zone::Battlefield,
+        );
+        start_step(&mut game, Step::BeginCombat);
+        act(&mut game, Action::ChooseMode { mode });
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(rival),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        resolve(&mut game);
+        assert_eq!(stats(&game, own), (if mode == 0 { 4 } else { 2 }, 2));
+        assert_eq!(
+            game.keywords(own)
+                .contains(Keywords::MENACE.union(Keywords::HASTE)),
+            mode == 1
+        );
+    }
+}
+
+#[test]
+fn freestrider_commando_counts_cast_mana_and_not_its_plot_cost() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let commando = put(&mut game, player, "Freestrider Commando", Zone::Hand);
+    let mut normal = game.clone();
+    cast(&mut normal, commando, None);
+    resolve(&mut normal);
+    assert_eq!(normal.counter_count(commando, CounterKind::PlusOne), 0);
+    act(&mut game, Action::AnnouncePlot { card: commando });
+    choose(&mut game, |action| matches!(action, Action::PayPlot { .. }));
+    game.state.turn += 1;
+    act(&mut game, Action::AnnouncePlotted { card: commando });
+    pay(&mut game);
+    resolve(&mut game);
+    assert_eq!(game.counter_count(commando, CounterKind::PlusOne), 2);
+}
+
+#[test]
+fn frontier_seeker_privately_finds_a_mount_or_a_plains() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let mount = put(&mut game, player, "Gila Courser", Zone::Library);
+    let plains = put(&mut game, player, "Plains", Zone::Library);
+    let forest = put(&mut game, player, "Forest", Zone::Library);
+    let seeker = put(&mut game, player, "Frontier Seeker", Zone::Hand);
+    cast(&mut game, seeker, None);
+    checkpoint(&mut game, Action::SelectLibrary { card: mount });
+    assert!(game.observe(player.other()).library_selection.is_none());
+    reject(&mut game, Action::SelectLibrary { card: forest });
+    let mut choose_plains = game.clone();
+    act(&mut choose_plains, Action::SelectLibrary { card: plains });
+    act(&mut choose_plains, Action::FinishLibrarySelection);
+    assert_eq!(choose_plains.object_view(plains).zone, Zone::Hand);
+    act(&mut game, Action::SelectLibrary { card: mount });
+    act(&mut game, Action::FinishLibrarySelection);
+    assert_eq!(game.object_view(mount).zone, Zone::Hand);
+}
+
+#[test]
+fn gila_courser_exiles_for_play_only_after_a_saddled_attack() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let courser = put(&mut game, player, "Gila Courser", Zone::Battlefield);
+    let rider = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    let mut unsaddled = game.clone();
+    attack(&mut unsaddled, courser);
+    resolve(&mut unsaddled);
+    assert_eq!(unsaddled.object_view(land).zone, Zone::Library);
+    saddle(&mut game, courser, &[rider]);
+    attack(&mut game, courser);
+    resolve(&mut game);
+    assert_eq!(game.object_view(land).zone, Zone::Exile);
+    choose_when_ready(&mut game, Action::PlayLand { card: land });
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+}

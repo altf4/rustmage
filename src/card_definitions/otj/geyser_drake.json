@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dc8b44086ccc7fd5153e3f67d21fb8ee29901cec8751b8b1239e8a7fa0f1b5c1"
   },
-  "physical_metadata_sha256": "f26e632f22c5ac93d382a0412e4776fbb7d342a5c27f73d797a7624e49c094cf"
+  "physical_metadata_sha256": "f26e632f22c5ac93d382a0412e4776fbb7d342a5c27f73d797a7624e49c094cf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GeyserDrake.java",
+  "java_sha256": "5cfd4fb7e57c6acfc3882dac3815b8109d4f3c9fd98bdfad9c384948239927b6",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/NotMyTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db899ec29be5298f5f3d4e36f0df6975f3f23ef347fa7753aa14cc9c1580e9df"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalCostModificationEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cdd08c2aebe148f281ec42f2d1a5fc92035dbc9e7b4bf144db74fc9670732196"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }
