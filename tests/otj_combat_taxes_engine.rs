@@ -56,6 +56,58 @@ fn blockers(g: &mut Game, cards: &[CardId]) {
     assert_eq!(g.state.pending, Pending::Blockers);
 }
 
+const FEROCIOUS: CardRules = CardRules {
+    effect: Effect::Creature(3, 3),
+    keywords: Keywords::DEFENDER,
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::AttackWithoutDefenderWhen(
+            StepGuard::Threshold {
+                value: StepValue::GreatestCreaturePower,
+                minimum: Some(4),
+                maximum: None,
+            },
+        )],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_live_power_threshold_waives_defender_without_removing_it() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &FEROCIOUS)]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let defender = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let large = put(
+        &mut game,
+        player.other(),
+        "Daring Thunder-Thief",
+        Zone::Battlefield,
+    );
+    attackers(&mut game);
+    let attack = Action::Attack { card: defender };
+    reject(&mut game, attack.clone());
+
+    let mut own_power = game.clone();
+    own_power.add_counter(defender, CounterKind::PlusOne, 1);
+    assert!(own_power.keywords(defender).contains(Keywords::DEFENDER));
+    assert!(own_power.legal_actions().contains(&attack));
+
+    let large_ref = game.object_ref(large);
+    game.record_control(large_ref, player, None);
+    act(&mut game, attack);
+    act(&mut game, Action::FinishAttackers);
+    game.move_object(large, Zone::Graveyard);
+    assert!(
+        game.state
+            .attackers
+            .iter()
+            .any(|attack| attack.card == defender)
+    );
+    assert!(game.keywords(defender).contains(Keywords::DEFENDER));
+}
+
 #[test]
 fn attack_tax_stacks_for_the_player_and_their_walkers_and_excludes_battles() {
     let _rules = fixture_rules::activate(&[

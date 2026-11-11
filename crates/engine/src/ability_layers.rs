@@ -162,6 +162,8 @@ pub enum StaticAbilityFragment {
     AttackWithoutDefenderIfScried,
     /// This exact source can attack despite defender while the live condition holds.
     AttackWithoutDefenderIf(StatValue),
+    /// Check a live battlefield guard for this permanent's defender permission.
+    AttackWithoutDefenderWhen(StepGuard),
     /// Controlled creatures may attack despite defender.
     ControlledAttackWithoutDefender,
     /// This source cannot be attacked while attached to a creature.

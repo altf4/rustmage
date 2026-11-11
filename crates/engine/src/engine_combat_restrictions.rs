@@ -319,6 +319,12 @@ impl Game {
                     StaticAbilityFragment::AttackWithoutDefenderIf(value) => {
                         self.stat_value(value, self.object_ref(id), player) != 0
                     }
+                    StaticAbilityFragment::AttackWithoutDefenderWhen(guard) => self.step_guard(
+                        guard,
+                        player,
+                        self.object_ref(id),
+                        self.state.objects[id as usize].tapped,
+                    ),
                     _ => false,
                 };
                 applies
