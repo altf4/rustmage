@@ -31,7 +31,13 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::BecomeCopy(InPlaceCopySpec {
                 recipient_group: Some(0),
                 blueprint_group: 1,
-                overrides: crate::engine::CopyOverrides::NONE,
+                overrides: crate::engine::CopyOverrides {
+                    name: None,
+                    legendary: None,
+                    kinds: None,
+                    types: None,
+                    keywords: Keywords::NONE,
+                },
                 add_kinds: 0,
                 base: None,
                 next_turn: false,

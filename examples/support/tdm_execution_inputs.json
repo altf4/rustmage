@@ -7618,7 +7618,7 @@
     "src/card_definitions/otj/final_showdown.json": "5db8af8243da96fac717262fb897b42a5f28eeed39fcc44e1f0dc9c2bd31daec",
     "src/card_definitions/otj/final_showdown.rs": "8af5a259dc598fa99259c2bf5392989b475347a12953b905be86a6c96d3b7886",
     "src/card_definitions/otj/fleeting_reflection.json": "d4b815b0ccbd39b29f4f6d3a32e85bd886bfe3057ccd9fca43d4fc6e3a34c7b2",
-    "src/card_definitions/otj/fleeting_reflection.rs": "0369559b0ef744d98d4ed5fe362605bf688ab8591662faa80dbe7a9df855ebb5",
+    "src/card_definitions/otj/fleeting_reflection.rs": "418f5e5648888f2fc63e06b53a1a5ed729a273cf2f4450c702e450d6cc9fad71",
     "src/card_definitions/otj/forlorn_flats.json": "ff0b273df139256d8606b89a537b69563b448e3bbe39783946be058a0518cb8b",
     "src/card_definitions/otj/forlorn_flats.rs": "f78374b3c5fc26998cd595610226bec1e75771ee5449ff99503992800dd06bd9",
     "src/card_definitions/otj/form_a_posse.json": "fe5f277027424e3d0af62de37f8c703ab9ec1a651bafec399bab2da07b7b7411",
@@ -11593,7 +11593,7 @@
     "src/card_definitions/znr/highborn_vampire.rs": "9e13e514d96f221fb9e99e2cd599554c8662b6abdd0c3c5d5933ca3c241cb27e",
     "src/catalogue.rs": "01554000ade12fdd9b611ac87667361f09ce1f2d590b63836ed6b7dfd9c0c438",
     "src/ffi.rs": "dc5d9c545f822822d3571619e108180db4c255c30c890774c8ebb26a45f1b94b",
-    "src/generated/catalogue.rs": "5a54e20ee33cce898e97a94d0a58f27aab965398b2322cba8994b3a5ac677dc6",
+    "src/generated/catalogue.rs": "535bd876719a0c0a4b33a66348854efbbc39c3b975f5bb3ded9ad3005db6de2f",
     "src/lib.rs": "e084cc23875825bded63ce06f865bec8d5681c1d449ea4d9d068cca095ec2e0b",
     "tests/tdm_complete_games.rs": "c32cb72ee1eaa343fa6b4dc350fb03a2fa5401c9fc10bb3f5ff14d705cb82173"
   },
