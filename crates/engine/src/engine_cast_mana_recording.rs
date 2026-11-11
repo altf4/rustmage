@@ -283,6 +283,7 @@ impl Game {
         &mut self,
         player: Player,
         amount: i128,
+        lost: i128,
         exiled: Option<Vec<ObjectRef>>,
     ) {
         let is_entry = self.state.entry_batch.is_some();
@@ -296,6 +297,7 @@ impl Game {
             capture.event.life_payments.push(LifePaymentReceipt {
                 player,
                 amount,
+                lost,
                 entry_index,
                 exiled,
             });

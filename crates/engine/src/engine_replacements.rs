@@ -413,14 +413,34 @@ impl TokenBatch {
         }
     }
 
-    fn artifact_at(&self, index: usize) -> bool {
-        self.recipes
-            .get(index)
-            .and_then(|recipe| *recipe)
-            .map_or_else(
-                || self.groups[index].token.is_artifact(),
-                |recipe| recipe.kinds() & 16 != 0,
-            )
+    fn group_matches_kinds(&self, index: usize, kinds: u16) -> bool {
+        kinds == 0
+            || self
+                .recipes
+                .get(index)
+                .and_then(|recipe| *recipe)
+                .map_or_else(|| self.groups[index].token.kind_mask(), CopyRecipe::kinds)
+                & kinds
+                != 0
+    }
+
+    fn has_matching_group(&self, kinds: u16) -> bool {
+        self.groups
+            .iter()
+            .enumerate()
+            .any(|(index, group)| group.amount > 0 && self.group_matches_kinds(index, kinds))
+    }
+
+    fn multiply_groups(&mut self, kinds: u16, factor: u32) {
+        for index in 0..self.groups.len() {
+            if self.group_matches_kinds(index, kinds) {
+                let group = &mut self.groups[index];
+                group.amount = group
+                    .amount
+                    .checked_mul(u128::from(factor))
+                    .capacity("replacement token quantity exhausted");
+            }
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2636,17 +2656,14 @@ impl Game {
                 let ability = u16::try_from(i).expect("immutable replacement index");
                 let applicable = match spec {
                     ReplacementSpec::DoubleTokens { effects_only } => !effects_only || b.effect,
+                    ReplacementSpec::MultiplyTokens { kinds, .. } => b.has_matching_group(kinds),
                     ReplacementSpec::AddToken(_) => true,
                     ReplacementSpec::FirstTokensCopyAttached => {
                         b.first_this_turn == Some(true)
                             && self.attached_copy_recipe(source).is_some()
                     }
                     ReplacementSpec::AddArtifactToken(_)
-                    | ReplacementSpec::ReplaceArtifactTokens(_) => b
-                        .groups
-                        .iter()
-                        .enumerate()
-                        .any(|(index, group)| group.amount > 0 && b.artifact_at(index)),
+                    | ReplacementSpec::ReplaceArtifactTokens(_) => b.has_matching_group(16),
                     _ => false,
                 };
                 if applicable && !b.used.contains(&(source, ability)) {
@@ -2675,14 +2692,8 @@ impl Game {
                     })
                     .collect();
             }
-            ReplacementSpec::DoubleTokens { .. } => {
-                for g in &mut b.groups {
-                    g.amount = g
-                        .amount
-                        .checked_mul(2)
-                        .capacity("replacement token quantity exhausted");
-                }
-            }
+            ReplacementSpec::DoubleTokens { .. } => b.multiply_groups(0, 2),
+            ReplacementSpec::MultiplyTokens { kinds, factor } => b.multiply_groups(kinds, factor),
             ReplacementSpec::AddToken(token) | ReplacementSpec::AddArtifactToken(token) => {
                 // The added token inherits the event's tapped/attacking instructions.
                 let tapped = b.groups[0].tapped;
@@ -2709,7 +2720,7 @@ impl Game {
             }
             ReplacementSpec::ReplaceArtifactTokens(token) => {
                 for index in 0..b.groups.len() {
-                    if b.artifact_at(index) {
+                    if b.group_matches_kinds(index, 16) {
                         b.groups[index].token = token;
                         if let Some(recipe) = b.recipes.get_mut(index) {
                             *recipe = None;
@@ -3002,8 +3013,10 @@ impl Game {
                                 | ReplacementSpec::DoubleTokens { .. }
                                 | ReplacementSpec::AddToken(_)
                                 | ReplacementSpec::AddArtifactToken(_)
-                        ) || matches!(s, ReplacementSpec::ReplaceArtifactTokens(_))
-                            && token.is_artifact()
+                        ) || matches!(s, ReplacementSpec::MultiplyTokens { kinds, .. }
+                            if *kinds == 0 || token.kind_mask() & *kinds != 0)
+                            || matches!(s, ReplacementSpec::ReplaceArtifactTokens(_))
+                                && token.is_artifact()
                     })
             })
         {

@@ -2770,7 +2770,8 @@ impl Game {
                 .iter()
                 .enumerate()
                 .any(|(index, mode)| {
-                    self.modal_choice_unused(&item, index)
+                    self.item_mode_eligible(&item, index)
+                        && self.modal_choice_unused(&item, index)
                         && self.item_targets_available(&item, mode.targets)
                 })
         {

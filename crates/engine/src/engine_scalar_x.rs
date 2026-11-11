@@ -473,6 +473,15 @@ impl Game {
                     .map(u64::from)
                     .sum::<u64>(),
             ),
+            AmountValue::DiscoverEventAmount => {
+                item.event_object
+                    .as_ref()
+                    .map_or(0, |event| match event.facts {
+                        EventObjectFacts::DiscoverAmount(amount) => u128::from(amount),
+                        _ => 0,
+                    })
+            }
+            AmountValue::DiscoverManaValueShortfall => self.discover_mana_value_shortfall(),
             AmountValue::CastSpellManaValue => item
                 .cast_event
                 .as_ref()

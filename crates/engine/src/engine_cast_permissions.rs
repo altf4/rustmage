@@ -651,7 +651,9 @@ impl Game {
         let bargain_changes_targets = definition.bargain_targets().is_some();
         if !teamwork && !kicker_changes_targets && !bargain_changes_targets {
             let targets_available = match definition.effect() {
-                Effect::Modal(modes) => modes.iter().any(|mode| available(mode.targets)),
+                Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
+                    self.item_mode_eligible(&item, index) && available(mode.targets)
+                }),
                 _ => available(self.target_spec(&item)),
             };
             if !targets_available
@@ -783,7 +785,11 @@ impl Game {
         };
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(index, mode)| {
-                if !kicker_changes_targets && !bargain_changes_targets && !available(mode.targets) {
+                if !self.item_mode_eligible(&a.item, index)
+                    || !kicker_changes_targets
+                        && !bargain_changes_targets
+                        && !available(mode.targets)
+                {
                     return false;
                 }
                 let mut choice = a.clone();

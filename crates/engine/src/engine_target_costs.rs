@@ -256,7 +256,9 @@ impl Game {
             })
         };
         match card.effect() {
-            Effect::Modal(modes) => modes.iter().any(|m| available(m.targets)),
+            Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
+                self.spell_mode_eligible(actor, source, card, index) && available(mode.targets)
+            }),
             Effect::Spell(plan, _) | Effect::Aura(plan) => available(plan),
             _ => available(TargetPlan::NONE),
         }
@@ -298,15 +300,16 @@ impl Game {
             && a.item.mode.is_none()
             && let Some(modes) = a.item.modes()
         {
-            return modes.iter().any(|m| {
-                self.announcement_target_fundable(
-                    a,
-                    Some(m.targets),
-                    cost,
-                    offspring,
-                    extra,
-                    finished,
-                )
+            return modes.iter().enumerate().any(|(index, mode)| {
+                self.item_mode_eligible(&a.item, index)
+                    && self.announcement_target_fundable(
+                        a,
+                        Some(mode.targets),
+                        cost,
+                        offspring,
+                        extra,
+                        finished,
+                    )
             });
         }
         let plan = plan.unwrap_or_else(|| {

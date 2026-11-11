@@ -322,6 +322,19 @@ impl CardRules {
                 _ => panic!("modal costs require modal behavior"),
             }
         }
+        if !self.extras.cast_mode_requirements.is_empty() {
+            let Effect::Modal(modes) = self.effect else {
+                panic!("mode requirements require modal behavior");
+            };
+            let mut index = 0;
+            while index < self.extras.cast_mode_requirements.len() {
+                assert!(
+                    (self.extras.cast_mode_requirements[index].0 as usize) < modes.len(),
+                    "mode requirement index outside modal behavior"
+                );
+                index += 1;
+            }
+        }
         self.effect
     }
 }
@@ -414,6 +427,8 @@ pub struct CardExtras {
     pub static_ability_groups: &'static [StaticAbilityGroup],
     pub live_static_effects: &'static [LiveStaticEffect],
     pub tiered_costs: Option<&'static [ManaCost]>,
+    /// Cast-time conditions for specified modal options.
+    pub cast_mode_requirements: &'static [(u16, StatValue)],
     pub base_stat_setter: Option<BaseStatSetter>,
     pub combat_restriction: Option<CombatRestriction>,
     pub role: Option<RoleKind>,
@@ -557,6 +572,7 @@ impl CardExtras {
         static_ability_groups: &[],
         live_static_effects: &[],
         tiered_costs: None,
+        cast_mode_requirements: &[],
         base_stat_setter: None,
         combat_restriction: None,
         role: None,

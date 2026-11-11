@@ -127,6 +127,8 @@ pub use meld::{MeldDepartureOrder, MeldOrderingChoice, MeldedPermanentView};
 #[doc(hidden)]
 #[path = "engine_life_gain.rs"]
 pub mod life_gain;
+#[path = "engine_life_loss.rs"]
+pub mod life_loss;
 #[doc(hidden)]
 #[path = "engine_limited_exile.rs"]
 pub mod limited_exile;
@@ -540,6 +542,8 @@ pub mod outcome_effects;
 #[path = "engine_target_exile_play.rs"]
 pub mod target_exile_play;
 pub use exile::{ExilePlayExpiry, ExilePlayPermission};
+#[path = "engine_craft.rs"]
+pub mod craft;
 #[doc(hidden)]
 #[path = "engine_delayed_steps.rs"]
 pub mod delayed_steps;
@@ -3111,6 +3115,7 @@ struct State {
     tap_sources: Vec<CardId>,
     damage_sources: Vec<CardId>,
     discard_sources: Vec<CardId>,
+    // Indexed draw, search and discover observers.
     draw_sources: Vec<CardId>,
     cleanup_discards: Vec<CardId>,
     triggered_this_turn: Vec<TriggerUse>,
@@ -6386,9 +6391,13 @@ impl Game {
                         continue;
                     }
                     let completable = match obj.card.effect() {
-                        Effect::Modal(modes) => modes.iter().any(|mode| {
-                            self.cast_targets_available(mode.targets, actor, self.object_ref(card))
-                        }),
+                        Effect::Modal(modes) => {
+                            let source = self.object_ref(card);
+                            modes.iter().enumerate().any(|(index, mode)| {
+                                self.spell_mode_eligible(actor, source, obj.card, index)
+                                    && self.cast_targets_available(mode.targets, actor, source)
+                            })
+                        }
                         Effect::Spell(spec, _) | Effect::Aura(spec) => {
                             self.cast_targets_available(spec, actor, self.object_ref(card))
                                 || obj.card.gift().is_some_and(|gift| {
@@ -6807,7 +6816,12 @@ impl Game {
                 }
             }
             Pending::Explore { .. } => {
-                let choice = s.resolving.as_ref().unwrap().explore.as_ref().unwrap();
+                let choice = s
+                    .resolving
+                    .as_ref()
+                    .and_then(|r| r.explore.as_ref())
+                    .and_then(|explore| explore.choice.as_ref())
+                    .expect("pending explore choice");
                 for graveyard in [false, true] {
                     if emit(Action::ChooseExplore {
                         object: choice.revealed.object,
@@ -7457,7 +7471,7 @@ impl Game {
             }
             Action::ChooseAdditionalCost { object } => self.choose_additional_cost(object),
             Action::FinishAdditionalCostGroup => self.finish_additional_cost_group(),
-            Action::FinishCraftMaterials => self.finish_graveyard_symbol_cost(),
+            Action::FinishCraftMaterials => self.finish_craft_materials(),
             Action::ChooseAdditionalLife => self.choose_additional_life(),
             Action::FinishGraveyardSymbolCost => self.finish_graveyard_symbol_cost(),
             Action::ChooseEntryTimestamp { object } => self.choose_entry_timestamp(object),
@@ -11214,6 +11228,17 @@ impl Game {
     ) {
         let mut losses = [0i128; 2];
         for event in events {
+            if let Target::Player(player) = event.target
+                && event.amount > 0
+            {
+                losses[player.index()] = losses[player.index()]
+                    .checked_add(event.amount)
+                    .capacity("damage life-loss batch exhausted");
+            }
+        }
+        let losses = [Player::P0, Player::P1]
+            .map(|player| life_loss::replacement_amount(self, player, losses[player.index()]));
+        for event in events {
             if event.amount <= 0 {
                 continue;
             }
@@ -11239,10 +11264,6 @@ impl Game {
                     if !event.combat {
                         self.state.players[p.index()].noncombat_damage_this_turn = true;
                     }
-                    self.lose_life_unobserved(p, event.amount);
-                    losses[p.index()] = losses[p.index()]
-                        .checked_add(event.amount)
-                        .capacity("damage life-loss batch exhausted");
                 }
                 Target::Card(id) => {
                     let creature = self.is_creature(id);
@@ -11295,6 +11316,9 @@ impl Game {
                     source.dealt_combat_damage_this_incarnation = true;
                 }
             }
+        }
+        for player in [Player::P0, Player::P1] {
+            self.lose_life_unobserved(player, losses[player.index()]);
         }
         for player in [Player::P0, Player::P1] {
             self.life_lost_event(player, losses[player.index()]);
@@ -11617,6 +11641,7 @@ impl Game {
                 c.links
                     .iter()
                     .copied()
+                    .chain(c.craft_links.iter().copied())
                     .chain(
                         c.null_cast_links
                             .iter()
@@ -12186,7 +12211,7 @@ impl Game {
             cascade: s
                 .resolving
                 .as_ref()
-                .and_then(|r| r.cascade.as_deref().cloned()),
+                .and_then(|r| r.cascade.as_deref()?.view().cloned()),
             miracle: self.miracle_choice_view(viewer),
             draw_replacement: self.draw_replacement_view(),
             resolution_free_casts: s
@@ -12585,7 +12610,7 @@ impl Game {
                 .resolving
                 .as_ref()
                 .and_then(|r| r.explore.as_ref())
-                .map(|c| (**c).clone()),
+                .and_then(|explore| explore.choice.clone()),
             last_library_reveal: s.library_top.as_ref().and_then(|s| s.reveal.clone()),
             last_explore: s.explore_data.as_ref().and_then(|d| d.last.clone()),
             known_library_top: std::array::from_fn(|i| {
@@ -12944,14 +12969,14 @@ impl Game {
                         + resolution.linked_copy.as_ref().map_or(0, |_| {
                             std::mem::size_of::<linked_copies::LinkedCopyCapture>()
                         })
-                        + resolution.cascade.as_ref().map_or(0, |row| {
-                            std::mem::size_of::<CascadeView>()
-                                + row.exiled.len() * std::mem::size_of::<ObjectRef>()
-                        })
+                        + resolution
+                            .cascade
+                            .as_ref()
+                            .map_or(0, |row| row.owned_bytes())
                         + resolution
                             .explore
                             .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<ExploreChoiceView>())
+                            .map_or(0, |_| std::mem::size_of::<explore::ExploreSequence>())
                         + resolution
                             .immediate_blink_return
                             .as_ref()

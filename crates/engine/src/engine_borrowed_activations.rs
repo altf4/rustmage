@@ -35,6 +35,8 @@ pub(super) struct Link {
     pub once_per_turn: bool,
     /// This link supplies a continuous grant to other eligible recipients.
     pub shared: bool,
+    /// Materials remain associated with the crafted permanent through copy changes.
+    pub craft: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -192,7 +194,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         } else {
             if !source.card.borrows_exiled_activations()
                 || link.source != recipient
-                || link.origin != world.ability_origin(id)
+                || !link.craft && link.origin != world.ability_origin(id)
                 || check_available && !world.printed_abilities_available(id)
             {
                 continue;
@@ -419,6 +421,7 @@ impl Game {
                 width,
                 once_per_turn: false,
                 shared,
+                craft: false,
             });
     }
     pub(super) fn borrowed_descriptor(

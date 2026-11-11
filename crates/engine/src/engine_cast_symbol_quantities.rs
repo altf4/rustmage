@@ -25,6 +25,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         Instruction::AddCastEntryCounters { .. }
         | Instruction::AddCastEntryCountersForControlledSubtypes { .. } => true,
         Instruction::UpToTargets(value)
+        | Instruction::DiscoverScaled(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }

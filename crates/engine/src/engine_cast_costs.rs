@@ -59,13 +59,10 @@ impl Announcement {
         };
         let definition = source.card.activation(ability);
         definition.cost.exile_self
-            && definition.cost.additional.is_some_and(|cost| {
-                matches!(
-                    cost.kind,
-                    EffectChoiceKind::ExileControlledOrGraveyard
-                        | EffectChoiceKind::ExileCraftNonlands(_)
-                )
-            })
+            && definition
+                .cost
+                .additional
+                .is_some_and(|cost| cost.kind.craft_materials().is_some())
             && definition
                 .program
                 .contains(&Instruction::ReturnCraftedSourceTransformed)

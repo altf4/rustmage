@@ -19,6 +19,9 @@ pub struct SourceQuantityView {
     /// Signed source facts for an intervening creature-stat comparison.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_comparison: Option<CreatureComparisonFacts>,
+    /// This exact explorer's current or last-known battlefield characteristics.
+    #[serde(skip)]
+    pub(super) explorer: Option<ExplorerView>,
 }
 
 #[derive(Clone, Copy, Default, PartialEq, Eq)]
@@ -27,6 +30,7 @@ struct SelectedQuantities {
     toughness: bool,
     equipment: bool,
     attached_equipment: bool,
+    explorer: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -60,6 +64,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                     result.toughness |= nested.toughness;
                     result.equipment |= nested.equipment;
                     result.attached_equipment |= nested.attached_equipment;
+                    result.explorer |= nested.explorer;
                 }
             }
             Instruction::CounterUnlessPayCosts { costs, .. }
@@ -71,6 +76,16 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
                 }
             }
             Instruction::SetBaseStatsFromSource { .. } => result.toughness = true,
+            Instruction::DestroyOthersIfSourcePowerTwenty => result.power = true,
+            Instruction::Explore(Subject::Source) => result.explorer = true,
+            Instruction::ExploreRepeated {
+                subject,
+                amount: value,
+            } => {
+                result.explorer |= subject == Subject::Source;
+                amount(value, &mut result);
+            }
+            Instruction::ReturnToBattlefieldThenExplore(value) => amount(value, &mut result),
             Instruction::AttachPriorSourceEquipment { .. } => result.attached_equipment = true,
             Instruction::SelectLibraryTo(effect)
             | Instruction::SelectLibraryToHandRememberCount(effect)
@@ -88,6 +103,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             }
             Instruction::UpToTargets(value)
             | Instruction::RememberCount(value)
+            | Instruction::DiscoverScaled(value)
             | Instruction::IfAmountAtLeast { value, .. }
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
@@ -216,6 +232,7 @@ impl Game {
             Box::new(SourceQuantityView {
                 power: quantities.power.then_some(source.power),
                 creature_comparison: None,
+                explorer: quantities.explorer.then(|| ExplorerView::from_view(source)),
                 chosen_creature_type: if chosen_type {
                     match source.entry_choice {
                         Some(EntryChoiceValue::CreatureType(kind)) => Some(kind),
@@ -306,6 +323,9 @@ impl Game {
         if saved.attached_equipment.is_some() {
             saved.attached_equipment = Some(self.source_equipment_refs(source).collect());
         }
+        if saved.explorer.is_some() {
+            saved.explorer = Some(ExplorerView::from_view(&view));
+        }
     }
     /// Freeze before ANY member commits. Live queries remain authoritative until
     /// the source actually leaves; a failed/skipped move cannot bind a new object.
@@ -335,6 +355,7 @@ impl Game {
                         selected.toughness |= facts.toughness.is_some();
                         selected.equipment |= facts.equipment_count.is_some();
                         selected.attached_equipment |= facts.attached_equipment.is_some();
+                        selected.explorer |= facts.explorer.is_some();
                     }
                 }
                 (selected != SelectedQuantities::default()).then(|| {
@@ -343,6 +364,7 @@ impl Game {
                         SourceQuantityView {
                             power: selected.power.then_some(source.power),
                             creature_comparison: None,
+                            explorer: selected.explorer.then(|| ExplorerView::from_view(source)),
                             chosen_creature_type: None,
                             toughness: selected.toughness.then_some(if source.is_creature() {
                                 source.toughness
@@ -401,6 +423,9 @@ impl Game {
                 }
                 if saved.attached_equipment.is_some() {
                     saved.attached_equipment = frozen.attached_equipment.clone();
+                }
+                if saved.explorer.is_some() {
+                    saved.explorer = frozen.explorer;
                 }
             }
         }

@@ -25,6 +25,7 @@ impl Game {
             Effect::Modal(modes) => modes.iter().enumerate().any(|(i, m)| {
                 i < 64
                     && spec.normal_modes & (1u64 << i) != 0
+                    && self.spell_mode_eligible(actor, self.object_ref(id), card, i)
                     && self.cast_targets_available(m.targets, actor, self.object_ref(id))
             }),
             _ => true,
@@ -77,7 +78,8 @@ impl Game {
         ));
         if let Some(modes) = a.item.modes() {
             return modes.iter().enumerate().any(|(i, m)| {
-                if !self.teamwork_mode_allowed(&a.item, i)
+                if !self.item_mode_eligible(&a.item, i)
+                    || !self.teamwork_mode_allowed(&a.item, i)
                     || !self.item_targets_available(&a.item, m.targets)
                 {
                     return false;

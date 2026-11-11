@@ -166,6 +166,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Add one scry before each explore by a creature this player controls.
+    ScryBeforeControlledCreatureExplores,
     /// Double each controller draw, including their normal draw-step draw, while true.
     ConditionalDoubleDraw(StatValue),
     /// Add one to a controller draw instruction while their hand has at most one card.
@@ -344,6 +346,7 @@ pub enum StaticAbilityFragment {
     },
     LifeGainAdditional(u16),
     LifeGainDouble,
+    OpponentLifeLossDoubleOnOwnTurn,
     /// Add to an opponent's positive mill event.
     OpponentMillAdditional(u16),
     /// The controller's first positive batch of coin flips comes up heads and is won.

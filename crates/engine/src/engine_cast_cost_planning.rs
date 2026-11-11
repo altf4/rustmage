@@ -627,12 +627,18 @@ impl FundingState<'_> {
             spec.kind.payment_kind(),
             EffectChoiceKind::ExileControlledOrGraveyard
                 | EffectChoiceKind::ExileCraftNonlands(_)
+                | EffectChoiceKind::ExileCraftMaterials(_)
                 | EffectChoiceKind::ExileGraveyardRange { .. }
         );
         if matches!(
             spec.kind.payment_kind(),
             EffectChoiceKind::ExileCraftNonlands(_)
         ) && !additional_costs::has_craft_activated_ability(self, r.card)
+        {
+            return false;
+        }
+        if spec.kind.craft_materials().is_some()
+            && (r == source || !craft::material_matches(self, spec.kind, r))
         {
             return false;
         }
@@ -1757,6 +1763,10 @@ impl FundingState<'_> {
                 destination = Zone::Exile;
                 amount = usize::from(n);
             }
+            EffectChoiceKind::ExileCraftMaterials(materials) => {
+                destination = Zone::Exile;
+                amount = materials.minimum();
+            }
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);
@@ -1851,14 +1861,20 @@ impl FundingState<'_> {
         at: usize,
         selected: &mut Vec<ObjectRef>,
     ) -> bool {
-        let enough = evidence_min.map_or(
-            if matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::ExileCraftNonlands(_)
-            ) {
-                selected.len() >= amount
-            } else {
-                selected.len() == amount
+        let craft_materials = spec.kind.craft_materials();
+        if craft_materials.is_some_and(|materials| {
+            materials
+                .maximum()
+                .is_some_and(|maximum| selected.len() > maximum)
+                || !craft::material_group_matches(self, materials, selected)
+        }) {
+            return false;
+        }
+        let enough = evidence_min.map_or_else(
+            || {
+                craft_materials.map_or(selected.len() == amount, |materials| {
+                    materials.accepts(selected.len())
+                })
             },
             |(minimum, color)| {
                 selected
@@ -1896,12 +1912,12 @@ impl FundingState<'_> {
             }
         }
         if c.exact
-            || evidence_min.is_none()
-                && selected.len() >= amount
-                && !matches!(
-                    spec.kind.payment_kind(),
-                    EffectChoiceKind::ExileCraftNonlands(_)
-                )
+            || craft_materials.is_some_and(|materials| {
+                materials
+                    .maximum()
+                    .is_some_and(|maximum| selected.len() >= maximum)
+            })
+            || evidence_min.is_none() && selected.len() >= amount && craft_materials.is_none()
         {
             return false;
         }

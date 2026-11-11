@@ -4571,7 +4571,7 @@ impl<'g> FundingState<'g> {
             && activation_counter_placement_payable(self, goal)
             && source_exile_payable(self, goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
+                spec.kind.craft_materials().is_none()
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
                         reference.card,
@@ -5133,7 +5133,7 @@ impl Game {
         ) && activation_counter_placement_payable(self, &goal)
             && source_exile_payable(self, &goal)
             && goal.reserve.is_none_or(|(reference, spec)| {
-                spec.kind.payment_kind() != EffectChoiceKind::ExileControlledOrGraveyard
+                spec.kind.craft_materials().is_none()
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
                         reference.card,

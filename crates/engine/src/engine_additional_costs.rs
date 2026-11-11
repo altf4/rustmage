@@ -153,15 +153,14 @@ impl Game {
         let Some(a) = self.state.announcing.as_ref() else {
             return false;
         };
-        let Some(AdditionalCost {
-            kind: EffectChoiceKind::ExileCraftNonlands(minimum),
-            ..
-        }) = a.additional_cost()
+        let Some(materials) = a
+            .additional_cost()
+            .and_then(|cost| cost.kind.craft_materials())
         else {
             return false;
         };
         let selected = a.additional_group.as_deref().map_or(&[][..], Vec::as_slice);
-        selected.len() >= usize::from(minimum) && self.cast_cost_group_fundable(selected, true)
+        materials.accepts(selected.len()) && self.cast_cost_group_fundable(selected, true)
     }
     pub(super) fn additional_candidate(
         &self,
@@ -207,6 +206,7 @@ impl Game {
                 spec.kind.payment_kind(),
                 EffectChoiceKind::ExileControlledOrGraveyard
                     | EffectChoiceKind::ExileCraftNonlands(_)
+                    | EffectChoiceKind::ExileCraftMaterials(_)
                     | EffectChoiceKind::ExileGraveyard
                     | EffectChoiceKind::ExileGraveyardCards(_)
                     | EffectChoiceKind::ExileGraveyardRange { .. }
@@ -226,6 +226,11 @@ impl Game {
         if !projected
             && matches!(spec.kind.payment_kind(), EffectChoiceKind::BlightCost(n) if n > 0)
             && replacements::counters_prohibited(world, object)
+        {
+            return false;
+        }
+        if spec.kind.craft_materials().is_some()
+            && (object == source || !craft::material_matches(world, spec.kind, object))
         {
             return false;
         }
@@ -718,10 +723,7 @@ impl Game {
                 current.is_some_and(|a| a.additional_group_complete),
             );
         }
-        if matches!(
-            spec.kind.payment_kind(),
-            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
-        ) {
+        if spec.kind.craft_materials().is_some() {
             return self.preview_ordered_activation_cost(goal, spec, true);
         }
         let source = goal.source.as_ref().expect("activation source").0;
@@ -794,17 +796,19 @@ impl Game {
             ) {
                 return false;
             }
-            if matches!(
-                spec.kind.payment_kind(),
-                EffectChoiceKind::BeholdMany(_)
-                    | EffectChoiceKind::TapPermanents(_)
-                    | EffectChoiceKind::ExileGraveyardCards(_)
-                    | EffectChoiceKind::ExileGraveyardRange { .. }
-                    | EffectChoiceKind::ExileGraveyardSymbols { .. }
-                    | EffectChoiceKind::ExileCraftNonlands(_)
-                    | EffectChoiceKind::SacrificeDifferentNames(_)
-                    | EffectChoiceKind::SacrificePermanents(_)
-            ) {
+            if spec.kind.craft_materials().is_some()
+                || matches!(
+                    spec.kind.payment_kind(),
+                    EffectChoiceKind::BeholdMany(_)
+                        | EffectChoiceKind::TapPermanents(_)
+                        | EffectChoiceKind::ExileGraveyardCards(_)
+                        | EffectChoiceKind::ExileGraveyardRange { .. }
+                        | EffectChoiceKind::ExileGraveyardSymbols { .. }
+                        | EffectChoiceKind::ExileCraftNonlands(_)
+                        | EffectChoiceKind::SacrificeDifferentNames(_)
+                        | EffectChoiceKind::SacrificePermanents(_)
+                )
+            {
                 let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
                 if selected.contains(&object) {
                     return false;
@@ -944,10 +948,23 @@ impl Game {
             a.additional_group.get_or_insert_default().push(object);
             return;
         }
+        if let Some(materials) = a.additional_cost().unwrap().kind.craft_materials() {
+            let group = a.additional_group.get_or_insert_default();
+            group.push(object);
+            if materials.maximum() != Some(group.len()) {
+                return;
+            }
+            a.additional_group_complete = true;
+            a.additional = Some(object);
+            self.state.pending = Pending::PayCosts {
+                player: a.item.controller,
+            };
+            self.resume_cast_cost_selection();
+            return;
+        }
         if matches!(
             a.additional_cost().unwrap().kind,
             EffectChoiceKind::ExileGraveyardSymbols { .. }
-                | EffectChoiceKind::ExileCraftNonlands(_)
         ) {
             a.additional_group.get_or_insert_default().push(object);
             return;
@@ -1073,28 +1090,37 @@ impl Game {
             a.additional_paid = true;
             return;
         }
-        if let EffectChoiceKind::ExileCraftNonlands(minimum) = spec.kind.payment_kind() {
-            let group = a
-                .additional_group
-                .as_deref()
-                .expect("selected craft materials");
-            assert!(group.len() >= usize::from(minimum));
+        if let Some(materials) = spec.kind.craft_materials() {
+            let selected = a.additional_group.as_deref().map_or_else(
+                || a.additional.into_iter().collect(),
+                |group| group.to_vec(),
+            );
+            assert!(materials.accepts(selected.len()));
             let source = a.item.source.expect("craft source").object;
-            assert!(group.iter().all(|&object| self.additional_candidate(
+            assert!(selected.iter().all(|&object| self.additional_candidate(
                 spec,
                 a.item.controller,
                 source,
                 object
             )));
+            assert!(craft::material_group_matches(self, materials, &selected));
             let events = self.move_objects_raw(
-                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
+                &selected
+                    .iter()
+                    .map(|object| object.card)
+                    .collect::<Vec<_>>(),
                 Zone::Exile,
             );
             a.item.craft_materials = Some(Box::new(
                 events
                     .iter()
                     .filter(|event| event.moved && event.destination == Zone::Exile)
-                    .map(|event| event.after)
+                    .flat_map(ZoneChange::objects_after)
+                    .filter(|object| {
+                        self.object_ref(object.card) == *object
+                            && self.state.objects[object.card as usize].zone == Zone::Exile
+                            && self.state.objects[object.card as usize].is_card()
+                    })
                     .collect(),
             ));
             self.finish_zone_events(&events, &[]);
@@ -1403,6 +1429,7 @@ impl Game {
             | EffectChoiceKind::SacrificeOrDiscard { .. }
             | EffectChoiceKind::ExileControlledOrGraveyard
             | EffectChoiceKind::ExileCraftNonlands(_)
+            | EffectChoiceKind::ExileCraftMaterials(_)
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent
@@ -1517,7 +1544,12 @@ impl Game {
             can_finish_group: spec
                 .kind
                 .variable_cost_minimum()
-                .map(|_| self.variable_cost_selection_complete()),
+                .map(|_| self.variable_cost_selection_complete())
+                .or_else(|| {
+                    spec.kind
+                        .craft_materials()
+                        .map(|_| self.craft_material_selection_complete())
+                }),
         })
     }
 }

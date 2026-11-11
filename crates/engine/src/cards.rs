@@ -1364,6 +1364,8 @@ pub enum EffectChoiceKind {
     ExileControlledOrGraveyard,
     /// Craft with at least this many nonlands that have activated abilities.
     ExileCraftNonlands(u16),
+    /// A bounded mixed-zone material group, optionally filling distinct subtype slots.
+    ExileCraftMaterials(CraftMaterials),
     /// Internal projected route for a controlled battlefield material.
     ExileControlled,
     /// Non-targeted selection of controlled permanents for the resolving source's linked exile.
@@ -1524,8 +1526,51 @@ pub(crate) struct CounterCostRequirement {
     pub bearer_kinds: u16,
 }
 
+/// The material cardinality printed by a craft ability. All objects are distinct.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum CraftMaterials {
+    Count {
+        minimum: u16,
+        maximum: Option<u16>,
+    },
+    /// Each chosen object fills one different slot, including objects with several matching subtypes.
+    DistinctSubtypes(&'static [&'static str]),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CraftMaterials {
+    pub(crate) fn minimum(self) -> usize {
+        match self {
+            Self::Count { minimum, .. } => usize::from(minimum),
+            Self::DistinctSubtypes(slots) => slots.len(),
+        }
+    }
+    pub(crate) fn maximum(self) -> Option<usize> {
+        match self {
+            Self::Count { maximum, .. } => maximum.map(usize::from),
+            Self::DistinctSubtypes(slots) => Some(slots.len()),
+        }
+    }
+    pub(crate) fn accepts(self, count: usize) -> bool {
+        count >= self.minimum() && self.maximum().is_none_or(|maximum| count <= maximum)
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
+    pub(crate) fn craft_materials(self) -> Option<CraftMaterials> {
+        match self {
+            Self::ExileControlledOrGraveyard => Some(CraftMaterials::Count {
+                minimum: 1,
+                maximum: Some(1),
+            }),
+            Self::ExileCraftNonlands(minimum) => Some(CraftMaterials::Count {
+                minimum,
+                maximum: None,
+            }),
+            Self::ExileCraftMaterials(materials) => Some(materials),
+            _ => None,
+        }
+    }
     pub(crate) fn is_attached_sacrifice(self) -> bool {
         matches!(
             self,
@@ -1657,10 +1702,7 @@ impl AdditionalCost {
     /// The hand route has its own printed restriction; the permanent filter
     /// applies only to the sacrifice route.
     pub(crate) fn in_zone(mut self, zone: Zone) -> Self {
-        if matches!(
-            self.kind,
-            EffectChoiceKind::ExileControlledOrGraveyard | EffectChoiceKind::ExileCraftNonlands(_)
-        ) {
+        if self.kind.craft_materials().is_some() {
             match zone {
                 Zone::Battlefield => self.kind = EffectChoiceKind::ExileControlled,
                 Zone::Graveyard => self.kind = EffectChoiceKind::ExileGraveyard,
@@ -2138,6 +2180,11 @@ pub enum Instruction {
     },
     /// Return the exact physical source from its owner's graveyard back face up.
     ReturnGraveyardSourceTransformed,
+    /// Return the exact card that left the battlefield for a graveyard,
+    /// tapped and back face up under its owner's control.
+    ReturnDepartedSourceTransformedTapped {
+        counters: &'static [(CounterKind, u64)],
+    },
     /// Return the exact source incarnation exiled as an activation cost, transformed.
     ReturnCraftedSourceTransformed,
     /// Privately exile top cards; paid play remains conditional on a current subtype.
@@ -2164,6 +2211,11 @@ pub enum Instruction {
     Cascade,
     /// Exile until a nonland card at or below this value; cast it or take it.
     Discover(u16),
+    DiscoverScaled(AmountValue),
+    /// Use the target spell's stack mana value, even if the counter is prohibited.
+    CounterTargetThenDiscover,
+    /// Its owner discovers using the target's battlefield mana value before shuffling it in.
+    ShuffleTargetThenDiscover,
     CreateCopyTokenForPlayer {
         subject: Subject,
         amount: u16,
@@ -3064,6 +3116,13 @@ pub enum Instruction {
     },
     /// Historical paid qualification of the exact cast.
     Explore(Subject),
+    /// Resolve each explore in order, with a fresh replacement and library choice.
+    ExploreRepeated {
+        subject: Subject,
+        amount: AmountValue,
+    },
+    /// Return one graveyard target, then explore with the exact resulting permanent.
+    ReturnToBattlefieldThenExplore(AmountValue),
     /// Destroy all other creatures if the exact source's current or last power equals 20.
     DestroyOthersIfSourcePowerTwenty,
     /// Look at the top two cards, manifest one and put the rest into the graveyard.
@@ -4614,6 +4673,11 @@ pub enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    /// The value of the completed discovery that caused this trigger.
+    DiscoverEventAmount,
+    /// The value of the most recent discovery minus its found card's mana value.
+    /// If no card was found, the shortfall is zero.
+    DiscoverManaValueShortfall,
     CastCardTypeCount,
     CastSpellManaSymbols(ChoiceColor),
     SourcePower,
@@ -5126,6 +5190,12 @@ pub enum ReplacementSpec {
     FirstTokensCopyAttached,
     DoubleTokens {
         effects_only: bool,
+    },
+    /// Multiply each token group that has any of the given creation-time kinds.
+    /// Zero kinds matches every group.
+    MultiplyTokens {
+        kinds: u16,
+        factor: u32,
     },
     AddToken(Card),
     ReplaceArtifactTokens(Card),
@@ -6230,6 +6300,8 @@ pub enum TriggerCondition {
         relation: CastRelation,
         ordinal: Option<u64>,
     },
+    /// The controller completed a discovery, even if no card qualified.
+    DiscoveredYou,
     /// Completion of a library search, including a search that finds no card.
     LibrarySearched {
         relation: CastRelation,
@@ -7507,6 +7579,13 @@ impl Card {
     }
     pub(crate) fn live_static_effects(self) -> &'static [LiveStaticEffect] {
         generated::live_static_effects(self)
+    }
+    pub(crate) fn cast_mode_requirement(self, index: usize) -> Option<StatValue> {
+        authored::rules(self)?
+            .extras
+            .cast_mode_requirements
+            .iter()
+            .find_map(|&(mode, condition)| (usize::from(mode) == index).then_some(condition))
     }
     pub(crate) fn tiered_costs(self) -> Option<&'static [ManaCost]> {
         authored::mode_costs(self).or_else(|| generated::tiered_costs(self))

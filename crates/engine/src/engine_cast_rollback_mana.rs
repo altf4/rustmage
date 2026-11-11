@@ -37,6 +37,7 @@ pub(super) enum ManaEventKind {
 pub(super) struct LifePaymentReceipt {
     pub player: Player,
     pub amount: i128,
+    pub lost: i128,
     pub entry_index: Option<usize>,
     pub exiled: Option<Vec<ObjectRef>>,
 }

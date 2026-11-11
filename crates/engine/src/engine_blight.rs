@@ -26,6 +26,7 @@ impl Game {
             Effect::Modal(modes) => modes.iter().enumerate().any(|(i, mode)| {
                 i < 64
                     && bits & (1u64 << i) != 0
+                    && self.spell_mode_eligible(actor, self.object_ref(id), card, i)
                     && self.cast_targets_available(mode.targets, actor, self.object_ref(id))
             }),
             Effect::Spell(plan, _) => self.cast_targets_available(plan, actor, self.object_ref(id)),
@@ -74,7 +75,8 @@ impl Game {
         ));
         let available = if let Some(modes) = a.item.modes() {
             modes.iter().enumerate().any(|(i, m)| {
-                self.blight_mode_allowed(&a.item, i)
+                self.item_mode_eligible(&a.item, i)
+                    && self.blight_mode_allowed(&a.item, i)
                     && self.item_targets_available(&a.item, m.targets)
             })
         } else {

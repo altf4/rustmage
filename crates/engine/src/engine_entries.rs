@@ -1168,26 +1168,7 @@ impl Game {
                     }
                 }
                 if let Some(materials) = movement.craft_materials.as_deref() {
-                    for &exiled in materials {
-                        if self.object_ref(exiled.card) != exiled
-                            || self.state.objects[exiled.card as usize].zone != Zone::Exile
-                            || !self.state.objects[exiled.card as usize].is_card()
-                        {
-                            continue;
-                        }
-                        let first_slot = graveyard_borrowing::next_slot(self, event.after);
-                        self.state.borrowed_links.get_or_insert_default().push(
-                            borrowed_activations::Link {
-                                source: event.after,
-                                origin: None,
-                                exiled,
-                                first_slot,
-                                width: borrowed_activations::DONOR_SLOT_WIDTH,
-                                once_per_turn: true,
-                                shared: false,
-                            },
-                        );
-                    }
+                    self.register_craft_materials(event.after, materials);
                 }
                 if let Some(item) = &movement.delayed_return_exile {
                     self.register_delayed_return_exile(item, event.after);
@@ -1520,6 +1501,7 @@ impl Game {
         if batch.captures_result {
             self.capture_search_result_entry(&events);
         }
+        self.capture_returned_explorer(&events);
         if let Some(packet) = &batch.cleanup {
             let recipients = events
                 .iter()

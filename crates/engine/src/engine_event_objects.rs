@@ -46,6 +46,8 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    /// Frozen threshold of the completed discovery, independent of its result.
+    DiscoverAmount(u64),
     /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
@@ -389,6 +391,7 @@ impl Game {
                     | EventObjectFacts::CopiableGroup(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. } => {
                         continue;
                     }
@@ -511,6 +514,7 @@ impl Game {
             equipment_count: None,
             attached_equipment: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
+            explorer: None,
         }));
         p.set_event_object(EventObjectView {
             object: entering.reference,

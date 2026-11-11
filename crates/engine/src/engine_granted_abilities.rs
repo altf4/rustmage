@@ -43,6 +43,7 @@ impl Game {
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
+                            | TriggerCondition::DiscoveredYou
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged

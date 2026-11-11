@@ -1137,6 +1137,7 @@ impl FundingState<'_> {
                 return;
             }
         }
+        let amount = life_loss::replacement_amount(self, player, amount);
         self.life_lost[player.index()] |= amount > 0;
         if player == self.actor {
             self.life -= amount

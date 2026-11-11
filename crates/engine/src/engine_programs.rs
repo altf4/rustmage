@@ -35,13 +35,13 @@ pub(super) struct Resolution {
     pub target_counter_removal: Option<Box<TargetCounterRemovalView>>,
     pub linked_copy: Option<Box<linked_copies::LinkedCopyCapture>>,
     pub blight_copy: Option<Box<CopyRecipe>>,
-    pub cascade: Option<Box<cascade::CascadeView>>,
+    pub cascade: Option<Box<cascade::CascadeState>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     pub immediate_blink_return: Option<Box<return_links::ImmediateBlink>>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
-    pub explore: Option<Box<ExploreChoiceView>>,
+    pub explore: Option<Box<explore::ExploreSequence>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
@@ -181,6 +181,39 @@ impl Game {
         id.is_some_and(|id| self.on_battlefield(id) && self.has_subtype(id, subtype))
     }
 
+    pub(super) fn start_library_arrangement(
+        &mut self,
+        player: Player,
+        amount: usize,
+        surveil: bool,
+    ) -> bool {
+        let remaining: Vec<_> = self.state.players[player.index()]
+            .library
+            .iter()
+            .rev()
+            .filter(|&&id| self.state.objects[id as usize].is_card())
+            .take(amount)
+            .copied()
+            .collect();
+        if remaining.is_empty() {
+            if amount != 0 {
+                self.scry_or_surveil_event(player);
+            }
+            return false;
+        }
+        self.state.resolving.as_mut().unwrap().library = Some(Box::new(LibraryChoice {
+            surveil,
+            return_within_life_gained: false,
+            return_noncreature_nonland: false,
+            remaining,
+            top: Vec::new(),
+            bottom: Vec::new(),
+            graveyard: Vec::new(),
+        }));
+        self.state.pending = Pending::EffectLibrary { player };
+        true
+    }
+
     pub(super) fn arrange_library(
         &mut self,
         player: Player,
@@ -282,11 +315,14 @@ impl Game {
     }
 
     pub(super) fn lose_life(&mut self, player: Player, amount: i128) {
+        let amount = life_loss::replacement_amount(self, player, amount);
         self.lose_life_unobserved(player, amount);
         self.life_lost_event(player, amount);
     }
 
     pub(super) fn lose_life_simultaneously(&mut self, amounts: [i128; 2]) {
+        let amounts = [Player::P0, Player::P1]
+            .map(|player| life_loss::replacement_amount(self, player, amounts[player.index()]));
         let order = [self.state.active, self.state.active.other()];
         for player in order {
             self.lose_life_unobserved(player, amounts[player.index()]);
@@ -311,7 +347,8 @@ impl Game {
                 return;
             }
             if receipt.exiled.is_none() {
-                self.lose_life(player, amount);
+                self.lose_life_unobserved(player, receipt.lost);
+                self.life_lost_event(player, receipt.lost);
                 return;
             }
         }
@@ -352,7 +389,7 @@ impl Game {
             }
             if let Some(cards) = cards {
                 let ids: Vec<_> = cards.iter().map(|object| object.card).collect();
-                self.record_cast_mana_life_payment(player, amount, Some(cards));
+                self.record_cast_mana_life_payment(player, amount, 0, Some(cards));
                 if !ids.is_empty() {
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     self.finish_zone_events(&events, &[]);
@@ -360,8 +397,10 @@ impl Game {
                 return;
             }
         }
-        self.record_cast_mana_life_payment(player, amount, None);
-        self.lose_life(player, amount);
+        let lost = life_loss::replacement_amount(self, player, amount);
+        self.record_cast_mana_life_payment(player, amount, lost, None);
+        self.lose_life_unobserved(player, lost);
+        self.life_lost_event(player, lost);
     }
 
     pub(super) fn lose_life_unobserved(&mut self, player: Player, amount: i128) {
@@ -1010,6 +1049,7 @@ impl Game {
                     TriggerCondition::SelfEvidence => same && event.evidence_collected,
                     TriggerCondition::EvidenceCollected
                     | TriggerCondition::ScryOrSurveil
+                    | TriggerCondition::DiscoveredYou
                     | TriggerCondition::Proliferated(_)
                     | TriggerCondition::Chapter { .. } => false,
                     TriggerCondition::SelfEnters
@@ -3870,6 +3910,15 @@ impl Game {
             {
                 return;
             }
+            if self.state.resolving.as_ref().unwrap().explore.is_some() {
+                // A new placement batch must advance to an actual choice here.
+                // A previous explore may have resumed this same program from
+                // inside the action boundary's replacement settlement.
+                if self.advance_explore() && self.state.replacements.is_none() {
+                    return;
+                }
+                continue;
+            }
             if self.advance_optional_wheel() {
                 continue;
             }
@@ -4015,7 +4064,24 @@ impl Game {
                     }
                 }
                 Instruction::Discover(amount) => {
-                    if self.start_discover(&item, amount) {
+                    if self.start_discover(item.controller, u64::from(amount)) {
+                        return;
+                    }
+                }
+                Instruction::DiscoverScaled(amount) => {
+                    let amount = u64::try_from(self.item_amount(amount, &item))
+                        .capacity("discover value exhausted");
+                    if self.start_discover(item.controller, amount) {
+                        return;
+                    }
+                }
+                Instruction::CounterTargetThenDiscover => {
+                    if self.counter_target_then_discover(&item) {
+                        return;
+                    }
+                }
+                Instruction::ShuffleTargetThenDiscover => {
+                    if self.shuffle_target_then_discover(&item) {
                         return;
                     }
                 }
@@ -4972,34 +5038,7 @@ impl Game {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::DestroyOthersIfSourcePowerTwenty => {
-                    let live = self.on_battlefield(
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object
-                            .card,
-                    ) && self.object_ref(
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object
-                            .card,
-                    ) == item
-                        .source
-                        .expect("instruction requires an object source")
-                        .object;
-                    let power = if live {
-                        self.stats(
-                            item.source
-                                .expect("instruction requires an object source")
-                                .object
-                                .card,
-                        )
-                        .power
-                    } else {
-                        item.source
-                            .expect("instruction requires an object source")
-                            .facts
-                            .power
-                    };
+                    let power = self.item_amount(AmountValue::SourcePower, &item);
                     if power == 20 {
                         let mut ids: Vec<_> = (0..self.state.objects.len())
                             .map(|id| id as CardId)
@@ -5024,10 +5063,14 @@ impl Game {
                         self.finish_zone_events(&events, &sources);
                     }
                 }
-                Instruction::Explore(subject) => {
-                    if self.start_explore(&item, subject) {
-                        return;
-                    }
+                Instruction::Explore(subject) => self.start_explore(&item, subject, 1),
+                Instruction::ExploreRepeated { subject, amount } => {
+                    let amount = self.item_amount(amount, &item);
+                    self.start_explore(&item, subject, amount);
+                }
+                Instruction::ReturnToBattlefieldThenExplore(amount) => {
+                    let amount = self.item_amount(amount, &item);
+                    self.return_target_then_explore(&item, amount);
                 }
                 Instruction::ManifestDread => {
                     if self.start_manifest_dread(item.controller) {
@@ -8333,6 +8376,9 @@ impl Game {
                 Instruction::ReturnGraveyardSourceTransformed => {
                     self.return_graveyard_source_transformed(&item)
                 }
+                Instruction::ReturnDepartedSourceTransformedTapped { counters } => {
+                    self.return_departed_source_transformed_tapped(&item, counters)
+                }
                 Instruction::ReturnCraftedSourceTransformed => {
                     self.return_crafted_source_transformed(&item)
                 }
@@ -8629,32 +8675,12 @@ impl Game {
                         }
                         _ => unreachable!("scry or surveil amount"),
                     };
-                    let remaining: Vec<_> = self.state.players[item.controller.index()]
-                        .library
-                        .iter()
-                        .rev()
-                        .filter(|&&id| self.state.objects[id as usize].is_card())
-                        .take(amount)
-                        .copied()
-                        .collect();
-                    if !remaining.is_empty() {
-                        self.state.resolving.as_mut().unwrap().library =
-                            Some(Box::new(LibraryChoice {
-                                surveil: !matches!(instruction, Instruction::Scry(_)),
-                                return_within_life_gained: false,
-                                return_noncreature_nonland: false,
-                                remaining,
-                                top: Vec::new(),
-                                bottom: Vec::new(),
-                                graveyard: Vec::new(),
-                            }));
-                        self.state.pending = Pending::EffectLibrary {
-                            player: item.controller,
-                        };
+                    if self.start_library_arrangement(
+                        item.controller,
+                        amount,
+                        !matches!(instruction, Instruction::Scry(_)),
+                    ) {
                         return;
-                    }
-                    if amount != 0 {
-                        self.scry_or_surveil_event(item.controller);
                     }
                 }
                 Instruction::SurveilOneReturnByLifeGained

@@ -314,9 +314,11 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
+        let source = self.object_ref(card);
         let available = match definition.effect() {
-            Effect::Modal(modes) => modes.iter().any(|mode| {
-                self.cast_targets_available(mode.targets, actor, self.object_ref(card))
+            Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
+                self.spell_mode_eligible(actor, source, definition, index)
+                    && self.cast_targets_available(mode.targets, actor, source)
             }),
             Effect::Spell(plan, _) | Effect::Aura(plan) => {
                 self.cast_targets_available(plan, actor, self.object_ref(card))

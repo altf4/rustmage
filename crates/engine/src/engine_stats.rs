@@ -173,7 +173,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CardDrawn { .. } | TriggerCondition::LibrarySearched { .. }
+                TriggerCondition::CardDrawn { .. }
+                    | TriggerCondition::LibrarySearched { .. }
+                    | TriggerCondition::DiscoveredYou
             )
         }) {
             self.state.draw_sources.push(id);
@@ -304,6 +306,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::ScryBeforeControlledCreatureExplores
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
@@ -360,6 +363,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::LifeGainDouble
+                            | crate::cards::StaticAbilityFragment::OpponentLifeLossDoubleOnOwnTurn
                             | crate::cards::StaticAbilityFragment::OpponentMillAdditional(_)
                             | crate::cards::StaticAbilityFragment::FirstCoinFlipsHeads
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize

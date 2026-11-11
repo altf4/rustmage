@@ -799,6 +799,8 @@ impl Game {
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
+            | AmountValue::DiscoverEventAmount
+            | AmountValue::DiscoverManaValueShortfall
             | AmountValue::CastSpellManaSymbols(_)
             | AmountValue::SpellColors
             | AmountValue::ColorsSpent
