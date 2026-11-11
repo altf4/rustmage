@@ -1,0 +1,16 @@
+{
+  "name": "Guidestone Compass",
+  "catalogue_id": 5592,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "0a5e51320b8b5f3abbf3ef00007c86044ce3bb7f5d9bd4ab06afc58f517a17ed",
+  "oracle_face": {
+    "oracle_id": "f429ca15-c578-4c1d-a604-fd5509c92dba",
+    "index": 1,
+    "sha256": "e6f09931860f051007ad86a619af4e0300208ab01f6384c41141729d97ed5305"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LodestoneNeedle.java",
+  "java_sha256": "cb4e971b4a53ddf1c99ab8676d44d990d848e241df080cca02a58382c4b1f471"
+}

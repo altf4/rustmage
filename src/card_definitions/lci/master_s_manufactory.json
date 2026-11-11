@@ -1,0 +1,16 @@
+{
+  "name": "Master's Manufactory",
+  "catalogue_id": 5593,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "0fcacb2e59858fb8b9019eeaaf4e1c63d682cfadad7c56abe7e9c4ff78ffaceb",
+  "oracle_face": {
+    "oracle_id": "2dfdd358-e3cd-4bf5-871b-37689b7951e9",
+    "index": 1,
+    "sha256": "a635ec9e1ffe63c0a1f1fd049066689df66dbd3ef035c77d13d18d0b7504098e"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MastersGuideMural.java",
+  "java_sha256": "7bb30a3843a4dcf46ff4b29b40dd42e5e12d05e0848d4407377f6bc226274c19"
+}

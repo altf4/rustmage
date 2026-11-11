@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "265814f33cb162c2f73e1e6c6cc738193071f71a39c86dcbbfcb4e66d9074473"
   },
-  "physical_metadata_sha256": "0a91bedb66418d9c0f3b3bcbcbbfce59a164ad1d5384314be130440d806edafc"
+  "physical_metadata_sha256": "00015d2042440554a8f46c8bc3b3c0d561163b6d7121338358cb505f938ffe7e",
+  "oracle_face": {
+    "oracle_id": "ef8df503-6160-4e40-a689-49e97fd56cd0",
+    "index": 0,
+    "sha256": "974889a136edc6600bfc7c1efbb6a983d17314e8e3b1302786413b135ae330a0"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaheelisLattice.java",
+  "java_sha256": "1d3e91870b38be3a0eefdfb22c5f87f1bd5a73a8928a07729a161fec7113166e"
 }

@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cce400b549d210e9d976d577bd862d0215ab541c801124cba009554cd846c1b5"
   },
-  "physical_metadata_sha256": "dc2ff5b74fd3563b28ed53012b2affeb455d0fac63edf6c5006bf80941ae7c73"
+  "physical_metadata_sha256": "59a2ffe7546d34872bb093f034596d0ca31e019ca0235887f1e62fca6efd3c89",
+  "oracle_face": {
+    "oracle_id": "a75b02ba-b0c8-47e3-a05c-e9ba221a7578",
+    "index": 0,
+    "sha256": "7a2f7f602542a509b09089057ce3a267f2edacdb8db7f40d17d7a00a219e3506"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TarriansJournal.java",
+  "java_sha256": "e424e36c2e5f8983be2df9480e08e1e9237ad3d29eb90a95757749eb7bdfb6ad"
 }

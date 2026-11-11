@@ -1,0 +1,16 @@
+{
+  "name": "Temple of Civilization",
+  "catalogue_id": 5598,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "614ca7a18ac3fe4f4255eca863dfc23777e3d35a5a9540c072e6ba5c1c763a07",
+  "oracle_face": {
+    "oracle_id": "486bb9a5-73f1-4cec-b097-fb07ac80b72e",
+    "index": 1,
+    "sha256": "b86c71e5641a74c72080201a6cefbe037cb75be32953ec6b3bc216b82f39ab28"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerTaqDeepestFoundation.java",
+  "java_sha256": "80d4f0a86ba4cc2e82654fd2fca632cc079e191e92298c44fd85f48a3561a63c"
+}

@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "410cd37ee796f9c9fcf669dd5afcbded882aee4c9842e4cd296cd0806dda3ce3"
   },
-  "physical_metadata_sha256": "b1566fedb96b98c2625248674585236bbdef71f36ff0cbfe825902e923e7298b"
+  "physical_metadata_sha256": "6feb7f58d093f5c01ac4f2c613a07c02dc34cd0f68bd76c6a0cb11dddb8013d9",
+  "oracle_face": {
+    "oracle_id": "740aa9d9-91a9-431e-8bf9-1344e5273e27",
+    "index": 0,
+    "sha256": "b637e96276fdf107d2e0db06dcf8302890039fea4548959d195530d8521b4be3"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwistsAndTurns.java",
+  "java_sha256": "dd2afa27ea9d61aad6b849992639c33dfccc95dde739f5aad2253fa4aa1421f7"
 }

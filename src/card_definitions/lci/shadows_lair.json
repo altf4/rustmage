@@ -1,0 +1,16 @@
+{
+  "name": "Shadows' Lair",
+  "catalogue_id": 5584,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "75be1bdc3ac87332c89ebdfdd1c4143ce8c7a980422606ca885fb9e244eb0c3e",
+  "oracle_face": {
+    "oracle_id": "522a4b02-24c7-45d2-9097-2803cc9fffad",
+    "index": 1,
+    "sha256": "39a6f66b276e0289932cf00d996226ddfe60facbe010e3bf11ee9698dade829c"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GraspingShadows.java",
+  "java_sha256": "62aa9092348c1adce6286767745aad94ad639ff060602511178c0fe5fea90673"
+}

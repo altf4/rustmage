@@ -1,0 +1,16 @@
+{
+  "name": "Kaslem's Strider",
+  "catalogue_id": 5590,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "66cc26aeb67948ca64dcc28907a1bbc0e14b6c4d579f69b78cf7b56098bef7ce",
+  "oracle_face": {
+    "oracle_id": "1ac3e4bc-1678-4280-a071-3dbc8ef4a2bf",
+    "index": 1,
+    "sha256": "85a5c5efa29a7d25b7e19e140feff69a9b627194da3f70ce1cd7f7f31fd74d1a"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KaslemsStonetree.java",
+  "java_sha256": "11b5c688e5590ba4850fd4c88c07b64a62c3b006baf862f7cbae49b6b90696f8"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Sovereign's Macuahuitl",
+  "catalogue_id": 5587,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "857848f4c28f0674a56d6fa0f2143500fbef8620d60970b15d497d89b0efcaaf",
+  "oracle_face": {
+    "oracle_id": "e7ba349e-b9c1-4373-b79f-755688138b7c",
+    "index": 1,
+    "sha256": "22e11cd7f342af5fe3673ba20d9d43b2f6365b2d50097b8ece3a356ad3997648"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IdolOfTheDeepKing.java",
+  "java_sha256": "3bdfc3645e2d09aeb2d095fce4233f47cd0063df51eed97e0e389129ee5ae4f9"
+}

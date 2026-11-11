@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "13094cb0fa4871c11222470bc96e678d5fe4a736ee450f01ebbe59ed955003c6"
   },
-  "physical_metadata_sha256": "aa85516e7165d7105326a7da591ff850ada74b0ae27f7554b3ccb590198f237a"
+  "physical_metadata_sha256": "69c3f8be08fdd78515b0e085209756f882208e8ad704ccd53d7228f744d8cfcc",
+  "oracle_face": {
+    "oracle_id": "2420828e-b886-42d3-81ba-8ee81b6e1eb8",
+    "index": 0,
+    "sha256": "ecb0aac6ee620446e74533a63459e608950f3c80dfda2c3a44443af678ad2958"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OteclanLandmark.java",
+  "java_sha256": "3541b2a97d53cb4eda6494eb44bb3493c12b6fb31b11f9fa74afec2d5e7d5a7b"
 }

@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b572e9bc1f19ee86442b158df2f30bc63e894d8848e9345fdaec1e2971c85c22"
   },
-  "physical_metadata_sha256": "5ac1b6abf45db3bbd14d0258ce3bdf381bbf6e638e01195edab93db0b522766e"
+  "physical_metadata_sha256": "e02afa8e1ddba61ea0f070488fc38c26f4387a1b4087ca2160b155934118b598",
+  "oracle_face": {
+    "oracle_id": "d3b7b541-6f05-46c1-8031-c848c4bd4635",
+    "index": 0,
+    "sha256": "db724ecfd9718e9c14f43f102bef24ddd3dc9d5cca446f51bf28c1610f6cf4be"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerAxonilDeepestMight.java",
+  "java_sha256": "437a33e2c7f7433c1f42592852561b4fe22692c3b439acc96b6d3db16011db33"
 }

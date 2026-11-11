@@ -1,0 +1,16 @@
+{
+  "name": "The Myriad Pools",
+  "catalogue_id": 5603,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "2c313827ea09a5668010ec2c731b1c38bf21f3eb07a4a6e610a526d7a6b5ec9e",
+  "oracle_face": {
+    "oracle_id": "1f57a9f1-6b95-4395-bdf0-c5289b786ab1",
+    "index": 1,
+    "sha256": "f53f44c91fe9d8af4b27de170dc315987241a8d011c650516c9afcd1151a9472"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheEverflowingWell.java",
+  "java_sha256": "240ecb97e6d140aeda27d90c4df504506fc6506497d7efaa1215e0875ad5cd3e"
+}

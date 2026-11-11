@@ -1,0 +1,16 @@
+{
+  "name": "Temple of Power",
+  "catalogue_id": 5595,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "442a0f2a5ab8826b702cf680909934009746101f6af01de6dcaa7fc9bc2514fa",
+  "oracle_face": {
+    "oracle_id": "d3b7b541-6f05-46c1-8031-c848c4bd4635",
+    "index": 1,
+    "sha256": "c8480a3fedadd165d649c971aa0dcfe116067d3c03ad70c9a294181f5acf4dd4"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerAxonilDeepestMight.java",
+  "java_sha256": "437a33e2c7f7433c1f42592852561b4fe22692c3b439acc96b6d3db16011db33"
+}

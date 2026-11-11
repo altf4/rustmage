@@ -1,0 +1,16 @@
+{
+  "name": "Oteclan Levitator",
+  "catalogue_id": 5599,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "d586180af89c3dd50a547f63dad8f0a21a94957f00bf27e54873a29c1a85bd6c",
+  "oracle_face": {
+    "oracle_id": "2420828e-b886-42d3-81ba-8ee81b6e1eb8",
+    "index": 1,
+    "sha256": "55777d40b4382e37560f924028fd4fc136127c16c3052577e59c7185a637231d"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OteclanLandmark.java",
+  "java_sha256": "3541b2a97d53cb4eda6494eb44bb3493c12b6fb31b11f9fa74afec2d5e7d5a7b"
+}

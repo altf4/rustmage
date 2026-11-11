@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "898ec1a6b961cf856b61703e37ff4c46bae4287c39eaf58fafcf4693fa7f050d"
   },
-  "physical_metadata_sha256": "f63086cc6abc882ecaf8b6ba610ac226e600537cda23471a800021c77b771868"
+  "physical_metadata_sha256": "82f6e2ddfb25fe34daccda379d472e28d8d03b1c8e08ec3d0da1606dc3dea0d0",
+  "oracle_face": {
+    "oracle_id": "30820f71-9fd4-453c-b377-c2e0b01c07a7",
+    "index": 0,
+    "sha256": "244c65c72a30f44c8d38642dc0d2014e4e94a6cdcadc7008dbb625e4f434cf20"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WaterloggedHulk.java",
+  "java_sha256": "d9a149a6816615a6f11522f630e482b9a40e1929c6602264d9891987c7908c1e"
 }

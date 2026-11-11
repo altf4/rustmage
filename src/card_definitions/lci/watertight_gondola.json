@@ -1,0 +1,16 @@
+{
+  "name": "Watertight Gondola",
+  "catalogue_id": 5611,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "b948b23496e419366f2baa8d0534e42a26a9bc554b36bf4e6e7da95ef45419f0",
+  "oracle_face": {
+    "oracle_id": "30820f71-9fd4-453c-b377-c2e0b01c07a7",
+    "index": 1,
+    "sha256": "5aeeadc90ace57aa5153bc88f4873c9a4ff33f52f5116b4c66db6dee9411e21d"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WaterloggedHulk.java",
+  "java_sha256": "d9a149a6816615a6f11522f630e482b9a40e1929c6602264d9891987c7908c1e"
+}

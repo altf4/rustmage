@@ -1,0 +1,16 @@
+{
+  "name": "Mastercraft Raptor",
+  "catalogue_id": 5600,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "6a192cc8e96efd0e4b276c40dcff0527a32b1edd7a6a962bc45e21b3155fa57b",
+  "oracle_face": {
+    "oracle_id": "ef8df503-6160-4e40-a689-49e97fd56cd0",
+    "index": 1,
+    "sha256": "2f33ac028ed30ad6962b0f92087321229fa34001a5499156fe884cdfc084e509"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaheelisLattice.java",
+  "java_sha256": "1d3e91870b38be3a0eefdfb22c5f87f1bd5a73a8928a07729a161fec7113166e"
+}

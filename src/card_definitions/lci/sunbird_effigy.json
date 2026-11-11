@@ -1,0 +1,16 @@
+{
+  "name": "Sunbird Effigy",
+  "catalogue_id": 5601,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "e2ace2dd9f4ac307d4fbb793fd4a0c21f6caa625be411a787b447c57a4696958",
+  "oracle_face": {
+    "oracle_id": "c69742bf-f0f5-4216-a602-c21f9c5a6501",
+    "index": 1,
+    "sha256": "58a75f5053efd3c5014e396ac1eb9115bfb47e47f92d7a4098188a9ebd2c7f83"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunbirdStandard.java",
+  "java_sha256": "9372464737d2e1e29fa79ffbc370708f23d09faeb493e61ad6bc1c8f4708678c"
+}

@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "877fd95c802bdc55a04d30ae3bcddeead622738cbde7bfcc5a3e257b70c38176"
   },
-  "physical_metadata_sha256": "a580cae13bd04d7601dd6788ba9d8fcab046743028401b8370c135093d73ee4c"
+  "physical_metadata_sha256": "d8f4e8825c7e1efb32eac525533417280c4b8668328edacb4a024a945f33abb4",
+  "oracle_face": {
+    "oracle_id": "0b55eac6-a745-4bf4-8926-5ce83bc38d7d",
+    "index": 0,
+    "sha256": "26334f6a0e372ffa7281d60da49ea93e183ea8f24977a16482ff998a83fbfab4"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TreasureMap.java",
+  "java_sha256": "5e5a992580911c13beab7b58be228c07173fe6a70f37a8c032475e705b0b2c8d"
 }

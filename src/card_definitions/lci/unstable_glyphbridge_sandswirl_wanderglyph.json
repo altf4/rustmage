@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fa496d520b9c8eb49e46fc20d3b7f11c349329207b140736583d0df0802aa82"
   },
-  "physical_metadata_sha256": "9f0d92b9303cd1cb17426e0ad56df1d9f1604db22a11e5ce86bd164eb0800d96"
+  "physical_metadata_sha256": "f1976caf9d144417c545db0e6de1259850c9a5f3eb861bb7dee10045ed968d09",
+  "oracle_face": {
+    "oracle_id": "fcd54631-ea47-49a7-ad5f-9a9a51a815ba",
+    "index": 0,
+    "sha256": "4e784d3889dbd0212cc47f9c68f82bdf304838b11de5dae6b5048a38123bef34"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnstableGlyphbridge.java",
+  "java_sha256": "e262735bf62c2d477450528556219c0ec5820f7ed6393ef44c7a0281d8075975"
 }

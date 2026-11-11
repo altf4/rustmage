@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "77dc4eec1ad106482ba8f755cb82fc995925928f88cb1ba840f1fd7477d82a82"
   },
-  "physical_metadata_sha256": "8cf173602b2ad5cb1db24c7231ee864caeb07a400cac7d017d0f3061bd7b670f"
+  "physical_metadata_sha256": "600c0b8e9edbe82a3756ef1d76dcd31234d7eeb8ec76cfe1581fe5ebe56ebd68",
+  "oracle_face": {
+    "oracle_id": "e7ba349e-b9c1-4373-b79f-755688138b7c",
+    "index": 0,
+    "sha256": "87c181c6297264cfad412ce657c580a747f86e086c86698a7b19a665d6de2cdd"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IdolOfTheDeepKing.java",
+  "java_sha256": "3bdfc3645e2d09aeb2d095fce4233f47cd0063df51eed97e0e389129ee5ae4f9"
 }

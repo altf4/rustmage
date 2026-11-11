@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9e359f3f6afab5cf5850dc39e3caf724223041b21a1a7af73bfebc854b604d37"
   },
-  "physical_metadata_sha256": "6451853a24c30460ec3a2b27fd6bddf699d0f7624fac33126847b568afc58043"
+  "physical_metadata_sha256": "d88ee6db226531a2f6a2d1801285eeb407643d130cf266d94a7434b297671d11",
+  "oracle_face": {
+    "oracle_id": "eda11077-b2ce-408b-b982-def2da8fe599",
+    "index": 0,
+    "sha256": "8fdee724bf2cfa55f6b54f387082daa9818cc2715e63f5ef3ce77bc9beb1c754"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerKaslemDeepestGrowth.java",
+  "java_sha256": "025c48307cfadcdce64696f1c5efa97a7debcbabc2b65ab66293fe8236262228"
 }

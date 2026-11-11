@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28bef7d8828153fe2b54ab39091d86a888e347d633fd0586baef932295052d2d"
   },
-  "physical_metadata_sha256": "554c66c7eb3310ff139387591ca79e1def9aba3a0d2f6a878ba86d3c3ffe3b9b"
+  "physical_metadata_sha256": "9c81c1e06b9c457297ff6f61d90e59cbc3f9a5843aba10acea8cfa297f9f42f2",
+  "oracle_face": {
+    "oracle_id": "90e1bcef-53af-4c08-b713-bf10dfcbd577",
+    "index": 0,
+    "sha256": "5cdb00bfe804912cb0b21945d9fcdc9aee140dd63d48d4b5d9a2fa5e6fecba87"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClayFiredBricks.java",
+  "java_sha256": "d82ae5e8a640a6184045cef8b065b79ed0aa9ef7658c5716ff0525afb5b8477c"
 }

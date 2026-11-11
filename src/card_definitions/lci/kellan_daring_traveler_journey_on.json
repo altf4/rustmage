@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91f9184ea610aa0141eb033b119b7b7e9702e3b4bf19ae6e8fc5a2aab1a04337"
   },
-  "physical_metadata_sha256": "0b9c03728cfe94fe468b71c89ad610959d575ecaf39308fd22012b3499973dd9"
+  "physical_metadata_sha256": "5af140771822f2cf8aceaf8a7d75431f7e768f9091a6ef3eb22b8ef3bfc9ba86",
+  "oracle_face": {
+    "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+    "index": 0,
+    "sha256": "a83817ba48b6280ca9620f45fadae53cb6b1cb1699afbd8b6c32d2064f6ef512"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanDaringTraveler.java",
+  "java_sha256": "818fd0d7dbb3043794be1ce244a45f917d6ebaa4b2c59c5707be4b79782e372a"
 }

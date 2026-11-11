@@ -1,0 +1,16 @@
+{
+  "name": "Cosmium Kiln",
+  "catalogue_id": 5581,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "a17c862c9bb8838e73bf4f931bc497f6e6067ab32aefa267f7e6068aab8e685a",
+  "oracle_face": {
+    "oracle_id": "90e1bcef-53af-4c08-b713-bf10dfcbd577",
+    "index": 1,
+    "sha256": "eeee11685b1eaeac496d338983aca428d636c65ceb5e51f60d140c0ff44f89a0"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClayFiredBricks.java",
+  "java_sha256": "d82ae5e8a640a6184045cef8b065b79ed0aa9ef7658c5716ff0525afb5b8477c"
+}

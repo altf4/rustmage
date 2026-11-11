@@ -1,0 +1,15 @@
+{
+  "name": "Abuelo's Awakening",
+  "catalogue_id": 40,
+  "oracle_id": "2b22cf44-7b03-4919-9812-6796bf193484",
+  "facts_sha256": "27d37caa382c6a3256991f5b69255008c63901947c44759fb23adcb35c977684",
+  "complete": false,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "3797f26ef77cfe956077475c9882fa5b6574015d3fc1d6da075bc56c930f4648"
+  },
+  "physical_metadata_sha256": "24ccfc14aed80d32bb04813730d2f393f0283c5bd5e07e41b6233d26dc99b9aa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbuelosAwakening.java",
+  "java_sha256": "f1c4180a7bc9bbaf21d88048cdf14b13129d32f674c1603553bd581f7e557ca4"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Jadeheart Attendant",
+  "catalogue_id": 5589,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "daef1a59458fd782013d76c1f5fa20e921744e9da92808b1fecefab8d64216fb",
+  "oracle_face": {
+    "oracle_id": "fa2c984a-6bc1-4ec8-93d7-87f9f06b841e",
+    "index": 1,
+    "sha256": "bc09334d44ea49e4f39a681e571a6aba79a6f04dfe7407223314a352c0caa7c1"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JadeSeedstones.java",
+  "java_sha256": "d43be6a98a8cedcd0870a38007b61412e024dde029e09e288019286b1b001706"
+}

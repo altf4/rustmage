@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "24a0804143ab86deafe13620c5c71972d6a51cf79dd72b6590cb8d256c912378",
+  "catalogue_version": "322e53c2d88b233d546cc88cb4cb1cf3e46d792c1af385c5d8eb91558b948653",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4127,
   "implemented_total": 4139,
-  "token_definitions": 176,
+  "token_definitions": 186,
   "emblem_definitions": 12,
-  "adventure_definitions": 73,
+  "adventure_definitions": 74,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -515,8 +515,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/abuelo_s_awakening.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/lci/abuelo_s_awakening.rs",
+      "set": "lci"
     },
     {
       "name": "Abuelo, Ancestral Echo",

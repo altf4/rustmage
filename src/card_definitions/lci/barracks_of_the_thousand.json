@@ -1,0 +1,16 @@
+{
+  "name": "Barracks of the Thousand",
+  "catalogue_id": 5604,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "3f89717ff93fd98dcf79598fc99360a51074303cf89fcf4b2563c70e60e4088c",
+  "oracle_face": {
+    "oracle_id": "32af5f7b-a970-484a-9aff-226749551d32",
+    "index": 1,
+    "sha256": "9e228a0b4df014300468b917feef02125f1bd211e8921a4fc6d4765a7c3be1c7"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThousandMoonsSmithy.java",
+  "java_sha256": "7585df49e731386e5f9618405b2cb82b5e17351574f6080806687bb4c5159d18"
+}

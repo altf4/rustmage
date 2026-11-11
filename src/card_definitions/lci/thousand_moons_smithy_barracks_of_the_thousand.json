@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f86387ccb99a905cd978075b3aca4ed7a7d2659a9ccae2654b0de097eec1617b"
   },
-  "physical_metadata_sha256": "5d10cbcebe27762f2e0de2e80ac883dd05d2d2a42c3082c701550e448ad3184b"
+  "physical_metadata_sha256": "55505832393d758a30fd0f7e039f960aea0610d5f5a9599332f5267e846ce37a",
+  "oracle_face": {
+    "oracle_id": "32af5f7b-a970-484a-9aff-226749551d32",
+    "index": 0,
+    "sha256": "fb8f6225aaadee3fd7b8a91dbf9b906008f7285d354f51d6b6612a99358b8541"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThousandMoonsSmithy.java",
+  "java_sha256": "7585df49e731386e5f9618405b2cb82b5e17351574f6080806687bb4c5159d18"
 }

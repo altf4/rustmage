@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-fungus-dinosaur",
+  "catalogue_id": 5572,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "e9b0f3c3c9f12843d319c97c8190ca6370a10bbb4d618381db2374353458ff17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/FungusDinosaurToken.java",
+  "java_sha256": "89be799fea82c95aeb629583c50573e066e3ac9768c2fdfd0f85b05a95404c4f",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

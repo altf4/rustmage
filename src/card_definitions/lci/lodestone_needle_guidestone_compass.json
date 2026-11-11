@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f0b0f47c03e19aba8da6dcf18a6b75fcf8981a6e5fd7436828c19d3113963fe6"
   },
-  "physical_metadata_sha256": "172a1b3712ca1dd0310e7715b63177b8f569c6f62f4a3e77286d7202e09968b4"
+  "physical_metadata_sha256": "14ea6338756b600065787beed589a742af08212967218a06f25b1dc85afc3078",
+  "oracle_face": {
+    "oracle_id": "f429ca15-c578-4c1d-a604-fd5509c92dba",
+    "index": 0,
+    "sha256": "0fb08274b409914cabf90062e1fde66395404fdf75f2a9fcb22bb3c7b18fed04"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LodestoneNeedle.java",
+  "java_sha256": "cb4e971b4a53ddf1c99ab8676d44d990d848e241df080cca02a58382c4b1f471"
 }

@@ -1,0 +1,16 @@
+{
+  "name": "Mycoid Maze",
+  "catalogue_id": 5608,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "785f1432e3218e4378db64667b135a1f81f74936c1a7103022a2f9f6458c9c10",
+  "oracle_face": {
+    "oracle_id": "740aa9d9-91a9-431e-8bf9-1344e5273e27",
+    "index": 1,
+    "sha256": "27a0dbdf379eb9d13ba1b9ae2c231704b6d99067d71ad80c56d640e1c0c53e47"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwistsAndTurns.java",
+  "java_sha256": "dd2afa27ea9d61aad6b849992639c33dfccc95dde739f5aad2253fa4aa1421f7"
+}

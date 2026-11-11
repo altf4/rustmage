@@ -1,0 +1,16 @@
+{
+  "name": "Geode Grotto",
+  "catalogue_id": 5583,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "5c6fca6b66247fde4096e077125380f12d1fe643337f06d97a008b23a03ef93d",
+  "oracle_face": {
+    "oracle_id": "2f4374f6-c695-4a5d-a6d6-0e41eaa587ca",
+    "index": 1,
+    "sha256": "2982f58d5d1d8102423690d1237876f005d53b0ee5c8d51e0d0268970852295c"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DowsingDevice.java",
+  "java_sha256": "d9d3334bed8782a4259a7aee9e22e3e4fd19bec6450cfcd7bde12300d41d801c"
+}

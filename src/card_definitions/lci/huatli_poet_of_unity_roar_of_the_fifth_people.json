@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a0a62731cc4a3d6844f7733a55e5152e294271acc2cb78ac7fa49f090c5d98d"
   },
-  "physical_metadata_sha256": "e360edf8dd04c69d12fa899365437d22025ef41cd2799bdabeae5e2c5cac71e0"
+  "physical_metadata_sha256": "c4100c298f855cee307d001e4e36450ed85e90dc43938c4fb5a2b23fa34ab093",
+  "oracle_face": {
+    "oracle_id": "2e6ed3e6-d2b8-4b75-b7e1-0773da4987a1",
+    "index": 0,
+    "sha256": "750c8b8fe7a971404ff0546c8eddbd0a747104d16b4b881647ae2e177030df9a"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HuatliPoetOfUnity.java",
+  "java_sha256": "6498fb174b5c272d2dc57f97748178575465a0a308fd96892ea6440bb7905e01"
 }

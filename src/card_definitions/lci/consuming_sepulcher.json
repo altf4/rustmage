@@ -1,0 +1,16 @@
+{
+  "name": "Consuming Sepulcher",
+  "catalogue_id": 5606,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "ad5939f023497e7033d4249e5ca290d9abc63f54de04e708d9d937b897c0d3a6",
+  "oracle_face": {
+    "oracle_id": "883a4180-9ede-4249-a4b8-3a29c998fb63",
+    "index": 1,
+    "sha256": "d56e339e673dbcfab750d0f0ad8d710f9a464679c3cc9b93c79f6e56a3e0cbfb"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TithingBlade.java",
+  "java_sha256": "55735e2133ddd52d909c7d51e8b05e98b80124dff44c058e24d50d420d295823"
+}

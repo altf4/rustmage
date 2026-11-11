@@ -46,7 +46,7 @@
     1,
     18,
     10,
-    0,
+    1,
     3,
     4,
     4,
@@ -5574,7 +5574,50 @@
     1,
     4,
     16,
-    1
+    1,
+    1,
+    8,
+    16,
+    16,
+    1,
+    3,
+    1,
+    2,
+    4,
+    5,
+    0,
+    0,
+    1,
+    8,
+    0,
+    0,
+    0,
+    25,
+    8,
+    2,
+    16,
+    16,
+    16,
+    2,
+    3,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    8,
+    0,
+    0,
+    0,
+    0,
+    4,
+    4,
+    0,
+    0,
+    1,
+    4,
+    2
   ],
   "aliases": [
     [
@@ -6574,8 +6617,48 @@
       5335
     ],
     [
+      "@token/lci-dinosaur-3-1",
+      5570
+    ],
+    [
+      "@token/lci-dinosaur-egg",
+      5571
+    ],
+    [
+      "@token/lci-fungus-dinosaur",
+      5572
+    ],
+    [
+      "@token/lci-gnome-soldier",
+      5573
+    ],
+    [
+      "@token/lci-golem-4-4",
+      5574
+    ],
+    [
+      "@token/lci-merfolk-hexproof",
+      5576
+    ],
+    [
       "@token/lci-quintorius-spirit",
       5472
+    ],
+    [
+      "@token/lci-resplendent-angel",
+      5569
+    ],
+    [
+      "@token/lci-skeleton-pirate",
+      5577
+    ],
+    [
+      "@token/lci-vampire-demon",
+      5578
+    ],
+    [
+      "@token/lci-vampire-lifelink",
+      5575
     ],
     [
       "@token/lluwen_worm_1_1_black_green",
@@ -6900,6 +6983,10 @@
     [
       "Accumulate Wisdom",
       47
+    ],
+    [
+      "Aclazotz, Deepest Betrayal",
+      48
     ],
     [
       "Aclazotz, Deepest Betrayal // Temple of the Dead",
@@ -8122,6 +8209,10 @@
       335
     ],
     [
+      "Barracks of the Thousand",
+      5604
+    ],
+    [
       "Barrels of Blasting Jelly",
       336
     ],
@@ -8996,6 +9087,10 @@
     [
       "Brass's Bounty",
       527
+    ],
+    [
+      "Brass's Tunnel-Grinder",
+      528
     ],
     [
       "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
@@ -10034,6 +10129,10 @@
       766
     ],
     [
+      "Clay-Fired Bricks",
+      767
+    ],
+    [
       "Clay-Fired Bricks // Cosmium Kiln",
       767
     ],
@@ -10346,6 +10445,10 @@
       839
     ],
     [
+      "Consuming Sepulcher",
+      5606
+    ],
+    [
       "Contested Game Ball",
       840
     ],
@@ -10440,6 +10543,10 @@
     [
       "Cosmium Confluence",
       862
+    ],
+    [
+      "Cosmium Kiln",
+      5581
     ],
     [
       "Cosmogoyf",
@@ -11382,8 +11489,16 @@
       1084
     ],
     [
+      "Dire Blunderbuss",
+      5582
+    ],
+    [
       "Dire Downdraft",
       1085
+    ],
+    [
+      "Dire Flail",
+      1086
     ],
     [
       "Dire Flail // Dire Blunderbuss",
@@ -11638,6 +11753,10 @@
       1144
     ],
     [
+      "Dowsing Device",
+      1145
+    ],
+    [
       "Dowsing Device // Geode Grotto",
       1145
     ],
@@ -11756,6 +11875,10 @@
     [
       "Dramatic Accusation",
       1173
+    ],
+    [
+      "Dread Osseosaur",
+      5610
     ],
     [
       "Dread Summons",
@@ -14074,6 +14197,10 @@
       1711
     ],
     [
+      "Geode Grotto",
+      5583
+    ],
+    [
       "Geological Appraiser",
       1712
     ],
@@ -14674,6 +14801,10 @@
       1849
     ],
     [
+      "Grasping Shadows",
+      1850
+    ],
+    [
       "Grasping Shadows // Shadows' Lair",
       1850
     ],
@@ -14854,6 +14985,10 @@
       1889
     ],
     [
+      "Growing Rites of Itlimoc",
+      1890
+    ],
+    [
       "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
       1890
     ],
@@ -14932,6 +15067,10 @@
     [
       "Guidelight Synergist",
       1906
+    ],
+    [
+      "Guidestone Compass",
+      5592
     ],
     [
       "Guiding Hydra",
@@ -15730,6 +15869,10 @@
       2089
     ],
     [
+      "Huatli, Poet of Unity",
+      2090
+    ],
+    [
       "Huatli, Poet of Unity // Roar of the Fifth People",
       2090
     ],
@@ -15866,6 +16009,10 @@
       2122
     ],
     [
+      "Iceberg Titan",
+      5588
+    ],
+    [
       "Icecave Crasher",
       2123
     ],
@@ -15892,6 +16039,10 @@
     [
       "Identity Echo",
       2129
+    ],
+    [
+      "Idol of the Deep King",
+      2130
     ],
     [
       "Idol of the Deep King // Sovereign's Macuahuitl",
@@ -16254,6 +16405,10 @@
       2214
     ],
     [
+      "Inverted Iceberg",
+      2215
+    ],
+    [
       "Inverted Iceberg // Iceberg Titan",
       2215
     ],
@@ -16374,6 +16529,10 @@
       2241
     ],
     [
+      "Itlimoc, Cradle of the Sun",
+      5585
+    ],
+    [
       "Itzquinth, Firstborn of Gishath",
       2242
     ],
@@ -16414,6 +16573,10 @@
       2251
     ],
     [
+      "Jade Seedstones",
+      2252
+    ],
+    [
       "Jade Seedstones // Jadeheart Attendant",
       2252
     ],
@@ -16424,6 +16587,10 @@
     [
       "Jaded Analyst",
       2254
+    ],
+    [
+      "Jadeheart Attendant",
+      5589
     ],
     [
       "Jadelight Spelunker",
@@ -16598,6 +16765,10 @@
       2290
     ],
     [
+      "Journey On",
+      5591
+    ],
+    [
       "Joust Through",
       2291
     ],
@@ -16722,8 +16893,16 @@
       2320
     ],
     [
+      "Kaslem's Stonetree",
+      2321
+    ],
+    [
       "Kaslem's Stonetree // Kaslem's Strider",
       2321
+    ],
+    [
+      "Kaslem's Strider",
+      5590
     ],
     [
       "Kastral, the Windcrested",
@@ -16800,6 +16979,10 @@
     [
       "Kellan's Lightblades",
       2338
+    ],
+    [
+      "Kellan, Daring Traveler",
+      2339
     ],
     [
       "Kellan, Daring Traveler // Journey On",
@@ -17654,6 +17837,10 @@
       2535
     ],
     [
+      "Lodestone Needle",
+      2536
+    ],
+    [
       "Lodestone Needle // Guidestone Compass",
       2536
     ],
@@ -18258,8 +18445,20 @@
       2682
     ],
     [
+      "Master's Guide-Mural",
+      2683
+    ],
+    [
       "Master's Guide-Mural // Master's Manufactory",
       2683
+    ],
+    [
+      "Master's Manufactory",
+      5593
+    ],
+    [
+      "Mastercraft Raptor",
+      5600
     ],
     [
       "Masterful Flourish",
@@ -18276,6 +18475,10 @@
     [
       "Matterbending Mage",
       2687
+    ],
+    [
+      "Matzalantli, the Great Door",
+      2688
     ],
     [
       "Matzalantli, the Great Door // The Core",
@@ -19142,6 +19345,10 @@
       2893
     ],
     [
+      "Mycoid Maze",
+      5608
+    ],
+    [
       "Myojin of Night's Reach",
       2894
     ],
@@ -19562,16 +19769,32 @@
       2995
     ],
     [
+      "Ojer Axonil, Deepest Might",
+      2996
+    ],
+    [
       "Ojer Axonil, Deepest Might // Temple of Power",
       2996
+    ],
+    [
+      "Ojer Kaslem, Deepest Growth",
+      2997
     ],
     [
       "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
       2997
     ],
     [
+      "Ojer Pakpatiq, Deepest Epoch",
+      2998
+    ],
+    [
       "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
       2998
+    ],
+    [
+      "Ojer Taq, Deepest Foundation",
+      2999
     ],
     [
       "Ojer Taq, Deepest Foundation // Temple of Civilization",
@@ -19798,8 +20021,16 @@
       3051
     ],
     [
+      "Oteclan Landmark",
+      3052
+    ],
+    [
       "Oteclan Landmark // Oteclan Levitator",
       3052
+    ],
+    [
+      "Oteclan Levitator",
+      5599
     ],
     [
       "Otter-Penguin",
@@ -21962,6 +22193,10 @@
       3562
     ],
     [
+      "Roar of the Fifth People",
+      5586
+    ],
+    [
       "Roaring Furnace // Steaming Sauna",
       3563
     ],
@@ -22338,6 +22573,10 @@
       3652
     ],
     [
+      "Saheeli's Lattice",
+      3653
+    ],
+    [
       "Saheeli's Lattice // Mastercraft Raptor",
       3653
     ],
@@ -22456,6 +22695,10 @@
     [
       "Sandstorm Verge",
       3681
+    ],
+    [
+      "Sandswirl Wanderglyph",
+      5609
     ],
     [
       "Sandworm",
@@ -23012,6 +23255,10 @@
     [
       "Shadow of the Goblin",
       3806
+    ],
+    [
+      "Shadows' Lair",
+      5584
     ],
     [
       "Shadowy Backstreet",
@@ -23796,6 +24043,10 @@
     [
       "Sovereign Okinec Ahau",
       3987
+    ],
+    [
+      "Sovereign's Macuahuitl",
+      5587
     ],
     [
       "Sower of Chaos",
@@ -24866,6 +25117,14 @@
       4235
     ],
     [
+      "Sunbird Effigy",
+      5601
+    ],
+    [
+      "Sunbird Standard",
+      4236
+    ],
+    [
       "Sunbird Standard // Sunbird Effigy",
       4236
     ],
@@ -25314,6 +25573,10 @@
       4339
     ],
     [
+      "Tarrian's Journal",
+      4340
+    ],
+    [
       "Tarrian's Journal // The Tomb of Aclazotz",
       4340
     ],
@@ -25374,6 +25637,10 @@
       4354
     ],
     [
+      "Tecutlan, the Searing Rift",
+      5580
+    ],
+    [
       "Teeming Dragonstorm",
       4355
     ],
@@ -25410,6 +25677,18 @@
       4362
     ],
     [
+      "Temple of Civilization",
+      5598
+    ],
+    [
+      "Temple of Cultivation",
+      5596
+    ],
+    [
+      "Temple of Cyclical Time",
+      5597
+    ],
+    [
       "Temple of Deceit",
       4363
     ],
@@ -25438,12 +25717,20 @@
       4369
     ],
     [
+      "Temple of Power",
+      5595
+    ],
+    [
       "Temple of Silence",
       4370
     ],
     [
       "Temple of Triumph",
       4371
+    ],
+    [
+      "Temple of the Dead",
+      5579
     ],
     [
       "Temporal Cleansing",
@@ -25698,6 +25985,10 @@
       4430
     ],
     [
+      "The Core",
+      5594
+    ],
+    [
       "The Crystal's Chosen",
       4431
     ],
@@ -25762,6 +26053,10 @@
       4444
     ],
     [
+      "The Everflowing Well",
+      4445
+    ],
+    [
       "The Everflowing Well // The Myriad Pools",
       4445
     ],
@@ -25792,6 +26087,10 @@
     [
       "The Great Goblin",
       4452
+    ],
+    [
+      "The Grim Captain",
+      5605
     ],
     [
       "The Huntsman's Redemption",
@@ -25922,6 +26221,10 @@
       4481
     ],
     [
+      "The Myriad Pools",
+      5603
+    ],
+    [
       "The Neutrinos",
       4482
     ],
@@ -26040,6 +26343,10 @@
     [
       "The Thing, Ben Grimm",
       4510
+    ],
+    [
+      "The Tomb of Aclazotz",
+      5602
     ],
     [
       "The Unagi of Kyoshi Island",
@@ -26218,6 +26525,10 @@
       4554
     ],
     [
+      "Thousand Moons Smithy",
+      4555
+    ],
+    [
       "Thousand Moons Smithy // Barracks of the Thousand",
       4555
     ],
@@ -26296,6 +26607,10 @@
     [
       "Thrill of Possibility",
       4572
+    ],
+    [
+      "Throne of the Grim Captain",
+      4573
     ],
     [
       "Throne of the Grim Captain // The Grim Captain",
@@ -26468,6 +26783,10 @@
     [
       "Titanic Growth",
       4614
+    ],
+    [
+      "Tithing Blade",
+      4615
     ],
     [
       "Tithing Blade // Consuming Sepulcher",
@@ -26702,8 +27021,16 @@
       4669
     ],
     [
+      "Treasure Cove",
+      5607
+    ],
+    [
       "Treasure Dredger",
       4670
+    ],
+    [
+      "Treasure Map",
+      4671
     ],
     [
       "Treasure Map // Treasure Cove",
@@ -26956,6 +27283,10 @@
     [
       "Twisted Sewer-Witch",
       4728
+    ],
+    [
+      "Twists and Turns",
+      4729
     ],
     [
       "Twists and Turns // Mycoid Maze",
@@ -27260,6 +27591,10 @@
     [
       "Unstable Experiment",
       4799
+    ],
+    [
+      "Unstable Glyphbridge",
+      4800
     ],
     [
       "Unstable Glyphbridge // Sandswirl Wanderglyph",
@@ -27774,6 +28109,10 @@
       4913
     ],
     [
+      "Visage of Dread",
+      4914
+    ],
+    [
       "Visage of Dread // Dread Osseosaur",
       4914
     ],
@@ -28118,12 +28457,20 @@
       4999
     ],
     [
+      "Waterlogged Hulk",
+      5000
+    ],
+    [
       "Waterlogged Hulk // Watertight Gondola",
       5000
     ],
     [
       "Waterspout Warden",
       5001
+    ],
+    [
+      "Watertight Gondola",
+      5611
     ],
     [
       "Waterwind Scout",
@@ -29938,6 +30285,66 @@
       "name": "Mouse Token",
       "subtypes": "Mouse",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/lci-resplendent-angel",
+      "name": "Angel Token",
+      "subtypes": "Angel",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/lci-dinosaur-3-1",
+      "name": "Dinosaur Token",
+      "subtypes": "Dinosaur",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/lci-dinosaur-egg",
+      "name": "Dinosaur Egg Token",
+      "subtypes": "Dinosaur Egg",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/lci-fungus-dinosaur",
+      "name": "Fungus Dinosaur Token",
+      "subtypes": "Fungus Dinosaur",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/lci-gnome-soldier",
+      "name": "Gnome Soldier Token",
+      "subtypes": "Gnome Soldier",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/lci-golem-4-4",
+      "name": "Golem Token",
+      "subtypes": "Golem",
+      "colors": 3
+    },
+    {
+      "factory_identity": "@token/lci-vampire-lifelink",
+      "name": "Vampire Token",
+      "subtypes": "Vampire",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/lci-merfolk-hexproof",
+      "name": "Merfolk Token",
+      "subtypes": "Merfolk",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/lci-skeleton-pirate",
+      "name": "Skeleton Pirate Token",
+      "subtypes": "Skeleton Pirate",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/lci-vampire-demon",
+      "name": "Vampire Demon Token",
+      "subtypes": "Vampire Demon",
+      "colors": 5
     }
   ],
   "emblems": [
@@ -31715,29 +32122,29 @@
     {
       "index": 40,
       "module": "card_0040",
-      "path": "legacy/abuelo_s_awakening.rs",
-      "set": "legacy",
+      "path": "lci/abuelo_s_awakening.rs",
+      "set": "lci",
       "category": "physical",
       "name": "Abuelo's Awakening",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "2b22cf44-7b03-4919-9812-6796bf193484",
+      "facts_sha256": "27d37caa382c6a3256991f5b69255008c63901947c44759fb23adcb35c977684",
+      "mana_cost": "{X}{3}{W}",
+      "type_line": "Sorcery",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 4,
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 3
     },
     {
       "index": 41,
@@ -31963,7 +32370,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Aclazotz, Deepest Betrayal",
+        "mana_cost": "{3}{B}{B}",
+        "type_line": "Legendary Creature — Bat God",
+        "colored": [
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Flying",
+          "Lifelink",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5579
     },
     {
       "index": 49,
@@ -45676,7 +46106,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Brass's Tunnel-Grinder",
+        "mana_cost": "{2}{R}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5580
     },
     {
       "index": 529,
@@ -52598,7 +53049,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Clay-Fired Bricks",
+        "mana_cost": "{1}{W}",
+        "type_line": "Artifact",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5581
     },
     {
       "index": 768,
@@ -61758,7 +62231,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Dire Flail",
+        "mana_cost": "{R}",
+        "type_line": "Artifact — Equipment",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Equip"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5582
     },
     {
       "index": 1087,
@@ -63431,7 +63927,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Dowsing Device",
+        "mana_cost": "{1}{R}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5583
     },
     {
       "index": 1146,
@@ -83604,7 +84121,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Grasping Shadows",
+        "mana_cost": "{3}{B}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 32,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5584
     },
     {
       "index": 1851,
@@ -84748,7 +85286,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Growing Rites of Itlimoc",
+        "mana_cost": "{2}{G}",
+        "type_line": "Legendary Enchantment",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 32,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5585
     },
     {
       "index": 1891,
@@ -90499,7 +91058,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Huatli, Poet of Unity",
+        "mana_cost": "{2}{G}",
+        "type_line": "Legendary Creature — Human Warrior Bard",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5586
     },
     {
       "index": 2091,
@@ -91651,7 +92231,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Idol of the Deep King",
+        "mana_cost": "{2}{R}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Flash"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5587
     },
     {
       "index": 2131,
@@ -94055,7 +94658,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Inverted Iceberg",
+        "mana_cost": "{1}{U}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Mill"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5588
     },
     {
       "index": 2216,
@@ -95119,7 +95745,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Jade Seedstones",
+        "mana_cost": "{3}{G}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5589
     },
     {
       "index": 2253,
@@ -95203,7 +95851,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -97176,7 +97824,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Kaslem's Stonetree",
+        "mana_cost": "{2}{G}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5590
     },
     {
       "index": 2322,
@@ -97711,7 +98381,25 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Kellan, Daring Traveler",
+        "mana_cost": "{1}{W}",
+        "type_line": "Legendary Creature — Human Faerie Scout",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      }
     },
     {
       "index": 2340,
@@ -103432,7 +104120,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Lodestone Needle",
+        "mana_cost": "{1}{U}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Flash"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5592
     },
     {
       "index": 2537,
@@ -107632,7 +108343,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Master's Guide-Mural",
+        "mana_cost": "{3}{W}{U}",
+        "type_line": "Artifact",
+        "colored": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5593
     },
     {
       "index": 2684,
@@ -107770,7 +108503,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Matzalantli, the Great Door",
+        "mana_cost": "{3}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5594
     },
     {
       "index": 2689,
@@ -116596,7 +117350,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Ojer Axonil, Deepest Might",
+        "mana_cost": "{2}{R}{R}",
+        "type_line": "Legendary Creature — God",
+        "colored": [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform",
+          "Trample"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5595
     },
     {
       "index": 2997,
@@ -116626,7 +117402,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Ojer Kaslem, Deepest Growth",
+        "mana_cost": "{3}{G}{G}",
+        "type_line": "Legendary Creature — God",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          2,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Transform",
+          "Trample"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5596
     },
     {
       "index": 2998,
@@ -116656,7 +117454,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Ojer Pakpatiq, Deepest Epoch",
+        "mana_cost": "{2}{U}{U}",
+        "type_line": "Legendary Creature — God",
+        "colored": [
+          0,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Flying",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5597
     },
     {
       "index": 2999,
@@ -116686,7 +117506,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Ojer Taq, Deepest Foundation",
+        "mana_cost": "{4}{W}{W}",
+        "type_line": "Legendary Creature — God",
+        "colored": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 4,
+        "oracle_keywords": [
+          "Vigilance",
+          "Transform"
+        ],
+        "kind": 1,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5598
     },
     {
       "index": 3000,
@@ -118201,7 +119043,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Oteclan Landmark",
+        "mana_cost": "{W}",
+        "type_line": "Artifact",
+        "colored": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Scry",
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5599
     },
     {
       "index": 3053,
@@ -135341,7 +136206,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Saheeli's Lattice",
+        "mana_cost": "{1}{R}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5600
     },
     {
       "index": 3654,
@@ -152196,7 +153083,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Sunbird Standard",
+        "mana_cost": "{3}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5601
     },
     {
       "index": 4237,
@@ -155166,7 +156075,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Tarrian's Journal",
+        "mana_cost": "{1}{B}",
+        "type_line": "Legendary Artifact — Book",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5602
     },
     {
       "index": 4341,
@@ -158206,7 +159136,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "The Everflowing Well",
+        "mana_cost": "{2}{U}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform",
+          "Descend",
+          "Mill"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5603
     },
     {
       "index": 4446,
@@ -161380,7 +162333,28 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Thousand Moons Smithy",
+        "mana_cost": "{2}{W}{W}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5604
     },
     {
       "index": 4556,
@@ -161887,7 +162861,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Throne of the Grim Captain",
+        "mana_cost": "{2}",
+        "type_line": "Legendary Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Mill"
+        ],
+        "kind": 16,
+        "legendary": true,
+        "basic": false
+      },
+      "back_face": 5605
     },
     {
       "index": 4574,
@@ -163099,7 +164096,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Tithing Blade",
+        "mana_cost": "{1}{B}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5606
     },
     {
       "index": 4616,
@@ -164720,7 +165739,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Treasure Map",
+        "mana_cost": "{2}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 2,
+        "oracle_keywords": [
+          "Transform",
+          "Treasure",
+          "Scry"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5607
     },
     {
       "index": 4672,
@@ -166393,7 +167435,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Twists and Turns",
+        "mana_cost": "{G}",
+        "type_line": "Enchantment",
+        "colored": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Transform",
+          "Explore",
+          "Scry"
+        ],
+        "kind": 32,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5608
     },
     {
       "index": 4730,
@@ -168442,7 +169507,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Unstable Glyphbridge",
+        "mana_cost": "{3}{W}{W}",
+        "type_line": "Artifact",
+        "colored": [
+          2,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 3,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5609
     },
     {
       "index": 4801,
@@ -171768,7 +172855,29 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Visage of Dread",
+        "mana_cost": "{1}{B}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        "generic": 1,
+        "oracle_keywords": [
+          "Craft",
+          "Transform"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5610
     },
     {
       "index": 4915,
@@ -174223,7 +175332,30 @@
         0,
         0
       ],
-      "generic": 0
+      "generic": 0,
+      "front_face": {
+        "name": "Waterlogged Hulk",
+        "mana_cost": "{U}",
+        "type_line": "Artifact",
+        "colored": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        "generic": 0,
+        "oracle_keywords": [
+          "Craft",
+          "Transform",
+          "Mill"
+        ],
+        "kind": 16,
+        "legendary": false,
+        "basic": false
+      },
+      "back_face": 5611
     },
     {
       "index": 5001,
@@ -190167,6 +191299,1250 @@
       ],
       "generic": 0,
       "oracle_keywords": []
+    },
+    {
+      "index": 5569,
+      "module": "card_5569",
+      "path": "synthetic/token_lci_resplendent_angel.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-resplendent-angel",
+      "mana_cost": "",
+      "type_line": "Creature — Angel",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Vigilance"
+      ]
+    },
+    {
+      "index": 5570,
+      "module": "card_5570",
+      "path": "synthetic/token_lci_dinosaur_3_1.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-dinosaur-3-1",
+      "mana_cost": "",
+      "type_line": "Creature — Dinosaur",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5571,
+      "module": "card_5571",
+      "path": "synthetic/token_lci_dinosaur_egg.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-dinosaur-egg",
+      "mana_cost": "",
+      "type_line": "Creature — Dinosaur Egg",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5572,
+      "module": "card_5572",
+      "path": "synthetic/token_lci_fungus_dinosaur.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-fungus-dinosaur",
+      "mana_cost": "",
+      "type_line": "Creature — Fungus Dinosaur",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5573,
+      "module": "card_5573",
+      "path": "synthetic/token_lci_gnome_soldier.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-gnome-soldier",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Gnome Soldier",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5574,
+      "module": "card_5574",
+      "path": "synthetic/token_lci_golem_4_4.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-golem-4-4",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5575,
+      "module": "card_5575",
+      "path": "synthetic/token_lci_vampire_lifelink.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-vampire-lifelink",
+      "mana_cost": "",
+      "type_line": "Creature — Vampire",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Lifelink"
+      ]
+    },
+    {
+      "index": 5576,
+      "module": "card_5576",
+      "path": "synthetic/token_lci_merfolk_hexproof.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-merfolk-hexproof",
+      "mana_cost": "",
+      "type_line": "Creature — Merfolk",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Hexproof"
+      ]
+    },
+    {
+      "index": 5577,
+      "module": "card_5577",
+      "path": "synthetic/token_lci_skeleton_pirate.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-skeleton-pirate",
+      "mana_cost": "",
+      "type_line": "Creature — Skeleton Pirate",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5578,
+      "module": "card_5578",
+      "path": "synthetic/token_lci_vampire_demon.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/lci-vampire-demon",
+      "mana_cost": "",
+      "type_line": "Creature — Vampire Demon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ]
+    },
+    {
+      "index": 5579,
+      "module": "card_5579",
+      "path": "lci/temple_of_the_dead.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Temple of the Dead",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 48
+    },
+    {
+      "index": 5580,
+      "module": "card_5580",
+      "path": "lci/tecutlan_the_searing_rift.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Tecutlan, the Searing Rift",
+      "mana_cost": "",
+      "type_line": "Legendary Land — Cave",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Discover"
+      ],
+      "kind": 2,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 528
+    },
+    {
+      "index": 5581,
+      "module": "card_5581",
+      "path": "lci/cosmium_kiln.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Cosmium Kiln",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 767
+    },
+    {
+      "index": 5582,
+      "module": "card_5582",
+      "path": "lci/dire_blunderbuss.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Dire Blunderbuss",
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Equip"
+      ],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 1086
+    },
+    {
+      "index": 5583,
+      "module": "card_5583",
+      "path": "lci/geode_grotto.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Geode Grotto",
+      "mana_cost": "",
+      "type_line": "Land — Cave",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 1145
+    },
+    {
+      "index": 5584,
+      "module": "card_5584",
+      "path": "lci/shadows_lair.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Shadows' Lair",
+      "mana_cost": "",
+      "type_line": "Land — Cave",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 1850
+    },
+    {
+      "index": 5585,
+      "module": "card_5585",
+      "path": "lci/itlimoc_cradle_of_the_sun.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Itlimoc, Cradle of the Sun",
+      "mana_cost": "",
+      "type_line": "Legendary Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 1890
+    },
+    {
+      "index": 5586,
+      "module": "card_5586",
+      "path": "lci/roar_of_the_fifth_people.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Roar of the Fifth People",
+      "mana_cost": "",
+      "type_line": "Enchantment — Saga",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 32,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2090
+    },
+    {
+      "index": 5587,
+      "module": "card_5587",
+      "path": "lci/sovereign_s_macuahuitl.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Sovereign's Macuahuitl",
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Equip"
+      ],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2130
+    },
+    {
+      "index": 5588,
+      "module": "card_5588",
+      "path": "lci/iceberg_titan.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Iceberg Titan",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2215
+    },
+    {
+      "index": 5589,
+      "module": "card_5589",
+      "path": "lci/jadeheart_attendant.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Jadeheart Attendant",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2252
+    },
+    {
+      "index": 5590,
+      "module": "card_5590",
+      "path": "lci/kaslem_s_strider.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Kaslem's Strider",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2321
+    },
+    {
+      "index": 5591,
+      "module": "card_5591",
+      "path": "lci/journey_on.rs",
+      "set": "lci",
+      "category": "adventure",
+      "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+      "facts_sha256": "aa45d0691f61dc33a93b93b147d3cd45d238b17ea5b90f73163375ddd3326cbf",
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Journey On",
+      "mana_cost": "{G}",
+      "type_line": "Sorcery — Adventure",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 4,
+      "legendary": false,
+      "basic": false
+    },
+    {
+      "index": 5592,
+      "module": "card_5592",
+      "path": "lci/guidestone_compass.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Guidestone Compass",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Explore"
+      ],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2536
+    },
+    {
+      "index": 5593,
+      "module": "card_5593",
+      "path": "lci/master_s_manufactory.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Master's Manufactory",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2683
+    },
+    {
+      "index": 5594,
+      "module": "card_5594",
+      "path": "lci/the_core.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "The Core",
+      "mana_cost": "",
+      "type_line": "Legendary Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Fathomless descent"
+      ],
+      "kind": 2,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 2688
+    },
+    {
+      "index": 5595,
+      "module": "card_5595",
+      "path": "lci/temple_of_power.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Temple of Power",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2996
+    },
+    {
+      "index": 5596,
+      "module": "card_5596",
+      "path": "lci/temple_of_cultivation.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Temple of Cultivation",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2997
+    },
+    {
+      "index": 5597,
+      "module": "card_5597",
+      "path": "lci/temple_of_cyclical_time.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Temple of Cyclical Time",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2998
+    },
+    {
+      "index": 5598,
+      "module": "card_5598",
+      "path": "lci/temple_of_civilization.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Temple of Civilization",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Transform"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 2999
+    },
+    {
+      "index": 5599,
+      "module": "card_5599",
+      "path": "lci/oteclan_levitator.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Oteclan Levitator",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 3052
+    },
+    {
+      "index": 5600,
+      "module": "card_5600",
+      "path": "lci/mastercraft_raptor.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Mastercraft Raptor",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Dinosaur",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 3653
+    },
+    {
+      "index": 5601,
+      "module": "card_5601",
+      "path": "lci/sunbird_effigy.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Sunbird Effigy",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Bird Construct",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Vigilance",
+        "Haste"
+      ],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4236
+    },
+    {
+      "index": 5602,
+      "module": "card_5602",
+      "path": "lci/the_tomb_of_aclazotz.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "The Tomb of Aclazotz",
+      "mana_cost": "",
+      "type_line": "Legendary Land — Cave",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 4340
+    },
+    {
+      "index": 5603,
+      "module": "card_5603",
+      "path": "lci/the_myriad_pools.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "The Myriad Pools",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 18,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 4445
+    },
+    {
+      "index": 5604,
+      "module": "card_5604",
+      "path": "lci/barracks_of_the_thousand.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Barracks of the Thousand",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 18,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 4555
+    },
+    {
+      "index": 5605,
+      "module": "card_5605",
+      "path": "lci/the_grim_captain.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "The Grim Captain",
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Skeleton Spirit Pirate",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Lifelink",
+        "Hexproof",
+        "Trample",
+        "Menace"
+      ],
+      "kind": 1,
+      "legendary": true,
+      "basic": false,
+      "face_parent": 4573
+    },
+    {
+      "index": 5606,
+      "module": "card_5606",
+      "path": "lci/consuming_sepulcher.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Consuming Sepulcher",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4615
+    },
+    {
+      "index": 5607,
+      "module": "card_5607",
+      "path": "lci/treasure_cove.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Treasure Cove",
+      "mana_cost": "",
+      "type_line": "Land",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Treasure"
+      ],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4671
+    },
+    {
+      "index": 5608,
+      "module": "card_5608",
+      "path": "lci/mycoid_maze.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Mycoid Maze",
+      "mana_cost": "",
+      "type_line": "Land — Cave",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [],
+      "kind": 2,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4729
+    },
+    {
+      "index": 5609,
+      "module": "card_5609",
+      "path": "lci/sandswirl_wanderglyph.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Sandswirl Wanderglyph",
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Golem",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "kind": 17,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4800
+    },
+    {
+      "index": 5610,
+      "module": "card_5610",
+      "path": "lci/dread_osseosaur.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Dread Osseosaur",
+      "mana_cost": "",
+      "type_line": "Creature — Dinosaur Skeleton Horror",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Menace",
+        "Mill"
+      ],
+      "kind": 1,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 4914
+    },
+    {
+      "index": 5611,
+      "module": "card_5611",
+      "path": "lci/watertight_gondola.rs",
+      "set": "lci",
+      "category": "back_face",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "mana_color": null,
+      "name": "Watertight Gondola",
+      "mana_cost": "",
+      "type_line": "Artifact — Vehicle",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Vigilance",
+        "Descend",
+        "Crew"
+      ],
+      "kind": 16,
+      "legendary": false,
+      "basic": false,
+      "face_parent": 5000
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-vampire-lifelink",
+  "catalogue_id": 5575,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "4e3dac158ce613f22f2baacd66778ea93dab1bb15f468ba8540bca4a53c78e0b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/IxalanVampireToken.java",
+  "java_sha256": "a3c154ba470f1e394f0bc8f6ee38c458f9f20a34d21a6d07323f4d01794a9999",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "84f260dd6e6de8101a6d3dee4196b79a8f6ebfc1ff04968450369ce2dfe89795"
   },
-  "physical_metadata_sha256": "2c737a8ee288a45a09a476c04b9b9653809642da9fdcf3f4e421c280cd1a8d20"
+  "physical_metadata_sha256": "45706464a14ab0ea4e8d0258cc70e47a9e8d59b5d34da32bcac74911846f39c3",
+  "oracle_face": {
+    "oracle_id": "522a4b02-24c7-45d2-9097-2803cc9fffad",
+    "index": 0,
+    "sha256": "836d5bfc91b310c7f4af7b9d084d4fc09dd1d51280d4aab3375689489cec3299"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GraspingShadows.java",
+  "java_sha256": "62aa9092348c1adce6286767745aad94ad639ff060602511178c0fe5fea90673"
 }

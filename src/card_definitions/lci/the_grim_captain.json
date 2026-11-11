@@ -1,0 +1,16 @@
+{
+  "name": "The Grim Captain",
+  "catalogue_id": 5605,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "8dc316fd46cec639239aa5cc8537810fb0638e60efbab8c1d6d745bb29f51e42",
+  "oracle_face": {
+    "oracle_id": "a7c96442-706b-4fd8-9b38-052872dafe58",
+    "index": 1,
+    "sha256": "a64d26fc6992bc0c76f0057c9d83558d7c0e422470538a26910c1e34783e0016"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThroneOfTheGrimCaptain.java",
+  "java_sha256": "242b30924a40144f26ac829043386adc67f659be4a01d1802b25e356164dd9bc"
+}

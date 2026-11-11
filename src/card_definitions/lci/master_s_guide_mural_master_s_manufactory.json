@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd690c2079d3511b274af7f7bf41723ec09bc73a606e9ee6536e09289264d712"
   },
-  "physical_metadata_sha256": "71b7e64c66b2cac8b042d3f5bc69842a601f10ada2d07f75e0b4cf9fc45e520b"
+  "physical_metadata_sha256": "e824949cf256e85ba44e093b5a46261bfc560b2ab2507048022c670e4fb3306c",
+  "oracle_face": {
+    "oracle_id": "2dfdd358-e3cd-4bf5-871b-37689b7951e9",
+    "index": 0,
+    "sha256": "4c584c8ac25950d16e302e09999c60b83448c8312264ad5114875f46b85217c4"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MastersGuideMural.java",
+  "java_sha256": "7bb30a3843a4dcf46ff4b29b40dd42e5e12d05e0848d4407377f6bc226274c19"
 }

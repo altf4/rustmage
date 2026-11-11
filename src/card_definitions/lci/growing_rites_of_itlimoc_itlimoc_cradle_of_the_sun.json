@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "94dd919c992032d41c44924efd36a115d8a90ca745e69b11c03430dcae3de121"
   },
-  "physical_metadata_sha256": "473d669fa8ca0f654fbecb25fcbf0ca1922c5002f3232c30c902410667dd41ed"
+  "physical_metadata_sha256": "4dd661ef4660e0f9b5db6233441f64974ff96e1c57333e64352b9d63e0f78159",
+  "oracle_face": {
+    "oracle_id": "ea9c459a-6047-43aa-968f-a582be4000e8",
+    "index": 0,
+    "sha256": "a2f7cb00275b5e00dd0d1d19d4e0f4bf3200820170acb29bfd5d2d96145d658b"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrowingRitesOfItlimoc.java",
+  "java_sha256": "32bd5abefaa1830c69eb891ae61fb2c844262c8751e0fe5f6820e989ac1ee1b9"
 }

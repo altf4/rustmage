@@ -1,0 +1,16 @@
+{
+  "name": "The Tomb of Aclazotz",
+  "catalogue_id": 5602,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "9dcbfb2af869ee3a728a704322482715dbee2d0ddcceb7a75330b0889cb81370",
+  "oracle_face": {
+    "oracle_id": "a75b02ba-b0c8-47e3-a05c-e9ba221a7578",
+    "index": 1,
+    "sha256": "4e0d4ccd4dcaa00ad5d2b147199c82b93e0357e59b856ef8e43aae6b81803bd3"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TarriansJournal.java",
+  "java_sha256": "e424e36c2e5f8983be2df9480e08e1e9237ad3d29eb90a95757749eb7bdfb6ad"
+}

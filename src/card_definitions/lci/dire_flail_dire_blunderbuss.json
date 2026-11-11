@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f252eece9dae2929ebaf4f791f2e60151d2bdab906df9a504dfa7aa633512891"
   },
-  "physical_metadata_sha256": "8d99dfdc1cef05a2fe3f1cc739082237cf3ae6bef7beabff3c92eb2e209caf4a"
+  "physical_metadata_sha256": "a886bbd8c0da68b9fb92ffa6ebd8a973a505f34c7f9f74436692d769900f6570",
+  "oracle_face": {
+    "oracle_id": "5a043512-fa56-4361-bb92-0a0f229f34d3",
+    "index": 0,
+    "sha256": "8c1a3f8656699a4e10a7891a11438b52247bd9fc894fc4c5c1f242c0d3715640"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DireFlail.java",
+  "java_sha256": "00ff89fd5fe2cfb3a87267a1987b9f20287ab501e9c8f3bbe5e194e6a94b3b6c"
 }

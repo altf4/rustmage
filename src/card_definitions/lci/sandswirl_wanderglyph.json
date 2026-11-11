@@ -1,0 +1,16 @@
+{
+  "name": "Sandswirl Wanderglyph",
+  "catalogue_id": 5609,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "328d5c906d29509d3fa73d1ef8a7e0f43185b68d0ad57e9fd03ba585440d1f08",
+  "oracle_face": {
+    "oracle_id": "fcd54631-ea47-49a7-ad5f-9a9a51a815ba",
+    "index": 1,
+    "sha256": "f8cb486d688a26b3f6621678249f48b550553ce0b867220315ef998030cfe637"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnstableGlyphbridge.java",
+  "java_sha256": "e262735bf62c2d477450528556219c0ec5820f7ed6393ef44c7a0281d8075975"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Journey On",
+  "catalogue_id": 5591,
+  "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+  "facts_sha256": "aa45d0691f61dc33a93b93b147d3cd45d238b17ea5b90f73163375ddd3326cbf",
+  "complete": false,
+  "physical_metadata_sha256": "e60d00e311d93649bc7c807fcdc4ce7d4c605ea83339cfce466d4b72d4b3d74c",
+  "oracle_face": {
+    "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+    "index": 1,
+    "sha256": "cf0cf9a27e57c313f2847b82425a4283b132891730bd8947a81a84493f93b098"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanDaringTraveler.java",
+  "java_sha256": "818fd0d7dbb3043794be1ce244a45f917d6ebaa4b2c59c5707be4b79782e372a"
+}

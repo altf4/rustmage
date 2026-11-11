@@ -1,0 +1,16 @@
+{
+  "name": "The Core",
+  "catalogue_id": 5594,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "6f6f4b3b76bf906cb51dd496c39b390805f6b82bcab11c6e4bb9038741b0dc01",
+  "oracle_face": {
+    "oracle_id": "16182e01-22ff-4786-985d-919b47c4aa4d",
+    "index": 1,
+    "sha256": "4d69d5e828e901a672519772d4f6fae6b4d9c22d3dac01a2c0095c33b24f82f8"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MatzalantliTheGreatDoor.java",
+  "java_sha256": "5802f8ad9cc1ca5c8a90f9aa1e2803e446e57777ea519691fd2755b1c159bbd9"
+}

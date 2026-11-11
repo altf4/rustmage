@@ -1,0 +1,16 @@
+{
+  "name": "Temple of the Dead",
+  "catalogue_id": 5579,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "0e72137e9a73ba354bb93e5a4ce6d73706871d14f03761b229065b01885fbc4a",
+  "oracle_face": {
+    "oracle_id": "fcdfe9d5-2743-4d3e-ab57-bf0f96beaa15",
+    "index": 1,
+    "sha256": "e2a0575365d4fb721e556f1cfa26bd13f5d3263de0dba0dea5c7b6b5ddb5814d"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AclazotzDeepestBetrayal.java",
+  "java_sha256": "5ff33cb44aa9b821687c673e52cd8af81ecede72027096c2d5b4f28b5d86c028"
+}

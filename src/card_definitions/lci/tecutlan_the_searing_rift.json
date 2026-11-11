@@ -1,0 +1,16 @@
+{
+  "name": "Tecutlan, the Searing Rift",
+  "catalogue_id": 5580,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "65c6476e211d78c9ff93bbd6cd09e6b074fd47a7fc0e9d05cf1abdbdaa507c64",
+  "oracle_face": {
+    "oracle_id": "af1553eb-4f9f-4335-9078-56649bd8d8fc",
+    "index": 1,
+    "sha256": "c4858539255f8e865c7c3c9f0d7a971bc77fad0627fe1b23ba58a1258e5fca98"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrasssTunnelGrinder.java",
+  "java_sha256": "d216e1428bf2cdccb6eb44f74c98fca92972861d72ac724fc51a8b490b4c87cf"
+}

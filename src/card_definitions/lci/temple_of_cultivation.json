@@ -1,0 +1,16 @@
+{
+  "name": "Temple of Cultivation",
+  "catalogue_id": 5596,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "c0f1034ce120ee4bce58b41f6e1d809e8c9f410aea38b16318f8fc2ebacf2b88",
+  "oracle_face": {
+    "oracle_id": "eda11077-b2ce-408b-b982-def2da8fe599",
+    "index": 1,
+    "sha256": "9963652407108ee87446c1c00a4a8af7ba442f38e5e3fd4412e94c28116420cb"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerKaslemDeepestGrowth.java",
+  "java_sha256": "025c48307cfadcdce64696f1c5efa97a7debcbabc2b65ab66293fe8236262228"
+}

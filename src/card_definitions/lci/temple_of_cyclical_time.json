@@ -1,0 +1,16 @@
+{
+  "name": "Temple of Cyclical Time",
+  "catalogue_id": 5597,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "24d746ba781dcadb835b09da857cf5173df5201536347b5a24f742874e6ecbde",
+  "oracle_face": {
+    "oracle_id": "34ef174e-1b3d-43d5-9f72-3d35befbdd7f",
+    "index": 1,
+    "sha256": "c271a98b05bbe0e2d1d3f032daf3b3ad0340094b3cd78b147ee1a1c9d57d2e1a"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OjerPakpatiqDeepestEpoch.java",
+  "java_sha256": "04af14abf11de68f91f37e87e6b934254a2e794de01e1a29f39e3e9b23bfdae9"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Itlimoc, Cradle of the Sun",
+  "catalogue_id": 5585,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "3b49e16cb91fde0294f1f3093dd538d8b97ca8fea2099f12c4725ea21d41e1ca",
+  "oracle_face": {
+    "oracle_id": "ea9c459a-6047-43aa-968f-a582be4000e8",
+    "index": 1,
+    "sha256": "0f95474aa97ecc1a774033edbf10f7b669ecbba1c82233ab7af308b8174dc360"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrowingRitesOfItlimoc.java",
+  "java_sha256": "32bd5abefaa1830c69eb891ae61fb2c844262c8751e0fe5f6820e989ac1ee1b9"
+}

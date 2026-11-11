@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "adefe846877eefc56ccd85d1670295f829f01f16061e232fa4f3a3da3d472762"
   },
-  "physical_metadata_sha256": "fb201b7f5e26055a539628d8dd549b59840475a957323d695fab7867cd663bd4"
+  "physical_metadata_sha256": "65529352a8286080751da23ba8ed4c6490275681d81b3289b34be936a97d56bb",
+  "oracle_face": {
+    "oracle_id": "883a4180-9ede-4249-a4b8-3a29c998fb63",
+    "index": 0,
+    "sha256": "cb316b4c358d8b0b856d537ab0f20e5a11bf4637bd8829fe2340de7c4cdd19a3"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TithingBlade.java",
+  "java_sha256": "55735e2133ddd52d909c7d51e8b05e98b80124dff44c058e24d50d420d295823"
 }

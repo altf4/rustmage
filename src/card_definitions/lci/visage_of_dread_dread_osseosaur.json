@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fbf56f99e68d1570543265d185c9059f799b6b8718ef65690ae13d36adf008c"
   },
-  "physical_metadata_sha256": "2da99cf04fa4f13c8ce7ad285bcd13abe31e5535f90781f0bdaefd513922941e"
+  "physical_metadata_sha256": "61a5cbf8f06996a28c3ac96c6104c6d0e96840b8a19ea743454233e4d157647b",
+  "oracle_face": {
+    "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
+    "index": 0,
+    "sha256": "83c21fb6eaaf3fc6f87a73d3ffab7ebbf15d273c3fcfefcdddd4128f63db40af"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VisageOfDread.java",
+  "java_sha256": "111d5d8b6de7d99d0a9466c14b0612d7d93694a99dfcbce14371b6fb25f5fe70"
 }

@@ -1,0 +1,16 @@
+{
+  "name": "Dread Osseosaur",
+  "catalogue_id": 5610,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "32152eaf11b5ba367d1b5fd6cb6a1c247680e2329c9159d4bf043ac70d74e471",
+  "oracle_face": {
+    "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
+    "index": 1,
+    "sha256": "ef291ad3c7f225f47783b498b639628851d1747223b5e0ecd32a0cbdb3e1b917"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VisageOfDread.java",
+  "java_sha256": "111d5d8b6de7d99d0a9466c14b0612d7d93694a99dfcbce14371b6fb25f5fe70"
+}

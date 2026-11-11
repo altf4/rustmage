@@ -8,5 +8,13 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5c2c077545f7473bf3372ff31cbe60a9d65b2d8a77aa07b80aa92e2e2a153bc6"
   },
-  "physical_metadata_sha256": "ce062028d854cc95fc57abd05c5a1f85182f1e72d863d949db73447bc7b618d7"
+  "physical_metadata_sha256": "5b14dbc77f9b05e42fa3c975a4a4e996582a738da68af7da0070e091db53d36e",
+  "oracle_face": {
+    "oracle_id": "3feedc63-173e-4713-8e96-8f1c9576055f",
+    "index": 0,
+    "sha256": "33388478c584f9d9d4eebc2a25b0dc7739d70d922259c7f95c8b66d111c13333"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InvertedIceberg.java",
+  "java_sha256": "636635f5d07f724952be329f956b6cf4f5498bdc3e17b8604640c57774a6f96a"
 }

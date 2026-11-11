@@ -1,0 +1,16 @@
+{
+  "name": "Roar of the Fifth People",
+  "catalogue_id": 5586,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "2677c91eda19bfb4834b8475a180da880be0d413c8e8cc1b33b57f79bda6c273",
+  "oracle_face": {
+    "oracle_id": "2e6ed3e6-d2b8-4b75-b7e1-0773da4987a1",
+    "index": 1,
+    "sha256": "fc830f078aa4cff08d0c3a1ada48c42d199c969523a4e67b3e7e49d5906dd41d"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HuatliPoetOfUnity.java",
+  "java_sha256": "6498fb174b5c272d2dc57f97748178575465a0a308fd96892ea6440bb7905e01"
+}
