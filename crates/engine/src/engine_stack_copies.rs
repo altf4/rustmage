@@ -388,6 +388,8 @@ impl Game {
                 trigger.loyalty_x = None;
                 trigger.gift = None;
                 trigger.cast_event = None;
+                trigger.mana_copy_sources = None;
+                trigger.mana_provenance = None;
                 trigger.source_counter_lki = None;
                 trigger.source_quantity_lki = None;
                 trigger.event_object = None;
@@ -674,6 +676,7 @@ impl Game {
         }
         copy.copy_event = None;
         copy.mana_copy_sources = None;
+        copy.mana_provenance = None;
         copy.cast_event = None;
         if template
             .source
@@ -705,6 +708,7 @@ impl Game {
         // Evaluate after installing the recipe so the new spell has its own
         // copiable values and the continuous effects of its own controller.
         copy.source_keywords = self.keywords(card);
+        copy.source.as_mut().unwrap().facts.granted_subtypes = self.granted_subtypes(card);
         copy
     }
     pub(super) fn copy_target_spell(

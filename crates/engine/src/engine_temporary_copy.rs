@@ -177,6 +177,20 @@ pub(super) fn owned_bytes(rows: &Rows) -> usize {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn copy_targets_from_cast_spell(&mut self, item: &SpellView) {
+        let Some(&recipe) = item.captured_artifact_copy.as_deref() else {
+            return;
+        };
+        for &bound in &item.targets {
+            if let Some(recipient) = bound.object
+                && self.same_target_object(bound)
+                && self.on_battlefield(recipient.card)
+            {
+                self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
+            }
+        }
+    }
+
     pub(super) fn resolve_in_place_copy(
         &mut self,
         item: &SpellView,

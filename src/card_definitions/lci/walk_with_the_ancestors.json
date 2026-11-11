@@ -3,10 +3,31 @@
   "catalogue_id": 4955,
   "oracle_id": "ce657a2e-461b-45fd-ab98-35b5c8512777",
   "facts_sha256": "dd0f4ef71a96b89fd7d98e799c2f4c5db91bb9db618bd365a09f04091407fc5b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dbdd2b514ea63feab3367fc660a275fff99bb85eda3033d0426d8b0926a78f73"
   },
-  "physical_metadata_sha256": "0bf5b920c9ccc68615235dadd05c4c61606ba51f075159cf3218131c534adbed"
+  "physical_metadata_sha256": "0bf5b920c9ccc68615235dadd05c4c61606ba51f075159cf3218131c534adbed",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WalkWithTheAncestors.java",
+  "java_sha256": "a37da9493628e41bef6c2edaf57b916dc0d2427ebdfbb6e9bbedcbdda76185f8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_choices.rs"
 }

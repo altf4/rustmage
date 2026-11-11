@@ -1,0 +1,34 @@
+{
+  "name": "Kaslem's Strider",
+  "catalogue_id": 5590,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "66cc26aeb67948ca64dcc28907a1bbc0e14b6c4d579f69b78cf7b56098bef7ce",
+  "oracle_face": {
+    "oracle_id": "1ac3e4bc-1678-4280-a071-3dbc8ef4a2bf",
+    "index": 1,
+    "sha256": "85a5c5efa29a7d25b7e19e140feff69a9b627194da3f70ce1cd7f7f31fd74d1a"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KaslemsStonetree.java",
+  "java_sha256": "11b5c688e5590ba4850fd4c88c07b64a62c3b006baf862f7cbae49b6b90696f8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_craft.rs"
+}

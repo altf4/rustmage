@@ -1,18 +1,33 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::HASTE
+    effect: Effect::Creature(7, 6),
+    keywords: Keywords::TRAMPLE
         .union(Keywords::VIGILANCE)
-        .union(Keywords::TRAMPLE),
+        .union(Keywords::HASTE),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::PlayerDamaged {
+            subject: DamageSubject::Source,
+            combat_only: true,
+            opponent_only: false,
+            one_or_more: false,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::SelectLibraryTo(LibrarySelectionEffect {
+            spec: LibrarySelectionSpec {
+                look: 0,
+                count: LibrarySelectionCount::All,
+                filter: LibrarySelectionFilter::AllOf(&[
+                    LibrarySelectionFilter::Kinds(1),
+                    LibrarySelectionFilter::Subtype("Dinosaur"),
+                ]),
+                optional: true,
+                reveal: true,
+                remainder: LibraryRemainder::BottomRandom,
+            },
+            look: LibraryLook::Amount(AmountValue::DamageEventAmount),
+            destination: LibraryPickDestination::Battlefield,
+            public: true,
+            maximum_mana_value: None,
+        })],
+    }],
     ..CardRules::EMPTY
 };

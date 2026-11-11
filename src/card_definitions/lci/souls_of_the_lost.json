@@ -3,10 +3,61 @@
   "catalogue_id": 3979,
   "oracle_id": "c05d5a51-8e39-4475-9743-1adc60283c5a",
   "facts_sha256": "53bbdc4a4c8509bee6c9b2e487b4d19c1779596de40b0f18af5211d2e0e11487",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2d648e2d09d2498803668e77b3bc489a72bd5fc65647f062f641a71c0b73073c"
   },
-  "physical_metadata_sha256": "aeb7c3fd31da036474beec702d75b656bd809f525e15696edcf9877b49cf8780"
+  "physical_metadata_sha256": "aeb7c3fd31da036474beec702d75b656bd809f525e15696edcf9877b49cf8780",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SoulsOfTheLost.java",
+  "java_sha256": "535f0ec0352bc8e18f200e8a9a0a8950d143594e6ea0c782203145d230ed8f16",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "010a37420f4bc3db319b94957debdff39888a47a1651b4ae965c36a231ef0961"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessPlusOneSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1088d948e4eb7af88b0b9b7159eb34371b73d70c256abf0ee82804076db8f7b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_live.rs"
 }

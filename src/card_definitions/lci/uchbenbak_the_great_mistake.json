@@ -3,10 +3,51 @@
   "catalogue_id": 4737,
   "oracle_id": "36bfcc4a-7f66-4649-ab6b-18d360299d46",
   "facts_sha256": "9cf76fc85d7e8c64f4b2a7360d2f04889f83ab768a7d416e5a2d58463211115d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8a3fd532e833266ed7ffadbbda89e3726d4465527c91915aa2e4bf859d9b00c8"
   },
-  "physical_metadata_sha256": "e8cc01fc8a7ab587dbc9a3b50d1668d20bb7adc4e8c47cb9e90f008e43d1cf24"
+  "physical_metadata_sha256": "e8cc01fc8a7ab587dbc9a3b50d1668d20bb7adc4e8c47cb9e90f008e43d1cf24",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UchbenbakTheGreatMistake.java",
+  "java_sha256": "d82b8bc7e21534fd91ca0fc0401d8f37c9d4d2ef872c627c9b13ba8932ea5067",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "010a37420f4bc3db319b94957debdff39888a47a1651b4ae965c36a231ef0961"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_descend.rs"
 }

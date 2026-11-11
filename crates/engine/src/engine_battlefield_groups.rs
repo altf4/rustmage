@@ -359,7 +359,28 @@ impl Game {
         filters: &[BattlefieldFilter],
         exile: bool,
     ) {
-        let mut ids = self.battlefield_group(item, filters);
+        let ids = self.battlefield_group(item, filters);
+        self.move_battlefield_ids(ids, exile);
+    }
+
+    pub(super) fn destroy_battlefield_mana_value(&mut self, kinds: u16, amount: u128) {
+        let ids = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && self.current_kinds(id) & kinds != 0
+                    && u128::from(self.object_mana_value(id)) == amount)
+                    .then_some(id)
+            })
+            .collect();
+        self.move_battlefield_ids(ids, false);
+    }
+
+    fn move_battlefield_ids(&mut self, mut ids: Vec<CardId>, exile: bool) {
         if !exile {
             ids.retain(|&id| !self.effect_destruction_prevented(id));
         }

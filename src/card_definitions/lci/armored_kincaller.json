@@ -3,10 +3,36 @@
   "catalogue_id": 227,
   "oracle_id": "6aad6906-96ec-4994-bfc3-9a76f893bc8c",
   "facts_sha256": "1be00970aa6df4298febac77f27efdcd718e563ff31bde7c4bd98145bc580261",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6c43b41a2395d25fbf26f8c24fabc4e4e9791be6ddcbd891f2dfef8df3166a0"
   },
-  "physical_metadata_sha256": "2f636ffe0094c5a2b7ea0c0be2968d26549c621e5e212cb1d21f867600c2df43"
+  "physical_metadata_sha256": "2f636ffe0094c5a2b7ea0c0be2968d26549c621e5e212cb1d21f867600c2df43",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArmoredKincaller.java",
+  "java_sha256": "c34264da956b967ec90dff3b2f13f9aa7fa630a27b0dcee3d1f9b937387ac789",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_descend_choices"
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 4398,
   "oracle_id": "12be58f4-1c12-4bca-8069-1f049cd8a90c",
   "facts_sha256": "fe2e900eb97bab429a1c072007ea275b59afa44bd04750f6f0627037a7baf3fe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ad4512cb8910a590ca8fb5cba21545ec9ce3b723bfde3974c320298160bb4d44"
   },
-  "physical_metadata_sha256": "32b041f35d9d68aacc18362c9d1819ac85fb7bedf823b347ebafa3e05e4b3d97"
+  "physical_metadata_sha256": "32b041f35d9d68aacc18362c9d1819ac85fb7bedf823b347ebafa3e05e4b3d97",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TerrorTide.java",
+  "java_sha256": "d295f6e2eb2cfbf2e8c6b739f6d3f4fb870087d87f5c6decefa1bfeaaf16a510",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "010a37420f4bc3db319b94957debdff39888a47a1651b4ae965c36a231ef0961"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_descend.rs"
 }

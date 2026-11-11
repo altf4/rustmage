@@ -49,6 +49,8 @@ pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     OtherControlledSubtype(&'static str),
+    /// Abilities of another creature with this provider's active entry choice.
+    OtherControlledCreatureOfChosenType,
     EquippedCreature,
     /// Abilities of this equipped source or of any Equipment attached to it.
     SourceAndAttachedEquipment,
@@ -86,6 +88,11 @@ pub enum StaticAbilityFragment {
     CantDrawCards,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
+    /// Cast owned cards linked to this permanent using ordinary mana costs.
+    LinkedExilePaidCast {
+        filter: CastFilter,
+        entry_counter: Option<CounterKind>,
+    },
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.
@@ -129,6 +136,8 @@ pub enum StaticAbilityFragment {
     ReplaceLifePaymentWithLibraryExile,
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
+    /// Opponents who declared an attack on this controller or their planeswalker this turn can't cast.
+    OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast,
 
     /// Cast this exact owned graveyard card normally while the live predicate holds.
     /// This grants neither land plays nor flashback's alternative cost/destination.
@@ -166,6 +175,8 @@ pub enum StaticAbilityFragment {
     SourceNegativePowerCombatDamage,
     /// Replace each nonexempt controller draw with two draws.
     DoubleDrawExceptFirst,
+    /// Add one scry before each explore by a creature this player controls.
+    ScryBeforeControlledCreatureExplores,
     /// Double each controller draw, including their normal draw-step draw, while true.
     ConditionalDoubleDraw(StatValue),
     /// Add one to a controller draw instruction while their hand has at most one card.
@@ -344,6 +355,7 @@ pub enum StaticAbilityFragment {
     },
     LifeGainAdditional(u16),
     LifeGainDouble,
+    OpponentLifeLossDoubleOnOwnTurn,
     /// Add to an opponent's positive mill event.
     OpponentMillAdditional(u16),
     /// The controller's first positive batch of coin flips comes up heads and is won.
@@ -380,6 +392,8 @@ pub enum StaticAbilityFragment {
         relation: crate::cards::CastRelation,
     },
     SelfUntap(UntapRestriction),
+    /// Include this permanent in the turn-based action on another player's turn.
+    UntapDuringOtherUntapSteps,
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
     /// Source-only ability grant whose earlier-layer condition remains live.
@@ -442,9 +456,16 @@ pub enum StaticAbilityFragment {
     AttachmentAttackingKeywords(Keywords),
     AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
+    /// Choose the grant by the attachment controller's turn.
+    AttachmentTurnChoiceKeywords {
+        own_turn: Keywords,
+        other_turn: Keywords,
+    },
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// The attached permanent's controller may privately view their library top.
+    AttachmentLookAtLibraryTop,
     /// Each matching creature owns the indexed granted trigger template.
     /// Scope is evaluated in layer six and frozen for departure events.
     ControlledCreatureTrigger {
@@ -488,6 +509,11 @@ pub enum StaticAbilityFragment {
     ControlledSubtypeTapMana {
         subtype: &'static str,
         production: ManaProduction,
+    },
+    /// Other controlled permanents of this subtype gain the indexed mana ability.
+    OtherControlledSubtypeTapManaActivation {
+        subtype: &'static str,
+        ability: u16,
     },
     /// In layer four add Food to controlled artifacts. In layer six grant them
     /// this indexed activation template as part of the same continuous effect.

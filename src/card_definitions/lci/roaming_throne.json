@@ -3,10 +3,61 @@
   "catalogue_id": 3561,
   "oracle_id": "3640c29b-1534-4952-b297-619ade948431",
   "facts_sha256": "e753bd676e91205c117afbdd560d01e171e2ba618d5a28a1d26d839d75dcb318",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b54bfd60f6e8368958ec7644f811989f10bbd352cb67bf41558c5c5cb85d254f"
   },
-  "physical_metadata_sha256": "6dbe8cdae140df021db475570edafa0e0c07e41ce03a7e7e05b0eae7555d04f1"
+  "physical_metadata_sha256": "6dbe8cdae140df021db475570edafa0e0c07e41ce03a7e7e05b0eae7555d04f1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoamingThrone.java",
+  "java_sha256": "fe277b630c7b055d2929bf79aab6bd477ee67f325cd18746fdcb02cfc89fa991",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddChosenSubtypeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "001d020ed7d1c3f52c597c33adfa31ec550b3c994f09fec6b62e138b96edd691"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/enterAttribute/EnterAttributeAddChosenSubtypeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9cbbd91ca3cb70ba5fd1a43b12275eb92f5856e7e3ccded8611d7ae9405be0e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_creatures.rs"
 }

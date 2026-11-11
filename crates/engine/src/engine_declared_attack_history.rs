@@ -19,6 +19,8 @@ pub(super) struct DeclaredAttackHistory {
     queried: Vec<&'static str>,
     rows: Vec<DeclaredAttackHistoryView>,
     combat_start: usize,
+    /// Actual player and planeswalker controller seats attacked by each player this turn.
+    player_or_planeswalker_defenders: [u8; 2],
 }
 
 impl DeclaredAttackHistory {
@@ -110,18 +112,27 @@ impl Game {
                 );
             }
         }
+        let mut defenders = 0;
         let rows = declared
             .iter()
-            .map(|attack| DeclaredAttackHistoryView {
-                object: self.object_ref(attack.card),
-                player,
-                subtypes: queried
-                    .iter()
-                    .copied()
-                    .filter(|typ| self.has_subtype(attack.card, typ))
-                    .collect(),
-                definition: self.state.objects[attack.card as usize].card,
-                granted_subtypes: self.granted_subtypes(attack.card),
+            .map(|attack| {
+                if let Some(defender) = attack
+                    .defender
+                    .and_then(|d| self.player_or_planeswalker_defender(d))
+                {
+                    defenders |= 1 << defender.index();
+                }
+                DeclaredAttackHistoryView {
+                    object: self.object_ref(attack.card),
+                    player,
+                    subtypes: queried
+                        .iter()
+                        .copied()
+                        .filter(|typ| self.has_subtype(attack.card, typ))
+                        .collect(),
+                    definition: self.state.objects[attack.card as usize].card,
+                    granted_subtypes: self.granted_subtypes(attack.card),
+                }
             })
             .collect::<Vec<_>>();
         let history = self.state.declared_attack_history.get_or_insert_with(|| {
@@ -129,10 +140,21 @@ impl Game {
                 queried: Vec::new(),
                 rows: Vec::new(),
                 combat_start: 0,
+                player_or_planeswalker_defenders: [0; 2],
             })
         });
         history.queried = queried;
         history.rows.extend(rows);
+        history.player_or_planeswalker_defenders[player.index()] |= defenders;
+    }
+
+    pub(super) fn attacked_player_or_planeswalker_controllers(&self, actor: Player) -> u8 {
+        self.state
+            .declared_attack_history
+            .as_ref()
+            .map_or(0, |history| {
+                history.player_or_planeswalker_defenders[actor.index()]
+            })
     }
     pub(super) fn finish_declared_attack_combat(&mut self) {
         if let Some(history) = &mut self.state.declared_attack_history {
@@ -140,6 +162,19 @@ impl Game {
             history.queried.clear();
         }
     }
+    pub(super) fn declared_attackers_this_turn(&self, player: Player) -> usize {
+        self.state
+            .declared_attack_history
+            .as_ref()
+            .map_or(0, |history| {
+                history
+                    .rows
+                    .iter()
+                    .filter(|row| row.player == player)
+                    .count()
+            })
+    }
+
     pub(super) fn declared_subtype_attackers(&self, player: Player, subtype: &str) -> usize {
         let Some(history) = &self.state.declared_attack_history else {
             return 0;

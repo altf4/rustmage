@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-resplendent-angel",
+  "catalogue_id": 5569,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "284972aea2098ef9e872afa67e2250156678b7b83a891c4d788f428cd171e815",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/AngelVigilanceToken.java",
+  "java_sha256": "7f3605aecfb1b3140ab12bcb76e4a28971ff2238056afc694396bcc77035d4b3",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

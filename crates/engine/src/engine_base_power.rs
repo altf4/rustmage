@@ -24,6 +24,9 @@ impl Game {
     pub(super) fn spell_with_current_abilities(&self, item: &SpellView) -> SpellView {
         let mut view = item.clone();
         view.split_second = self.spell_has_split_second(item);
+        if self.spell_has_rebound(item) {
+            view.source_keywords = view.source_keywords.union(Keywords::REBOUND);
+        }
         view
     }
     /// Active rule restrictions are sampled live, including during resolution.
@@ -70,14 +73,19 @@ impl Game {
                 .is_some_and(|r| self.spell_has_split_second(&r.item))
     }
     pub(super) fn static_casting_prohibited(&self, actor: Player) -> bool {
+        let attacked = self.attacked_player_or_planeswalker_controllers(actor);
         self.nonmana_actions_prohibited()
             || self.state.static_sources.iter().any(|&id| {
                 let object = &self.state.objects[id as usize];
                 object.zone == Zone::Battlefield
-                    && self.printed_abilities_available(id)
-                    && object.controller == self.state.active
                     && object.controller != actor
-                    && object.card.static_cast_restriction() & 1 != 0
+                    && ((object.controller == self.state.active
+                        && object.card.static_cast_restriction() & 1 != 0
+                        && self.printed_abilities_available(id))
+                        || (attacked & (1 << object.controller.index()) != 0
+                            && self.active_rule_fragment(id, |fragment| {
+                                matches!(fragment, crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast)
+                            })))
             })
     }
     pub(super) fn put_power_excess_counters(&mut self, item: &SpellView, filter: CreatureFilter) {

@@ -8,5 +8,46 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1b382373f57c7c02b737af66acdd56d5dddc10e1796b9a5bdadd8daf54bfa427"
   },
-  "physical_metadata_sha256": "a77ecdd1d89d2026c28a4ad44e13ad15d3ce645e9ce994cb89f035c945dcef8a"
+  "physical_metadata_sha256": "a77ecdd1d89d2026c28a4ad44e13ad15d3ce645e9ce994cb89f035c945dcef8a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OutOfAir.java",
+  "java_sha256": "db00ccf459f12d5541a18d6dc73b155fa8ed3dbe3b3aa6706bfff53b1ce4e17f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/Target.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bfa4bcb195f5bc43a53e61baf312f392c782fd177d36c4b232e4146156a6b916"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }

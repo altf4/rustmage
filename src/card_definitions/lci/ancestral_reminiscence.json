@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ee648564fae328b8bd5bcb053a0fc85166a3de48449e23c60ef7b74e68681c30"
   },
-  "physical_metadata_sha256": "f7cfeae3bca3698ab5fa3beb5b9de1ba5372a7d117ac78a44a2a3955dae64c04"
+  "physical_metadata_sha256": "f7cfeae3bca3698ab5fa3beb5b9de1ba5372a7d117ac78a44a2a3955dae64c04",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AncestralReminiscence.java",
+  "java_sha256": "13971aeb017563be9836169ff237a632ccef62c7a08fba04c69e6e6a8641feee",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_ab"
 }

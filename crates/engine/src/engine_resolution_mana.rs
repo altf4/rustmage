@@ -157,6 +157,12 @@ impl Game {
                 .capacity("countered item count exhausted"),
         );
         self.finish_zone_events(&events, &[]);
+        if victims
+            .iter()
+            .any(SpellView::is_original_state_counter_trigger)
+        {
+            self.queue_state_counter_triggers();
+        }
     }
     /// Explicit counters share one check. Abilities are independent of their source spell.
     pub(super) fn counter_stack_item(&mut self, id: u64, exile: bool) -> bool {
@@ -175,6 +181,11 @@ impl Game {
         } else {
             let departed = self.state.stack.remove(index);
             self.retain_departing_activation_for_triggers(&departed);
+            // CR603.8: the state ability may trigger now, even when this
+            // effect will remove the source's abilities after countering it.
+            if departed.is_original_state_counter_trigger() {
+                self.queue_state_counter_triggers();
+            }
         }
         true
     }

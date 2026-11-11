@@ -162,12 +162,13 @@ impl Game {
         if gain == 0 {
             return;
         }
-        self.lose_life_unobserved(loser, loss);
+        let actual_loss = life_loss::replacement_amount(self, loser, loss);
+        self.lose_life_unobserved(loser, actual_loss);
         self.commit_life_gain(gainer, gain);
-        self.life_lost_event(loser, loss);
+        self.life_lost_event(loser, actual_loss);
 
         if loser == controller && draw_controller_loss {
-            self.draw_many(controller, loss as u128);
+            self.draw_many(controller, actual_loss as u128);
         }
     }
 

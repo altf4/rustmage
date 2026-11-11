@@ -85,7 +85,7 @@ impl ManaOutput {
         controller: Player,
         quality: Option<mana_lots::Quality>,
     ) -> Self {
-        let recipe = if recipe.base() == ManaProduction::ChosenColor {
+        let recipe = if recipe.chosen_color_amount().is_some() {
             recipe.in_world(world, instance.source.card)
         } else {
             recipe.base()
@@ -95,7 +95,8 @@ impl ManaOutput {
             | ManaProduction::AnyColorChangingSource(_)
             | ManaProduction::ChoiceStat { .. }
             | ManaProduction::TapSourcePowerChoice { .. }
-            | ManaProduction::DistinctCreaturePowers => {
+            | ManaProduction::DistinctCreaturePowers
+            | ManaProduction::LinkedExileCardColor => {
                 let mut colors = selected.iter().enumerate().filter(|(_, n)| **n != 0);
                 colors.next().and_then(|(color, _)| {
                     colors
@@ -168,6 +169,9 @@ impl ManaOutput {
                     world.departed_source_power(source).unwrap_or(fallback),
                 )
             }
+            ManaProduction::LinkedExileCardColor => {
+                ManaProduction::linked_exile_card_color(world, source, self.instance.source_origin)
+            }
             recipe => recipe.in_world_for_controller(world, source.card, self.controller),
         }
     }
@@ -237,6 +241,7 @@ impl ManaProduction {
                 | Self::Split(_)
                 | Self::TapSourcePowerChoice { .. }
                 | Self::DistinctCreaturePowers
+                | Self::LinkedExileCardColor
         )
     }
     /// Planning fixed domains uses concrete outputs once; real costly actions
@@ -300,12 +305,14 @@ impl Game {
         }
     }
 
-    fn mana_split_tap_receipt(&self) -> ManaTapBonus {
+    fn mana_split_tap_receipt(&self) -> mana_tap_bonus::ManaTapReceipt {
         self.state
             .announcing
             .as_ref()
             .filter(|a| a.mana_output.is_some())
-            .map_or_else(ManaTapBonus::default, |a| a.item.tap_mana_bonus(self))
+            .map_or_else(mana_tap_bonus::ManaTapReceipt::default, |a| {
+                a.item.tap_mana_bonus(self)
+            })
     }
 
     pub fn mana_split_choice(&self) -> Option<ManaSplitChoiceView> {
@@ -436,6 +443,7 @@ impl Game {
             ManaProduction::Choice { .. }
                 | ManaProduction::Combination { .. }
                 | ManaProduction::AnyColorChangingSource(_)
+                | ManaProduction::LinkedExileCardColor
         ) && self.fixed_mana_choice_can_be_late(source, definition, index);
         // Pure tap-only fixed mana has no intervening information choice and
         // retains its original concrete action set. Real costs retain a full

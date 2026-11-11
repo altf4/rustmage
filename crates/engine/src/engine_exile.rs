@@ -876,6 +876,17 @@ impl Game {
         events: &[ZoneChange],
         death_sources: &[ObjectView],
     ) {
+        self.finish_zone_events_with_craft(events, death_sources, None);
+    }
+
+    /// The directly paid source/material clauses own their announcement outside
+    /// State until payment is committed. Mana-payment frames remain discoverable.
+    pub(super) fn finish_zone_events_with_craft(
+        &mut self,
+        events: &[ZoneChange],
+        death_sources: &[ObjectView],
+        craft_payer: Option<Player>,
+    ) {
         self.refresh_enduring_stories();
         self.advance_source_prevention_permanents(events);
         for event in events {
@@ -886,6 +897,13 @@ impl Game {
                 *count = count
                     .checked_add(1)
                     .capacity("permanent sacrifice history exhausted");
+            }
+            if event.moved
+                && event.before.zone == Zone::Battlefield
+                && event.destination == Zone::Exile
+                && let Some(actor) = craft_payer.or_else(|| self.active_craft_payment_actor())
+            {
+                self.craft_exile_triggers(event, actor);
             }
         }
         if events

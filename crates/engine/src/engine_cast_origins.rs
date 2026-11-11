@@ -91,7 +91,8 @@ pub(super) fn land_origin_available<W: ability_world::CharacteristicWorld + ?Siz
     player: Player,
     origin: Zone,
 ) -> bool {
-    if origin == Zone::Library && world.game().state.players[player.index()].library_top_life_play {
+    let state = &world.game().state.players[player.index()];
+    if origin == Zone::Library && (state.library_top_life_play || state.library_top_play) {
         return true;
     }
     has_fragment_from(world, Some(player), |id, fragment| {
@@ -132,12 +133,15 @@ pub(super) fn ordinary_library_spell_permission<W: ability_world::Characteristic
     definition: Card,
 ) -> bool {
     !definition.is_land()
-        && has_fragment_from(world, Some(player), |id, fragment| match fragment {
-            StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
-            StaticAbilityFragment::CastFromLibraryTop(filter) => filter.matches(definition),
-            StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => source_attacked(world, id),
-            _ => false,
-        })
+        && (world.game().state.players[player.index()].library_top_play
+            || has_fragment_from(world, Some(player), |id, fragment| match fragment {
+                StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
+                StaticAbilityFragment::CastFromLibraryTop(filter) => filter.matches(definition),
+                StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => {
+                    source_attacked(world, id)
+                }
+                _ => false,
+            }))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn library_spell_with_counter_permission<
@@ -325,10 +329,13 @@ impl Game {
         })
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
-        self.state.players[player.index()].library_top_life_play
+        let state = &self.state.players[player.index()];
+        state.library_top_life_play
+            || state.library_top_play
             || has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::LookAtLibraryTop)
             })
+            || self.attached_library_top_permission(player)
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
         if let Some(object) = self.private_library_top(viewer, owner) {
@@ -714,8 +721,34 @@ impl Game {
         let Some(object) = self.exiled_search_result() else {
             return false;
         };
-        // Keep the choice private even when every face fails the restriction.
         // The surrounding program moves the exact uncast card after the offer.
+        self.offer_exact_free_cast(player, object, Zone::Exile, Some(maximum));
+        true
+    }
+
+    pub(super) fn offer_discard_result_free_cast(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+    ) -> bool {
+        if self.object_ref(object.card) != object {
+            return false;
+        }
+        let origin = self.state.objects[object.card as usize].zone;
+        if !matches!(origin, Zone::Graveyard | Zone::Exile | Zone::Command) {
+            return false;
+        }
+        self.offer_exact_free_cast(player, object, origin, None);
+        true
+    }
+
+    fn offer_exact_free_cast(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        origin: Zone,
+        remaining_mana_value: Option<u64>,
+    ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
             uncast_to_hand: false,
@@ -723,17 +756,16 @@ impl Game {
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
-            remaining_mana_value: Some(maximum),
+            remaining_mana_value,
             alternative_cost: None,
             maximum_mana_value: None,
-            origin: Zone::Exile,
+            origin,
             exile_on_graveyard: false,
             allow_lands: false,
             player,
             remaining: vec![object],
         }));
         self.state.pending = Pending::ResolutionCasts { player };
-        true
     }
 
     pub(super) fn offer_hand_free_cast(

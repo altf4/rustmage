@@ -6,6 +6,8 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
 pub enum SourceLinkedEffectKind {
     RemoveAbilities,
+    /// Replace types and abilities with those of a Treasure while the source remains.
+    Treasure,
     /// Type replacement and blue mana grant, ending at the captured controller's next turn.
     LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
@@ -28,6 +30,7 @@ impl SourceLinkedEffectKind {
         matches!(
             self,
             Self::RemoveAbilities
+                | Self::Treasure
                 | Self::RemoveAbilitiesUntilEndOfTurn
                 | Self::BlankLandWhileBlighted
         )

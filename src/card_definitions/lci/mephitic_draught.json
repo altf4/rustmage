@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7d3bf3b37a36e8edb411433dc570d4f355b330436d29ac6929093bc70e11efb5"
   },
-  "physical_metadata_sha256": "166da0aa99a025d1b5c04040c3274fa1e419e109e087c82619705fe5bd45f434"
+  "physical_metadata_sha256": "166da0aa99a025d1b5c04040c3274fa1e419e109e087c82619705fe5bd45f434",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MephiticDraught.java",
+  "java_sha256": "db65711e528fc5700691551b9661771239dc731bb3e4e7d45bd0850243bc22e2",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrDiesSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc63649c52975b7de190b2f45fda8f94e462716367c82fa8064cd51314ce08c0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }

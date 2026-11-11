@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4fedeacede01418218f610c4287048c327e53274db79310ac68ba140e2b76822"
   },
-  "physical_metadata_sha256": "cd82b517e947d7c265dde7a7589eaa691e9b35c15689206c8ad44ff614c2b773"
+  "physical_metadata_sha256": "cd82b517e947d7c265dde7a7589eaa691e9b35c15689206c8ad44ff614c2b773",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TectonicHazard.java",
+  "java_sha256": "86462bcf45115799e410e235aa72d91847646615123773f90033923c1e928f91",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_inherited_tail.rs"
 }

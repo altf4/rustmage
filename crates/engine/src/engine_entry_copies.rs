@@ -16,6 +16,16 @@ pub(super) struct Preparation {
     pub done: bool,
     pub recipe: Option<CopyRecipe>,
     pub exile: Option<EntryCopyExile>,
+    /// The exact donor of the replacement currently printed on the entrant.
+    origin: Option<ObjectRef>,
+    applied: Vec<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Preparation {
+    pub(super) fn bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + self.applied.len() * std::mem::size_of::<ObjectRef>()
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -27,13 +37,14 @@ pub struct EntryCopyChoiceView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn needs_copy(movement: &entries::EntryMove) -> bool {
+    let Some(definition) = movement.intrinsic_entry_card() else {
+        return false;
+    };
     movement.destination == Zone::Battlefield
         && movement.before.zone != Zone::Battlefield
         && !movement.skipped
         && movement.manifest_original.is_none()
-        && movement
-            .intrinsic_entry_card()
-            .is_some_and(|card| card.entry_copy().is_some())
+        && definition.entry_copy().is_some()
         && movement
             .copy_preparation
             .as_ref()
@@ -86,11 +97,10 @@ pub(super) fn apply_blueprint(movement: &mut entries::EntryMove, mut recipe: Cop
     movement.before.power = base.power;
     movement.before.toughness = base.toughness;
     // A subsequent entry copy displaces the first copy's linked trigger (CR707.9g).
-    movement.copy_preparation = Some(Box::new(Preparation {
-        done: false,
-        recipe: Some(recipe),
-        exile: None,
-    }));
+    let preparation = movement.copy_preparation.get_or_insert_default();
+    preparation.done = false;
+    preparation.recipe = Some(recipe);
+    preparation.exile = None;
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -120,12 +130,18 @@ pub(super) fn candidate<W: ability_world::CharacteristicWorld + ?Sized>(
                         )
                     })
         }
-        EntryCopySource::GraveyardCreature { .. } => {
+        source => {
             // Simultaneous entrants are still in the graveyard during this choice.
             let object = world.object(id);
             object.zone == Zone::Graveyard
                 && object.is_card()
-                && object.card.front_face().is_creature()
+                && match source {
+                    EntryCopySource::GraveyardCreature { .. } => {
+                        object.card.front_face().is_creature()
+                    }
+                    EntryCopySource::GraveyardLand { .. } => object.card.front_face().is_land(),
+                    EntryCopySource::Battlefield => unreachable!(),
+                }
         }
     }
 }
@@ -147,16 +163,43 @@ pub(super) fn chosen_blueprint<W: ability_world::CharacteristicWorld + ?Sized>(
                 object,
             }),
         ),
+        EntryCopySource::GraveyardLand { .. } => (
+            CopyRecipe::new(world.definition(object.card).front_face()),
+            None,
+        ),
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn apply_choice(
     movement: &mut entries::EntryMove,
+    object: ObjectRef,
     (recipe, exile): (CopyRecipe, Option<EntryCopyExile>),
 ) {
+    let definition = movement.before.card;
+    let entrant = movement.before.reference;
+    movement.tapped |= matches!(
+        definition.entry_copy_options().source,
+        EntryCopySource::GraveyardLand { tapped: true }
+    );
     apply_blueprint(movement, recipe);
-    movement.copy_preparation.as_mut().unwrap().exile = exile;
+    let preparation = movement.copy_preparation.as_mut().unwrap();
+    preparation.exile = exile;
+    // The same replacement has one opportunity per entry (CR614.5). A
+    // replacement copied from another exact object can still apply (CR707.5).
+    if recipe.definition.entry_copy().is_some() {
+        let used = preparation.origin.replace(object).unwrap_or(entrant);
+        if matches!(
+            definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) {
+            preparation.applied.push(used);
+        }
+        preparation.done = matches!(
+            recipe.definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) && preparation.applied.contains(&object);
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -208,6 +251,7 @@ impl Game {
                 chosen_blueprint(self, definition, object, || self.copiable_recipe(object));
             apply_choice(
                 &mut self.state.entry_batch.as_mut().unwrap().moves[index],
+                object,
                 choice,
             );
         } else {

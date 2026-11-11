@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "85bacaba72dc6fe2b2dc944752f01a95dbc1c2457429ecfb2a0144ef33098368"
   },
-  "physical_metadata_sha256": "351825d85b0eaaaa096a8ce03cae9f19a4cd65d68f516d5704898720abf3444a"
+  "physical_metadata_sha256": "351825d85b0eaaaa096a8ce03cae9f19a4cd65d68f516d5704898720abf3444a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StaunchCrewmate.java",
+  "java_sha256": "e35b4c2173f40c8ae793c3efb07eae086823880be47c200b057171abb9dc3bd9",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ],
+  "rules_tests": "lci_cards_s_z_inherited_seismic_swamp"
 }

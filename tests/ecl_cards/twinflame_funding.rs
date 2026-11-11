@@ -80,7 +80,9 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
         let production = [0, 0, 0, 0, 1, 0];
         let produced_bonus = tap.with_event_effects(&g, p, Some(tapped_land));
         assert_eq!(
-            produced_bonus.singleton(production),
+            produced_bonus
+                .singleton(production)
+                .map(|output| output.total),
             Some([0, 0, 0, 0, 2, 0])
         );
         let step = world
@@ -123,7 +125,8 @@ fn ecl_twinflame_triggered_mana_bonus_at_production_and_funding_match_actual() {
         g.move_object(provider, Zone::Graveyard);
         assert_eq!(
             tap.with_event_effects(&g, p, Some(tapped_land))
-                .singleton(production),
+                .singleton(production)
+                .map(|output| output.total),
             Some(production)
         );
         assert!(!FundingState::from_game(&g, &goal).reachable(&goal, &mut HashSet::new()));

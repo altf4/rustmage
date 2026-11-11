@@ -61,6 +61,9 @@ pub(super) trait CharacteristicWorld {
         own.is_some() && own >= greatest[player.other().index()]
     }
     fn game(&self) -> &Game;
+    fn projected_craft_materials(&self, _source: ObjectRef) -> &[ObjectRef] {
+        &[]
+    }
     fn void_active_this_turn(&self) -> bool {
         self.game().state.void_active_this_turn
     }
@@ -1237,7 +1240,10 @@ pub(super) trait CharacteristicWorld {
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.game().entered_this_turn(source)
+        self.entry_controller_this_turn(source).is_some()
+    }
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.game().entry_controller_this_turn(source)
     }
     /// Basic is a supertype; a basic land type alone is insufficient.
     /// Read this world so virtual departures and control changes take effect.
@@ -1331,6 +1337,44 @@ pub(super) trait CharacteristicWorld {
             _ => unreachable!("static mana grant"),
         };
         qualifies.then_some(production)
+    }
+    fn controlled_subtype_mana_grants(
+        &self,
+        id: CardId,
+    ) -> Vec<(ability_order::GrantedAbilityKey, u16)> {
+        let recipient = self.object(id);
+        if recipient.zone != Zone::Battlefield {
+            return Vec::new();
+        }
+        let mut subtypes = None;
+        let potential = self.static_sources().iter().copied().any(|provider| {
+            let source = self.object(provider);
+            provider != id
+                && source.zone == Zone::Battlefield
+                && source.controller == recipient.controller
+                && self.definition(provider).static_ability_groups().iter()
+                    .flat_map(|group| group.fragments)
+                    .any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { subtype, .. }
+                            if subtypes.get_or_insert_with(|| self.subtypes(id)).has(recipient.card, subtype))
+                    })
+        });
+        if !potential {
+            return Vec::new();
+        }
+        ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+            .grants
+            .iter()
+            .filter_map(|&grant| {
+                let ability_order::GrantedAbilityKind::Template(index) = grant.kind else {
+                    return None;
+                };
+                grant
+                    .granting_card
+                    .controlled_subtype_mana_activation(Some(index))
+                    .then_some((grant, index))
+            })
+            .collect()
     }
     /// Availability of an exact immutable activation template granted to its
     /// own source. This is not a printed-ability permission or a flattened tap
@@ -1436,6 +1480,15 @@ pub(super) trait CharacteristicWorld {
         }
         let mut result = Vec::new();
         self.append_additional_basic_subtype_mana(id, &mut result);
+        result.extend(
+            self.game()
+                .state
+                .self_granted_abilities
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .filter_map(|row| row.tap_mana_grant(self, id)),
+        );
         for &source in self.attachment_sources() {
             let reference = self.reference(source);
             if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
@@ -1746,6 +1799,18 @@ pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Si
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaProduction {
+    pub(super) fn linked_exile_card_color<W: CharacteristicWorld + ?Sized>(
+        world: &W,
+        source: ObjectRef,
+        origin: Option<u64>,
+    ) -> Self {
+        let mask = world.game().linked_exile_colors(world, source, origin);
+        if mask == 0 {
+            Self::Fixed([0; 6])
+        } else {
+            Self::Choice { mask, amount: 1 }
+        }
+    }
     /// Evaluate against the actual game or a speculative funding overlay.
     pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(
         self,
@@ -1811,12 +1876,12 @@ impl ManaProduction {
                     }
                 }
             }
-            Self::ChosenColor => {
+            Self::ChosenColor | Self::ChosenColorAmount(_) => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
                     world.entry_value(world.reference(source))
                 {
-                    mana[color.index()] = 1;
+                    mana[color.index()] = self.chosen_color_amount().expect("chosen color");
                 }
                 Self::Fixed(mana)
             }
@@ -1849,6 +1914,17 @@ impl ManaProduction {
                 } else {
                     Self::any_color(amount)
                 }
+            }
+            Self::LinkedExileCardColor => Self::linked_exile_card_color(
+                world,
+                world.reference(source),
+                world.ability_origin(source),
+            ),
+            Self::CraftMaterialColors => {
+                let mask = world.game().craft_colors(world, world.reference(source));
+                Self::Fixed(std::array::from_fn(|index| {
+                    u32::from(index < 5 && mask & (1 << index) != 0)
+                }))
             }
             Self::MonocoloredPermanentColors => {
                 let mut mask = 0u8;
@@ -1911,6 +1987,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn game(&self) -> &Game {
         self.parent.game()
+    }
+    fn projected_craft_materials(&self, source: ObjectRef) -> &[ObjectRef] {
+        self.parent.projected_craft_materials(source)
     }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.parent.battle_protector(object)
@@ -1994,8 +2073,8 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.parent.borrowed_activation_used(source, slot)
     }
-    fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.parent.entered_this_turn(source)
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.parent.entry_controller_this_turn(source)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

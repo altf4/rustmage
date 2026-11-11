@@ -3,10 +3,31 @@
   "catalogue_id": 2255,
   "oracle_id": "0a72d6cd-b4a7-4c42-90ba-a14f1733d00e",
   "facts_sha256": "7f157e7af6f98f50a69f290f1ae384982e647fb5d03f0e0d245fe3dedd5a9d40",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "79e81cd5da00cd575f135c0a408fa342081845755f09c811d9a2503f9c1b87f1"
   },
-  "physical_metadata_sha256": "f21c9b6df8d69d17ad1da9272a9e65572317a32134d8a652d64951d49fecbd58"
+  "physical_metadata_sha256": "6629687d66740c50ce2fd155d96b3606fd901f1bd44d49baa4fd4c2cfa143fb4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JadelightSpelunker.java",
+  "java_sha256": "7b9c6b52b0beda6342b9d19d09c95c65564cdb285654ce86aa5b764ddaa60e20",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_graveyards.rs"
 }

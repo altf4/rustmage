@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum HandDeploymentMode {
     CreaturesEach,
+    ControllerCreatures,
     ControllerPermanents,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -26,7 +27,7 @@ impl HandDeployment {
     fn player_count(&self) -> usize {
         match self.mode {
             HandDeploymentMode::CreaturesEach => 2,
-            HandDeploymentMode::ControllerPermanents => 1,
+            HandDeploymentMode::ControllerCreatures | HandDeploymentMode::ControllerPermanents => 1,
         }
     }
     fn actor(&self) -> Option<Player> {
@@ -99,6 +100,10 @@ impl Game {
     pub(super) fn start_hand_deployment(&mut self) {
         self.start_hand_deployment_mode(self.state.active, HandDeploymentMode::CreaturesEach);
     }
+    pub(super) fn start_controller_hand_creature_deployment(&mut self, item: &SpellView) {
+        self.start_hand_deployment_mode(item.controller, HandDeploymentMode::ControllerCreatures);
+    }
+
     pub(super) fn start_controller_hand_permanent_deployment(&mut self, item: &SpellView) {
         self.start_hand_deployment_mode(item.controller, HandDeploymentMode::ControllerPermanents);
     }
@@ -127,7 +132,9 @@ impl Game {
             && o.owner == player
             && o.is_card()
             && match mode {
-                HandDeploymentMode::CreaturesEach => o.card.is_creature(),
+                HandDeploymentMode::CreaturesEach | HandDeploymentMode::ControllerCreatures => {
+                    o.card.is_creature()
+                }
                 HandDeploymentMode::ControllerPermanents => PermanentType::ALL
                     .into_iter()
                     .any(|kind| o.card.kind_mask() & kind.mask() != 0),
@@ -169,7 +176,9 @@ impl Game {
         }
         Some(HandChoiceView {
             kind: match d.mode {
-                HandDeploymentMode::CreaturesEach => HandChoiceKind::DeployCreatures,
+                HandDeploymentMode::CreaturesEach | HandDeploymentMode::ControllerCreatures => {
+                    HandChoiceKind::DeployCreatures
+                }
                 HandDeploymentMode::ControllerPermanents => HandChoiceKind::DeployPermanents,
             },
             inspected_cards: None,

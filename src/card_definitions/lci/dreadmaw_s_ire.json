@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/d/DreadmawsIre.java",
   "java_sha256": "fafdef4bcdb61e379469b4fc9560c4cf30f9d2301aa9b8c07c63b69661e1526a",
-  "rules_tests": "src/assurance/requested_dreadmaw.rs",
+  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

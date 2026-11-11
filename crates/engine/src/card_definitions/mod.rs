@@ -160,6 +160,42 @@ impl CardRules {
                             "Celebration grant needs a battlefield activation slot"
                         );
                     }
+                    StaticAbilityFragment::OtherControlledSubtypeTapManaActivation {
+                        ability,
+                        ..
+                    } => {
+                        assert!(matches!(
+                            self.static_groups[group].first_layer,
+                            AbilityLayer::Ability
+                        ));
+                        assert!((ability as usize) < self.activated.len());
+                        let rules = &self.activated[ability as usize];
+                        let cost = rules.cost;
+                        assert!(
+                            matches!(rules.origin, ActivationOrigin::Battlefield)
+                                && matches!(rules.guard, ActivationGuard::Always)
+                                && cost.tap
+                                && !cost.sacrifice
+                                && !cost.discard
+                                && !cost.exile_self
+                                && cost.additional.is_none()
+                                && cost.remove.is_none()
+                                && cost.loyalty.is_none()
+                                && !rules.exhaust
+                                && !rules.once_per_turn
+                                && !rules.sorcery
+                                && !rules.cycling
+                                && matches!(rules.program, [Instruction::AddMana(_)])
+                                && matches!(
+                                    rules.targets,
+                                    TargetPlan::Single(TargetSpec {
+                                        rule: TargetRule::None,
+                                        ..
+                                    })
+                                ),
+                            "controlled subtype grant needs an unconditional tap mana ability"
+                        );
+                    }
                     grant @ (StaticAbilityFragment::ControlledArtifactFood(ability)
                     | StaticAbilityFragment::ControlledArtifactActivation(ability)) => {
                         assert!(
@@ -322,6 +358,19 @@ impl CardRules {
                 _ => panic!("modal costs require modal behavior"),
             }
         }
+        if !self.extras.cast_mode_requirements.is_empty() {
+            let Effect::Modal(modes) = self.effect else {
+                panic!("mode requirements require modal behavior");
+            };
+            let mut index = 0;
+            while index < self.extras.cast_mode_requirements.len() {
+                assert!(
+                    (self.extras.cast_mode_requirements[index].0 as usize) < modes.len(),
+                    "mode requirement index outside modal behavior"
+                );
+                index += 1;
+            }
+        }
         self.effect
     }
 }
@@ -373,6 +422,8 @@ pub struct CardExtras {
     pub self_granted_activation_templates: &'static [u16],
     /// Attachment-granted templates that exile their exact grantor as a cost.
     pub attachment_activation_exile_costs: &'static [u16],
+    /// Attachment-granted templates that sacrifice their exact grantor as a cost.
+    pub attachment_activation_sacrifice_costs: &'static [u16],
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -414,6 +465,8 @@ pub struct CardExtras {
     pub static_ability_groups: &'static [StaticAbilityGroup],
     pub live_static_effects: &'static [LiveStaticEffect],
     pub tiered_costs: Option<&'static [ManaCost]>,
+    /// Cast-time conditions for specified modal options.
+    pub cast_mode_requirements: &'static [(u16, StatValue)],
     pub base_stat_setter: Option<BaseStatSetter>,
     pub combat_restriction: Option<CombatRestriction>,
     pub role: Option<RoleKind>,
@@ -522,6 +575,7 @@ impl CardExtras {
         borrows_exiled_activations: false,
         self_granted_activation_templates: &[],
         attachment_activation_exile_costs: &[],
+        attachment_activation_sacrifice_costs: &[],
         zone_replacement: None,
         opening_hand_battlefield: false,
         power_up_abilities: &[],
@@ -557,6 +611,7 @@ impl CardExtras {
         static_ability_groups: &[],
         live_static_effects: &[],
         tiered_costs: None,
+        cast_mode_requirements: &[],
         base_stat_setter: None,
         combat_restriction: None,
         role: None,

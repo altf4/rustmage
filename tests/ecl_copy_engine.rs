@@ -793,7 +793,8 @@ fn target_count_counts_repeated_target_instances() {
                 1,
                 Player::P0,
                 &observer,
-                &targets
+                &targets,
+                GrantedSubtypes::default(),
             ),
             count == 1
         );

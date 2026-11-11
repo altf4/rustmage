@@ -12,8 +12,8 @@ fn cycle_for(player: Player) -> Game {
     g.state.objects[cage as usize].generation = 11;
     // put() also records this exact incarnation in entry history.
     for object in g.state.entered_this_turn.as_mut().unwrap().iter_mut() {
-        if object.card == snare {
-            object.generation = 7;
+        if object.object.card == snare {
+            object.object.generation = 7;
         }
     }
     for stamp in &mut g.state.roles.as_mut().unwrap().ability_timestamps {
@@ -109,10 +109,18 @@ fn optional_instant_and_rejected_indices_preserve_the_game() {
 fn inert_departed_entry_history_does_not_create_an_escape_from_the_closed_cycle() {
     let mut g = cycle();
     let source = g.state.exile_links[0].source.card;
-    g.state.entered_this_turn.as_mut().unwrap().push(ObjectRef {
-        card: source,
-        generation: 0,
-    });
+    let controller = g.state.objects[source as usize].controller;
+    g.state
+        .entered_this_turn
+        .as_mut()
+        .unwrap()
+        .push(EntryTurnFact {
+            object: ObjectRef {
+                card: source,
+                generation: 0,
+            },
+            controller,
+        });
     for _ in 0..48 {
         if g.outcome().is_some() {
             break;

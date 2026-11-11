@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-skeleton-pirate",
+  "catalogue_id": 5577,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "d8c6da86670bc47d18075f71ce7a7b7a7e91de7fedffee63309ae5c4fd7cfb85",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/SkeletonPirateToken.java",
+  "java_sha256": "8a7a03d59798c5001bca0d684d4afc48beb6ccccff3d56837281b6854051e707",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

@@ -237,7 +237,7 @@ impl Game {
     pub(super) fn permanent_cards_enter_graveyard_triggers(&mut self, events: &[ZoneChange]) {
         self.card_arrivals_in_graveyard(
             events,
-            1 | 2 | 16 | 32 | 64 | 256,
+            crate::cards::PERMANENT_KINDS,
             TriggerCondition::PermanentCardsEnterYourGraveyard,
         );
     }

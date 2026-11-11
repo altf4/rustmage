@@ -3,10 +3,41 @@
   "catalogue_id": 1102,
   "oracle_id": "6a381297-ebce-403c-b1dc-b7405fa6902c",
   "facts_sha256": "bfaa67ba28cf36f6e7dfba7efed90aa8350becb500b5be71964d6bd921a63460",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "501c7aed2e22f1eec16346e51b27fb2701eb03d8f79dab2df0279c9dcaa39671"
   },
-  "physical_metadata_sha256": "5f54218eae696134103e611baf1047877a86feeb0c59e154b6f5351eceecb4a4"
+  "physical_metadata_sha256": "5f54218eae696134103e611baf1047877a86feeb0c59e154b6f5351eceecb4a4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DisturbedSlumber.java",
+  "java_sha256": "722dc6e754e963eb8a2c610df55c4595cde44547c3697241a50940162176619d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a7b718f5db290094e2812e5ded044d13afd7d3eaf032b15b59204a2d050e7ef3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_discover.rs"
 }

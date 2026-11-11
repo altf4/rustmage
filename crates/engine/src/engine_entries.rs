@@ -1,7 +1,7 @@
 //! Owned pre-entry attachment/life choices; no object moves until the batch is ready.
 use super::entry_tap::{EntryTapEffect, EntryTapEvent, EntryTapKind};
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{AnimationSpec, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -61,6 +61,8 @@ pub(super) struct EntryMove {
     pub food_return: Option<Card>,
     /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
     pub artifact_return: bool,
+    /// Add a creature form at the same time this exact object enters.
+    pub animation: Option<&'static AnimationSpec>,
     /// Source-independent enchantment-only form as it enters.
     pub enchantment_return: bool,
     pub attacking: Option<CombatDefender>,
@@ -79,6 +81,8 @@ pub(super) struct EntryMove {
     pub evoked: bool,
     pub behold_exiled: Option<ObjectRef>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
+    /// Additive type effect following the exact spell into the prospective entry.
+    pub cast_added_creature_types: &'static [&'static str],
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
     pub warp_controller: Option<Player>,
@@ -207,6 +211,7 @@ impl EntryMove {
     /// Copy recipes and applicable continuous effects can change the prospective entrant.
     pub(super) fn requires_characteristic_preview(&self) -> bool {
         self.ghost_vacuum_after.is_some()
+            || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
             || self.before.copy_recipe.is_some()
             || self
@@ -264,6 +269,8 @@ impl EntryMove {
             16
         } else if self.artifact_return || self.enchantment_return {
             (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
+        } else if let Some(animation) = self.animation {
+            self.before.kinds | 1 | (16 * u16::from(animation.artifact))
         } else {
             self.before.kinds
         }
@@ -305,6 +312,7 @@ impl EntryMove {
             ghost_vacuum_after: None,
             food_return: None,
             artifact_return: false,
+            animation: None,
             enchantment_return: false,
             attacking: None,
             sneak_paid: false,
@@ -320,6 +328,7 @@ impl EntryMove {
             evoked: false,
             behold_exiled: None,
             cast_event: None,
+            cast_added_creature_types: &[],
             cast_origin: None,
             warp_controller: None,
             kicked: false,
@@ -365,9 +374,7 @@ impl EntryBatch {
                         })
                         + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
                         + m.devour_preparation.as_ref().map_or(0, |p| p.bytes())
-                        + m.copy_preparation
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
+                        + m.copy_preparation.as_ref().map_or(0, |copy| copy.bytes())
                         + m.counters.owned_bytes()
                         + m.before.owned_bytes()
                         + m.source_before
@@ -518,7 +525,12 @@ impl Game {
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
-        EntryMove::from_view(self.object_view(id), destination, tapped)
+        let mut movement = EntryMove::from_view(self.object_view(id), destination, tapped);
+        if movement.before.zone == Zone::Stack && destination == Zone::Battlefield {
+            movement.cast_added_creature_types =
+                self.cast_added_creature_types(movement.before.reference);
+        }
+        movement
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
@@ -1088,6 +1100,7 @@ impl Game {
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
+        let mut animation_results = Vec::new();
         let mut ghost_results = Vec::new();
         let mut copy_results = Vec::new();
         let mut copy_exile_results = Vec::new();
@@ -1168,26 +1181,7 @@ impl Game {
                     }
                 }
                 if let Some(materials) = movement.craft_materials.as_deref() {
-                    for &exiled in materials {
-                        if self.object_ref(exiled.card) != exiled
-                            || self.state.objects[exiled.card as usize].zone != Zone::Exile
-                            || !self.state.objects[exiled.card as usize].is_card()
-                        {
-                            continue;
-                        }
-                        let first_slot = graveyard_borrowing::next_slot(self, event.after);
-                        self.state.borrowed_links.get_or_insert_default().push(
-                            borrowed_activations::Link {
-                                source: event.after,
-                                origin: None,
-                                exiled,
-                                first_slot,
-                                width: borrowed_activations::DONOR_SLOT_WIDTH,
-                                once_per_turn: true,
-                                shared: false,
-                            },
-                        );
-                    }
+                    self.register_craft_materials(event.after, materials);
                 }
                 if let Some(item) = &movement.delayed_return_exile {
                     self.register_delayed_return_exile(item, event.after);
@@ -1243,6 +1237,12 @@ impl Game {
                 && let Some(definition) = movement.food_return
             {
                 food_results.push((event.after, definition));
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(animation) = movement.animation
+            {
+                animation_results.push((event.after, animation));
             }
             if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
                 artifact_results.push(event.after);
@@ -1480,6 +1480,13 @@ impl Game {
                 source,
             );
         }
+        for (recipient, animation) in animation_results {
+            self.change_object_form(
+                recipient,
+                *animation,
+                characteristic_layers::AnimationTypeMode::AddCreature,
+            );
+        }
         for recipient in artifact_results {
             let timestamp = self.next_role_timestamp();
             self.state.roles.get_or_insert_default().animations.push(
@@ -1520,6 +1527,7 @@ impl Game {
         if batch.captures_result {
             self.capture_search_result_entry(&events);
         }
+        self.capture_returned_explorer(&events);
         if let Some(packet) = &batch.cleanup {
             let recipients = events
                 .iter()
@@ -2077,6 +2085,7 @@ impl Game {
                 .is_some_and(|copy| copy.recipe.is_some())
                 || m.artifact_return
                 || m.enchantment_return
+                || m.animation.is_some()
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
                 || m.return_modification

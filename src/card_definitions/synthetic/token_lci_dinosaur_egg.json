@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-dinosaur-egg",
+  "catalogue_id": 5571,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "5032afa0898d35f0e7ddfc6b4b505937eec4003b5f6ab6391740cf50664596f2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/DinosaurEggToken.java",
+  "java_sha256": "35f3e29d08f86516610a40d9e66c1ce035b2f1de23afe3e17948984ea901e2ac",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

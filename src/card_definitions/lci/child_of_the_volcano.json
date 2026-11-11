@@ -3,10 +3,51 @@
   "catalogue_id": 736,
   "oracle_id": "701c8624-70d8-49df-84b1-d7b2a8e83552",
   "facts_sha256": "c263ab4fbfebaa195536d45b8c4057f83ad361a375aecdf49490ae0f59532687",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33789ab25285f93f52cd1536499f91e327e3a51c9f947f2ca82f32b980537d5f"
   },
-  "physical_metadata_sha256": "b77a6fc92899f047dd290e0d52f91eaadc0498340a08465d52e7a3237ab0344f"
+  "physical_metadata_sha256": "b77a6fc92899f047dd290e0d52f91eaadc0498340a08465d52e7a3237ab0344f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChildOfTheVolcano.java",
+  "java_sha256": "f20fdca42861ed63744e988b4b46d833f6474ad2e6562eb1864b8d0db9c8f38e",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendedThisTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "91398d1f7e4aa5d9be195ec7538268249f05cd1bc4862743049e6bd9c58b64da"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/DescendedThisTurnCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6ff7443e2d244b32147091927a615aede20208fce1bf1690cbcc639600cd5406"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/DescendedWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "596ed6aa70260ef6d061e97c3f3cb109a4f8fc544557f059f358a5f1901feb4b"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_descend_choices"
 }

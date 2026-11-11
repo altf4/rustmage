@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "832ca57776c9753dcc7a5a3ca27c3b46d64b149a47d3f40c91dd5cf951bcf016"
   },
-  "physical_metadata_sha256": "7cd50d1a88d31d631b1b8d14f21f7464b31f2183c279fce30c64df2969e95e4e"
+  "physical_metadata_sha256": "7cd50d1a88d31d631b1b8d14f21f7464b31f2183c279fce30c64df2969e95e4e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CavernStomper.java",
+  "java_sha256": "b9420366cd18bb8325b74190d6a6882fe33cc5d1978bc54a4abc38a11ecf6854",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

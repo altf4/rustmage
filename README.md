@@ -102,7 +102,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Tarkir: Dragonstorm | TDM | 276/276 (100%) | ✅ Complete |
 | The Big Score | BIG | 30/30 (100%) | ✅ Complete |
 | The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
-| The Lost Caverns of Ixalan | LCI | 117/291 (40%) | ⏳ Partial |
+| The Lost Caverns of Ixalan | LCI | 291/291 (100%) | ✅ Complete |
 | Wilds of Eldraine | WOE | 281/281 (100%) | ✅ Complete |
 
 ## Modern tracker

@@ -3,10 +3,41 @@
   "catalogue_id": 2666,
   "oracle_id": "12fa17b2-158e-4d53-897f-81111f912b00",
   "facts_sha256": "5c11d5d20edea651b028a7c572bd37f9a83356fbdc5849092cb11f71723ff995",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b1dacb419a308b3ed5fa3c3a6ebd404f967c8671a07d90b342f1437fbb28153c"
   },
-  "physical_metadata_sha256": "ba0b8e2317eabfe08c7545fd0ffb45a20abce17594e8d43d68cca8f90789b7f0"
+  "physical_metadata_sha256": "ba0b8e2317eabfe08c7545fd0ffb45a20abce17594e8d43d68cca8f90789b7f0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarketGnome.java",
+  "java_sha256": "097bf96ac30d015bd7e9fcf70f6625cf7f20dbd9ce7d029b47cd3079bb1c718c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_craft.rs"
 }

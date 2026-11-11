@@ -3,10 +3,46 @@
   "catalogue_id": 2636,
   "oracle_id": "483a0caa-e912-41e9-aaa3-bcea9369ec06",
   "facts_sha256": "186faf8e964db989a73341b7003b8b132dda48a7ae816b1ed56f7aa6101e8006",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d75d94bbf01bfb3fd42f3b89a83f1750a4991e5102691a7c37c784413cba94fd"
   },
-  "physical_metadata_sha256": "219621b1d8cab9d5954b3b8fda738c83ac46fbec853d59c94254ee196e6e8a06"
+  "physical_metadata_sha256": "219621b1d8cab9d5954b3b8fda738c83ac46fbec853d59c94254ee196e6e8a06",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MalametBattleGlyph.java",
+  "java_sha256": "7bfaa3c759bb622b59d3a7d75db1470397a0ebb3c44cdaae8c2e6d3afa055309",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/FightTargetsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e562370eb9b15a7fc0db16f44b32e8dce627719fc405b2bc09eb8dad21f8edc2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_spells.rs"
 }

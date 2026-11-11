@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "89d14ae18b7044a01e870e9b88fac591b2aafcdc8da6dbee4def69fc9418d11b"
   },
-  "physical_metadata_sha256": "7e69ceaa8d3053d4f3b41b07590bfe290f99f88c77e44ec7da947db656363cc5"
+  "physical_metadata_sha256": "7e69ceaa8d3053d4f3b41b07590bfe290f99f88c77e44ec7da947db656363cc5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AttentiveSunscribe.java",
+  "java_sha256": "3a43bd2b3e050685c017c4b0ffa85f293ffc8ddc9c5a43a3b333fe709b18483f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_ab"
 }

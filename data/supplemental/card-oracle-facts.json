@@ -194,6 +194,35 @@
           "released_at": "2023-09-08"
         }
       }
+    },
+    {
+      "facts_sha256": "27d37caa382c6a3256991f5b69255008c63901947c44759fb23adcb35c977684",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/lci/1",
+      "source_response_sha256": "e33f03ee5040df566fa5571241e4a106bfd3378379d6cd748ee5f0f4c2eb9ab1",
+      "facts": {
+        "oracle_id": "2b22cf44-7b03-4919-9812-6796bf193484",
+        "name": "Abuelo's Awakening",
+        "layout": "normal",
+        "mana_cost": "{X}{3}{W}",
+        "cmc": 4.0,
+        "type_line": "Sorcery",
+        "oracle_text": "Return target artifact or non-Aura enchantment card from your graveyard to the battlefield with X additional +1/+1 counters on it. It's a 1/1 Spirit creature with flying in addition to its other types.",
+        "colors": [
+          "W"
+        ],
+        "color_identity": [
+          "W"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "f93b725e-2b9c-4830-ac54-b2562afe09bb",
+          "set": "lci",
+          "collector_number": "1",
+          "released_at": "2023-11-17"
+        }
+      }
     }
   ]
 }

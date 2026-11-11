@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c291f7c5bcc490eb4d8fc8d9eedde8afa8634803f322ad7519282c0d1b35047c"
   },
-  "physical_metadata_sha256": "5574bec9ed9f44c8116ed246c0a1d743487aa9c57af95190eb900edc41abe664"
+  "physical_metadata_sha256": "5574bec9ed9f44c8116ed246c0a1d743487aa9c57af95190eb900edc41abe664",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VolatileWanderglyph.java",
+  "java_sha256": "3d884f8f8c0a2736b206911461e43441480a46ff25fc9240ff018b31d6d1b691",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_inherited_tail.rs"
 }

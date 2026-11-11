@@ -3,10 +3,66 @@
   "catalogue_id": 2339,
   "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
   "facts_sha256": "aa45d0691f61dc33a93b93b147d3cd45d238b17ea5b90f73163375ddd3326cbf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91f9184ea610aa0141eb033b119b7b7e9702e3b4bf19ae6e8fc5a2aab1a04337"
   },
-  "physical_metadata_sha256": "0b9c03728cfe94fe468b71c89ad610959d575ecaf39308fd22012b3499973dd9"
+  "physical_metadata_sha256": "5af140771822f2cf8aceaf8a7d75431f7e768f9091a6ef3eb22b8ef3bfc9ba86",
+  "oracle_face": {
+    "oracle_id": "7af69a44-e958-42e5-9d65-75e53a601e96",
+    "index": 0,
+    "sha256": "a83817ba48b6280ca9620f45fadae53cb6b1cb1699afbd8b6c32d2064f6ef512"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanDaringTraveler.java",
+  "java_sha256": "818fd0d7dbb3043794be1ce244a45f917d6ebaa4b2c59c5707be4b79782e372a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/IntPlusDynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e6b7d97aecee63d129c961c1d35245a1daec6d200f4f495ca6ed10081e5b1c43"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_transforms.rs"
 }

@@ -48,6 +48,30 @@ impl Game {
             });
     }
 
+    pub(super) fn linked_exile_colors<W: ability_world::CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        source: ObjectRef,
+        origin: Option<u64>,
+    ) -> u8 {
+        self.state.linked_choices.as_ref().map_or(0, |choices| {
+            choices.links.iter().fold(0, |colors, link| {
+                let exiled = link.exiled;
+                if link.source == source
+                    && link.ability_origin == origin
+                    && world.reference(exiled.card) == exiled
+                    && world.object(exiled.card).zone == Zone::Exile
+                    && world.object(exiled.card).is_card()
+                    && !self.exiled_face_down(exiled)
+                {
+                    colors | (world.colors(exiled.card) & 31)
+                } else {
+                    colors
+                }
+            })
+        })
+    }
+
     fn remember_linked_exile_events(&mut self, item: &SpellView, events: &[ZoneChange]) {
         let Some(source) = item.source else {
             return;

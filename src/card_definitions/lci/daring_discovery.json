@@ -3,10 +3,31 @@
   "catalogue_id": 959,
   "oracle_id": "a9564593-b5a6-4a83-be1e-2af8caf647d7",
   "facts_sha256": "8b51f20182e739328ca85d7e2994a84e71533e36ef016d8339cf5f9eb91008ae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0a4433f95864d040d95d70dc3202be68d056149cdc220cc3630d16297ba6bd34"
   },
-  "physical_metadata_sha256": "0246f1a9fbac9ea142dd0c5d55731200ab132b1daa394f4fa63a92d70f6e9f6c"
+  "physical_metadata_sha256": "0246f1a9fbac9ea142dd0c5d55731200ab132b1daa394f4fa63a92d70f6e9f6c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DaringDiscovery.java",
+  "java_sha256": "e746a749e81afb0d65e497f3026d803e8a73bc9123104741a614fd9392513009",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_discover_explore"
 }

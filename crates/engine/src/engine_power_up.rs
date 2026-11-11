@@ -148,10 +148,15 @@ impl Iterator for ActivationManaCosts {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn entered_this_turn(&self, object: ObjectRef) -> bool {
+        self.entry_controller_this_turn(object).is_some()
+    }
+    pub(super) fn entry_controller_this_turn(&self, object: ObjectRef) -> Option<Player> {
         self.state
             .entered_this_turn
-            .as_ref()
-            .is_some_and(|r| r.contains(&object))
+            .as_ref()?
+            .iter()
+            .find(|entry| entry.object == object)
+            .map(|entry| entry.controller)
     }
     pub(super) fn power_up_use_views(&self, object: ObjectRef) -> Vec<PowerUpUseView> {
         self.state

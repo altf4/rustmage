@@ -1,0 +1,74 @@
+{
+  "name": "The Grim Captain",
+  "catalogue_id": 5605,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "8dc316fd46cec639239aa5cc8537810fb0638e60efbab8c1d6d745bb29f51e42",
+  "oracle_face": {
+    "oracle_id": "a7c96442-706b-4fd8-9b38-052872dafe58",
+    "index": 1,
+    "sha256": "a64d26fc6992bc0c76f0057c9d83558d7c0e422470538a26910c1e34783e0016"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThroneOfTheGrimCaptain.java",
+  "java_sha256": "242b30924a40144f26ac829043386adc67f659be4a01d1802b25e356164dd9bc",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/SubTypeAssignment.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a79864ff2d31c41d0804ab2326779c2a53576ad13635a1543447020c71892e43"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyardBattlefieldOrStack.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7febe25523cd36116f5a25df0470f31ad504249ef7b40c56d1fa21ea762b0e28"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_craft.rs"
+}

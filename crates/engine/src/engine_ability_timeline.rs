@@ -116,17 +116,20 @@ impl Card {
                                 ..
                             }
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
+                            | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
+                            | StaticAbilityFragment::AttachmentLookAtLibraryTop
                             | StaticAbilityFragment::AttachmentActivation { .. }
                             | StaticAbilityFragment::AttachmentMana(..)
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)

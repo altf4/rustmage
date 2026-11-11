@@ -3,10 +3,36 @@
   "catalogue_id": 457,
   "oracle_id": "469956a2-7cd4-4695-b8f4-c841526f160d",
   "facts_sha256": "a8a3157cf4d26653bb59eaaf6f79cea9e0c24dd51ba3352e04519b996f2853dc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "539ff82bda922bf898198f46537545ccaff30bfeaeeb91788f963fe9522c2c32"
   },
-  "physical_metadata_sha256": "84131ad805ce32d118dcf56ff8142f38f83eba08778d63063698dbc89468afab"
+  "physical_metadata_sha256": "84131ad805ce32d118dcf56ff8142f38f83eba08778d63063698dbc89468afab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloodletterOfAclazotz.java",
+  "java_sha256": "088c1de8290e1f6437f75b867dc4400dd53a563709a8d36e3d1aea2dd715539c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

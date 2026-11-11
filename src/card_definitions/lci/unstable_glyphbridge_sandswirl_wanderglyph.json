@@ -3,10 +3,81 @@
   "catalogue_id": 4800,
   "oracle_id": "fcd54631-ea47-49a7-ad5f-9a9a51a815ba",
   "facts_sha256": "a42a2fe7eea45d6f6958b9f04cbef9b9702be2d3dd5d3c6fe0822f2fd858e9a6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fa496d520b9c8eb49e46fc20d3b7f11c349329207b140736583d0df0802aa82"
   },
-  "physical_metadata_sha256": "9f0d92b9303cd1cb17426e0ad56df1d9f1604db22a11e5ce86bd164eb0800d96"
+  "physical_metadata_sha256": "f1976caf9d144417c545db0e6de1259850c9a5f3eb861bb7dee10045ed968d09",
+  "oracle_face": {
+    "oracle_id": "fcd54631-ea47-49a7-ad5f-9a9a51a815ba",
+    "index": 0,
+    "sha256": "4e784d3889dbd0212cc47f9c68f82bdf304838b11de5dae6b5048a38123bef34"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnstableGlyphbridge.java",
+  "java_sha256": "e262735bf62c2d477450528556219c0ec5820f7ed6393ef44c7a0281d8075975",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastOpponentTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "84626f91214806489e0cd62e2dfae9fb0f0e510af41d84ca8bdd20d94ca9d9f3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/RestrictionEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "408c7ac5e439f5c6f0f176525253ccdcf8a3ea563323128e2a167716ebe26a4f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/PlayersAttackedThisTurnWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc7b5503868cafe9939ee04885a1706e0fdda4703c3256e64de78a8cfa568127"
+    }
+  ],
+  "rules_tests": "lci_cards_s_z_transform_mechanics"
 }

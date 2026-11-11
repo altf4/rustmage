@@ -1,4 +1,4 @@
-//! One immutable modal additional cost; declaration and total lock precede payment.
+//! Modal choices and additional mana are locked before payment.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -25,6 +25,22 @@ impl Game {
         Self::selected_tiered_cost(item)
             .map_or(Some(base), |extra| Self::add_tiered_mana(base, extra))
     }
+    pub(super) fn spell_mode_eligible(
+        &self,
+        actor: Player,
+        source: ObjectRef,
+        card: Card,
+        index: usize,
+    ) -> bool {
+        card.cast_mode_requirement(index)
+            .is_none_or(|condition| self.stat_value(condition, source, actor) > 0)
+    }
+    pub(super) fn item_mode_eligible(&self, item: &SpellView, index: usize) -> bool {
+        item.kind != StackKind::Spell
+            || item.source.is_some_and(|source| {
+                self.spell_mode_eligible(item.controller, source.object, source.card, index)
+            })
+    }
     pub(super) fn tiered_initial_fundable(
         &self,
         actor: Player,
@@ -36,11 +52,17 @@ impl Game {
         let Effect::Modal(modes) = card.effect() else {
             unreachable!("complete Tiered modal body")
         };
-        modes.iter().zip(costs).any(|(mode, extra)| {
-            self.cast_targets_available(mode.targets, actor, self.object_ref(id))
-                && Self::add_tiered_mana(base, *extra)
-                    .is_some_and(|cost| self.spell_can_fund(actor, id, cost))
-        })
+        let source = self.object_ref(id);
+        modes
+            .iter()
+            .zip(costs)
+            .enumerate()
+            .any(|(index, (mode, extra))| {
+                self.spell_mode_eligible(actor, source, card, index)
+                    && self.cast_targets_available(mode.targets, actor, source)
+                    && Self::add_tiered_mana(base, *extra)
+                        .is_some_and(|cost| self.spell_can_fund(actor, id, cost))
+            })
     }
     pub(super) fn mode_choice_fundable(&self, a: &Announcement, index: usize) -> bool {
         let mode = &a.item.modes().expect("modal announcement")[index];
@@ -52,6 +74,7 @@ impl Game {
         if a.item
             .bounded_mode_count(index)
             .is_some_and(|count| u32::from(count) > a.item.x.unwrap_or(0))
+            || !self.item_mode_eligible(&a.item, index)
             || !self.teamwork_mode_allowed(&a.item, index)
             || !self.blight_mode_allowed(&a.item, index)
             || !self.modal_choice_unused(&a.item, index)

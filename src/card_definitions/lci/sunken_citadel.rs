@@ -1,16 +1,38 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+const TAP: ActivatedAbility = ActivatedAbility {
+    exhaust: false,
+    guard: ActivationGuard::Always,
+    cycling: false,
+    origin: ActivationOrigin::Battlefield,
+    cost: ActivationCost {
+        tap: true,
+        ..ActivationCost::ZERO
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    targets: TargetPlan::NONE,
+    program: &[Instruction::AddMana(ManaProduction::ChosenColor)],
+    sorcery: false,
+    once_per_turn: false,
+};
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Land,
+    entry: EntryTapped::Always,
+    extras: &CardExtras {
+        entry_choice: Some(EntryChoiceKind::Color),
+        ..CardExtras::EMPTY
+    },
+    activated: &[
+        TAP,
+        ActivatedAbility {
+            program: &[Instruction::AddMana(ManaProduction::Tagged {
+                production: &ManaProduction::ChosenColorAmount(2),
+                quality: &ManaQuality {
+                    restriction: ManaRestriction::LandActivation,
+                    spell_bonus: ManaSpellBonus::None,
+                    retention: ManaRetention::Step,
+                },
+            })],
+            ..TAP
+        },
+    ],
     ..CardRules::EMPTY
 };

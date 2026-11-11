@@ -3,10 +3,26 @@
   "catalogue_id": 3236,
   "oracle_id": "80ca6596-9763-4310-b30b-7153ade9f567",
   "facts_sha256": "1e8fbf047ede1f4f843845e19412b2e06ab64e8bd3b62f168960f4e673718dde",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1af522062411ac0f9540114183cdffcc456ff382e27d7825336eaf6abc5ed9f2"
   },
-  "physical_metadata_sha256": "b0d500c7fd14eb7a23326ea33937b3caebf26add8567f1cd76929de88716da31"
+  "physical_metadata_sha256": "b0d500c7fd14eb7a23326ea33937b3caebf26add8567f1cd76929de88716da31",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PrimordialGnawer.java",
+  "java_sha256": "9817c31574375729c47f4be7e66fea1d62f8aad8d1fefe2b2489cdb587dfae29",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_library.rs"
 }

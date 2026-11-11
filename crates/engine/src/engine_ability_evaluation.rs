@@ -91,6 +91,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::AttachmentTurnChoiceKeywords {
+            own_turn,
+            other_turn,
+        } => {
+            if !world.attached(source, id) {
+                return None;
+            }
+            if provider.controller == world.game().state.active {
+                own_turn
+            } else {
+                other_turn
+            }
+        }
         StaticAbilityFragment::AttachmentMana(production)
         | StaticAbilityFragment::AttachmentSacrificeMana(production) => {
             if !world.attachment_link(source, world.reference(id))
@@ -243,6 +256,20 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::AttachmentLookAtLibraryTop => {
+            if !world.attached(source, id) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![GrantedAbilityKey {
+                    kind: GrantedAbilityKind::LookAtLibraryTop,
+                    ..key(0)
+                }],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::AttachmentTrigger(ability)
         | StaticAbilityFragment::AttachmentActivation { ability, .. } => {
             if !world.attached(source, id) {
@@ -289,6 +316,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     grantor_controller: provider.controller,
                     timestamp: time,
                 }],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { subtype, ability } => {
+            if !own || id == source.card || !world.subtypes(id).has(target.card, subtype) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
                 mana: Vec::new(),
             });
         }
@@ -552,6 +590,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider())
@@ -757,6 +796,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             ..
                         }
                         | StaticAbilityFragment::AttachedTurnKeywords(..)
+                        | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
@@ -765,12 +805,14 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
+                        | StaticAbilityFragment::AttachmentLookAtLibraryTop
                         | StaticAbilityFragment::AttachmentActivation { .. }
                         | StaticAbilityFragment::AttachmentMana(..)
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                        | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)
@@ -870,6 +912,19 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let action = match row.kind {
                 SourceLinkedEffectKind::RemoveAbilities
                 | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                SourceLinkedEffectKind::Treasure => {
+                    LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
+                        recipient: row.recipient.card,
+                        keywords: Keywords::NONE,
+                        abilities: Vec::new(),
+                        mana: vec![GrantedManaAbility {
+                            source: row.source,
+                            production: ManaProduction::any_color(1),
+                            sacrifice: true,
+                            subtype_derived: false,
+                        }],
+                    }])
+                }
                 SourceLinkedEffectKind::BlankLandWhileBlighted => {
                     LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
                         recipient: row.recipient.card,
@@ -911,7 +966,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             };
             effects.push(LayerSixEffect {
                 provider: None,
-                started_earlier: false,
+                started_earlier: row.kind == SourceLinkedEffectKind::Treasure,
                 timestamp: row.timestamp,
                 recipients: vec![row.recipient.card],
                 action,
@@ -1003,6 +1058,27 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     recipients: vec![grant.recipient.card],
                     action: LayerSixAction::GrantSelf(grant.timestamp),
                 });
+                if let Some((_, production)) = grant.kind.controlled_tap_mana() {
+                    let recipients = (0..game.state.objects.len())
+                        .map(|id| id as CardId)
+                        .filter(|&id| grant.tap_mana_grant(world, id).is_some())
+                        .collect();
+                    effects.push(LayerSixEffect {
+                        provider: None,
+                        started_earlier: false,
+                        timestamp: grant.effect_timestamp.expect("self-granted static effect"),
+                        recipients,
+                        action: LayerSixAction::SelfGrantedMana {
+                            acquisition: grant.timestamp,
+                            mana: GrantedManaAbility {
+                                source: grant.recipient,
+                                production,
+                                sacrifice: false,
+                                subtype_derived: false,
+                            },
+                        },
+                    });
+                }
                 if grant.kind == SelfGrantedAbilityKind::OwnTurnFirstStrike
                     && recipient.controller == game.state.active
                 {
@@ -1089,6 +1165,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
 pub enum GrantedStaticRule {
     PlaneswalkerAttackLimit,
     EquippedCreatureDeathMultiplier,
+    LookAtLibraryTop,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

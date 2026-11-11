@@ -3,10 +3,46 @@
   "catalogue_id": 461,
   "oracle_id": "01ab7724-1967-4da6-aebd-3729983d6a0e",
   "facts_sha256": "66a6fad0f9cbe87d9888f8f96821c2f8433a55264ece36339e738d31ec2a0daa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b0c205a66eb77176cc192cd3403a51e25c40c9b5057cbd5d8cf89631ca801055"
   },
-  "physical_metadata_sha256": "7ac6a8aa21defcf3d8c79a75176896eb96c67a1a076d37ce1666007fd0b3e88f"
+  "physical_metadata_sha256": "7ac6a8aa21defcf3d8c79a75176896eb96c67a1a076d37ce1666007fd0b3e88f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloodthornFlail.java",
+  "java_sha256": "d97fec6d845046cb332ecf6bb57d2bfb2ac3224a435dc27735d5fd5eea2e65b7",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_caves_equipment"
 }

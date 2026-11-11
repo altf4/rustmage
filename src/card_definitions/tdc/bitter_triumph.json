@@ -38,5 +38,6 @@
       "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
       "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
     }
-  ]
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_ab"
 }

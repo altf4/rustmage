@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-golem-4-4",
+  "catalogue_id": 5574,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "b2ce3d7f3de79f7aa0fd7514d690b31ea836557bed604c5c6f480863c3b28a74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/GolemWhiteBlueToken.java",
+  "java_sha256": "f35a72b021d15177ecfd8849ff3d9ad280eb11346e6cefbe5b05df236406774f",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

@@ -3,10 +3,31 @@
   "catalogue_id": 4081,
   "oracle_id": "e468f1fe-d99c-4034-a94f-91c41a129092",
   "facts_sha256": "08aafdfd62d918fc70544e10f7fc9689b3efdaca79a72273f29d0e6afa526d1a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2970ccfe5b5c64d229f038b27b394051f5ebdda8da0fa7a201ba97cc392935ae"
   },
-  "physical_metadata_sha256": "ff51e59cc45fd596e86147768024427864072472c96acc56c6e5c86a8f1667af"
+  "physical_metadata_sha256": "ff51e59cc45fd596e86147768024427864072472c96acc56c6e5c86a8f1667af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SquirmingEmergence.java",
+  "java_sha256": "57a6ee0e31febb5c7997b624a2449f03bc667b265e45bacfebbc57a352921691",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "010a37420f4bc3db319b94957debdff39888a47a1651b4ae965c36a231ef0961"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_descend.rs"
 }

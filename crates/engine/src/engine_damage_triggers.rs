@@ -51,6 +51,25 @@ impl Game {
         }
     }
 
+    /// Only committed positive damage reaches this point. Use the event's
+    /// source facts so leaving play or changing control cannot move the credit.
+    pub(super) fn record_noncombat_damage_dealt(&mut self, event: &DamageEvent) {
+        if event.combat || event.source.facts.colors() == 0 {
+            return;
+        }
+        let amount = u128::try_from(event.amount).expect("positive damage");
+        let totals = &mut self.state.players[event.source.controller.index()]
+            .noncombat_damage_dealt_by_color_this_turn;
+        for color in crate::cards::ChoiceColor::ALL {
+            if event.source.facts.has_color(color) {
+                let total = &mut totals[color.index()];
+                *total = total
+                    .checked_add(amount)
+                    .capacity("noncombat damage history exhausted");
+            }
+        }
+    }
+
     fn damage_qualified(
         &self,
         source: &ObjectView,
@@ -282,12 +301,39 @@ impl Game {
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
+                let condition = ability.condition.event();
+                if condition == TriggerCondition::CombatDamageToController {
+                    let player = source.controller;
+                    let amount = hits
+                        .iter()
+                        .filter_map(|(&(_, recipient, combat), &amount)| {
+                            (combat && recipient == player).then_some(amount)
+                        })
+                        .try_fold(0u128, u128::checked_add)
+                        .capacity("damage amount exhausted");
+                    if amount != 0 {
+                        self.queue_damage_trigger(
+                            &source,
+                            index,
+                            grant,
+                            DamageTriggerView {
+                                dealer: None,
+                                player,
+                                amount,
+                                combat: true,
+                            },
+                            Some(self.state.active),
+                            Vec::new(),
+                        );
+                    }
+                    continue;
+                }
                 let TriggerCondition::PlayerDamaged {
                     subject,
                     combat_only,
                     opponent_only,
                     one_or_more,
-                } = ability.condition.event()
+                } = condition
                 else {
                     continue;
                 };
@@ -352,6 +398,47 @@ impl Game {
                         None,
                         objects,
                     );
+                }
+            }
+        }
+    }
+
+    pub(super) fn excess_noncombat_damage_triggers(&mut self, recipients: &[ObjectRef]) {
+        if recipients.is_empty() {
+            return;
+        }
+        // As with other damage triggers, classify the exact recipients and
+        // observers after the event's results and before state-based actions.
+        let mut damaged_controllers = [false; 2];
+        for &recipient in recipients {
+            if self.on_battlefield(recipient.card)
+                && self.object_ref(recipient.card) == recipient
+                && self.is_creature(recipient.card)
+            {
+                let controller = self.state.objects[recipient.card as usize].controller;
+                damaged_controllers[controller.index()] = true;
+            }
+        }
+        if damaged_controllers == [false; 2] {
+            return;
+        }
+        for (source, grant) in self.indexed_trigger_sources(&self.state.damage_sources) {
+            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                let TriggerCondition::ExcessNoncombatDamageToCreatures { relation } =
+                    ability.condition.event()
+                else {
+                    continue;
+                };
+                let matches = match relation {
+                    CastRelation::You => damaged_controllers[source.controller.index()],
+                    CastRelation::Opponent => {
+                        damaged_controllers[source.controller.other().index()]
+                    }
+                    CastRelation::Any => true,
+                };
+                if matches {
+                    self.queue_trigger_from(&source, index, grant.map(Box::new));
                 }
             }
         }
@@ -518,14 +605,14 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant.map(Box::new)) {
             return;
         }
-        let program = self
+        let ability = &self
             .state
             .pending_triggers
             .last()
             .unwrap()
             .trigger_definition()
-            .triggers()[index]
-            .program;
+            .triggers()[index];
+        let program = ability.program;
         let copy_dealer = program.iter().any(|instruction| {
             matches!(
                 instruction,
@@ -547,15 +634,17 @@ impl Game {
             })
             .map(|dealer| (dealer, self.copiable_recipe(dealer)));
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        let retain_dealer_controller = program.iter().any(|instruction| {
-            matches!(
-                instruction,
-                Instruction::ExileLibraryTopFaceDownPlay {
-                    beneficiary: PlayerSet::EventPlayer,
-                    ..
-                }
-            )
-        });
+        let retain_event_player = ability.condition.event()
+            == TriggerCondition::CombatDamageToController
+            || program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::ExileLibraryTopFaceDownPlay {
+                        beneficiary: PlayerSet::EventPlayer,
+                        ..
+                    }
+                )
+            });
         packet.damage_event = Some(event);
         packet.refer_objects(semantic_dealers);
         if let Some((dealer, recipe)) = recipe {
@@ -568,7 +657,7 @@ impl Game {
                 subtype_lki: None,
             });
         }
-        if retain_dealer_controller {
+        if retain_event_player {
             packet.event_player = dealer_controller;
         }
     }

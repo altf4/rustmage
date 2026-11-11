@@ -135,6 +135,7 @@ impl Game {
             delayed.cast_event = None;
             delayed.gift = None;
             delayed.mana_copy_sources = None;
+            delayed.mana_provenance = None;
             let data = self.state.paradigm.get_or_insert_with(Default::default);
             installed = Some(data.delayed.len());
             data.delayed.push(delayed);

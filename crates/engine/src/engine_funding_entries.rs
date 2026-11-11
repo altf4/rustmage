@@ -166,7 +166,8 @@ pub(super) struct EntryProjection {
     pub order: Vec<ObjectRef>,
     /// Every committed entry, independent of whether it provides a timestamped
     /// continuous effect. Power-up and public entry facts use this exact history.
-    pub entered: Vec<ObjectRef>,
+    pub entered: Vec<EntryTurnFact>,
+    pub craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     pub lands_entered: [u64; 2],
     pub battle_protectors: Vec<(ObjectRef, Player)>,
     pub consumed: Vec<ObjectRef>,
@@ -214,6 +215,7 @@ impl EntryProjection {
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
             entered: Vec::new(),
+            craft_materials: Vec::new(),
             lands_entered: std::array::from_fn(|p| w.game.state.players[p].lands_entered_this_turn),
             battle_protectors: Vec::new(),
             consumed: Vec::new(),
@@ -1137,6 +1139,7 @@ impl FundingState<'_> {
                 return;
             }
         }
+        let amount = life_loss::replacement_amount(self, player, amount);
         self.life_lost[player.index()] |= amount > 0;
         if player == self.actor {
             self.life -= amount
@@ -1606,6 +1609,7 @@ impl FundingState<'_> {
             .is_some_and(|copy| copy.recipe.is_some())
             || m.artifact_return
             || m.enchantment_return
+            || m.animation.is_some()
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
             || m.return_modification
@@ -1752,7 +1756,14 @@ impl FundingState<'_> {
             }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
-                next.entry_projection.as_mut().unwrap().entered.push(source);
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .entered
+                    .push(EntryTurnFact {
+                        object: source,
+                        controller: o.controller,
+                    });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection
                         .as_mut()
@@ -1761,12 +1772,23 @@ impl FundingState<'_> {
                         .push((source, protector));
                 }
                 let p = next.entry_projection.as_mut().unwrap();
+                if let Some(materials) = m.craft_materials.as_deref() {
+                    p.craft_materials.push((source, materials.clone()));
+                }
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
                 }
                 if o.card.is_attachment_source() && !p.attachment_sources.contains(&row.id) {
                     p.attachment_sources.push(row.id)
                 }
+            }
+            if m.before.zone == Zone::Stack && !m.cast_added_creature_types.is_empty() {
+                subtypes::continue_cast_type_effects(
+                    &mut next.entry_projection.as_mut().unwrap().roles,
+                    m.before.reference,
+                    source,
+                    m.destination,
+                );
             }
             next.project_copy_departure(m.before.reference, source);
             if m.destination == Zone::Battlefield
@@ -1823,6 +1845,19 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if let Some(animation) = m.animation {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::animation_view(
+                        source,
+                        timestamp,
+                        *animation,
+                        characteristic_layers::AnimationTypeMode::AddCreature,
+                        None,
+                        self.game.state.turn,
+                    ));
+            }
             if m.artifact_return {
                 let timestamp = p.roles.next_timestamp();
                 p.roles
@@ -2109,10 +2144,18 @@ impl FundingState<'_> {
             }
             let source = next.reference(m.before.id);
             let kinds = CharacteristicWorld::kinds(&next, source.card);
+            let controller = next.object(source.card).controller;
+            let projection = next.entry_projection.as_mut().unwrap();
+            // The final control layer may differ from the movement's initial controller.
+            let entry = projection
+                .entered
+                .iter_mut()
+                .rev()
+                .find(|entry| entry.object == source)
+                .expect("projected battlefield entry");
+            entry.controller = controller;
             if kinds & 2 != 0 {
-                let controller = next.object(source.card).controller;
-                let count =
-                    &mut next.entry_projection.as_mut().unwrap().lands_entered[controller.index()];
+                let count = &mut projection.lands_entered[controller.index()];
                 *count = count
                     .checked_add(1)
                     .capacity("projected land entry history exhausted");
@@ -2418,7 +2461,7 @@ impl Game {
                         *object,
                         || entry_copies::blueprint_in_world(&world, object.card),
                     );
-                    entry_copies::apply_choice(movement, choice);
+                    entry_copies::apply_choice(movement, *object, choice);
                 } else {
                     batch.moves[index]
                         .copy_preparation
@@ -2615,7 +2658,7 @@ impl<'g> FundingState<'g> {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
-        let source_counter_cost = step.ability.and_then(|index| {
+        let definition = step.ability.map(|index| {
             let definition = step.frozen.as_deref().map_or_else(
                 || {
                     step.self_grant.map_or_else(
@@ -2628,8 +2671,18 @@ impl<'g> FundingState<'g> {
                 },
                 |f| f.0,
             );
-            definition.activation_put_counter(index)
+            (definition, index)
         });
+        let source_counter_cost =
+            definition.and_then(|(definition, index)| definition.activation_put_counter(index));
+        let time_removal = definition
+            .filter(|(definition, index)| definition.activation(*index).mana_removes_time_counter())
+            .map(|_| {
+                step.output.as_ref().map_or_else(
+                    || self.reference(self.resources[step.resource].id),
+                    |output| output.instance.source,
+                )
+            });
         if source_counter_cost.is_none()
             && step.external.is_none()
             && self.cast_costs.is_none()
@@ -2648,20 +2701,21 @@ impl<'g> FundingState<'g> {
                 }
             }
             && self.game.state.death_exile_replacements.is_none()
+            && !self.game.state.players[self.actor.other().index()].exile_opposing_creature_deaths
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();
             let (bonus, tap_source) = next.apply(step, false);
             let receipt = bonus.with_event_effects(&next, self.actor, tap_source);
-            if let Some(production) = next.singleton_output(step, receipt)
+            if let Some(production) = next.singleton_output(step, &receipt)
                 && let Some(replaced) = receipt.replace_production(production)
                 && let Some(bonus) = receipt.singleton(production)
-                && next.completed_mana_fits(replaced, bonus)
+                && next.completed_mana_fits(replaced, bonus.total)
             {
-                next.add_funding_output(step, bonus, replaced);
+                next.add_funding_output(step, &bonus, replaced, time_removal);
                 return emit(&next);
             }
-            return next.visit_output(step, receipt, goal, emit);
+            return next.visit_output(step, &receipt, time_removal, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2732,7 +2786,7 @@ impl<'g> FundingState<'g> {
                 external,
                 &mut |world| {
                     let bonus = bonus.with_event_effects(world, self.actor, tap_source);
-                    world.visit_output(step, bonus, goal, emit)
+                    world.visit_output(step, &bonus, time_removal, goal, emit)
                 },
             )
         })
@@ -3024,7 +3078,12 @@ impl<'g> FundingState<'g> {
                     let step = FundingMove {
                         resource,
                         ability: Some(ability),
-                        grantor: None,
+                        grantor: a.item.attachment_trigger.as_ref().and_then(|grant| {
+                            grant
+                                .granting_card
+                                .controlled_subtype_mana_activation(Some(ability))
+                                .then_some(grant.grantor)
+                        }),
                         borrowed: None,
                         self_grant: a.item.self_granted_activation.as_ref().map(|g| {
                             (
@@ -3224,12 +3283,12 @@ impl FundingState<'_> {
             .into_iter()
             .filter(|&id| entry_copies::candidate(self, movement, &moves, id))
             .map(|id| {
-                entry_copies::chosen_blueprint(
-                    self,
-                    movement.before.card,
-                    self.reference(id),
-                    || entry_copies::blueprint_in_world(self, id),
-                )
+                let object = self.reference(id);
+                let choice =
+                    entry_copies::chosen_blueprint(self, movement.before.card, object, || {
+                        entry_copies::blueprint_in_world(self, id)
+                    });
+                (object, choice)
             })
             .collect::<Vec<_>>();
         if spec.optional || candidates.is_empty() {
@@ -3242,7 +3301,7 @@ impl FundingState<'_> {
                 return true;
             }
         }
-        for choice in candidates {
+        for (object, choice) in candidates {
             // The deferred exile does not resolve inside funding. Repeated choices
             // with an identical blueprint can share this existential search branch.
             let key = (index, choice.0);
@@ -3250,7 +3309,7 @@ impl FundingState<'_> {
                 continue;
             }
             let mut branch = moves.clone();
-            entry_copies::apply_choice(&mut branch[index], choice);
+            entry_copies::apply_choice(&mut branch[index], object, choice);
             seen.push(key);
             if self.visit_entry_copy_choices(branch, seen, emit) {
                 return true;

@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d34e838b77874b03c568a9bfde3fe9cf937ddc71e4ad18194bfddb86c8aa04d"
   },
-  "physical_metadata_sha256": "941e9ea203843ef76f8c70bc8b57a65131821dbeef7ddf681be8d5fdf7ba248b"
+  "physical_metadata_sha256": "941e9ea203843ef76f8c70bc8b57a65131821dbeef7ddf681be8d5fdf7ba248b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DisruptorWanderglyph.java",
+  "java_sha256": "a36fd0312d49f5d27802881568ee2eb852dbe658b08606143b6100ead520f45c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInOpponentsGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "130879427031c491824341bd85b54a7a35980a79058fb7cc6e3910be640ab724"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs"
 }

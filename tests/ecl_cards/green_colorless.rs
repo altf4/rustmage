@@ -2813,30 +2813,45 @@ fn ecl_green_growth_multiple_providers_timestamps_and_exact_land_at_production()
         // receipt retains land facts, but Aura triggers wait for production.
         let old = g.object_ref(land);
         let tap = g.mana_tap_bonuses(p, land);
+        let green = [0, 0, 0, 0, 1, 0];
         assert_eq!(
-            tap.with_event_effects(&g, p, Some(old)).fixed,
+            tap.with_event_effects(&g, p, Some(old))
+                .singleton(green)
+                .unwrap()
+                .total,
             [0, 1, 0, 0, 0, 0]
         );
         let snapshot = g.snapshot();
         g.move_object(land, Zone::Graveyard);
         let departed_bonus = tap.with_event_effects(&g, p, Some(old));
-        assert_eq!(departed_bonus.fixed, [0; 6]);
+        assert_eq!(departed_bonus.singleton(green).unwrap().total, [0; 6]);
         g.finish_mana_tap_bonus(p, departed_bonus, [0, 0, 0, 0, 1, 0]);
         assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 1, 1, 0]);
         g.move_object(land, Zone::Battlefield);
         let newer = g.object_ref(land);
         assert_ne!(newer, old);
-        assert_eq!(tap.with_event_effects(&g, p, Some(old)).fixed, [0; 6]);
+        assert_eq!(
+            tap.with_event_effects(&g, p, Some(old))
+                .singleton(green)
+                .unwrap()
+                .total,
+            [0; 6]
+        );
         assert_eq!(
             g.mana_tap_bonuses(p, land)
                 .with_event_effects(&g, p, Some(newer))
-                .fixed,
+                .singleton(green)
+                .unwrap()
+                .total,
             [0; 6]
         );
         assert_eq!(g.object_view(first).attached_to, Some(old));
         g.restore(&snapshot).unwrap();
         assert_eq!(
-            tap.with_event_effects(&g, p, Some(old)).fixed,
+            tap.with_event_effects(&g, p, Some(old))
+                .singleton(green)
+                .unwrap()
+                .total,
             [0, 1, 0, 0, 0, 0]
         );
     }

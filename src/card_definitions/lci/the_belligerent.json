@@ -3,10 +3,46 @@
   "catalogue_id": 4422,
   "oracle_id": "9a0c9023-9431-4f98-b167-ab4c7215319c",
   "facts_sha256": "c9b60aef34035b098e682cbad8b7b0763495cdd17d38661b5c3e036d5cef9e16",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b567fb41786a8e3d68ff3313e446deb2265af59e97fbdb7ccc50e457e9b4fb4f"
   },
-  "physical_metadata_sha256": "48c3feb8412877763470e37f1c8878f2eda808b0fbd376c2c349a8e2ffd4ea5e"
+  "physical_metadata_sha256": "48c3feb8412877763470e37f1c8878f2eda808b0fbd376c2c349a8e2ffd4ea5e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheBelligerent.java",
+  "java_sha256": "600ba0cfcb31224f36edb89e122ff60d3348fd4589f25dd00c0a07acc50e986e",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_live.rs"
 }

@@ -15,6 +15,8 @@ pub enum SelfGrantedAbilityKind {
     AttacksEachCombat,
     /// This permanent has first strike on its current controller's turn.
     OwnTurnFirstStrike,
+    /// A static ability granting controlled permanents one of these tap mana colors.
+    ControlledPermanentTapMana { kinds: u16, colors: u8 },
     /// A real immutable activated template, independently acquired per grant.
     Activated { ability: u16 },
     /// Equip and the static bonus granted by the same Equipment form.
@@ -26,6 +28,19 @@ pub enum SelfGrantedAbilityKind {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SelfGrantedAbilityKind {
+    pub(super) fn controlled_tap_mana(self) -> Option<(u16, ManaProduction)> {
+        match self {
+            Self::ControlledPermanentTapMana { kinds, colors } => Some((
+                kinds,
+                ManaProduction::Choice {
+                    mask: colors,
+                    amount: 1,
+                },
+            )),
+            _ => None,
+        }
+    }
+
     pub(super) fn activation(self) -> Option<u16> {
         match self {
             Self::Activated { ability } => Some(ability),
@@ -59,6 +74,33 @@ pub struct SelfGrantedAbilityView {
     pub expires_turn: Option<u32>,
     pub available: bool,
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Row {
+    pub(super) fn tap_mana_grant<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        id: CardId,
+    ) -> Option<ability_order::GrantedManaAbility> {
+        let (kinds, production) = self.kind.controlled_tap_mana()?;
+        let source = world.object(self.recipient.card);
+        let recipient = world.object(id);
+        (source.zone == Zone::Battlefield
+            && world.reference(self.recipient.card) == self.recipient
+            && self
+                .expires_turn
+                .is_none_or(|turn| turn == world.game().state.turn)
+            && recipient.zone == Zone::Battlefield
+            && recipient.controller == source.controller
+            && world.kinds(id) & kinds != 0)
+            .then_some(ability_order::GrantedManaAbility {
+                source: self.recipient,
+                production,
+                sacrifice: false,
+                subtype_derived: false,
+            })
+    }
+}
+
 // Preserve the optional cold-state allocation used by State.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[allow(clippy::box_collection)]

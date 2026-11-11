@@ -3,10 +3,41 @@
   "catalogue_id": 1022,
   "oracle_id": "0c0d6c7e-a7cc-49e0-bf84-3fc33dd10b90",
   "facts_sha256": "a2fe1c8b65d4a608301e24acf4071b82cddead439016a3e189f45c7b6876a39e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "771cc2a8dd562be2ad73d70168126a45bf8a265489fbc12f512da8b47f1f8c59"
   },
-  "physical_metadata_sha256": "d5ef7da08d437505cf1d547507bbdae86daa34e010b334d27576fa478727980c"
+  "physical_metadata_sha256": "d5ef7da08d437505cf1d547507bbdae86daa34e010b334d27576fa478727980c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeepfathomEcho.java",
+  "java_sha256": "cdd18872d9469047ed380240749adac979302c2c0ac81e618d06da6ba0008a4d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_discover_explore"
 }

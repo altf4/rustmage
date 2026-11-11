@@ -161,7 +161,7 @@ impl Game {
         };
         let source = item.source.expect("activated ability has an object source");
         let mut definition = *source.card.activation(ability);
-        if route == ActivationCostRoute::FirstEquipZero {
+        if route != ActivationCostRoute::Printed {
             assert!(definition.is_equip());
             definition.cost = ActivationCost::ZERO;
         }
@@ -298,6 +298,9 @@ impl Game {
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 self.counter_count(source, kind) >= minimum
             }
+            ActivationGuard::SourceCounterExactly { kind, amount } => {
+                self.counter_count(source, kind) == amount
+            }
             ActivationGuard::ClassLevelExactly(level) => {
                 self.state.objects[source as usize].class_level == level
             }
@@ -321,6 +324,9 @@ impl Game {
                 .contains(&self.object_ref(source)),
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
+            }
+            ActivationGuard::StatAtLeast { value, minimum } => {
+                self.stat_value(value, self.object_ref(source), actor) >= i128::from(minimum)
             }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 graveyard_cards_at_least(self, actor, kind, minimum)
@@ -580,6 +586,28 @@ impl Game {
         }));
         Some(item)
     }
+    pub(super) fn controlled_subtype_mana_packet(
+        &self,
+        actor: Player,
+        source: ObjectRef,
+        grantor: ObjectRef,
+        ability: u16,
+    ) -> SpellView {
+        let giver = self.state.objects[grantor.card as usize].card;
+        let origin = self.copied_grant_origin(grantor);
+        let mut item = self.activation_packet(actor, source.card, ability);
+        item.set_source_definition(giver);
+        item.source_ability_origin = origin;
+        item.attachment_trigger = Some(Box::new(AttachmentTriggerView {
+            grantor,
+            granting_card: giver,
+            recipient: source,
+            defender: None,
+            granted: true,
+            origin,
+        }));
+        item
+    }
     pub(super) fn visit_granted_mana(
         &self,
         card: CardId,
@@ -628,6 +656,33 @@ impl Game {
                                 production,
                             })
                     }
+                },
+            ) {
+                return true;
+            }
+        }
+        for (grant, ability) in
+            ability_world::CharacteristicWorld::controlled_subtype_mana_grants(self, card)
+        {
+            let rules = grant.granting_card.activation(ability);
+            if self.state.players[actor.index()].life < i128::from(rules.cost.life) {
+                continue;
+            }
+            let source = self.object_ref(card);
+            let packet = self.controlled_subtype_mana_packet(actor, source, grant.source, ability);
+            if self.visit_activation_mana_outputs(
+                rules.mana_production().expect("mana template"),
+                card,
+                grant.granting_card,
+                ability,
+                |production| {
+                    self.mana_packet_fundable(&packet, Counters::default(), production)
+                        && emit(Action::AnnounceGrantedManaTemplate {
+                            source,
+                            grantor: grant.source,
+                            ability,
+                            production,
+                        })
                 },
             ) {
                 return true;
@@ -764,7 +819,9 @@ impl Game {
                     }
                     // A direct action cannot declare which optional whole-cost
                     // route it pays; expose the explicit announcement instead.
-                    if self.first_equip_zero_available(actor, ability) {
+                    if ability.equip_discard_alternative()
+                        || self.first_equip_zero_available(actor, ability)
+                    {
                         return false;
                     }
                     if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability)
@@ -963,6 +1020,7 @@ impl Game {
                 .map(Box::new),
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
             mana_copy_sources: None,
+            mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
             delayed_sacrifice: None,
@@ -1058,7 +1116,7 @@ impl Game {
         };
         let source = item.source.expect("activated ability has an object source");
         let mut definition = *source.card.activation(ability);
-        if route == ActivationCostRoute::FirstEquipZero {
+        if route != ActivationCostRoute::Printed {
             assert!(definition.is_equip());
             assert_eq!(counter_payment, Counters::default());
             definition.cost = ActivationCost::ZERO;
@@ -1078,7 +1136,7 @@ impl Game {
     ) -> Option<ActivationPaymentPhase> {
         self.bind_activation_source_quantities(item, definition.program);
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
-            self.pay_attachment_exile_cost(item);
+            self.pay_attachment_departure_cost(item);
             return None;
         }
         self.pay_activation_loyalty(item, definition);
@@ -1200,6 +1258,7 @@ impl Game {
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
+                        | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability: index, .. }
                         if *index == ability)
                     })
                 })
@@ -1320,11 +1379,14 @@ impl Game {
         } else if cost.sacrifice {
             self.sacrifice_batch(&[(item.controller, source.id)]);
         }
-        self.pay_attachment_exile_cost(item);
+        self.pay_attachment_departure_cost(item);
     }
 
-    fn pay_attachment_exile_cost(&mut self, item: &SpellView) {
-        if let Some(grantor) = item.attached_activation_exile_cost() {
+    fn pay_attachment_departure_cost(&mut self, item: &SpellView) {
+        if let Some(grantor) = item.attached_activation_sacrifice_cost() {
+            assert_eq!(self.object_ref(grantor.card), grantor);
+            assert!(self.sacrifice_cost_batch_atomic(&[(item.controller, grantor.card)]));
+        } else if let Some(grantor) = item.attached_activation_exile_cost() {
             assert_eq!(self.object_ref(grantor.card), grantor);
             assert!(self.on_battlefield(grantor.card));
             self.move_object(grantor.card, Zone::Exile);

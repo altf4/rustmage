@@ -102,12 +102,18 @@ impl Game {
                     controller: item.controller,
                     payment: cast.payment,
                     treasure_mana_spent: cast.treasure_mana_spent,
+                    cave_mana_spent: item.cave_mana_spent(),
                     web_slinging_return_mana_value: cast.web_slinging_return_mana_value,
                 })
         });
         let owner = event
             .as_ref()
             .map(|e| self.state.objects[e.object.card as usize].owner);
+        let spell_subtypes = stack
+            .and_then(|i| self.state.stack[i].source)
+            .map_or_else(GrantedSubtypes::default, |source| {
+                source.facts.granted_subtypes
+            });
         let origin = stack
             .and_then(|index| self.state.stack[index].cast)
             .map(|cast| (cast.origin, owner == Some(caster)));
@@ -154,6 +160,7 @@ impl Game {
                     caster,
                     &source,
                     stack.map_or(&[][..], |i| self.state.stack[i].targets.as_slice()),
+                    spell_subtypes,
                 )
             {
                 continue;
@@ -179,6 +186,7 @@ impl Game {
                         caster,
                         &source,
                         &self.state.stack[i].targets,
+                        spell_subtypes,
                     )
                 });
                 let item = self.state.pending_triggers.last_mut().unwrap();

@@ -35,7 +35,11 @@ impl Game {
         }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
-                && matches!(a.condition.event(), TriggerCondition::PlayerDamaged { .. })
+                && matches!(
+                    a.condition.event(),
+                    TriggerCondition::PlayerDamaged { .. }
+                        | TriggerCondition::CombatDamageToController
+                )
         }) {
             self.state.damage_sources.push(id);
         }
@@ -68,8 +72,11 @@ impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         let object = self.object_ref(id);
         let entries = self.state.entered_this_turn.get_or_insert_default();
-        if !entries.contains(&object) {
-            entries.push(object);
+        if !entries.iter().any(|entry| entry.object == object) {
+            entries.push(EntryTurnFact {
+                object,
+                controller: self.state.objects[id as usize].controller,
+            });
         }
         self.register_battlefield_providers(id);
     }
@@ -108,6 +115,7 @@ impl Game {
                 a.condition.event(),
                 TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
+                    | TriggerCondition::ControlledPermanentsOfSubtypeTapped { .. }
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
                     | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
@@ -143,6 +151,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                    | TriggerCondition::ControlledSubtypeAttacks { .. }
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
@@ -173,7 +182,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::CardDrawn { .. } | TriggerCondition::LibrarySearched { .. }
+                TriggerCondition::CardDrawn { .. }
+                    | TriggerCondition::LibrarySearched { .. }
+                    | TriggerCondition::DiscoveredYou
             )
         }) {
             self.state.draw_sources.push(id);
@@ -181,7 +192,7 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::Discarded { .. }
+                TriggerCondition::Discarded { .. } | TriggerCondition::DiscardedKinds { .. }
             )
         }) {
             self.state.discard_sources.push(id);
@@ -190,7 +201,9 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::CombatDamageToController
                     | TriggerCondition::CreatureDamaged { .. }
+                    | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
@@ -234,6 +247,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
+                    | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
@@ -259,7 +273,9 @@ impl Game {
                 ability.condition.origin() != Some(TargetZone::Graveyard)
                     && matches!(
                         ability.condition.event(),
-                        TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
+                        TriggerCondition::AtStep { .. }
+                            | TriggerCondition::Chapter { .. }
+                            | TriggerCondition::OwnUntapStepUntaps
                     )
             })
         {
@@ -274,6 +290,7 @@ impl Game {
                     && matches!(
                         ability.condition.event(),
                         TriggerCondition::SpellCast { .. }
+                            | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                     )
             })
@@ -292,6 +309,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                            | crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast
                             | crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::StartYourEngines
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
@@ -304,6 +322,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                             | crate::cards::StaticAbilityFragment::DoubleDrawExceptFirst
+                            | crate::cards::StaticAbilityFragment::ScryBeforeControlledCreatureExplores
                             | crate::cards::StaticAbilityFragment::ConditionalDoubleDraw(_)
                             | crate::cards::StaticAbilityFragment::AdditionalDrawWithAtMostOneCard
                             | crate::cards::StaticAbilityFragment::AdditionalTriggers { .. }
@@ -319,6 +338,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                             | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
@@ -356,10 +376,12 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
+                            | crate::cards::StaticAbilityFragment::UntapDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
                             | crate::cards::StaticAbilityFragment::LifeGainDouble
+                            | crate::cards::StaticAbilityFragment::OpponentLifeLossDoubleOnOwnTurn
                             | crate::cards::StaticAbilityFragment::OpponentMillAdditional(_)
                             | crate::cards::StaticAbilityFragment::FirstCoinFlipsHeads
                             | crate::cards::StaticAbilityFragment::NoMaximumHandSize
@@ -458,7 +480,7 @@ impl Game {
                 .card
                 .cast_timing_grants()
                 .is_empty()
-            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_))))
+            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_) | crate::cards::StaticAbilityFragment::LinkedExilePaidCast { .. })))
             || zone_replacements::card_provides_prevention(self.state.objects[id as usize].card)
             || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))

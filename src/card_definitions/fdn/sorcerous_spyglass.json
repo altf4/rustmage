@@ -14,9 +14,9 @@
   "java_sha256": "b1e5e4da12b6776319cb43756fb1aeaad635409818ab04354ae3c9a5d20aa53b",
   "xmage_dependencies": [
     {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
-      "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561"
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -27,7 +27,18 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
       "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseACardNameEffect.java",
+      "sha256": "33f32c237aec9329b59275757fadc7b1a4b63f898c44999e9169de81e30a3561"
     }
   ],
-  "remaining_obligations": []
+  "remaining_obligations": [],
+  "rules_tests": "lci_cards_s_z_inherited_seismic_swamp"
 }

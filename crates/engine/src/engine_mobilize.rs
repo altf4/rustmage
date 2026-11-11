@@ -384,6 +384,7 @@ impl Game {
                 target_allocations: None,
                 announced_division: None,
                 mana_copy_sources: None,
+                mana_provenance: None,
                 is_copy: false,
                 ninjutsu_defender: None,
                 delayed_sacrifice: Some(Box::new(b.view)),

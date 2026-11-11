@@ -2577,6 +2577,7 @@ fn both_devotees_convert_one_generic_to_each_printed_color_once_per_turn() {
             reject(&mut g, production(source, color, expected));
             g.begin_turn();
             reset_main(&mut g, p);
+            g.clear_step_mana(false, false);
             g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 1];
             act(&mut g, production(source, color, [0, 0, 0, 0, 0, 1]));
             assert_eq!(g.state.players[p.index()].mana, expected);

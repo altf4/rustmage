@@ -144,6 +144,7 @@ impl Game {
             trigger.is_copy = false;
             trigger.cast_event = None;
             trigger.mana_copy_sources = None;
+            trigger.mana_provenance = None;
             trigger.copy_event = Some(Box::new(CopyEvent {
                 spell: a.item.clone(),
                 amount: 1,

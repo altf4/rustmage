@@ -3,10 +3,61 @@
   "catalogue_id": 4914,
   "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
   "facts_sha256": "8680b965c292e0fdc694c63dbd1d09fbefe3c2c36c1ec3c8662829b1a9255f50",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fbf56f99e68d1570543265d185c9059f799b6b8718ef65690ae13d36adf008c"
   },
-  "physical_metadata_sha256": "2da99cf04fa4f13c8ce7ad285bcd13abe31e5535f90781f0bdaefd513922941e"
+  "physical_metadata_sha256": "61a5cbf8f06996a28c3ac96c6104c6d0e96840b8a19ea743454233e4d157647b",
+  "oracle_face": {
+    "oracle_id": "7cad43df-31c9-47b5-bc05-4a0f6544b396",
+    "index": 0,
+    "sha256": "83c21fb6eaaf3fc6f87a73d3ffab7ebbf15d273c3fcfefcdddd4128f63db40af"
+  },
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VisageOfDread.java",
+  "java_sha256": "111d5d8b6de7d99d0a9466c14b0612d7d93694a99dfcbce14371b6fb25f5fe70",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardCardYouChooseTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ee3872ce6e44f3605b5b71fa77669461c11e8312bd1fbb0a486c5730c463de3d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_reassigned_faces.rs"
 }

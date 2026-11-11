@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "24bc49a8d066c8274eb438c6f506bb5c4cd8bff6920f9336d2f8653d3e63ed2b"
   },
-  "physical_metadata_sha256": "915aa53951700b67dfc3e65341dbff8a0ec1c6f3a5179205a59aea09679da9eb"
+  "physical_metadata_sha256": "915aa53951700b67dfc3e65341dbff8a0ec1c6f3a5179205a59aea09679da9eb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MalametWarScribe.java",
+  "java_sha256": "5bbabe8a62685182319c06528b071d625985dcd265dc45f5bcebb01ae588e834",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }

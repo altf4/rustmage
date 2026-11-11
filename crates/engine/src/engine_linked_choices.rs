@@ -80,8 +80,11 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    /// Materials of a craft activation tied to its actual returned incarnation.
+    pub craft_links: Vec<LinkedExileView>,
     pub free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
+    pub graveyard_paid_permissions: Vec<PaidGraveyardCastPermission>,
     pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
     pub linked_exile_selected: Option<ObjectRef>,
     pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
@@ -116,9 +119,11 @@ impl ChoiceState {
             + self.library_cast.as_ref().map_or(0, |h| h.bytes())
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
-            + self.links.len() * std::mem::size_of::<LinkedExileView>()
+            + (self.links.len() + self.craft_links.len()) * std::mem::size_of::<LinkedExileView>()
             + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
+            + self.graveyard_paid_permissions.len()
+                * std::mem::size_of::<PaidGraveyardCastPermission>()
             + self
                 .legendary_search
                 .as_ref()
@@ -713,9 +718,11 @@ impl Game {
             let o = &objects[link.exiled.card as usize];
             matches!(o.zone, Zone::Exile | Zone::Stack) && o.generation == link.exiled.generation
         });
-        data.links.retain(|link| {
-            let o = &objects[link.exiled.card as usize];
-            o.zone == Zone::Exile && o.generation == link.exiled.generation
-        });
+        for links in [&mut data.links, &mut data.craft_links] {
+            links.retain(|link| {
+                let o = &objects[link.exiled.card as usize];
+                o.zone == Zone::Exile && o.generation == link.exiled.generation
+            });
+        }
     }
 }

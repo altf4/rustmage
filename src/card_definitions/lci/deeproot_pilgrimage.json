@@ -3,10 +3,26 @@
   "catalogue_id": 1024,
   "oracle_id": "188656d8-4ea8-4e58-88da-b010a16eb6f2",
   "facts_sha256": "ddaf126d10a977873da27e242b92b818e0985b6f4d25e09ffd8f9276bdcc9d84",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b9db5c29d1cc2eec5a8c3c7e43e6e6163403604b69cbf79c28c1825a90654bc4"
   },
-  "physical_metadata_sha256": "316fcc3065df832d8852b3b3e49a9f417382202b1753bbec604586a32304678f"
+  "physical_metadata_sha256": "316fcc3065df832d8852b3b3e49a9f417382202b1753bbec604586a32304678f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeeprootPilgrimage.java",
+  "java_sha256": "9af7bcf246e57966578a344be845ac41548234130eedd9581ad3cc9b1520a4b5",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedOneOrMoreTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a32ffd4da700a57a9d54a0a701a915784376cc9528aff15f4892e62efe475c28"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

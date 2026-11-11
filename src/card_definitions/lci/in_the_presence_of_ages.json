@@ -3,10 +3,36 @@
   "catalogue_id": 2155,
   "oracle_id": "142a960c-4d8e-4b3b-a0db-435c22df8f92",
   "facts_sha256": "95b36177c3435c18454c9c971db17e59ec777550f7eb24fc85c32dcccce8adc3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d61b54dc6767660b33c4b82b078488b9107139f942c92f68fee33544eb50864d"
   },
-  "physical_metadata_sha256": "9af6acf9784d976c5e23932f3a1f659166ba35dc1f3571a9dcfbf5386e21d829"
+  "physical_metadata_sha256": "9af6acf9784d976c5e23932f3a1f659166ba35dc1f3571a9dcfbf5386e21d829",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InThePresenceOfAges.java",
+  "java_sha256": "85d4e729468eaccf27482e14b49313bdf489352cafc43c1667adf29f26f9b90d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardAndOrCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b5b251352260d77bf27867a2ce924d35a6fcc86557600a4136e2e7de957dc21b"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_creature_choices.rs"
 }

@@ -42,7 +42,9 @@ impl Game {
             kind,
             production,
             tap_bonus: [0; 6],
+            tap_bonus_lots: Vec::new(),
             recolor: None,
+            time_removal: None,
             quality: None,
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
@@ -184,6 +186,16 @@ impl Game {
             };
         }
     }
+    pub(super) fn record_cast_mana_time_removal(&mut self, source: ObjectRef) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|rollback| rollback.capture.as_mut())
+        {
+            capture.event.time_removal = Some(source);
+        }
+    }
     pub(super) fn record_cast_mana_recolor(&mut self, colors: u8) {
         if let Some(capture) = self
             .state
@@ -194,7 +206,11 @@ impl Game {
             capture.event.recolor = Some(colors);
         }
     }
-    pub(super) fn record_cast_mana_bonus(&mut self, actor: Player, mana: Mana) {
+    pub(super) fn record_cast_mana_bonus(
+        &mut self,
+        actor: Player,
+        bonus: &mana_tap_bonus::TapBonusOutput,
+    ) {
         if let Some(capture) = self
             .state
             .cast_rollback
@@ -202,7 +218,8 @@ impl Game {
             .and_then(|r| r.capture.as_mut())
         {
             assert_eq!(capture.event.actor, actor);
-            for (amount, added) in capture.event.tap_bonus.iter_mut().zip(mana) {
+            capture.event.tap_bonus_lots.extend_from_slice(&bonus.lots);
+            for (amount, added) in capture.event.tap_bonus.iter_mut().zip(bonus.total) {
                 *amount = amount
                     .checked_add(added)
                     .capacity("triggered mana receipt exhausted");
@@ -283,6 +300,7 @@ impl Game {
         &mut self,
         player: Player,
         amount: i128,
+        lost: i128,
         exiled: Option<Vec<ObjectRef>>,
     ) {
         let is_entry = self.state.entry_batch.is_some();
@@ -296,6 +314,7 @@ impl Game {
             capture.event.life_payments.push(LifePaymentReceipt {
                 player,
                 amount,
+                lost,
                 entry_index,
                 exiled,
             });

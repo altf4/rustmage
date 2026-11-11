@@ -46,7 +46,7 @@ impl Game {
             rules.dream_exiles.retain(|r| r.object != object);
         }
     }
-    pub(super) fn finish_dream_spell_resolution(&mut self, item: &SpellView) -> bool {
+    pub(super) fn mark_dream_spell_resolving(&mut self, item: &SpellView) -> bool {
         let Some(source) = item.source else {
             return false;
         };
@@ -60,7 +60,6 @@ impl Game {
         mark.resolving = true;
         mark.player = item.controller;
         mark.face = item.cast.map_or(CastFace::Normal, |c| c.face);
-        self.move_adventure_spell(item, Zone::Graveyard);
         true
     }
     pub(super) fn start_dream_free_cast(&mut self, player: Player) {
@@ -97,6 +96,7 @@ impl Game {
     }
     pub(super) fn complete_special_zone_move(
         &mut self,
+        before: &ObjectView,
         object: ObjectRef,
         completion: zone_replacements::ZoneMoveCompletion,
         was_card: bool,
@@ -104,6 +104,11 @@ impl Game {
         match completion {
             zone_replacements::ZoneMoveCompletion::Dream => {
                 self.add_counter(object.card, CounterKind::Dream, 1)
+            }
+            zone_replacements::ZoneMoveCompletion::Rebound(player) => {
+                if was_card {
+                    self.schedule_rebound(before, object, player);
+                }
             }
             zone_replacements::ZoneMoveCompletion::Adventure(player) => {
                 let card = self.state.objects[object.card as usize].card;

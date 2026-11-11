@@ -198,6 +198,13 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
+            return self.object_ref(object.card) == object
+                && self.creature_survives_sweep(object.card, maximum)
+                && choice.selected[player.index()].iter().all(|survivor| {
+                    self.state.objects[survivor.card as usize].controller != o.controller
+                });
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             return o.controller == player
                 && choice.selected[player.index()].is_empty()
@@ -263,6 +270,10 @@ impl Game {
                             && bound.object == Some(object)
                     });
         }
+        if choice.kind == EffectChoiceKind::ReturnCraftedCreatureAttacking {
+            return choice.selected[player.index()].is_empty()
+                && self.crafted_exiled_creature(choice.source, object);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
@@ -318,7 +329,8 @@ impl Game {
             ) && !choice.selected[player.index()].contains(&object);
         }
         let graveyard_filter = match choice.kind {
-            EffectChoiceKind::ReturnGraveyardToHand { kinds } => Some((kinds, None)),
+            EffectChoiceKind::ReturnGraveyardToHand { kinds }
+            | EffectChoiceKind::ReturnUpToGraveyardToHand { kinds } => Some((kinds, None)),
             EffectChoiceKind::ReturnGraveyardToHandOrSubtype { kinds, subtype } => {
                 Some((kinds, Some(subtype)))
             }
@@ -455,7 +467,7 @@ impl Game {
                     .resolving
                     .as_ref()
                     .unwrap()
-                    .remembered_creatures
+                    .remembered_objects
                     .as_ref()
                     .is_some_and(|receipts| receipts.binary_search(&object).is_ok());
         }
@@ -774,6 +786,10 @@ impl Game {
             None,
         )
     }
+    fn creature_survives_sweep(&self, card: CardId, maximum: i128) -> bool {
+        self.on_battlefield(card) && self.is_creature(card) && self.stats(card).power <= maximum
+    }
+
     pub(super) fn start_effect_choice(
         &mut self,
         item: &SpellView,
@@ -1016,6 +1032,13 @@ impl Game {
             .unwrap();
         let item = &self.state.resolving.as_ref().unwrap().item;
         let player = item.controller;
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+        ) {
+            self.return_effect_choice_to_hand(*choice);
+            return;
+        }
         if self.target_graveyard_return_active() {
             let battlefield = choice.selected[player.index()].first().copied();
             let moves = self.target_graveyard_return_entries(item, battlefield);
@@ -1363,7 +1386,24 @@ impl Game {
     ) -> bool {
         if matches!(kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
             assert_eq!(amount, 1, "one alternative resolution cost");
-            assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
+            assert!(matches!(
+                players,
+                PlayerSet::Controller | PlayerSet::Opponent
+            ));
+        }
+        if let EffectChoiceKind::RememberPermanents {
+            require_battlefield_source,
+        } = kind
+        {
+            self.state.resolving.as_mut().unwrap().remembered_objects = None;
+            if require_battlefield_source
+                && !item.source.is_some_and(|source| {
+                    self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+                })
+            {
+                self.state.resolving.as_mut().unwrap().pc += optional_skip.unwrap_or(0);
+                return false;
+            }
         }
         if kind == EffectChoiceKind::ReturnRememberedCreature {
             assert_eq!(amount, 1, "one remembered creature return");
@@ -1383,7 +1423,8 @@ impl Game {
                 "any-number resolution choice finishes with any subset"
             );
         }
-        let pc = self.state.resolving.as_ref().unwrap().pc;
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let pc = resolution.pc;
         if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
             && item.source.is_none_or(|source| {
                 self.object_ref(source.id) != source.object
@@ -1394,6 +1435,23 @@ impl Game {
                 pc + optional_skip.expect("optional source cost");
             return false;
         }
+        let source = if matches!(
+            resolution.program.get(pc.saturating_sub(1)),
+            Some(Instruction::MaySacrificeForGrantedReflexive { .. })
+        ) {
+            let Some(grant) = item
+                .attachment_trigger
+                .as_ref()
+                .filter(|event| event.granted)
+            else {
+                return false;
+            };
+            grant.grantor
+        } else {
+            item.source
+                .expect("effect choice requires object source")
+                .object
+        };
         let mut choice = EffectChoice {
             discard_draw: None,
             discarded: None,
@@ -1406,10 +1464,7 @@ impl Game {
             hand_entry_filter: None,
             equipment_recipient: None,
             blight_copy_attacking: false,
-            source: item
-                .source
-                .expect("effect choice requires object source")
-                .object,
+            source,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             greatest_value: [None; 2],
@@ -1417,6 +1472,18 @@ impl Game {
         };
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
+        }
+        if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = kind {
+            let mut eligible = [false; 2];
+            for (index, object) in self.state.objects.iter().enumerate() {
+                let slot = &mut eligible[object.controller.index()];
+                if !*slot && self.creature_survives_sweep(index as CardId, maximum) {
+                    *slot = true;
+                }
+            }
+            choice.required[item.controller.index()] = eligible.into_iter().map(u32::from).sum();
+            self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
+            return self.advance_effect_choice();
         }
         // Unfiltered affordability follows the public hand count. A typed
         // restriction makes eligibility private, so retain its phase and quota.
@@ -1888,6 +1955,36 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+        ) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let survivors = &choice.selected[player.index()];
+            let destroyed = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(index, object)| {
+                    let card = index as CardId;
+                    let reference = self.object_ref(card);
+                    (object.zone == Zone::Battlefield
+                        && self.is_creature(card)
+                        && !survivors.contains(&reference))
+                    .then_some(reference)
+                })
+                .collect::<Vec<_>>();
+            self.destroy_objects_outcome(destroyed);
+            return false;
+        }
+        if matches!(choice.kind, EffectChoiceKind::RememberPermanents { .. }) {
+            let mut selected: Vec<_> = choice.selected.into_iter().flatten().collect();
+            selected.sort_unstable();
+            self.state.resolving.as_mut().unwrap().remembered_objects =
+                (!selected.is_empty()).then(|| selected.into());
+            return false;
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&recipient) = choice.selected[player.index()].first() {
@@ -1918,10 +2015,22 @@ impl Game {
         if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
             let resolution = self.state.resolving.as_mut().unwrap();
             let player = resolution.item.controller;
-            resolution.remembered_creatures = None;
+            resolution.remembered_objects = None;
             if let Some(&object) = choice.selected[player.index()].first() {
                 let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
                 movement.controller = player;
+                self.stage_entries(vec![movement], None);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::ReturnCraftedCreatureAttacking {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&object) = choice.selected[player.index()].first()
+                && self.crafted_exiled_creature(choice.source, object)
+            {
+                let mut movement = self.entry_move(object.card, Zone::Battlefield, true);
+                movement.controller = player;
+                movement.choose_attacking_defender = true;
                 self.stage_entries(vec![movement], None);
             }
             return false;
@@ -1957,8 +2066,26 @@ impl Game {
             return false;
         }
         let resolution = self.state.resolving.as_ref().unwrap();
+        let instruction = resolution.program.get(resolution.pc.saturating_sub(1));
+        if let Some(Instruction::MaySacrificeForGrantedReflexive { ability, .. }) =
+            instruction.copied()
+        {
+            let controller = resolution.item.controller;
+            if let Some(&object) = choice.selected[controller.index()].first()
+                && self.object_ref(object.card) == object
+                && self
+                    .sacrifice_cost_batch_outcome(&[(controller, object.card)])
+                    .is_some_and(|receipt| receipt.count != 0)
+            {
+                // The bearer might have been the sacrifice. Use the packet with
+                // its updated departure facts to create the independent trigger.
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.queue_reflexive_objects(&item, ability, item.reflexive_action_objects());
+            }
+            return false;
+        }
         if matches!(
-            resolution.program.get(resolution.pc.saturating_sub(1)),
+            instruction,
             Some(Instruction::MaySacrificeForManaValue { .. })
         ) {
             let player = resolution.item.controller;
@@ -2249,11 +2376,18 @@ impl Game {
         ) {
             // The resolving packet captures the payer/cause. A legal chosen cost
             // is paid even if its zone-change destination is replaced.
-            let payer = self.state.resolving.as_ref().unwrap().item.controller;
-            let reference = choice.selected[payer.index()][0];
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            let (payer, reference) = [Player::P0, Player::P1]
+                .into_iter()
+                .find_map(|player| {
+                    choice.selected[player.index()]
+                        .first()
+                        .map(|&object| (player, object))
+                })
+                .expect("one chosen payer");
             assert_eq!(self.object_ref(reference.card), reference);
             if self.state.objects[reference.card as usize].zone == Zone::Hand {
-                self.discard_batch_caused(&[reference.card], None, Some(payer));
+                self.discard_batch_caused(&[reference.card], None, Some(controller));
             } else {
                 self.sacrifice_batch(&[(payer, reference.card)]);
             }
@@ -2744,7 +2878,12 @@ impl Game {
         Some(EffectChoiceView {
             kind: choice.kind,
             amount: choice.amount,
-            optional: choice.skip_to.is_some() || choice.kind.any_number_selection(),
+            optional: choice.skip_to.is_some()
+                || choice.kind.any_number_selection()
+                || matches!(
+                    choice.kind,
+                    EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                ),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]

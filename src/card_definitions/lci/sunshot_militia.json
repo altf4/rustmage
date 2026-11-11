@@ -3,10 +3,36 @@
   "catalogue_id": 4246,
   "oracle_id": "19afaf35-b420-49e0-bddf-3180bf1dc30f",
   "facts_sha256": "de5a8bb7725534ecf40b1bb16ab2aa3a80d3ed2b3079be5c9f0b5267d45dd4a6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "85e9035629ad98f3d62925d7b7d319af5a195475a40650c1f2612d3279062580"
   },
-  "physical_metadata_sha256": "de1ed39a219777e57f0902ae964c39c2bb7bf7816deec5e003a4cb53a48892bd"
+  "physical_metadata_sha256": "de1ed39a219777e57f0902ae964c39c2bb7bf7816deec5e003a4cb53a48892bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SunshotMilitia.java",
+  "java_sha256": "1708baa3bd7a381f2c07c4ef2d3b12ce49ce188f2f1cca6cebdc4db8916099bd",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_mana_combat.rs"
 }

@@ -32,11 +32,14 @@ impl CreatureComparisonFacts {
 pub enum EventObjectFacts {
     /// Immutable pre-death multiset; never refreshed from a live/new incarnation.
     DeathCounters(Counters),
+    /// Signed sum of the triggering creatures' power as they last existed.
+    DeathBatchPower(i128),
     /// Refresh at departure for a program that reads the exact permanent at resolution.
     CounterTotal(u128),
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
+    UntapStepCount(u64),
     /// Frozen amount this exact event object dealt in one simultaneous damage event.
     DamageDealt {
         amount: u128,
@@ -46,6 +49,9 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    DiscardedManaValue(u64),
+    /// Frozen threshold of the completed discovery, independent of its result.
+    DiscoverAmount(u64),
     /// Current or last-known controller of an exact untargeted object.
     Controller(Player),
     /// Exact untargeted entrant's current or latest battlefield copiable values.
@@ -386,9 +392,13 @@ impl Game {
                 }
                 e.facts = match e.facts {
                     EventObjectFacts::DeathCounters(_)
+                    | EventObjectFacts::DeathBatchPower(_)
                     | EventObjectFacts::CopiableGroup(_)
+                    | EventObjectFacts::UntapStepCount(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::DiscardedManaValue(_)
+                    | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. } => {
                         continue;
                     }
@@ -511,6 +521,7 @@ impl Game {
             equipment_count: None,
             attached_equipment: None,
             creature_comparison: Some(CreatureComparisonFacts::from_view(source)),
+            explorer: None,
         }));
         p.set_event_object(EventObjectView {
             object: entering.reference,

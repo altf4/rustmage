@@ -14,14 +14,40 @@
   "java_sha256": "a4d6a4e1f3048102cf755615451436c8531e25b099f1cd3464be62875764f1fd",
   "xmage_dependencies": [
     {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesTargetEffect.java",
       "sha256": "016ec15a3f4b05c2eeea23439fcc71554cfef1232bcdd844dee63ad6618cacd4"
     },
     {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/target/common/TargetActivatedOrTriggeredAbility.java",
       "sha256": "1d83aa0018d3a33d04dfba3966f177e2e60e6a807c28bf6ac49832bad5d3bcdd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
     }
-  ]
+  ],
+  "rules_tests": "tests/lci_cards_s_z_inherited_tail.rs"
 }

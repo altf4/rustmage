@@ -170,10 +170,11 @@ impl Game {
         }
         let plan = match definition.effect() {
             Effect::Modal(modes) => {
-                return modes
-                    .iter()
-                    .any(|m| self.cast_targets_available(m.targets, actor, self.object_ref(card)))
-                    && self.spell_can_fund(actor, card, base);
+                let source = self.object_ref(card);
+                return modes.iter().enumerate().any(|(index, mode)| {
+                    self.spell_mode_eligible(actor, source, definition, index)
+                        && self.cast_targets_available(mode.targets, actor, source)
+                }) && self.spell_can_fund(actor, card, base);
             }
             Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
             _ => TargetPlan::NONE,

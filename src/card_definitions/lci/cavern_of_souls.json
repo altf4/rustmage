@@ -14,14 +14,65 @@
   "java_sha256": "497b437c479efbd3093369f0a2d67a9ab0be0445eebd628bc0786bfe8a2d8061",
   "xmage_dependencies": [
     {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
       "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
     },
     {
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
       "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
     }
-  ]
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

@@ -27,6 +27,11 @@ pub(super) enum DiscardAfter {
     DrawFixed(Player, u16),
     DrawCardTypes(Player),
     RememberActual,
+    RememberOne(Player),
+    ReflexiveManaValue {
+        controller: Player,
+        ability: u16,
+    },
     DrawUnlessOpponentDiscardedTwoNonland(Player),
     NonlandReflexive {
         controller: Player,
@@ -253,12 +258,15 @@ impl Game {
         }
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::Discarded {
-                    relation,
-                    one_or_more,
-                } = ability.condition.event()
-                else {
-                    continue;
+                let (relation, one_or_more, kinds) = match ability.condition.event() {
+                    TriggerCondition::Discarded {
+                        relation,
+                        one_or_more,
+                    } => (relation, one_or_more, 0),
+                    TriggerCondition::DiscardedKinds { relation, kinds } => {
+                        (relation, false, kinds)
+                    }
+                    _ => continue,
                 };
                 for player in [self.state.active, self.state.active.other()] {
                     let count = counts[player.index()];
@@ -274,6 +282,18 @@ impl Game {
                     let cycling = cycled.is_some_and(|reference| {
                         self.state.objects[reference.card as usize].owner == player
                     });
+                    let matching: Vec<_> = events
+                        .iter()
+                        .filter(|event| {
+                            event.moved
+                                && event.before.owner == player
+                                && (kinds == 0 || event.before.kinds & kinds != 0)
+                        })
+                        .collect();
+                    let count = u32::try_from(matching.len()).capacity("discard count exhausted");
+                    if count == 0 {
+                        continue;
+                    }
                     if ability.program.iter().any(|instruction| {
                         matches!(
                             instruction,
@@ -281,10 +301,7 @@ impl Game {
                                 | Instruction::MayExileDiscardedPlay { .. }
                         )
                     }) {
-                        for discarded in events
-                            .iter()
-                            .filter(|event| event.moved && event.before.owner == player)
-                        {
+                        for discarded in matching {
                             let prior = self.state.pending_triggers.len();
                             self.queue_discard_trigger(
                                 &source,
@@ -312,10 +329,6 @@ impl Game {
                         }
                         continue;
                     }
-                    let matching: Vec<_> = events
-                        .iter()
-                        .filter(|event| event.moved && event.before.owner == player)
-                        .collect();
                     for position in 0..if one_or_more { 1 } else { count } {
                         let prior = self.state.pending_triggers.len();
                         self.queue_discard_trigger(
@@ -352,6 +365,45 @@ impl Game {
         events: &[ZoneChange],
     ) {
         match after {
+            Some(DiscardAfter::RememberOne(player)) => {
+                self.state.resolving.as_mut().unwrap().discarded_card = events
+                    .iter()
+                    .find(|event| {
+                        event.moved
+                            && event.before.owner == player
+                            && matches!(
+                                event.destination,
+                                Zone::Graveyard | Zone::Exile | Zone::Command
+                            )
+                    })
+                    .map(|event| event.after);
+            }
+            Some(DiscardAfter::ReflexiveManaValue {
+                controller,
+                ability,
+            }) => {
+                if let Some(event) = events
+                    .iter()
+                    .find(|event| event.moved && event.before.owner == controller)
+                {
+                    let item = self.state.resolving.as_ref().unwrap().item.clone();
+                    let before = self.state.pending_triggers.len();
+                    self.queue_reflexive(&item, ability, Some(event.before.reference));
+                    if self.state.pending_triggers.len() > before {
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.refer_zone_event(event);
+                        packet.set_event_object(EventObjectView {
+                            object: event.before.reference,
+                            facts: EventObjectFacts::DiscardedManaValue(
+                                event.before.card.fixed_mana_value(),
+                            ),
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                    }
+                }
+            }
             Some(DiscardAfter::NonlandReflexive {
                 controller,
                 ability,

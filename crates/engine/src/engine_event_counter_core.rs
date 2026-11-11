@@ -240,9 +240,25 @@ impl Game {
             .state
             .counter_sources
             .iter()
-            .map(|&id| self.object_view(id))
+            .copied()
+            .filter(|&id| {
+                let object = &self.state.objects[id as usize];
+                object.zone == Zone::Battlefield
+                    && object.card.triggers().iter().any(|ability| {
+                        matches!(
+                            ability.condition.event(),
+                            TriggerCondition::StateCounterAtLeast { kind, minimum }
+                                if self.counter_count(id, kind) >= minimum
+                        )
+                    })
+            })
+            .map(|id| self.object_view(id))
             .collect();
         for source in sources {
+            let origin = source
+                .temporary_copy
+                .as_ref()
+                .map(|copy| copy.active_origin);
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let TriggerCondition::StateCounterAtLeast { kind, minimum } =
                     ability.condition.event()
@@ -253,12 +269,15 @@ impl Game {
                     continue;
                 }
                 let matches = |item: &SpellView| {
-                    item.source.is_some_and(|identity| {
-                        identity.object == source.reference && identity.card == source.card
-                    }) && item.kind
-                        == (StackKind::TriggeredAbility {
-                            ability: index as u16,
+                    !item.is_copy
+                        && item.source_ability_origin == origin
+                        && item.source.is_some_and(|identity| {
+                            identity.object == source.reference && identity.card == source.card
                         })
+                        && item.kind
+                            == (StackKind::TriggeredAbility {
+                                ability: index as u16,
+                            })
                 };
                 let queued = self
                     .state
@@ -282,5 +301,17 @@ impl Game {
                 }
             }
         }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellView {
+    pub(super) fn is_original_state_counter_trigger(&self) -> bool {
+        !self.is_copy
+            && matches!(self.kind, StackKind::TriggeredAbility { ability }
+            if self.trigger_definition().triggers().get(usize::from(ability))
+                .is_some_and(|trigger| matches!(
+                    trigger.condition.event(), TriggerCondition::StateCounterAtLeast { .. }
+                )))
     }
 }

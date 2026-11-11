@@ -35,6 +35,8 @@ pub struct SpellCharacteristicsView {
     pub mana_cost: &'static str,
     pub mana_value: u64,
     pub type_line: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_creature_types: Option<&'static [&'static str]>,
     pub colors: u8,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -72,6 +74,7 @@ impl Game {
             .filter_map(|s| {
                 let source = s.source?;
                 let info = source.card.info();
+                let added = self.cast_added_creature_types(source.object);
                 Some(SpellCharacteristicsView {
                     id: s.id,
                     object: source.object,
@@ -81,6 +84,7 @@ impl Game {
                     mana_cost: info.mana_cost,
                     mana_value: s.mana_value(),
                     type_line: info.type_line,
+                    additional_creature_types: (!added.is_empty()).then_some(added),
                     colors: source.card.colors(),
                 })
             })
@@ -105,7 +109,7 @@ impl Game {
         }
     }
     /// A popped/resolving packet still owns the last stack characteristics.
-    fn chosen_spell_before(&self, item: &SpellView) -> ObjectView {
+    pub(super) fn chosen_spell_before(&self, item: &SpellView) -> ObjectView {
         let source = item.source.expect("adventure spell has a source");
         let mut before = self.object_view(source.id);
         if before.zone == Zone::Stack && before.reference == source.object {

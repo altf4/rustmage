@@ -39,8 +39,16 @@ impl Game {
     }
 
     pub(super) fn create_sized_token(&mut self, player: Player, token: Card, size: u128) {
-        let _ = i128::try_from(size).capacity("token base size exhausted");
-        let recipe = CopyRecipe::new(token).with_sampled_size(copies::SampledTokenSize::new(size));
+        self.create_token_with_sampled_base(player, token, copies::SampledTokenSize::new(size));
+    }
+
+    pub(super) fn create_token_with_sampled_base(
+        &mut self,
+        player: Player,
+        token: Card,
+        size: copies::SampledTokenSize,
+    ) {
+        let recipe = CopyRecipe::new(token).with_sampled_size(size);
         self.stage_copy_creation(player, recipe, 1);
     }
 
@@ -114,7 +122,7 @@ impl Game {
                 replacements::ResumeMode::Program,
             );
         } else if let Some(size) = sampled_size {
-            self.create_sized_token(player, token, size.value());
+            self.create_token_with_sampled_base(player, token, size);
         } else {
             self.create_tokens(player, token, 1, false);
         }

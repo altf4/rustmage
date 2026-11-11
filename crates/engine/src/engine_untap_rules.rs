@@ -150,60 +150,137 @@ impl Game {
         }
         true
     }
-    pub(super) fn untap_objects(&mut self, ids: &[CardId], cause: UntapCause) {
+    /// Return actual untaps controlled by the player taking this untap step.
+    /// Effect untaps never contribute to this step receipt.
+    pub(super) fn untap_objects(&mut self, ids: &[CardId], cause: UntapCause) -> u64 {
+        let step_player = match cause {
+            UntapCause::Effect => None,
+            UntapCause::ControllerStep(player) => Some(player),
+        };
         if !self.has_untap_rules() {
+            let mut count = 0;
             for &id in ids {
                 if self.on_battlefield(id) {
-                    self.state.objects[id as usize].untap();
+                    let object = &mut self.state.objects[id as usize];
+                    if object.untap() && Some(object.controller) == step_player {
+                        count += 1;
+                    }
                 }
             }
-            return;
+            return count;
         }
-        // Determine every member before any stun counter is removed. Untapping
-        // is simultaneous, including when an effect affects several permanents.
+        // Decide the entire group before removing any stun counter. Untaps
+        // caused by the turn-based action or one effect occur simultaneously.
         let allowed: Vec<_> = ids
             .iter()
             .copied()
             .filter(|&id| self.on_battlefield(id) && self.untap_allowed(id, cause))
             .collect();
-        let before: Vec<_> = allowed
-            .iter()
-            .copied()
-            .filter(|&id| self.state.objects[id as usize].tapped)
-            .map(|id| self.object_ref(id))
-            .collect();
+        let mut count = 0;
+        let mut untapped = Vec::new();
         for id in allowed {
-            self.state.objects[id as usize].untap();
+            let object = &mut self.state.objects[id as usize];
+            if object.untap() {
+                if Some(object.controller) == step_player {
+                    count += 1;
+                }
+                untapped.push(self.object_ref(id));
+            }
         }
-        let untapped: Vec<_> = before
-            .into_iter()
-            .filter(|r| !self.state.objects[r.card as usize].tapped)
-            .collect();
         self.forget_untapped_activation_locks(&untapped);
         self.attached_untap_triggers(&untapped);
+        count
     }
+
     pub(super) fn untap_active_player(&mut self) {
-        if !self.has_untap_rules() {
-            for object in &mut self.state.objects {
-                if object.zone == Zone::Battlefield && object.controller == self.state.active {
-                    object.untap();
-                }
-            }
-            return;
-        }
-        let ids: Vec<_> = self
+        let active = self.state.active;
+        let also_untap = |fragment: &StaticAbilityFragment| {
+            matches!(fragment, StaticAbilityFragment::UntapDuringOtherUntapSteps)
+        };
+        let other: Vec<_> = self
             .state
-            .objects
+            .static_sources
             .iter()
-            .enumerate()
-            .filter_map(|(id, object)| {
-                (object.zone == Zone::Battlefield && object.controller == self.state.active)
-                    .then_some(id as CardId)
+            .copied()
+            .filter(|&id| {
+                let object = &self.state.objects[id as usize];
+                object.zone == Zone::Battlefield
+                    && object.controller != active
+                    && object.tapped
+                    && object
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| group.fragments.iter().any(also_untap))
+                    && self.continuous_fragment_available(id, also_untap)
             })
             .collect();
-        self.untap_objects(&ids, UntapCause::ControllerStep(self.state.active));
+        let count = if other.is_empty() && !self.has_untap_rules() {
+            let mut count = 0;
+            for object in &mut self.state.objects {
+                if object.zone == Zone::Battlefield && object.controller == active && object.untap()
+                {
+                    count += 1;
+                }
+            }
+            count
+        } else {
+            let ids: Vec<_> = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(id, object)| {
+                    (object.zone == Zone::Battlefield && object.controller == active)
+                        .then_some(id as CardId)
+                })
+                .chain(other)
+                .collect();
+            self.untap_objects(&ids, UntapCause::ControllerStep(active))
+        };
         // CR701.43: all overlapping exertions for this player's next actual
         // untap expire together, even if another player now controls a recipient.
-        self.expire_exertions(self.state.active);
+        self.expire_exertions(active);
+        self.queue_untap_step_triggers(active, count);
+    }
+
+    fn queue_untap_step_triggers(&mut self, active: Player, amount: u64) {
+        if amount == 0
+            || !self.state.step_sources.iter().any(|&id| {
+                self.state.objects[id as usize]
+                    .card
+                    .triggers()
+                    .iter()
+                    .any(|ability| {
+                        ability.condition.event() == TriggerCondition::OwnUntapStepUntaps
+                    })
+            })
+        {
+            return;
+        }
+        // CR502.4 and 503.1a: enqueue now and publish with upkeep triggers.
+        for (source, grant) in self.indexed_trigger_sources(&self.state.step_sources) {
+            if source.controller != active {
+                continue;
+            }
+            let definition = grant.as_ref().map_or(source.card, |row| row.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::OwnUntapStepUntaps
+                    && self.queue_trigger_from(&source, index, grant.map(Box::new))
+                {
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .set_event_object(EventObjectView {
+                            object: source.reference,
+                            facts: EventObjectFacts::UntapStepCount(amount),
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                }
+            }
+        }
     }
 }

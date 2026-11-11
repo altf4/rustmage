@@ -186,6 +186,35 @@ impl Game {
         }
     }
 
+    pub(super) fn return_departed_source_transformed_tapped(
+        &mut self,
+        item: &SpellView,
+        counters: &'static [(CounterKind, u64)],
+    ) {
+        let (Some(source), Some(movement)) = (item.source, item.source_move.as_deref()) else {
+            return;
+        };
+        if movement.before != source.object
+            || movement.origin != Zone::Battlefield
+            || movement.destination != Zone::Graveyard
+        {
+            return;
+        }
+
+        let entries: Vec<_> = movement
+            .objects_after()
+            .filter_map(|object| {
+                let mut entry = self.source_return_entry(object, Zone::Graveyard, true, None)?;
+                entry.tapped = true;
+                entry.effect_counters = counters;
+                Some(entry)
+            })
+            .collect();
+        if !entries.is_empty() {
+            self.stage_entries(entries, None);
+        }
+    }
+
     fn exile_for_source_return(
         &mut self,
         object: ObjectRef,

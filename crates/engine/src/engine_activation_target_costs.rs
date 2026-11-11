@@ -14,6 +14,23 @@ impl Game {
         if !a.pay_window || a.total_cost.is_some() {
             return false;
         }
+        if a.additional_cost()
+            .is_some_and(|c| c.kind.uses_target_mana_value())
+        {
+            let Target::Card(target) = a.item.targets[0].target else {
+                unreachable!("mana-value exile cost has one card target");
+            };
+            let minimum = self.object_mana_value(target);
+            self.state
+                .announcing
+                .as_mut()
+                .unwrap()
+                .cast_costs
+                .as_mut()
+                .expect("ordered mana-value exile cost")
+                .target_mana_value = Some(minimum);
+        }
+        let a = self.state.announcing.as_ref().unwrap();
         let source = a.item.source.expect("activation source");
         let increase =
             ability_world::CharacteristicWorld::named_activation_generic_increase(self, source.id);
@@ -191,7 +208,11 @@ impl Game {
         if proposal.declares_target_value_x() {
             return !self.target_value_x_intervals(&proposal).is_empty();
         }
-        if source.card.activation_target_color_discount(ability) != 0
+        if proposal.has_equip_discard_alternative()
+            || proposal
+                .additional_cost()
+                .is_some_and(|c| c.kind.uses_target_mana_value())
+            || source.card.activation_target_color_discount(ability) != 0
             || proposal.activation_discounts().leave_one != 0
                 && Self::activation_target_sensitive(source.card, ability)
         {
@@ -246,7 +267,12 @@ impl Game {
             let proposal = self.payment_announcement(packet, counters.clone(), None, None);
             return !self.target_value_x_intervals(&proposal).is_empty();
         }
-        if definition.activation_target_color_discount(*index) != 0
+        if ability.equip_discard_alternative()
+            || ability
+                .cost
+                .additional
+                .is_some_and(|c| c.kind.uses_target_mana_value())
+            || definition.activation_target_color_discount(*index) != 0
             || Self::activation_target_sensitive(*definition, *index)
                 && self
                     .activation_generic_discount(source.card, *definition, *index)
@@ -340,12 +366,15 @@ impl Game {
         let StackKind::ActivatedAbility { ability } = a.item.kind else {
             unreachable!();
         };
-        if a.item
-            .source
-            .expect("activation source")
-            .card
-            .activation_target_color_discount(ability)
-            != 0
+        if a.has_equip_discard_alternative()
+            || a.additional_cost()
+                .is_some_and(|c| c.kind.uses_target_mana_value())
+            || a.item
+                .source
+                .expect("activation source")
+                .card
+                .activation_target_color_discount(ability)
+                != 0
             || a.activation_discounts().leave_one != 0
         {
             return self.activation_exact_target_fundable(a, extra, finished);
@@ -426,12 +455,27 @@ impl Game {
     }
 
     fn activation_target_choice_fundable(&self, a: &Announcement, target: Target) -> bool {
+        let minimum = if a
+            .additional_cost()
+            .is_some_and(|c| c.kind.uses_target_mana_value())
+        {
+            let Target::Card(id) = target else {
+                return false;
+            };
+            Some(self.object_mana_value(id))
+        } else {
+            None
+        };
         self.activation_target_totals(a, target)
             .into_iter()
             .flatten()
             .any(|total| {
                 let mut selected = a.clone();
                 selected.total_cost = Some(total);
+                if let Some(minimum) = minimum {
+                    selected.initialize_cast_costs(false);
+                    selected.cast_costs.as_mut().unwrap().target_mana_value = Some(minimum);
+                }
                 self.activation_packet_fundable(&selected)
             })
     }

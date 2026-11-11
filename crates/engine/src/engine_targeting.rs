@@ -14,6 +14,8 @@ pub(super) struct ActivationCostChoice {
 pub(super) enum LimitedCastPermission {
     FreeHand(ObjectRef),
     LibraryTop(LibraryTopCastPermission),
+    LinkedExilePaid(linked_source_casts::LinkedExilePaidCast),
+    PaidGraveyard(PaidGraveyardCastPermission),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -22,6 +24,8 @@ impl LimitedCastPermission {
         match self {
             Self::FreeHand(source) => source,
             Self::LibraryTop(permission) => permission.source,
+            Self::LinkedExilePaid(permission) => permission.source,
+            Self::PaidGraveyard(permission) => permission.source,
         }
     }
 }
@@ -190,8 +194,10 @@ impl Announcement {
         self.printed_additional_cost()
     }
     pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
-        if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
-            return None;
+        match self.activation_cost_route {
+            ActivationCostRoute::FirstEquipZero => return None,
+            ActivationCostRoute::DiscardCard => return Some(equip_costs::discard_cost()),
+            ActivationCostRoute::Printed => {}
         }
         if let Some((_, additional)) = self.self_graveyard_cast_cost() {
             return Some(additional);
@@ -319,6 +325,11 @@ impl Announcement {
                             let amount = self.item.x.filter(|&amount| amount != 0)?;
                             cost.kind = EffectChoiceKind::TapPermanents(amount);
                         }
+                        EffectChoiceKind::ExilePermanentsForTargetManaValue { .. } => {
+                            cost.kind = EffectChoiceKind::ExilePermanentsForTargetManaValue {
+                                minimum: self.cast_costs.as_ref().and_then(|c| c.target_mana_value),
+                            };
+                        }
                         _ => {}
                     }
                     Some(cost)
@@ -327,6 +338,7 @@ impl Announcement {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -407,6 +419,15 @@ impl Announcement {
                     self.apply_cost_declarations(Card::add_mana_cost(base, fee)) == Some(cost)
                 })
             })
+    }
+
+    pub(super) fn has_equip_discard_alternative(&self) -> bool {
+        match (self.item.kind, self.item.source) {
+            (StackKind::ActivatedAbility { ability }, Some(source)) => {
+                source.card.activation(ability).equip_discard_alternative()
+            }
+            _ => false,
+        }
     }
 
     fn cost_route_options(
@@ -537,6 +558,7 @@ impl Announcement {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -626,6 +648,11 @@ impl Announcement {
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
+                false,
+            )))
+            .chain(self.has_equip_discard_alternative().then_some((
+                ManaCost::ZERO,
+                ActivationCostRoute::DiscardCard,
                 false,
             )))
             .flat_map(move |(cost, route, evoked)| {
@@ -917,6 +944,7 @@ impl Announcement {
                 | StackKind::DecayedAttack
                 | StackKind::SuspendTick
                 | StackKind::SuspendCast
+                | StackKind::ReboundCast
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
@@ -1999,6 +2027,16 @@ impl Game {
                 target,
                 Some(TargetSourceCharacteristics::from_item(item)),
             )
+            && self.paid_cost_target_matches(item, target)
+    }
+
+    fn paid_cost_target_matches(&self, item: &SpellView, target: Target) -> bool {
+        item.paid_additional_cost
+            .as_ref()
+            .and_then(|cost| cost.total_mana_value)
+            .is_none_or(|maximum| {
+                matches!(target, Target::Card(id) if self.object_mana_value(id) <= maximum)
+            })
     }
 
     pub(super) fn activation_target_matches(
@@ -2020,11 +2058,42 @@ impl Game {
     ) -> bool {
         let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
         if let Some(world) = self.cast_departure(source, controller) {
+            let rule = self.live_mana_value_target_rule(&world, rule, source, controller);
             self.target_matches_in_world(&world, rule, controller, source, target, qualification)
         } else {
+            let rule = self.live_mana_value_target_rule(self, rule, source, controller);
             self.target_matches_in_world(self, rule, controller, source, target, qualification)
         }
     }
+
+    // A live stat is available before a spell has a stack item. Read it in
+    // the same world that supplies the potential targets.
+    fn live_mana_value_target_rule<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        rule: TargetRule,
+        source: ObjectRef,
+        controller: Player,
+    ) -> TargetRule {
+        if let TargetRule::ManaValueAtMost {
+            base,
+            amount: AmountValue::Stat(value),
+            maximum: None,
+        } = rule
+        {
+            let maximum = self
+                .stat_value_in_world(world, value, source, controller)
+                .max(0);
+            TargetRule::ManaValueAtMost {
+                base,
+                amount: AmountValue::Stat(value),
+                maximum: Some(u64::try_from(maximum).unwrap_or(u64::MAX)),
+            }
+        } else {
+            rule
+        }
+    }
+
     fn target_source_qualities(
         &self,
         source: ObjectRef,
@@ -2497,7 +2566,11 @@ impl Game {
             item.controller,
             item.target_source(),
             Some(TargetSourceCharacteristics::from_item(item)),
-            |target| target != Target::Stack(item.id) && emit(target),
+            |target| {
+                target != Target::Stack(item.id)
+                    && self.paid_cost_target_matches(item, target)
+                    && emit(target)
+            },
         )
     }
     pub(super) fn visit_targets(
@@ -2536,6 +2609,7 @@ impl Game {
         if rule == TargetRule::None {
             return false;
         }
+        let rule = self.live_mana_value_target_rule(world, rule, source, controller);
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
             if self.target_matches_in_world(world, rule, controller, source, target, qualification)
@@ -2640,6 +2714,7 @@ impl Game {
         }
         item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
         item.mana_copy_sources = outcome.copies;
+        item.mana_provenance = outcome.provenance;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
         item.cast.as_mut().unwrap().exile_on_graveyard = modifiers.1;
@@ -2681,6 +2756,7 @@ impl Game {
             target_allocations: None,
             announced_division: None,
             mana_copy_sources: None,
+            mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
             delayed_sacrifice: None,
@@ -2770,7 +2846,8 @@ impl Game {
                 .iter()
                 .enumerate()
                 .any(|(index, mode)| {
-                    self.modal_choice_unused(&item, index)
+                    self.item_mode_eligible(&item, index)
+                        && self.modal_choice_unused(&item, index)
                         && self.item_targets_available(&item, mode.targets)
                 })
         {
@@ -3327,6 +3404,7 @@ impl Game {
                 announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
                     outcome.treasure_spent;
                 announcement.item.mana_copy_sources = outcome.copies;
+                announcement.item.mana_provenance = outcome.provenance;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
@@ -3412,6 +3490,15 @@ impl Game {
                     }
                     LimitedCastPermission::LibraryTop(permission) => self
                         .use_library_top_cast_permission(announcement.item.controller, permission),
+                    LimitedCastPermission::PaidGraveyard(permission) => {
+                        self.consume_paid_graveyard_permission(&announcement.item, permission);
+                    }
+                    LimitedCastPermission::LinkedExilePaid(permission) => {
+                        if let Some(kind) = permission.entry_counter {
+                            let spell = announcement.item.source.expect("paid spell").object;
+                            self.record_cast_entry_counters(spell, kind, 1);
+                        }
+                    }
                 }
             }
             self.queue_casualty_copies(&announcement);

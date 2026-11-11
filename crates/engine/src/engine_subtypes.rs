@@ -84,6 +84,10 @@ const ADDED_EQUIPMENT: u32 = ADDED_CONSTRUCT << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const SUPPRESS_PRINTED_ARTIFACT: u32 = ADDED_EQUIPMENT << 1;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+const ADDED_TREASURE: u32 = SUPPRESS_PRINTED_ARTIFACT << 1;
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+const ADDED_ARTIFACT_SUBTYPES: u32 = ADDED_FOOD | ADDED_EQUIPMENT | ADDED_TREASURE;
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const ADDED_MASK: u32 = JOB_MASK
     | COPY_HUMAN
     | COPY_VILLAIN
@@ -91,12 +95,11 @@ const ADDED_MASK: u32 = JOB_MASK
     | ADDED_SOLDIER
     | ADDED_GOBLIN
     | ADDED_BEAR
-    | ADDED_FOOD
     | ADDED_SPIRIT
     | ADDED_CONSTRUCT
-    | ADDED_EQUIPMENT;
+    | ADDED_ARTIFACT_SUBTYPES;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-const _: () = assert!(JOB_TYPES.len() + 14 <= u32::BITS as usize);
+const _: () = assert!(JOB_TYPES.len() + 15 <= u32::BITS as usize);
 // Only query values and frozen views carry this fixed taxonomy mask. Hot Object
 // storage is unchanged; inherited sparse grants retain their original wire form.
 const CREATURE_TYPE_WORDS: usize = crate::cards::CREATURE_TYPES.len().div_ceil(64);
@@ -140,6 +143,7 @@ pub struct GrantedSubtypes {
     /// A layer-four effect replaces all previously held land subtypes.
     basic_land: Option<crate::cards::BasicLandType>,
     added_basic_lands: u8,
+    added_cave: bool,
     effective_basic_lands: Option<u8>,
     suppress_printed_land: bool,
     /// None retains printed types (including changeling); Some replaces only
@@ -151,12 +155,16 @@ pub struct GrantedSubtypes {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl GrantedSubtypes {
     pub(super) fn food_only() -> Self {
+        Self::only_artifact_subtype(ADDED_FOOD)
+    }
+    fn only_artifact_subtype(subtype: u32) -> Self {
         Self {
-            added: SUPPRESS_PRINTED | ADDED_FOOD,
+            added: SUPPRESS_PRINTED | subtype,
             chosen: None,
             additional_creature_types: CreatureTypeSet::default(),
             basic_land: None,
             added_basic_lands: 0,
+            added_cave: false,
             effective_basic_lands: None,
             suppress_printed_land: false,
             creature_types: Some(&[]),
@@ -182,7 +190,8 @@ impl GrantedSubtypes {
         {
             return false;
         }
-        self.basic_land.is_some_and(|kind| kind.name() == subtype)
+        (self.added_cave && subtype == "Cave")
+            || self.basic_land.is_some_and(|kind| kind.name() == subtype)
             || (self.added_basic_lands != 0
                 && crate::cards::BasicLandType::ALL.iter().any(|kind| {
                     kind.name() == subtype && self.added_basic_lands & (1 << kind.index()) != 0
@@ -241,7 +250,7 @@ impl GrantedSubtypes {
         }
     }
     fn replace_creature_types(&mut self, types: &'static [&'static str]) {
-        self.added &= FLAGS_MASK | ADDED_FOOD | ADDED_EQUIPMENT;
+        self.added &= FLAGS_MASK | ADDED_ARTIFACT_SUBTYPES;
         self.chosen = None;
         self.additional_creature_types = CreatureTypeSet::default();
         self.creature_types = Some(types);
@@ -278,6 +287,9 @@ impl GrantedSubtypes {
             if recipe.exceptions.reflection {
                 self.insert("Reflection");
             }
+            if recipe.exceptions.cave && recipe.kinds() & 2 != 0 {
+                self.added_cave = true;
+            }
             if recipe.exceptions.spider_human_hero {
                 self.insert("Spider");
                 self.insert("Human");
@@ -300,7 +312,13 @@ impl GrantedSubtypes {
             "Spirit" => ADDED_SPIRIT,
             "Construct" => ADDED_CONSTRUCT,
             "Equipment" => ADDED_EQUIPMENT,
+            "Treasure" => ADDED_TREASURE,
             _ => 0,
+        }
+    }
+    pub(super) fn add_creature_types(&mut self, types: &'static [&'static str]) {
+        for subtype in types {
+            self.insert(subtype);
         }
     }
     fn insert(&mut self, subtype: &str) {
@@ -322,10 +340,11 @@ impl GrantedSubtypes {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Serialize for GrantedSubtypes {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        struct Added(u32);
+        struct Added(u32, bool);
         impl Serialize for Added {
             fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-                let mut out = serializer.serialize_seq(Some(self.0.count_ones() as usize))?;
+                let mut out = serializer
+                    .serialize_seq(Some(self.0.count_ones() as usize + usize::from(self.1)))?;
                 for (i, subtype) in JOB_TYPES.iter().enumerate() {
                     if self.0 & (1 << i) != 0 {
                         out.serialize_element(subtype)?;
@@ -342,10 +361,14 @@ impl Serialize for GrantedSubtypes {
                     (ADDED_SPIRIT, "Spirit"),
                     (ADDED_CONSTRUCT, "Construct"),
                     (ADDED_EQUIPMENT, "Equipment"),
+                    (ADDED_TREASURE, "Treasure"),
                 ] {
                     if self.0 & bit != 0 {
                         out.serialize_element(subtype)?;
                     }
+                }
+                if self.1 {
+                    out.serialize_element("Cave")?;
                 }
                 out.end()
             }
@@ -364,7 +387,7 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
         out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
-        out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
+        out.serialize_field("added", &Added(self.added & ADDED_MASK, self.added_cave))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         if !self.additional_creature_types.is_empty() {
             out.serialize_field("additional_creature_types", &self.additional_creature_types)?;
@@ -578,6 +601,89 @@ pub struct CreatureTypesEffectView {
     pub timestamp: u64,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn cast_added_types(state: Option<&roles::RoleState>, spell: ObjectRef) -> &'static [&'static str] {
+    state
+        .and_then(|roles| {
+            roles
+                .creature_types
+                .iter()
+                .find(|row| row.recipient == spell && row.additional)
+        })
+        .map_or(&[], |row| row.types)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellView {
+    pub(super) fn add_cast_creature_types(&mut self, types: &'static [&'static str]) {
+        self.source
+            .as_mut()
+            .expect("typed spell")
+            .facts
+            .granted_subtypes
+            .add_creature_types(types);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn continue_cast_type_effects(
+    state: &mut roles::RoleState,
+    spell: ObjectRef,
+    after: ObjectRef,
+    destination: Zone,
+) {
+    state.creature_types.retain_mut(|row| {
+        if row.recipient != spell {
+            return true;
+        }
+        if destination != Zone::Battlefield {
+            return false;
+        }
+        row.recipient = after;
+        true
+    });
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn cast_added_creature_types(&self, spell: ObjectRef) -> &'static [&'static str] {
+        cast_added_types(self.state.roles.as_deref(), spell)
+    }
+    pub(super) fn apply_paid_graveyard_spell_types(
+        &mut self,
+        item: &mut SpellView,
+        permission: PaidGraveyardCastPermission,
+    ) {
+        if permission.additional_types.is_empty() {
+            return;
+        }
+        item.add_cast_creature_types(permission.additional_types);
+        let timestamp = self.next_role_timestamp();
+        self.state
+            .roles
+            .as_mut()
+            .unwrap()
+            .creature_types
+            .push(CreatureTypesEffectView {
+                recipient: item.source.expect("typed spell").object,
+                source: permission.source,
+                types: permission.additional_types,
+                additional: true,
+                timestamp,
+            });
+    }
+    pub(super) fn continue_cast_creature_types(
+        &mut self,
+        spell: ObjectRef,
+        after: ObjectRef,
+        destination: Zone,
+    ) {
+        if let Some(state) = &mut self.state.roles {
+            continue_cast_type_effects(state, spell, after, destination);
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ObjectView {
     pub fn has_subtype(&self, subtype: &str) -> bool {
         self.granted_subtypes.has(self.card, subtype)
@@ -635,7 +741,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         mask.set_flag(ALL_CREATURE_TYPES, true);
     }
     // Copy exceptions already exist while an owned token awaits entry.
-    // Later continuous type changes apply only on the battlefield.
+    if target.zone == Zone::Stack {
+        mask.add_creature_types(cast_added_types(world.roles(), reference));
+    }
     if target.zone != Zone::Battlefield {
         return mask;
     }
@@ -873,13 +981,16 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             characteristic_layers::SubtypeChange::FoodOnly => {
                 mask = GrantedSubtypes::food_only();
             }
+            characteristic_layers::SubtypeChange::TreasureOnly => {
+                mask = GrantedSubtypes::only_artifact_subtype(ADDED_TREASURE);
+            }
             characteristic_layers::SubtypeChange::EquipmentOnly => {
-                mask.set_flag(ADDED_FOOD, false);
+                mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
                 mask.set_flag(ADDED_EQUIPMENT, true);
                 mask.set_flag(SUPPRESS_PRINTED_ARTIFACT, true);
             }
             characteristic_layers::SubtypeChange::LandOnly => {
-                mask.set_flag(ADDED_FOOD, false);
+                mask.set_flag(ADDED_FOOD | ADDED_TREASURE, false);
                 mask.replace_creature_types(&[]);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 mask.set_flag(LAND_ONLY, true);
@@ -892,8 +1003,8 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask.replace_creature_types(types);
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 if all {
-                    mask.set_flag(ADDED_FOOD, false);
-                    mask.set_flag(ADDED_EQUIPMENT, false);
+                    mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
+                    mask.added_cave = false;
                     mask.set_flag(SUPPRESS_PRINTED, true);
                     mask.set_flag(LAND_ONLY, false);
                 }
@@ -905,6 +1016,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         mask.effective_basic_lands = Some(land_timeline.final_types);
         mask.suppress_printed_land = land_timeline.lost_original_types;
         mask.added_basic_lands &= land_timeline.final_types;
+        mask.added_cave &= !land_timeline.lost_original_types;
         if mask
             .basic_land
             .is_some_and(|kind| land_timeline.final_types & (1 << kind.index()) == 0)
@@ -922,9 +1034,11 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
     }) {
         mask.card_types = Some(kinds(id, target));
     }
+    if mask.added_cave && kinds(id, target) & 2 == 0 {
+        mask.added_cave = false;
+    }
     if kinds(id, target) & 16 == 0 {
-        mask.set_flag(ADDED_FOOD, false);
-        mask.set_flag(ADDED_EQUIPMENT, false);
+        mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
     } else if world.roles().is_some_and(|roles| {
         roles.characteristic_sources.iter().any(|&source| {
             let provider = world.object(source.card);
@@ -1311,6 +1425,7 @@ impl Game {
             && m.entry_kinds() & 2 != 0
         {
             result.basic_land = Some(kind);
+            result.added_cave = false;
         }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments
@@ -1333,6 +1448,9 @@ impl Game {
                 Some(ReturnKind::HeroFinality) => result.insert("Hero"),
                 _ => {}
             }
+        }
+        if m.entry_kinds() & CREATURE_OR_KINDRED != 0 {
+            result.add_creature_types(m.cast_added_creature_types);
         }
         if m.artifact_return || m.enchantment_return {
             result.card_types = Some(m.entry_kinds());

@@ -3,10 +3,31 @@
   "catalogue_id": 818,
   "oracle_id": "b64051c0-e791-4fcb-b79f-4287e1b06468",
   "facts_sha256": "5a81b63cbc3c13eaacfe107e52528f225c84e4362a8badaff1faff25db794791",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ea0b3fe4fa3e1ba8d8017e75aa4239f39b6f7f7b5e50a6185faaaf7715c07fb7"
   },
-  "physical_metadata_sha256": "c6e3d3061d6bcf96bd24d029176a3e235f0271140299bb63902e510cc63015a5"
+  "physical_metadata_sha256": "c6e3d3061d6bcf96bd24d029176a3e235f0271140299bb63902e510cc63015a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CompassGnome.java",
+  "java_sha256": "67f7bee69077bfff50c5cee9b8838a01d7a38af5ff0fa7d9f5b5e8b74057c53a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutOnLibraryEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "743cf7facece5aca87d59348f3bb7d8655aa46d3852e9e437f6672c29535e782"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_caves_equipment"
 }

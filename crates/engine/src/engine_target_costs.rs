@@ -125,7 +125,7 @@ impl Game {
                 },
                 |r| r.discount,
             );
-        self.spell_total_with_reductions(
+        self.spell_total_with_reductions_and_types(
             a.item.controller,
             source.id,
             base,
@@ -134,6 +134,7 @@ impl Game {
             extra,
             discount,
             reduction,
+            source.facts.granted_subtypes,
         )
     }
     fn target_total(
@@ -256,7 +257,9 @@ impl Game {
             })
         };
         match card.effect() {
-            Effect::Modal(modes) => modes.iter().any(|m| available(m.targets)),
+            Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
+                self.spell_mode_eligible(actor, source, card, index) && available(mode.targets)
+            }),
             Effect::Spell(plan, _) | Effect::Aura(plan) => available(plan),
             _ => available(TargetPlan::NONE),
         }
@@ -298,15 +301,16 @@ impl Game {
             && a.item.mode.is_none()
             && let Some(modes) = a.item.modes()
         {
-            return modes.iter().any(|m| {
-                self.announcement_target_fundable(
-                    a,
-                    Some(m.targets),
-                    cost,
-                    offspring,
-                    extra,
-                    finished,
-                )
+            return modes.iter().enumerate().any(|(index, mode)| {
+                self.item_mode_eligible(&a.item, index)
+                    && self.announcement_target_fundable(
+                        a,
+                        Some(mode.targets),
+                        cost,
+                        offspring,
+                        extra,
+                        finished,
+                    )
             });
         }
         let plan = plan.unwrap_or_else(|| {

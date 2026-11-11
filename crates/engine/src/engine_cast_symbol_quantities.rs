@@ -1,34 +1,57 @@
 //! Retain a cast event for programs consuming its identity, mana value or symbols.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn amount(value: AmountValue) -> bool {
+fn amount(value: AmountValue, cave_only: bool) -> bool {
     match value {
-        AmountValue::CastSpellManaValue | AmountValue::CastSpellManaSymbols(_) => true,
-        AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => amount(*value),
-        AmountValue::Sum(values) => values.iter().any(|v| amount(*v)),
+        AmountValue::CaveManaSpent => true,
+        AmountValue::CastSpellManaValue | AmountValue::CastSpellManaSymbols(_) => !cave_only,
+        AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
+            amount(*value, cave_only)
+        }
+        AmountValue::Sum(values) => values.iter().any(|v| amount(*v, cave_only)),
         _ => false,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn selected(program: &[Instruction]) -> bool {
+    selected_for(program, false)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn uses_cave_mana(card: Card) -> bool {
+    card.triggers()
+        .iter()
+        .any(|ability| selected_for(ability.program, true))
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
     program.iter().any(|instruction| match *instruction {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|m| selected(m.program)),
+        | Instruction::ModalUpToX { modes, .. } => {
+            modes.iter().any(|m| selected_for(m.program, cave_only))
+        }
         Instruction::SelectLibraryTo(effect)
         | Instruction::SelectLibraryToHandRememberCount(effect)
         | Instruction::SelectLibraryThenMayTransform(effect)
-        | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
-            effect.maximum_mana_value.is_some_and(amount)
+        | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => effect
+            .maximum_mana_value
+            .is_some_and(|value| amount(value, cave_only)),
+        Instruction::AddCastEntryCounters { amount: value, .. } => {
+            !cave_only || amount(value, cave_only)
         }
-        Instruction::AddCastEntryCounters { .. }
-        | Instruction::AddCastEntryCountersForControlledSubtypes { .. } => true,
+        Instruction::AddCastEntryCountersForControlledSubtypes { .. }
+        | Instruction::GrantCastRebound => !cave_only,
         Instruction::UpToTargets(value)
+        | Instruction::DiscoverScaled(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }
         | Instruction::DestroyTargetsAtMostManaValue(value)
+        | Instruction::DamageBattlefieldScaled { amount: value, .. }
+        | Instruction::DestroyManaValueExactly { amount: value, .. }
         | Instruction::DiscardScaled(_, value)
         | Instruction::SearchScaled { maximum: value, .. }
         | Instruction::DrawThenDiscardIfDrew { amount: value, .. }
@@ -72,7 +95,7 @@ pub(super) fn selected(program: &[Instruction]) -> bool {
         }
         | Instruction::CreateTokensThenCounters {
             counters: value, ..
-        } => amount(value),
+        } => amount(value, cave_only),
         _ => false,
     })
 }

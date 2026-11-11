@@ -3,10 +3,41 @@
   "catalogue_id": 172,
   "oracle_id": "df9cdc11-cb92-46ce-a83d-eb26e3cd004a",
   "facts_sha256": "670ea48ec7b7260662e53fec2f9f1e5f3b8c62d9fe8d621c42aa2648f6dd9144",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c375c05a78a3f8c4be99b0590e854e50f6f67df53ea073876e96ac7d89babe40"
   },
-  "physical_metadata_sha256": "cef4b130d53b637b18f72197cf7650fa35eb056e3bf95f1e390c7468f6eb3e83"
+  "physical_metadata_sha256": "cef4b130d53b637b18f72197cf7650fa35eb056e3bf95f1e390c7468f6eb3e83",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnotherChance.java",
+  "java_sha256": "2915d947b1aa9e3ec7e03c6b05f62e713ad582022d092c7be2cb06e08fdb388e",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotNonTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "81398a179b9a5f2fbfda118b6137df5c1772361d3f0b57dfde1a8284c44b331e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_descend_choices"
 }

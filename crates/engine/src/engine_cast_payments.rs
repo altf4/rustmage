@@ -89,12 +89,31 @@ pub struct CastPaymentEvent {
     pub payment: Mana,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub treasure_mana_spent: bool,
+    /// Number of actual paid units produced by Cave sources.
+    #[serde(skip_serializing_if = "mana_lots::is_zero")]
+    pub cave_mana_spent: u64,
     /// Actual Web-slinging return receipt; absent for other casts and uncast copies.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub web_slinging_return_mana_value: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
+    pub(super) fn cave_mana_spent(&self) -> u64 {
+        self.mana_provenance
+            .iter()
+            .flat_map(|provenance| provenance.sources.iter())
+            .filter(|payment| payment.cave)
+            .map(|payment| payment.amount)
+            .sum()
+    }
+
+    pub(super) fn paid_mana_from(&self, source: ObjectRef) -> bool {
+        self.mana_provenance
+            .iter()
+            .flat_map(|provenance| provenance.sources.iter())
+            .any(|payment| payment.source == source && payment.amount > 0)
+    }
+
     /// Mana spent is a fact of an actual cast, never inherited by a spell copy.
     pub(super) fn actual_cast_event(&self) -> Option<CastPaymentEvent> {
         self.cast
@@ -108,6 +127,7 @@ impl SpellView {
                 controller: cast.caster,
                 payment: cast.payment,
                 treasure_mana_spent: cast.treasure_mana_spent,
+                cave_mana_spent: self.cave_mana_spent(),
                 web_slinging_return_mana_value: cast.web_slinging_return_mana_value,
             })
     }

@@ -100,6 +100,8 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath => {
                         matches!(cause, TriggerCause::CreatureDeath)
                     }
+                    // The source view carries all ordinary extras into event
+                    // dispatch. Entry, attack and death add only their own scopes.
                     _ => matches!(cause, TriggerCause::Ordinary),
                 };
                 if !matches_event {
@@ -120,6 +122,16 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                 scope,
                                 AdditionalTriggerScope::ControlledCreatureSubtype(_)
                             ) || query.kinds(id) & 1 != 0)
+                    }
+                    AdditionalTriggerScope::OtherControlledCreatureOfChosenType => {
+                        id != provider
+                            && recipient.controller == object.controller
+                            && query.kinds(id) & 1 != 0
+                            && matches!(
+                                query.entry_value(query.reference(provider)),
+                                Some(EntryChoiceValue::CreatureType(kind))
+                                    if query.subtypes(id).has(recipient.card, kind.name())
+                            )
                     }
                     AdditionalTriggerScope::ControlledPermanentAttack
                     | AdditionalTriggerScope::ControlledPermanentEntry => {

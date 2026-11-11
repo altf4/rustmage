@@ -465,6 +465,7 @@ fn capital_city_can_make_colorless_filter_mana_or_cycle() {
     g.state.players[p.index()].mana = colorless;
     act(&mut g, mana(city, 1, colorless, blue));
     assert_eq!(g.state.players[p.index()].mana, blue);
+    g.clear_step_mana(false, false);
     g.state.players[p.index()].mana = [0, 0, 0, 0, 0, 2];
     activate(&mut g, spare, 2, None);
     settle(&mut g);

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dfd45eff20c2465ac8b8c738e0829e6596f195aede03708052c23b27c65ba7c8"
   },
-  "physical_metadata_sha256": "f026fc2b52835cb0e0f9b96943b73d05fc65b9a15e21d71d85e9f275d4e0ab1b"
+  "physical_metadata_sha256": "f026fc2b52835cb0e0f9b96943b73d05fc65b9a15e21d71d85e9f275d4e0ab1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Colossadactyl.java",
+  "java_sha256": "711373b76fb2a53ece4e2ca7b39ffe05bd99eb01746a55cf858f02bdcb739e8a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

@@ -142,6 +142,16 @@ impl Game {
             }
             let id = event.after.card;
             let controller = self.state.objects[id as usize].controller;
+            // Registration predates the full simultaneous entry. Freeze the
+            // actual controller now that continuous control has settled.
+            if let Some(entry) = self
+                .state
+                .entered_this_turn
+                .as_mut()
+                .and_then(|rows| rows.iter_mut().find(|entry| entry.object == event.after))
+            {
+                entry.controller = controller;
+            }
             let kinds = self.current_kinds(id);
             facts[controller.index()].artifact_entered |= kinds & 16 != 0;
             if kinds & 2 != 0 {

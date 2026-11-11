@@ -93,16 +93,22 @@ impl Game {
             })
     }
 
-    fn aura_protects_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
-        let player = match defender {
-            CombatDefender::Player(player) => player,
+    pub(super) fn player_or_planeswalker_defender(
+        &self,
+        defender: CombatDefender,
+    ) -> Option<Player> {
+        match defender {
+            CombatDefender::Player(player) => Some(player),
             CombatDefender::Planeswalker(object)
                 if self.on_battlefield(object.card) && self.object_ref(object.card) == object =>
             {
-                self.state.objects[object.card as usize].controller
+                Some(self.state.objects[object.card as usize].controller)
             }
-            CombatDefender::Planeswalker(_) | CombatDefender::Battle(_) => return false,
-        };
+            CombatDefender::Planeswalker(_) | CombatDefender::Battle(_) => None,
+        }
+    }
+
+    fn aura_protects_defender(&self, attacker: CardId, player: Player) -> bool {
         let attacker = self.object_ref(attacker);
         self.state.attachment_sources.iter().any(|&id| {
             let aura = &self.state.objects[id as usize];
@@ -123,8 +129,14 @@ impl Game {
     }
 
     pub(super) fn can_attack_defender(&self, attacker: CardId, defender: CombatDefender) -> bool {
-        if self.aura_protects_defender(attacker, defender) {
-            return false;
+        if let Some(player) = self.player_or_planeswalker_defender(defender) {
+            let actor = self.state.objects[attacker as usize].controller;
+            if self.state.combat_rules.as_ref().is_some_and(|rules| {
+                rules.player_attack_prohibitions[actor.index()] & (1 << player.index()) != 0
+            }) || self.aura_protects_defender(attacker, player)
+            {
+                return false;
+            }
         }
         if let CombatDefender::Planeswalker(walker) | CombatDefender::Battle(walker) = defender {
             let object = &self.state.objects[walker.card as usize];

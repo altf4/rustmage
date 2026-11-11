@@ -1248,6 +1248,7 @@ fn forest_and_gallant_citizen_supply_and_consume_the_printed_colors() {
         assert_eq!(game.state.players[P.index()].mana, [0, 0, 0, 0, 1, 0]);
         assert!(game.object_view(forest).has_subtype("Forest"));
         let citizen = put(&mut game, P, "Gallant Citizen", Zone::Hand);
+        game.clear_step_mana(false, false);
         game.state.players[P.index()].mana = payment;
         act(&mut game, Action::AnnounceCast { card: citizen });
         choose_spell_cost_if_needed(&mut game);
@@ -1364,6 +1365,7 @@ fn guy_in_the_chair_taps_for_any_color_and_supports_a_spider_at_sorcery_speed() 
     assert_eq!(game.state.players[P.index()].mana, WHITE);
     assert!(game.object_view(source).tapped);
     game.state.objects[source as usize].tapped = false;
+    game.clear_step_mana(false, false);
     game.state.players[P.index()].mana = [0, 0, 0, 0, 1, 2];
     act(&mut game, announce_activation(source, 1));
     reject(&mut game, target_action(Target::Card(ordinary)));

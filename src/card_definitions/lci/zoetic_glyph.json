@@ -3,10 +3,56 @@
   "catalogue_id": 5167,
   "oracle_id": "1c21efcf-1007-45bb-ba21-ac33c2a8d751",
   "facts_sha256": "7c164794e411abaee5490bf590fbb4acb654038e0fcc3132174ded6f8a5901e8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "681af10179522e6b2ddf3e6752db5404515886b0c0a30296ea39846ee2a84f06"
   },
-  "physical_metadata_sha256": "d47b6a27f35af898875675429de63dd564c812695a71960e32b0a6b659d692e9"
+  "physical_metadata_sha256": "d47b6a27f35af898875675429de63dd564c812695a71960e32b0a6b659d692e9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZoeticGlyph.java",
+  "java_sha256": "ead6eef3984f5fd241d3e2f3a3e045131c63e81b4fb2feb6bcad19d5ff21b6ce",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureAttachedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3fe1bc492de2b19b90314d93d7a07c705a70927e168d63458084f5a6360a2a0f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetArtifactPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7cbfb4763fc203a4f36b4b779bad8102d058066579a47e323b1ba1dc02153d53"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_live.rs"
 }

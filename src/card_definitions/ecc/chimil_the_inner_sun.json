@@ -3,10 +3,36 @@
   "catalogue_id": 737,
   "oracle_id": "119d9671-61ba-4629-89b1-f94bdec5cb74",
   "facts_sha256": "4f41c5607317647ff688501967e2c6ecf109527e634f90e27900a62f8b4591fe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e82553827d479c38767a5dded9b2b9727d857154250ab5c140f809ad679ade90"
   },
-  "physical_metadata_sha256": "adf927b314462be28497aa2de1ff526aca3688d8d3001a4f7389d81d127feaaa"
+  "physical_metadata_sha256": "adf927b314462be28497aa2de1ff526aca3688d8d3001a4f7389d81d127feaaa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ChimilTheInnerSun.java",
+  "java_sha256": "14eaa1013e19c07e0d34d8ab5263d853476a6677f98e3f56b477ca93dc700222",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CantBeCounteredControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "27fc63b4a9057d305e6356dfcbeb00c952df15e838118ff0b63af6e135e968c3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_discover_explore"
 }

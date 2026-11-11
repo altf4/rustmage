@@ -3,10 +3,36 @@
   "catalogue_id": 532,
   "oracle_id": "43c92618-0aae-41f8-aa39-393e5d6b5ff7",
   "facts_sha256": "f6a72faec8dfa37604782843233dd3a0b334766325f44bcc1ac0266525e36261",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d418358a27519555e16837b8b6dec82d5f36aa9d875d8d9faf2f16432c4aac7"
   },
-  "physical_metadata_sha256": "48e172760766bf0d3ab41a3e2ce82ac6dae757f9048fa2f7074e66dab95382cd"
+  "physical_metadata_sha256": "48e172760766bf0d3ab41a3e2ce82ac6dae757f9048fa2f7074e66dab95382cd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrazenBlademaster.java",
+  "java_sha256": "b3dcaa972685e51f6701501c0d537429b4adbf281a4c18c002aa19ca674a5c97",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

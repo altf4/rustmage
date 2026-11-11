@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fdf0fc070c1d6685f511b50e288bbe4bdb9fa4710657a05f704110fcd8edc29"
   },
-  "physical_metadata_sha256": "990b9656d349e86c2a71846491a36b9a3c5ed9041996888e53863964a4fbf6f5"
+  "physical_metadata_sha256": "990b9656d349e86c2a71846491a36b9a3c5ed9041996888e53863964a4fbf6f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DeathcapMarionette.java",
+  "java_sha256": "5b90b6768e53384ac035d71ef4c242ab2c2bedc5f91d1bc62ef1e13c6c610ef8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

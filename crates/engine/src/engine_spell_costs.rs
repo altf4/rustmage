@@ -76,6 +76,32 @@ impl Game {
         discount: ManaCost,
         extra_reduction: u64,
     ) -> Option<ManaCost> {
+        self.spell_total_with_reductions_and_types(
+            actor,
+            id,
+            base,
+            definition,
+            mana_value,
+            extra_generic,
+            discount,
+            extra_reduction,
+            self.spell_cost_subtypes(id),
+        )
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub(super) fn spell_total_with_reductions_and_types(
+        &self,
+        actor: Player,
+        id: CardId,
+        base: ManaCost,
+        definition: Card,
+        mana_value: u64,
+        extra_generic: u64,
+        discount: ManaCost,
+        extra_reduction: u64,
+        subtypes: GrantedSubtypes,
+    ) -> Option<ManaCost> {
         let raw = u64::from(base.generic)
             .checked_add(extra_generic)?
             .checked_add(self.spell_generic_tax(actor, definition))?;
@@ -84,7 +110,7 @@ impl Game {
             .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))
             .sum::<u64>();
         let reductions = self
-            .spell_reduction_for_definition(actor, id, mana_value, definition)
+            .spell_reduction_with_subtypes(actor, id, mana_value, definition, subtypes)
             .saturating_add(u64::from(discount.generic))
             .saturating_add(extra_reduction)
             .saturating_add(excess);
@@ -120,7 +146,20 @@ impl Game {
         card: CardId,
         cost: ManaCost,
     ) -> bool {
-        let definition = self.effective_spell_card(card);
+        self.spell_cost_option_available_for_definition(
+            actor,
+            card,
+            cost,
+            self.effective_spell_card(card),
+        )
+    }
+    pub(super) fn spell_cost_option_available_for_definition(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        definition: Card,
+    ) -> bool {
         let (colored, generic) = definition.cost();
         cost == ManaCost { colored, generic }
             || definition.cost_alternative_guard().is_none_or(|guard| {
@@ -314,9 +353,11 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
+        let source = self.object_ref(card);
         let available = match definition.effect() {
-            Effect::Modal(modes) => modes.iter().any(|mode| {
-                self.cast_targets_available(mode.targets, actor, self.object_ref(card))
+            Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
+                self.spell_mode_eligible(actor, source, definition, index)
+                    && self.cast_targets_available(mode.targets, actor, source)
             }),
             Effect::Spell(plan, _) | Effect::Aura(plan) => {
                 self.cast_targets_available(plan, actor, self.object_ref(card))
@@ -470,6 +511,31 @@ impl Game {
         mana_value: u64,
         definition: Card,
     ) -> u64 {
+        self.spell_reduction_with_subtypes(
+            actor,
+            id,
+            mana_value,
+            definition,
+            self.spell_cost_subtypes(id),
+        )
+    }
+
+    fn spell_cost_subtypes(&self, id: CardId) -> GrantedSubtypes {
+        let mut subtypes = GrantedSubtypes::default();
+        if self.state.objects[id as usize].zone == Zone::Stack {
+            subtypes.add_creature_types(self.cast_added_creature_types(self.object_ref(id)));
+        }
+        subtypes
+    }
+
+    fn spell_reduction_with_subtypes(
+        &self,
+        actor: Player,
+        id: CardId,
+        mana_value: u64,
+        definition: Card,
+        subtypes: GrantedSubtypes,
+    ) -> u64 {
         if definition.cost_reductions().is_empty()
             && self.state.static_sources.is_empty()
             && self.affinity_grants(actor, definition) == 0
@@ -477,9 +543,9 @@ impl Game {
             return self.turn_spell_reduction(actor, definition);
         }
         if let Some(world) = self.cast_departure(self.object_ref(id), actor) {
-            self.spell_reduction_in_world(&world, actor, id, mana_value, definition)
+            self.spell_reduction_in_world(&world, actor, id, mana_value, definition, subtypes)
         } else {
-            self.spell_reduction_in_world(self, actor, id, mana_value, definition)
+            self.spell_reduction_in_world(self, actor, id, mana_value, definition, subtypes)
         }
     }
 
@@ -497,6 +563,7 @@ impl Game {
         id: CardId,
         mana_value: u64,
         definition: Card,
+        subtypes: GrantedSubtypes,
     ) -> u64 {
         let recipient = world.object(id);
         let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
@@ -504,7 +571,7 @@ impl Game {
             let object = world.object(source);
             (match rule.filter {
                 CastFilter::SourceChosenCreatureType => {
-                    matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if definition.has_subtype(typ.name()))
+                    matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if subtypes.has(definition, typ.name()))
                 }
                 CastFilter::FirstQualifiedCreature(qualifier) => {
                     qualifier.matches(definition)
@@ -519,7 +586,11 @@ impl Game {
                         value.toughness > value.power
                     }
                 }
-                _ => rule.filter.matches_mana_value(definition, mana_value),
+                _ => rule
+                    .filter
+                    .matches_mana_value_with(definition, mana_value, |subtype| {
+                        subtypes.has(definition, subtype)
+                    }),
             }) && match rule.turn {
                 CostTurn::Any => true,
                 CostTurn::Graveyard => {

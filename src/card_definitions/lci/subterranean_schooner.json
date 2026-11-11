@@ -3,10 +3,46 @@
   "catalogue_id": 4198,
   "oracle_id": "7f82bae3-feaa-4967-a843-32a4f72806d5",
   "facts_sha256": "345bd41b8808937d5658c091205a45915b60d40c5d1b31c8aecf8b82758abac0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fd511518089ccaf119a422d2c53b5a2db51d175eed14f3f50a384dada53bda15"
   },
-  "physical_metadata_sha256": "6db4d74bb7dcdf06770aaf6399d8e31e4ddae008dea72f6c303f522101e15dc3"
+  "physical_metadata_sha256": "6db4d74bb7dcdf06770aaf6399d8e31e4ddae008dea72f6c303f522101e15dc3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SubterraneanSchooner.java",
+  "java_sha256": "1f054d821e9fd31f61fe00dccc4acd7015091ef03d2603355a77cfb245e5d207",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "341217e7c17ad4a5921695f9ec242245be91395b6e49e6bc4494521f59beb9ba"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CrewedVehicleWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cf30f42d7f9bb7e0d06079c5c413d2c1bfc294b9d5d2dd1c442a37708fc05075"
+    }
+  ],
+  "rules_tests": "lci_cards_s_z_attachment_crew"
 }

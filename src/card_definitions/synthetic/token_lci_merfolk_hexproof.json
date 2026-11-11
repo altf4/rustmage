@@ -1,0 +1,12 @@
+{
+  "name": "@token/lci-merfolk-hexproof",
+  "catalogue_id": 5576,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "2d6ab862485270469ae0c64ac0d3c1c25cd45dbe67969d8469fae18c0ffcef6d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MerfolkHexproofToken.java",
+  "java_sha256": "8fcb9595483b9c6ca0408a26e10824ed383808e782ba7e71e14f7b41624fbc36",
+  "rules_tests": "tests/lci_token_recipes.rs"
+}

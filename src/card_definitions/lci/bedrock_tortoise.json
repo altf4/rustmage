@@ -3,10 +3,46 @@
   "catalogue_id": 370,
   "oracle_id": "d9c2e674-11a9-47f0-8790-a53b62c43fe6",
   "facts_sha256": "0be9ad9d8db2b0b659dc4ec90020f7ba8412f927056227111791965fc1a98545",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82eeecbeba7e2593ea3c4aeac0977bf74b1bea13d13950941f3ac235279896fb"
   },
-  "physical_metadata_sha256": "f74c1f3ae774cab164ec73ecb9ccb655a408e96367ca2e7e2d0f8490fc8646da"
+  "physical_metadata_sha256": "f74c1f3ae774cab164ec73ecb9ccb655a408e96367ca2e7e2d0f8490fc8646da",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BedrockTortoise.java",
+  "java_sha256": "05265956d44003480837c809fa31b45499e018e0ebe175def9c889840441d0b8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MyTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a6c7cf96d2fdec34c9c999ad4b486627d257eeac9b7e7de139f104ac1ef45d90"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CombatDamageByToughnessControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f53d12244705d3bec02687372af643608ee307af417a19d2f4ee28f072e6732b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

@@ -1,5 +1,6 @@
 //! Public explore transactions, exact incarnations and bounded owned knowledge.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -14,6 +15,17 @@ pub struct ExplorerView {
     pub object: ObjectRef,
     pub card: Card,
     pub controller: Player,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ExplorerView {
+    pub(super) fn from_view(view: &ObjectView) -> Self {
+        Self {
+            kinds: view.kinds,
+            object: view.reference,
+            card: view.card,
+            controller: view.controller,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -32,6 +44,21 @@ pub struct ExploreEventView {
     pub destination: Option<Zone>,
     pub result: Option<ObjectRef>,
     pub counter_added: bool,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Explorer {
+    AwaitingEntry(ObjectRef),
+    Ready(ExplorerView),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ExploreSequence {
+    explorer: Explorer,
+    remaining: u128,
+    /// Frozen number of equivalent scry replacements left for this event.
+    scries: Option<usize>,
+    pub(super) choice: Option<ExploreChoiceView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
@@ -125,50 +152,162 @@ impl Game {
             }
         }
     }
-    pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject) -> bool {
+    fn live_explorer(&self, object: ObjectRef) -> Option<ExplorerView> {
+        let id = object.card;
+        (self.on_battlefield(id) && self.object_ref(id) == object).then(|| {
+            let current = &self.state.objects[id as usize];
+            ExplorerView {
+                kinds: self.current_kinds(id),
+                object,
+                card: current.card,
+                controller: current.controller,
+            }
+        })
+    }
+    fn set_explore_sequence(&mut self, explorer: Explorer, amount: u128) {
+        if amount != 0 {
+            let resolution = self.state.resolving.as_mut().unwrap();
+            assert!(resolution.explore.is_none());
+            resolution.explore = Some(Box::new(ExploreSequence {
+                explorer,
+                remaining: amount,
+                scries: None,
+                choice: None,
+            }));
+        }
+    }
+    pub(super) fn start_explore(&mut self, item: &SpellView, subject: Subject, amount: u128) {
+        if amount == 0 {
+            return;
+        }
         let explorer = match subject {
-            Subject::Source => {
-                let Some(source) = item.source else {
-                    return false;
-                };
-                ExplorerView {
-                    kinds: if self.on_battlefield(source.id)
-                        && self.object_ref(source.id) == source.object
-                    {
-                        self.current_kinds(source.id)
-                    } else {
-                        source.facts.kinds
-                    },
-                    object: source.object,
-                    card: source.card,
-                    controller: if self.on_battlefield(source.id)
-                        && self.object_ref(source.id) == source.object
-                    {
-                        self.state.objects[source.id as usize].controller
-                    } else {
-                        source.facts.controller
-                    },
-                }
-            }
-            Subject::Targets => {
-                let Some(bound) = item.targets.first().copied() else {
-                    return false;
-                };
-                let Target::Card(id) = bound.target else {
-                    return false;
-                };
-                if !self.same_target_object(bound) || !self.on_battlefield(id) {
-                    return false;
-                }
-                ExplorerView {
-                    kinds: self.current_kinds(id),
-                    object: bound.object.unwrap(),
-                    card: self.state.objects[id as usize].card,
-                    controller: self.state.objects[id as usize].controller,
-                }
-            }
+            Subject::Source => item.source.map(|source| {
+                self.live_explorer(source.object)
+                    .or_else(|| {
+                        item.source_quantity_lki
+                            .as_ref()
+                            .and_then(|facts| facts.explorer)
+                    })
+                    .unwrap_or(ExplorerView {
+                        kinds: source.facts.kinds,
+                        object: source.object,
+                        card: source.card,
+                        controller: source.facts.controller,
+                    })
+            }),
+            Subject::Targets => item
+                .targets
+                .first()
+                .and_then(|bound| bound.object)
+                .and_then(|object| self.live_explorer(object)),
             _ => unreachable!("unsupported explore subject"),
         };
+        if let Some(explorer) = explorer {
+            self.set_explore_sequence(Explorer::Ready(explorer), amount);
+        }
+    }
+    pub(super) fn return_target_then_explore(&mut self, item: &SpellView, amount: u128) {
+        let Some(object) = item.targets.first().and_then(|bound| bound.object) else {
+            return;
+        };
+        if self.object_ref(object.card) != object
+            || self.state.objects[object.card as usize].zone != Zone::Graveyard
+        {
+            return;
+        }
+        let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+        movement.controller = item.controller;
+        self.set_explore_sequence(Explorer::AwaitingEntry(object), amount);
+        self.stage_entries(vec![movement], None);
+    }
+    pub(super) fn capture_returned_explorer(&mut self, events: &[ZoneChange]) {
+        let Some(Explorer::AwaitingEntry(origin)) = self
+            .state
+            .resolving
+            .as_ref()
+            .and_then(|resolution| resolution.explore.as_ref())
+            .map(|sequence| sequence.explorer)
+        else {
+            return;
+        };
+        let explorer = events
+            .iter()
+            .find(|event| {
+                event.moved
+                    && event.before.reference == origin
+                    && event.destination == Zone::Battlefield
+            })
+            .and_then(|event| self.live_explorer(event.after));
+        if let Some(explorer) = explorer {
+            self.state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .explore
+                .as_mut()
+                .unwrap()
+                .explorer = Explorer::Ready(explorer);
+        }
+    }
+    fn pre_explore_scries(&self, explorer: ExplorerView) -> usize {
+        if explorer.kinds & 1 == 0 {
+            return 0;
+        }
+        self.state
+            .static_sources
+            .iter()
+            .filter(|&&id| {
+                self.state.objects[id as usize].controller == explorer.controller
+                    && self.active_rule_fragment(id, |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::ScryBeforeControlledCreatureExplores
+                        )
+                    })
+            })
+            .count()
+    }
+    /// Advance one scry or explore. The program settles replacements first and
+    /// calls back before advancing to the next printed instruction.
+    pub(super) fn advance_explore(&mut self) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let sequence = resolution.explore.as_ref().unwrap();
+        if resolution.library.is_some() || sequence.choice.is_some() {
+            return true;
+        }
+        let Explorer::Ready(explorer) = sequence.explorer else {
+            self.state.resolving.as_mut().unwrap().explore = None;
+            return false;
+        };
+        if sequence.remaining == 0 {
+            self.state.resolving.as_mut().unwrap().explore = None;
+            return false;
+        }
+        let (explorer, scries) = sequence.scries.map_or_else(
+            || {
+                let current = self.live_explorer(explorer.object).unwrap_or(explorer);
+                (current, self.pre_explore_scries(current))
+            },
+            |left| (explorer, left),
+        );
+        let sequence = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .explore
+            .as_mut()
+            .unwrap();
+        sequence.explorer = Explorer::Ready(explorer);
+        if scries != 0 {
+            sequence.scries = Some(scries - 1);
+            return self.start_library_arrangement(explorer.controller, 1, false);
+        }
+        sequence.scries = None;
+        sequence.remaining -= 1;
+        self.explore_once(explorer)
+    }
+    fn explore_once(&mut self, explorer: ExplorerView) -> bool {
         let player = explorer.controller;
         let revealed = self.top_library_card(player).map(|id| RevealedLibraryCard {
             object: self.object_ref(id),
@@ -207,11 +346,18 @@ impl Game {
             );
         }
         if let Some(revealed) = revealed {
-            self.state.resolving.as_mut().unwrap().explore = Some(Box::new(ExploreChoiceView {
+            self.state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .explore
+                .as_mut()
+                .unwrap()
+                .choice = Some(ExploreChoiceView {
                 explorer,
                 revealed,
                 counter_added,
-            }));
+            });
             self.state.pending = Pending::Explore { player };
             true
         } else {
@@ -225,12 +371,15 @@ impl Game {
         }
     }
     pub(super) fn finish_explore(&mut self, graveyard: bool) {
-        let choice = *self
+        let choice = self
             .state
             .resolving
             .as_mut()
             .unwrap()
             .explore
+            .as_mut()
+            .unwrap()
+            .choice
             .take()
             .unwrap();
         let (destination, result) = if graveyard {

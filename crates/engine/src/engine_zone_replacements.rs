@@ -16,6 +16,7 @@ pub(super) fn affected_player(before: &ObjectView) -> Player {
 pub enum ZoneReplacementKind {
     RevealShuffle,
     DreamExile,
+    Rebound,
     AdventureExile,
     OmenShuffle,
     /// The event is prevented; the object remains in its original zone.
@@ -169,6 +170,8 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
     pub dream: Option<DreamExileView>,
+    pub rebound: Option<Player>,
+    pub resolution_face: Option<(Player, CastFace)>,
     pub prevent: bool,
     pub shuffle_self: bool,
     pub shuffle_spell: bool,
@@ -195,6 +198,7 @@ pub(super) enum ZoneShuffle {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum ZoneMoveCompletion {
     Dream,
+    Rebound(Player),
     Adventure(Player),
     LinkedDeathExile(LinkedDeathExile),
 }
@@ -325,6 +329,9 @@ impl Game {
         let (Some(cast), Some(source)) = (item.cast, item.source) else {
             return;
         };
+        if source.card.keywords().contains(Keywords::REBOUND) {
+            self.state.zone_rules.get_or_insert_default();
+        }
         if cast.exile_on_graveyard {
             let rows = &mut self
                 .state
@@ -555,6 +562,8 @@ impl Game {
         }
         FrozenRules {
             dream: self.dream_resolution_mark(before.reference),
+            rebound: None,
+            resolution_face: None,
             prevent,
             reflexive_exiles,
             linked_death_exiles,
@@ -598,6 +607,8 @@ impl Game {
             && frozen.iter().any(|(_, _, rules, _)| {
                 // All other effects collapse to a single exile option.
                 rules.dream.is_some()
+                    || rules.rebound.is_some()
+                    || rules.resolution_face.is_some()
                     || rules.prevent
                     || rules.shuffle_self
                     || rules.shuffle_spell
@@ -759,9 +770,14 @@ impl Game {
             };
         }
         let mut choices = Vec::new();
-        if let Some(mark) = rules.dream {
+        if rules.dream.is_some() {
             choices.push(ZoneReplacementKind::DreamExile);
-            match mark.face {
+        }
+        if rules.rebound.is_some() {
+            choices.push(ZoneReplacementKind::Rebound);
+        }
+        if let Some((_, face)) = rules.resolution_face {
+            match face {
                 CastFace::Adventure => choices.push(ZoneReplacementKind::AdventureExile),
                 CastFace::Omen => choices.push(ZoneReplacementKind::OmenShuffle),
                 _ => {}
@@ -865,8 +881,11 @@ impl Game {
         Plan {
             completion: match effect {
                 ZoneReplacementKind::DreamExile => Some(ZoneMoveCompletion::Dream),
+                ZoneReplacementKind::Rebound => Some(ZoneMoveCompletion::Rebound(
+                    rules.rebound.expect("marked rebound"),
+                )),
                 ZoneReplacementKind::AdventureExile => Some(ZoneMoveCompletion::Adventure(
-                    rules.dream.expect("marked adventure").player,
+                    rules.resolution_face.expect("resolving adventure").0,
                 )),
                 ZoneReplacementKind::ExileLinked { source } => {
                     Some(ZoneMoveCompletion::LinkedDeathExile(
@@ -893,6 +912,7 @@ impl Game {
                     }
                 }
                 ZoneReplacementKind::DreamExile
+                | ZoneReplacementKind::Rebound
                 | ZoneReplacementKind::AdventureExile
                 | ZoneReplacementKind::Exile
                 | ZoneReplacementKind::ExileReflexive { .. }
