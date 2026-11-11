@@ -3,10 +3,31 @@
   "catalogue_id": 928,
   "oracle_id": "0e636c98-67c7-4f02-b909-5d43e276fa41",
   "facts_sha256": "94bfad17da4ede4aa36f9ec27816cbcb943a4f3ae88ad5dae7ec28470d336f93",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7cc51acaa23c99996dab618b96cf9487e02e4a44b6a1f06a1807b4937337d77"
   },
-  "physical_metadata_sha256": "de67c6fade0d6102db42f1635b58298956102770453727a41d30325dae2093d8"
+  "physical_metadata_sha256": "de67c6fade0d6102db42f1635b58298956102770453727a41d30325dae2093d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CuratorOfSunsCreation.java",
+  "java_sha256": "7ed08dbdfadad7838ce03abd92ddd024e12a65d2388b4d02ec8169c504c3f821",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/StaticHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5a3f3b2f76e808a6d65498aed67bd359bb920462548d28baf94bc63e4be7f2c2"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_discover_explore"
 }

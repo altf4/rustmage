@@ -1,16 +1,44 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the paired Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Scry(2)],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            colored: [1, 0, 0, 0, 0, 0],
+            generic: 2,
+            mana_component: true,
+            exile_self: true,
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::ExileControlledOrGraveyard,
+                filter: SacrificeFilter {
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    kinds: 16,
+                    nonland: false,
+                    other: true,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+            }),
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnCraftedSourceTransformed],
+        sorcery: true,
+        once_per_turn: false,
+    }],
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING,
     ..CardRules::EMPTY
 };

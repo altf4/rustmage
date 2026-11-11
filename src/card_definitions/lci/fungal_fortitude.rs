@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const BONUS: Stats = Stats {
+    power: 2,
+    toughness: 0,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Aura(one(TargetRule::Creature)),
     keywords: Keywords::FLASH,
+    aura: Some(AuraSpec {
+        kinds: 1,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: BONUS,
+            keywords: Keywords::NONE,
+        },
+    }),
+    static_groups: &[StaticAbilityGroup {
+        line: 2,
+        first_layer: AbilityLayer::Modify,
+        fragments: &[StaticAbilityFragment::AttachmentStats(BONUS)],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AttachedCreatureDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ReturnEventCardToBattlefieldTapped],
+    }],
     ..CardRules::EMPTY
 };

@@ -3,10 +3,46 @@
   "catalogue_id": 118,
   "oracle_id": "53bfe54e-9b97-4113-97d9-3c5dbc85e7cf",
   "facts_sha256": "f29631d440c62eae8cd997fc5acad6d65d1a4f12824360f8ef0b66d89d850f9a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e1d9be9ed0a7c18fe802880817157d2107708339e46c1f2c0540f0b62635c1eb"
   },
-  "physical_metadata_sha256": "2608cc5dbe5ceffecc65965f89a5919ed816609bc4575283f3e067517b5784d1"
+  "physical_metadata_sha256": "2608cc5dbe5ceffecc65965f89a5919ed816609bc4575283f3e067517b5784d1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AkalPakalFirstAmongEquals.java",
+  "java_sha256": "322e7c132b369f92ba9f5689fbdd8bddbc05de7c8a4bfa16be0246f21cf9cf85",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_descend_choices"
 }

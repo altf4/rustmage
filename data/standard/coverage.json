@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "ee338e407a5635d04bde9dffefcdf2fb262a2a6971f0676378333e61539ea632",
+  "catalogue_version": "b0326a6635acec7ea36bbd032d2903bff0718d2b57a605576d65687ded46cba7",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4135,
-  "implemented_total": 4147,
+  "implemented_standard_cards": 4183,
+  "implemented_total": 4195,
   "token_definitions": 186,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -41,8 +41,8 @@
     },
     "ecc": {
       "total": 7,
-      "gated": 2,
-      "complete": 5
+      "complete": 6,
+      "gated": 1
     },
     "ecl": {
       "total": 267,
@@ -96,8 +96,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 162,
-      "complete": 111
+      "gated": 115,
+      "complete": 158
     },
     "m19": {
       "total": 2,
@@ -1137,8 +1137,8 @@
     {
       "name": "Akal Pakal, First Among Equals",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/akal_pakal_first_among_equals.rs",
       "set": "lci"
     },
@@ -1569,8 +1569,8 @@
     {
       "name": "Another Chance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/another_chance.rs",
       "set": "lci"
     },
@@ -2009,8 +2009,8 @@
     {
       "name": "Armored Kincaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/armored_kincaller.rs",
       "set": "lci"
     },
@@ -4745,8 +4745,8 @@
     {
       "name": "Broodrage Mycoid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/broodrage_mycoid.rs",
       "set": "lci"
     },
@@ -4897,8 +4897,8 @@
     {
       "name": "Buried Treasure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/buried_treasure.rs",
       "set": "lci"
     },
@@ -5265,8 +5265,8 @@
     {
       "name": "Canonized in Blood",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/canonized_in_blood.rs",
       "set": "lci"
     },
@@ -5305,8 +5305,8 @@
     {
       "name": "Caparocti Sunborn",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/caparocti_sunborn.rs",
       "set": "lci"
     },
@@ -6081,16 +6081,16 @@
     {
       "name": "Child of the Volcano",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/child_of_the_volcano.rs",
       "set": "lci"
     },
     {
       "name": "Chimil, the Inner Sun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecc/chimil_the_inner_sun.rs",
       "set": "ecc"
     },
@@ -6193,8 +6193,8 @@
     {
       "name": "Chupacabra Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/chupacabra_echo.rs",
       "set": "lci"
     },
@@ -7017,8 +7017,8 @@
     {
       "name": "Corpses of the Lost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/corpses_of_the_lost.rs",
       "set": "lci"
     },
@@ -7129,8 +7129,8 @@
     {
       "name": "Council of Echoes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/council_of_echoes.rs",
       "set": "lci"
     },
@@ -7617,8 +7617,8 @@
     {
       "name": "Curator of Sun's Creation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/curator_of_sun_s_creation.rs",
       "set": "lci"
     },
@@ -7865,8 +7865,8 @@
     {
       "name": "Daring Discovery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/daring_discovery.rs",
       "set": "lci"
     },
@@ -8345,8 +8345,8 @@
     {
       "name": "Deep Goblin Skulltaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/deep_goblin_skulltaker.rs",
       "set": "lci"
     },
@@ -8369,8 +8369,8 @@
     {
       "name": "Deepfathom Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/deepfathom_echo.rs",
       "set": "lci"
     },
@@ -8441,8 +8441,8 @@
     {
       "name": "Defossilize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/defossilize.rs",
       "set": "lci"
     },
@@ -8793,8 +8793,8 @@
     {
       "name": "Digsite Conservator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/digsite_conservator.rs",
       "set": "lci"
     },
@@ -9009,8 +9009,8 @@
     {
       "name": "Disturbed Slumber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/disturbed_slumber.rs",
       "set": "lci"
     },
@@ -10153,8 +10153,8 @@
     {
       "name": "Earthshaker Dreadmaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/earthshaker_dreadmaw.rs",
       "set": "lci"
     },
@@ -10209,8 +10209,8 @@
     {
       "name": "Echoing Deeps",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/echoing_deeps.rs",
       "set": "lci"
     },
@@ -10961,8 +10961,8 @@
     {
       "name": "Enterprising Scallywag",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/enterprising_scallywag.rs",
       "set": "lci"
     },
@@ -11201,8 +11201,8 @@
     {
       "name": "Etali's Favor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/etali_s_favor.rs",
       "set": "lci"
     },
@@ -11569,8 +11569,8 @@
     {
       "name": "Fabrication Foundry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/fabrication_foundry.rs",
       "set": "lci"
     },
@@ -12945,8 +12945,8 @@
     {
       "name": "Forgotten Monument",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/forgotten_monument.rs",
       "set": "lci"
     },
@@ -13401,8 +13401,8 @@
     {
       "name": "Fungal Fortitude",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/fungal_fortitude.rs",
       "set": "lci"
     },
@@ -13889,8 +13889,8 @@
     {
       "name": "Geological Appraiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/geological_appraiser.rs",
       "set": "lci"
     },
@@ -16217,8 +16217,8 @@
     {
       "name": "Helping Hand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/helping_hand.rs",
       "set": "lci"
     },
@@ -16585,8 +16585,8 @@
     {
       "name": "Hit the Mother Lode",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hit_the_mother_lode.rs",
       "set": "lci"
     },
@@ -17049,8 +17049,8 @@
     {
       "name": "Hurl into History",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hurl_into_history.rs",
       "set": "lci"
     },
@@ -17817,8 +17817,8 @@
     {
       "name": "Intrepid Paleontologist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/intrepid_paleontologist.rs",
       "set": "lci"
     },
@@ -18137,8 +18137,8 @@
     {
       "name": "Ixalli's Lorekeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ixalli_s_lorekeeper.rs",
       "set": "lci"
     },
@@ -18233,8 +18233,8 @@
     {
       "name": "Jadelight Spelunker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/jadelight_spelunker.rs",
       "set": "lci"
     },
@@ -18465,8 +18465,8 @@
     {
       "name": "Join the Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/join_the_dead.rs",
       "set": "lci"
     },
@@ -21521,8 +21521,8 @@
     {
       "name": "Market Gnome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/market_gnome.rs",
       "set": "lci"
     },
@@ -21697,8 +21697,8 @@
     {
       "name": "Matzalantli, the Great Door // The Core",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/matzalantli_the_great_door_the_core.rs",
       "set": "lci"
     },
@@ -24041,8 +24041,8 @@
     {
       "name": "Oaken Siren",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/oaken_siren.rs",
       "set": "lci"
     },
@@ -24441,8 +24441,8 @@
     {
       "name": "Orazca Puzzle-Door",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/orazca_puzzle_door.rs",
       "set": "lci"
     },
@@ -24609,8 +24609,8 @@
     {
       "name": "Oteclan Landmark // Oteclan Levitator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/oteclan_landmark_oteclan_levitator.rs",
       "set": "lci"
     },
@@ -26081,8 +26081,8 @@
     {
       "name": "Primordial Gnawer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/primordial_gnawer.rs",
       "set": "lci"
     },
@@ -29089,8 +29089,8 @@
     {
       "name": "Ruin-Lurker Bat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ruin_lurker_bat.rs",
       "set": "lci"
     },
@@ -29361,8 +29361,8 @@
     {
       "name": "Sage of Days",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sage_of_days.rs",
       "set": "lci"
     },
@@ -29417,8 +29417,8 @@
     {
       "name": "Saheeli's Lattice // Mastercraft Raptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/saheeli_s_lattice_mastercraft_raptor.rs",
       "set": "lci"
     },
@@ -29873,8 +29873,8 @@
     {
       "name": "Scampering Surveyor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/scampering_surveyor.rs",
       "set": "lci"
     },
@@ -31353,8 +31353,8 @@
     {
       "name": "Skullcap Snail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/skullcap_snail.rs",
       "set": "lci"
     },
@@ -39641,8 +39641,8 @@
     {
       "name": "Volatile Fault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/volatile_fault.rs",
       "set": "lci"
     },
@@ -39833,8 +39833,8 @@
     {
       "name": "Walk with the Ancestors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/walk_with_the_ancestors.rs",
       "set": "lci"
     },
@@ -41585,8 +41585,8 @@
     {
       "name": "Zoyowa's Justice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/zoyowa_s_justice.rs",
       "set": "lci"
     },
