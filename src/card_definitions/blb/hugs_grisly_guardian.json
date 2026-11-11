@@ -3,10 +3,46 @@
   "catalogue_id": 2091,
   "oracle_id": "3c5c227a-335b-4995-9821-d4269a0a233a",
   "facts_sha256": "ee591597ca9bdf7d4ccab2c3ae809f8d4e253546663b0ecc940d228f73f4b296",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b23ed1c2ca4456dcc7882400bbcaaa62ccd852df06b72fe1073be1cd83bee5e"
   },
-  "physical_metadata_sha256": "32c8b5bcd942418850c20f7a4bea3b12e842e4cd7bb198f2de3dcec04205895d"
+  "physical_metadata_sha256": "32c8b5bcd942418850c20f7a4bea3b12e842e4cd7bb198f2de3dcec04205895d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HugsGrislyGuardian.java",
+  "java_sha256": "45c78bea77e23896d4537b4ddc737395ee2c4bec1999436cac0ab76eda48f4a8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayAdditionalLandsControllerEffect.java",
+      "sha256": "a7b2413a24959fbde172621336f4f48cb1ef76bc4254b922b272bfe2bef30664"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }

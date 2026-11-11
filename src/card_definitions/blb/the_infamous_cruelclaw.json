@@ -3,10 +3,61 @@
   "catalogue_id": 4454,
   "oracle_id": "e229d55c-9513-437d-bd67-015ac46aaa18",
   "facts_sha256": "ebe581bcd632a5e1c6b5c5159c565339220a8ef7abfd3551896ae4d70d49f417",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "41ccc8a3bf84ccc67910e20592fff97a36b3ccaceb652108aa6cd1782badea1e"
   },
-  "physical_metadata_sha256": "dc22cf23b20eec7fae63ec1babf566a8bec4e24652a0f7047de28ea348db955a"
+  "physical_metadata_sha256": "dc22cf23b20eec7fae63ec1babf566a8bec4e24652a0f7047de28ea348db955a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheInfamousCruelclaw.java",
+  "java_sha256": "91206fcc1ef85c88588f7f4730fb52232b2d087be22ab7281b1dcf0f7dc060c7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+      "sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostsImpl.java",
+      "sha256": "7b320b5c829830e9cd5f09832910509cc12f1b8bf526c5c358762e17d6969e6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }

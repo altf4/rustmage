@@ -3,10 +3,61 @@
   "catalogue_id": 2873,
   "oracle_id": "c115159c-6991-4812-b3b6-6ed80221cab4",
   "facts_sha256": "13a2d6612dce1b614f19900a1b99fb22edde169c9fbdc9226678243dce88ae97",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "52e5856e7f8ecbae8942a681a06d18a13b02117479a4acaf2efc551a545c210b"
   },
-  "physical_metadata_sha256": "2100bf2fffeb6b103d3fabf0be053445525dd57bc7ac1495c97aa556876ff494"
+  "physical_metadata_sha256": "2100bf2fffeb6b103d3fabf0be053445525dd57bc7ac1495c97aa556876ff494",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MuerraTrashTactician.java",
+  "java_sha256": "e491be886ac5dbf4440a4c794200337d74b790bfaa1463c48dfb18247bddabf0",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaInAnyCombinationEffect.java",
+      "sha256": "fb802b6605624db7d5995595779e3a8a882077a9a8b91124ebbf9013d19a440e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_expend.rs"
 }

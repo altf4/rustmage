@@ -3,10 +3,66 @@
   "catalogue_id": 125,
   "oracle_id": "63d50d5e-56de-44c4-b906-b2a21a56e3f3",
   "facts_sha256": "8a8316e5dbf4fe729b38bcfbfbd9c8a64be17a1d7bfcf0e3700d508291152862",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7f4d5e903bd28a2ee337c3a084bbbb171eec96b2ee037ec587780aa0a19f07d"
   },
-  "physical_metadata_sha256": "5b579ab297d018b40d7622ae36f6b032ca6a244954c005867d21f9ab77bb833d"
+  "physical_metadata_sha256": "5b579ab297d018b40d7622ae36f6b032ca6a244954c005867d21f9ab77bb833d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlaniaDivergentStorm.java",
+  "java_sha256": "0d448f2e72e324c16c1600278833a57087a0db5bd4a33a62029f27dace5b6542",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+      "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }

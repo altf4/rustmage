@@ -3,10 +3,86 @@
   "catalogue_id": 1994,
   "oracle_id": "0a0d25a8-4f28-453b-9270-4d449fe0ca65",
   "facts_sha256": "afd7e99890790f9e1d2adf12e0590360c82359a7c828ec1fbd4cf649c192944d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a68165cd1b4c6c189a06f81e85255b6b848524345442e0b9510cbc8b27b51a94"
   },
-  "physical_metadata_sha256": "8669b8283a0a4bf283bda4886dc15e381d4b302b3aa6b7c21382f638e813eeb0"
+  "physical_metadata_sha256": "8669b8283a0a4bf283bda4886dc15e381d4b302b3aa6b7c21382f638e813eeb0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HelgaSkittishSeer.java",
+  "java_sha256": "64fe30918d087089edf3af98fa34ac373a49b7155af6310521eeff0e6e44bcaf",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentPowerValue.java",
+      "sha256": "aabc6ce8b7bd68b08691830a2a45af0d886a2837c652bbca9e109b5813b0ca9a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/ManaEffect.java",
+      "sha256": "9332af88b954f2fdab1b7fc0bc71ac41d534eeb5ba12dceb4bd924b08f8f88e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/CreatureCastManaCondition.java",
+      "sha256": "2fe6eba8a8c032287e84bb56b3a9301126f3b3bc9c79ba40b63c66d7b116d47e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }

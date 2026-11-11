@@ -3,10 +3,51 @@
   "catalogue_id": 1767,
   "oracle_id": "df9409e6-bd6d-4b5b-b807-fcf347ee940a",
   "facts_sha256": "66a84fcd63d085984d7c1a0665c2b7a76790d79466d75490b8eef034c09d69cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6d9cf2462fbab99c4f6c9f0ab9db3049593a6e31c8476eac501d05ab9018f978"
   },
-  "physical_metadata_sha256": "41a354f66cd5b980d06ab314be3cc1a9a84b6bc2b3a4b2faceb59691d03c7a7f"
+  "physical_metadata_sha256": "41a354f66cd5b980d06ab314be3cc1a9a84b6bc2b3a4b2faceb59691d03c7a7f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlarbCalamitysAugur.java",
+  "java_sha256": "bb6adeab6c4507b61dfed1850d054c37d4462ee51a3180c2d72baaee937702ab",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/PlayFromTopOfLibraryEffect.java",
+      "sha256": "85eb4f9d72b858df624abe15ea3797b67aa3b9dc05bd5e55d9037d3c42f474dd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }
