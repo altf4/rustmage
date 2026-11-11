@@ -620,7 +620,7 @@ impl FundingState<'_> {
             StepGuard::Outlaw => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == player
-                    && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                    && crate::cards::OUTLAW_SUBTYPES
                         .iter()
                         .any(|s| self.subtypes(r.id).has(r.object.card, s))
             }),

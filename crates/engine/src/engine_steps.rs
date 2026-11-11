@@ -510,7 +510,7 @@ impl Game {
                 return self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.controller == player
                         && o.zone == Zone::Battlefield
-                        && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                        && crate::cards::OUTLAW_SUBTYPES
                             .iter()
                             .any(|s| world.subtypes(id as CardId).has(o.card, s))
                 });

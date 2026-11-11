@@ -8092,12 +8092,16 @@ impl Game {
                         self.add_mana(item.controller, mana);
                     }
                 }
-                Instruction::IfSacrificedVehicle { skip } => {
-                    if !item
-                        .paid_additional_cost
-                        .as_ref()
-                        .is_some_and(|paid| paid.sacrificed_vehicle)
-                    {
+                Instruction::IfSacrificedVehicle { skip }
+                | Instruction::IfSacrificedOutlaw { skip } => {
+                    let matches = item.paid_additional_cost.as_ref().is_some_and(|paid| {
+                        if matches!(instruction, Instruction::IfSacrificedVehicle { .. }) {
+                            paid.sacrificed_vehicle
+                        } else {
+                            paid.sacrificed_outlaw
+                        }
+                    });
+                    if !matches {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }

@@ -2424,10 +2424,11 @@ impl Game {
                     TargetPredicate::Legendary => world.legendary(id),
                     TargetPredicate::Nonlegendary => !world.legendary(id),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
-                    TargetPredicate::NonOutlaw => {
-                        !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                    TargetPredicate::Outlaw | TargetPredicate::NonOutlaw => {
+                        let outlaw = crate::cards::OUTLAW_SUBTYPES
                             .iter()
-                            .any(|subtype| has_subtype(id, subtype))
+                            .any(|subtype| has_subtype(id, subtype));
+                        outlaw == (*predicate == TargetPredicate::Outlaw)
                     }
                 };
             }

@@ -17,6 +17,7 @@ impl Game {
     // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
         self.register_activation_observer(id);
+        self.register_ability_target_source(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|ability| {
             ability.condition.origin() == Some(TargetZone::Graveyard)
@@ -56,6 +57,7 @@ impl Game {
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
     pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        self.forget_ability_target_source(id);
         if self.state.cast_sources.contains(&id) {
             self.state.cast_sources.retain(|&source| source != id);
         }

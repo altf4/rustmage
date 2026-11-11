@@ -1500,8 +1500,13 @@ impl Game {
                     a.item.sacrificed_power = Some(Box::new(self.stats(object.card).power));
                 }
                 if a.item.program().is_some_and(|(_, p)| {
-                    p.iter()
-                        .any(|i| matches!(i, Instruction::IfSacrificedVehicle { .. }))
+                    p.iter().any(|i| {
+                        matches!(
+                            i,
+                            Instruction::IfSacrificedVehicle { .. }
+                                | Instruction::IfSacrificedOutlaw { .. }
+                        )
+                    })
                 }) {
                     a.item.paid_additional_cost = Some(Box::new(
                         self.sacrifice_cost_batch_outcome(&[(a.item.controller, object.card)])

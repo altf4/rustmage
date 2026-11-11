@@ -9619,6 +9619,12 @@ impl Game {
             sacrificed_vehicle: events
                 .iter()
                 .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+            sacrificed_outlaw: events.iter().any(|event| {
+                event.sacrificed_by.is_some()
+                    && crate::cards::OUTLAW_SUBTYPES
+                        .iter()
+                        .any(|subtype| event.before.has_subtype(subtype))
+            }),
         })
     }
 

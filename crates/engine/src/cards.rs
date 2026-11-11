@@ -476,8 +476,11 @@ pub enum TargetPredicate {
     NoAbilities,
     Legendary,
     Nonlegendary,
+    Outlaw,
     NonOutlaw,
 }
+
+pub const OUTLAW_SUBTYPES: &[&str] = &["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"];
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -3782,6 +3785,9 @@ pub enum Instruction {
     IfSacrificedVehicle {
         skip: usize,
     },
+    IfSacrificedOutlaw {
+        skip: usize,
+    },
     AddManaScaled {
         color: ChoiceColor,
         amount: AmountValue,
@@ -4981,6 +4987,7 @@ pub enum StatValue {
     /// Creatures that actually left the battlefield under this player's control.
     ControlledCreatureDeparturesThisTurn,
     CardLeftGraveyardThisTurn,
+    CommittedCrimeThisTurn,
     /// Whether the controller owns a face-up adventurer card in exile.
     OwnExiledAdventurerCard,
     /// Physical cards in your graveyard that are instants, sorceries, or adventurers.
@@ -5990,6 +5997,7 @@ pub enum CastFilter {
     Enchantment,
     Subtype(&'static str),
     CreatureSubtype(&'static str),
+    Outlaw,
     AnyOf(&'static [CastFilter]),
     Multicolored,
     Colors {
@@ -6080,6 +6088,7 @@ impl CastFilter {
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => has_subtype(subtype),
             Self::CreatureSubtype(subtype) => card.is_creature() && has_subtype(subtype),
+            Self::Outlaw => OUTLAW_SUBTYPES.iter().copied().any(has_subtype),
             Self::AnyOf(filters) => filters
                 .iter()
                 .any(|filter| filter.matches_mana_value_with(card, mana_value, has_subtype)),
@@ -6492,6 +6501,8 @@ pub enum TriggerCondition {
     CastFromExile(&'static TriggerCondition),
     /// A spell cast or land played from a zone other than the actor's own hand.
     PlayFromOutsideOwnHand(&'static TriggerCondition),
+    /// One event for each committed spell or ability with an opposing target.
+    CommittedCrime,
     OncePerTurn(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
