@@ -120,7 +120,7 @@ fn sazacaps_brew_requires_discard_and_can_still_draw_after_the_creature_departs(
         object: game.object_ref(discarded),
     };
     for _ in 0..8 {
-        if game.object_view(brew).zone == Zone::Stack {
+        if game.state.pending == Pending::Priority && game.object_view(brew).zone == Zone::Stack {
             break;
         }
         choose(&mut game, |action| {

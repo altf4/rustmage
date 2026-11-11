@@ -502,3 +502,35 @@ fn iridescent_vinelasher_and_starscape_cleric_copies_retain_their_own_triggers()
         }
     }
 }
+
+#[test]
+fn wick_may_grow_and_sacrifice_a_kindred_snail_without_power() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let wick = put(
+        &mut game,
+        player,
+        "Wick, the Whorled Mind",
+        Zone::Battlefield,
+    );
+    let core = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
+    let rat = put(&mut game, player, "Persistent Marshstalker", Zone::Hand);
+    assert!(!game.is_creature(core));
+    assert!(game.has_subtype(core, "Snail"));
+    cast(&mut game, rat, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    let object = game.object_ref(core);
+    act(&mut game, Action::ChooseEffectObject { object });
+    assert_eq!(game.counter_count(core, CounterKind::PlusOne), 1);
+    assert!(game.controlled_token_ids(player).next().is_none());
+    activate(&mut game, wick, 0);
+    choose_cost(&mut game, core);
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(core).zone, Zone::Graveyard);
+    assert_eq!(life(&game, player.other()), 20);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+}
