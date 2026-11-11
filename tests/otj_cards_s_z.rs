@@ -129,7 +129,7 @@ fn satoru_ignores_paid_and_token_entries_and_draws_once_for_a_free_group() {
     pass_pair(&mut game);
     for card in [first, second] {
         let object = game.object_ref(card);
-        act(&mut game, Action::ChooseEffectObject { object });
+        act(&mut game, Action::PutHandCreature { object });
     }
     if game.legal_actions().contains(&Action::FinishEffectChoice) {
         act(&mut game, Action::FinishEffectChoice);
@@ -283,13 +283,13 @@ fn servant_requires_a_crime_and_the_actual_optional_self_sacrifice() {
     hit_player(&mut game, &[servant], player.other());
     pass_pair(&mut game);
     let outsider = game.object_ref(other);
-    reject(&mut game, Action::ChooseEffectObject { object: outsider });
+    reject(&mut game, Action::Sacrifice { object: outsider });
     let mut decline = game.clone();
-    act(&mut decline, Action::FinishEffectChoice);
+    act(&mut decline, Action::DeclineEffectPayment);
     assert_eq!(decline.object_view(servant).zone, Zone::Battlefield);
     assert_eq!(decline.object_view(find).zone, Zone::Library);
     let object = game.object_ref(servant);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Sacrifice { object });
     assert_eq!(game.object_view(servant).zone, Zone::Graveyard);
     act(&mut game, Action::ChooseSearch { card: find });
     if game.legal_actions().contains(&Action::FinishSearch) {
@@ -604,10 +604,10 @@ fn smuggler_combines_mill_recovery_private_deployment_and_current_power_protecti
     assert!(game.observe(player).effect_choice.is_some());
     assert!(game.observe(player.other()).effect_choice.is_none());
     let object = game.object_ref(recovered_land);
-    reject(&mut game, Action::ChooseEffectObject { object });
+    reject(&mut game, Action::PutHandCreature { object });
     for card in [recovered_creature, low] {
         let object = game.object_ref(card);
-        act(&mut game, Action::ChooseEffectObject { object });
+        act(&mut game, Action::PutHandCreature { object });
     }
     if game.legal_actions().contains(&Action::FinishEffectChoice) {
         act(&mut game, Action::FinishEffectChoice);
@@ -891,10 +891,8 @@ fn gitrog_sacrifices_only_its_exact_rider_then_draws_and_puts_tapped_lands() {
     assert_eq!(game.object_view(rider).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
     let object = game.object_ref(land);
-    act(&mut game, Action::ChooseEffectObject { object });
-    if game.legal_actions().contains(&Action::FinishEffectChoice) {
-        act(&mut game, Action::FinishEffectChoice);
-    }
+    act(&mut game, Action::SelectLand { object });
+    act(&mut game, Action::FinishLandSelection);
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
     assert!(game.object_view(land).tapped);
     assert!(!game.state.land_played);
@@ -1026,8 +1024,7 @@ fn three_steps_ahead_counters_then_copies_then_loots_in_the_same_paid_cast() {
     assert_eq!(tokens.len(), 1);
     assert_eq!((tokens[0].power, tokens[0].toughness), (2, 2));
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
-    let object = game.object_ref(discard);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Discard { card: discard });
     assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
 }
 
@@ -1102,12 +1099,10 @@ fn tinybones_joins_up_targets_any_number_and_waits_for_all_private_discards() {
     pass_pair(&mut game);
     assert_eq!(game.actor(), Some(player));
     assert!(game.observe(opponent).effect_choice.is_none());
-    let object = game.object_ref(ours);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Discard { card: ours });
     assert_eq!(game.actor(), Some(opponent));
     assert_eq!(game.object_view(ours).zone, Zone::Hand);
-    let object = game.object_ref(theirs);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Discard { card: theirs });
     assert_eq!(game.object_view(ours).zone, Zone::Graveyard);
     assert_eq!(game.object_view(theirs).zone, Zone::Graveyard);
 
@@ -1297,12 +1292,12 @@ fn contractor_only_targets_a_player_after_the_optional_sacrifice() {
     assert!(!game.state.players[player.index()].committed_crime_this_turn);
     pass_pair(&mut game);
     let object = game.object_ref(enemy_creature);
-    reject(&mut game, Action::ChooseEffectObject { object });
+    reject(&mut game, Action::Sacrifice { object });
     let mut decline = game.clone();
-    act(&mut decline, Action::FinishEffectChoice);
+    act(&mut decline, Action::DeclineEffectPayment);
     assert_eq!(decline.object_view(contractor).zone, Zone::Battlefield);
     let object = game.object_ref(contractor);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Sacrifice { object });
     assert_eq!(game.object_view(contractor).zone, Zone::Graveyard);
     assert!(!game.state.players[player.index()].committed_crime_this_turn);
     act(
@@ -1449,18 +1444,29 @@ fn vraska_returns_an_opposing_nontoken_as_tapped_treasure_with_its_own_abilities
     assert_eq!(treasure.controller, player);
     assert!(treasure.tapped);
     game.state.objects[elf as usize].tapped = false;
-    choose(&mut game, |action| {
-        matches!(action, Action::ActivateMana {
-        card, production, ..
-    } if *card == elf && *production == [0, 0, 0, 0, 1, 0])
+    let before = game.state.players[player.index()].mana[4];
+    choose(&mut game, |action| match action {
+        Action::TapMana { card } => *card == elf,
+        Action::ActivateMana {
+            card, production, ..
+        } => *card == elf && *production == [0, 0, 0, 0, 1, 0],
+        _ => false,
     });
+    assert_eq!(game.state.players[player.index()].mana[4], before + 1);
     assert_eq!(game.object_view(elf).zone, Zone::Battlefield);
     game.state.objects[elf as usize].tapped = false;
-    choose(&mut game, |action| {
-        matches!(action, Action::ActivateMana {
-        card, production, ..
-    } if *card == elf && *production == [0, 1, 0, 0, 0, 0])
-    });
+    let production = [0, 1, 0, 0, 0, 0];
+    act(
+        &mut game,
+        Action::TapGrantedMana {
+            card: elf,
+            grantor: treasure.reference,
+            production,
+        },
+    );
+    if matches!(game.state.pending, Pending::EffectMana { .. }) {
+        act(&mut game, Action::ChooseMana { production });
+    }
     assert_eq!(game.object_view(elf).zone, Zone::Graveyard);
     assert!(game.object_view(elf).has_subtype("Elf"));
 }
@@ -1498,4 +1504,585 @@ fn wrangler_checks_own_hand_casts_again_and_creates_a_white_flying_spirit() {
     let spirit = &spirits[0];
     assert_eq!((spirit.power, spirit.toughness, spirit.colors), (2, 2, 1));
     assert!(spirit.keywords.contains(Keywords::FLYING));
+}
+
+#[test]
+fn sandstorm_verge_has_colorless_mana_and_a_sorcery_speed_block_restriction() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let verge = put(&mut game, player, "Sandstorm Verge", Zone::Hand);
+    let foe = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    act(&mut game, Action::PlayLand { card: verge });
+    assert!(game.object_view(verge).has_subtype("Desert"));
+    assert!(!game.object_view(verge).tapped);
+    let mut mana = game.clone();
+    act(&mut mana, Action::TapMana { card: verge });
+    assert_eq!(mana.state.players[player.index()].mana[5], 9);
+    let activate = Action::AnnounceActivate {
+        card: verge,
+        ability: 1,
+        counter_payment: Counters::default(),
+    };
+    let mut off_timing = game.clone();
+    off_timing.begin_step(Step::BeginCombat);
+    reject(&mut off_timing, activate.clone());
+    act(&mut game, activate);
+    act(&mut game, target(foe));
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(verge).tapped);
+    assert!(game.keywords(foe).contains(Keywords::CANT_BLOCK));
+    advance_turn(&mut game);
+    assert!(!game.keywords(foe).contains(Keywords::CANT_BLOCK));
+}
+
+#[test]
+fn canal_threshold_and_soured_springs_entry_use_actual_lands_and_colors() {
+    let player = Player::P1;
+    for other_lands in [2, 3] {
+        let mut game = scenario(player);
+        for _ in 0..other_lands {
+            put(&mut game, player, "Forest", Zone::Battlefield);
+        }
+        put(&mut game, player.other(), "Forest", Zone::Battlefield);
+        let canal = put(&mut game, player, "Spirebluff Canal", Zone::Hand);
+        act(&mut game, Action::PlayLand { card: canal });
+        assert_eq!(game.object_view(canal).tapped, other_lands == 3);
+        if other_lands == 2 {
+            choose(&mut game, |action| {
+                matches!(action, Action::ActivateMana { card, production, .. }
+                if *card == canal && *production == [0, 0, 0, 1, 0, 0])
+            });
+            assert_eq!(game.state.players[player.index()].mana[3], 9);
+        }
+    }
+
+    let mut game = scenario(player);
+    let springs = put(&mut game, player, "Soured Springs", Zone::Hand);
+    let swamp = put(&mut game, player, "Swamp", Zone::Battlefield);
+    act(&mut game, Action::TapMana { card: swamp });
+    assert_eq!(game.state.players[player.index()].mana[2], 9);
+    act(&mut game, Action::PlayLand { card: springs });
+    assert!(game.object_view(springs).tapped);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    assert!(game.state.players[player.index()].committed_crime_this_turn);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 19);
+    game.state.objects[springs as usize].tapped = false;
+    choose(&mut game, |action| {
+        matches!(action, Action::ActivateMana { card, production, .. }
+        if *card == springs && *production == [0, 1, 0, 0, 0, 0])
+    });
+    assert_eq!(game.state.players[player.index()].mana[1], 9);
+}
+
+#[test]
+fn scorching_shot_and_shoot_the_sheriff_enforce_creature_and_outlaw_targeting() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let shot = put(&mut game, player, "Scorching Shot", Zone::Hand);
+    let sheriff = put(&mut game, player, "Shoot the Sheriff", Zone::Hand);
+    let large = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let outlaw = put(
+        &mut game,
+        player.other(),
+        "Silver Deputy",
+        Zone::Battlefield,
+    );
+    let non_outlaw = put(&mut game, player.other(), "Goblin Piker", Zone::Battlefield);
+    game.add_counter(large, CounterKind::PlusOne, 3);
+    act(&mut game, Action::AnnounceCast { card: shot });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    act(&mut game, target(large));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(large).damage, 5);
+    act(&mut game, Action::AnnounceCast { card: sheriff });
+    reject(&mut game, target(outlaw));
+    act(&mut game, target(non_outlaw));
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(non_outlaw).zone, Zone::Graveyard);
+}
+
+#[test]
+fn wylie_vigilance_and_tap_trigger_interact_with_steeds_saddle_four() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let steed = put(&mut game, player, "Seraphic Steed", Zone::Battlefield);
+    let wylie = put(
+        &mut game,
+        player,
+        "Wylie Duke, Atiin Hero",
+        Zone::Battlefield,
+    );
+    let small = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    assert!(
+        game.keywords(steed)
+            .contains(Keywords::FIRST_STRIKE.union(Keywords::LIFELINK))
+    );
+    let mut attack = game.clone();
+    start_attack(&mut attack, wylie);
+    assert!(!attack.object_view(wylie).tapped);
+    assert_eq!(
+        attack.state.players[player.index()].cards_drawn_this_turn,
+        0
+    );
+    let mut unsaddled = game.clone();
+    start_attack(&mut unsaddled, steed);
+    assert!(token_objects(&unsaddled, player, "Angel").is_empty());
+    activate(&mut game, steed, None);
+    let little = game.object_ref(small);
+    act(&mut game, Action::ChooseSaddler { object: little });
+    reject(&mut game, Action::FinishSaddle);
+    let duke = game.object_ref(wylie);
+    act(&mut game, Action::ChooseSaddler { object: duke });
+    act(&mut game, Action::FinishSaddle);
+    while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+    }
+    settle(&mut game);
+    assert!(game.object_view(steed).saddled);
+    assert!(game.object_view(wylie).tapped);
+    assert_eq!(game.state.players[player.index()].life, 21);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    start_attack(&mut game, steed);
+    settle(&mut game);
+    let angels = token_objects(&game, player, "Angel");
+    assert_eq!(angels.len(), 1);
+    assert_eq!(
+        (angels[0].power, angels[0].toughness, angels[0].colors),
+        (3, 3, 1)
+    );
+    assert!(angels[0].keywords.contains(Keywords::FLYING));
+}
+
+#[test]
+fn trained_arynx_saddled_attack_grants_first_strike_and_scries() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let arynx = put(&mut game, player, "Trained Arynx", Zone::Battlefield);
+    let rider = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let top = put(&mut game, player, "Island", Zone::Library);
+    let mut unsaddled = game.clone();
+    start_attack(&mut unsaddled, arynx);
+    assert!(unsaddled.state.stack.is_empty());
+    assert!(!unsaddled.keywords(arynx).contains(Keywords::FIRST_STRIKE));
+    saddle(&mut game, arynx, rider);
+    start_attack(&mut game, arynx);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: top,
+            destination: LibraryDestination::Bottom,
+        },
+    );
+    assert!(game.keywords(arynx).contains(Keywords::FIRST_STRIKE));
+    assert_eq!(
+        game.state.players[player.index()].library.first(),
+        Some(&top)
+    );
+    advance_turn(&mut game);
+    assert!(!game.keywords(arynx).contains(Keywords::FIRST_STRIKE));
+}
+
+#[test]
+fn stubborn_burrowfiend_mills_only_on_the_first_saddle_and_freezes_its_bonus() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let fiend = put(&mut game, player, "Stubborn Burrowfiend", Zone::Battlefield);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Savannah Lions", Zone::Battlefield);
+    let prior = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let milled = put(&mut game, player, "Llanowar Elves", Zone::Library);
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    saddle(&mut game, fiend, first);
+    assert_eq!(game.object_view(milled).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+    assert_eq!(stats(&game, fiend), (4, 4));
+    game.move_object(prior, Zone::Exile);
+    let deck_size = game.state.players[player.index()].library.len();
+    saddle(&mut game, fiend, second);
+    assert_eq!(game.state.players[player.index()].library.len(), deck_size);
+    assert_eq!(stats(&game, fiend), (4, 4));
+    advance_turn(&mut game);
+    assert_eq!(stats(&game, fiend), (2, 2));
+}
+
+#[test]
+fn slickshot_show_off_pumps_only_for_noncreature_casts_and_expires() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let show = put(&mut game, player, "Slickshot Show-Off", Zone::Hand);
+    let mut plotted = game.clone();
+    plot(&mut plotted, show, [0, 0, 0, 1, 0, 1]);
+    cast(&mut game, show, None);
+    settle(&mut game);
+    assert!(
+        game.keywords(show)
+            .contains(Keywords::FLYING.union(Keywords::HASTE))
+    );
+    let creature = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, creature, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, show), (1, 2));
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(player.other())));
+    settle(&mut game);
+    assert_eq!(stats(&game, show), (3, 2));
+    start_attack(&mut game, show);
+    advance_turn(&mut game);
+    assert_eq!(stats(&game, show), (1, 2));
+}
+
+#[test]
+fn plotted_woodland_creatures_and_stagecoach_security_keep_distinct_entry_effects() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let paladin = put(&mut game, player, "Spinewoods Paladin", Zone::Hand);
+    let security = put(&mut game, player, "Stagecoach Security", Zone::Hand);
+    let terror = put(&mut game, player, "Stingerback Terror", Zone::Hand);
+    let rival = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let mut paladin_plot = game.clone();
+    plot(&mut paladin_plot, paladin, [0, 0, 0, 0, 1, 3]);
+    let mut security_plot = game.clone();
+    plot(&mut security_plot, security, [1, 0, 0, 0, 0, 3]);
+    let mut terror_plot = game.clone();
+    plot(&mut terror_plot, terror, [0, 0, 0, 1, 0, 2]);
+    cast(&mut game, paladin, None);
+    settle(&mut game);
+    assert!(game.keywords(paladin).contains(Keywords::TRAMPLE));
+    assert_eq!(game.state.players[player.index()].life, 23);
+    cast(&mut game, security, None);
+    settle(&mut game);
+    assert_eq!(stats(&game, paladin), (6, 5));
+    assert_eq!(stats(&game, security), (5, 6));
+    assert!(game.keywords(paladin).contains(Keywords::VIGILANCE));
+    assert_eq!(stats(&game, rival), (2, 2));
+    cast(&mut game, terror, None);
+    settle(&mut game);
+    assert!(
+        game.keywords(terror)
+            .contains(Keywords::FLYING.union(Keywords::TRAMPLE))
+    );
+    assert_eq!(stats(&game, terror), (7, 7));
+    put(&mut game, player, "Forest", Zone::Hand);
+    assert_eq!(stats(&game, terror), (6, 6));
+    assert!(!game.keywords(terror).contains(Keywords::VIGILANCE));
+}
+
+#[test]
+fn armadillo_discards_to_find_a_desert_and_reach_and_ward_are_live() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let card = put(&mut game, player, "Spinewoods Armadillo", Zone::Hand);
+    let desert = put(&mut game, player, "Sandstorm Verge", Zone::Library);
+    let invalid = put(&mut game, player, "Spirebluff Canal", Zone::Library);
+    activate(&mut game, card, None);
+    assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    pass_pair(&mut game);
+    reject(&mut game, Action::ChooseSearch { card: invalid });
+    act(&mut game, Action::ChooseSearch { card: desert });
+    if game.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut game, Action::FinishSearch);
+    }
+    assert_eq!(game.object_view(desert).zone, Zone::Hand);
+    assert_eq!(game.state.players[player.index()].life, 23);
+
+    let armadillo = put(
+        &mut game,
+        opponent,
+        "Spinewoods Armadillo",
+        Zone::Battlefield,
+    );
+    let spell = put(&mut game, player, "Murder", Zone::Hand);
+    assert!(game.keywords(armadillo).contains(Keywords::REACH));
+    cast(&mut game, spell, Some(Target::Card(armadillo)));
+    pass_pair(&mut game);
+    act(&mut game, Action::DeclineResolutionMana);
+    settle(&mut game);
+    assert_eq!(game.object_view(armadillo).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+}
+
+#[test]
+fn sterling_hound_surveils_two_and_supplier_targets_only_another_own_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let hound = put(&mut game, player, "Sterling Hound", Zone::Hand);
+    let supplier = put(&mut game, player, "Sterling Supplier", Zone::Hand);
+    let ours = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let foe = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let keep = put(&mut game, player, "Island", Zone::Library);
+    let bin = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, hound, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: bin,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: keep,
+            destination: LibraryDestination::Top,
+        },
+    );
+    assert_eq!(game.object_view(bin).zone, Zone::Graveyard);
+    assert_eq!(game.top_library_card(player), Some(keep));
+    cast(&mut game, supplier, None);
+    pass_pair(&mut game);
+    reject(&mut game, target(supplier));
+    reject(&mut game, target(foe));
+    act(&mut game, target(ours));
+    settle(&mut game);
+    assert!(game.keywords(supplier).contains(Keywords::FLYING));
+    assert_eq!(game.counter_count(ours, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn sterling_keykeeper_can_act_off_turn_but_cannot_choose_a_mount() {
+    let player = Player::P1;
+    let mut game = scenario(player.other());
+    let keeper = put(&mut game, player, "Sterling Keykeeper", Zone::Battlefield);
+    let mount = put(
+        &mut game,
+        player.other(),
+        "Trained Arynx",
+        Zone::Battlefield,
+    );
+    let ordinary = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: keeper,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(&mut game, target(mount));
+    act(&mut game, target(ordinary));
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(keeper).tapped && game.object_view(ordinary).tapped);
+    assert!(!game.object_view(mount).tapped);
+}
+
+#[test]
+fn stoic_sphinx_qualifies_hexproof_by_its_controller_casts_and_stop_cold_blanks_it() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let sphinx = put(&mut game, player, "Stoic Sphinx", Zone::Battlefield);
+    let cold = put(&mut game, opponent, "Stop Cold", Zone::Hand);
+    assert!(
+        game.keywords(sphinx)
+            .contains(Keywords::FLYING.union(Keywords::HEXPROOF))
+    );
+    let mut guarded = game.clone();
+    act(&mut guarded, Action::Pass);
+    reject(&mut guarded, Action::AnnounceCast { card: cold });
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert!(!game.keywords(sphinx).contains(Keywords::HEXPROOF));
+    act(&mut game, Action::Pass);
+    cast(&mut game, cold, Some(Target::Card(sphinx)));
+    settle(&mut game);
+    assert_eq!(
+        game.object_view(cold).attached_to,
+        Some(game.object_ref(sphinx))
+    );
+    assert!(
+        !game
+            .keywords(sphinx)
+            .intersects(Keywords::FLYING.union(Keywords::FLASH))
+    );
+    assert!(game.object_view(sphinx).tapped);
+    advance_turn(&mut game);
+    advance_turn(&mut game);
+    assert!(game.object_view(sphinx).tapped);
+    game.move_object(cold, Zone::Graveyard);
+    assert!(
+        game.keywords(sphinx)
+            .contains(Keywords::FLYING.union(Keywords::HEXPROOF))
+    );
+}
+
+#[test]
+fn thunder_lasso_attaches_then_uses_the_equipped_attack_to_tap_an_opposing_creature() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let lasso = put(&mut game, player, "Thunder Lasso", Zone::Hand);
+    let attacker = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let next = put(&mut game, player, "Savannah Lions", Zone::Battlefield);
+    let rival = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    cast(&mut game, lasso, None);
+    pass_pair(&mut game);
+    reject(&mut game, target(rival));
+    act(&mut game, target(attacker));
+    settle(&mut game);
+    assert_eq!(stats(&game, attacker), (3, 3));
+    activate(&mut game, lasso, Some(next));
+    settle(&mut game);
+    assert_eq!(stats(&game, attacker), (2, 2));
+    assert_eq!(stats(&game, next), (3, 2));
+    start_attack(&mut game, next);
+    reject(&mut game, target(attacker));
+    act(&mut game, target(rival));
+    settle(&mut game);
+    assert!(game.object_view(rival).tapped);
+}
+
+#[test]
+fn tomb_trawler_uses_its_controllers_graveyard_and_needs_no_tap() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let trawler = put(&mut game, player, "Tomb Trawler", Zone::Battlefield);
+    let own = put(&mut game, player, "Forest", Zone::Graveyard);
+    let foreign = put(&mut game, player.other(), "Island", Zone::Graveyard);
+    game.state.objects[trawler as usize].tapped = true;
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: trawler,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(&mut game, target(foreign));
+    act(&mut game, target(own));
+    pay(&mut game);
+    let mut stale = game.clone();
+    stale.move_object(own, Zone::Exile);
+    stale.move_object(own, Zone::Graveyard);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(own).zone, Zone::Graveyard);
+    settle(&mut game);
+    assert_eq!(
+        game.state.players[player.index()].library.first(),
+        Some(&own)
+    );
+}
+
+#[test]
+fn dredger_pays_life_to_make_treasure_and_varmint_can_sacrifice_for_either_type() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let dredger = put(&mut game, player, "Treasure Dredger", Zone::Battlefield);
+    let varmint = put(&mut game, player, "Voracious Varmint", Zone::Battlefield);
+    let artifact = put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
+    let enchantment = put(&mut game, player.other(), "Omniscience", Zone::Battlefield);
+    activate(&mut game, dredger, None);
+    settle(&mut game);
+    assert!(game.object_view(dredger).tapped);
+    assert_eq!(game.state.players[player.index()].life, 19);
+    assert_eq!(token_objects(&game, player, "Treasure").len(), 1);
+    assert!(game.keywords(varmint).contains(Keywords::VIGILANCE));
+    for chosen in [artifact, enchantment] {
+        let mut branch = game.clone();
+        activate(&mut branch, varmint, Some(chosen));
+        assert_eq!(branch.object_view(varmint).zone, Zone::Graveyard);
+        settle(&mut branch);
+        assert_eq!(branch.object_view(chosen).zone, Zone::Graveyard);
+    }
+}
+
+#[test]
+fn vial_smasher_only_hits_the_opponent_and_vault_plunderer_can_choose_either_player() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    put(
+        &mut game,
+        player,
+        "Vial Smasher, Gleeful Grenadier",
+        Zone::Battlefield,
+    );
+    game.create_tokens(player, Card::from_catalogue_id(5612), 1, false);
+    game.prepare_triggers();
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+    assert!(game.state.players[player.index()].committed_crime_this_turn);
+
+    let mut draw_game = scenario(player);
+    let plunderer = put(&mut draw_game, player, "Vault Plunderer", Zone::Hand);
+    cast(&mut draw_game, plunderer, None);
+    pass_pair(&mut draw_game);
+    for recipient in [player, opponent] {
+        let mut branch = draw_game.clone();
+        act(
+            &mut branch,
+            Action::ChooseTarget {
+                target: Target::Player(recipient),
+            },
+        );
+        settle(&mut branch);
+        assert_eq!(
+            branch.state.players[recipient.index()].cards_drawn_this_turn,
+            1
+        );
+        assert_eq!(branch.state.players[recipient.index()].life, 19);
+        assert_eq!(
+            branch.state.players[player.index()].committed_crime_this_turn,
+            recipient == opponent
+        );
+    }
 }
