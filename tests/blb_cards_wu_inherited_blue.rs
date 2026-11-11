@@ -31,7 +31,7 @@ fn arranger(card: CardId, destination: LibraryDestination) -> Action {
 }
 
 #[test]
-fn crier_loots_and_lightshell_duo_survels_two_and_has_prowess() {
+fn crier_loots_and_lightshell_duo_surveils_two_and_has_prowess() {
     let player = Player::P0;
     let mut game = scenario(player);
     let discard = put(&mut game, player, "Island", Zone::Library);
@@ -299,5 +299,24 @@ fn thieving_otter_draws_for_actual_damage_to_an_opponent_in_or_out_of_combat() {
         game.prepare_triggers();
         settle(&mut game);
         assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    }
+}
+
+#[test]
+fn mind_spring_draws_exactly_the_paid_x() {
+    let player = Player::P0;
+    for value in [0, 3] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Mind Spring", Zone::Hand);
+        game.state.players[player.index()].mana = [0, 2, 0, 0, 0, value];
+        act(&mut game, Action::AnnounceCast { card: source });
+        act(&mut game, Action::ChooseX { value });
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(
+            game.state.players[player.index()].cards_drawn_this_turn,
+            u64::from(value)
+        );
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
     }
 }

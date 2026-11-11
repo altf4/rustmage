@@ -274,3 +274,36 @@ fn thistledown_targets_any_nonland_and_stun_replaces_its_untap() {
     assert!(game.object_view(enemy).tapped);
     assert_eq!(game.counter_count(enemy, CounterKind::Stun), 0);
 }
+
+#[test]
+fn lifecreed_duo_only_gains_life_for_each_other_controlled_creature() {
+    let player = Player::P0;
+    let other = player.other();
+    let mut game = scenario(player);
+    let duo = put(&mut game, player, "Lifecreed Duo", Zone::Hand);
+    cast(&mut game, duo, None);
+    settle(&mut game);
+    assert!(game.object_view(duo).keywords.contains(Keywords::FLYING));
+    assert_eq!(game.state.players[player.index()].life, 20);
+    let rabbits = put(&mut game, player, "Hop to It", Zone::Hand);
+    cast(&mut game, rabbits, None);
+    for _ in 0..24 {
+        if game.state.stack.is_empty()
+            && game.state.pending == Pending::Priority
+            && game.state.ordering_triggers.is_empty()
+            && game.state.pending_triggers.is_empty()
+        {
+            break;
+        }
+        progress(&mut game);
+    }
+    assert_eq!(game.state.players[player.index()].life, 23);
+    game.finish_cleanup();
+    game.state.step = Step::Main1;
+    game.state.priority = other;
+    game.state.players[other.index()].mana = [8; 6];
+    let enemy = put(&mut game, other, "Bear Cub", Zone::Hand);
+    cast(&mut game, enemy, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 23);
+}
