@@ -1,7 +1,7 @@
 //! Exact OTJ-only Standard decks, replay, and owned branches.
 use rustmage::{
-    Action, Card, CastMethod, Config, DeckRules, Error, Game, Observation, Outcome, Player,
-    StackKind, Zone, policy,
+    Action, Card, CastMethod, Config, DeckRules, Error, Game, ObjectView, Observation, Outcome,
+    Player, StackKind, Step, Zone, policy,
 };
 use rustmage_core::cards::Instruction;
 use serde::Deserialize;
@@ -123,33 +123,33 @@ fn deck_cards(deck: &Deck, pool: &BTreeSet<Card>) -> Vec<Card> {
     cards
 }
 
-fn saddle_activation(view: &Observation, action: &Action) -> bool {
+fn saddle_activation<'a>(view: &'a Observation, action: &Action) -> Option<&'a ObjectView> {
     let (card, ability) = match *action {
         Action::AnnounceActivate { card, ability, .. }
         | Action::BeginActivate { card, ability, .. }
         | Action::Activate { card, ability, .. } => (card, ability),
-        _ => return false,
+        _ => return None,
     };
     view.objects
         .iter()
         .find(|object| object.id == card)
-        .is_some_and(|object| {
-            !object.saddled
-                && object
-                    .card
-                    .activations()
-                    .get(usize::from(ability))
-                    .is_some_and(|ability| {
-                        ability
-                            .program
-                            .iter()
-                            .any(|step| matches!(step, Instruction::BecomeSaddled { .. }))
-                    })
+        .filter(|object| {
+            object
+                .card
+                .activations()
+                .get(usize::from(ability))
+                .is_some_and(|ability| {
+                    ability
+                        .program
+                        .iter()
+                        .any(|step| matches!(step, Instruction::BecomeSaddled { .. }))
+                })
         })
 }
 
-fn choose(view: &Observation, plot_paid: bool) -> usize {
-    view.actions
+fn choose(view: &Observation, plot_paid: bool, saddle_turn: Option<u32>) -> usize {
+    let preferred = view
+        .actions
         .iter()
         .position(|action| {
             matches!(
@@ -167,16 +167,36 @@ fn choose(view: &Observation, plot_paid: bool) -> usize {
                 .flatten()
         })
         .or_else(|| {
-            view.actions
-                .iter()
-                .position(|action| saddle_activation(view, action))
+            (view.step == Step::Main1 && saddle_turn != Some(view.turn))
+                .then(|| {
+                    view.actions.iter().position(|action| {
+                        saddle_activation(view, action)
+                            .is_some_and(|mount| !mount.saddled && !mount.tapped)
+                    })
+                })
+                .flatten()
         })
         .or_else(|| {
             view.actions
                 .iter()
                 .rposition(|action| matches!(action, Action::ChooseMode { .. }))
-        })
-        .unwrap_or_else(|| policy::smoke_index_from_observation(view, &view.actions))
+        });
+    if let Some(index) = preferred {
+        return index;
+    }
+    let index = policy::smoke_index_from_observation(view, &view.actions);
+    if saddle_activation(view, &view.actions[index]).is_none() {
+        return index;
+    }
+    // Repeated Saddle can tap all available attackers before combat.
+    let (indices, actions): (Vec<_>, Vec<_>) = view
+        .actions
+        .iter()
+        .enumerate()
+        .filter(|(_, action)| saddle_activation(view, action).is_none())
+        .map(|(index, action)| (index, action.clone()))
+        .unzip();
+    indices[policy::smoke_index_from_observation(view, &actions)]
 }
 
 fn prove_branch(game: &Game, view: &Observation, index: usize) -> bool {
@@ -338,13 +358,14 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
             let mut game = Game::new(config.clone()).unwrap();
             let mut journal = Vec::new();
             let mut plot_paid = false;
+            let mut saddle_turn = None;
             let mut branches = [false; 2];
             let started = Instant::now();
             while game.outcome().is_none() && journal.len() < 4096 {
                 let actor = game.actor().unwrap();
                 let view = game.observe(actor);
                 check_privacy(&view, actor);
-                let index = choose(&view, plot_paid);
+                let index = choose(&view, plot_paid, saddle_turn);
                 let action = view.actions[index].clone();
                 assert_ne!(action, Action::Concede);
                 let private = private_choice(&view);
@@ -370,6 +391,9 @@ fn outlaws_standard_games_finish_and_replay_with_real_mechanic_events() {
                     panic!("{label}, decision {} {action:?}: {error}", journal.len());
                 }
                 plot_paid |= matches!(action, Action::PayPlot { .. });
+                if action == Action::FinishSaddle {
+                    saddle_turn = Some(view.turn);
+                }
                 coverage.transition(&view, &game.observe(actor));
                 journal.push((actor, action));
             }

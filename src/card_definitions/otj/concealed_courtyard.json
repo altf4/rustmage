@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f20c7fd3ddda5677645d9fe6874539282d67501032bce96d27f4eb1f61bef40d"
   },
-  "physical_metadata_sha256": "f4353820fa5590c02ba72ae60842869814862297345f772e9505d5e10db82ed9"
+  "physical_metadata_sha256": "f4353820fa5590c02ba72ae60842869814862297345f772e9505d5e10db82ed9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConcealedCourtyard.java",
+  "java_sha256": "06dd4ec615a08672f053716528498a064d067407d8cdd423b0fa995efe7e609f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/BlackManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c7c69b99a3cc42aa1be3926c5f631440e6a34cb0156dd5065ab32204e954d28f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/WhiteManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a_d_inherited.rs"
 }
