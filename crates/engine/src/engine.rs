@@ -438,7 +438,7 @@ pub mod temporary_tokens;
 #[doc(hidden)]
 #[path = "engine_turn_callbacks.rs"]
 pub mod turn_callbacks;
-pub use combat_schedule::MainPhaseCombatView;
+pub use combat_schedule::{AfterCombatPhaseView, MainPhaseCombatView};
 pub use turn_callbacks::TurnCallbackView;
 #[doc(hidden)]
 #[path = "engine_nonmana_x.rs"]
@@ -3887,6 +3887,9 @@ pub struct Observation {
     pub after_main_combats: Option<MainPhaseCombatView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inserted_phases: Option<Vec<Step>>,
+    /// Pending inserted phases in execution order, when an upkeep is scheduled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub after_combat_phases: Option<Vec<AfterCombatPhaseView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_end_steps: Option<AdditionalEndStepsView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11051,7 +11054,9 @@ impl Game {
         self.clear_step_mana(keep_combat, self.state.step != Step::Cleanup);
         match self.state.step {
             Step::Upkeep => {
-                if self.state.turn == 1 {
+                if let Some(next) = self.step_after_inserted_upkeep() {
+                    self.begin_step(next);
+                } else if self.state.turn == 1 {
                     self.begin_step(Step::Main1);
                 } else {
                     self.begin_step(Step::Draw);
@@ -11165,7 +11170,8 @@ impl Game {
             rules.must_be_blocked.clear();
             rules.blocker_power_limits.clear();
             rules.must_attack_this_combat.clear();
-            rules.additional_combats = 0;
+            rules.after_combat.clear();
+            rules.in_inserted_upkeep = false;
             rules.after_main = None;
             rules.inserted_phases.clear();
             rules.end_steps = AdditionalEndStepsView::default();
@@ -12084,9 +12090,24 @@ impl Game {
                     .then_some(r.toughness_combat_damage)
             }),
             additional_combats: s.combat_rules.as_ref().map_or(0, |r| {
-                r.additional_combats
-                    .checked_add(r.after_main.map_or(0, |schedule| schedule.remaining))
+                r.after_combat
+                    .iter()
+                    .filter(|phase| phase.first_step == Step::BeginCombat)
+                    .map(|phase| {
+                        u64::try_from(phase.remaining).capacity("additional combat count exhausted")
+                    })
+                    .try_fold(
+                        r.after_main.map_or(0, |schedule| schedule.remaining),
+                        u64::checked_add,
+                    )
                     .capacity("additional combat count exhausted")
+            }),
+            after_combat_phases: s.combat_rules.as_ref().and_then(|rules| {
+                rules
+                    .after_combat
+                    .iter()
+                    .any(|phase| phase.first_step == Step::Upkeep)
+                    .then(|| rules.after_combat.iter().rev().copied().collect())
             }),
             inserted_phases: s.combat_rules.as_ref().and_then(|r| {
                 (!r.inserted_phases.is_empty())

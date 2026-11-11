@@ -494,6 +494,7 @@ impl Game {
                 return self.state.active == player
                     && matches!(self.state.step, Step::Main1 | Step::Main2);
             }
+            StepGuard::YourCombatPhase => return self.attacking_return_combat(player),
             StepGuard::SourceCreature => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source

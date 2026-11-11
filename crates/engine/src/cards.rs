@@ -2104,6 +2104,7 @@ pub enum TurnCallbackEvent {
     ControlledNontokenCreatureDeath,
     ControlledCreatureCombatDamagePlayerOrPlaneswalker,
     NamedCreatureCombatDamagePlayer(crate::CardName),
+    ControlledCreatureCombatDamagePlayer(crate::engine::Player),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -2440,6 +2441,11 @@ pub enum Instruction {
         once: bool,
     },
     ScheduleNamedCombatDamageTrigger {
+        ability: u16,
+    },
+    /// This turn, queue one delayed trigger per controlled creature that
+    /// actually deals combat damage to the legal player in the current group.
+    ScheduleTargetPlayerCombatDamageTrigger {
         ability: u16,
     },
     AttackWithoutDefenderThisTurn,
@@ -3103,6 +3109,8 @@ pub enum Instruction {
     },
 
     AdditionalCombat,
+    /// Insert upkeep-only beginning phases after this controller's combat.
+    AdditionalUpkeepsAfterCombat(AmountValue),
     /// If this is the turn's first end step, insert one more before cleanup.
     AdditionalEndStepIfFirst,
     /// Insert this many combats after the current main, then resume its frozen successor.
@@ -6276,6 +6284,7 @@ pub enum StepGuard {
     PutCounterOnCreatureThisTurn,
     YourTurn,
     YourMainPhase,
+    YourCombatPhase,
     SourcePowerAtLeast(u16),
     SourceCreature,
     SourceToughnessAtMost(u16),

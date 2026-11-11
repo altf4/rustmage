@@ -4501,6 +4501,16 @@ impl Game {
                         );
                     }
                 }
+                Instruction::ScheduleTargetPlayerCombatDamageTrigger { ability } => {
+                    if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next() {
+                        self.schedule_turn_callback(
+                            &item,
+                            TurnCallbackEvent::ControlledCreatureCombatDamagePlayer(player),
+                            ability,
+                            false,
+                        );
+                    }
+                }
                 Instruction::AttackWithoutDefenderThisTurn => {
                     self.allow_source_attack_without_defender(&item)
                 }
@@ -7827,6 +7837,9 @@ impl Game {
                     self.state.damage_prevention_prohibited = true;
                 }
                 Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::AdditionalUpkeepsAfterCombat(amount) => {
+                    self.add_upkeeps_after_combat(item.controller, self.item_amount(amount, &item));
+                }
                 Instruction::AdditionalEndStepIfFirst => self.add_end_step_if_first(),
                 Instruction::AdditionalCombatsAfterCurrentMain(count) => {
                     self.add_combats_after_current_main(count)
