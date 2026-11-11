@@ -1366,7 +1366,9 @@ impl Game {
                     });
                 }
 
-                if let Some(target) = movement.attachment {
+                if event.destination == Zone::Battlefield
+                    && let Some(target) = movement.attachment
+                {
                     attachments.push((event.after, target));
                 }
                 if movement.reveal_hand && event.destination == Zone::Hand {

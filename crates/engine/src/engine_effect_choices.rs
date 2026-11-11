@@ -209,6 +209,10 @@ impl Game {
                     self.state.objects[survivor.card as usize].controller != o.controller
                 });
         }
+        if let EffectChoiceKind::ReturnAttachmentRecipient { attachment } = choice.kind {
+            return choice.selected[player.index()].is_empty()
+                && self.returned_attachment_recipient(attachment, object, player);
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             return o.controller == player
                 && choice.selected[player.index()].is_empty()
@@ -2078,6 +2082,15 @@ impl Game {
             selected.sort_unstable();
             self.state.resolving.as_mut().unwrap().remembered_objects =
                 (!selected.is_empty()).then(|| selected.into());
+            return false;
+        }
+        if let EffectChoiceKind::ReturnAttachmentRecipient { attachment } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            self.finish_returned_attachment(
+                attachment,
+                choice.selected[player.index()].first().copied(),
+                player,
+            );
             return false;
         }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {

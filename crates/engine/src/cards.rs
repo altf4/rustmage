@@ -29,7 +29,7 @@ pub mod activation_slots;
 
 use crate::PermanentType;
 use crate::capacity::CapacityExt;
-use crate::engine::{GrantedSubtypes, Player, Zone};
+use crate::engine::{GrantedSubtypes, ObjectRef, Player, Zone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// An immutable activated template retained as a copiable layer-one exception.
@@ -1374,6 +1374,10 @@ pub enum EffectChoiceKind {
     KeepCreaturesByPowerForEachPlayer(i128),
     /// Choose one legal controlled creature for the resolving Equipment source.
     EquipmentRecipient,
+    /// Select an eligible controlled creature for this exact graveyard attachment.
+    ReturnAttachmentRecipient {
+        attachment: ObjectRef,
+    },
     /// Choose a controlled creature for one Equipment from the exact reflexive event.
     ReflexiveEquipmentRecipient {
         subtype: &'static str,
@@ -4522,6 +4526,8 @@ pub enum Instruction {
     /// Return the target with a Skeleton subtype and no abilities as it enters.
     ReturnToBattlefieldAsSkeletonWithoutAbilities,
     ReturnToBattlefieldUnderControl,
+    /// Return the current graveyard target attached to a chosen controlled creature.
+    ReturnTargetAttachmentToControlledCreature,
     /// Return under your control; grant attack-each-combat and a permanent triggered template.
     ReturnToBattlefieldWithAttackTrigger(u16),
     /// Return legal target cards with an additional entry counter.

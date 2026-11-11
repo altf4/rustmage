@@ -338,8 +338,19 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
     source: ObjectRef,
     target: ObjectRef,
 ) -> bool {
+    world.object(source.card).zone == Zone::Battlefield
+        && can_attach_as(world, source, target, world.object(source.card).controller)
+}
+
+/// An exact existing or prospective Equipment controlled by this player.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn can_attach_as<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    target: ObjectRef,
+    controller: Player,
+) -> bool {
     source != target
-        && world.object(source.card).zone == Zone::Battlefield
         && world.reference(source.card) == source
         && world.is_equipment(source.card)
         && world.kinds(source.card) & 1 == 0
@@ -351,7 +362,7 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
             .protects_from_controller(
                 world.colors(source.card),
                 world.kinds(source.card),
-                world.object(source.card).controller != world.object(target.card).controller,
+                controller != world.object(target.card).controller,
             )
         && !world.protected_from_subtype(target.card, |subtype| {
             world

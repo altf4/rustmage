@@ -11945,6 +11945,11 @@ impl Game {
                 Instruction::ReturnToBattlefieldWithAttackTrigger(ability) => {
                     self.return_target_with_attack_trigger(&item, ability);
                 }
+                Instruction::ReturnTargetAttachmentToControlledCreature => {
+                    if self.return_target_attachment(&item) {
+                        return;
+                    }
+                }
                 Instruction::ReturnToBattlefieldUnderControl => {
                     let moves = item
                         .targets
