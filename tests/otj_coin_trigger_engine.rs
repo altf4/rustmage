@@ -176,6 +176,7 @@ fn sacrifice_exiles_using_the_previous_battlefield_mana_value() {
     );
     game.sacrifice_batch(&[(player, sacrifice)]);
     game.give_priority();
+    game.prepare_triggers();
     act(
         &mut game,
         Action::ChooseTarget {

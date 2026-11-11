@@ -225,6 +225,7 @@ fn linked_creature_copy_ends_at_the_first_detachment() {
     let hawk = game.object_ref(hawk.card);
     assert!(game.attach_equipment(equipment, subject));
     game.give_priority();
+    game.prepare_triggers();
     let old = attachment_packet(&mut game, source)
         .attachment_trigger
         .unwrap();
@@ -243,6 +244,7 @@ fn linked_creature_copy_ends_at_the_first_detachment() {
     assert!(game.exact_attachment_event_is_live(new));
     // Resolve the new attachment first, then the obsolete pending trigger.
     game.give_priority();
+    game.prepare_triggers();
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
     act(&mut game, Action::ChooseLinkedExile { object: hawk });

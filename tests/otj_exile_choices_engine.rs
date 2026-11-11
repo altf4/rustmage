@@ -148,6 +148,7 @@ fn attached_combat_damage_looks_privately_then_offers_only_the_exact_exile() {
         },
     ]);
     game.give_priority();
+    game.prepare_triggers();
     pass_pair(&mut game);
     let view = game.observe(player).library_selection.unwrap();
     assert_eq!(
