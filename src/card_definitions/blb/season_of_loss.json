@@ -3,10 +3,56 @@
   "catalogue_id": 3750,
   "oracle_id": "31b5d0ad-3a4d-4f43-b0a9-c9f7a362680f",
   "facts_sha256": "8ed5656ac6e77239f138eb64d58d3a556411a21ed706b9dba6d7bc96cb76ece7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "04a15aa997f4f26be0883abdafbdf685af4c50a0b554109020b92277de187587"
   },
-  "physical_metadata_sha256": "725e44e429f235f855940f19f73bbcd09fd6317c79236bec725c319304e4dce0"
+  "physical_metadata_sha256": "725e44e429f235f855940f19f73bbcd09fd6317c79236bec725c319304e4dce0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeasonOfLoss.java",
+  "java_sha256": "98f0fbcd42b63d7ba4ea96883bc241b2e2ce67bad9d0ab94355d465c664f8f78",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerGraveyardCount.java",
+      "sha256": "1681b71d7aeed7c96c0e4b1963a4ebec63874299ad681fd1bf7b9f1b539ba297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlDiedCount.java",
+      "sha256": "c77d6fb8f0cc949f86c6583cf907eb34d7158564e55a9e0c9712f40f3ef950b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeAllEffect.java",
+      "sha256": "edfea847c85bbbee218fd9e81bc9c2d310ce3bc2221d31eef237e9c66accfc62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_black_03.rs"
 }

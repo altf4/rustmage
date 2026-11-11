@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "08376734c9c9d916dcbc528717376e4221794b0de446e966fc2afee358a0b781",
+  "catalogue_version": "8a8de23f5b5b39a73371fd517236f02c34b89fddc07da6641ba3bf9575a90d91",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4519,
-  "implemented_total": 4534,
+  "implemented_standard_cards": 4589,
+  "implemented_total": 4605,
   "token_definitions": 197,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 169,
-      "gated": 92
+      "complete": 239,
+      "gated": 22
     },
     "cmm": {
       "total": 1,
@@ -1190,8 +1190,8 @@
     {
       "name": "Alania, Divergent Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/alania_divergent_storm.rs",
       "set": "blb"
     },
@@ -2582,8 +2582,8 @@
     {
       "name": "Azure Beastbinder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/azure_beastbinder.rs",
       "set": "blb"
     },
@@ -2742,8 +2742,8 @@
     {
       "name": "Bandit's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/bandit_s_talent.rs",
       "set": "blb"
     },
@@ -3414,8 +3414,8 @@
     {
       "name": "Beza, the Bounding Spring",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/beza_the_bounding_spring.rs",
       "set": "blb"
     },
@@ -4382,8 +4382,8 @@
     {
       "name": "Brambleguard Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/brambleguard_captain.rs",
       "set": "blb"
     },
@@ -4454,8 +4454,8 @@
     {
       "name": "Brazen Collector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/brazen_collector.rs",
       "set": "blb"
     },
@@ -4542,8 +4542,8 @@
     {
       "name": "Bria, Riptide Rogue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/bria_riptide_rogue.rs",
       "set": "blb"
     },
@@ -4806,8 +4806,8 @@
     {
       "name": "Builder's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/builder_s_talent.rs",
       "set": "blb"
     },
@@ -5046,8 +5046,8 @@
     {
       "name": "Byrke, Long Ear of the Law",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/byrke_long_ear_of_the_law.rs",
       "set": "blb"
     },
@@ -5126,8 +5126,8 @@
     {
       "name": "Calamitous Tide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/calamitous_tide.rs",
       "set": "blb"
     },
@@ -5406,8 +5406,8 @@
     {
       "name": "Caretaker's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/caretaker_s_talent.rs",
       "set": "blb"
     },
@@ -5454,8 +5454,8 @@
     {
       "name": "Carrot Cake",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/carrot_cake.rs",
       "set": "blb"
     },
@@ -5990,8 +5990,8 @@
     {
       "name": "Charmed Sleep",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/charmed_sleep.rs",
       "set": "blb"
     },
@@ -6790,8 +6790,8 @@
     {
       "name": "Conduct Electricity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/conduct_electricity.rs",
       "set": "blb"
     },
@@ -8110,8 +8110,8 @@
     {
       "name": "Dazzling Denial",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/dazzling_denial.rs",
       "set": "blb"
     },
@@ -9318,8 +9318,8 @@
     {
       "name": "Dour Port-Mage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/dour_port_mage.rs",
       "set": "blb"
     },
@@ -9494,8 +9494,8 @@
     {
       "name": "Dragonhawk, Fate's Tempest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/dragonhawk_fate_s_tempest.rs",
       "set": "blb"
     },
@@ -10534,8 +10534,8 @@
     {
       "name": "Eluge, the Shoreless Sea",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/eluge_the_shoreless_sea.rs",
       "set": "blb"
     },
@@ -12198,8 +12198,8 @@
     {
       "name": "Festival of Embers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/festival_of_embers.rs",
       "set": "blb"
     },
@@ -12294,8 +12294,8 @@
     {
       "name": "Finneas, Ace Archer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/finneas_ace_archer.rs",
       "set": "blb"
     },
@@ -12446,8 +12446,8 @@
     {
       "name": "Fireglass Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/fireglass_mentor.rs",
       "set": "blb"
     },
@@ -12902,8 +12902,8 @@
     {
       "name": "For the Common Good",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/for_the_common_good.rs",
       "set": "blb"
     },
@@ -14326,8 +14326,8 @@
     {
       "name": "Glarb, Calamity's Augur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/glarb_calamity_s_augur.rs",
       "set": "blb"
     },
@@ -14870,8 +14870,8 @@
     {
       "name": "Gossip's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/gossip_s_talent.rs",
       "set": "blb"
     },
@@ -15806,8 +15806,8 @@
     {
       "name": "Harnesser of Storms",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/harnesser_of_storms.rs",
       "set": "blb"
     },
@@ -15862,8 +15862,8 @@
     {
       "name": "Harvestrite Host",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/harvestrite_host.rs",
       "set": "blb"
     },
@@ -16038,8 +16038,8 @@
     {
       "name": "Hearthborn Battler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hearthborn_battler.rs",
       "set": "blb"
     },
@@ -16142,8 +16142,8 @@
     {
       "name": "Helga, Skittish Seer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/helga_skittish_seer.rs",
       "set": "blb"
     },
@@ -16574,8 +16574,8 @@
     {
       "name": "Hired Claw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hired_claw.rs",
       "set": "blb"
     },
@@ -16590,8 +16590,8 @@
     {
       "name": "Hivespine Wolverine",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hivespine_wolverine.rs",
       "set": "blb"
     },
@@ -16918,8 +16918,8 @@
     {
       "name": "Hugs, Grisly Guardian",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hugs_grisly_guardian.rs",
       "set": "blb"
     },
@@ -18198,8 +18198,8 @@
     {
       "name": "Jackdaw Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/jackdaw_savior.rs",
       "set": "blb"
     },
@@ -18590,8 +18590,8 @@
     {
       "name": "Junkblade Bruiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/junkblade_bruiser.rs",
       "set": "blb"
     },
@@ -18766,8 +18766,8 @@
     {
       "name": "Kastral, the Windcrested",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/kastral_the_windcrested.rs",
       "set": "blb"
     },
@@ -20974,8 +20974,8 @@
     {
       "name": "Mabel's Mettle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mabel_s_mettle.rs",
       "set": "blb"
     },
@@ -22198,8 +22198,8 @@
     {
       "name": "Might of the Meek",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/might_of_the_meek.rs",
       "set": "blb"
     },
@@ -22358,8 +22358,8 @@
     {
       "name": "Mindwhisker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mindwhisker.rs",
       "set": "blb"
     },
@@ -22646,8 +22646,8 @@
     {
       "name": "Mockingbird",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mockingbird.rs",
       "set": "blb"
     },
@@ -23174,8 +23174,8 @@
     {
       "name": "Muerra, Trash Tactician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/muerra_trash_tactician.rs",
       "set": "blb"
     },
@@ -24622,8 +24622,8 @@
     {
       "name": "Otterball Antics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/otterball_antics.rs",
       "set": "blb"
     },
@@ -25478,8 +25478,8 @@
     {
       "name": "Pileated Provisioner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/pileated_provisioner.rs",
       "set": "blb"
     },
@@ -25686,8 +25686,8 @@
     {
       "name": "Plumecreed Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/plumecreed_mentor.rs",
       "set": "blb"
     },
@@ -25782,8 +25782,8 @@
     {
       "name": "Polliwallop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/polliwallop.rs",
       "set": "blb"
     },
@@ -25830,8 +25830,8 @@
     {
       "name": "Portent of Calamity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/portent_of_calamity.rs",
       "set": "blb"
     },
@@ -27902,8 +27902,8 @@
     {
       "name": "Reptilian Recruiter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/reptilian_recruiter.rs",
       "set": "blb"
     },
@@ -28942,8 +28942,8 @@
     {
       "name": "Rottenmouth Viper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/rottenmouth_viper.rs",
       "set": "blb"
     },
@@ -29934,8 +29934,8 @@
     {
       "name": "Scavenger's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/scavenger_s_talent.rs",
       "set": "blb"
     },
@@ -30182,16 +30182,16 @@
     {
       "name": "Season of Gathering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/season_of_gathering.rs",
       "set": "blb"
     },
     {
       "name": "Season of Loss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/season_of_loss.rs",
       "set": "blb"
     },
@@ -30206,8 +30206,8 @@
     {
       "name": "Season of the Bold",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/season_of_the_bold.rs",
       "set": "blb"
     },
@@ -30238,8 +30238,8 @@
     {
       "name": "Seasoned Warrenguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/seasoned_warrenguard.rs",
       "set": "blb"
     },
@@ -30302,8 +30302,8 @@
     {
       "name": "Seedpod Squire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/seedpod_squire.rs",
       "set": "blb"
     },
@@ -30958,8 +30958,8 @@
     {
       "name": "Shoreline Looter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/shoreline_looter.rs",
       "set": "blb"
     },
@@ -31902,8 +31902,8 @@
     {
       "name": "Sonar Strike",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/sonar_strike.rs",
       "set": "blb"
     },
@@ -32950,8 +32950,8 @@
     {
       "name": "Star Charter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/star_charter.rs",
       "set": "blb"
     },
@@ -33006,8 +33006,8 @@
     {
       "name": "Stargaze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/stargaze.rs",
       "set": "blb"
     },
@@ -33574,8 +33574,8 @@
     {
       "name": "Stormchaser's Talent",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/stormchaser_s_talent.rs",
       "set": "blb"
     },
@@ -33622,8 +33622,8 @@
     {
       "name": "Stormsplitter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/stormsplitter.rs",
       "set": "blb"
     },
@@ -33822,8 +33822,8 @@
     {
       "name": "Sugar Coat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/sugar_coat.rs",
       "set": "blb"
     },
@@ -35822,8 +35822,8 @@
     {
       "name": "The Infamous Cruelclaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/the_infamous_cruelclaw.rs",
       "set": "blb"
     },
@@ -36534,8 +36534,8 @@
     {
       "name": "Thornplate Intimidator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/thornplate_intimidator.rs",
       "set": "blb"
     },
@@ -36574,8 +36574,8 @@
     {
       "name": "Thought Shucker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/thought_shucker.rs",
       "set": "blb"
     },
@@ -38822,16 +38822,16 @@
     {
       "name": "Valley Flamecaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/valley_flamecaller.rs",
       "set": "blb"
     },
     {
       "name": "Valley Floodcaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/valley_floodcaller.rs",
       "set": "blb"
     },
@@ -38846,8 +38846,8 @@
     {
       "name": "Valley Questcaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/valley_questcaller.rs",
       "set": "blb"
     },
@@ -39918,8 +39918,8 @@
     {
       "name": "Wandertale Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/wandertale_mentor.rs",
       "set": "blb"
     },
@@ -40198,8 +40198,8 @@
     {
       "name": "Waterspout Warden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/waterspout_warden.rs",
       "set": "blb"
     },
@@ -40230,8 +40230,8 @@
     {
       "name": "Wax-Wane Witness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/wax_wane_witness.rs",
       "set": "blb"
     },
@@ -40598,16 +40598,16 @@
     {
       "name": "Wick's Patrol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/wick_s_patrol.rs",
       "set": "blb"
     },
     {
       "name": "Wick, the Whorled Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/wick_the_whorled_mind.rs",
       "set": "blb"
     },
@@ -41566,8 +41566,8 @@
     {
       "name": "Zoraline, Cosmos Caller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/zoraline_cosmos_caller.rs",
       "set": "blb"
     },

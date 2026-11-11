@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "da918e83379716bb50acb8089617c9e0819fa813aa7877f6da9f9fab9a2d680c"
   },
-  "physical_metadata_sha256": "d6a34d12cb86a1ab3d151aea3b8ccb95f79552e210fa508eeb719108342c5161"
+  "physical_metadata_sha256": "d6a34d12cb86a1ab3d151aea3b8ccb95f79552e210fa508eeb719108342c5161",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarscapeCleric.java",
+  "java_sha256": "3068a85be2c70aa3a8cdcbf02802a6c7e7c3e7f772cbab403d8d7ead45ddd3f4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_black_03.rs"
 }

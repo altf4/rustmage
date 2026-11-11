@@ -7,7 +7,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 token: Card(5467),
                 amount: 1,
                 kind: CounterKind::PlusOne,
-                counters: 1,
+                counters: AmountValue::Fixed(1),
             },
             Instruction::Skip(1),
             Instruction::CreateTokens {

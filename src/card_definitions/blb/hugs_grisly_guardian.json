@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4b23ed1c2ca4456dcc7882400bbcaaa62ccd852df06b72fe1073be1cd83bee5e"
   },
-  "physical_metadata_sha256": "32c8b5bcd942418850c20f7a4bea3b12e842e4cd7bb198f2de3dcec04205895d",
+  "physical_metadata_sha256": "d515d7692efaa9a9e99cdf9a9b875104f6b8d42e9f65f338414266d3659c76fd",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/h/HugsGrislyGuardian.java",
   "java_sha256": "45c78bea77e23896d4537b4ddc737395ee2c4bec1999436cac0ab76eda48f4a8",

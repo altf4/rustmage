@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6c48ff003750ce3074fe14651b7a8dd31a68d67bf639ec03965dc77cb91eebd"
   },
-  "physical_metadata_sha256": "644bb7b608b04473827dbd56d4fcdc3d8a3d37d7b4f1a9c74f2961a0c268c312",
+  "physical_metadata_sha256": "ed0927f624197dcec5845b7f7bd476a741171691825c3a4388c8e2763453c4fd",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/Mockingbird.java",
   "java_sha256": "3b867a65252cf568cff789dc1d55fb8497a62930f6f485939257aef3bd3e5598",
