@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "03314e5687b9268ff5ab61354ad7f0e42e8db67cdadb524df1de57c1f2036497",
+  "catalogue_version": "92ba21b0ffcbd1d6e8c4c169e37f6eb68e7927e280348075850d5a2840cbff9b",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4608,
-  "implemented_total": 4624,
+  "implemented_standard_cards": 4611,
+  "implemented_total": 4627,
   "token_definitions": 197,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -19,8 +19,7 @@
     },
     "blb": {
       "total": 261,
-      "complete": 258,
-      "gated": 3
+      "complete": 261
     },
     "cmm": {
       "total": 1,
@@ -5062,8 +5061,8 @@
     {
       "name": "Cache Grab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/cache_grab.rs",
       "set": "blb"
     },
@@ -16726,8 +16725,8 @@
     {
       "name": "Honored Dreyleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/honored_dreyleader.rs",
       "set": "blb"
     },
@@ -36550,8 +36549,8 @@
     {
       "name": "Thornvault Forager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/thornvault_forager.rs",
       "set": "blb"
     },
