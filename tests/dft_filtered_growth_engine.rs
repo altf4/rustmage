@@ -454,6 +454,7 @@ fn borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_s
                     width: borrowed_activations::DONOR_SLOT_WIDTH,
                     once_per_turn: false,
                     shared: false,
+                    craft: false,
                 });
             Action::AnnounceBorrowedAbility {
                 card: source,
