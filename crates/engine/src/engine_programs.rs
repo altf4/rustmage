@@ -1213,6 +1213,7 @@ impl Game {
                     | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledSubtypeAttacks { .. }
+                    | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
@@ -2820,7 +2821,9 @@ impl Game {
                         });
                     }
                 }
-                let each_attacker = match ability.condition.event() {
+                let condition = ability.condition.event();
+                let single_subtype;
+                let each_attacker = match condition {
                     TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks => {
                         Some((Keywords::NONE, None))
@@ -2832,15 +2835,24 @@ impl Game {
                         subtype,
                         exclude,
                         one_or_more: false,
-                    } => Some((Keywords::NONE, Some((subtype, exclude)))),
+                    } => {
+                        single_subtype = [subtype];
+                        Some((Keywords::NONE, Some((&single_subtype[..], exclude))))
+                    }
+                    TriggerCondition::ControlledSubtypeAttacksAny(subtypes) => {
+                        Some((Keywords::NONE, Some((subtypes, false))))
+                    }
                     _ => None,
                 };
-                if let Some((keyword, subtype)) = each_attacker {
+                if let Some((keyword, subtypes)) = each_attacker {
                     for attacker in declared {
                         if (keyword != Keywords::NONE
                             && !self.keywords(attacker.card).contains(keyword))
-                            || subtype.is_some_and(|(subtype, exclude)| {
-                                self.has_subtype(attacker.card, subtype) == exclude
+                            || subtypes.is_some_and(|(subtypes, exclude)| {
+                                subtypes
+                                    .iter()
+                                    .any(|subtype| self.has_subtype(attacker.card, subtype))
+                                    == exclude
                             })
                         {
                             continue;
@@ -2849,17 +2861,18 @@ impl Game {
                         let facts =
                             EventObjectFacts::DamageActor(self.damage_source(attacker.card));
                         if self.queue_attack_trigger(&source, index) {
-                            self.state
-                                .pending_triggers
-                                .last_mut()
-                                .unwrap()
-                                .set_event_object(EventObjectView {
-                                    object,
-                                    facts,
-                                    semantic_objects: None,
-                                    conniver_creature: None,
-                                    subtype_lki: None,
-                                });
+                            let trigger = self.state.pending_triggers.last_mut().unwrap();
+                            if matches!(condition, TriggerCondition::ControlledSubtypeAttacksAny(_))
+                            {
+                                trigger.entering_object = Some(object);
+                            }
+                            trigger.set_event_object(EventObjectView {
+                                object,
+                                facts,
+                                semantic_objects: None,
+                                conniver_creature: None,
+                                subtype_lki: None,
+                            });
                         }
                     }
                 }

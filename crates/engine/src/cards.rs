@@ -6930,6 +6930,8 @@ pub enum TriggerCondition {
         exclude: bool,
         one_or_more: bool,
     },
+    /// One event for each attacker declared by the controller with any of these subtypes.
+    ControlledSubtypeAttacksAny(&'static [&'static str]),
     /// Once per declaration, retaining the exact declared attackers of this subtype.
     ControlledSubtypeAttackDeclaration(&'static str),
     ControlledSubtypeAttackAtLeast {
