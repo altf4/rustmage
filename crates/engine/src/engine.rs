@@ -347,8 +347,9 @@ pub mod shield_harness;
 pub use replacements::{
     CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldScope,
     CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView, DamagePreventionKind,
-    DamagePreventionView, PlayerCounterPlacementView, ProliferateReplacementView,
-    ReplacementChoiceView, ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
+    DamagePreventionView, NoncombatDamageIncreaseView, PlayerCounterPlacementView,
+    ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
+    SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -4066,6 +4067,8 @@ pub struct Observation {
     pub creature_damage_shields: Vec<CreatureDamageShieldView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_doublers: Vec<DamageDoublerView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -11172,6 +11175,9 @@ impl Game {
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
         self.expire_source_prevention();
+        if let Some(roles) = &mut self.state.roles {
+            roles.noncombat_damage_increases.clear();
+        }
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
             player.mountain_mana_bonus = 0;
@@ -11409,6 +11415,7 @@ impl Game {
         self.refresh_excess_threshold(events);
         self.source_damage_triggers(events);
         self.controlled_spell_target_damage_triggers(events);
+        self.creature_toughness_damage_triggers(events);
         DamageResults {
             gains,
             excess_noncombat_recipients: self.excess_noncombat_recipients(events),
@@ -12544,6 +12551,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.damage_doublers.clone()),
+            noncombat_damage_increases: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.noncombat_damage_increases.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles

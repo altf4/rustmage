@@ -53,6 +53,7 @@ impl Game {
                             | TriggerCondition::SelfDamaged
                             | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
+                            | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
                             | TriggerCondition::AtStep { .. }
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp

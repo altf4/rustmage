@@ -2492,6 +2492,8 @@ pub enum Instruction {
     PreventCreatureDamageToControllerAndCreaturesThisTurn,
     /// Until your next turn, double damage to the damaged player or their permanents.
     DoubleDamageToDamagedPlayerUntilNextTurn,
+    /// Until cleanup, increase the controller's noncombat damage by the paid X.
+    IncreaseControlledNoncombatDamageThisTurn,
     BlinkUntilEndStep {
         under_owner: bool,
     },
@@ -6631,6 +6633,8 @@ pub enum TriggerCondition {
     CreatureDamaged {
         relation: CastRelation,
     },
+    /// An actual controlled-source noncombat hit matches a creature's toughness.
+    ControlledNoncombatDamageMatchesCreatureToughness,
     /// Once per completed damage batch with one or more excess noncombat hits.
     ExcessNoncombatDamageToCreatures {
         relation: CastRelation,

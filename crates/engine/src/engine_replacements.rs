@@ -30,6 +30,16 @@ pub struct DamageDoublerView {
     pub controller: Player,
     pub recipient: Player,
 }
+/// A resolved noncombat damage increase, independent of its original source.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct NoncombatDamageIncreaseView {
+    pub id: u64,
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
+    pub amount: u32,
+}
 /// A resolved effect preventing damage to its controller or their current creatures this turn.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -106,6 +116,8 @@ pub struct ReplacementChoiceView {
     pub damage: Option<DamageEvent>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub resolved_damage_effects: Vec<DamageDoublerView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_preventions: Vec<DamagePreventionView>,
     /// Exact pending heals applied before the simultaneous final damage batch.
@@ -454,6 +466,7 @@ enum DamageReplacementId {
 enum DamageReplacement {
     Printed(ReplacementEffectView),
     Resolved(DamageDoublerView),
+    Increase(NoncombatDamageIncreaseView),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl DamageReplacement {
@@ -461,6 +474,7 @@ impl DamageReplacement {
         match self {
             Self::Printed(effect) => DamageReplacementId::Printed(effect.source, effect.ability),
             Self::Resolved(effect) => DamageReplacementId::Resolved(effect.id),
+            Self::Increase(effect) => DamageReplacementId::Resolved(effect.id),
         }
     }
 }
@@ -1246,6 +1260,20 @@ impl Game {
             recipient: event.player,
         });
     }
+    pub(super) fn increase_controlled_noncombat_damage_this_turn(&mut self, item: &SpellView) {
+        let source = item.source.expect("resolved damage replacement source");
+        let roles = self.state.roles.get_or_insert_default();
+        let id = roles.next_acquisition();
+        roles
+            .noncombat_damage_increases
+            .push(NoncombatDamageIncreaseView {
+                id,
+                source: source.object,
+                source_card: source.card,
+                controller: item.controller,
+                amount: item.x.expect("damage increase activation has a chosen X"),
+            });
+    }
     pub(super) fn prevent_creature_damage_this_turn(
         &mut self,
         item: &SpellView,
@@ -1390,15 +1418,28 @@ impl Game {
                 }
             }
         }
-        if let Some(roles) = &self.state.roles
-            && !roles.damage_doublers.is_empty()
-        {
-            let recipient = self.damage_recipient_controller(event);
-            out.extend(roles.damage_doublers.iter().copied().filter_map(|effect| {
-                (effect.recipient == recipient
-                    && !used.contains(&DamageReplacementId::Resolved(effect.id)))
-                .then_some(DamageReplacement::Resolved(effect))
-            }));
+        if let Some(roles) = &self.state.roles {
+            if !roles.damage_doublers.is_empty() {
+                let recipient = self.damage_recipient_controller(event);
+                out.extend(roles.damage_doublers.iter().copied().filter_map(|effect| {
+                    (effect.recipient == recipient
+                        && !used.contains(&DamageReplacementId::Resolved(effect.id)))
+                    .then_some(DamageReplacement::Resolved(effect))
+                }));
+            }
+            if !event.combat {
+                out.extend(
+                    roles
+                        .noncombat_damage_increases
+                        .iter()
+                        .copied()
+                        .filter_map(|effect| {
+                            (effect.controller == event.source.controller
+                                && !used.contains(&DamageReplacementId::Resolved(effect.id)))
+                            .then_some(DamageReplacement::Increase(effect))
+                        }),
+                );
+            }
         }
         out
     }
@@ -1634,6 +1675,12 @@ impl Game {
                 self.modify_damage(effect, event, &mut batch.heals, &mut batch.damage_counters)
             }
             DamageReplacement::Resolved(_) => Self::double_damage(event),
+            DamageReplacement::Increase(effect) => {
+                event.amount = event
+                    .amount
+                    .checked_add(i128::from(effect.amount))
+                    .capacity("damage replacement quantity exhausted");
+            }
         }
         // A redirected packet may now share a recipient with another row.
         // Keep the packet in place with its already-applied replacements.
@@ -4344,13 +4391,12 @@ impl Game {
                 .damage_replacements(event, &batch.used)
                 .into_iter()
                 .any(|choice| {
-                    emit(match choice {
-                        DamageReplacement::Printed(effect) => Action::ChooseReplacement {
-                            source: effect.source,
-                            ability: effect.ability,
-                        },
-                        DamageReplacement::Resolved(effect) => {
-                            Action::ChooseResolvedDamageReplacement { effect: effect.id }
+                    emit(match choice.id() {
+                        DamageReplacementId::Printed(source, ability) => {
+                            Action::ChooseReplacement { source, ability }
+                        }
+                        DamageReplacementId::Resolved(effect) => {
+                            Action::ChooseResolvedDamageReplacement { effect }
                         }
                     })
                 })
@@ -4426,6 +4472,7 @@ impl Game {
             Event::Proliferate(batch) => Some(ReplacementChoiceView {
                 self_counter_effects: Vec::new(),
                 resolved_damage_effects: Vec::new(),
+                noncombat_damage_increases: Vec::new(),
                 kind: "Proliferate",
                 object: None,
                 counters: None,
@@ -4449,12 +4496,16 @@ impl Game {
                 let choosing_replacement = damage_event_order.is_empty();
                 let mut effects = Vec::new();
                 let mut resolved_damage_effects = Vec::new();
+                let mut noncombat_damage_increases = Vec::new();
                 if choosing_replacement {
                     for choice in self.damage_replacements(&batch.events[batch.next], &batch.used) {
                         match choice {
                             DamageReplacement::Printed(effect) => effects.push(effect),
                             DamageReplacement::Resolved(effect) => {
                                 resolved_damage_effects.push(effect)
+                            }
+                            DamageReplacement::Increase(effect) => {
+                                noncombat_damage_increases.push(effect)
                             }
                         }
                     }
@@ -4475,6 +4526,7 @@ impl Game {
                     role_attachments: Vec::new(),
                     effects,
                     resolved_damage_effects,
+                    noncombat_damage_increases,
                     damage: choosing_replacement.then_some(batch.events[batch.next]),
                     damage_preventions: if choosing_replacement {
                         self.damage_preventions(&batch.events[batch.next], &batch.used_preventions)
@@ -4492,6 +4544,7 @@ impl Game {
                 let (player, kind) = current_player_counter(batch, self.state.active).unwrap();
                 Some(ReplacementChoiceView {
                     resolved_damage_effects: Vec::new(),
+                    noncombat_damage_increases: Vec::new(),
                     self_counter_effects: batch
                         .self_effects
                         .iter()
@@ -4559,6 +4612,7 @@ impl Game {
                 Some(ReplacementChoiceView {
                     self_counter_effects: Vec::new(),
                     resolved_damage_effects: Vec::new(),
+                    noncombat_damage_increases: Vec::new(),
                     damage: None,
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
@@ -4578,6 +4632,7 @@ impl Game {
             Event::Tokens(batch) => Some(ReplacementChoiceView {
                 self_counter_effects: Vec::new(),
                 resolved_damage_effects: Vec::new(),
+                noncombat_damage_increases: Vec::new(),
                 damage: None,
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),

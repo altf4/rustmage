@@ -86,7 +86,7 @@ pub use rustmage_core::engine::{
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
-    MeldedPermanentView,
+    MeldedPermanentView, NoncombatDamageIncreaseView,
 };
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;
