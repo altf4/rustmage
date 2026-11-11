@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "171f40f7c8db0d13bac0fc3457bbe2a80922d108a74e1828ec708089c3d04dcb"
   },
-  "physical_metadata_sha256": "44ae8f7e4357bc8f70b1b6073a3ee95dba77d25474ad98c2b27ae4c15d20db63"
+  "physical_metadata_sha256": "44ae8f7e4357bc8f70b1b6073a3ee95dba77d25474ad98c2b27ae4c15d20db63",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloomingBlast.java",
+  "java_sha256": "099b6ff447c135807cdab24affb94386622d0cb1face1f684b6fc31a8f01ed14",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+      "sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetControllerEffect.java",
+      "sha256": "3840f10d46eb873900ab403a544a466553ac695a889f4276165cc1b4c2510edf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+      "sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_gifts.rs"
 }

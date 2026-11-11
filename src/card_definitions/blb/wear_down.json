@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cfcab20f4c5c52f8f8df4ff588130c1a1c2b6065103f036b04550ea0f6b261f9"
   },
-  "physical_metadata_sha256": "3e8903c674420b77a68d895872fc2c3e6220dc03b7bfc36c27d845e5a50d36dc"
+  "physical_metadata_sha256": "3e8903c674420b77a68d895872fc2c3e6220dc03b7bfc36c27d845e5a50d36dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WearDown.java",
+  "java_sha256": "abe454d4b915b9f7d2a3825dbc72f655b6da87cbcaee836a5917e8fcf191129e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+      "sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+      "sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ConditionalTargetAdjuster.java",
+      "sha256": "3f26037edef7dba84184c3329f743861ec80b030433187ea3d72f71a2cb7d1ac"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_gifts.rs"
 }
