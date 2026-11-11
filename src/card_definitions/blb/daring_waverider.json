@@ -3,10 +3,36 @@
   "catalogue_id": 962,
   "oracle_id": "e4d52559-7624-48b2-96ba-e52ada6c507a",
   "facts_sha256": "96b31ce630670677e14af9b6f88dc44f81f75b9d65e957ae1d02852b2adb92d7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3cf780ddb6d9a0f1dcc9f7c957b9931c3d05b4d6bf4d20ac24d73c75ac2bd3b2"
   },
-  "physical_metadata_sha256": "b83ab1dccc86c58e497b401ea1b3c122c32304b24eb9cc82cdab976a8b390439"
+  "physical_metadata_sha256": "b83ab1dccc86c58e497b401ea1b3c122c32304b24eb9cc82cdab976a8b390439",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DaringWaverider.java",
+  "java_sha256": "89f2e36f0b0913d956449c8468f4a719b938f8dbc4d63f16c3fa64bde0213e9a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayCastTargetCardEffect.java",
+      "sha256": "f2c37f7ccdb36f97486391bd46784eee91990f591c5fa3a445dea0e37c1e6c15"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_exile.rs"
 }
