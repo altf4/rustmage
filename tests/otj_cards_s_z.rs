@@ -2086,3 +2086,27 @@ fn vial_smasher_only_hits_the_opponent_and_vault_plunderer_can_choose_either_pla
         );
     }
 }
+
+#[test]
+fn take_up_the_shield_leaves_the_counter_and_temporary_combat_abilities() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let shield = put(&mut game, player, "Take Up the Shield", Zone::Hand);
+    let creature = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let removal = put(&mut game, opponent, "Murder", Zone::Hand);
+    cast(&mut game, shield, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert_eq!(game.counter_count(creature, CounterKind::PlusOne), 1);
+    let abilities = Keywords::LIFELINK.union(Keywords::INDESTRUCTIBLE);
+    assert!(game.keywords(creature).contains(abilities));
+    hit_player(&mut game, &[creature], opponent);
+    assert_eq!(game.state.players[player.index()].life, 23);
+    act(&mut game, Action::Pass);
+    cast(&mut game, removal, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+    advance_turn(&mut game);
+    assert_eq!(game.counter_count(creature, CounterKind::PlusOne), 1);
+    assert!(!game.keywords(creature).intersects(abilities));
+}
