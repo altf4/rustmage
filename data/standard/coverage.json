@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8a8de23f5b5b39a73371fd517236f02c34b89fddc07da6641ba3bf9575a90d91",
+  "catalogue_version": "03314e5687b9268ff5ab61354ad7f0e42e8db67cdadb524df1de57c1f2036497",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4589,
-  "implemented_total": 4605,
+  "implemented_standard_cards": 4608,
+  "implemented_total": 4624,
   "token_definitions": 197,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 239,
-      "gated": 22
+      "complete": 258,
+      "gated": 3
     },
     "cmm": {
       "total": 1,
@@ -3022,8 +3022,8 @@
     {
       "name": "Baylen, the Haymaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/baylen_the_haymaker.rs",
       "set": "blb"
     },
@@ -6334,16 +6334,16 @@
     {
       "name": "Clement, the Worrywort",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/clement_the_worrywort.rs",
       "set": "blb"
     },
     {
       "name": "Clifftop Lookout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/clifftop_lookout.rs",
       "set": "blb"
     },
@@ -12014,8 +12014,8 @@
     {
       "name": "Fecund Greenshell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/fecund_greenshell.rs",
       "set": "blb"
     },
@@ -13974,8 +13974,8 @@
     {
       "name": "Gev, Scaled Scorch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/gev_scaled_scorch.rs",
       "set": "blb"
     },
@@ -15998,8 +15998,8 @@
     {
       "name": "Heaped Harvest",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/heaped_harvest.rs",
       "set": "blb"
     },
@@ -19214,8 +19214,8 @@
     {
       "name": "Kitsa, Otterball Elite",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/kitsa_otterball_elite.rs",
       "set": "blb"
     },
@@ -20270,8 +20270,8 @@
     {
       "name": "Lilysplash Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/lilysplash_mentor.rs",
       "set": "blb"
     },
@@ -20838,8 +20838,8 @@
     {
       "name": "Lumra, Bellow of the Woods",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/lumra_bellow_of_the_woods.rs",
       "set": "blb"
     },
@@ -20990,8 +20990,8 @@
     {
       "name": "Mabel, Heir to Cragflame",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mabel_heir_to_cragflame.rs",
       "set": "blb"
     },
@@ -22518,8 +22518,8 @@
     {
       "name": "Mistbreath Elder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mistbreath_elder.rs",
       "set": "blb"
     },
@@ -30198,8 +30198,8 @@
     {
       "name": "Season of Weaving",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/season_of_weaving.rs",
       "set": "blb"
     },
@@ -30214,8 +30214,8 @@
     {
       "name": "Season of the Burrow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/season_of_the_burrow.rs",
       "set": "blb"
     },
@@ -33078,8 +33078,8 @@
     {
       "name": "Starseer Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/starseer_mentor.rs",
       "set": "blb"
     },
@@ -34166,8 +34166,8 @@
     {
       "name": "Sunshower Druid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/sunshower_druid.rs",
       "set": "blb"
     },
@@ -36750,8 +36750,8 @@
     {
       "name": "Three Tree Scribe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/three_tree_scribe.rs",
       "set": "blb"
     },
@@ -37566,8 +37566,8 @@
     {
       "name": "Treeguard Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/treeguard_duo.rs",
       "set": "blb"
     },
@@ -40062,8 +40062,8 @@
     {
       "name": "Warren Warleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/warren_warleader.rs",
       "set": "blb"
     },
@@ -41294,8 +41294,8 @@
     {
       "name": "Ygra, Eater of All",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/ygra_eater_of_all.rs",
       "set": "blb"
     },

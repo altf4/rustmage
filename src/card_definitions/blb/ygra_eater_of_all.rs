@@ -1,3 +1,5 @@
+use rustmage_core::engine::Zone;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(6, 6),
     static_groups: &[StaticAbilityGroup {
