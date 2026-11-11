@@ -756,7 +756,7 @@ impl Game {
         true
     }
 
-    fn offer_exact_free_cast(
+    pub(super) fn offer_exact_free_cast(
         &mut self,
         player: Player,
         object: ObjectRef,

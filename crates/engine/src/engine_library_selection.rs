@@ -32,6 +32,7 @@ pub(super) enum LibrarySelectionCompletion {
     RememberHandCount,
     MayTransform,
     ReflexiveEquipment(u16),
+    RememberExile,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -273,6 +274,9 @@ impl Game {
         completion: LibrarySelectionCompletion,
     ) -> bool {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
+        if completion == LibrarySelectionCompletion::RememberExile {
+            self.state.resolving.as_mut().unwrap().milled.clear();
+        }
         match completion {
             LibrarySelectionCompletion::None => {}
             LibrarySelectionCompletion::RememberHandCount => {
@@ -999,6 +1003,13 @@ impl Game {
                 .collect();
             self.stage_entries(moves, None);
             return;
+        }
+        if f.completion == LibrarySelectionCompletion::RememberExile {
+            self.state.resolving.as_mut().unwrap().milled = events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Exile)
+                .map(|event| event.after)
+                .collect();
         }
         self.commit_library_remainder(owner, *f);
     }

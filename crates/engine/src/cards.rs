@@ -1356,6 +1356,9 @@ pub enum EffectChoiceKind {
     },
     /// Count actual moves of another permanent with this effective subtype.
     ReturnToHandCountingOtherSubtype(&'static str),
+    MoveFaceUpExileToGraveyard {
+        owner: Player,
+    },
     KeepSharedCreatureTypes,
     /// The ability controller saves one qualifying creature per controlling player.
     KeepCreaturesByPowerForEachPlayer(i128),
@@ -2006,6 +2009,7 @@ pub enum CounterSubject {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CreaturePowerDamageRecipients {
     OtherCreatures,
+    TargetGroup(u16),
     /// The source creature is hit even if every target in this group is illegal.
     TargetGroupAndSelf(u16),
 }
@@ -2251,6 +2255,7 @@ pub enum Instruction {
     RevealTopDrawIfArtifact,
     RevealTopMoveIfPermanent,
     RevealTopToHandLoseManaValue,
+    RevealTopToHandLoseManaValueFor(PlayerSet),
     /// Both legal targets reveal their top cards, lose life from the other
     /// reveal, and take the exact revealed cards into their hands.
     RevealTargetTopsToHandLoseOtherManaValue,
@@ -2370,6 +2375,11 @@ pub enum Instruction {
     },
     /// Allow ordinary plays of the preceding exact exile results through cleanup.
     GrantExiledResultFlexiblePlay,
+    /// Allow casting the preceding exact exile results until the end of your next turn.
+    GrantExiledResultCastUntilEndOfNextTurn,
+    /// Allow playing the preceding exact exile results with any type of mana until
+    /// your next end step begins.
+    GrantExiledResultFlexiblePlayUntilNextEndStep,
     ExileTopPlayScaled {
         amount: AmountValue,
         next_turn: bool,
@@ -3099,6 +3109,11 @@ pub enum Instruction {
     IfCoinFlipWon {
         skip: usize,
     },
+    /// Flip a coin, then create one of two reflexive triggers with the captured spell.
+    FlipCoinForCapturedSpell {
+        win: u16,
+        loss: u16,
+    },
     FlipCoinsSkipTurns {
         coins: u16,
     },
@@ -3626,6 +3641,9 @@ pub enum Instruction {
     MayCounterSourceOtherwiseCast,
     /// Private look, optional exact card choice, then discard and a draw for that player.
     LookTargetHandMayDiscardThenDraw,
+    /// Reveal the target's hand. Choose a nonland to discard, or optionally
+    /// put a face-up exiled card they own into their graveyard.
+    RevealTargetHandDiscardOrMoveExileToGraveyard,
     /// Inspect a targeted player's hand privately and optionally exile a nonland
     /// card from it while the exact source remains on the battlefield.
     LookTargetHandMayExileUntilSourceLeaves,
@@ -4057,6 +4075,10 @@ pub enum Instruction {
     SearchRequired(SearchSpec),
     SelectLibrary(LibrarySelectionSpec),
     SelectLibraryTo(LibrarySelectionEffect),
+    /// Save the exact card actually exiled by this library selection.
+    SelectLibraryToExileRemember(LibrarySelectionEffect),
+    /// Offer a free cast of the exact card saved by the preceding selection.
+    CastRememberedExileFree,
     /// Privately choose cards from the targeted player's top group, then
     /// exile the selection face down and put the rest on the bottom at random.
     SelectTargetLibraryFaceDownPlay {
@@ -4422,6 +4444,8 @@ pub enum Instruction {
     },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
+    /// Destroy every surviving target role as one deduplicated event.
+    DestroyAllTargets,
     /// Return owned graveyard targets to hand, with an optional creature entry instead.
     ReturnGraveyardTargetsToHandOrBattlefield {
         maximum_mana_value: u64,
@@ -4965,6 +4989,8 @@ pub enum AmountValue {
     /// Toughness of the creature immediately before the triggering death.
     DeathEventToughness,
     DeathEventPower,
+    /// Last battlefield mana value of the permanent that was actually sacrificed.
+    SacrificeEventManaValue,
     DeathEventCounterTotal,
     /// Damage dealt by the equipped creature in one completed combat batch.
     CreatureCombatDamageAmount,
@@ -6653,6 +6679,7 @@ pub enum TriggerCondition {
     SourceDealtCombatDamage,
     SourceCombatDamagePlayerOrPlaneswalker,
     AttachedDealtCombatDamage,
+    AttachedDealtCombatDamageToPlayer,
     ControlledCreatureCombatDamageOwnTurn,
     DamagedCreatureDies,
     /// Historical placement event: before < threshold <= after. Never a live recheck.

@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
     LookDiscardDraw,
+    DiscardRevealedNonlandOrMoveExile,
     LookMayExileUntilSourceLeaves,
     ExileOwn,
     RevealOptional {
@@ -195,6 +196,24 @@ impl Game {
             required: 0,
             selected: Vec::new(),
             candidates: self.exact_hand(victim),
+        });
+        true
+    }
+    pub(super) fn start_reveal_discard_or_move_exile(&mut self, item: &SpellView) -> bool {
+        let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
+            return false;
+        };
+        let candidates = self.exact_hand(victim);
+        self.reveal_hand_refs(&candidates);
+        self.set_hand_interaction(HandInteraction {
+            kind: HandChoiceKind::DiscardRevealedNonlandOrMoveExile,
+            actor: item.controller,
+            controller: item.controller,
+            victim: Some(victim),
+            source: item.source.expect("hand reveal source").object,
+            required: 0,
+            selected: Vec::new(),
+            candidates,
         });
         true
     }
@@ -513,6 +532,7 @@ impl Game {
                     && o.is_card()
                     && self.current_kinds(reference.card) & 2 == 0
             }
+            HandChoiceKind::DiscardRevealedNonlandOrMoveExile => in_hand && !o.card.is_land(),
             HandChoiceKind::ExileRevealedLinked | HandChoiceKind::ExileRevealedLinkedOptional => {
                 o.zone == Zone::Hand
                     && Some(o.owner) == interaction.victim
@@ -563,6 +583,7 @@ impl Game {
                 | HandChoiceKind::Behold
                 | HandChoiceKind::BeholdOptional { .. }
                 | HandChoiceKind::LookDiscardDraw
+                | HandChoiceKind::DiscardRevealedNonlandOrMoveExile
                 | HandChoiceKind::LookMayExileUntilSourceLeaves
                 | HandChoiceKind::RevealOptional { .. }
         ) && emit(Action::ChooseHandCard { object: None })
@@ -647,7 +668,9 @@ impl Game {
                         )),
                     );
                 }
-                HandChoiceKind::DiscardRevealed | HandChoiceKind::DiscardRevealedKinds { .. } => {
+                HandChoiceKind::DiscardRevealed
+                | HandChoiceKind::DiscardRevealedKinds { .. }
+                | HandChoiceKind::DiscardRevealedNonlandOrMoveExile => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
                 }
                 HandChoiceKind::ExileRevealedKinds { .. }
@@ -742,6 +765,22 @@ impl Game {
                 | HandChoiceKind::DeployPermanents => unreachable!(),
             }
         }
+        if object.is_none() && interaction.kind == HandChoiceKind::DiscardRevealedNonlandOrMoveExile
+        {
+            let item = self.state.resolving.as_ref().unwrap().item.clone();
+            if self.start_effect_choice(
+                &item,
+                EffectChoiceKind::MoveFaceUpExileToGraveyard {
+                    owner: interaction.victim.unwrap(),
+                },
+                PlayerSet::Controller,
+                evidence::cost(0).filter,
+                1,
+                Some(0),
+            ) {
+                return;
+            }
+        }
         if interaction.kind == HandChoiceKind::Behold {
             self.state.resolving.as_mut().unwrap().search_result = None;
         }
@@ -805,6 +844,7 @@ impl Game {
                     | HandChoiceKind::Behold
                     | HandChoiceKind::BeholdOptional { .. }
                     | HandChoiceKind::LookDiscardDraw
+                    | HandChoiceKind::DiscardRevealedNonlandOrMoveExile
                     | HandChoiceKind::LookMayExileUntilSourceLeaves
                     | HandChoiceKind::RevealOptional { .. }
             ),

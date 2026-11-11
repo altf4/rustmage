@@ -401,13 +401,19 @@ impl Game {
         }
     }
 
-    pub(super) fn reveal_top_to_hand_lose_mana_value(&mut self, item: &SpellView) {
+    pub(super) fn reveal_top_to_hand_lose_mana_value(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+    ) {
         if let Some(reveal) = self.reveal_top_for(item) {
             let id = reveal.revealed.object.card;
             let amount = i128::from(self.object_mana_value(id));
             self.state.library_top.get_or_insert_default().reveal = Some(reveal);
             self.move_revealed_top_to_hand(id);
-            self.lose_life(item.controller, amount);
+            for player in self.program_players(players, item) {
+                self.lose_life(player, amount);
+            }
         }
     }
 

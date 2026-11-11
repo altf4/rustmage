@@ -743,21 +743,6 @@ impl Game {
         self.open_payment_announcement(item, Counters::default(), None);
     }
 
-    pub(super) fn grant_flexible_exile_permission_this_turn(
-        &mut self,
-        player: Player,
-        object: ObjectRef,
-        cast_only: bool,
-    ) {
-        let expiry = ExilePlayExpiry::Turn(self.state.turn);
-        if let Some(row) =
-            self.grant_exile_play_permission_with_expiry(player, object, None, expiry)
-        {
-            row.spend_any_mana = true;
-            row.cast_only = cast_only;
-        }
-    }
-
     pub(super) fn exile_top_choose_play(
         &mut self,
         player: Player,

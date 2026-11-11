@@ -1425,6 +1425,7 @@ impl Game {
             | EffectChoiceKind::BlinkControlledCreatures
             | EffectChoiceKind::HandCreatures { .. }
             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+            | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }

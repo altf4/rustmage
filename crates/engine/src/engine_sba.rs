@@ -551,12 +551,21 @@ impl Game {
             .deaths
             .iter()
             .filter(|&&id| self.saga_sacrifice_required(id))
-            .map(|&id| (self.state.objects[id as usize].controller, id))
+            .map(|&id| {
+                (
+                    self.state.objects[id as usize].controller,
+                    id,
+                    self.object_mana_value(id),
+                )
+            })
             .collect();
         let mut events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
         for event in &mut events {
-            if let Some(&(actor, _)) = sacrifices.iter().find(|&&(_, id)| id == event.before.id) {
+            if let Some(&(actor, _, mana_value)) =
+                sacrifices.iter().find(|&&(_, id, _)| id == event.before.id)
+            {
                 event.sacrificed_by = Some(actor);
+                event.granted_departure_mana_value = mana_value;
             }
         }
         self.food_sacrifice_triggers(&events, &sources);

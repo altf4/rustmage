@@ -892,6 +892,7 @@ impl Game {
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DepartureCounterCount(_)
             | AmountValue::DeathEventPower
+            | AmountValue::SacrificeEventManaValue
             | AmountValue::DeathEventCounterTotal
             | AmountValue::DeathEventToughness
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

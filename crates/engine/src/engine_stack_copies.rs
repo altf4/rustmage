@@ -486,6 +486,7 @@ impl Game {
                     }
                     Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
                     Instruction::CopyCapturedSpellModified { .. }
+                    | Instruction::FlipCoinForCapturedSpell { .. }
                     | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
                     _ => None,
                 })

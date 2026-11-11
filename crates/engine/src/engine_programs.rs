@@ -1137,6 +1137,7 @@ impl Game {
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::SourceCombatDamagePlayerOrPlaneswalker
                     | TriggerCondition::AttachedDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamageToPlayer
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
                     | TriggerCondition::OwnUntapStepUntaps
@@ -2397,6 +2398,7 @@ impl Game {
                                     instruction,
                                     Instruction::ChangeCastSpellTargets
                                         | Instruction::MarkCastDreamExile
+                                        | Instruction::FlipCoinForCapturedSpell { .. }
                                         | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
                                         | Instruction::DamageScaled(
                                             AmountValue::CastSpellManaValue
@@ -4212,6 +4214,7 @@ impl Game {
                     | Instruction::AttachEquipmentByGroups { .. }
                     | Instruction::AttachEquipmentGroupsReflexive { .. }
                     | Instruction::ReturnAllTargetsToHand
+                    | Instruction::DestroyAllTargets
                     | Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. }
                     | Instruction::ExileAllTargetsLinkedToSource
                     // These aggregate operations consume every independently
@@ -6361,6 +6364,22 @@ impl Game {
                 Instruction::GrantExiledResultFlexiblePlay => {
                     self.grant_exiled_result_flexible_play(item.controller, false);
                 }
+                Instruction::GrantExiledResultCastUntilEndOfNextTurn => {
+                    self.grant_remembered_exile_permission(
+                        item.controller,
+                        ExilePlayExpiry::EndOfNextTurn,
+                        true,
+                        false,
+                    );
+                }
+                Instruction::GrantExiledResultFlexiblePlayUntilNextEndStep => {
+                    self.grant_remembered_exile_permission(
+                        item.controller,
+                        ExilePlayExpiry::StartOfNextEndStep(item.controller),
+                        false,
+                        true,
+                    );
+                }
                 Instruction::MayExileDiscardedPlay { .. } => {
                     let skip_to = resolution.pc;
                     if self.discarded_play_object(&item).is_some() {
@@ -6810,6 +6829,11 @@ impl Game {
                 }
                 Instruction::LookTargetHandMayDiscardThenDraw => {
                     if self.start_private_hand_discard_draw(&item) {
+                        return;
+                    }
+                }
+                Instruction::RevealTargetHandDiscardOrMoveExileToGraveyard => {
+                    if self.start_reveal_discard_or_move_exile(&item) {
                         return;
                     }
                 }
@@ -7808,6 +7832,9 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::FlipCoinForCapturedSpell { win, loss } => {
+                    self.flip_coin_for_captured_spell(&item, win, loss);
+                }
                 Instruction::FlipCoinsSkipTurns { coins } => {
                     self.flip_coins_skip_turns(&item, coins)
                 }
@@ -8795,7 +8822,10 @@ impl Game {
                 Instruction::RevealTopDrawIfArtifact => self.reveal_top_draw_if_artifact(&item),
                 Instruction::RevealTopMoveIfPermanent => self.reveal_top_move_if_permanent(&item),
                 Instruction::RevealTopToHandLoseManaValue => {
-                    self.reveal_top_to_hand_lose_mana_value(&item)
+                    self.reveal_top_to_hand_lose_mana_value(&item, PlayerSet::Controller)
+                }
+                Instruction::RevealTopToHandLoseManaValueFor(players) => {
+                    self.reveal_top_to_hand_lose_mana_value(&item, players);
                 }
                 Instruction::RevealTargetTopsToHandLoseOtherManaValue => {
                     self.reveal_target_tops_to_hand_lose_other_mana_value(&item)
@@ -9071,6 +9101,25 @@ impl Game {
                         effect,
                         library_selection::LibrarySelectionCompletion::MayTransform,
                     ) {
+                        return;
+                    }
+                }
+                Instruction::SelectLibraryToExileRemember(effect) => {
+                    if self.start_library_selection_completion(
+                        &item,
+                        effect,
+                        library_selection::LibrarySelectionCompletion::RememberExile,
+                    ) {
+                        return;
+                    }
+                }
+                Instruction::CastRememberedExileFree => {
+                    let exiled = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
+                    if let Some(&object) = exiled.first()
+                        && self.object_ref(object.card) == object
+                        && self.state.objects[object.card as usize].zone == Zone::Exile
+                    {
+                        self.offer_exact_free_cast(item.controller, object, Zone::Exile, None);
                         return;
                     }
                 }
@@ -12112,6 +12161,9 @@ impl Game {
                                 || event.before.is_token())
                     });
                     self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(qualifies));
+                }
+                Instruction::DestroyAllTargets => {
+                    self.destroy_targets_outcome(&item.targets);
                 }
                 Instruction::Exile
                 | Instruction::Destroy

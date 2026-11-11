@@ -5630,6 +5630,7 @@ impl Game {
                     } else if matches!(
                         choice.kind,
                         EffectChoiceKind::ReturnToHand
+                            | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
                             | EffectChoiceKind::ReturnGraveyardToHand { .. }
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
@@ -5666,6 +5667,7 @@ impl Game {
                             | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::BlinkControlledCreatures
                             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                            | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -9748,6 +9750,10 @@ impl Game {
             .map(|&(_, id)| (self.object_ref(id), Zone::Graveyard))
             .collect();
         let plans = self.plan_atomic_zone_cost(&moves)?;
+        let mana_values: Vec<_> = plans
+            .iter()
+            .map(|(before, _)| self.object_mana_value(before.id))
+            .collect();
         self.capture_event_object_facts(plans.iter().map(|(view, _)| view));
         self.capture_source_quantities(plans.iter().map(|(view, _)| view));
         let graveyard_observers = self.freeze_exile_batch_observers();
@@ -9770,9 +9776,11 @@ impl Game {
                 )
             })
             .collect();
-        for (event, &(actor, _)) in events.iter_mut().zip(sacrifices) {
+        for ((event, &(actor, _)), mana_value) in events.iter_mut().zip(sacrifices).zip(mana_values)
+        {
             if event.moved {
                 event.sacrificed_by = Some(actor);
+                event.granted_departure_mana_value = mana_value;
             }
         }
         self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Sacrifice);

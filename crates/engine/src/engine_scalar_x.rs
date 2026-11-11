@@ -665,6 +665,12 @@ impl Game {
                     0
                 }
             }),
+            AmountValue::SacrificeEventManaValue => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::DepartureManaValue(value)) => u128::from(*value),
+                    _ => 0,
+                }
+            }
             AmountValue::DeathEventCounterTotal => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::DeathCounters(counters) = &event.facts {
                     counters.total()

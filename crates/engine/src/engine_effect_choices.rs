@@ -500,6 +500,14 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object);
         }
+        if let EffectChoiceKind::MoveFaceUpExileToGraveyard { owner } = choice.kind {
+            return o.zone == Zone::Exile
+                && o.owner == owner
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && !self.exiled_face_down(object)
+                && choice.selected[player.index()].is_empty();
+        }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind.payment_kind()
             && o.zone == Zone::Hand
         {
@@ -2230,6 +2238,16 @@ impl Game {
                 | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
             self.return_effect_choice_to_hand(*choice);
+            return false;
+        }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
+        ) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(object) = choice.selected[player.index()].first() {
+                self.move_object(object.card, Zone::Graveyard);
+            }
             return false;
         }
         if let EffectChoiceKind::MeldPartner(pair) = choice.kind {

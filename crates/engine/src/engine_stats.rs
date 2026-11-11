@@ -217,6 +217,7 @@ impl Game {
                     | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamageToPlayer
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {

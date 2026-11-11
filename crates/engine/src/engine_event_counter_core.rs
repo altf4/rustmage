@@ -55,42 +55,51 @@ impl Game {
             {
                 continue;
             }
-            let amount = events
-                .iter()
-                .filter(|e| e.amount > 0 && e.combat && e.source.reference == recipient)
-                .fold(0u128, |total, e| {
-                    total
-                        .checked_add(e.amount as u128)
-                        .capacity("equipped combat damage exhausted")
-                });
+            let mut amount = 0u128;
+            let mut by_player = [0u128; 2];
+            for event in events.iter().filter(|event| {
+                event.amount > 0 && event.combat && event.source.reference == recipient
+            }) {
+                amount = amount
+                    .checked_add(event.amount as u128)
+                    .capacity("equipped combat damage exhausted");
+                if let Target::Player(player) = event.target {
+                    let dealt = &mut by_player[player.index()];
+                    *dealt = dealt
+                        .checked_add(event.amount as u128)
+                        .capacity("equipped combat damage to player exhausted");
+                }
+            }
             if amount == 0 {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event() == TriggerCondition::AttachedDealtCombatDamage
-                    && self.queue_trigger(&source, index)
-                {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .refer_objects([recipient]);
-                    if ability.program.iter().any(|instruction| {
-                        matches!(
-                            instruction,
-                            Instruction::PutCountersScaled {
-                                amount: AmountValue::CreatureCombatDamageAmount,
-                                ..
-                            }
-                        )
-                    }) {
-                        self.state
-                            .pending_triggers
-                            .last_mut()
-                            .unwrap()
-                            .creature_combat_event = Some(Box::new(CreatureCombatEventView {
+                let event = ability.condition.event();
+                let amounts = match event {
+                    TriggerCondition::AttachedDealtCombatDamage => [amount, 0],
+                    TriggerCondition::AttachedDealtCombatDamageToPlayer => by_player,
+                    _ => continue,
+                };
+                for dealt in amounts.into_iter().filter(|&dealt| dealt > 0) {
+                    if !self.queue_trigger(&source, index) {
+                        continue;
+                    }
+                    let trigger = self.state.pending_triggers.last_mut().unwrap();
+                    trigger.refer_objects([recipient]);
+                    if event == TriggerCondition::AttachedDealtCombatDamageToPlayer
+                        || ability.program.iter().any(|instruction| {
+                            matches!(
+                                instruction,
+                                Instruction::PutCountersScaled {
+                                    amount: AmountValue::CreatureCombatDamageAmount,
+                                    ..
+                                }
+                            )
+                        })
+                    {
+                        trigger.creature_combat_event = Some(Box::new(CreatureCombatEventView {
                             dealer: recipient,
-                            amount,
+                            amount: dealt,
                         }));
                     }
                 }

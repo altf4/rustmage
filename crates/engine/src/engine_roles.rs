@@ -226,6 +226,22 @@ impl Game {
     ) {
         self.queue_reflexive_objects(item, ability, subject);
     }
+    pub(super) fn flip_coin_for_captured_spell(&mut self, item: &SpellView, win: u16, loss: u16) {
+        let ability = if self.flip_coins(item.controller, 1) == 1 {
+            win
+        } else {
+            loss
+        };
+        let before = self.state.pending_triggers.len();
+        self.queue_reflexive(item, ability, None);
+        if let Some(trigger) = self.state.pending_triggers.get_mut(before) {
+            trigger.copy_event = item.copy_event.clone();
+            trigger.cast_event = item.cast_event.clone();
+            if let Some(event) = trigger.cast_event.as_deref() {
+                trigger.refer_objects([event.object]);
+            }
+        }
+    }
     pub(super) fn queue_reflexive_objects(
         &mut self,
         item: &SpellView,

@@ -240,6 +240,18 @@ impl Game {
             )
         }) {
             EventObjectFacts::DeathCounters(event.before.counters.clone())
+        } else if event.sacrificed_by.is_some()
+            && program.iter().any(|instruction| {
+                matches!(
+                    instruction,
+                    Instruction::ExileTopLibraryRemember {
+                        amount: AmountValue::SacrificeEventManaValue,
+                        ..
+                    }
+                )
+            })
+        {
+            EventObjectFacts::DepartureManaValue(event.granted_departure_mana_value)
         } else if program.iter().any(|instruction| {
             matches!(
                 instruction,
