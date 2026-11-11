@@ -50,7 +50,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             },
             program: &[Instruction::AnimateSource(AnimationSpec {
                 artifact: false,
-                creature_types: AnimationCreatureTypes::Named(&["Elemental"]),
+                creature_types: AnimationCreatureTypes::Additional(&["Elemental"]),
                 base: Some((3, 3)),
                 keywords: Keywords::NONE,
                 duration: AnimationDuration::EndOfTurn,

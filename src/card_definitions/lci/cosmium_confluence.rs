@@ -37,7 +37,7 @@ const ANIMATE: Instruction = Instruction::AnimateRememberedPermanents(AnimationS
 const ENCHANTMENT: TargetSpec = TargetSpec::one(TargetRule::Object {
     zone: TargetZone::Battlefield,
     kinds: 32,
-    relation: 2,
+    relation: -1,
     other: false,
     nonland: false,
     tapped: false,

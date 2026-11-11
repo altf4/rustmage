@@ -228,6 +228,19 @@ fn cavernous_maw_qualifies_without_counting_itself_and_remains_a_cave_when_anima
     );
     reject(&mut game, activate(maw, 1));
     let last = put(&mut game, player, "Captivating Cave", Zone::Graveyard);
+    let slumber = put(&mut game, player, "Disturbed Slumber", Zone::Hand);
+    let mut slumber_first = game.clone();
+    cast(&mut slumber_first, slumber, Some(Target::Card(maw)));
+    settle(&mut slumber_first);
+    assert!(slumber_first.has_subtype(maw, "Dinosaur"));
+    act(&mut slumber_first, activate(maw, 1));
+    pay(&mut slumber_first);
+    settle(&mut slumber_first);
+    assert_eq!(stats(&slumber_first, maw), (3, 3));
+    for subtype in ["Cave", "Dinosaur", "Elemental"] {
+        assert!(slumber_first.has_subtype(maw, subtype));
+    }
+
     act(&mut game, activate(maw, 1));
     pay(&mut game);
     game.move_object(last, Zone::Exile);
@@ -236,6 +249,12 @@ fn cavernous_maw_qualifies_without_counting_itself_and_remains_a_cave_when_anima
     assert_eq!(land.kinds, 1 | 2);
     assert!(land.has_subtype("Elemental") && land.has_subtype("Cave"));
     assert_eq!(stats(&game, maw), (3, 3));
+    cast(&mut game, slumber, Some(Target::Card(maw)));
+    settle(&mut game);
+    assert_eq!(stats(&game, maw), (4, 4));
+    for subtype in ["Cave", "Dinosaur", "Elemental"] {
+        assert!(game.has_subtype(maw, subtype));
+    }
     reject(&mut game, activate(maw, 1));
 }
 
@@ -299,7 +318,7 @@ fn cosmium_confluence_uses_printed_mode_order_and_independent_repeated_targets()
     let foreign = put(&mut root, foe, "Captivating Cave", Zone::Battlefield);
     let found = put(&mut root, player, "Captivating Cave", Zone::Library);
     let victim = put(&mut root, foe, "Impact Tremors", Zone::Battlefield);
-    let second = put(&mut root, foe, "Rest in Peace", Zone::Battlefield);
+    let own_enchantment = put(&mut root, player, "Rest in Peace", Zone::Battlefield);
     let wrong = put(&mut root, foe, "Swiftfoot Boots", Zone::Battlefield);
     let spell = candidate(&mut root, player, "Cosmium Confluence", Zone::Hand);
 
@@ -339,7 +358,7 @@ fn cosmium_confluence_uses_printed_mode_order_and_independent_repeated_targets()
     act(&mut root, Action::AnnounceCast { card: spell });
     act(&mut root, Action::ChooseMode { mode: 9 });
     reject(&mut root, target(wrong));
-    for card in [victim, victim, second] {
+    for card in [victim, victim, own_enchantment] {
         act(&mut root, target(card));
     }
     if root.legal_actions().contains(&Action::FinishTargets) {
@@ -350,10 +369,10 @@ fn cosmium_confluence_uses_printed_mode_order_and_independent_repeated_targets()
     shielded.add_counter(victim, CounterKind::Shield, 1);
     settle(&mut shielded);
     assert_eq!(shielded.object_view(victim).zone, Zone::Exile);
-    assert_eq!(shielded.object_view(second).zone, Zone::Exile);
+    assert_eq!(shielded.object_view(own_enchantment).zone, Zone::Exile);
     root.move_object(victim, Zone::Exile);
     settle(&mut root);
-    assert_eq!(root.object_view(second).zone, Zone::Exile);
+    assert_eq!(root.object_view(own_enchantment).zone, Zone::Exile);
 }
 
 #[test]
@@ -448,6 +467,15 @@ fn deconstruction_hammer_sacrifices_only_the_selected_grantor() {
     game.state.objects[bearer as usize].summoning_sick = true;
     reject(&mut game, use_hammer.clone());
     game.state.objects[bearer as usize].summoning_sick = false;
+    let mut own_target = game.clone();
+    act(&mut own_target, use_hammer.clone());
+    act(&mut own_target, target(hammers[0]));
+    pay(&mut own_target);
+    assert_eq!(own_target.object_view(hammers[1]).zone, Zone::Graveyard);
+    assert_eq!(own_target.object_view(hammers[0]).zone, Zone::Battlefield);
+    settle(&mut own_target);
+    assert_eq!(own_target.object_view(hammers[0]).zone, Zone::Graveyard);
+
     act(&mut game, use_hammer);
     reject(&mut game, target(bearer));
     act(&mut game, target(victim));

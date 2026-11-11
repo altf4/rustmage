@@ -13,7 +13,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         &[
             Instruction::AnimateTargets(AnimationSpec {
                 artifact: false,
-                creature_types: AnimationCreatureTypes::Named(&["Dinosaur"]),
+                creature_types: AnimationCreatureTypes::Additional(&["Dinosaur"]),
                 base: Some((4, 4)),
                 keywords: Keywords::REACH.union(Keywords::HASTE),
                 duration: AnimationDuration::EndOfTurn,

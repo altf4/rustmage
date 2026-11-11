@@ -24,6 +24,14 @@ pub mod funding_entry_exiles;
 #[path = "engine_funding_linked_copies.rs"]
 pub mod funding_linked_copies;
 
+type FundingManaActivation = (
+    u16,
+    &'static ActivatedAbility,
+    Option<BorrowedDescriptor>,
+    Option<(Card, u64)>,
+    Option<ability_order::GrantedAbilityKey>,
+);
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug)]
 pub(super) struct FundingGoal {
@@ -1854,18 +1862,7 @@ impl<'g> FundingState<'g> {
             }),
         }
     }
-    fn mana_activations(
-        &self,
-        id: CardId,
-    ) -> impl Iterator<
-        Item = (
-            u16,
-            &'static ActivatedAbility,
-            Option<BorrowedDescriptor>,
-            Option<(Card, u64)>,
-            Option<ability_order::GrantedAbilityKey>,
-        ),
-    > {
+    fn mana_activations(&self, id: CardId) -> impl Iterator<Item = FundingManaActivation> {
         let object = ability_world::CharacteristicWorld::object(self, id);
         object
             .card

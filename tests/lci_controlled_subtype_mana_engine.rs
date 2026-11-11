@@ -150,8 +150,7 @@ fn nested_cast_funding_charges_each_life_payment_and_restores_exact_branches() {
         let all_blue = game
             .legal_actions()
             .into_iter()
-            .filter(|action| matches!(action, Action::ChooseSpellCost { .. }))
-            .last()
+            .rfind(|action| matches!(action, Action::ChooseSpellCost { .. }))
             .unwrap();
         act(&mut game, all_blue);
     }
