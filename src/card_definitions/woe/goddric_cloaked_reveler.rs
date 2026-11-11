@@ -42,16 +42,19 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             ..ActivationCost::ZERO
         },
         targets: TargetPlan::NONE,
-        program: &[Instruction::GrowCreatures {
-            filter: CreatureFilter {
+        program: &[Instruction::GrowFilteredScaled {
+            // A kindred Dragon can animate after the modifier is created.
+            filter: CountFilter {
+                zone: CountZone::Battlefield,
                 relation: 0,
-                other: false,
+                kind: 0,
+                exclude: 0,
                 subtype: Some("Dragon"),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
+                basic: false,
+                other: false,
+                cards_only: false,
             },
+            amount: AmountValue::Fixed(1),
             power: 1,
             toughness: 0,
         }],

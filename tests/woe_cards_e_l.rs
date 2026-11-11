@@ -1527,6 +1527,7 @@ fn goddric_celebrates_two_nonland_entries_and_pays_to_boost_current_dragons() {
         let mut game = scenario(player);
         let goddric = candidate(&mut game, player, "Goddric, Cloaked Reveler");
         let other_dragon = put(&mut game, player, "Shivan Dragon", Zone::Battlefield);
+        let core = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
         let foreign_dragon = put(
             &mut game,
             player.other(),
@@ -1571,6 +1572,25 @@ fn goddric_celebrates_two_nonland_entries_and_pays_to_boost_current_dragons() {
         assert_eq!(stats(&game, other_dragon), (6, 5));
         assert_eq!(stats(&game, foreign_dragon), (5, 5));
         assert_eq!(stats(&game, bear), (2, 2));
+
+        let core_view = game.object_view(core);
+        assert!(core_view.has_subtype("Dragon") && !core_view.is_creature());
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: core,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        act(
+            &mut game,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 0, 4],
+            },
+        );
+        settle(&mut game);
+        assert_eq!(stats(&game, core), (5, 4));
 
         end_scenario_turn(&mut game);
         assert_eq!(stats(&game, goddric), (3, 3));
