@@ -60,14 +60,15 @@ def snapshot_library(target, report_dir):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
+    windows = os.name == 'nt'
     parser.add_argument('--release', action='store_true',
                         help='also build production library and run the bounded native benchmark')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
                         help='run binding assurance against this run\'s release library')
     parser.add_argument('--games', type=int, default=10,
                         help='native benchmark games, only with --release (default: 10)')
-    parser.add_argument('--timeout', type=float, default=3600,
-                        help='total wall-clock budget after acquiring the build slot (default: 3600 seconds)')
+    parser.add_argument('--timeout', type=float, default=4500 if windows else 3600,
+                        help='total wall-clock budget after acquiring the build slot (default: %(default)s seconds)')
     targets = parser.add_mutually_exclusive_group()
     targets.add_argument('--target-dir', type=Path,
                          help='reuse this Cargo target (default: CARGO_TARGET_DIR or a worktree cache)')
@@ -110,9 +111,10 @@ def main(argv=None):
     env.setdefault('RUSTMAGE_TDM_EVIDENCE_DIR', str(report_dir/'tdm-games'))
     files = source_files()
     head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-    native_compile_timeout = 1800
-    # Multi-game replay cases can exceed 45 seconds on hosted runners.
-    native_suite_timeout = 480
+    # Cold Windows runners link hundreds of integration targets serially.
+    native_compile_timeout = 2700 if windows else 1800
+    # Hosted macOS and Windows runners also pay process startup for each target.
+    native_suite_timeout = 720 if windows or sys.platform == 'darwin' else 480
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
         ('format', ['cargo', 'fmt', '--all', '--check'], 45),
@@ -120,7 +122,8 @@ def main(argv=None):
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 60),
         # Cold native toolchains on hosted Windows/macOS need time to populate
         # the per-set cache; compilation budgets are separate from game limits.
-        ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'], 600),
+        ('clippy', ['cargo', 'clippy', '--workspace', '--all-targets', '--', '-D', 'warnings'],
+         750 if windows else 600),
         ('native assurance', [sys.executable, 'scripts/run_native_tests.py',
                               '--target-dir', str(target), '--report', str(report_dir/'native.json'),
                               '--test-timeout', '90', '--suite-timeout', str(native_suite_timeout),
