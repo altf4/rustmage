@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const DESERTS: StatValue = StatValue::Count(CountFilter {
+    zone: CountZone::Battlefield,
+    relation: 0,
+    kind: 0,
+    exclude: 0,
+    subtype: Some("Desert"),
+    basic: false,
+    other: false,
+    cards_only: false,
+});
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        one(TargetRule::Creature),
+        &[Instruction::GrowScaled {
+            subject: Subject::Targets,
+            amount: AmountValue::Stat(StatValue::Sum(&[StatValue::Fixed(2), DESERTS])),
+            power: -1,
+            toughness: -1,
+        }],
+    ),
     ..CardRules::EMPTY
 };

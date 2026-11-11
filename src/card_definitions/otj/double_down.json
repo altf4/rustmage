@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb59f9a04cbe6a40922c5b152f042947bbb484f1424e5b61766b7c4347132cf1"
   },
-  "physical_metadata_sha256": "17d553e82f44e4a4e987d7bb55501c1e587bb961f98ec0d76075e9ec75c936ef"
+  "physical_metadata_sha256": "17d553e82f44e4a4e987d7bb55501c1e587bb961f98ec0d76075e9ec75c936ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DoubleDown.java",
+  "java_sha256": "90fb637a5bc91e8fbe8090e67ac43f11436ae42fe7ba57dea7775f88b63b0c37",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_c_d.rs"
 }

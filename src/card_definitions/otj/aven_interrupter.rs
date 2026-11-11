@@ -1,16 +1,15 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::FLYING.union(Keywords::FLASH),
+    effect: Effect::Creature(2, 2),
+    keywords: Keywords::FLASH.union(Keywords::FLYING),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: one(TargetRule::Spell),
+        program: &[Instruction::ExileTargetSpellPlotted],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 2,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(2)],
+    }],
     ..CardRules::EMPTY
 };

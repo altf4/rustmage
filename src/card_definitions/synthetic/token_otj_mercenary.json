@@ -7,5 +7,6 @@
   "physical_metadata_sha256": "676f5d0e65f4b7e086ca472eec7f8435aa13896c9224f9b2e3ced6bf8028aee4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/MercenaryToken.java",
-  "java_sha256": "e3da133ae91b84af428f1ec547e285f0fcd0a89bbd6e287f66f309fcf0704668"
+  "java_sha256": "e3da133ae91b84af428f1ec547e285f0fcd0a89bbd6e287f66f309fcf0704668",
+  "rules_tests": "tests/otj_cards_a.rs"
 }
