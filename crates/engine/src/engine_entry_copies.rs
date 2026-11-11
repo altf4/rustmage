@@ -189,8 +189,16 @@ pub(super) fn apply_choice(
     // replacement copied from another exact object can still apply (CR707.5).
     if recipe.definition.entry_copy().is_some() {
         let used = preparation.origin.replace(object).unwrap_or(entrant);
-        preparation.applied.push(used);
-        preparation.done = preparation.applied.contains(&object);
+        if matches!(
+            definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) {
+            preparation.applied.push(used);
+        }
+        preparation.done = matches!(
+            recipe.definition.entry_copy_options().source,
+            EntryCopySource::GraveyardLand { .. }
+        ) && preparation.applied.contains(&object);
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

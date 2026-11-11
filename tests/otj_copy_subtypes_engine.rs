@@ -99,7 +99,7 @@ fn added_subtypes_are_copied_with_printed_subtypes_and_without_counters() {
 }
 
 #[test]
-fn copying_the_same_entry_copy_donor_twice_finishes_entry() {
+fn repeated_battlefield_copy_replacements_remain_optional() {
     let bear = Card::from_name("Bear Cub").unwrap();
     let _rules = fixture_rules::activate(&[(bear, &ADDITIVE_COPY)]);
     let player = Player::P1;
@@ -108,9 +108,12 @@ fn copying_the_same_entry_copy_donor_twice_finishes_entry() {
     let entrant = put(&mut game, player, "Bear Cub", Zone::Hand);
     enter_copy(&mut game, entrant);
     let object = game.object_ref(donor);
-    act(&mut game, copy(object));
-    assert!(matches!(game.state.pending, Pending::EntryCopy { .. }));
-    act(&mut game, copy(object));
+    for _ in 0..3 {
+        act(&mut game, copy(object));
+        assert!(matches!(game.state.pending, Pending::EntryCopy { .. }));
+        assert_eq!(game.object_view(entrant).zone, Zone::Stack);
+    }
+    act(&mut game, Action::ChooseEntryCopy { object: None });
     assert_eq!(game.state.pending, Pending::Priority);
     let view = game.object_view(entrant);
     assert_eq!(view.card, bear);
