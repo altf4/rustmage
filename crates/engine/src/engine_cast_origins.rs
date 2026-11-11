@@ -335,6 +335,7 @@ impl Game {
             || has_fragment(self, player, |f| {
                 matches!(f, StaticAbilityFragment::LookAtLibraryTop)
             })
+            || self.attached_library_top_permission(player)
     }
     pub(super) fn visible_library_top(&self, viewer: Player, owner: Player) -> Option<ObjectRef> {
         if let Some(object) = self.private_library_top(viewer, owner) {
@@ -720,8 +721,34 @@ impl Game {
         let Some(object) = self.exiled_search_result() else {
             return false;
         };
-        // Keep the choice private even when every face fails the restriction.
         // The surrounding program moves the exact uncast card after the offer.
+        self.offer_exact_free_cast(player, object, Zone::Exile, Some(maximum));
+        true
+    }
+
+    pub(super) fn offer_discard_result_free_cast(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+    ) -> bool {
+        if self.object_ref(object.card) != object {
+            return false;
+        }
+        let origin = self.state.objects[object.card as usize].zone;
+        if !matches!(origin, Zone::Graveyard | Zone::Exile | Zone::Command) {
+            return false;
+        }
+        self.offer_exact_free_cast(player, object, origin, None);
+        true
+    }
+
+    fn offer_exact_free_cast(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        origin: Zone,
+        remaining_mana_value: Option<u64>,
+    ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
             uncast_to_hand: false,
@@ -729,17 +756,16 @@ impl Game {
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
-            remaining_mana_value: Some(maximum),
+            remaining_mana_value,
             alternative_cost: None,
             maximum_mana_value: None,
-            origin: Zone::Exile,
+            origin,
             exile_on_graveyard: false,
             allow_lands: false,
             player,
             remaining: vec![object],
         }));
         self.state.pending = Pending::ResolutionCasts { player };
-        true
     }
 
     pub(super) fn offer_hand_free_cast(
@@ -1012,11 +1038,16 @@ impl Game {
                         true,
                         false,
                     )
-                    && emit(if free.origin == Zone::Hand {
-                        Action::CastFreeDuringResolution { object, face }
-                    } else {
-                        Action::CastExiledDuringResolution { object, face }
-                    })
+                    && emit(
+                        if free.origin == Zone::Hand
+                            || free.paid.is_none()
+                                && matches!(free.origin, Zone::Graveyard | Zone::Command)
+                        {
+                            Action::CastFreeDuringResolution { object, face }
+                        } else {
+                            Action::CastExiledDuringResolution { object, face }
+                        },
+                    )
                 {
                     return true;
                 }

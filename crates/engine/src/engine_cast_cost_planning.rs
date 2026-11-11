@@ -4,6 +4,14 @@ use crate::cards::ZoneReplacementRule;
 use ability_world::CharacteristicWorld;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+enum CostWeight {
+    PrintedManaValue,
+    LiveManaValue,
+    ManaSymbols(crate::cards::ChoiceColor),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
 pub(super) struct CostContext {
     actor: Player,
@@ -53,7 +61,7 @@ impl CostContext {
         let mut source_tap_reserved = false;
         let mut source_counter_reservation = Counters::default();
         if let StackKind::ActivatedAbility { ability } = a.item.kind
-            && a.activation_cost_route != ActivationCostRoute::FirstEquipZero
+            && a.activation_cost_route == ActivationCostRoute::Printed
         {
             let cost = a
                 .item
@@ -390,6 +398,7 @@ impl FundingState<'_> {
                     | ManaProduction::ColorsAmongControlledPermanents
                     | ManaProduction::MonocoloredPermanentColors
                     | ManaProduction::ChosenColor
+                    | ManaProduction::ChosenColorAmount(_)
             )
         };
         for resource in &self.resources {
@@ -1715,7 +1724,7 @@ impl FundingState<'_> {
         }
         let mut amount = 1usize;
         let mut destination = Zone::Graveyard;
-        let mut evidence_min = None;
+        let mut weight_minimum = None;
         let mut counters = None;
         let mut any_graveyard = false;
         match spec.kind.payment_kind() {
@@ -1725,6 +1734,13 @@ impl FundingState<'_> {
             EffectChoiceKind::ExileGraveyardRange { minimum } => {
                 destination = Zone::Exile;
                 amount = c.selected.len().max(usize::from(minimum));
+            }
+            EffectChoiceKind::ExilePermanentsForTargetManaValue { minimum } => {
+                let Some(minimum) = minimum else {
+                    return false;
+                };
+                destination = Zone::Exile;
+                weight_minimum = Some((u128::from(minimum), CostWeight::LiveManaValue));
             }
             EffectChoiceKind::Forage | EffectChoiceKind::ForageOrBlack => match c.forage {
                 Some(ForageRoute::Black) => return self.complete_cost_rows(later, remaining),
@@ -1738,13 +1754,13 @@ impl FundingState<'_> {
                 None => return false,
             },
             EffectChoiceKind::CollectEvidence(n) => {
-                evidence_min = Some((u128::from(n), None));
+                weight_minimum = Some((u128::from(n), CostWeight::PrintedManaValue));
                 destination = Zone::Exile;
                 spec.kind = EffectChoiceKind::ExileGraveyard;
                 any_graveyard = true;
             }
             EffectChoiceKind::ExileGraveyardSymbols { color, minimum } => {
-                evidence_min = Some((u128::from(minimum), Some(color)));
+                weight_minimum = Some((u128::from(minimum), CostWeight::ManaSymbols(color)));
                 destination = Zone::Exile;
             }
             EffectChoiceKind::RemoveCreatureCounters(_)
@@ -1815,17 +1831,24 @@ impl FundingState<'_> {
                 .then_some(r)
             })
             .collect::<Vec<_>>();
-        if evidence_min.is_some_and(|(n, color)| {
-            candidates
-                .iter()
-                .map(|r| cost_weight(self.object(r.card).card, color))
-                .sum::<u128>()
-                < n
-        }) {
-            return false;
-        }
         if !c.selected.iter().all(|r| candidates.contains(r)) {
             return false;
+        }
+        if let Some((minimum, weight)) = weight_minimum {
+            let available = if c.exact { &c.selected } else { &candidates };
+            let enough = available
+                .iter()
+                .map(|r| cost_weight(self, *r, weight))
+                .sum::<u128>()
+                >= minimum;
+            if !enough || spec.kind.uses_target_mana_value() && available.is_empty() {
+                return false;
+            }
+            // When nothing follows, the entire witness set is itself one valid
+            // group. Individual subset orders cannot improve a monotone bound.
+            if spec.kind.uses_target_mana_value() && remaining.is_empty() {
+                return true;
+            }
         }
         if remaining.is_empty()
             && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
@@ -1842,7 +1865,7 @@ impl FundingState<'_> {
             spec,
             destination,
             amount,
-            evidence_min,
+            weight_minimum,
             &candidates,
             0,
             &mut selected,
@@ -1857,7 +1880,7 @@ impl FundingState<'_> {
         spec: AdditionalCost,
         destination: Zone,
         amount: usize,
-        evidence_min: Option<(u128, Option<crate::cards::ChoiceColor>)>,
+        weight_minimum: Option<(u128, CostWeight)>,
         candidates: &[ObjectRef],
         at: usize,
         selected: &mut Vec<ObjectRef>,
@@ -1871,18 +1894,19 @@ impl FundingState<'_> {
         }) {
             return false;
         }
-        let enough = evidence_min.map_or_else(
+        let enough = weight_minimum.map_or_else(
             || {
                 craft_materials.map_or(selected.len() == amount, |materials| {
                     materials.accepts(selected.len())
                 })
             },
-            |(minimum, color)| {
-                selected
-                    .iter()
-                    .map(|r| cost_weight(self.object(r.card).card, color))
-                    .sum::<u128>()
-                    >= minimum
+            |(minimum, weight)| {
+                (!spec.kind.uses_target_mana_value() || !selected.is_empty())
+                    && selected
+                        .iter()
+                        .map(|r| cost_weight(self, *r, weight))
+                        .sum::<u128>()
+                        >= minimum
             },
         );
         if enough {
@@ -1918,7 +1942,7 @@ impl FundingState<'_> {
                     .maximum()
                     .is_some_and(|maximum| selected.len() >= maximum)
             })
-            || evidence_min.is_none() && selected.len() >= amount && craft_materials.is_none()
+            || weight_minimum.is_none() && selected.len() >= amount && craft_materials.is_none()
         {
             return false;
         }
@@ -1944,7 +1968,7 @@ impl FundingState<'_> {
                 spec,
                 destination,
                 amount,
-                evidence_min,
+                weight_minimum,
                 candidates,
                 i + 1,
                 selected,
@@ -2709,11 +2733,14 @@ impl Game {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn cost_weight(card: Card, color: Option<crate::cards::ChoiceColor>) -> u128 {
-    u128::from(color.map_or_else(
-        || card.fixed_mana_value(),
-        |color| card.mana_symbols_of_color(color),
-    ))
+fn cost_weight(world: &FundingState<'_>, object: ObjectRef, kind: CostWeight) -> u128 {
+    u128::from(match kind {
+        CostWeight::PrintedManaValue => world.object(object.card).card.fixed_mana_value(),
+        CostWeight::LiveManaValue => CharacteristicWorld::mana_value(world, object.card),
+        CostWeight::ManaSymbols(color) => {
+            world.object(object.card).card.mana_symbols_of_color(color)
+        }
+    })
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

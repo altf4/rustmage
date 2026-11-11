@@ -116,19 +116,23 @@ pub(super) fn grants_legendary<W: CharacteristicWorld + ?Sized>(world: &W, id: C
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn land_forms<W: CharacteristicWorld + ?Sized>(
+fn source_type_forms<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
-) -> impl Iterator<Item = &SourceLinkedEffectView> {
+) -> impl Iterator<Item = (&SourceLinkedEffectView, u16, SubtypeChange)> {
     let recipient = world.reference(id);
     world
         .roles()
         .into_iter()
         .flat_map(|roles| &roles.source_linked_effects)
-        .filter(move |row| {
-            row.kind == SourceLinkedEffectKind::LandUntilControllerNextTurn
-                && row.recipient == recipient
-                && source_linked_effects::active(world, row)
+        .filter_map(move |row| {
+            let (kinds, change) = match row.kind {
+                SourceLinkedEffectKind::LandUntilControllerNextTurn => (2, SubtypeChange::LandOnly),
+                SourceLinkedEffectKind::Treasure => (16, SubtypeChange::TreasureOnly),
+                _ => return None,
+            };
+            (row.recipient == recipient && source_linked_effects::active(world, row))
+                .then_some((row, kinds, change))
         })
 }
 
@@ -232,7 +236,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             None
         }
     }));
-    events.extend(land_forms(world, id).map(|row| (row.timestamp, true)));
+    events.extend(source_type_forms(world, id).map(|(row, kinds, _)| (row.timestamp, kinds == 2)));
     events.sort_by_key(|event| event.0);
     events
 }
@@ -253,7 +257,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_conditional_creature(world, id).is_none_or(|change| change.kinds == 0)
-        && land_forms(world, id).next().is_none()
+        && source_type_forms(world, id).next().is_none()
     {
         if world
             .game()
@@ -315,7 +319,8 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
         };
         changes.push((change.timestamp, kinds, change.additive));
     }
-    changes.extend(land_forms(world, id).map(|row| (row.timestamp, 2, false)));
+    changes
+        .extend(source_type_forms(world, id).map(|(row, kinds, _)| (row.timestamp, kinds, false)));
     for row in animations(world, id) {
         if row.food_only {
             changes.push((row.timestamp, 16, false));
@@ -504,6 +509,7 @@ pub(super) enum SubtypeChange {
     BasicLand(crate::cards::BasicLandType),
     AddBasicLand(crate::cards::BasicLandType),
     FoodOnly,
+    TreasureOnly,
     EquipmentOnly,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -517,7 +523,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_conditional_creature(world, id).is_none()
-        && land_forms(world, id).next().is_none()
+        && source_type_forms(world, id).next().is_none()
     {
         return Vec::new();
     }
@@ -582,7 +588,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             SubtypeChange::Named(change.subtypes, !change.additive),
         ));
     }
-    changes.extend(land_forms(world, id).map(|row| (row.timestamp, SubtypeChange::LandOnly)));
+    changes.extend(source_type_forms(world, id).map(|(row, _, change)| (row.timestamp, change)));
     changes.extend(animations(world, id).filter_map(|row| {
         if row.food_only {
             return Some((row.timestamp, SubtypeChange::FoodOnly));

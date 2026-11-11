@@ -1439,6 +1439,15 @@ pub(super) trait CharacteristicWorld {
         }
         let mut result = Vec::new();
         self.append_additional_basic_subtype_mana(id, &mut result);
+        result.extend(
+            self.game()
+                .state
+                .self_granted_abilities
+                .as_deref()
+                .into_iter()
+                .flatten()
+                .filter_map(|row| row.tap_mana_grant(self, id)),
+        );
         for &source in self.attachment_sources() {
             let reference = self.reference(source);
             if self.kinds(source) & 1 != 0 || !self.attachment_link(reference, self.reference(id)) {
@@ -1814,12 +1823,12 @@ impl ManaProduction {
                     }
                 }
             }
-            Self::ChosenColor => {
+            Self::ChosenColor | Self::ChosenColorAmount(_) => {
                 let mut mana = [0; 6];
                 if let Some(EntryChoiceValue::Color(color)) =
                     world.entry_value(world.reference(source))
                 {
-                    mana[color.index()] = 1;
+                    mana[color.index()] = self.chosen_color_amount().expect("chosen color");
                 }
                 Self::Fixed(mana)
             }

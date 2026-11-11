@@ -9,6 +9,9 @@ pub struct PaidAdditionalCostView {
     pub count: u64,
     /// Declared cardinality, independent of replacement-modified outcomes.
     pub selected: u64,
+    /// Full-width X sampled immediately before a mana-value exile payment.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_mana_value: Option<u64>,
     /// Frozen immediately before an actual sacrifice, including redirected exile.
     pub sacrificed_vehicle: bool,
 }
@@ -154,7 +157,20 @@ impl Game {
                         .collect::<Vec<_>>(),
                 )
                 .expect("legal ranged sacrifice cost"),
-            EffectChoiceKind::ExileGraveyardRange { .. } => {
+            EffectChoiceKind::ExileGraveyardRange { .. }
+            | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. } => {
+                let total_mana_value = match spec.kind {
+                    EffectChoiceKind::ExilePermanentsForTargetManaValue { minimum } => {
+                        let value = selected
+                            .iter()
+                            .map(|r| self.object_mana_value(r.card))
+                            .try_fold(0u64, u64::checked_add)
+                            .capacity("exiled mana value exhausted");
+                        assert!(value >= minimum.expect("announced target mana value"));
+                        Some(value)
+                    }
+                    _ => None,
+                };
                 // Capture the owned prepayment announcement for entry-redirection
                 // rollback. The actual chosen group remains frozen across choices.
                 let mut checkpoint = self.atomic_zone_cost_checkpoint(None);
@@ -177,6 +193,7 @@ impl Game {
                             .filter(|(_, plan)| !plan.prevented && plan.destination == Zone::Exile)
                             .count() as u64,
                         selected: selected.len() as u64,
+                        total_mana_value,
                         sacrificed_vehicle: false,
                     };
                     self.stage_atomic_zone_cost(plans, checkpoint);
@@ -191,6 +208,7 @@ impl Game {
                             .filter(|event| event.moved && event.destination == Zone::Exile)
                             .count() as u64,
                         selected: selected.len() as u64,
+                        total_mana_value,
                         sacrificed_vehicle: false,
                     };
                     self.finish_zone_events(&events, &[]);
@@ -199,6 +217,9 @@ impl Game {
             }
             _ => unreachable!("ranged cost"),
         };
+        if let Some(value) = paid.total_mana_value {
+            a.item.x = u32::try_from(value).ok();
+        }
         a.item.paid_additional_cost = Some(Box::new(paid));
         a.additional_paid = true;
     }

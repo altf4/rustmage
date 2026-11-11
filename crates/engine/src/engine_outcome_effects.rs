@@ -83,7 +83,7 @@ impl Game {
                 .filter(|object| self.state.objects[object.card as usize].card.is_creature())
                 .collect();
             receipts.sort_unstable();
-            self.state.resolving.as_mut().unwrap().remembered_creatures =
+            self.state.resolving.as_mut().unwrap().remembered_objects =
                 (!receipts.is_empty()).then(|| receipts.into());
         }
         self.finish_zone_events(&events, &observers);

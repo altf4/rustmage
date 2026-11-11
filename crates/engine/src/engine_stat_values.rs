@@ -327,6 +327,15 @@ impl Game {
                 }
                 i128::from(mask.count_ones())
             }
+            StatValue::AnyPlayerHandSizeAtMost(maximum) => {
+                let mut sizes = [0usize; 2];
+                for (_, object) in objects() {
+                    if object.zone == Zone::Hand && object.is_card() {
+                        sizes[object.owner.index()] += 1;
+                    }
+                }
+                i128::from(sizes.into_iter().any(|size| size <= usize::from(maximum)))
+            }
             StatValue::ControllerHandSize => objects()
                 .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
                 .count() as i128,
@@ -859,6 +868,7 @@ impl Game {
             | AmountValue::EventObjectTotalCounters
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
+            | AmountValue::DiscardedCardManaValue
             | AmountValue::DamageEventAmount
             | AmountValue::UntapStepCount
             | AmountValue::CounterPlacementAmount

@@ -611,6 +611,12 @@ impl Game {
                 .copied()
                 .unwrap_or(0)
                 .max(0) as u128,
+            AmountValue::DiscardedCardManaValue => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::DiscardedManaValue(amount)) => u128::from(*amount),
+                    _ => unreachable!("discard amount requires its frozen event"),
+                }
+            }
             AmountValue::CounterPlacementAmount => {
                 match item.event_object.as_deref().map(|event| &event.facts) {
                     Some(EventObjectFacts::CountersPlaced { amount }) => u128::from(*amount),
@@ -720,7 +726,10 @@ impl Game {
                 u128::from(item.reflexive_target_limit.unwrap_or(0))
             }
             AmountValue::ChosenX => u128::from(
-                item.loyalty_x
+                item.paid_additional_cost
+                    .as_ref()
+                    .and_then(|cost| cost.total_mana_value)
+                    .or(item.loyalty_x)
                     .unwrap_or_else(|| u64::from(item.x.unwrap_or(0))),
             ),
             AmountValue::MilledCreatures => self

@@ -589,6 +589,17 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                             StaticAbilityFragment::AttachmentStatsPerAttachment(value) => {
                                 stats += scale_by_attachments(value);
                             }
+                            StaticAbilityFragment::AttachmentTurnChoiceKeywords {
+                                own_turn,
+                                other_turn,
+                            } => {
+                                let grant = if object.controller == self.state.active {
+                                    own_turn
+                                } else {
+                                    other_turn
+                                };
+                                keywords = keywords.union(grant);
+                            }
                             _ => (),
                         }
                     }
@@ -1240,6 +1251,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         ),
                         ability_order::GrantedAbilityKind::PlaneswalkerAttackLimit => {
                             Some(ability_evaluation::GrantedStaticRule::PlaneswalkerAttackLimit)
+                        }
+                        ability_order::GrantedAbilityKind::LookAtLibraryTop => {
+                            Some(ability_evaluation::GrantedStaticRule::LookAtLibraryTop)
                         }
                         _ => None,
                     },

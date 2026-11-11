@@ -380,7 +380,12 @@ impl Game {
                     spec.filter,
                     r.card,
                     self.source_chosen_creature_type(item),
-                ) && maximum_mana_value.is_none_or(|max| {
+                ) && match spec.count {
+                    LibrarySelectionCount::DistinctCardTypes(kinds) => {
+                        self.state.objects[r.card as usize].card.kind_mask() & kinds != 0
+                    }
+                    _ => true,
+                } && maximum_mana_value.is_none_or(|max| {
                     u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()) <= max
                 })
             })
@@ -423,6 +428,10 @@ impl Game {
         let requested = match spec.count {
             LibrarySelectionCount::ControlledColors => {
                 available_colors.unwrap().count_ones() as usize
+            }
+            LibrarySelectionCount::DistinctCardTypes(kinds) => {
+                assert!(spec.optional, "type slots are an up-to selection");
+                kinds.count_ones() as usize
             }
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::ManaValueBudget { maximum_cards, .. } => {
@@ -670,6 +679,17 @@ impl Game {
             }
         }
         match frame.spec.count {
+            LibrarySelectionCount::DistinctCardTypes(kinds) => {
+                let masks: Vec<_> = frame
+                    .selected
+                    .iter()
+                    .chain(std::iter::once(&object))
+                    .map(|reference| {
+                        self.state.objects[reference.card as usize].card.kind_mask() & kinds
+                    })
+                    .collect();
+                card_type_assignment::distinct_type_assignment(&masks)
+            }
             LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
                 frame
                     .selected

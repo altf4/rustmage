@@ -24,6 +24,9 @@ impl Game {
     pub(super) fn spell_with_current_abilities(&self, item: &SpellView) -> SpellView {
         let mut view = item.clone();
         view.split_second = self.spell_has_split_second(item);
+        if self.spell_has_rebound(item) {
+            view.source_keywords = view.source_keywords.union(Keywords::REBOUND);
+        }
         view
     }
     /// Active rule restrictions are sampled live, including during resolution.

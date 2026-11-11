@@ -42,7 +42,8 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         Instruction::AddCastEntryCounters { amount: value, .. } => {
             !cave_only || amount(value, cave_only)
         }
-        Instruction::AddCastEntryCountersForControlledSubtypes { .. } => !cave_only,
+        Instruction::AddCastEntryCountersForControlledSubtypes { .. }
+        | Instruction::GrantCastRebound => !cave_only,
         Instruction::UpToTargets(value)
         | Instruction::DiscoverScaled(value)
         | Instruction::IfAmountAtLeast { value, .. }

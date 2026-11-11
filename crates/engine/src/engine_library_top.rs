@@ -183,6 +183,48 @@ impl Game {
             .push(LibraryTopCastUse { player, permission });
     }
 
+    pub(super) fn attached_library_top_permission(&self, player: Player) -> bool {
+        let provides = |fragment: &StaticAbilityFragment| {
+            matches!(fragment, StaticAbilityFragment::AttachmentLookAtLibraryTop)
+        };
+        let mut evaluation = None;
+        self.state.attachment_sources.iter().copied().any(|id| {
+            let provider = &self.state.objects[id as usize];
+            if provider.zone != Zone::Battlefield
+                || !provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(provides))
+            {
+                return false;
+            }
+            let Some(bearer) = self.attachment_recipient(id) else {
+                return false;
+            };
+            if self.state.objects[bearer.card as usize].controller != player {
+                return false;
+            }
+            let source = self.object_ref(id);
+            evaluation
+                .get_or_insert_with(|| self.evaluated_abilities())
+                .as_ref()
+                .map_or_else(
+                    || self.continuous_fragment_available(id, provides),
+                    |evaluation| {
+                        evaluation.result.objects[bearer.card as usize]
+                            .grants
+                            .iter()
+                            .any(|grant| {
+                                grant.source == source
+                                    && grant.kind
+                                        == ability_order::GrantedAbilityKind::LookAtLibraryTop
+                            })
+                    },
+                )
+        })
+    }
+
     pub(super) fn prepare_library_visibility(&mut self, action: &Action) {
         if self
             .state
@@ -199,9 +241,13 @@ impl Game {
             .any(|p| p.library_top_life_play || p.library_top_play)
             && !self.state.objects.iter().any(|o| {
                 o.card.static_ability_groups().iter().any(|g| {
-                    g.fragments
-                        .iter()
-                        .any(|f| matches!(f, crate::cards::StaticAbilityFragment::LookAtLibraryTop))
+                    g.fragments.iter().any(|f| {
+                        matches!(
+                            f,
+                            StaticAbilityFragment::LookAtLibraryTop
+                                | StaticAbilityFragment::AttachmentLookAtLibraryTop
+                        )
+                    })
                 })
             })
         {

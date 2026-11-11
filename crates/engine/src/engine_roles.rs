@@ -172,7 +172,8 @@ impl Game {
                 ReflexiveAction::Sacrifice,
                 Some(
                     Instruction::SacrificeSourceReflexive { .. }
-                    | Instruction::MaySacrificeSourceReflexive { .. },
+                    | Instruction::MaySacrificeSourceReflexive { .. }
+                    | Instruction::MaySacrificeForGrantedReflexive { .. },
                 ),
             ) => true,
             (ReflexiveAction::Mill, Some(Instruction::MillThenReflexive { .. })) => true,

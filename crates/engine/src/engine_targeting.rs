@@ -15,6 +15,7 @@ pub(super) enum LimitedCastPermission {
     FreeHand(ObjectRef),
     LibraryTop(LibraryTopCastPermission),
     LinkedExilePaid(linked_source_casts::LinkedExilePaidCast),
+    PaidGraveyard(PaidGraveyardCastPermission),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -24,6 +25,7 @@ impl LimitedCastPermission {
             Self::FreeHand(source) => source,
             Self::LibraryTop(permission) => permission.source,
             Self::LinkedExilePaid(permission) => permission.source,
+            Self::PaidGraveyard(permission) => permission.source,
         }
     }
 }
@@ -192,8 +194,10 @@ impl Announcement {
         self.printed_additional_cost()
     }
     pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
-        if self.activation_cost_route == ActivationCostRoute::FirstEquipZero {
-            return None;
+        match self.activation_cost_route {
+            ActivationCostRoute::FirstEquipZero => return None,
+            ActivationCostRoute::DiscardCard => return Some(equip_costs::discard_cost()),
+            ActivationCostRoute::Printed => {}
         }
         if let Some((_, additional)) = self.self_graveyard_cast_cost() {
             return Some(additional);
@@ -321,6 +325,11 @@ impl Announcement {
                             let amount = self.item.x.filter(|&amount| amount != 0)?;
                             cost.kind = EffectChoiceKind::TapPermanents(amount);
                         }
+                        EffectChoiceKind::ExilePermanentsForTargetManaValue { .. } => {
+                            cost.kind = EffectChoiceKind::ExilePermanentsForTargetManaValue {
+                                minimum: self.cast_costs.as_ref().and_then(|c| c.target_mana_value),
+                            };
+                        }
                         _ => {}
                     }
                     Some(cost)
@@ -329,6 +338,7 @@ impl Announcement {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -409,6 +419,15 @@ impl Announcement {
                     self.apply_cost_declarations(Card::add_mana_cost(base, fee)) == Some(cost)
                 })
             })
+    }
+
+    pub(super) fn has_equip_discard_alternative(&self) -> bool {
+        match (self.item.kind, self.item.source) {
+            (StackKind::ActivatedAbility { ability }, Some(source)) => {
+                source.card.activation(ability).equip_discard_alternative()
+            }
+            _ => false,
+        }
     }
 
     fn cost_route_options(
@@ -539,6 +558,7 @@ impl Announcement {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -628,6 +648,11 @@ impl Announcement {
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
+                false,
+            )))
+            .chain(self.has_equip_discard_alternative().then_some((
+                ManaCost::ZERO,
+                ActivationCostRoute::DiscardCard,
                 false,
             )))
             .flat_map(move |(cost, route, evoked)| {
@@ -919,6 +944,7 @@ impl Announcement {
                 | StackKind::DecayedAttack
                 | StackKind::SuspendTick
                 | StackKind::SuspendCast
+                | StackKind::ReboundCast
                 | StackKind::CopyEndStepSacrifice
                 | StackKind::CopyEndStepConditionalSacrifice
                 | StackKind::CasualtyCopy
@@ -2001,6 +2027,16 @@ impl Game {
                 target,
                 Some(TargetSourceCharacteristics::from_item(item)),
             )
+            && self.paid_cost_target_matches(item, target)
+    }
+
+    fn paid_cost_target_matches(&self, item: &SpellView, target: Target) -> bool {
+        item.paid_additional_cost
+            .as_ref()
+            .and_then(|cost| cost.total_mana_value)
+            .is_none_or(|maximum| {
+                matches!(target, Target::Card(id) if self.object_mana_value(id) <= maximum)
+            })
     }
 
     pub(super) fn activation_target_matches(
@@ -2499,7 +2535,11 @@ impl Game {
             item.controller,
             item.target_source(),
             Some(TargetSourceCharacteristics::from_item(item)),
-            |target| target != Target::Stack(item.id) && emit(target),
+            |target| {
+                target != Target::Stack(item.id)
+                    && self.paid_cost_target_matches(item, target)
+                    && emit(target)
+            },
         )
     }
     pub(super) fn visit_targets(
@@ -3415,6 +3455,9 @@ impl Game {
                     }
                     LimitedCastPermission::LibraryTop(permission) => self
                         .use_library_top_cast_permission(announcement.item.controller, permission),
+                    LimitedCastPermission::PaidGraveyard(permission) => {
+                        self.consume_paid_graveyard_permission(&announcement.item, permission);
+                    }
                     LimitedCastPermission::LinkedExilePaid(permission) => {
                         if let Some(kind) = permission.entry_counter {
                             let spell = announcement.item.source.expect("paid spell").object;

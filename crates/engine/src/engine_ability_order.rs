@@ -9,6 +9,7 @@ pub(super) enum GrantedAbilityKind {
     LinkedExileActivations,
     PlaneswalkerAttackLimit,
     EquippedCreatureDeathMultiplier,
+    LookAtLibraryTop,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -103,6 +104,10 @@ pub(super) enum LayerSixAction {
     SelfGrantedKeywords {
         acquisition: u64,
         keywords: Keywords,
+    },
+    SelfGrantedMana {
+        acquisition: u64,
+        mana: GrantedManaAbility,
     },
     RemoveAndGrant(Vec<LayerSixGrant>),
     /// CR305.7 removes rules-text/copiable abilities, but not grants from other effects.
@@ -227,19 +232,30 @@ pub(super) fn apply_layer_six(
             if !pending[i] || effect.started_earlier {
                 continue;
             }
-            let Some(source) = effect.provider else {
+            let acquired = match effect.action {
+                LayerSixAction::SelfGrantedMana { acquisition, mana } => {
+                    Some((mana.source.card, acquisition))
+                }
+                _ => None,
+            };
+            let Some(source) = effect
+                .provider
+                .or_else(|| acquired.map(|(source, _)| source))
+            else {
                 continue;
             };
             for (j, other) in effects.iter().enumerate() {
                 if i != j
                     && pending[j]
-                    && matches!(
-                        other.action,
-                        LayerSixAction::Remove
-                            | LayerSixAction::RemoveAndGrant(_)
-                            | LayerSixAction::RemovePrintedAndGrant(_)
-                    )
                     && other.recipients.contains(&source)
+                    && match other.action {
+                        LayerSixAction::Remove | LayerSixAction::RemoveAndGrant(_) => true,
+                        LayerSixAction::RemovePrintedAndGrant(_) => acquired.is_none(),
+                        LayerSixAction::GrantSelf(timestamp) => {
+                            acquired.is_some_and(|(_, acquisition)| timestamp == acquisition)
+                        }
+                        _ => false,
+                    }
                 {
                     dependencies[i].push(j);
                 }
@@ -281,12 +297,24 @@ pub(super) fn apply_layer_six(
             }
             continue;
         }
+        if let LayerSixAction::SelfGrantedMana { acquisition, mana } = effect.action {
+            if objects[mana.source.card as usize]
+                .self_grants
+                .contains(&acquisition)
+            {
+                for &recipient in &effect.recipients {
+                    objects[recipient as usize].mana.push(mana);
+                }
+            }
+            continue;
+        }
         for &recipient in &effect.recipients {
             let object = &mut objects[recipient as usize];
             match &effect.action {
                 LayerSixAction::GrantEach(_)
                 | LayerSixAction::RemoveAndGrant(_)
-                | LayerSixAction::RemovePrintedAndGrant(_) => unreachable!(),
+                | LayerSixAction::RemovePrintedAndGrant(_)
+                | LayerSixAction::SelfGrantedMana { .. } => unreachable!(),
                 LayerSixAction::RemoveKeywords(keywords) => {
                     object.keywords = object.keywords.without(*keywords);
                     object.granted_keywords = object.granted_keywords.without(*keywords);

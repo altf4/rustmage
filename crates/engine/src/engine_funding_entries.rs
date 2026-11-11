@@ -1775,6 +1775,14 @@ impl FundingState<'_> {
                     p.attachment_sources.push(row.id)
                 }
             }
+            if m.before.zone == Zone::Stack && !m.cast_added_creature_types.is_empty() {
+                subtypes::continue_cast_type_effects(
+                    &mut next.entry_projection.as_mut().unwrap().roles,
+                    m.before.reference,
+                    source,
+                    m.destination,
+                );
+            }
             next.project_copy_departure(m.before.reference, source);
             if m.destination == Zone::Battlefield
                 && let Some(recipe) = m.copy_preparation.as_ref().and_then(|copy| copy.recipe)
@@ -2635,7 +2643,7 @@ impl<'g> FundingState<'g> {
         if step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             return self.visit_deferred(step, emit);
         }
-        let source_counter_cost = step.ability.and_then(|index| {
+        let definition = step.ability.map(|index| {
             let definition = step.frozen.as_deref().map_or_else(
                 || {
                     step.self_grant.map_or_else(
@@ -2648,8 +2656,18 @@ impl<'g> FundingState<'g> {
                 },
                 |f| f.0,
             );
-            definition.activation_put_counter(index)
+            (definition, index)
         });
+        let source_counter_cost =
+            definition.and_then(|(definition, index)| definition.activation_put_counter(index));
+        let time_removal = definition
+            .filter(|(definition, index)| definition.activation(*index).mana_removes_time_counter())
+            .map(|_| {
+                step.output.as_ref().map_or_else(
+                    || self.reference(self.resources[step.resource].id),
+                    |output| output.instance.source,
+                )
+            });
         if source_counter_cost.is_none()
             && step.external.is_none()
             && self.cast_costs.is_none()
@@ -2679,10 +2697,10 @@ impl<'g> FundingState<'g> {
                 && let Some(bonus) = receipt.singleton(production)
                 && next.completed_mana_fits(replaced, bonus)
             {
-                next.add_funding_output(step, bonus, replaced);
+                next.add_funding_output(step, bonus, replaced, time_removal);
                 return emit(&next);
             }
-            return next.visit_output(step, receipt, goal, emit);
+            return next.visit_output(step, receipt, time_removal, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2753,7 +2771,7 @@ impl<'g> FundingState<'g> {
                 external,
                 &mut |world| {
                     let bonus = bonus.with_event_effects(world, self.actor, tap_source);
-                    world.visit_output(step, bonus, goal, emit)
+                    world.visit_output(step, bonus, time_removal, goal, emit)
                 },
             )
         })

@@ -799,6 +799,19 @@ impl<'g> FundingState<'g> {
                 ) => Some(production),
                 _ => None,
             })
+            .chain(
+                self.game
+                    .state
+                    .self_granted_abilities
+                    .as_deref()
+                    .into_iter()
+                    .flatten()
+                    .filter_map(|row| {
+                        row.kind
+                            .controlled_tap_mana()
+                            .map(|(_, production)| production)
+                    }),
+            )
     }
     fn production_upper(&self, production: ManaProduction) -> ManaProduction {
         match production.base() {
@@ -842,6 +855,9 @@ impl<'g> FundingState<'g> {
             | ManaProduction::CraftMaterialColors
             | ManaProduction::ColorsAmongControlledPermanents
             | ManaProduction::ChosenColor => ManaProduction::Fixed([1, 1, 1, 1, 1, 0]),
+            ManaProduction::ChosenColorAmount(amount) => {
+                ManaProduction::Fixed([amount, amount, amount, amount, amount, 0])
+            }
             value => value,
         }
     }
@@ -1083,22 +1099,42 @@ impl<'g> FundingState<'g> {
         // An ordinary permanent can gain a mana action from another permanent.
         // Retain controlled recipients even if their current type or ability
         // layer would hide the grant. The projected world tests it at use time.
-        let has_controlled_tap_mana_grant = game.state.static_sources.iter().any(|&id| {
-            let provider = &game.state.objects[id as usize];
-            provider.zone == Zone::Battlefield
-                && provider.controller == goal.actor
-                && provider.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(
-                            fragment,
-                            StaticAbilityFragment::ControlledPermanentTapMana { .. }
-                                | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
-                                | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
-                        )
+        let acquired_tap_mana_grants = game
+            .state
+            .self_granted_abilities
+            .as_deref()
+            .into_iter()
+            .flatten()
+            .filter(|row| row.kind.controlled_tap_mana().is_some());
+        let has_controlled_tap_mana_grant = acquired_tap_mana_grants.clone().next().is_some()
+            || game.state.static_sources.iter().any(|&id| {
+                let provider = &game.state.objects[id as usize];
+                provider.zone == Zone::Battlefield
+                    && provider.controller == goal.actor
+                    && provider.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                    | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                                    | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
+                            )
+                        })
                     })
-                })
-        });
+            });
         let shared_linked_activations = borrowed_activations::has_shared_links(game);
+        // The mana recipient can have no printed mana ability, and sacrificing
+        // the linked source can restore its recipients' original abilities.
+        let treasure_forms: Vec<_> = game
+            .state
+            .roles
+            .iter()
+            .flat_map(|roles| &roles.source_linked_effects)
+            .filter(|row| {
+                row.kind == SourceLinkedEffectKind::Treasure
+                    && source_linked_effects::active(game, row)
+            })
+            .collect();
         let resources = game
             .state
             .objects
@@ -1119,6 +1155,12 @@ impl<'g> FundingState<'g> {
                     || goal
                         .source.as_ref()
                         .is_some_and(|(source, _, _, _, _)| source.card == *id as CardId)
+                    || object.zone == Zone::Battlefield
+                        && acquired_tap_mana_grants.clone().any(|row| row.recipient.card == *id as CardId)
+                    || object.zone == Zone::Battlefield
+                        && treasure_forms.iter().any(|row| {
+                            row.source.card == *id as CardId || row.recipient.card == *id as CardId
+                        })
                     || object.zone == Zone::Battlefield
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
@@ -1676,6 +1718,9 @@ impl<'g> FundingState<'g> {
         match guard {
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 ability_world::CharacteristicWorld::counter_count(self, source, kind) >= minimum
+            }
+            ActivationGuard::SourceCounterExactly { kind, amount } => {
+                ability_world::CharacteristicWorld::counter_count(self, source, kind) == amount
             }
             ActivationGuard::ClassLevelExactly(level) => {
                 ability_world::CharacteristicWorld::object(self, source).class_level == level
@@ -2823,7 +2868,26 @@ impl<'g> FundingState<'g> {
             }
         }
     }
-    fn add_funding_output(&mut self, step: &FundingMove, tap_bonus: Mana, production: Mana) {
+    fn project_mana_time_removal(&mut self, source: ObjectRef) {
+        if self.reference(source.card) != source
+            || self.object(source.card).zone != Zone::Battlefield
+        {
+            return;
+        }
+        let amount = self.counter_amounts(source.card);
+        if amount.get(CounterKind::Time) != 0 {
+            let mut counters = amount.to_owned();
+            counters.remove(CounterKind::Time, 1);
+            live_counters::set(&mut self.named_counters, source, counters.named);
+        }
+    }
+    fn add_funding_output(
+        &mut self,
+        step: &FundingMove,
+        tap_bonus: Mana,
+        production: Mana,
+        time_removal: Option<ObjectRef>,
+    ) {
         self.add_completed_mana(
             production,
             step.output.as_ref().map_or(step.quality, |o| o.quality),
@@ -2831,6 +2895,9 @@ impl<'g> FundingState<'g> {
         );
         if let Some(output) = &step.output {
             self.project_mana_color_change(output, production);
+        }
+        if let Some(source) = time_removal {
+            self.project_mana_time_removal(source);
         }
     }
     fn add_completed_mana(
@@ -2889,6 +2956,7 @@ impl<'g> FundingState<'g> {
         &self,
         step: &FundingMove,
         tap_bonus: ManaTapBonus,
+        time_removal: Option<ObjectRef>,
         goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
@@ -2901,7 +2969,7 @@ impl<'g> FundingState<'g> {
                     return false;
                 }
                 let mut next = self.clone();
-                next.add_funding_output(step, bonus, replaced);
+                next.add_funding_output(step, bonus, replaced, time_removal);
                 emit(&next)
             })
         };
@@ -4197,6 +4265,22 @@ impl<'g> FundingState<'g> {
     }
 
     fn optimistic(&self, goal: &FundingGoal) -> bool {
+        // Removing Time counters can enable guarded mana abilities that are
+        // absent from the current readiness bounds. Use exact search in that case.
+        if self.named_counters.as_ref().is_some_and(|rows| {
+            rows.iter().any(|row| {
+                let object = row.object();
+                self.object(object.card).zone == Zone::Battlefield
+                    && self.object(object.card).controller == goal.actor
+                    && self.reference(object.card) == object
+                    && row.count(CounterKind::Time) != 0
+                    && self
+                        .mana_activations(object.card)
+                        .any(|(_, ability, _, _)| ability.mana_removes_time_counter())
+            })
+        }) {
+            return true;
+        }
         // A later mana sacrifice may both add graveyard payment resources and
         // change whether delve is granted. Battlefield mana alone is no bound.
         if matches!(self.purpose, mana_lots::Purpose::Spell(_)) && delve::potential(self) {
@@ -5399,7 +5483,9 @@ impl Game {
         }
         if matches!(
             a.limited_cast_permission.as_deref(),
-            Some(LimitedCastPermission::LinkedExilePaid(_))
+            Some(
+                LimitedCastPermission::LinkedExilePaid(_) | LimitedCastPermission::PaidGraveyard(_)
+            )
         ) {
             let source = a.item.source.expect("linked cast source");
             return (a.item.cast.unwrap().method != CastMethod::Normal
@@ -5908,6 +5994,7 @@ impl Game {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -5922,10 +6009,9 @@ impl Game {
         }
     }
     pub(super) fn funding_goal(&self, announcement: &Announcement) -> FundingGoal {
-        if announcement.activation_cost_route == ActivationCostRoute::FirstEquipZero {
-            // Only the printed equip cost is replaced. Preserve the computed
-            // total after modifiers; the waived printed nonmana costs are not
-            // reintroduced as source obligations during funding.
+        if announcement.activation_cost_route != ActivationCostRoute::Printed {
+            // Preserve modifiers applied to the replacement and any selected
+            // discard. The printed source costs are no longer obligations.
             let cost = announcement
                 .total_cost
                 .or(announcement.cost)
@@ -5934,7 +6020,11 @@ impl Game {
                 actor: announcement.item.controller,
                 required: cost.colored,
                 generic: cost.generic,
-                reserve: None,
+                reserve: if announcement.activation_cost_route == ActivationCostRoute::DiscardCard {
+                    self.announcement_reserve(announcement)
+                } else {
+                    None
+                },
                 source: None,
             };
         }
@@ -6017,6 +6107,7 @@ impl Game {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -6471,9 +6562,10 @@ impl Game {
                 .item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::WebSlinging)
-            || announcement
-                .additional_cost()
-                .is_some_and(|cost| cost.kind == EffectChoiceKind::ReturnTappedCreature)
+            || announcement.additional_cost().is_some_and(|cost| {
+                cost.kind == EffectChoiceKind::ReturnTappedCreature
+                    || cost.kind.uses_target_mana_value()
+            })
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement.has_ordered_life_cost()
             || announcement.linked_origin_counter_cost().is_some()
@@ -7434,6 +7526,12 @@ impl FundingState<'_> {
                     next.project_mana_color_change(output, production);
                 }
                 next.project_paid_mana_use(&a.item);
+                if let StackKind::ActivatedAbility { ability } = a.item.kind
+                    && let Some(source) = a.item.source
+                    && source.card.activation(ability).mana_removes_time_counter()
+                {
+                    next.project_mana_time_removal(source.object);
+                }
                 emit(&next)
             })
         };

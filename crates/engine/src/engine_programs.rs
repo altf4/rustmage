@@ -54,9 +54,11 @@ pub(super) struct Resolution {
     /// Resolution may discard illegal bindings, which cannot qualify a multi-target spell.
     pub original_single_spell_card_target: bool,
     pub moved_count: Option<u64>,
+    exiled_library_land: bool,
+    exiled_library_nonland: bool,
     pub remembered_draws: Option<u64>,
     pub remembered_damage_players: Option<u8>,
-    pub remembered_creatures: Option<SharedVec<ObjectRef>>,
+    pub remembered_objects: Option<SharedVec<ObjectRef>>,
     pub sacrificed_power: Option<Box<i128>>,
     pub sacrificed_mana_value: Option<u64>,
     pub discard_after: Option<discard_events::DiscardAfter>,
@@ -65,6 +67,7 @@ pub(super) struct Resolution {
     pub discards: [usize; 2],
     pub selected_discards: [Vec<CardId>; 2],
     pub milled: Vec<ObjectRef>,
+    pub(super) discarded_card: Option<ObjectRef>,
     pub milled_selection: Option<Box<super::milled_selection::MilledSelection>>,
     pub library: Option<Box<LibraryChoice>>,
     pub selection: Option<Box<super::library_selection::LibrarySelection>>,
@@ -81,6 +84,7 @@ pub(super) struct Resolution {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct LibraryChoice {
     pub surveil: bool,
+    remember_top: bool,
     pub return_within_life_gained: bool,
     pub return_noncreature_nonland: bool,
     pub remaining: Vec<CardId>,
@@ -203,6 +207,7 @@ impl Game {
         }
         self.state.resolving.as_mut().unwrap().library = Some(Box::new(LibraryChoice {
             surveil,
+            remember_top: false,
             return_within_life_gained: false,
             return_noncreature_nonland: false,
             remaining,
@@ -280,6 +285,10 @@ impl Game {
         let library = &mut self.state.players[player.index()].library;
         library.splice(0..0, choice.bottom.iter().rev().copied());
         library.extend(choice.top.iter().rev().copied());
+        if choice.remember_top {
+            self.state.resolving.as_mut().unwrap().moved_count =
+                Some(u64::try_from(choice.top.len()).capacity("surveil kept count exhausted"));
+        }
         self.refresh_controllers();
         self.finish_zone_events(&events, &[]);
         self.scry_or_surveil_event(player);
@@ -1104,6 +1113,7 @@ impl Game {
                     | TriggerCondition::SelfDiscarded
                     | TriggerCondition::SelfCycled
                     | TriggerCondition::Discarded { .. }
+                    | TriggerCondition::DiscardedKinds { .. }
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtDamageAtLeast(_)
@@ -1815,10 +1825,11 @@ impl Game {
         caster: Player,
         source: &ObjectView,
         targets: &[BoundTarget],
+        spell_subtypes: GrantedSubtypes,
     ) -> bool {
         match filter {
             CastFilter::SourceChosenCreatureType => {
-                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if card.has_subtype(typ.name()))
+                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if spell_subtypes.has(card, typ.name()))
             }
             CastFilter::CreatureManaValueEqualsSourcePower => {
                 card.is_creature() && i128::from(mana_value) == source.power
@@ -1834,6 +1845,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::NotOwnedByYou => {
@@ -1875,6 +1887,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::ManaSymbols { filter, color } => {
@@ -1887,6 +1900,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
@@ -1898,6 +1912,7 @@ impl Game {
                     caster,
                     source,
                     targets,
+                    spell_subtypes,
                 )
             }),
             CastFilter::ManaValueMaximum { filter, maximum } => {
@@ -1910,6 +1925,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
@@ -1922,6 +1938,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::TargetCount { filter, count } => {
@@ -1934,6 +1951,7 @@ impl Game {
                         caster,
                         source,
                         targets,
+                        spell_subtypes,
                     )
             }
             CastFilter::Targeted { filter, target } => {
@@ -1945,6 +1963,7 @@ impl Game {
                     caster,
                     source,
                     targets,
+                    spell_subtypes,
                 ) && targets.iter().any(|bound| {
                     if let Target::Player(player) = bound.target {
                         return target == CastTarget::OpponentOrCreature
@@ -1979,7 +1998,9 @@ impl Game {
                     }
                 })
             }
-            _ => filter.matches(card),
+            _ => filter.matches_mana_value_with(card, card.fixed_mana_value(), |subtype| {
+                spell_subtypes.has(card, subtype)
+            }),
         }
     }
 
@@ -1996,16 +2017,32 @@ impl Game {
         caster: Player,
         source: &ObjectView,
         targets: &[BoundTarget],
+        spell_subtypes: GrantedSubtypes,
     ) -> Vec<ObjectRef> {
-        if !self.cast_filter_matches_value(owner, filter, card, mana_value, caster, source, targets)
-        {
+        if !self.cast_filter_matches_value(
+            owner,
+            filter,
+            card,
+            mana_value,
+            caster,
+            source,
+            targets,
+            spell_subtypes,
+        ) {
             return Vec::new();
         }
         let mut objects = Vec::new();
         match filter {
             CastFilter::Targeted { filter: inner, .. } => {
                 objects.extend(self.cast_semantic_targets(
-                    owner, *inner, card, mana_value, caster, source, targets,
+                    owner,
+                    *inner,
+                    card,
+                    mana_value,
+                    caster,
+                    source,
+                    targets,
+                    spell_subtypes,
                 ));
                 for bound in targets {
                     if self.cast_filter_matches_value(
@@ -2016,6 +2053,7 @@ impl Game {
                         caster,
                         source,
                         std::slice::from_ref(bound),
+                        spell_subtypes,
                     ) && let Some(object) = bound.object
                     {
                         objects.push(object);
@@ -2029,13 +2067,27 @@ impl Game {
             | CastFilter::ManaValueMaximum { filter, .. }
             | CastFilter::ManaValueMinimum { filter, .. } => {
                 objects.extend(self.cast_semantic_targets(
-                    owner, *filter, card, mana_value, caster, source, targets,
+                    owner,
+                    *filter,
+                    card,
+                    mana_value,
+                    caster,
+                    source,
+                    targets,
+                    spell_subtypes,
                 ));
             }
             CastFilter::AnyOf(filters) => {
                 for &filter in filters {
                     objects.extend(self.cast_semantic_targets(
-                        owner, filter, card, mana_value, caster, source, targets,
+                        owner,
+                        filter,
+                        card,
+                        mana_value,
+                        caster,
+                        source,
+                        targets,
+                        spell_subtypes,
                     ));
                 }
             }
@@ -2134,6 +2186,11 @@ impl Game {
         let origin = stack
             .and_then(|i| self.state.stack[i].cast)
             .map(|cast| (cast.origin, spell_owner == Some(caster)));
+        let spell_subtypes = stack
+            .and_then(|i| self.state.stack[i].source)
+            .map_or_else(GrantedSubtypes::default, |source| {
+                source.facts.granted_subtypes
+            });
         let mana_value = stack.map_or_else(
             || card.fixed_mana_value(),
             |i| self.state.stack[i].mana_value(),
@@ -2249,6 +2306,7 @@ impl Game {
                                 stack
                                     .map(|i| self.state.stack[i].targets.as_slice())
                                     .unwrap_or(&[]),
+                                spell_subtypes,
                             )
                         })
                         && wanted.is_none_or(|wanted| wanted == ordinal)
@@ -2266,6 +2324,7 @@ impl Game {
                                 caster,
                                 &source,
                                 targets,
+                                spell_subtypes,
                             );
                             let packet = self.state.pending_triggers.last_mut().unwrap();
                             packet.refer_objects(std::iter::once(event.object).chain(objects));
@@ -3509,6 +3568,7 @@ impl Game {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -3734,9 +3794,11 @@ impl Game {
             target_group: 0,
             original_single_spell_card_target,
             moved_count: None,
+            exiled_library_land: false,
+            exiled_library_nonland: false,
             remembered_draws: None,
             remembered_damage_players: None,
-            remembered_creatures: None,
+            remembered_objects: None,
             discard_after: None,
             optional_wheel: None,
             color_sequence: None,
@@ -3745,6 +3807,7 @@ impl Game {
             forage: None,
             selected_discards: [Vec::new(), Vec::new()],
             milled: Vec::new(),
+            discarded_card: None,
             milled_selection: None,
             library: None,
             selection: None,
@@ -4066,7 +4129,7 @@ impl Game {
                         .zone
                         == Zone::Stack
                 {
-                    if self.finish_dream_spell_resolution(&item) {
+                    if self.finish_spell_with_resolution_exile(&item) {
                         // The selected resolution replacement already completed its exact move.
                     } else if item.cast.is_some_and(|c| c.face == CastFace::Adventure) {
                         self.finish_adventure(&item);
@@ -4088,6 +4151,7 @@ impl Game {
             if !matches!(
                 instruction,
                 Instruction::Fight { .. }
+                    | Instruction::IfTargetEnteredThisTurn { .. }
                     | Instruction::FightForExcess { .. }
                     | Instruction::GroupPowerDamage { .. }
                     | Instruction::GroupsPowerDamage { .. }
@@ -4108,6 +4172,7 @@ impl Game {
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
                     | Instruction::ExchangeControlTargets
+                    | Instruction::MakeTargetsTreasureWhileSourceRemains
                     | Instruction::BlinkFollowingPublicMove { all_groups: true }
                     | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
@@ -4478,6 +4543,12 @@ impl Game {
                     self.suspend_captured_spell(&item, time)
                 }
                 Instruction::ResolveSuspendTick => self.resolve_suspend_tick(&item),
+                Instruction::GrantCastRebound => self.grant_cast_rebound(&item),
+                Instruction::ResolveReboundCast => {
+                    if self.resolve_rebound_cast(&item) {
+                        return;
+                    }
+                }
                 Instruction::ResolveSuspendCast => {
                     if self.resolve_suspend_cast(&item) {
                         return;
@@ -5225,6 +5296,14 @@ impl Game {
                     }
                 }
 
+                Instruction::RememberTargetTapped => {
+                    let tapped = item.targets.iter().any(|bound| {
+                        self.same_target_object(*bound)
+                            && matches!(bound.target, Target::Card(id)
+                                if self.on_battlefield(id) && self.state.objects[id as usize].tapped)
+                    });
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(u64::from(tapped));
+                }
                 Instruction::IfTargetEnteredThisTurn { group, skip } => {
                     if !item.targets.iter().any(|bound| {
                         bound.group == group
@@ -7134,6 +7213,18 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::MaySacrificeForGrantedReflexive { filter, .. } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::Sacrifice,
+                        PlayerSet::Controller,
+                        filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::MaySacrificeForManaValue { filter, skip } => {
                     self.state.resolving.as_mut().unwrap().sacrificed_mana_value = None;
                     if self.start_effect_choice(
@@ -7375,6 +7466,30 @@ impl Game {
                     }
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
+                Instruction::CopySourceFromRememberedPermanent => {
+                    let blueprint = self.live_remembered_permanents().next();
+                    if let (Some(source), Some(blueprint)) = (item.source, blueprint) {
+                        let recipe = self.copiable_recipe(blueprint);
+                        self.apply_temporary_copy(source.object, recipe, CopyDeadline::EndOfTurn);
+                    }
+                }
+                Instruction::PutRememberedPermanentCounters { kind, amount } => {
+                    let changes = self
+                        .live_remembered_permanents()
+                        .map(|object| (object, Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
+                Instruction::AnimateRememberedPermanents(animation) => {
+                    let objects: Vec<_> = self.live_remembered_permanents().collect();
+                    for object in objects {
+                        self.change_object_form(
+                            object,
+                            animation,
+                            characteristic_layers::AnimationTypeMode::AddCreature,
+                        );
+                    }
+                }
                 Instruction::CopyTargetsFromCastSpell => self.copy_targets_from_cast_spell(&item),
                 Instruction::CopyChosenExiledTriggerCreature => {
                     if self.start_effect_choice(
@@ -7665,6 +7780,7 @@ impl Game {
                     self.require_targets_blocked(&item, group);
                 }
                 Instruction::ExileDamagedIfDiesThisTurn
+                | Instruction::EquipDiscardAlternative
                 | Instruction::ActivationX
                 | Instruction::ActivationXWithMinimum { .. }
                 | Instruction::ActivationCannotBeCopied
@@ -8003,6 +8119,7 @@ impl Game {
                             .id,
                     ) {
                         ManaProduction::ChosenColor
+                        | ManaProduction::ChosenColorAmount(_)
                         | ManaProduction::ColorsAmongControlledPermanents
                         | ManaProduction::AnyColorChangingSource(_)
                         | ManaProduction::ChoiceStat { .. }
@@ -8154,7 +8271,11 @@ impl Game {
                 Instruction::AnimateSourceIfNoncreature { spec, ability } => {
                     self.animate_source_if_noncreature(&item, spec, ability)
                 }
-                Instruction::DestroyLandAndSearch => self.destroy_land_and_search(&item),
+                Instruction::DestroyLandAndSearch
+                | Instruction::DestroyLandThenControllerMaySearch => self.destroy_land_and_search(
+                    &item,
+                    instruction == Instruction::DestroyLandThenControllerMaySearch,
+                ),
                 Instruction::SearchLibraryAndGraveyardWithXCounters {
                     filter,
                     counter,
@@ -8612,13 +8733,28 @@ impl Game {
                         .collect::<Vec<_>>();
                     let events = self.move_objects_raw(&ids, Zone::Exile);
                     if matches!(instruction, Instruction::ExileTopLibraryRemember { .. }) {
-                        self.state.resolving.as_mut().unwrap().milled = events
+                        let resolution = self.state.resolving.as_mut().unwrap();
+                        let actual = events
                             .iter()
-                            .filter(|event| event.moved && event.destination == Zone::Exile)
-                            .map(|event| event.after)
-                            .collect();
+                            .filter(|event| event.moved && event.destination == Zone::Exile);
+                        resolution.exiled_library_land =
+                            actual.clone().any(|event| event.before.kinds & 2 != 0);
+                        resolution.exiled_library_nonland =
+                            actual.clone().any(|event| event.before.kinds & 2 == 0);
+                        resolution.milled = actual.map(|event| event.after).collect();
                     }
                     self.finish_zone_events(&events, &[]);
+                }
+                Instruction::IfExiledLibraryCard { land, skip } => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    let matched = if land {
+                        resolution.exiled_library_land
+                    } else {
+                        resolution.exiled_library_nonland
+                    };
+                    if !matched {
+                        resolution.pc += skip;
+                    }
                 }
                 Instruction::ExileEachTopPlayOwnAndLesserFree => {
                     self.exile_each_top_play_own_and_lesser_free(item.controller);
@@ -8834,6 +8970,20 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::SurveilRememberTop(amount) => {
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
+                    if self.start_library_arrangement(item.controller, usize::from(amount), true) {
+                        self.state
+                            .resolving
+                            .as_mut()
+                            .unwrap()
+                            .library
+                            .as_mut()
+                            .unwrap()
+                            .remember_top = true;
+                        return;
+                    }
+                }
                 Instruction::SurveilOneReturnByLifeGained
                 | Instruction::SurveilOneReturnNoncreatureNonland => {
                     let remaining: Vec<_> = self.state.players[item.controller.index()]
@@ -8848,6 +8998,7 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().library =
                             Some(Box::new(LibraryChoice {
                                 surveil: true,
+                                remember_top: false,
                                 return_within_life_gained: matches!(
                                     instruction,
                                     Instruction::SurveilOneReturnByLifeGained
@@ -9596,6 +9747,31 @@ impl Game {
                         self.select_random_discards(player, amount, &mut selected);
                     }
                     self.discard_batch_caused(&selected, None, Some(item.controller));
+                }
+                Instruction::DiscardOneRememberCard
+                | Instruction::DiscardOneReflexiveManaValue(_) => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[item.controller.index()] = 1;
+                    resolution.discard_after = Some(match instruction {
+                        Instruction::DiscardOneRememberCard => {
+                            discard_events::DiscardAfter::RememberOne(item.controller)
+                        }
+                        Instruction::DiscardOneReflexiveManaValue(ability) => {
+                            discard_events::DiscardAfter::ReflexiveManaValue {
+                                controller: item.controller,
+                                ability,
+                            }
+                        }
+                        _ => unreachable!(),
+                    });
+                }
+                Instruction::CastRememberedDiscardFree => {
+                    let card = self.state.resolving.as_mut().unwrap().discarded_card.take();
+                    if let Some(card) = card
+                        && self.offer_discard_result_free_cast(item.controller, card)
+                    {
+                        return;
+                    }
                 }
                 Instruction::DiscardTwoNonlandReflexive(ability) => {
                     self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 2;
@@ -10375,6 +10551,16 @@ impl Game {
                 Instruction::AddCreatureTypes { subject, types } => {
                     self.add_creature_types(&item, subject, types)
                 }
+                Instruction::GrantCreatureGraveyardCastThisTurn {
+                    entry_counter,
+                    additional_types,
+                } => {
+                    self.grant_creature_graveyard_cast_this_turn(
+                        &item,
+                        entry_counter,
+                        additional_types,
+                    );
+                }
                 Instruction::AddLegendaryCreatureTypes { subject, types } => {
                     self.grant_legendary_creature_types(&item, subject, types)
                 }
@@ -10593,7 +10779,7 @@ impl Game {
                         .resolving
                         .as_mut()
                         .unwrap()
-                        .remembered_creatures
+                        .remembered_objects
                         .take();
                     let affected: Vec<_> = objects
                         .into_iter()
@@ -10873,7 +11059,7 @@ impl Game {
                         instruction,
                         Instruction::PutCreatureCountersAndRemember { .. }
                     ) {
-                        self.state.resolving.as_mut().unwrap().remembered_creatures = (!affected
+                        self.state.resolving.as_mut().unwrap().remembered_objects = (!affected
                             .is_empty())
                         .then(|| affected.iter().map(|(object, _)| *object).collect());
                     }
@@ -11311,6 +11497,9 @@ impl Game {
                         &item,
                         SourceLinkedEffectKind::RemoveAbilities,
                     );
+                }
+                Instruction::MakeTargetsTreasureWhileSourceRemains => {
+                    self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::Treasure);
                 }
                 Instruction::GrantTargetHexproofUntilSourceLeaves => {
                     self.resolve_source_linked_effect(&item, SourceLinkedEffectKind::GrantHexproof);

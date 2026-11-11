@@ -301,6 +301,18 @@ impl Game {
             .collect();
         self.stage_entries(moves, None);
     }
+    pub(super) fn live_remembered_permanents(&self) -> impl Iterator<Item = ObjectRef> + '_ {
+        self.state
+            .resolving
+            .as_ref()
+            .and_then(|resolution| resolution.remembered_objects.as_ref())
+            .into_iter()
+            .flat_map(|objects| objects.iter().copied())
+            .filter(|object| {
+                self.on_battlefield(object.card) && self.object_ref(object.card) == *object
+            })
+    }
+
     pub(super) fn sacrifice_other_creatures_remember_graveyard(&mut self, item: &SpellView) {
         let source = item.source.expect("sacrifice effect source").object;
         let creatures: Vec<_> = self
@@ -326,7 +338,7 @@ impl Game {
             })
             .flat_map(ZoneChange::objects_after)
             .collect();
-        self.state.resolving.as_mut().unwrap().remembered_creatures =
+        self.state.resolving.as_mut().unwrap().remembered_objects =
             (!graveyard_cards.is_empty()).then_some(graveyard_cards);
     }
 
@@ -336,7 +348,7 @@ impl Game {
             .resolving
             .as_mut()
             .unwrap()
-            .remembered_creatures
+            .remembered_objects
             .take();
         let moves = self
             .state

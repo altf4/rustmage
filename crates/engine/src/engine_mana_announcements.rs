@@ -64,6 +64,16 @@ impl Game {
         self.state.pending = frame.pending;
         true
     }
+    pub(super) fn remove_mana_time_counter(&mut self, source: ObjectRef) -> bool {
+        if !self.on_battlefield(source.card)
+            || self.object_ref(source.card) != source
+            || self.counter_count(source.card, CounterKind::Time) == 0
+        {
+            return false;
+        }
+        self.pay_counters(source.card, &Counters::of(CounterKind::Time, 1));
+        true
+    }
     pub(super) fn committed_mana_followups(&mut self, item: &SpellView) {
         self.committed_activation_observers(item);
         let Some((_, program)) = item.program() else {
@@ -81,6 +91,19 @@ impl Game {
                 Instruction::CopyNextInstantSorcery { ability },
             ] => {
                 self.register_delayed_stack_trigger(item, *ability);
+            }
+            [
+                Instruction::AddMana(_),
+                Instruction::RemoveSourceCounterIfAny {
+                    kind: CounterKind::Time,
+                    skip: 0,
+                },
+            ] => {
+                if let Some(source) = item.source
+                    && self.remove_mana_time_counter(source.object)
+                {
+                    self.record_cast_mana_time_removal(source.object);
+                }
             }
             _ => {}
         }

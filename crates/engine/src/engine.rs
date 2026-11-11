@@ -166,6 +166,9 @@ pub mod copies;
 #[path = "engine_prepared.rs"]
 pub mod prepared;
 #[doc(hidden)]
+#[path = "engine_rebound.rs"]
+pub mod rebound;
+#[doc(hidden)]
 #[path = "engine_stack_copies.rs"]
 pub mod stack_copies;
 #[doc(hidden)]
@@ -239,6 +242,10 @@ pub use dream_exile::DreamExileView;
 #[doc(hidden)]
 #[path = "engine_cast_permissions.rs"]
 pub mod cast_permissions;
+#[doc(hidden)]
+#[path = "engine_graveyard_paid_casts.rs"]
+pub mod graveyard_paid_casts;
+pub use graveyard_paid_casts::PaidGraveyardCastPermission;
 #[doc(hidden)]
 #[path = "engine_cast_route_costs.rs"]
 pub mod cast_route_costs;
@@ -917,6 +924,7 @@ define_actions! {
     AnnounceCounterGraveyard { card: CardId },
     AnnounceGraveyardAdditionalCosts { card: CardId },
     AnnounceGraveyardFinality { card: CardId, sneak: bool },
+    AnnounceGraveyardPaid { object: ObjectRef, permission: u64, face: CastFace, method: CastMethod, flash_surcharge: bool },
     AnnounceGraveyardWithLife {
         object: ObjectRef,
         face: CastFace,
@@ -2240,6 +2248,7 @@ impl SpellView {
             | StackKind::DecayedAttack
             | StackKind::SuspendTick
             | StackKind::SuspendCast
+            | StackKind::ReboundCast
             | StackKind::CopyEndStepSacrifice
             | StackKind::CopyEndStepConditionalSacrifice
             | StackKind::CasualtyCopy
@@ -2411,6 +2420,7 @@ impl SpellView {
             )),
             StackKind::SuspendTick => Some((TargetPlan::NONE, &[Instruction::ResolveSuspendTick])),
             StackKind::SuspendCast => Some((TargetPlan::NONE, &[Instruction::ResolveSuspendCast])),
+            StackKind::ReboundCast => Some((TargetPlan::NONE, &[Instruction::ResolveReboundCast])),
             StackKind::DecayedAttack => {
                 Some((TargetPlan::NONE, &[Instruction::SacrificeSourceAtEndCombat]))
             }
@@ -2505,6 +2515,7 @@ pub enum StackKind {
     DecayedAttack,
     SuspendTick,
     SuspendCast,
+    ReboundCast,
     CopyEndStepConditionalSacrifice,
     CasualtyCopy,
     ConspireCopy,
@@ -3543,9 +3554,10 @@ pub struct PendingPaymentView {
 pub enum ActivationCostRoute {
     Printed,
     FirstEquipZero,
+    DiscardCard,
 }
 
-/// Legal mana-cost choices for the current spell or activation announcement.
+/// Legal payment choices for the current spell or activation announcement.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct SpellCostChoiceView {
@@ -3966,6 +3978,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub paid_graveyard_cast_permissions: Vec<PaidGraveyardCastPermission>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub embalm_abilities: Option<Vec<EmbalmAbilityView>>,
     pub graveyard_type_uses: Vec<GraveyardTypeUse>,
@@ -5536,6 +5550,7 @@ impl Game {
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+                            | EffectChoiceKind::RememberPermanents { .. }
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -5562,6 +5577,7 @@ impl Game {
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+                            | EffectChoiceKind::RememberPermanents { .. }
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -5871,6 +5887,14 @@ impl Game {
                         && !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
                         && self.visit_linked_source_casts(actor, card, sorcery, &mut emit)
+                    {
+                        return true;
+                    }
+                    if obj.zone == Zone::Graveyard
+                        && obj.owner == actor
+                        && !casting_prohibited
+                        && !self.nonhand_cast_prohibited(actor)
+                        && self.visit_paid_graveyard_casts(actor, card, sorcery, &mut emit)
                     {
                         return true;
                     }
@@ -7978,6 +8002,22 @@ impl Game {
                     .power = 0;
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceGraveyardPaid {
+                object,
+                permission,
+                face,
+                method,
+                flash_surcharge,
+            } => {
+                self.start_paid_graveyard_cast(
+                    actor,
+                    object,
+                    permission,
+                    face,
+                    method,
+                    flash_surcharge,
+                );
+            }
             Action::AnnounceGraveyardWithLife {
                 object,
                 face,
@@ -9520,6 +9560,7 @@ impl Game {
         let events = self.sacrifice_cost_batch_events(sacrifices)?;
         Some(PaidAdditionalCostView {
             selected: sacrifices.len() as u64,
+            total_mana_value: None,
             count: events
                 .iter()
                 .filter(|event| event.sacrificed_by.is_some())
@@ -9932,10 +9973,29 @@ impl Game {
         entry_controller: Option<Player>,
         shuffle_instead_of_graveyard: bool,
     ) -> ZoneChange {
+        self.transition_object_configured(
+            before,
+            destination,
+            tapped,
+            counters,
+            entry_controller,
+            |rules| rules.shuffle_spell = shuffle_instead_of_graveyard,
+        )
+    }
+
+    fn transition_object_configured(
+        &mut self,
+        before: ObjectView,
+        destination: Zone,
+        tapped: bool,
+        counters: Counters,
+        entry_controller: Option<Player>,
+        configure: impl FnOnce(&mut zone_replacements::FrozenRules),
+    ) -> ZoneChange {
         self.capture_event_object_facts(std::iter::once(&before));
         self.capture_source_quantities(std::iter::once(&before));
         let mut rules = self.freeze_zone_rules(&before, destination, None);
-        rules.shuffle_spell = shuffle_instead_of_graveyard;
+        configure(&mut rules);
         let plan = self.plan_zone_move(&before, destination, rules);
         let returned_hand_observers =
             if before.zone == Zone::Battlefield && destination == Zone::Hand {
@@ -10539,6 +10599,7 @@ impl Game {
         }
         if before.zone == Zone::Stack {
             self.continue_stack_keywords(before.reference, self.object_ref(id), destination);
+            self.continue_cast_creature_types(before.reference, self.object_ref(id), destination);
         }
         if destination == Zone::Battlefield
             && let Some(meld) = entering_meld
@@ -10601,14 +10662,14 @@ impl Game {
             self.shuffle_zone_card(&before, shuffle);
         }
         let linked_exile_life = plan.completion.and_then(|completion| {
-            let mut life = self.complete_special_zone_move(after, completion, was_card);
+            let mut life = self.complete_special_zone_move(&before, after, completion, was_card);
             if let Some(companion) =
                 melded_after.and_then(|cards| cards.into_iter().find(|&card| card != after))
             {
                 // The linked replacement affects both physical results, but the
                 // life gain belongs to the single permanent departure.
                 life = self
-                    .complete_special_zone_move(companion, completion, was_card)
+                    .complete_special_zone_move(&before, companion, completion, was_card)
                     .or(life);
             }
             life
@@ -11068,6 +11129,7 @@ impl Game {
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
         self.expire_graveyard_cast_permissions();
+        self.expire_paid_graveyard_permissions();
         self.expire_embalm();
         self.state.turn_cast_grants = None;
         self.expire_linked_exile_plays();
@@ -12314,6 +12376,10 @@ impl Game {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| rows.iter().copied().collect()),
             embalm_abilities: self.embalm_views(),
+            paid_graveyard_cast_permissions: s
+                .linked_choices
+                .as_ref()
+                .map_or_else(Vec::new, |state| state.graveyard_paid_permissions.clone()),
             graveyard_cast_permissions: s
                 .graveyard_cast_permissions
                 .as_ref()
@@ -12527,9 +12593,9 @@ impl Game {
                     .map(|(index, cost)| SpellCostChoiceView {
                         index: index as u16,
                         cost,
-                        activation_route: a
-                            .equip_zero_available
-                            .then(|| a.activation_route_for_index(index)),
+                        activation_route: (a.equip_zero_available
+                            || a.has_equip_discard_alternative())
+                        .then(|| a.activation_route_for_index(index)),
                     })
                     .collect()
             } else {
@@ -13090,7 +13156,7 @@ impl Game {
                         + resolution.proliferate.as_ref().map_or(0, |p| p.bytes())
                         + resolution.mana_payment.as_ref().map_or(0, |p| p.bytes())
                         + resolution.milled.len() * std::mem::size_of::<ObjectRef>()
-                        + resolution.remembered_creatures.as_ref().map_or(0, |rows| {
+                        + resolution.remembered_objects.as_ref().map_or(0, |rows| {
                             std::mem::size_of::<Vec<ObjectRef>>()
                                 + rows.len() * std::mem::size_of::<ObjectRef>()
                         })

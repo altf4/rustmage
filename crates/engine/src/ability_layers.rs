@@ -456,9 +456,16 @@ pub enum StaticAbilityFragment {
     AttachmentAttackingKeywords(Keywords),
     AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
+    /// Choose the grant by the attachment controller's turn.
+    AttachmentTurnChoiceKeywords {
+        own_turn: Keywords,
+        other_turn: Keywords,
+    },
     AttachedTurnKeywords(Keywords),
     /// Stable index into the granting definition's immutable trigger array.
     AttachmentTrigger(u16),
+    /// The attached permanent's controller may privately view their library top.
+    AttachmentLookAtLibraryTop,
     /// Each matching creature owns the indexed granted trigger template.
     /// Scope is evaluated in layer six and frozen for departure events.
     ControlledCreatureTrigger {

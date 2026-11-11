@@ -85,7 +85,7 @@ impl ManaOutput {
         controller: Player,
         quality: Option<mana_lots::Quality>,
     ) -> Self {
-        let recipe = if recipe.base() == ManaProduction::ChosenColor {
+        let recipe = if recipe.chosen_color_amount().is_some() {
             recipe.in_world(world, instance.source.card)
         } else {
             recipe.base()

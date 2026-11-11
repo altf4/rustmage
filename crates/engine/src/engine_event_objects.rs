@@ -49,6 +49,7 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    DiscardedManaValue(u64),
     /// Frozen threshold of the completed discovery, independent of its result.
     DiscoverAmount(u64),
     /// Current or last-known controller of an exact untargeted object.
@@ -396,6 +397,7 @@ impl Game {
                     | EventObjectFacts::UntapStepCount(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::DiscardedManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. } => {
                         continue;

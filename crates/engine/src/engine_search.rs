@@ -362,10 +362,12 @@ impl Game {
 pub struct OptionalSearchSequence {
     pub players: [Player; 2],
     pub next: usize,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub land_controller_only: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn destroy_land_and_search(&mut self, item: &SpellView) {
+    pub(super) fn destroy_land_and_search(&mut self, item: &SpellView, land_controller_only: bool) {
         let Some(bound) = item
             .targets
             .first()
@@ -382,6 +384,7 @@ impl Game {
             Some(Box::new(OptionalSearchSequence {
                 players: [affected, item.controller],
                 next: 0,
+                land_controller_only,
             }));
         if !self.effect_destruction_prevented(id) {
             self.move_target_batch(&[bound], Zone::Graveyard);
@@ -395,7 +398,12 @@ impl Game {
         if resolution.search.is_some() {
             return false;
         }
-        if let Some(&player) = sequence.players.get(sequence.next) {
+        let participants = if sequence.land_controller_only {
+            1
+        } else {
+            sequence.players.len()
+        };
+        if let Some(&player) = sequence.players[..participants].get(sequence.next) {
             self.state.pending = Pending::OptionalSearch(player);
             true
         } else {

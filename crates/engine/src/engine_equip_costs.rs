@@ -1,5 +1,13 @@
 //! Equip cost modifiers and committed player history, separate from attachment effects.
 use super::*;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn discard_cost() -> AdditionalCost {
+    AdditionalCost {
+        kind: EffectChoiceKind::Discard,
+        filter: evidence::cost(0).filter,
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Cost readiness may use a declared replacement, while timing, guards and
@@ -33,6 +41,11 @@ impl Game {
     }
     pub(super) fn activation_target_sensitive(definition: Card, ability: u16) -> bool {
         definition.activation(ability).is_equip()
+            || definition
+                .activation(ability)
+                .cost
+                .additional
+                .is_some_and(|cost| cost.kind.uses_target_mana_value())
             || definition.activation_target_reduction(ability).is_some()
             || definition
                 .activation_target_counter_discount(ability)
@@ -137,6 +150,9 @@ impl Game {
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. }) {
             let mut proposal = a.clone();
             proposal.select_cost(index);
+            if a.has_equip_discard_alternative() {
+                return self.announcement_activation_target_fundable(&proposal, None, false);
+            }
             if a.equip_zero_available
                 && proposal.activation_cost_route == ActivationCostRoute::Printed
                 && let StackKind::ActivatedAbility { ability } = proposal.item.kind

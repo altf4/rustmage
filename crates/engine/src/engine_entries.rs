@@ -81,6 +81,8 @@ pub(super) struct EntryMove {
     pub evoked: bool,
     pub behold_exiled: Option<ObjectRef>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
+    /// Additive type effect following the exact spell into the prospective entry.
+    pub cast_added_creature_types: &'static [&'static str],
     /// Explicit origin of an actual spell cast; absent for reanimation/put effects.
     pub cast_origin: Option<Zone>,
     pub warp_controller: Option<Player>,
@@ -326,6 +328,7 @@ impl EntryMove {
             evoked: false,
             behold_exiled: None,
             cast_event: None,
+            cast_added_creature_types: &[],
             cast_origin: None,
             warp_controller: None,
             kicked: false,
@@ -524,7 +527,12 @@ impl Game {
             }
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
-        EntryMove::from_view(self.object_view(id), destination, tapped)
+        let mut movement = EntryMove::from_view(self.object_view(id), destination, tapped);
+        if movement.before.zone == Zone::Stack && destination == Zone::Battlefield {
+            movement.cast_added_creature_types =
+                self.cast_added_creature_types(movement.before.reference);
+        }
+        movement
     }
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None, None, None);

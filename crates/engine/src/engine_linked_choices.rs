@@ -84,6 +84,7 @@ pub(super) struct ChoiceState {
     pub craft_links: Vec<LinkedExileView>,
     pub free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
+    pub graveyard_paid_permissions: Vec<PaidGraveyardCastPermission>,
     pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
     pub linked_exile_selected: Option<ObjectRef>,
     pub legendary_search: Option<Box<legendary_split_search::LegendarySplitSearch>>,
@@ -121,6 +122,8 @@ impl ChoiceState {
             + (self.links.len() + self.craft_links.len()) * std::mem::size_of::<LinkedExileView>()
             + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
+            + self.graveyard_paid_permissions.len()
+                * std::mem::size_of::<PaidGraveyardCastPermission>()
             + self
                 .legendary_search
                 .as_ref()

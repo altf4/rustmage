@@ -710,6 +710,7 @@ impl Game {
         // Evaluate after installing the recipe so the new spell has its own
         // copiable values and the continuous effects of its own controller.
         copy.source_keywords = self.keywords(card);
+        copy.source.as_mut().unwrap().facts.granted_subtypes = self.granted_subtypes(card);
         copy
     }
     pub(super) fn copy_target_spell(

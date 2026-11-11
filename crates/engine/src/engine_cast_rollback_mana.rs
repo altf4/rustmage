@@ -58,6 +58,8 @@ pub(super) struct ManaEvent {
     /// Unrestricted mana produced by triggered mana abilities after this event.
     pub tap_bonus: Mana,
     pub recolor: Option<u8>,
+    /// The source actually lost a Time counter after this mana was produced.
+    pub time_removal: Option<ObjectRef>,
     pub quality: Option<mana_lots::Quality>,
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     /// Fully replaced, ordered activation-cost placements from the actual event.
@@ -578,6 +580,12 @@ impl Game {
         self.add_quality_mana(event.actor, event.production, event.quality);
         if event.tap_bonus != [0; 6] {
             self.add_mana(event.actor, event.tap_bonus);
+        }
+        if event
+            .time_removal
+            .is_some_and(|source| !self.remove_mana_time_counter(source))
+        {
+            return false;
         }
         let active = self
             .state

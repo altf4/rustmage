@@ -161,7 +161,7 @@ impl Game {
         };
         let source = item.source.expect("activated ability has an object source");
         let mut definition = *source.card.activation(ability);
-        if route == ActivationCostRoute::FirstEquipZero {
+        if route != ActivationCostRoute::Printed {
             assert!(definition.is_equip());
             definition.cost = ActivationCost::ZERO;
         }
@@ -297,6 +297,9 @@ impl Game {
         match guard {
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 self.counter_count(source, kind) >= minimum
+            }
+            ActivationGuard::SourceCounterExactly { kind, amount } => {
+                self.counter_count(source, kind) == amount
             }
             ActivationGuard::ClassLevelExactly(level) => {
                 self.state.objects[source as usize].class_level == level
@@ -767,7 +770,9 @@ impl Game {
                     }
                     // A direct action cannot declare which optional whole-cost
                     // route it pays; expose the explicit announcement instead.
-                    if self.first_equip_zero_available(actor, ability) {
+                    if ability.equip_discard_alternative()
+                        || self.first_equip_zero_available(actor, ability)
+                    {
                         return false;
                     }
                     if mana_loyalty_placement_prohibited(self, self.object_ref(card), ability)
@@ -1061,7 +1066,7 @@ impl Game {
         };
         let source = item.source.expect("activated ability has an object source");
         let mut definition = *source.card.activation(ability);
-        if route == ActivationCostRoute::FirstEquipZero {
+        if route != ActivationCostRoute::Printed {
             assert!(definition.is_equip());
             assert_eq!(counter_payment, Counters::default());
             definition.cost = ActivationCost::ZERO;

@@ -43,6 +43,10 @@ pub enum WebSlingingOrigin {
         object: ObjectRef,
         source: ObjectRef,
     },
+    GraveyardPaid {
+        object: ObjectRef,
+        permission: u64,
+    },
     TaxedExile {
         surcharge: std::num::NonZeroU32,
     },
@@ -175,6 +179,17 @@ impl Game {
             WebSlingingOrigin::LinkedExilePaid { .. } => return false,
             _ => None,
         };
+        let paid_graveyard = match origin {
+            WebSlingingOrigin::GraveyardPaid { object, permission } if object.card == card => {
+                let Some(row) = self.paid_graveyard_permission(actor, object, face, permission)
+                else {
+                    return false;
+                };
+                Some(row)
+            }
+            WebSlingingOrigin::GraveyardPaid { .. } => return false,
+            _ => None,
+        };
         let origin_counter_cost = match origin {
             WebSlingingOrigin::LinkedExileCounters { source } => {
                 self.linked_counter_permission(actor, source, card, face)
@@ -215,6 +230,7 @@ impl Game {
                         exile_play_surcharge,
                         web_slinging: Some(cost),
                         linked_exile_paid,
+                        paid_graveyard,
                         ..Default::default()
                     },
                 ) && emit(Action::AnnounceWebSlinging {
@@ -246,6 +262,7 @@ impl Game {
         let mut origin_life_cost = None;
         let mut exile_play_surcharge = None;
         let mut linked_exile_paid = None;
+        let mut paid_graveyard = None;
         match origin {
             WebSlingingOrigin::Ordinary | WebSlingingOrigin::LibraryTop { .. } => {}
             WebSlingingOrigin::GraveyardType {
@@ -277,6 +294,12 @@ impl Game {
                         .expect("approved exact linked Web-slinging permission"),
                 );
             }
+            WebSlingingOrigin::GraveyardPaid { object, permission } => {
+                paid_graveyard = Some(
+                    self.paid_graveyard_permission(actor, object, face, permission)
+                        .expect("approved exact graveyard Web-slinging permission"),
+                );
+            }
             WebSlingingOrigin::TaxedExile { surcharge } => exile_play_surcharge = Some(surcharge),
             WebSlingingOrigin::PaidResolution => {
                 self.cast_during_resolution_configured(
@@ -294,6 +317,9 @@ impl Game {
         Self::configure_web_slinging(&mut item);
         if linked_exile_paid.is_some() {
             self.select_linked_paid_cast(&mut item);
+        }
+        if let Some(permission) = paid_graveyard {
+            self.apply_paid_graveyard_spell_types(&mut item, permission);
         }
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if let Some(surcharge) = exile_play_surcharge {
@@ -321,6 +347,10 @@ impl Game {
                 if let Some(permission) = linked_exile_paid {
                     announcement.limited_cast_permission =
                         Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
+                }
+                if let Some(permission) = paid_graveyard {
+                    announcement.limited_cast_permission =
+                        Some(Box::new(LimitedCastPermission::PaidGraveyard(permission)));
                 }
                 announcement.origin_additional_cost = origin_additional_cost;
                 if let Some(life) = origin_life_cost {

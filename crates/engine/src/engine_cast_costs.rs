@@ -37,6 +37,8 @@ pub struct CastCostTransaction {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub teammates: Vec<ObjectRef>,
     pub mana_closed: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) target_mana_value: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastCostTransaction {
@@ -136,6 +138,7 @@ impl Announcement {
         }
         if self.additional_cost().is_some_and(|s| {
             s.kind == EffectChoiceKind::ReturnTappedCreature
+                || s.kind.uses_target_mana_value()
                 || matches!(
                     s.kind.payment_kind(),
                     EffectChoiceKind::BeholdMany(_)

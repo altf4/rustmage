@@ -273,6 +273,7 @@ impl Game {
             | EffectChoiceKind::ExileGraveyardSymbols { .. } => o.owner == actor,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. }
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -374,6 +375,7 @@ impl Game {
             | EffectChoiceKind::DiscardLegendary => Zone::Hand,
             EffectChoiceKind::BlightCost(_)
             | EffectChoiceKind::ExileControlled
+            | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. }
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeRange { .. }
             | EffectChoiceKind::SacrificeDifferentNames(_)
@@ -1386,6 +1388,7 @@ impl Game {
             | EffectChoiceKind::ExileGrantingAttachment
             | EffectChoiceKind::ReturnRememberedCreature
             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+            | EffectChoiceKind::RememberPermanents { .. }
             | EffectChoiceKind::CoverUpGraveyardCard
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
@@ -1431,6 +1434,7 @@ impl Game {
             | EffectChoiceKind::ExileControlledOrGraveyard
             | EffectChoiceKind::ExileCraftNonlands(_)
             | EffectChoiceKind::ExileCraftMaterials(_)
+            | EffectChoiceKind::ExilePermanentsForTargetManaValue { .. }
             | EffectChoiceKind::DiscardOrLife(_)
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent

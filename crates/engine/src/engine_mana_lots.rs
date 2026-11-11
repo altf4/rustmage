@@ -39,6 +39,7 @@ pub enum ManaRestrictionView {
     CreatureSpell(CreatureType),
     EquipmentSpellOrEquip,
     CreatureActivation,
+    LandActivation,
     AbilityActivation,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -206,6 +207,7 @@ impl Quality {
                     ManaRestrictionView::EquipmentSpellOrEquip
                 }
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
+                ManaRestriction::LandActivation => ManaRestrictionView::LandActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ArtifactActivation => ManaRestrictionView::ArtifactActivation,
@@ -305,6 +307,9 @@ impl Quality {
             },
             ManaRestrictionView::CreatureActivation => {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
+            }
+            ManaRestrictionView::LandActivation => {
+                matches!(purpose, Purpose::Activation(facts) if facts.kinds & 2 != 0)
             }
             ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
             ManaRestrictionView::ArtifactSpell => {
@@ -1272,6 +1277,7 @@ impl Game {
         if item.kind == StackKind::Spell {
             let mut source = Source::printed(identity.card);
             source.mana_value = item.mana_value();
+            source.subtypes = identity.facts.granted_subtypes;
             source.foreign_stash = item.cast.is_some_and(|c| c.stash_origin);
             source.cast_from_hand = item.cast.is_some_and(|c| {
                 c.origin == Zone::Hand
@@ -1319,6 +1325,12 @@ impl Game {
                     .is_some_and(|s| s.id == card && s.card == definition)
         }) {
             source.mana_value = a.item.mana_value();
+            source.subtypes = a
+                .item
+                .source
+                .expect("spell announcement")
+                .facts
+                .granted_subtypes;
         }
         source.cast_from_hand = self.state.objects[card as usize].owner == actor
             && self

@@ -467,7 +467,7 @@ impl Game {
                     .resolving
                     .as_ref()
                     .unwrap()
-                    .remembered_creatures
+                    .remembered_objects
                     .as_ref()
                     .is_some_and(|receipts| receipts.binary_search(&object).is_ok());
         }
@@ -1386,7 +1386,24 @@ impl Game {
     ) -> bool {
         if matches!(kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
             assert_eq!(amount, 1, "one alternative resolution cost");
-            assert_eq!(players, PlayerSet::Controller, "captured resolution payer");
+            assert!(matches!(
+                players,
+                PlayerSet::Controller | PlayerSet::Opponent
+            ));
+        }
+        if let EffectChoiceKind::RememberPermanents {
+            require_battlefield_source,
+        } = kind
+        {
+            self.state.resolving.as_mut().unwrap().remembered_objects = None;
+            if require_battlefield_source
+                && !item.source.is_some_and(|source| {
+                    self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+                })
+            {
+                self.state.resolving.as_mut().unwrap().pc += optional_skip.unwrap_or(0);
+                return false;
+            }
         }
         if kind == EffectChoiceKind::ReturnRememberedCreature {
             assert_eq!(amount, 1, "one remembered creature return");
@@ -1406,7 +1423,8 @@ impl Game {
                 "any-number resolution choice finishes with any subset"
             );
         }
-        let pc = self.state.resolving.as_ref().unwrap().pc;
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let pc = resolution.pc;
         if matches!(kind, EffectChoiceKind::ExileSourceAndNamed { .. })
             && item.source.is_none_or(|source| {
                 self.object_ref(source.id) != source.object
@@ -1417,6 +1435,23 @@ impl Game {
                 pc + optional_skip.expect("optional source cost");
             return false;
         }
+        let source = if matches!(
+            resolution.program.get(pc.saturating_sub(1)),
+            Some(Instruction::MaySacrificeForGrantedReflexive { .. })
+        ) {
+            let Some(grant) = item
+                .attachment_trigger
+                .as_ref()
+                .filter(|event| event.granted)
+            else {
+                return false;
+            };
+            grant.grantor
+        } else {
+            item.source
+                .expect("effect choice requires object source")
+                .object
+        };
         let mut choice = EffectChoice {
             discard_draw: None,
             discarded: None,
@@ -1429,10 +1464,7 @@ impl Game {
             hand_entry_filter: None,
             equipment_recipient: None,
             blight_copy_attacking: false,
-            source: item
-                .source
-                .expect("effect choice requires object source")
-                .object,
+            source,
             required: [0; 2],
             selected: std::array::from_fn(|_| Vec::new()),
             greatest_value: [None; 2],
@@ -1946,6 +1978,13 @@ impl Game {
             self.destroy_objects_outcome(destroyed);
             return false;
         }
+        if matches!(choice.kind, EffectChoiceKind::RememberPermanents { .. }) {
+            let mut selected: Vec<_> = choice.selected.into_iter().flatten().collect();
+            selected.sort_unstable();
+            self.state.resolving.as_mut().unwrap().remembered_objects =
+                (!selected.is_empty()).then(|| selected.into());
+            return false;
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&recipient) = choice.selected[player.index()].first() {
@@ -1976,7 +2015,7 @@ impl Game {
         if choice.kind == EffectChoiceKind::ReturnRememberedCreature {
             let resolution = self.state.resolving.as_mut().unwrap();
             let player = resolution.item.controller;
-            resolution.remembered_creatures = None;
+            resolution.remembered_objects = None;
             if let Some(&object) = choice.selected[player.index()].first() {
                 let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
                 movement.controller = player;
@@ -2027,8 +2066,26 @@ impl Game {
             return false;
         }
         let resolution = self.state.resolving.as_ref().unwrap();
+        let instruction = resolution.program.get(resolution.pc.saturating_sub(1));
+        if let Some(Instruction::MaySacrificeForGrantedReflexive { ability, .. }) =
+            instruction.copied()
+        {
+            let controller = resolution.item.controller;
+            if let Some(&object) = choice.selected[controller.index()].first()
+                && self.object_ref(object.card) == object
+                && self
+                    .sacrifice_cost_batch_outcome(&[(controller, object.card)])
+                    .is_some_and(|receipt| receipt.count != 0)
+            {
+                // The bearer might have been the sacrifice. Use the packet with
+                // its updated departure facts to create the independent trigger.
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.queue_reflexive_objects(&item, ability, item.reflexive_action_objects());
+            }
+            return false;
+        }
         if matches!(
-            resolution.program.get(resolution.pc.saturating_sub(1)),
+            instruction,
             Some(Instruction::MaySacrificeForManaValue { .. })
         ) {
             let player = resolution.item.controller;
@@ -2319,11 +2376,18 @@ impl Game {
         ) {
             // The resolving packet captures the payer/cause. A legal chosen cost
             // is paid even if its zone-change destination is replaced.
-            let payer = self.state.resolving.as_ref().unwrap().item.controller;
-            let reference = choice.selected[payer.index()][0];
+            let controller = self.state.resolving.as_ref().unwrap().item.controller;
+            let (payer, reference) = [Player::P0, Player::P1]
+                .into_iter()
+                .find_map(|player| {
+                    choice.selected[player.index()]
+                        .first()
+                        .map(|&object| (player, object))
+                })
+                .expect("one chosen payer");
             assert_eq!(self.object_ref(reference.card), reference);
             if self.state.objects[reference.card as usize].zone == Zone::Hand {
-                self.discard_batch_caused(&[reference.card], None, Some(payer));
+                self.discard_batch_caused(&[reference.card], None, Some(controller));
             } else {
                 self.sacrifice_batch(&[(payer, reference.card)]);
             }

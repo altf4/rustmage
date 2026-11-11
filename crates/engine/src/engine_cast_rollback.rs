@@ -292,6 +292,7 @@ impl Game {
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
+            | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }

@@ -43,6 +43,7 @@ impl Game {
             production,
             tap_bonus: [0; 6],
             recolor: None,
+            time_removal: None,
             quality: None,
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
@@ -182,6 +183,16 @@ impl Game {
                 counters: counters.clone(),
                 additional: None,
             };
+        }
+    }
+    pub(super) fn record_cast_mana_time_removal(&mut self, source: ObjectRef) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|rollback| rollback.capture.as_mut())
+        {
+            capture.event.time_removal = Some(source);
         }
     }
     pub(super) fn record_cast_mana_recolor(&mut self, colors: u8) {

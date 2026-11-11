@@ -125,7 +125,7 @@ impl Game {
                 },
                 |r| r.discount,
             );
-        self.spell_total_with_reductions(
+        self.spell_total_with_reductions_and_types(
             a.item.controller,
             source.id,
             base,
@@ -134,6 +134,7 @@ impl Game {
             extra,
             discount,
             reduction,
+            source.facts.granted_subtypes,
         )
     }
     fn target_total(
