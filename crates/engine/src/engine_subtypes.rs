@@ -298,6 +298,10 @@ impl GrantedSubtypes {
                 self.insert("Human");
                 self.insert("Hero");
             }
+            if recipe.exceptions.shapeshifter_rogue {
+                self.insert("Shapeshifter");
+                self.insert("Rogue");
+            }
             if let Some(subtype) = recipe.replacement_subtype {
                 self.insert(subtype.name());
             }

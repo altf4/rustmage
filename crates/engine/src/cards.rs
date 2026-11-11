@@ -65,6 +65,8 @@ pub struct CopyExceptions {
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub spider_human_hero: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub shapeshifter_rogue: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub reflection: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub cave: bool,
@@ -97,6 +99,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        shapeshifter_rogue: false,
         reflection: false,
         cave: false,
     };
@@ -113,6 +116,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        shapeshifter_rogue: false,
         reflection: false,
         cave: false,
     };
@@ -133,6 +137,7 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        shapeshifter_rogue: false,
         reflection: false,
         cave: false,
     };
@@ -153,6 +158,10 @@ impl CopyExceptions {
     };
     pub const CAVE: Self = Self {
         cave: true,
+        ..Self::NONE
+    };
+    pub const SHAPESHIFTER_ROGUE: Self = Self {
+        shapeshifter_rogue: true,
         ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
@@ -180,6 +189,7 @@ impl CopyExceptions {
             retained_activation: other.retained_activation.or(self.retained_activation),
             embalm: self.embalm || other.embalm,
             spider_human_hero: self.spider_human_hero || other.spider_human_hero,
+            shapeshifter_rogue: self.shapeshifter_rogue || other.shapeshifter_rogue,
             reflection: self.reflection || other.reflection,
             cave: self.cave || other.cave,
         }
