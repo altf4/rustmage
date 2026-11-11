@@ -589,3 +589,44 @@ fn jolene_gets_one_treasure_for_a_large_attack_and_pays_to_spend_it() {
     assert!(tokens(&game, player, TREASURE).is_empty());
     assert_eq!(game.state.players[player.other().index()].life, 19);
 }
+
+#[test]
+fn jace_reawakened_checks_early_turns_and_copies_later_casts_after_leaving() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let jace = put(&mut game, player, "Jace Reawakened", Zone::Hand);
+    let top = put(&mut game, player, "Island", Zone::Library);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    for turn in 1..=3 {
+        game.state.players[player.index()].turns_started = turn;
+        reject(&mut game, Action::AnnounceCast { card: jace });
+    }
+    game.state.players[player.index()].turns_started = 4;
+    cast(&mut game, jace, None);
+    resolve(&mut game);
+    assert_eq!(game.counter_count(jace, CounterKind::Loyalty), 3);
+    let mut loot = game.clone();
+    announce_activation(&mut loot, jace, 0);
+    pay(&mut loot);
+    choose_when_ready(&mut loot, Action::Discard { card: top });
+    resolve(&mut loot);
+    assert_eq!(loot.object_view(top).zone, Zone::Graveyard);
+    assert_eq!(loot.counter_count(jace, CounterKind::Loyalty), 4);
+
+    game.set_counters(jace, Counters::of(CounterKind::Loyalty, 6));
+    announce_activation(&mut game, jace, 2);
+    pay(&mut game);
+    resolve(&mut game);
+    assert_eq!(game.object_view(jace).zone, Zone::Graveyard);
+    for expected in [16, 12] {
+        let next = if expected == 16 {
+            shock
+        } else {
+            put(&mut game, player, "Shock", Zone::Hand)
+        };
+        cast(&mut game, next, Some(Target::Player(player.other())));
+        choose_when_ready(&mut game, Action::FinishStackTargets);
+        resolve(&mut game);
+        assert_eq!(game.state.players[player.other().index()].life, expected);
+    }
+}

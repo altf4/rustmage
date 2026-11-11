@@ -490,3 +490,38 @@ fn loan_shark_draws_only_if_its_entry_follows_two_casts_this_turn() {
     resolve(&mut game);
     assert_eq!(game.state.players[player.index()].library.len(), length - 1);
 }
+
+#[test]
+fn inherited_gold_pan_and_lavaspur_boots_use_their_exact_equipped_creatures() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let pan = put(&mut game, player, "Gold Pan", Zone::Hand);
+    let boots = put(&mut game, player, "Lavaspur Boots", Zone::Hand);
+    cast(&mut game, pan, None);
+    resolve(&mut game);
+    assert_eq!(tokens(&game, player, TREASURE).len(), 1);
+    cast(&mut game, boots, None);
+    resolve(&mut game);
+
+    for (equipment, creature) in [(pan, first), (boots, first), (pan, second)] {
+        announce_activation(&mut game, equipment, 0);
+        choose_targets(&mut game, &[Target::Card(creature)]);
+        pay(&mut game);
+        resolve(&mut game);
+    }
+    assert_eq!(stats(&game, first), (3, 2));
+    assert_eq!(stats(&game, second), (3, 3));
+    assert!(game.keywords(first).contains(Keywords::HASTE));
+    assert!(!game.keywords(second).contains(Keywords::HASTE));
+    act(&mut game, Action::Pass);
+    let shock = put(&mut game, player.other(), "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(first)));
+    choose_when_ready(&mut game, Action::DeclineResolutionMana);
+    resolve(&mut game);
+    assert_eq!(game.object_view(first).damage, 0);
+    game.move_object(boots, Zone::Graveyard);
+    assert_eq!(stats(&game, first), (2, 2));
+    assert!(!game.keywords(first).contains(Keywords::HASTE));
+}
