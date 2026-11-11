@@ -85,8 +85,8 @@ fn a_dual_outlaw_and_the_observer_each_drain_once_on_simultaneous_death() {
     cast(&mut g, sweep, None);
     resolve(&mut g, player.other());
     assert_eq!(g.state.objects[observer as usize].zone, Zone::Graveyard);
-    assert_eq!(g.life(player), 22);
-    assert_eq!(g.life(player.other()), 18);
+    assert_eq!(g.state.players[player.index()].life, 22);
+    assert_eq!(g.state.players[player.other().index()].life, 18);
 }
 
 fn make_legendary(g: &mut Game, id: CardId) {
@@ -124,7 +124,7 @@ fn legendary_death_uses_departure_power_and_chooses_a_legal_opponent() {
     hexproof.state.players[player.other().index()].hexproof_until_end_turn = true;
     cast(&mut hexproof, sweep, None);
     resolve(&mut hexproof, player.other());
-    assert_eq!(hexproof.life(player.other()), 20);
+    assert_eq!(hexproof.state.players[player.other().index()].life, 20);
 
     let original = root.object_ref(high);
     cast(&mut root, sweep, None);
@@ -135,5 +135,5 @@ fn legendary_death_uses_departure_power_and_chooses_a_legal_opponent() {
     assert_ne!(root.object_ref(high), original);
     assert_eq!(root.stats(high).power, 2);
     resolve(&mut root, player.other());
-    assert_eq!(root.life(player.other()), 15);
+    assert_eq!(root.state.players[player.other().index()].life, 15);
 }

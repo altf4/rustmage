@@ -107,8 +107,8 @@ fn targeted_half_choices_round_up_use_only_opponent_and_preserve_hidden_selectio
             }
         }
         settle(&mut g);
-        assert_eq!(g.life(opponent), 10);
-        assert_eq!(g.life(player), 20);
+        assert_eq!(g.state.players[opponent.index()].life, 10);
+        assert_eq!(g.state.players[player.index()].life, 20);
         assert_eq!(g.state.objects[own as usize].zone, Zone::Battlefield);
         assert_eq!(
             creatures
