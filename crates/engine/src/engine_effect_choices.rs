@@ -2546,6 +2546,7 @@ impl Game {
         } else if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::ExileGraveyard
+                | EffectChoiceKind::ExileControlled
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::ExileCardFromAnyGraveyard
                 | EffectChoiceKind::ExileGreatestManaValue
@@ -2556,6 +2557,7 @@ impl Game {
             if matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
+                    | EffectChoiceKind::ExileControlled
                     | EffectChoiceKind::ExileFromHand
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue

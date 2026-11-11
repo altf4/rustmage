@@ -5808,6 +5808,7 @@ impl Game {
                             EffectChoiceKind::ExileSourceAndNamed { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyard
                             | EffectChoiceKind::ExileCreatureAndGraveyard
+                            | EffectChoiceKind::ExileControlled
                             | EffectChoiceKind::ExileControlledLinked
                             | EffectChoiceKind::CoverUpGraveyardCard
                             | EffectChoiceKind::CoverUpSearch { .. }
