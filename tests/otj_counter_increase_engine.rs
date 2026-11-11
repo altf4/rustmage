@@ -169,6 +169,7 @@ fn printed_and_resolved_effects_share_ordering_on_real_and_projected_entry() {
     assert_eq!(projected, [5, 6]);
 
     game.stage_entries(vec![movement], None);
+    assert!(game.advance_entries());
     let printed = Action::ChooseReplacement {
         source: game.object_ref(doubler),
         ability: 0,
