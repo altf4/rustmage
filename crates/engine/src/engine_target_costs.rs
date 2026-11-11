@@ -13,7 +13,303 @@ struct Completion<'a> {
     finished: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct LifeCostCompletion<'a> {
+    item: &'a SpellView,
+    plan: TargetPlan,
+    optional_targets_help: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn visit_opposing_target_life_costs(
+        &self,
+        actor: Player,
+        mut emit: impl FnMut(ObjectRef, u32) -> bool,
+    ) -> bool {
+        use crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost;
+        let mut query = None;
+        for &id in &self.state.static_sources {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield || object.controller == actor {
+                continue;
+            }
+            let reference = self.object_ref(id);
+            for (index, group) in object.card.static_ability_groups().iter().enumerate() {
+                for fragment in group.fragments {
+                    if let OpponentSpellsTargetingSourceLifeCost(amount) = *fragment
+                        && amount != 0
+                        && query
+                            .get_or_insert_with(|| self.characteristic_query())
+                            .continuous_group_available(reference, index, group)
+                        && emit(reference, amount)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    pub(super) fn cast_uses_target_life_costs(&self, actor: Player, card: Card) -> bool {
+        let has_target = |plan: TargetPlan| match plan {
+            TargetPlan::Single(spec) => spec.rule != TargetRule::None,
+            TargetPlan::Groups(groups) => groups.iter().any(|spec| spec.rule != TargetRule::None),
+        };
+        let can_target = match card.effect() {
+            Effect::Spell(plan, _) | Effect::Aura(plan) => has_target(plan),
+            Effect::Modal(modes) => modes.iter().any(|mode| has_target(mode.targets)),
+            _ => false,
+        } || card.kicked_targets().is_some_and(has_target)
+            || card.bargain_targets().is_some_and(has_target)
+            || card
+                .gift()
+                .is_some_and(|gift| has_target(gift.promised_targets))
+            || card
+                .teamwork()
+                .and_then(|teamwork| teamwork.paid_targets)
+                .is_some_and(has_target);
+        can_target && self.visit_opposing_target_life_costs(actor, |_, _| true)
+    }
+
+    fn applies_target_life_cost(targets: &[BoundTarget], provider: ObjectRef) -> bool {
+        targets.iter().any(|bound| {
+            bound.target == Target::Card(provider.card) && bound.object == Some(provider)
+        })
+    }
+
+    pub(super) fn locked_target_life_costs(&self, a: &Announcement) -> Vec<u32> {
+        let mut fees = Vec::new();
+        if !a.item.targets.is_empty() {
+            self.visit_opposing_target_life_costs(a.item.controller, |source, amount| {
+                if Self::applies_target_life_cost(&a.item.targets, source) {
+                    fees.push(amount);
+                }
+                false
+            });
+        }
+        fees
+    }
+
+    fn target_life_completion(
+        &self,
+        completion: &LifeCostCompletion<'_>,
+        targets: &mut Vec<BoundTarget>,
+        group: u16,
+        closed: bool,
+        first_candidate: usize,
+        test: &mut impl FnMut(&[BoundTarget]) -> bool,
+    ) -> bool {
+        let Some(spec) = completion.plan.group(group) else {
+            return test(targets);
+        };
+        let count = targets.iter().filter(|bound| bound.group == group).count();
+        let min = self
+            .exact_x_targets(completion.item)
+            .unwrap_or(usize::from(spec.min));
+        if count > spec.max {
+            return false;
+        }
+        if count >= min
+            && self.target_life_completion(completion, targets, group + 1, false, 0, test)
+        {
+            return true;
+        }
+        if closed || count == spec.max || count >= min && !completion.optional_targets_help {
+            return false;
+        }
+        let mut index = 0;
+        self.visit_item_targets(completion.item, spec.rule, |target| {
+            let candidate = index;
+            index += 1;
+            if candidate < first_candidate
+                || targets
+                    .iter()
+                    .any(|b| b.group == group && b.target == target)
+                || !self.target_group_compatible(spec.rule, group, targets, target)
+            {
+                return false;
+            }
+            let mut bound = self.bind_target(target);
+            bound.group = group;
+            targets.push(bound);
+            let reachable =
+                self.target_life_completion(completion, targets, group, false, index, test);
+            targets.pop();
+            reachable
+        })
+    }
+
+    pub(super) fn target_life_cost_fundable(
+        &self,
+        a: &Announcement,
+        plan: TargetPlan,
+        cost: ManaCost,
+        offspring: Option<bool>,
+        extra: Option<Target>,
+        finished: bool,
+    ) -> bool {
+        let mut providers = Vec::new();
+        self.visit_opposing_target_life_costs(a.item.controller, |source, amount| {
+            providers.push((source, amount));
+            false
+        });
+        let mut proposal = a.clone();
+        proposal.cost = Some(cost);
+        if let Some(offspring) = offspring {
+            proposal.item.cast.as_mut().unwrap().offspring = Some(offspring);
+        }
+        let source = proposal.item.source.expect("spell cost source");
+        let base = Self::announcement_base_cost(&proposal);
+        let harmonizer = proposal.harmonizer.flatten();
+        let discount = harmonizer
+            .and_then(|reference| self.harmonizer_discount(&proposal.item, reference))
+            .unwrap_or(0);
+        let reduction = Self::announcement_optional_reduction(&proposal).saturating_add(discount);
+        let mut targets = a.item.targets.clone();
+        if let Some(target) = extra {
+            let mut bound = self.bind_target(target);
+            bound.group = a.group;
+            targets.push(bound);
+        }
+        let completion = LifeCostCompletion {
+            item: &a.item,
+            plan,
+            optional_targets_help: source.card.target_cost_reduction().is_some(),
+        };
+        proposal.group = u16::MAX;
+        self.target_life_completion(
+            &completion,
+            &mut targets,
+            a.group,
+            finished,
+            0,
+            &mut |targets| {
+                proposal.item.targets = targets.to_vec();
+                let Some(total) =
+                    self.target_proposal_total(&proposal, base, plan, None, true, reduction)
+                else {
+                    return false;
+                };
+                let mut choice = proposal.clone();
+                // Install ordinary costs first so matching life amounts stay separate.
+                choice.cast_costs.get_or_insert_with(Default::default);
+                choice.initialize_cast_costs(convoke::cost_potential(self, source.card));
+                choice.add_target_life_costs(providers.iter().filter_map(|&(provider, amount)| {
+                    Self::applies_target_life_cost(targets, provider).then_some(amount)
+                }));
+                self.harmonize_proposal_fundable(&choice, harmonizer, total)
+            },
+        )
+    }
+
+    pub(super) fn target_life_announcement_fundable(
+        &self,
+        a: &Announcement,
+        cost: ManaCost,
+    ) -> bool {
+        let source = a.item.source.expect("spell cost source");
+        if a.needs_bargain()
+            || a.needs_evidence()
+            || a.needs_kicker()
+            || a.needs_gift()
+            || a.needs_blight()
+        {
+            return [false, true].into_iter().any(|pay| {
+                let mut proposal = a.clone();
+                let cast = proposal.item.cast.as_mut().unwrap();
+                if a.needs_bargain() {
+                    cast.bargain = Some(pay);
+                } else if a.needs_evidence() {
+                    cast.evidence = Some(pay);
+                } else if a.needs_kicker() {
+                    cast.kicker = Some(pay);
+                } else if a.needs_gift() {
+                    cast.gift = Some(if pay {
+                        GiftDeclaration::Promised {
+                            beneficiary: a.item.controller.other(),
+                        }
+                    } else {
+                        GiftDeclaration::Declined
+                    });
+                } else {
+                    cast.blight = Some(pay);
+                }
+                proposal.plan = self.target_spec(&proposal.item);
+                self.target_life_announcement_fundable(&proposal, cost)
+            });
+        }
+        if a.item.mode.is_none()
+            && let Some(modes) = a.item.modes()
+        {
+            return modes.iter().enumerate().any(|(index, _)| {
+                if !self.item_mode_eligible(&a.item, index)
+                    || !self.teamwork_mode_allowed(&a.item, index)
+                    || !self.blight_mode_allowed(&a.item, index)
+                {
+                    return false;
+                }
+                let mut proposal = a.clone();
+                proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
+                proposal.plan = self.target_spec(&proposal.item);
+                Self::with_tiered_mana(cost, &proposal.item)
+                    .is_some_and(|total| self.target_life_announcement_fundable(&proposal, total))
+            });
+        }
+        if let Some(index) = a.item.mode.map(usize::from)
+            && (!self.teamwork_mode_allowed(&a.item, index)
+                || !self.blight_mode_allowed(&a.item, index))
+        {
+            return false;
+        }
+        let cast = a.item.cast.expect("spell cast choices");
+        if cast.method == CastMethod::Normal
+            && !cast.flash_surcharge
+            && !self.spell_cost_option_available_for_definition(
+                a.item.controller,
+                source.id,
+                a.cost_before_exile_play_surcharge(cost),
+                source.card,
+            )
+        {
+            return false;
+        }
+        if cast.method.is_harmonize() && a.harmonizer.is_none() {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            return self.harmonize_choice_fundable(&proposal, None)
+                || (0..self.state.objects.len()).any(|id| {
+                    self.harmonize_choice_fundable(&proposal, Some(self.object_ref(id as CardId)))
+                });
+        }
+        let mut proposal = a.clone();
+        proposal.cost = Some(cost);
+        if proposal.forage.is_none()
+            && let Some(spec) = proposal
+                .additional_cost()
+                .filter(|spec| forage::is_forage_cost(*spec))
+        {
+            return [
+                ForageRoute::Food,
+                ForageRoute::ExileThree,
+                ForageRoute::Black,
+            ]
+            .into_iter()
+            .any(|route| {
+                if route == ForageRoute::Black && spec.kind != EffectChoiceKind::ForageOrBlack {
+                    return false;
+                }
+                proposal.forage = Some(Box::new(forage::ForageSelection {
+                    route: Some(route),
+                    selected: Vec::new(),
+                    skip_to: 0,
+                }));
+                self.announcement_target_fundable(&proposal, None, Some(cost), None, None, false)
+            });
+        }
+        self.announcement_target_fundable(&proposal, None, Some(cost), None, None, false)
+    }
+
     fn completion_qualification(
         &self,
         c: &Completion<'_>,
@@ -287,14 +583,12 @@ impl Game {
         {
             return self.announcement_activation_target_fundable(a, extra, finished);
         }
-        if a.item.kind != StackKind::Spell
-            || !a
-                .item
-                .source
-                .expect("cost announcement has object source")
-                .card
-                .has_target_cost_modifier()
-        {
+        if a.item.kind != StackKind::Spell || !a.pay_window {
+            return true;
+        }
+        let card = a.item.source.expect("spell cost source").card;
+        let life_cost = self.cast_uses_target_life_costs(a.item.controller, card);
+        if !life_cost && !card.has_target_cost_modifier() {
             return true;
         }
         if plan.is_none()
@@ -321,6 +615,9 @@ impl Game {
             }
         });
         let test = |cost| {
+            if life_cost {
+                return self.target_life_cost_fundable(a, plan, cost, offspring, extra, finished);
+            }
             let mut base = Self::with_offspring_cost(
                 cost,
                 a.item

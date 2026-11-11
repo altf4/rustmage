@@ -6493,6 +6493,7 @@ impl Game {
                     if obj.card.behold_cast().is_some()
                         || obj.card.kicked_targets().is_some()
                         || obj.card.bargain_targets().is_some()
+                        || self.cast_uses_target_life_costs(actor, obj.card)
                         || self.library_counter_choice_available(actor, card)
                     {
                         let method = if flashback {

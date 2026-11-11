@@ -5527,6 +5527,13 @@ impl Game {
         if a.needs_behold() {
             return self.behold_intent_fundable(a, false) || self.behold_intent_fundable(a, true);
         }
+        if a.item.kind == StackKind::Spell
+            && a.item.source.is_some_and(|source| {
+                self.cast_uses_target_life_costs(a.item.controller, source.card)
+            })
+        {
+            return self.target_life_announcement_fundable(a, cost);
+        }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }

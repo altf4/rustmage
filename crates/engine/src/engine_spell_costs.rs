@@ -358,6 +358,21 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
+        if self.cast_uses_target_life_costs(actor, definition) {
+            let method = if flashback {
+                CastMethod::Flashback
+            } else {
+                CastMethod::Normal
+            };
+            return self.permitted_cast_available(
+                actor,
+                card,
+                method,
+                CastFace::Normal,
+                false,
+                true,
+            );
+        }
         let source = self.object_ref(card);
         let available = match definition.effect() {
             Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
@@ -444,11 +459,13 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.item
+        let card = a
+            .item
             .source
             .expect("cost announcement has object source")
-            .card
-            .has_target_cost_modifier()
+            .card;
+        if card.has_target_cost_modifier()
+            || self.cast_uses_target_life_costs(a.item.controller, card)
         {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }

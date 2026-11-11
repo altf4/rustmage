@@ -774,6 +774,7 @@ impl Game {
             |spec| spec.x_symbols > 0,
         );
         if scalar_x
+            && !self.cast_uses_target_life_costs(actor, definition)
             && origin_life_cost.is_none()
             && warp.is_none()
             && exile_play_surcharge == 0

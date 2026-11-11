@@ -94,9 +94,14 @@ impl Game {
             },
             None => 0,
         };
+        let source = a.item.source.expect("harmonize has a source");
+        if self.cast_uses_target_life_costs(a.item.controller, source.card) {
+            let mut proposal = a.clone();
+            proposal.harmonizer = Some(object);
+            return self.announcement_target_fundable(&proposal, None, None, None, None, false);
+        }
         let base = Self::announcement_base_cost(a);
         let extra = Self::announcement_optional_reduction(a).saturating_add(discount);
-        let source = a.item.source.expect("harmonize has a source");
         let x = a.item.x.unwrap_or(0);
         let total = if source.card.has_target_cost_modifier() {
             let plan = if a.plan == TargetPlan::NONE {

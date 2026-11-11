@@ -86,6 +86,7 @@ impl Game {
         let source = a.item.source.expect("Bargain source");
         let changes_targets = source.card.bargain_targets().is_some();
         if changes_targets
+            || self.cast_uses_target_life_costs(a.item.controller, source.card)
             || a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
             || source.card.behold_cast().is_some()
         {

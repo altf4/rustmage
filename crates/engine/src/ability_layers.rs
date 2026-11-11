@@ -188,6 +188,8 @@ pub enum StaticAbilityFragment {
     OpponentGraveyardOrExileSpellTax(u32),
     /// Each player can cast at most this many spells per turn.
     SpellCastLimit(u64),
+    /// Each opponent spell targeting this permanent costs an additional life payment.
+    OpponentSpellsTargetingSourceLifeCost(u32),
     /// Increase both players' spell costs for the type chosen as this source entered.
     ChosenCardTypeSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.

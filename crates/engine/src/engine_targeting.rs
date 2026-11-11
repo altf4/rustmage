@@ -2558,18 +2558,26 @@ impl Game {
         rule: TargetRule,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_in_world(
-            self,
-            rule,
-            item.controller,
-            item.target_source(),
-            Some(TargetSourceCharacteristics::from_item(item)),
-            |target| {
-                target != Target::Stack(item.id)
-                    && self.paid_cost_target_matches(item, target)
-                    && emit(target)
-            },
-        )
+        let source = item.target_source();
+        let qualification = Some(TargetSourceCharacteristics::from_item(item));
+        let filter = |target| {
+            target != Target::Stack(item.id)
+                && self.paid_cost_target_matches(item, target)
+                && emit(target)
+        };
+        if item.kind == StackKind::Spell
+            && let Some(world) = self.cast_departure(source, item.controller)
+        {
+            return self.visit_targets_in_world(
+                &world,
+                rule,
+                item.controller,
+                source,
+                qualification,
+                filter,
+            );
+        }
+        self.visit_targets_in_world(self, rule, item.controller, source, qualification, filter)
     }
     pub(super) fn visit_targets(
         &self,
@@ -3240,7 +3248,14 @@ impl Game {
                     )
                     .expect("validated target spell cost")
                 };
+                let fees = self.locked_target_life_costs(announcement);
+                let can_contribute = !fees.is_empty()
+                    && convoke::cost_potential(self, announcement.item.source.unwrap().card);
                 let announcement = self.state.announcing.as_mut().unwrap();
+                if !fees.is_empty() {
+                    announcement.add_target_life_costs(fees.into_iter());
+                    announcement.initialize_cast_costs(can_contribute);
+                }
                 announcement.harmonize_discount = discount;
                 announcement.total_cost = Some(total);
             }

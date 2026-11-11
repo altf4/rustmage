@@ -162,6 +162,13 @@ impl Game {
     }
     pub(super) fn evidence_intent_fundable(&self, collect: bool) -> bool {
         let a = self.state.announcing.as_ref().unwrap();
+        if self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card) {
+            let mut proposal = a.clone();
+            proposal.item.cast.as_mut().unwrap().evidence = Some(collect);
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
         a.cost_options().any(|c| {
             self.evidence_cast_fundable(
                 a.item.controller,

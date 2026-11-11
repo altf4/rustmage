@@ -340,6 +340,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
+                            | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
