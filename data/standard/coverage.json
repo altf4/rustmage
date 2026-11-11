@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "a9b6a9a72e52c6c03ef926a5c07fb2679faf0fda151f10ae0285e351f551a1b0",
+  "catalogue_version": "08376734c9c9d916dcbc528717376e4221794b0de446e966fc2afee358a0b781",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4469,
-  "implemented_total": 4483,
-  "token_definitions": 196,
+  "implemented_standard_cards": 4519,
+  "implemented_total": 4534,
+  "token_definitions": 197,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
   "omen_definitions": 13,
@@ -19,8 +19,8 @@
     },
     "blb": {
       "total": 261,
-      "complete": 120,
-      "gated": 141
+      "complete": 169,
+      "gated": 92
     },
     "cmm": {
       "total": 1,
@@ -113,8 +113,7 @@
     },
     "msc": {
       "total": 68,
-      "complete": 67,
-      "gated": 1
+      "complete": 68
     },
     "msh": {
       "total": 273,
@@ -839,8 +838,8 @@
     {
       "name": "Agate-Blade Assassin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/agate_blade_assassin.rs",
       "set": "blb"
     },
@@ -2063,8 +2062,8 @@
     {
       "name": "Artist's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/artist_s_talent.rs",
       "set": "blb"
     },
@@ -2655,8 +2654,8 @@
     {
       "name": "Bakersbane Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/bakersbane_duo.rs",
       "set": "blb"
     },
@@ -2831,8 +2830,8 @@
     {
       "name": "Bark-Knuckle Boxer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/bark_knuckle_boxer.rs",
       "set": "blb"
     },
@@ -3671,8 +3670,8 @@
     {
       "name": "Blacksmith's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/blacksmith_s_talent.rs",
       "set": "blb"
     },
@@ -4151,8 +4150,8 @@
     {
       "name": "Bonecache Overseer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/bonecache_overseer.rs",
       "set": "blb"
     },
@@ -4391,8 +4390,8 @@
     {
       "name": "Brambleguard Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/brambleguard_veteran.rs",
       "set": "blb"
     },
@@ -5055,8 +5054,8 @@
     {
       "name": "Byway Barterer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/byway_barterer.rs",
       "set": "blb"
     },
@@ -6527,8 +6526,8 @@
     {
       "name": "Coiling Rebirth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/coiling_rebirth.rs",
       "set": "blb"
     },
@@ -7431,8 +7430,8 @@
     {
       "name": "Cruelclaw's Heist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/cruelclaw_s_heist.rs",
       "set": "blb"
     },
@@ -7887,8 +7886,8 @@
     {
       "name": "Daring Waverider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/daring_waverider.rs",
       "set": "blb"
     },
@@ -7967,8 +7966,8 @@
     {
       "name": "Darkstar Augur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/darkstar_augur.rs",
       "set": "blb"
     },
@@ -9679,8 +9678,8 @@
     {
       "name": "Driftgloom Coyote",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/driftgloom_coyote.rs",
       "set": "blb"
     },
@@ -10039,8 +10038,8 @@
     {
       "name": "Early Winter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/early_winter.rs",
       "set": "blb"
     },
@@ -13063,8 +13062,8 @@
     {
       "name": "Fountainport Bell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/fountainport_bell.rs",
       "set": "blb"
     },
@@ -16007,8 +16006,8 @@
     {
       "name": "Heartfire Hero",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/heartfire_hero.rs",
       "set": "blb"
     },
@@ -16135,8 +16134,8 @@
     {
       "name": "Heirloom Epic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/heirloom_epic.rs",
       "set": "blb"
     },
@@ -16599,8 +16598,8 @@
     {
       "name": "Hoarder's Overflow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/hoarder_s_overflow.rs",
       "set": "blb"
     },
@@ -17567,8 +17566,8 @@
     {
       "name": "Innkeeper's Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/innkeeper_s_talent.rs",
       "set": "blb"
     },
@@ -18487,8 +18486,8 @@
     {
       "name": "Jolly Gerbils",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/jolly_gerbils.rs",
       "set": "blb"
     },
@@ -19207,8 +19206,8 @@
     {
       "name": "Kitnap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/kitnap.rs",
       "set": "blb"
     },
@@ -20263,8 +20262,8 @@
     {
       "name": "Lilypad Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/lilypad_village.rs",
       "set": "blb"
     },
@@ -20543,8 +20542,8 @@
     {
       "name": "Long River Lurker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/long_river_lurker.rs",
       "set": "blb"
     },
@@ -20871,8 +20870,8 @@
     {
       "name": "Lupinflower Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/lupinflower_village.rs",
       "set": "blb"
     },
@@ -21399,8 +21398,8 @@
     {
       "name": "Manifold Mouse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/manifold_mouse.rs",
       "set": "blb"
     },
@@ -22975,8 +22974,8 @@
     {
       "name": "Moonstone Harbinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/moonstone_harbinger.rs",
       "set": "blb"
     },
@@ -23167,8 +23166,8 @@
     {
       "name": "Mudflat Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/mudflat_village.rs",
       "set": "blb"
     },
@@ -24047,8 +24046,8 @@
     {
       "name": "Oakhollow Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/oakhollow_village.rs",
       "set": "blb"
     },
@@ -24591,8 +24590,8 @@
     {
       "name": "Osteomancer Adept",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/osteomancer_adept.rs",
       "set": "blb"
     },
@@ -25023,8 +25022,8 @@
     {
       "name": "Parting Gust",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/parting_gust.rs",
       "set": "blb"
     },
@@ -25055,8 +25054,8 @@
     {
       "name": "Patchwork Banner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/msc/patchwork_banner.rs",
       "set": "msc"
     },
@@ -25119,8 +25118,8 @@
     {
       "name": "Pawpatch Recruit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/pawpatch_recruit.rs",
       "set": "blb"
     },
@@ -25247,8 +25246,8 @@
     {
       "name": "Persistent Marshstalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/persistent_marshstalker.rs",
       "set": "blb"
     },
@@ -26343,8 +26342,8 @@
     {
       "name": "Psychic Whorl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/psychic_whorl.rs",
       "set": "blb"
     },
@@ -28751,8 +28750,8 @@
     {
       "name": "Rockface Village",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/rockface_village.rs",
       "set": "blb"
     },
@@ -28959,8 +28958,8 @@
     {
       "name": "Roughshod Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/roughshod_duo.rs",
       "set": "blb"
     },
@@ -29247,8 +29246,8 @@
     {
       "name": "Ruthless Negotiation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/ruthless_negotiation.rs",
       "set": "blb"
     },
@@ -29479,8 +29478,8 @@
     {
       "name": "Salvation Swan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/salvation_swan.rs",
       "set": "blb"
     },
@@ -31447,8 +31446,8 @@
     {
       "name": "Skyskipper Duo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/skyskipper_duo.rs",
       "set": "blb"
     },
@@ -32679,8 +32678,8 @@
     {
       "name": "Splash Portal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/splash_portal.rs",
       "set": "blb"
     },
@@ -32967,8 +32966,8 @@
     {
       "name": "Starfall Invocation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/starfall_invocation.rs",
       "set": "blb"
     },
@@ -32999,8 +32998,8 @@
     {
       "name": "Starforged Sword",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/starforged_sword.rs",
       "set": "blb"
     },
@@ -33047,8 +33046,8 @@
     {
       "name": "Starlit Soothsayer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/starlit_soothsayer.rs",
       "set": "blb"
     },
@@ -33415,8 +33414,8 @@
     {
       "name": "Stocking the Pantry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/stocking_the_pantry.rs",
       "set": "blb"
     },
@@ -34839,8 +34838,8 @@
     {
       "name": "Tangle Tumbler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/tangle_tumbler.rs",
       "set": "blb"
     },
@@ -35007,8 +35006,8 @@
     {
       "name": "Teapot Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/teapot_slinger.rs",
       "set": "blb"
     },
@@ -36583,8 +36582,8 @@
     {
       "name": "Thought-Stalker Warlock",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/thought_stalker_warlock.rs",
       "set": "blb"
     },
@@ -36727,8 +36726,8 @@
     {
       "name": "Three Tree City",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/three_tree_city.rs",
       "set": "blb"
     },
@@ -38863,8 +38862,8 @@
     {
       "name": "Valley Rotcaller",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/valley_rotcaller.rs",
       "set": "blb"
     },
@@ -40519,8 +40518,8 @@
     {
       "name": "Whiskervale Forerunner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/whiskervale_forerunner.rs",
       "set": "blb"
     },
@@ -40927,8 +40926,8 @@
     {
       "name": "Wishing Well",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/blb/wishing_well.rs",
       "set": "blb"
     },

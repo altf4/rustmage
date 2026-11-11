@@ -3,10 +3,76 @@
   "catalogue_id": 3050,
   "oracle_id": "791cbb7c-7935-4902-b050-9ea9d030e9fa",
   "facts_sha256": "62fb2420865f9989725997811d8c2c99947cec6ea2f35f82178244856ce5a5f0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5bcb6c83a08f1b781b2394a8e36992c9df6ba17542f5b69d937440c803d6aacc"
   },
-  "physical_metadata_sha256": "c9675f6f57ab90b0b2963a5a604963f4db4f3353e7710f22d316f268f76585b2"
+  "physical_metadata_sha256": "c9675f6f57ab90b0b2963a5a604963f4db4f3353e7710f22d316f268f76585b2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OsteomancerAdept.java",
+  "java_sha256": "2253a0797a43a89c5ffac36989246c938609121254bfc09dd03e0766504448a5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Cost.java",
+      "sha256": "51faa5510bad018a9529ca34c9a3c7189a2ff5df0bd9e5853e53303d7f54e1b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/Costs.java",
+      "sha256": "af0ae70d995d7e5e409a16d3787fd49dbc9b5d4d18c02462e37f83860a418dd7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostsImpl.java",
+      "sha256": "7b320b5c829830e9cd5f09832910509cc12f1b8bf526c5c358762e17d6969e6a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ForageCost.java",
+      "sha256": "167c6de322fe5d8f3059e6141da2c9173a6ce06cfec5bef1fcd8690f3af82762"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/AsThoughEffectImpl.java",
+      "sha256": "10ed5ff691248a18e61974fc1bd00c74d18518e42aa4fcdf767e3fb4990e0997"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCounterEnteringCreatureEffect.java",
+      "sha256": "6fa7d9b703e62fcfc2f323e012fc227e79f40cbcd6e4dec7a633ae4b1ec3be24"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_black_02.rs"
 }

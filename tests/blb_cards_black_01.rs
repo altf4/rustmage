@@ -305,3 +305,22 @@ fn bloomburrow_equipment_tokens_have_real_equip_cost_and_printed_effects() {
     assert_eq!(stats(&game, snail), (1, 1));
     assert!(Card::from_catalogue_id(5621).has_subtype("Snail"));
 }
+
+#[test]
+fn bloomburrow_wall_and_snail_tokens_have_the_printed_traits() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    for (slug, subtype, base, color, keyword) in [
+        ("@token/blb-wall", "Wall", (0, 4), 1, Keywords::DEFENDER),
+        ("@token/blb-snail", "Snail", (1, 1), 4, Keywords::NONE),
+    ] {
+        let token = Card::from_name(slug).unwrap();
+        let id = game.state.objects.len() as CardId;
+        game.create_tokens(player, token, 1, false);
+        assert!(game.state.objects[id as usize].is_token());
+        assert!(game.has_subtype(id, subtype));
+        assert_eq!(game.object_view(id).keywords, keyword);
+        assert_eq!(token.colors(), color);
+        assert_eq!(stats(&game, id), base);
+    }
+}

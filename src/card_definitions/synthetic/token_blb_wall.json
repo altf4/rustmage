@@ -1,0 +1,12 @@
+{
+  "name": "@token/blb-wall",
+  "catalogue_id": 5622,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "3678507da912b1863189794736fd22732ae8022040b272c639b2e33d12c9a64f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/WallWhiteToken.java",
+  "java_sha256": "a1a736c9dfcf9673687d7a9d4e8d9107b0dd5cfb41f3b9fca18892310df843c3",
+  "rules_tests": "tests/blb_cards_black_01.rs::bloomburrow_wall_and_snail_tokens_have_the_printed_traits"
+}

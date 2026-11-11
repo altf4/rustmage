@@ -5627,7 +5627,8 @@
     1,
     0,
     0,
-    4
+    4,
+    1
   ],
   "aliases": [
     [
@@ -6397,6 +6398,10 @@
     [
       "@token/blb-vren-rat",
       5483
+    ],
+    [
+      "@token/blb-wall",
+      5622
     ],
     [
       "@token/blood",
@@ -30455,6 +30460,12 @@
       "name": "Snail Token",
       "subtypes": "Snail",
       "colors": 4
+    },
+    {
+      "factory_identity": "@token/blb-wall",
+      "name": "Wall Token",
+      "subtypes": "Wall",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -192924,6 +192935,33 @@
       "name": "@token/blb-snail",
       "mana_cost": "",
       "type_line": "Creature — Snail",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5622,
+      "module": "card_5622",
+      "path": "synthetic/token_blb_wall.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/blb-wall",
+      "mana_cost": "",
+      "type_line": "Creature — Wall",
       "colored": [
         0,
         0,
