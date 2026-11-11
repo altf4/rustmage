@@ -1794,6 +1794,12 @@ impl<'g> FundingState<'g> {
             ActivationGuard::OncePerIncarnation(guard) => {
                 self.guard_available(*guard, source, actor)
             }
+            ActivationGuard::SourcePowerAtLeast(minimum) => {
+                characteristic_query::CharacteristicQuery::in_world(self)
+                    .stats(source)
+                    .power
+                    >= i128::from(minimum)
+            }
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 ability_world::CharacteristicWorld::counter_count(self, source, kind) >= minimum
             }

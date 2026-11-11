@@ -7603,6 +7603,7 @@ pub enum ActivationOrigin {
 pub enum ActivationGuard {
     /// The ability may be activated only once in this exact source incarnation.
     OncePerIncarnation(&'static ActivationGuard),
+    SourcePowerAtLeast(u16),
     SourceCounterAtLeast {
         kind: CounterKind,
         minimum: u64,
@@ -7653,7 +7654,8 @@ impl ActivationGuard {
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
             Self::OncePerIncarnation(guard) => guard.subtypes(),
-            Self::SourceCounterAtLeast { .. }
+            Self::SourcePowerAtLeast(_)
+            | Self::SourceCounterAtLeast { .. }
             | Self::SourceCounterExactly { .. }
             | Self::ClassLevelExactly(_)
             | Self::ControlColorsAtLeast(_)

@@ -298,6 +298,9 @@ impl Game {
             ActivationGuard::OncePerIncarnation(guard) => {
                 self.activation_guard_available(*guard, source, actor)
             }
+            ActivationGuard::SourcePowerAtLeast(minimum) => {
+                self.stats(source).power >= i128::from(minimum)
+            }
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 self.counter_count(source, kind) >= minimum
             }
