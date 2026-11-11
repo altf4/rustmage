@@ -3,10 +3,46 @@
   "catalogue_id": 2807,
   "oracle_id": "b9df2cdf-397c-458d-89cf-911568737ffa",
   "facts_sha256": "ab000b67bf92752530e9b95a2153b5f55332d6e43f5563ae98174afccb38b357",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f6c48ff003750ce3074fe14651b7a8dd31a68d67bf639ec03965dc77cb91eebd"
   },
-  "physical_metadata_sha256": "644bb7b608b04473827dbd56d4fcdc3d8a3d37d7b4f1a9c74f2961a0c268c312"
+  "physical_metadata_sha256": "644bb7b608b04473827dbd56d4fcdc3d8a3d37d7b4f1a9c74f2961a0c268c312",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Mockingbird.java",
+  "java_sha256": "3b867a65252cf568cff789dc1d55fb8497a62930f6f485939257aef3bd3e5598",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ManaSpentToCastCount.java",
+      "sha256": "f0918f87126c78976ddda63fc581a2da3cbfc4fc011c671474ff946243b5cdea"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyPermanentEffect.java",
+      "sha256": "256e2224f1087a614a7e4826dcdd43873e9e5b50236b9904affb8408698fe8fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_cast_choices.rs"
 }

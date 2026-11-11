@@ -3,10 +3,56 @@
   "catalogue_id": 3205,
   "oracle_id": "0d49187a-1c37-4c3a-afc2-fac2bbc6b29a",
   "facts_sha256": "df4b48a002ecd8661df7e19c0167249646ee0f90f8455b4c1b2f2a2fcf7afe64",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "695b0eae9e010ca30eac6966ca7df5f2d23b62fff7ed2dde9e50a10154858968"
   },
-  "physical_metadata_sha256": "40f2933dec4271e14f22518fc2533106ba73e587d64ff51c18ccbfb64cc51dca"
+  "physical_metadata_sha256": "40f2933dec4271e14f22518fc2533106ba73e587d64ff51c18ccbfb64cc51dca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PortentOfCalamity.java",
+  "java_sha256": "1019c4c47025da45112aa6de84b65efb23a4f1ffcbaab505cd94c925049d663d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/assignment/common/CardTypeAssignment.java",
+      "sha256": "4e0d4a014ef15a347681b8cde3701598640d9385b27bab97649a8c9538a15599"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayCastTargetCardEffect.java",
+      "sha256": "f2c37f7ccdb36f97486391bd46784eee91990f591c5fa3a445dea0e37c1e6c15"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_cast_choices.rs"
 }
