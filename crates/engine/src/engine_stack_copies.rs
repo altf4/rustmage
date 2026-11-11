@@ -771,6 +771,23 @@ impl Game {
             false
         }
     }
+    pub(super) fn copy_target_spell_or_ability(&mut self, item: &SpellView, group: u16) -> bool {
+        let Some(kind) = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| self.bound_stack_item(bound))
+            .map(|target| target.kind)
+        else {
+            return false;
+        };
+        if kind == StackKind::Spell {
+            self.copy_target_spell(item, group, true, CopyExceptions::NONE)
+        } else {
+            self.copy_target_ability(item, group, 1)
+        }
+    }
+
     pub(super) fn copy_target_ability(
         &mut self,
         item: &SpellView,

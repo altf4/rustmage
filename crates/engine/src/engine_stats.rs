@@ -23,7 +23,9 @@ impl Game {
             ability.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(
                     ability.condition.event(),
-                    TriggerCondition::SpellCast { .. } | TriggerCondition::SpellCastOrLandPlayed
+                    TriggerCondition::SpellCast { .. }
+                        | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::ModalSpellCastByYou
                 )
         }) {
             self.state.cast_sources.push(id);
@@ -294,6 +296,7 @@ impl Game {
                         TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
+                            | TriggerCondition::ModalSpellCastByYou
                     )
             })
         {

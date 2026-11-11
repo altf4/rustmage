@@ -497,6 +497,25 @@ impl Game {
                 .cast_event
                 .as_ref()
                 .map_or(0, |e| u128::from(e.mana_value)),
+            AmountValue::OtherSpellsCastThisTurn => {
+                let own_cast =
+                    !item.is_copy && item.cast.is_some_and(|cast| cast.caster == item.controller);
+                u128::from(
+                    self.state.players[item.controller.index()]
+                        .spells_cast_this_turn
+                        .saturating_sub(u64::from(own_cast)),
+                )
+            }
+            AmountValue::NoncreatureSpellsCastByCastingPlayer => {
+                item.cast_event.as_ref().map_or(0, |event| {
+                    let player = &self.state.players[event.controller.index()];
+                    u128::from(
+                        player
+                            .spells_cast_this_turn
+                            .saturating_sub(player.creature_spells_cast_this_turn),
+                    )
+                })
+            }
             AmountValue::CastCardTypeCount => u128::from(
                 self.state.players[item.controller.index()]
                     .turn_facts

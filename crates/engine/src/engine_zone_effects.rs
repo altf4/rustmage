@@ -455,10 +455,11 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn exchange_control_targets(&mut self, item: &SpellView) {
+    pub(super) fn exchange_control_targets(&mut self, item: &SpellView, group: Option<u16>) {
         let targets: Vec<_> = item
             .targets
             .iter()
+            .filter(|bound| group.is_none_or(|group| bound.group == group))
             .filter_map(|bound| {
                 let Target::Card(id) = bound.target else {
                     return None;

@@ -567,11 +567,36 @@ impl Game {
             None,
         );
     }
-    /// Freeze the complete recipients before the simultaneous damage event.
     pub(super) fn damage_creatures_except_controlled_tokens(
         &mut self,
         item: &SpellView,
         amount: i32,
+    ) {
+        self.damage_creatures_matching(item, amount, |_, _, object| {
+            !(object.is_token() && object.controller == item.controller)
+        });
+    }
+
+    pub(super) fn damage_creatures_by_outlaw(
+        &mut self,
+        item: &SpellView,
+        outlaw: bool,
+        amount: i32,
+    ) {
+        self.damage_creatures_matching(item, amount, |game, id, _| {
+            crate::cards::OUTLAW_SUBTYPES
+                .iter()
+                .any(|subtype| game.has_subtype(id, subtype))
+                == outlaw
+        });
+    }
+
+    /// Freeze the complete recipients before the simultaneous damage event.
+    fn damage_creatures_matching(
+        &mut self,
+        item: &SpellView,
+        amount: i32,
+        matches: impl Fn(&Self, CardId, &Object) -> bool,
     ) {
         let source = self.program_damage_source(item);
         let events: Vec<_> = self
@@ -582,14 +607,14 @@ impl Game {
             .filter_map(|(id, o)| {
                 (o.zone == Zone::Battlefield
                     && self.is_creature(id as CardId)
-                    && !(o.is_token() && o.controller == item.controller))
-                    .then_some(DamageEvent {
-                        source,
-                        target: Target::Card(id as CardId),
-                        amount: i128::from(amount),
-                        combat: false,
-                        preventable: true,
-                    })
+                    && matches(self, id as CardId, o))
+                .then_some(DamageEvent {
+                    source,
+                    target: Target::Card(id as CardId),
+                    amount: i128::from(amount),
+                    combat: false,
+                    preventable: true,
+                })
             })
             .collect();
         self.apply_damage_batch(&events);

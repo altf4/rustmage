@@ -1088,6 +1088,7 @@ impl Game {
                     | TriggerCondition::CommittedCrime
                     | TriggerCondition::TokensEnterYou
                     | TriggerCondition::CreatureAbilityActivated
+                    | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
                     | TriggerCondition::NonmanaAbilityActivated
                     | TriggerCondition::ExhaustAbilityActivated
                     | TriggerCondition::DelayedExhaustAbilityActivated
@@ -1230,6 +1231,7 @@ impl Game {
                     | TriggerCondition::SelfCast
                     | TriggerCondition::SpellCast { .. }
                     | TriggerCondition::SpellCastOrLandPlayed
+                    | TriggerCondition::ModalSpellCastByYou
                     | TriggerCondition::ManaSpentForSpell
                     | TriggerCondition::AtStep { .. } => false,
                     TriggerCondition::PermanentEntersYou {
@@ -2252,7 +2254,19 @@ impl Game {
         for (source, grant) in sources {
             let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
-                let event = match ability.condition.event() {
+                let condition = ability.condition.event();
+                let mode_count = if condition == TriggerCondition::ModalSpellCastByYou {
+                    let Some(count) = stack
+                        .and_then(|i| self.state.stack[i].mode)
+                        .and_then(|mode| card.selected_mode_count(mode))
+                    else {
+                        continue;
+                    };
+                    Some(u32::from(count))
+                } else {
+                    None
+                };
+                let event = match condition {
                     TriggerCondition::SpellCastUsingSourceMana(filter) => {
                         TriggerCondition::SpellCast {
                             relation: CastRelation::You,
@@ -2260,7 +2274,8 @@ impl Game {
                             ordinal: None,
                         }
                     }
-                    TriggerCondition::SpellCastOrLandPlayed => TriggerCondition::SpellCast {
+                    TriggerCondition::SpellCastOrLandPlayed
+                    | TriggerCondition::ModalSpellCastByYou => TriggerCondition::SpellCast {
                         relation: CastRelation::You,
                         filter: CastFilter::Any,
                         ordinal: None,
@@ -2368,7 +2383,8 @@ impl Game {
                         }
                         // A cast trigger owns the triggering spell's chosen X even after that
                         // spell is countered or leaves the stack. ChosenX reads this packet.
-                        let chosen_x = stack.and_then(|i| self.state.stack[i].x);
+                        let chosen_x =
+                            mode_count.or_else(|| stack.and_then(|i| self.state.stack[i].x));
                         self.state.pending_triggers.last_mut().unwrap().x = chosen_x;
                         if ability.condition.mana_spent_rule().is_some()
                             || ability.condition.requires_treasure_mana()
@@ -2384,6 +2400,7 @@ impl Game {
                                         )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
+                                        | Instruction::DamagePlayersScaled(PlayerSet::CastingPlayer, _)
                                         | Instruction::LoseLife(PlayerSet::CastingPlayer, _)
                                         | Instruction::ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(
                                             PlayerSet::CastingPlayer
@@ -4195,11 +4212,13 @@ impl Game {
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
                     | Instruction::ExchangeControlTargets
+                    | Instruction::ExchangeControlTargetGroup(_)
                     | Instruction::MakeTargetsTreasureWhileSourceRemains
                     | Instruction::BlinkFollowingPublicMove { all_groups: true }
                     | Instruction::DestroyTargetsThenSourceCountersIfOwnCreature { .. }
                     | Instruction::CopyTargetSpell { .. }
                     | Instruction::CopyTargetAbility { .. }
+                    | Instruction::CopyTargetSpellOrAbility { .. }
                     | Instruction::CopyTargetAbilityX { .. }
                     | Instruction::DamageByGroup { .. }
                     | Instruction::LoyaltyDamage { .. }
@@ -4741,6 +4760,11 @@ impl Game {
                     if self.state.players[item.controller.index()].instant_sorcery_cast_this_turn
                         <= u64::from(own_cast)
                     {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfAnotherSpellCast { skip } => {
+                    if self.item_amount(AmountValue::OtherSpellsCastThisTurn, &item) == 0 {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
@@ -6047,7 +6071,10 @@ impl Game {
                 Instruction::MoveBattlefield { filters, exile } => {
                     self.move_battlefield_group(&item, filters, exile);
                 }
-                Instruction::ExchangeControlTargets => self.exchange_control_targets(&item),
+                Instruction::ExchangeControlTargets => self.exchange_control_targets(&item, None),
+                Instruction::ExchangeControlTargetGroup(group) => {
+                    self.exchange_control_targets(&item, Some(group))
+                }
                 Instruction::TakeOpposingArtifactsUntilEndTurn => {
                     self.take_opposing_artifacts(&item)
                 }
@@ -6219,6 +6246,9 @@ impl Game {
                 ),
                 Instruction::DamageCreaturesExceptControlledTokens(amount) => {
                     self.damage_creatures_except_controlled_tokens(&item, amount);
+                }
+                Instruction::DamageCreaturesByOutlaw { outlaw, amount } => {
+                    self.damage_creatures_by_outlaw(&item, outlaw, amount);
                 }
                 Instruction::DamageEachCreatureByDepartureManaValue => {
                     self.damage_each_creature_by_departure_mana_value(&item);
@@ -7689,6 +7719,11 @@ impl Game {
                 }
                 Instruction::CopyTargetAbility { group } => {
                     if self.copy_target_ability(&item, group, 1) {
+                        return;
+                    }
+                }
+                Instruction::CopyTargetSpellOrAbility { group } => {
+                    if self.copy_target_spell_or_ability(&item, group) {
                         return;
                     }
                 }

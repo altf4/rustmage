@@ -860,6 +860,8 @@ impl Game {
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
+            | AmountValue::OtherSpellsCastThisTurn
+            | AmountValue::NoncreatureSpellsCastByCastingPlayer
             | AmountValue::CaveManaSpent
             | AmountValue::DiscoverEventAmount
             | AmountValue::DiscoverManaValueShortfall

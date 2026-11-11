@@ -42,6 +42,7 @@ impl Game {
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
+                            | TriggerCondition::ModalSpellCastByYou
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou

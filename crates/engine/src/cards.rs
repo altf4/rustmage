@@ -2824,6 +2824,9 @@ pub enum Instruction {
     IfAnotherInstantSorceryCast {
         skip: usize,
     },
+    IfAnotherSpellCast {
+        skip: usize,
+    },
     IfManaSpent {
         minimum: Option<u64>,
         maximum: Option<u64>,
@@ -3050,6 +3053,10 @@ pub enum Instruction {
         exceptions: CopyExceptions,
     },
     CopyTargetAbility {
+        group: u16,
+    },
+    /// Copy the selected spell or ability, permitting legal new targets.
+    CopyTargetSpellOrAbility {
         group: u16,
     },
     /// Copy the targeted ability once for each unit of the announced X.
@@ -3308,6 +3315,7 @@ pub enum Instruction {
     /// Freeze a non-targeted battlefield group, then return it simultaneously.
     /// An all-or-nothing, simultaneous fixed exchange of exactly two legal objects.
     ExchangeControlTargets,
+    ExchangeControlTargetGroup(u16),
     TakeOpposingArtifactsUntilEndTurn,
     ReturnNewNonlandPermanents,
     GainControlUntilEndTurn,
@@ -3396,6 +3404,10 @@ pub enum Instruction {
     },
     /// One damage batch to all creatures except the controller’s tokens.
     DamageCreaturesExceptControlledTokens(i32),
+    DamageCreaturesByOutlaw {
+        outlaw: bool,
+        amount: i32,
+    },
     /// A granted departure trigger deals its source's last battlefield mana value to each creature.
     DamageEachCreatureByDepartureManaValue,
     /// One simultaneous damage batch, excluding creatures with a live subtype.
@@ -4861,6 +4873,8 @@ pub enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    OtherSpellsCastThisTurn,
+    NoncreatureSpellsCastByCastingPlayer,
     /// Actual mana from Cave sources paid for this cast, including additional mana.
     CaveManaSpent,
     /// The value of the completed discovery that caused this trigger.
@@ -6458,6 +6472,8 @@ pub enum TriggerCondition {
     SelfCast,
     /// The controller actually activates an ability of a creature permanent.
     CreatureAbilityActivated,
+    /// Once per actual activation with at least one creature or player target.
+    AbilityActivatedTargetingCreatureOrPlayer,
     /// The controller activated a nonmana ability.
     NonmanaAbilityActivated,
     /// A committed exhaust activation, including mana abilities.
@@ -6744,6 +6760,8 @@ pub enum TriggerCondition {
     },
     /// The controller played a land as a special action or committed a spell cast.
     SpellCastOrLandPlayed,
+    /// Capture the number of modes chosen for the controller's committed spell.
+    ModalSpellCastByYou,
     SpellCast {
         relation: CastRelation,
         filter: CastFilter,
@@ -7915,6 +7933,18 @@ impl Card {
     }
     pub(crate) fn tiered_costs(self) -> Option<&'static [ManaCost]> {
         authored::mode_costs(self).or_else(|| generated::tiered_costs(self))
+    }
+    pub(crate) fn selected_mode_count(self, index: u16) -> Option<u8> {
+        let Effect::Modal(modes) = self.effect() else {
+            return None;
+        };
+        let index = usize::from(index);
+        modes.get(index)?;
+        Some(
+            authored::rules(self)
+                .and_then(|rules| rules.mode_counts)
+                .map_or(1, |counts| counts[index]),
+        )
     }
     pub(crate) fn base_stat_setter(self) -> Option<BaseStatSetter> {
         generated::base_stat_setter(self)

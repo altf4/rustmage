@@ -14,6 +14,9 @@ pub struct CardRules {
     pub entry: EntryTapped,
     /// Fixed additional mana for each predeclared modal combination.
     pub mode_costs: Option<&'static [ManaCost]>,
+    /// Number of printed modes in each predeclared combination. Single-mode
+    /// selections omit this table.
+    pub mode_counts: Option<&'static [u8]>,
     pub aura: Option<AuraSpec>,
     pub static_groups: &'static [StaticAbilityGroup],
 }
@@ -35,6 +38,7 @@ impl CardRules {
         },
         entry: EntryTapped::Never,
         mode_costs: None,
+        mode_counts: None,
         aura: None,
         static_groups: &[],
     };
@@ -356,6 +360,14 @@ impl CardRules {
                     "modal additional-cost table mismatch"
                 ),
                 _ => panic!("modal costs require modal behavior"),
+            }
+        }
+        if let Some(counts) = self.mode_counts {
+            match self.effect {
+                Effect::Modal(modes) => {
+                    assert!(counts.len() == modes.len(), "modal count table mismatch")
+                }
+                _ => panic!("mode counts require modal behavior"),
             }
         }
         if !self.extras.cast_mode_requirements.is_empty() {
