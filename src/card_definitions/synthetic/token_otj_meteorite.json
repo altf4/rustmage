@@ -1,0 +1,11 @@
+{
+  "name": "@token/otj-meteorite",
+  "catalogue_id": 5617,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "c43d510bc1d8efba910483b79847edfc351ac4838bca3e6bbdd916b95b147041",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/MeteoriteToken.java",
+  "java_sha256": "eff6bbac64e9ceb0e581f14b000c762a9ef26d2b3d7d79313a58f06b0899f4fa"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@token/otj-scorpion-dragon",
+  "catalogue_id": 5615,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "f740519220efa80920635c98d43096ec6f669f30dbd37693b188b427d9e2fb84",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ScorpionDragonToken.java",
+  "java_sha256": "e6d42a86f7de0ae5e87582ee27bd5296d994edb328a5da1f9802ecc0aee18c6c"
+}

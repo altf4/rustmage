@@ -1,0 +1,11 @@
+{
+  "name": "@token/otj-flying-spirit",
+  "catalogue_id": 5618,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "7d14d2a557c268a2c2957d18320e4b191d256fe0554f60fc6ad8efbbe27a5006",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spirit22Token.java",
+  "java_sha256": "97e78f86bd851873ab0787dce89e9af1303dfd0d944e2ca12835cb0d8186f764"
+}

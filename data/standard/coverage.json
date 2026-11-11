@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "c1222794a44168e11ebe4ed3d9d7372ff7616980d121df40493db630d5103d30",
+  "catalogue_version": "9184c2cceb41070ce0cf8dfc9e982b3ed599c38aac1071bc96f561d39055ab2e",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4300,
   "implemented_total": 4313,
-  "token_definitions": 186,
+  "token_definitions": 193,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
   "omen_definitions": 13,
@@ -36466,8 +36466,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/this_town_ain_t_big_enough.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/otj/this_town_ain_t_big_enough.rs",
+      "set": "otj"
     },
     {
       "name": "Thistledown Players",
