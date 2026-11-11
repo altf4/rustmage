@@ -117,7 +117,7 @@ def main(argv=None):
     native_suite_timeout = 720 if windows or sys.platform == 'darwin' else 480
     commands = [
         ('source pins', [sys.executable, 'scripts/check_sources.py'], 45),
-        ('format', ['cargo', 'fmt', '--all', '--check'], 45),
+        ('format', [sys.executable, 'scripts/format_workspace.py', '--check'], 45),
         ('card format', [sys.executable, 'scripts/format_cards.py', '--check'], 90),
         ('script contracts', [sys.executable, 'scripts/test_assurance_runner.py'], 60),
         # Cold native toolchains on hosted Windows/macOS need time to populate
