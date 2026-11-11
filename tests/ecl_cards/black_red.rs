@@ -6815,7 +6815,8 @@ fn lavaleaper_mixed_event_choices_are_owned_and_keep_frozen_types_and_multiplici
         );
         assert_eq!(g.state.pending, Pending::Priority);
         assert_eq!(g.state.players[p.index()].mana, [0, 1, 0, 0, 0, 1]);
-        assert!(g.state.mana_lots.is_none());
+        assert!(!g.mana_tap_bonus_pending());
+        assert!(g.observe(p).mana_lots.is_empty());
     }
 }
 #[test]
