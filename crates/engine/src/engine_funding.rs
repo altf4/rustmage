@@ -6785,21 +6785,21 @@ impl Game {
             emit,
         )
     }
+    pub(super) fn library_top_plot_fundable(&self, request: PlotPaymentView) -> bool {
+        let goal = request.goal();
+        let mut state = FundingState::from_game(self, &goal);
+        state.set_purpose(mana_lots::Purpose::Other);
+        state.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
+            request.source_is_current(world) && world.cost_completion()
+        })
+    }
+
     pub(super) fn visit_plot_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self.plot_payment().unwrap();
-        if self.object_ref(request.object.card) != request.object
-            || self.state.objects[request.object.card as usize].zone != Zone::Hand
-            || self.state.objects[request.object.card as usize].owner != request.controller
-        {
+        if !request.source_is_current(self) {
             return false;
         }
-        let goal = FundingGoal {
-            reserve: None,
-            actor: request.controller,
-            required: request.cost.colored,
-            generic: request.cost.generic,
-            source: None,
-        };
+        let goal = request.goal();
         let state = FundingState::from_game(self, &goal);
         if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
@@ -7038,20 +7038,7 @@ impl Game {
                     None,
                 )
             }
-            Pending::PlotPayment { .. } => {
-                let request = self.plot_payment().unwrap();
-                (
-                    FundingGoal {
-                        actor,
-                        required: request.cost.colored,
-                        generic: request.cost.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    false,
-                    None,
-                )
-            }
+            Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None),
             Pending::FaceUpPayment { .. } => {
                 let request = self.face_up_payment().unwrap();
                 (
@@ -7683,11 +7670,10 @@ impl FundingState<'_> {
         }
         next.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
             let valid = match pending {
-                Pending::PlotPayment { .. } => world.game.plot_payment().is_some_and(|r| {
-                    world.reference(r.object.card) == r.object
-                        && world.object(r.object.card).zone == Zone::Hand
-                        && world.object(r.object.card).owner == r.controller
-                }),
+                Pending::PlotPayment { .. } => world
+                    .game
+                    .plot_payment()
+                    .is_some_and(|request| request.source_is_current(world)),
                 _ => true,
             };
             valid && world.cost_completion()
@@ -7698,10 +7684,7 @@ impl FundingState<'_> {
 impl Game {
     pub(super) fn guided_mana_goal(&self, pending: &Pending) -> Option<FundingGoal> {
         let (actor, required, generic) = match pending {
-            Pending::PlotPayment { .. } => {
-                let r = self.plot_payment()?;
-                (r.controller, r.cost.colored, r.cost.generic)
-            }
+            Pending::PlotPayment { .. } => return Some(self.plot_payment()?.goal()),
             Pending::FaceUpPayment { .. } => {
                 let r = self.face_up_payment()?;
                 (r.controller, r.cost.colored, r.cost.generic)

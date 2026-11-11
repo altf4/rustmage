@@ -1114,6 +1114,11 @@ define_actions! {
     AnnounceOmen { card: CardId },
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
+    AnnounceLibraryTopPlot {
+        object: ObjectRef,
+        cost: ManaCost,
+        x_symbols: Option<std::num::NonZeroU32>,
+    },
     PayPlot { payment: Mana },
     BeginFaceUp { object: ObjectRef, cost: ManaCost },
     PayFaceUp { payment: Mana },
@@ -2737,6 +2742,9 @@ enum Pending {
         amount: u128,
         token: Card,
         sampled_size: Option<copies::SampledTokenSize>,
+    },
+    PlotX {
+        player: Player,
     },
     PlotPayment {
         player: Player,
@@ -4615,6 +4623,7 @@ impl Game {
             | Pending::Replacement { player }
             | Pending::CreatedToken { player }
             | Pending::CopiedSagaLore { player }
+            | Pending::PlotX { player }
             | Pending::PlotPayment { player }
             | Pending::FaceUpPayment { player }
             | Pending::EvidenceIntent { player }
@@ -5878,6 +5887,9 @@ impl Game {
                 let sorcery = actor == s.active
                     && matches!(s.step, Step::Main1 | Step::Main2)
                     && s.stack.is_empty();
+                if sorcery && self.visit_library_top_plots(actor, &mut emit) {
+                    return true;
+                }
                 let casting_prohibited =
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
@@ -7038,7 +7050,7 @@ impl Game {
                     }
                 }
             }
-            Pending::X { .. } | Pending::ResolutionX { .. } => {
+            Pending::X { .. } | Pending::ResolutionX { .. } | Pending::PlotX { .. } => {
                 if let Some(domain) = self.x_choice() {
                     for range in domain.intervals {
                         if range.maximum - range.minimum <= 64 {
@@ -8163,6 +8175,13 @@ impl Game {
                 self.start_warp_cast(actor, card, face, flash_surcharge, Some(cost));
             }
             Action::AnnouncePlot { card } => self.begin_plot(actor, card),
+            Action::AnnounceLibraryTopPlot {
+                object,
+                cost,
+                x_symbols,
+            } => {
+                self.begin_library_top_plot(actor, object, cost, x_symbols);
+            }
             Action::PayPlot { payment } => self.finish_plot(payment),
             Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost),
             Action::PayFaceUp { payment } => self.finish_face_up(payment),
@@ -8640,6 +8659,9 @@ impl Game {
             Action::FinishCrew => self.finish_crew_payment(),
             Action::ChooseSourceCounterAmount { amount } => {
                 self.choose_source_counter_amount(amount)
+            }
+            Action::ChooseX { value } if matches!(self.state.pending, Pending::PlotX { .. }) => {
+                self.choose_plot_x(value);
             }
             Action::ChooseX { value }
                 if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
@@ -12208,6 +12230,7 @@ impl Game {
                 Pending::Mulligan(_) => "mulligan",
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
+                Pending::PlotX { .. } => "plot_x",
                 Pending::PlotPayment { .. } => "plot_payment",
                 Pending::FaceUpPayment { .. } => "face_up_payment",
                 Pending::Role { .. } => "role_rule",

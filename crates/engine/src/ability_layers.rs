@@ -221,6 +221,8 @@ pub enum StaticAbilityFragment {
         ability: u16,
     },
     LookAtLibraryTop,
+    /// Nonland cards on top of this controller's library may be plotted, including for their mana cost.
+    PlotFromLibraryTop,
     CastCreatureFromLibraryTop,
     /// An ordinary cast from the current top, using the chosen spell face.
     CastFromLibraryTop(CastFilter),

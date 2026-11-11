@@ -3563,6 +3563,12 @@ impl Game {
         {
             return true;
         }
+        if object.zone == Zone::Library
+            && self.top_library_card(object.owner) == Some(id)
+            && self.can_plot_library_top(object.owner)
+        {
+            return true;
+        }
         // Existing graveyard cast rows grant flashback-like abilities, rather than
         // merely allowing an out-of-zone cast. They count even while unusable.
         object.zone == Zone::Graveyard
