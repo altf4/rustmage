@@ -85,7 +85,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::AnimateSourceColored(
                 AnimationSpec {
                     artifact: false,
-                    creature_types: AnimationCreatureTypes::Named(&["Shark"]),
+                    creature_types: AnimationCreatureTypes::Additional(&["Shark"]),
                     base: Some((4, 4)),
                     keywords: Keywords::DEATHTOUCH,
                     duration: AnimationDuration::EndOfTurn,

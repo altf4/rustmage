@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4e964be951533e11ddb227ac6466074cef7ea942b8d78c7b23da7fe75c9f7543"
   },
-  "physical_metadata_sha256": "f2a74f2dfbede78b8dfc1203c5c18858d6516718b1e1d53ea39d3a81e887d6c0"
+  "physical_metadata_sha256": "f2a74f2dfbede78b8dfc1203c5c18858d6516718b1e1d53ea39d3a81e887d6c0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RampagingCeratops.java",
+  "java_sha256": "645c559ffc10ab11cf4c54de4bec4449665a092d5515a006301283a5004b3243",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByOneEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e0bd814caa3d5758863c4230d3ac88a4361337d3459b13d4f0b309559520434e"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_b.rs"
 }

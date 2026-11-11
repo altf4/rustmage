@@ -3,7 +3,7 @@
   "catalogue_id": 2321,
   "oracle_id": "1ac3e4bc-1678-4280-a071-3dbc8ef4a2bf",
   "facts_sha256": "5380902b4c6ff5eca628f979ee4baa9258bf98395a4916f0c0311d3536534511",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12d68550ec063b179ccd67ce201ba0d80cc1372372bc2cc3e1b9f8b3b806b3a6"
@@ -16,5 +16,23 @@
   },
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/k/KaslemsStonetree.java",
-  "java_sha256": "11b5c688e5590ba4850fd4c88c07b64a62c3b006baf862f7cbae49b6b90696f8"
+  "java_sha256": "11b5c688e5590ba4850fd4c88c07b64a62c3b006baf862f7cbae49b6b90696f8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_craft.rs"
 }

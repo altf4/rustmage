@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9b25d59e566f4a2076b764a6cf4ab5b24e18584a85b8db48ab05509ba073226"
   },
-  "physical_metadata_sha256": "7170ee8e8446cb38678d8ab6aee1af6b6a3dc82996bd448e8eb28ef09ba7d568"
+  "physical_metadata_sha256": "7170ee8e8446cb38678d8ab6aee1af6b6a3dc82996bd448e8eb28ef09ba7d568",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GargantuanLeech.java",
+  "java_sha256": "af2d340e47ff7255a5880887beda17d61152a823c06c522f2be733fdd26be305",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CavesControlledAndInGraveCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1b010dca82cb952b659c8a905f8d830d16d1a6374164ee4306e5aab365476f39"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionForEachSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "47265899e05cec6a04b65519e61353b4684a7c0c1bdf6abf04af79ae4c7708eb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs"
 }

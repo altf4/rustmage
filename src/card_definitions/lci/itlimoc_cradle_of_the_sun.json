@@ -3,7 +3,7 @@
   "catalogue_id": 5585,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "3b49e16cb91fde0294f1f3093dd538d8b97ca8fea2099f12c4725ea21d41e1ca",
   "oracle_face": {
     "oracle_id": "ea9c459a-6047-43aa-968f-a582be4000e8",
@@ -12,5 +12,58 @@
   },
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GrowingRitesOfItlimoc.java",
-  "java_sha256": "32bd5abefaa1830c69eb891ae61fb2c844262c8751e0fe5f6820e989ac1ee1b9"
+  "java_sha256": "32bd5abefaa1830c69eb891ae61fb2c844262c8751e0fe5f6820e989ac1ee1b9",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/common/CreaturesYouControlHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3587307af9d2076bedf7e11989233f7d41a70ea474e214cbc0bde8686745da24"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/DynamicManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b3d0b50f07f8a0d751bf30a6ecaca74c91fd98a7dd4e3228f71b7543a2d108da"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_transforms.rs"
 }

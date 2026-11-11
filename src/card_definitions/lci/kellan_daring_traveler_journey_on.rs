@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::SelectLibraryTo(LibrarySelectionEffect {
+            spec: LibrarySelectionSpec {
+                look: 1,
+                count: LibrarySelectionCount::Fixed(1),
+                filter: LibrarySelectionFilter::Kinds(1),
+                optional: false,
+                reveal: true,
+                remainder: LibraryRemainder::OptionalGraveyard,
+            },
+            look: LibraryLook::Fixed(1),
+            destination: LibraryPickDestination::Hand,
+            public: true,
+            maximum_mana_value: Some(AmountValue::Fixed(3)),
+        })],
+    }],
+    extras: &CardExtras {
+        adventure_identity: Some("Kellan, Daring Traveler // Journey On"),
+        adventure_spell: Some(Card(5591)),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

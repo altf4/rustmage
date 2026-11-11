@@ -159,10 +159,11 @@ fn discover_followup_uses_the_physical_hit_value_and_cannot_fund_its_cast() {
             discover_pending(&mut game, player);
             let actions = game.legal_actions();
             assert!(actions.contains(&Action::FinishResolutionCasts));
-            assert!(actions.iter().all(|action| !matches!(
-                action,
-                Action::CastExiledDuringResolution { .. }
-            )));
+            assert!(
+                actions
+                    .iter()
+                    .all(|action| !matches!(action, Action::CastExiledDuringResolution { .. }))
+            );
             let unaffordable = offer(&game, found, CastFace::Normal);
             reject(&mut game, unaffordable);
             act(&mut game, Action::FinishResolutionCasts);

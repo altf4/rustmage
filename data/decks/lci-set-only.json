@@ -1,0 +1,381 @@
+{
+  "decks": [
+    {
+      "id": "white_artifacts",
+      "name": "White artifacts and fliers",
+      "cards": [
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 24
+        },
+        {
+          "name": "Miner's Guidewing",
+          "oracle_id": "eb161d0b-e534-463c-b1d1-7210bfba5d28",
+          "count": 4
+        },
+        {
+          "name": "Market Gnome",
+          "oracle_id": "12fa17b2-158e-4d53-897f-81111f912b00",
+          "count": 4
+        },
+        {
+          "name": "Attentive Sunscribe",
+          "oracle_id": "0f85714b-e731-45a3-aa65-8cd59cd48280",
+          "count": 4
+        },
+        {
+          "name": "Oteclan Landmark // Oteclan Levitator",
+          "oracle_id": "2420828e-b886-42d3-81ba-8ee81b6e1eb8",
+          "count": 4
+        },
+        {
+          "name": "Spring-Loaded Sawblades // Bladewheel Chariot",
+          "oracle_id": "fa1ed9fa-5f77-4f7d-bab0-47c719cdc5bc",
+          "count": 4
+        },
+        {
+          "name": "Dusk Rose Reliquary",
+          "oracle_id": "dca7102e-c020-4fdc-9b59-f186e3e615a5",
+          "count": 4
+        },
+        {
+          "name": "Tinker's Tote",
+          "oracle_id": "cd1e6225-31b7-4a70-81ab-681abe860328",
+          "count": 4
+        },
+        {
+          "name": "Sanguine Evangelist",
+          "oracle_id": "a70d9645-7c25-4fcb-9d16-fb73ce8b55e2",
+          "count": 4
+        },
+        {
+          "name": "Oltec Cloud Guard",
+          "oracle_id": "922a8e27-a367-40c6-84df-86ed32f71c7c",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "blue_maps",
+      "name": "Blue Maps and craft",
+      "cards": [
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 24
+        },
+        {
+          "name": "Spyglass Siren",
+          "oracle_id": "4ec9d9eb-14e2-47ea-88a2-d2394e363784",
+          "count": 4
+        },
+        {
+          "name": "Cogwork Wrestler",
+          "oracle_id": "db27e3f0-5750-4c4b-9da9-70c3ab627f9c",
+          "count": 4
+        },
+        {
+          "name": "Oaken Siren",
+          "oracle_id": "a06a35a9-a23e-4a0a-90bc-84e7a52d2cef",
+          "count": 4
+        },
+        {
+          "name": "River Herald Scout",
+          "oracle_id": "021428b1-005c-40ed-9d47-fb5aa970598b",
+          "count": 4
+        },
+        {
+          "name": "Waterwind Scout",
+          "oracle_id": "db65f874-6bf3-4fdb-a977-10b01b7ee2e9",
+          "count": 4
+        },
+        {
+          "name": "Subterranean Schooner",
+          "oracle_id": "7f82bae3-feaa-4967-a843-32a4f72806d5",
+          "count": 4
+        },
+        {
+          "name": "Merfolk Cave-Diver",
+          "oracle_id": "2f1019df-3e76-446c-ba33-f9dfe56b10bf",
+          "count": 4
+        },
+        {
+          "name": "Braided Net // Braided Quipu",
+          "oracle_id": "86ef06b3-2049-494d-9ecb-ca14766d3b68",
+          "count": 4
+        },
+        {
+          "name": "Lodestone Needle // Guidestone Compass",
+          "oracle_id": "f429ca15-c578-4c1d-a604-fd5509c92dba",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "black_descend",
+      "name": "Black Descend and graveyard",
+      "cards": [
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 24
+        },
+        {
+          "name": "Stalactite Stalker",
+          "oracle_id": "c8c28807-8abf-4f91-81f3-1d7d9e856c25",
+          "count": 4
+        },
+        {
+          "name": "Deathcap Marionette",
+          "oracle_id": "6c4247d0-6dc8-4139-bbf5-c83dfdc7be1f",
+          "count": 4
+        },
+        {
+          "name": "Deep-Cavern Bat",
+          "oracle_id": "e46f6644-6bf1-47b1-817c-906bd3eca99f",
+          "count": 4
+        },
+        {
+          "name": "Echo of Dusk",
+          "oracle_id": "fd0980ae-eabf-45da-98e7-23d81bfa185a",
+          "count": 4
+        },
+        {
+          "name": "Screaming Phantom",
+          "oracle_id": "d32f570a-3738-4a9d-845f-6c7892b69991",
+          "count": 4
+        },
+        {
+          "name": "Synapse Necromage",
+          "oracle_id": "f5eace41-0f53-4084-8bec-1e079c04287b",
+          "count": 4
+        },
+        {
+          "name": "Chupacabra Echo",
+          "oracle_id": "68c56db4-c97a-4c1b-a6f6-096392488e21",
+          "count": 4
+        },
+        {
+          "name": "Fanatical Offering",
+          "oracle_id": "3e5402bf-ce7b-4c23-9333-0acdcf349caf",
+          "count": 4
+        },
+        {
+          "name": "Tithing Blade // Consuming Sepulcher",
+          "oracle_id": "883a4180-9ede-4249-a4b8-3a29c998fb63",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "red_discover",
+      "name": "Red Discover and Treasure",
+      "cards": [
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 24
+        },
+        {
+          "name": "Goblin Tomb Raider",
+          "oracle_id": "37ce95bb-8ff5-47b9-85e4-21be7a794940",
+          "count": 4
+        },
+        {
+          "name": "Enterprising Scallywag",
+          "oracle_id": "97607bf5-ca7b-4b1b-963e-390faf6e413e",
+          "count": 4
+        },
+        {
+          "name": "Plundering Pirate",
+          "oracle_id": "3ab13412-1eaf-40c0-905d-8a3ca0c51be5",
+          "count": 4
+        },
+        {
+          "name": "Etali's Favor",
+          "oracle_id": "df98b93b-0aa6-4bea-9d8d-798ebc795b0b",
+          "count": 4
+        },
+        {
+          "name": "Geological Appraiser",
+          "oracle_id": "a0a1cd2b-ed7c-4cce-8497-4873e1e5e3df",
+          "count": 4
+        },
+        {
+          "name": "Curator of Sun's Creation",
+          "oracle_id": "0e636c98-67c7-4f02-b909-5d43e276fa41",
+          "count": 4
+        },
+        {
+          "name": "Bonehoard Dracosaur",
+          "oracle_id": "7ba550a5-81fc-42c2-8df8-ad455d938605",
+          "count": 4
+        },
+        {
+          "name": "Abrade",
+          "oracle_id": "f9db72dc-9a5b-48a4-a86e-7464d9a2166a",
+          "count": 4
+        },
+        {
+          "name": "Idol of the Deep King // Sovereign's Macuahuitl",
+          "oracle_id": "e7ba349e-b9c1-4373-b79f-755688138b7c",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "green_explore",
+      "name": "Green Explore and trample",
+      "cards": [
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 22
+        },
+        {
+          "name": "Hidden Nursery",
+          "oracle_id": "1a26e2d6-6bfc-4cdc-9bd6-8b37a9be2961",
+          "count": 2
+        },
+        {
+          "name": "Cenote Scout",
+          "oracle_id": "ec3911c0-686f-4c78-838d-a683eed6c01c",
+          "count": 4
+        },
+        {
+          "name": "Seeker of Sunlight",
+          "oracle_id": "cba9d6a2-1772-42dc-9bfb-c933a092be19",
+          "count": 4
+        },
+        {
+          "name": "Twists and Turns // Mycoid Maze",
+          "oracle_id": "740aa9d9-91a9-431e-8bf9-1344e5273e27",
+          "count": 4
+        },
+        {
+          "name": "Poison Dart Frog",
+          "oracle_id": "e88a2b71-c90d-4e16-99a3-93d11fe7a968",
+          "count": 4
+        },
+        {
+          "name": "River Herald Guide",
+          "oracle_id": "b9687fef-4cb2-4bf1-91ad-49dada07f4d6",
+          "count": 4
+        },
+        {
+          "name": "Pathfinding Axejaw",
+          "oracle_id": "54452df0-560c-4561-9dd2-3903ae49c91b",
+          "count": 4
+        },
+        {
+          "name": "Malamet Battle Glyph",
+          "oracle_id": "483a0caa-e912-41e9-aaa3-bcea9369ec06",
+          "count": 4
+        },
+        {
+          "name": "Over the Edge",
+          "oracle_id": "26b441b9-fdfb-43e2-bc02-b358653eadf4",
+          "count": 4
+        },
+        {
+          "name": "Malamet Brawler",
+          "oracle_id": "06905dfb-b2df-4849-8848-fd3c964aa8c9",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "white_artifacts",
+      "p1": "blue_maps",
+      "runs": [
+        {
+          "seed": 0,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        }
+      ]
+    },
+    {
+      "p0": "blue_maps",
+      "p1": "black_descend",
+      "runs": [
+        {
+          "seed": 0,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "black_descend",
+      "p1": "red_discover",
+      "runs": [
+        {
+          "seed": 0,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        }
+      ]
+    },
+    {
+      "p0": "red_discover",
+      "p1": "green_explore",
+      "runs": [
+        {
+          "seed": 0,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "green_explore",
+      "p1": "white_artifacts",
+      "runs": [
+        {
+          "seed": 0,
+          "starting_player": 0
+        },
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 41,
+          "starting_player": 0
+        }
+      ]
+    }
+  ]
+}

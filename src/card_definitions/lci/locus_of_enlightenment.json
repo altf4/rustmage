@@ -12,5 +12,58 @@
     "oracle_id": "c0d2bdd9-1e68-4d3a-83f8-ec2ba440a494",
     "index": 1,
     "sha256": "e2fc6c45dcbb8f15a117e7e7ab1f913d68eaf2d6a91c280468a0d11b1ccf25ea"
-  }
+  },
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/ActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f1d5f9e5167bacdfd4f2a3362e1904847ae16f03dcf4290177f131c5258e68b3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAbilityTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ac026c9e891ddf1ca80ef4b2847e5f12587bd504bbd2f213346d129ea2ae961c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyStackObjectEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ced1d8312809beaec71b62e4a4fafd1291d6b1b5ce3d4cd6322bd56253e694b0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColorlessManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a33a4fadca48e2602ea78ec9a7a27e8e53659b047720c5cfffc2d34a27a51a6c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/common/ActivatedAbilityManaBuilder.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5e3d352765c77caf9ff18b8b1738d63e867238acad62818d22d515ef364e7cb5"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_inherited_tail.rs"
 }

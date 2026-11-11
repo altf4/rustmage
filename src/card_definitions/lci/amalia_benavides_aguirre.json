@@ -12,17 +12,12 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AmaliaBenavidesAguirre.java",
   "java_sha256": "c22c3a78b0d6136034d50dc38cc43c4fe2867f277d0e49e44e80dd6138146e0f",
-  "rules_tests": "src/assurance/requested_amalia.rs",
+  "rules_tests": "lci_cards_a_d_inherited_ab",
   "xmage_dependencies": [
     {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
-      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
-    },
-    {
-      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
-      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -30,9 +25,9 @@
       "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
     },
     {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
-      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
-      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
     },
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
@@ -43,6 +38,21 @@
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
       "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
     }
   ]
 }

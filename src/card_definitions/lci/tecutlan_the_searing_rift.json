@@ -3,7 +3,7 @@
   "catalogue_id": 5580,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "65c6476e211d78c9ff93bbd6cd09e6b074fd47a7fc0e9d05cf1abdbdaa507c64",
   "oracle_face": {
     "oracle_id": "af1553eb-4f9f-4335-9078-56649bd8d8fc",
@@ -12,5 +12,98 @@
   },
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BrasssTunnelGrinder.java",
-  "java_sha256": "d216e1428bf2cdccb6eb44f74c98fca92972861d72ac724fc51a8b490b4c87cf"
+  "java_sha256": "d216e1428bf2cdccb6eb44f74c98fca92972861d72ac724fc51a8b490b4c87cf",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSpellPaidBySourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb3507d37afb443bc26082f0194ab5ea1e55b12999d48a69b93c899cf35cb04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DescendedThisTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "91398d1f7e4aa5d9be195ec7538268249f05cd1bc4862743049e6bd9c58b64da"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/DescendedThisTurnCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6ff7443e2d244b32147091927a615aede20208fce1bf1690cbcc639600cd5406"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RemoveAllCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efd1dd4da87e8f228bd3bb3a3e4ca0d9a56c26e1d0377c210e4bc92504536aa3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TransformSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cb657dfa68c243833de4af4fd66287c1e8491c1d8846ca1897f3146799dd482e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardAndDrawThatManyEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f188e2031a5963432940d75ad39ec5b881cdd84feed7c7e136bc404996e1f01d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/DescendedWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "596ed6aa70260ef6d061e97c3f3cb109a4f8fc544557f059f358a5f1901feb4b"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_entry_faces"
 }

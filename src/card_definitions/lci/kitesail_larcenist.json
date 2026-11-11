@@ -3,10 +3,61 @@
   "catalogue_id": 2375,
   "oracle_id": "2452be47-cc23-47f7-a3a1-fec900bb0119",
   "facts_sha256": "433c48a6f037e9abe17acd06e040517bb2fcbbd90c88097e80e2b50f4989060f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f649892d61d6f3aa8465e492a330375f5ab9111b5dedbafcb3562fc0660a3639"
   },
-  "physical_metadata_sha256": "c80f39aa74aff67b2152759f5c09d991faa37e3d22d4e6d725e89cf48a61af30"
+  "physical_metadata_sha256": "c80f39aa74aff67b2152759f5c09d991faa37e3d22d4e6d725e89cf48a61af30",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KitesailLarcenist.java",
+  "java_sha256": "f5112e64f371567a86e8ca319932730c34a9f108309b6ce7d13f53cccdd28d9b",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ForEachPlayerTargetsAdjuster.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0983e17113baf50a95495f9aac7c2218adf8b0c7350303f390e2ecdfd2576971"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/EachTargetPointer.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "47409331c6a257595e641b63cb1eefe96070813dc4c8f37ce103a9220176a190"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_creature_choices.rs"
 }

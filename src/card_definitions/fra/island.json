@@ -40,5 +40,6 @@
       "sha256": "4eb89e2e86f2d29dd2bd4990f7f72089edbe07f6c17b0eb9fb48b3493ef79215"
     }
   ],
-  "has_rules_abilities": true
+  "has_rules_abilities": true,
+  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs"
 }

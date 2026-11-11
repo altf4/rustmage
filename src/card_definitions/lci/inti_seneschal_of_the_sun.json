@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/i/IntiSeneschalOfTheSun.java",
   "java_sha256": "ced418b36368458ebb26ab99355f9e068329137d75183762c6f833ed1ae0a188",
-  "rules_tests": "src/assurance/hartford_discard.rs",
+  "rules_tests": "tests/lci_cards_d_m_inherited_b.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

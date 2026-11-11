@@ -3,10 +3,61 @@
   "catalogue_id": 4693,
   "oracle_id": "f2ef8bda-373d-4387-900d-0f1b6ccf72e9",
   "facts_sha256": "0cce6868dc36c75c68b943438c619c0d295fabf9cc3b8138ee986497d2e752c5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cd67563551983e3d452bebde90c696888ceca9e253878608043e05dc0a0acd5"
   },
-  "physical_metadata_sha256": "15309ba5992543b514c3a022a8a70e59ae7d799fc4501108cb7ee51a2192cdfe"
+  "physical_metadata_sha256": "15309ba5992543b514c3a022a8a70e59ae7d799fc4501108cb7ee51a2192cdfe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TrumpetingCarnosaur.java",
+  "java_sha256": "80515426dd0dc3656bc24655a2a1118c40fb75f079fb9c0e284230b514c012ec",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0045494e33e80e96962af6a6c95ec025700ed91cbfae230d624c749e91793ecf"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/DiscoverEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "39448e5fb17f2a788a8ecf4801c5f2eec86916d9c29a46cac22478b401a6f392"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreatureOrPlaneswalker.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "74a515df49ac9de9bab546fb06aa877375286ce8bb4ea19113e77d811177d85f"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_finish_spells.rs"
 }

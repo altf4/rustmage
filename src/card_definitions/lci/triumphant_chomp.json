@@ -3,10 +3,51 @@
   "catalogue_id": 4685,
   "oracle_id": "d417f574-38a4-405c-83bb-49c5cf542648",
   "facts_sha256": "7d7c3f1c77d79a783c99a418cabbfcfb2e16183dafb8bde96c68f276ccb2741f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c682e27bc482e89f798ad161b4a7d1d5117bc5be3bd00dc5b898f35c275a32c4"
   },
-  "physical_metadata_sha256": "f4748cf824774ba2a6da6698f444e358e0118d0cfb1bf2b935af7b32a8dbe7c2"
+  "physical_metadata_sha256": "f4748cf824774ba2a6da6698f444e358e0118d0cfb1bf2b935af7b32a8dbe7c2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TriumphantChomp.java",
+  "java_sha256": "84f380f0a72985f35bce82836a99e51820a59476cea04dc413b287ad9f42c127",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/MaximumDynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "33625d516a0c051798cd704f216496624f77502d861097c399767b5faa3d6b5c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GreatestAmongPermanentsValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1fb2bb2baf97bbbf6aa1cf4669139b3d10d3fc3beb40a6f2c76fc403393fb299"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/StaticValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b951c6dd7da1b7d51d1725096d1884d2fc195a74614a0ea8713716216ebfbe36"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_mana_combat.rs"
 }

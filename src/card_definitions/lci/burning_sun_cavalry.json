@@ -3,10 +3,46 @@
   "catalogue_id": 593,
   "oracle_id": "9da7e8b5-887d-4174-b7aa-982fd052fcd1",
   "facts_sha256": "82b7f685246b73856b107cd0e47f85b6ec6ab902a2586dbee2990a4b39416d1b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "abdc9baf41827673862c0a0dc8e77d3fcc6528d6b1bb30577729265af1c4f9c5"
   },
-  "physical_metadata_sha256": "e18076dea095f79bc721f93fe0cdb355f23ad901e9aaddbdd847b1bcfe5072ee"
+  "physical_metadata_sha256": "e18076dea095f79bc721f93fe0cdb355f23ad901e9aaddbdd847b1bcfe5072ee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BurningSunCavalry.java",
+  "java_sha256": "89ce60096f44adb854c22c238abab6f12a3b916bc65ea968231506f2d6657879",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksOrBlocksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "81f1a21b619af2d872302a4fbcd27051b2c7a5ee0fe38d7073f21ec4219ff918"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

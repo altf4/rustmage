@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0dd2c9ae44d97ac6f94861b6572ea3ba6bc21fe3c03b02b75be0988f69222476"
   },
-  "physical_metadata_sha256": "32a801b854ad3d9cc6aceec9d340a2d454aa08c3554ef10e1f72844330da9e1e"
+  "physical_metadata_sha256": "32a801b854ad3d9cc6aceec9d340a2d454aa08c3554ef10e1f72844330da9e1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlimpseTheCore.java",
+  "java_sha256": "921e47392073e64b346737654980304f2d6ff20c6aca06a7056771240e191b48",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_b.rs"
 }

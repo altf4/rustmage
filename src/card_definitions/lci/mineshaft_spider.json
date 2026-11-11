@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23cc40ffa8659af8316aef320b8bc81c84c0cd053fefc6073541157ccdbf6b6c"
   },
-  "physical_metadata_sha256": "da72c08787454dc698bc344662addba646f5774952e0ad3ac8701789cee24b37"
+  "physical_metadata_sha256": "da72c08787454dc698bc344662addba646f5774952e0ad3ac8701789cee24b37",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MineshaftSpider.java",
+  "java_sha256": "541f6492204be09a1fef0bf0e28833e060456b4785e2c9be745f6a2ff26ed3ad",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }

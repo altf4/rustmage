@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "65e136650ad61f317be21e5fb445007937034446aea04b6c4660fdb3a332dafa"
   },
-  "physical_metadata_sha256": "7c0debe4917d86683eb95387cbf95957edccf37bc5c6bb57806ed73eae3b265e"
+  "physical_metadata_sha256": "7c0debe4917d86683eb95387cbf95957edccf37bc5c6bb57806ed73eae3b265e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CosmiumBlast.java",
+  "java_sha256": "89abb28e77a0db0976034d25da9d013529e89b7cefb8e736bf8189442bafe25e",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingOrBlockingCreature.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9189ffcb3f50a8a262aa70b884d39333a1b1681897b0957724c77eb0bb163f09"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

@@ -828,7 +828,9 @@ impl Game {
                             source.reference == event.before.reference
                         }
                         condition @ (TriggerCondition::CreatureDiesWithCounters { relation }
-                        | TriggerCondition::CreatureDiesWithCounter { relation, .. }) => {
+                        | TriggerCondition::CreatureDiesWithCounter {
+                            relation, ..
+                        }) => {
                             let counters = &event.before.counters;
                             let matches_counters = match condition {
                                 TriggerCondition::CreatureDiesWithCounter { kind, .. } => {

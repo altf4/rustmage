@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7ab978e605b6a5b77c16126ea12c7f25211bc237d09784ea6d80cbf8ac113afa"
   },
-  "physical_metadata_sha256": "05e9ffaeef7f486c0434a95f51e2c017fb2f5be555b7eea424631ccd22accdcb"
+  "physical_metadata_sha256": "05e9ffaeef7f486c0434a95f51e2c017fb2f5be555b7eea424631ccd22accdcb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CenoteScout.java",
+  "java_sha256": "8139ce1c419d6332aa1b672d94c3584d17f011139ce568da33b92c1210cf546f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

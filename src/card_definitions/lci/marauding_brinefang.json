@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab68d0fb10686018aeaeb0d419b8159a73cfefb8ac0f16cd4377244d54fab8d9"
   },
-  "physical_metadata_sha256": "90a0f97ad5b6ed2e39df992b42c58dbf86f30cb4c1cf744118098189f3fbe6c8"
+  "physical_metadata_sha256": "90a0f97ad5b6ed2e39df992b42c58dbf86f30cb4c1cf744118098189f3fbe6c8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaraudingBrinefang.java",
+  "java_sha256": "5899b49548f7409a71b89cde169ac450244ee47149430851625a3cf9abbc22c4",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IslandcyclingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "867746f55d6c9731a3fbdbdf7786356a78d0e75d29dc2224c8138169170aa46a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }

@@ -3,10 +3,41 @@
   "catalogue_id": 3145,
   "oracle_id": "ebec110e-aff3-48aa-abf6-309dd2ffb478",
   "facts_sha256": "1e2c33508b87b7ee5519474517dd56b3aadb3f4f2d31e3bc86f2f3d5c6e0fbba",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "802edc10d7846913e922c6e59b1f387680a5b12d6d094bca7e6836d102929014"
   },
-  "physical_metadata_sha256": "f2982fe09cc1e0b346b890fcffe9ded5aa732a1c9ab68659311b85fa313d88d7"
+  "physical_metadata_sha256": "f2982fe09cc1e0b346b890fcffe9ded5aa732a1c9ab68659311b85fa313d88d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/Petrify.java",
+  "java_sha256": "4d6c2486686cb67afb929bad73314286c9df76e4e23a8485957993ddc36cb735",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockAttackActivateAttachedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c032a5502ca6a9eea20ac7fff67b321be72ae71e0ce3c57549905ea9ea181497"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_spells.rs"
 }

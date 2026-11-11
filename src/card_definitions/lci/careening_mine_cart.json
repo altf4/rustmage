@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c52b84f9d19f86dac8c2563ecae3d365d4e3cb103aa0a67df1022406583fa624"
   },
-  "physical_metadata_sha256": "0c9b4d9777e131682067e8c831fbc4d9408d4c46baed6c920da3a1f34cc4f4c4"
+  "physical_metadata_sha256": "0c9b4d9777e131682067e8c831fbc4d9408d4c46baed6c920da3a1f34cc4f4c4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CareeningMineCart.java",
+  "java_sha256": "ac7735cf15281b41dbc4306cfa935385bb4f4d2fbe3d7d94d334d7422b2bcb6a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

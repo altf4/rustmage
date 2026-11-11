@@ -1,16 +1,45 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::OwnUntapStepUntaps,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCountersScaled {
+                subject: Subject::Source,
+                kind: CounterKind::Time,
+                amount: AmountValue::UntapStepCount,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::StateCounterAtLeast {
+                kind: CounterKind::Time,
+                minimum: 1000,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::SacrificeAbilitySource,
+                Instruction::LoseLife(PlayerSet::Opponent, 1000),
+            ],
+        },
+    ],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            generic: 2,
+            tap: true,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::DoubleCounterKind {
+            subject: Subject::Source,
+            kind: CounterKind::Time,
+        }],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

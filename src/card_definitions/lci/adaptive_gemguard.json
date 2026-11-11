@@ -3,10 +3,41 @@
   "catalogue_id": 56,
   "oracle_id": "2fdc0d15-ecb4-4a6d-be77-7a3fca188c9c",
   "facts_sha256": "669685a4cac5cb5578a82714f776b365a8f29acffa14104da4e395c5e418cd4d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c1921ced67209f0ff46815dbdf859f3a9d42c2baad08674bc43c47ea2b6be79e"
   },
-  "physical_metadata_sha256": "af332e1a7f16c460865471ebb67384fa3f27c2450226e0b8dd674357f4d1d8ec"
+  "physical_metadata_sha256": "af332e1a7f16c460865471ebb67384fa3f27c2450226e0b8dd674357f4d1d8ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AdaptiveGemguard.java",
+  "java_sha256": "a75984bfcb92aaa61e2c3791223eb7b1ed1ce4bd92b8db4893ca8090dfb7f265",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_combat_artifacts"
 }

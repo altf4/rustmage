@@ -3,7 +3,7 @@
   "catalogue_id": 5606,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "ad5939f023497e7033d4249e5ca290d9abc63f54de04e708d9d937b897c0d3a6",
   "oracle_face": {
     "oracle_id": "883a4180-9ede-4249-a4b8-3a29c998fb63",
@@ -12,5 +12,43 @@
   },
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/t/TithingBlade.java",
-  "java_sha256": "55735e2133ddd52d909c7d51e8b05e98b80124dff44c058e24d50d420d295823"
+  "java_sha256": "55735e2133ddd52d909c7d51e8b05e98b80124dff44c058e24d50d420d295823",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/CraftAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8650dde354818a23cb0a7be2a79f5f5f70c21d6c7de60f449e83860afb8c0754"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_reassigned_faces.rs"
 }

@@ -1,16 +1,39 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+const EQUIPMENT: EquipmentSpec = EquipmentSpec {
+    stats: Stats {
+        power: 2,
+        toughness: 1,
     },
-    entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+};
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Modify,
+        fragments: &[StaticAbilityFragment::AttachmentStats(EQUIPMENT.stats)],
+    }],
+    extras: &CardExtras {
+        equipment: Some(EQUIPMENT),
+        ..CardExtras::EMPTY
+    },
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            generic: 3,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: one(TargetRule::creature_you_control()),
+        program: &[
+            Instruction::EquipDiscardAlternative,
+            Instruction::AttachSource,
+        ],
+        sorcery: true,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

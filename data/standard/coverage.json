@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b0326a6635acec7ea36bbd032d2903bff0718d2b57a605576d65687ded46cba7",
+  "catalogue_version": "c2a6c68e4d5bbceb3497f98fbd80b627d788dd360b4e552a5d6055f4b7aa1ea7",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4183,
-  "implemented_total": 4195,
+  "implemented_standard_cards": 4300,
+  "implemented_total": 4313,
   "token_definitions": 186,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -50,8 +50,8 @@
     },
     "eoc": {
       "total": 8,
-      "gated": 2,
-      "complete": 6
+      "gated": 1,
+      "complete": 7
     },
     "eoe": {
       "total": 259,
@@ -71,8 +71,8 @@
     },
     "frc": {
       "total": 6,
-      "complete": 4,
-      "gated": 2
+      "complete": 5,
+      "gated": 1
     },
     "hob": {
       "total": 188,
@@ -96,8 +96,7 @@
     },
     "lci": {
       "total": 273,
-      "gated": 115,
-      "complete": 158
+      "complete": 273
     },
     "m19": {
       "total": 2,
@@ -513,16 +512,16 @@
     {
       "name": "Abuelo's Awakening",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/abuelo_s_awakening.rs",
       "set": "lci"
     },
     {
       "name": "Abuelo, Ancestral Echo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/abuelo_ancestral_echo.rs",
       "set": "lci"
     },
@@ -577,8 +576,8 @@
     {
       "name": "Aclazotz, Deepest Betrayal // Temple of the Dead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/aclazotz_deepest_betrayal_temple_of_the_dead.rs",
       "set": "lci"
     },
@@ -641,8 +640,8 @@
     {
       "name": "Adaptive Gemguard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/adaptive_gemguard.rs",
       "set": "lci"
     },
@@ -1529,8 +1528,8 @@
     {
       "name": "Anim Pakal, Thousandth Moon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/anim_pakal_thousandth_moon.rs",
       "set": "lci"
     },
@@ -2977,8 +2976,8 @@
     {
       "name": "Bat Colony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bat_colony.rs",
       "set": "lci"
     },
@@ -3153,8 +3152,8 @@
     {
       "name": "Bedrock Tortoise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bedrock_tortoise.rs",
       "set": "lci"
     },
@@ -3849,8 +3848,8 @@
     {
       "name": "Bloodletter of Aclazotz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bloodletter_of_aclazotz.rs",
       "set": "lci"
     },
@@ -3881,8 +3880,8 @@
     {
       "name": "Bloodthorn Flail",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bloodthorn_flail.rs",
       "set": "lci"
     },
@@ -4169,8 +4168,8 @@
     {
       "name": "Bonehoard Dracosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bonehoard_dracosaur.rs",
       "set": "lci"
     },
@@ -4353,8 +4352,8 @@
     {
       "name": "Brackish Blunder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/brackish_blunder.rs",
       "set": "lci"
     },
@@ -4417,8 +4416,8 @@
     {
       "name": "Brass's Tunnel-Grinder // Tecutlan, the Searing Rift",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/brass_s_tunnel_grinder_tecutlan_the_searing_rift.rs",
       "set": "lci"
     },
@@ -4449,8 +4448,8 @@
     {
       "name": "Brazen Blademaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/brazen_blademaster.rs",
       "set": "lci"
     },
@@ -4521,8 +4520,8 @@
     {
       "name": "Breeches, Eager Pillager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/breeches_eager_pillager.rs",
       "set": "lci"
     },
@@ -4641,8 +4640,8 @@
     {
       "name": "Bringer of the Last Gift",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/bringer_of_the_last_gift.rs",
       "set": "lci"
     },
@@ -4937,8 +4936,8 @@
     {
       "name": "Burning Sun Cavalry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/burning_sun_cavalry.rs",
       "set": "lci"
     },
@@ -5121,8 +5120,8 @@
     {
       "name": "Calamitous Cave-In",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/calamitous_cave_in.rs",
       "set": "lci"
     },
@@ -5377,8 +5376,8 @@
     {
       "name": "Captain Storm, Cosmium Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/captain_storm_cosmium_raider.rs",
       "set": "lci"
     },
@@ -5721,8 +5720,8 @@
     {
       "name": "Cavernous Maw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/cavernous_maw.rs",
       "set": "lci"
     },
@@ -6329,8 +6328,8 @@
     {
       "name": "Clay-Fired Bricks // Cosmium Kiln",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/clay_fired_bricks_cosmium_kiln.rs",
       "set": "lci"
     },
@@ -6737,8 +6736,8 @@
     {
       "name": "Compass Gnome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/compass_gnome.rs",
       "set": "lci"
     },
@@ -6913,8 +6912,8 @@
     {
       "name": "Contested Game Ball",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/contested_game_ball.rs",
       "set": "lci"
     },
@@ -7089,8 +7088,8 @@
     {
       "name": "Cosmium Confluence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/cosmium_confluence.rs",
       "set": "lci"
     },
@@ -7993,8 +7992,8 @@
     {
       "name": "Dauntless Dismantler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/dauntless_dismantler.rs",
       "set": "lci"
     },
@@ -8305,8 +8304,8 @@
     {
       "name": "Deconstruction Hammer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/deconstruction_hammer.rs",
       "set": "lci"
     },
@@ -8353,8 +8352,8 @@
     {
       "name": "Deep-Cavern Bat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/deep_cavern_bat.rs",
       "set": "lci"
     },
@@ -8385,8 +8384,8 @@
     {
       "name": "Deeproot Pilgrimage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/deeproot_pilgrimage.rs",
       "set": "lci"
     },
@@ -8881,8 +8880,8 @@
     {
       "name": "Dire Flail // Dire Blunderbuss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/dire_flail_dire_blunderbuss.rs",
       "set": "lci"
     },
@@ -9353,8 +9352,8 @@
     {
       "name": "Dowsing Device // Geode Grotto",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/dowsing_device_geode_grotto.rs",
       "set": "lci"
     },
@@ -11433,8 +11432,8 @@
     {
       "name": "Explorer's Cache",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/explorer_s_cache.rs",
       "set": "lci"
     },
@@ -14025,8 +14024,8 @@
     {
       "name": "Ghalta, Stampede Tyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ghalta_stampede_tyrant.rs",
       "set": "lci"
     },
@@ -14257,8 +14256,8 @@
     {
       "name": "Gishath, Sun's Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/gishath_sun_s_avatar.rs",
       "set": "lci"
     },
@@ -14497,8 +14496,8 @@
     {
       "name": "Glorifier of Suffering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/glorifier_of_suffering.rs",
       "set": "lci"
     },
@@ -14521,8 +14520,8 @@
     {
       "name": "Glowcap Lantern",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/glowcap_lantern.rs",
       "set": "lci"
     },
@@ -14761,8 +14760,8 @@
     {
       "name": "Goldfury Strider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/goldfury_strider.rs",
       "set": "lci"
     },
@@ -14993,8 +14992,8 @@
     {
       "name": "Grasping Shadows // Shadows' Lair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/grasping_shadows_shadows_lair.rs",
       "set": "lci"
     },
@@ -15313,8 +15312,8 @@
     {
       "name": "Growing Rites of Itlimoc // Itlimoc, Cradle of the Sun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/growing_rites_of_itlimoc_itlimoc_cradle_of_the_sun.rs",
       "set": "lci"
     },
@@ -15393,8 +15392,8 @@
     {
       "name": "Guardian of the Great Door",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/guardian_of_the_great_door.rs",
       "set": "lci"
     },
@@ -16817,8 +16816,8 @@
     {
       "name": "Hotfoot Gnome",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hotfoot_gnome.rs",
       "set": "lci"
     },
@@ -16913,8 +16912,8 @@
     {
       "name": "Huatli, Poet of Unity // Roar of the Fifth People",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/huatli_poet_of_unity_roar_of_the_fifth_people.rs",
       "set": "lci"
     },
@@ -17033,8 +17032,8 @@
     {
       "name": "Hunter's Blowgun",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hunter_s_blowgun.rs",
       "set": "lci"
     },
@@ -17233,8 +17232,8 @@
     {
       "name": "Idol of the Deep King // Sovereign's Macuahuitl",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/idol_of_the_deep_king_sovereign_s_macuahuitl.rs",
       "set": "lci"
     },
@@ -17433,8 +17432,8 @@
     {
       "name": "In the Presence of Ages",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/in_the_presence_of_ages.rs",
       "set": "lci"
     },
@@ -17913,8 +17912,8 @@
     {
       "name": "Inverted Iceberg // Iceberg Titan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/inverted_iceberg_iceberg_titan.rs",
       "set": "lci"
     },
@@ -18129,8 +18128,8 @@
     {
       "name": "Itzquinth, Firstborn of Gishath",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/itzquinth_firstborn_of_gishath.rs",
       "set": "lci"
     },
@@ -18209,8 +18208,8 @@
     {
       "name": "Jade Seedstones // Jadeheart Attendant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/jade_seedstones_jadeheart_attendant.rs",
       "set": "lci"
     },
@@ -18761,8 +18760,8 @@
     {
       "name": "Kaslem's Stonetree // Kaslem's Strider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/kaslem_s_stonetree_kaslem_s_strider.rs",
       "set": "lci"
     },
@@ -18905,8 +18904,8 @@
     {
       "name": "Kellan, Daring Traveler // Journey On",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/kellan_daring_traveler_journey_on.rs",
       "set": "lci"
     },
@@ -19193,8 +19192,8 @@
     {
       "name": "Kitesail Larcenist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/kitesail_larcenist.rs",
       "set": "lci"
     },
@@ -19577,8 +19576,8 @@
     {
       "name": "Kutzil's Flanker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/kutzil_s_flanker.rs",
       "set": "lci"
     },
@@ -20481,8 +20480,8 @@
     {
       "name": "Lodestone Needle // Guidestone Compass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/lodestone_needle_guidestone_compass.rs",
       "set": "lci"
     },
@@ -21177,8 +21176,8 @@
     {
       "name": "Magmatic Galleon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/magmatic_galleon.rs",
       "set": "lci"
     },
@@ -21281,8 +21280,8 @@
     {
       "name": "Malamet Battle Glyph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/malamet_battle_glyph.rs",
       "set": "lci"
     },
@@ -21329,8 +21328,8 @@
     {
       "name": "Malcolm, Alluring Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/malcolm_alluring_scoundrel.rs",
       "set": "lci"
     },
@@ -21361,8 +21360,8 @@
     {
       "name": "Malicious Eclipse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/malicious_eclipse.rs",
       "set": "lci"
     },
@@ -21657,8 +21656,8 @@
     {
       "name": "Master's Guide-Mural // Master's Manufactory",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/master_s_guide_mural_master_s_manufactory.rs",
       "set": "lci"
     },
@@ -22705,8 +22704,8 @@
     {
       "name": "Molten Collapse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/molten_collapse.rs",
       "set": "lci"
     },
@@ -24161,32 +24160,32 @@
     {
       "name": "Ojer Axonil, Deepest Might // Temple of Power",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ojer_axonil_deepest_might_temple_of_power.rs",
       "set": "lci"
     },
     {
       "name": "Ojer Kaslem, Deepest Growth // Temple of Cultivation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ojer_kaslem_deepest_growth_temple_of_cultivation.rs",
       "set": "lci"
     },
     {
       "name": "Ojer Pakpatiq, Deepest Epoch // Temple of Cyclical Time",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ojer_pakpatiq_deepest_epoch_temple_of_cyclical_time.rs",
       "set": "lci"
     },
     {
       "name": "Ojer Taq, Deepest Foundation // Temple of Civilization",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/ojer_taq_deepest_foundation_temple_of_civilization.rs",
       "set": "lci"
     },
@@ -24945,8 +24944,8 @@
     {
       "name": "Palani's Hatcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/palani_s_hatcher.rs",
       "set": "lci"
     },
@@ -25353,8 +25352,8 @@
     {
       "name": "Petrify",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/petrify.rs",
       "set": "lci"
     },
@@ -25585,8 +25584,8 @@
     {
       "name": "Pit of Offerings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/pit_of_offerings.rs",
       "set": "lci"
     },
@@ -25721,8 +25720,8 @@
     {
       "name": "Poetic Ingenuity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/poetic_ingenuity.rs",
       "set": "lci"
     },
@@ -25937,8 +25936,8 @@
     {
       "name": "Preacher of the Schism",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/preacher_of_the_schism.rs",
       "set": "lci"
     },
@@ -26385,8 +26384,8 @@
     {
       "name": "Pugnacious Hammerskull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/pugnacious_hammerskull.rs",
       "set": "lci"
     },
@@ -26665,8 +26664,8 @@
     {
       "name": "Queen's Bay Paladin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/queen_s_bay_paladin.rs",
       "set": "lci"
     },
@@ -27801,8 +27800,8 @@
     {
       "name": "Relic's Roar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/relic_s_roar.rs",
       "set": "lci"
     },
@@ -28041,8 +28040,8 @@
     {
       "name": "Resplendent Angel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/resplendent_angel.rs",
       "set": "lci"
     },
@@ -28057,8 +28056,8 @@
     {
       "name": "Restless Anchorage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/restless_anchorage.rs",
       "set": "frc"
     },
@@ -28089,8 +28088,8 @@
     {
       "name": "Restless Prairie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/restless_prairie.rs",
       "set": "lci"
     },
@@ -28105,8 +28104,8 @@
     {
       "name": "Restless Ridgeline",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/restless_ridgeline.rs",
       "set": "lci"
     },
@@ -28121,8 +28120,8 @@
     {
       "name": "Restless Vents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/restless_vents.rs",
       "set": "lci"
     },
@@ -28681,8 +28680,8 @@
     {
       "name": "Roaming Throne",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/roaming_throne.rs",
       "set": "lci"
     },
@@ -29441,8 +29440,8 @@
     {
       "name": "Saheeli, the Sun's Brilliance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/saheeli_the_sun_s_brilliance.rs",
       "set": "lci"
     },
@@ -29657,8 +29656,8 @@
     {
       "name": "Sanguine Evangelist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sanguine_evangelist.rs",
       "set": "lci"
     },
@@ -30153,8 +30152,8 @@
     {
       "name": "Scytheclaw Raptor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/scytheclaw_raptor.rs",
       "set": "lci"
     },
@@ -31273,8 +31272,8 @@
     {
       "name": "Sinuous Benthisaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sinuous_benthisaur.rs",
       "set": "lci"
     },
@@ -31913,8 +31912,8 @@
     {
       "name": "Song of Stupefaction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/song_of_stupefaction.rs",
       "set": "lci"
     },
@@ -32017,16 +32016,16 @@
     {
       "name": "Soulcoil Viper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/soulcoil_viper.rs",
       "set": "lci"
     },
     {
       "name": "Souls of the Lost",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/souls_of_the_lost.rs",
       "set": "lci"
     },
@@ -32841,8 +32840,8 @@
     {
       "name": "Squirming Emergence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/squirming_emergence.rs",
       "set": "lci"
     },
@@ -32905,8 +32904,8 @@
     {
       "name": "Stalactite Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/stalactite_stalker.rs",
       "set": "lci"
     },
@@ -33113,8 +33112,8 @@
     {
       "name": "Starving Revenant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/starving_revenant.rs",
       "set": "lci"
     },
@@ -33777,8 +33776,8 @@
     {
       "name": "Subterranean Schooner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/subterranean_schooner.rs",
       "set": "lci"
     },
@@ -34081,8 +34080,8 @@
     {
       "name": "Sunbird Standard // Sunbird Effigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sunbird_standard_sunbird_effigy.rs",
       "set": "lci"
     },
@@ -34121,16 +34120,16 @@
     {
       "name": "Sunfire Torch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sunfire_torch.rs",
       "set": "lci"
     },
     {
       "name": "Sunken Citadel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sunken_citadel.rs",
       "set": "lci"
     },
@@ -34161,8 +34160,8 @@
     {
       "name": "Sunshot Militia",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/sunshot_militia.rs",
       "set": "lci"
     },
@@ -34497,8 +34496,8 @@
     {
       "name": "Swashbuckler's Whip",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/swashbuckler_s_whip.rs",
       "set": "lci"
     },
@@ -34913,16 +34912,16 @@
     {
       "name": "Tarrian's Journal // The Tomb of Aclazotz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/tarrian_s_journal_the_tomb_of_aclazotz.rs",
       "set": "lci"
     },
     {
       "name": "Tarrian's Soulcleaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/tarrian_s_soulcleaver.rs",
       "set": "lci"
     },
@@ -35249,8 +35248,8 @@
     {
       "name": "Tendril of the Mycotyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/tendril_of_the_mycotyrant.rs",
       "set": "lci"
     },
@@ -35377,8 +35376,8 @@
     {
       "name": "Terror Tide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/terror_tide.rs",
       "set": "lci"
     },
@@ -35537,8 +35536,8 @@
     {
       "name": "The Ancient One",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_ancient_one.rs",
       "set": "lci"
     },
@@ -35569,8 +35568,8 @@
     {
       "name": "The Belligerent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_belligerent.rs",
       "set": "lci"
     },
@@ -35753,8 +35752,8 @@
     {
       "name": "The Everflowing Well // The Myriad Pools",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_everflowing_well_the_myriad_pools.rs",
       "set": "lci"
     },
@@ -36001,8 +36000,8 @@
     {
       "name": "The Millennium Calendar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_millennium_calendar.rs",
       "set": "lci"
     },
@@ -36041,8 +36040,8 @@
     {
       "name": "The Mycotyrant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_mycotyrant.rs",
       "set": "lci"
     },
@@ -36185,8 +36184,8 @@
     {
       "name": "The Skullspore Nexus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/the_skullspore_nexus.rs",
       "set": "lci"
     },
@@ -36633,8 +36632,8 @@
     {
       "name": "Thousand Moons Smithy // Barracks of the Thousand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/thousand_moons_smithy_barracks_of_the_thousand.rs",
       "set": "lci"
     },
@@ -36761,8 +36760,8 @@
     {
       "name": "Threefold Thunderhulk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoc/threefold_thunderhulk.rs",
       "set": "eoc"
     },
@@ -36777,8 +36776,8 @@
     {
       "name": "Throne of the Grim Captain // The Grim Captain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/throne_of_the_grim_captain_the_grim_captain.rs",
       "set": "lci"
     },
@@ -37113,8 +37112,8 @@
     {
       "name": "Tithing Blade // Consuming Sepulcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/tithing_blade_consuming_sepulcher.rs",
       "set": "lci"
     },
@@ -37561,8 +37560,8 @@
     {
       "name": "Treasure Map // Treasure Cove",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/treasure_map_treasure_cove.rs",
       "set": "lci"
     },
@@ -37673,8 +37672,8 @@
     {
       "name": "Triumphant Chomp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/triumphant_chomp.rs",
       "set": "lci"
     },
@@ -37737,8 +37736,8 @@
     {
       "name": "Trumpeting Carnosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/trumpeting_carnosaur.rs",
       "set": "lci"
     },
@@ -38025,8 +38024,8 @@
     {
       "name": "Twists and Turns // Mycoid Maze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/twists_and_turns_mycoid_maze.rs",
       "set": "lci"
     },
@@ -38089,8 +38088,8 @@
     {
       "name": "Uchbenbak, the Great Mistake",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/uchbenbak_the_great_mistake.rs",
       "set": "lci"
     },
@@ -38593,8 +38592,8 @@
     {
       "name": "Unstable Glyphbridge // Sandswirl Wanderglyph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/unstable_glyphbridge_sandswirl_wanderglyph.rs",
       "set": "lci"
     },
@@ -39505,8 +39504,8 @@
     {
       "name": "Visage of Dread // Dread Osseosaur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/visage_of_dread_dread_osseosaur.rs",
       "set": "lci"
     },
@@ -39553,8 +39552,8 @@
     {
       "name": "Vito, Fanatic of Aclazotz",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/vito_fanatic_of_aclazotz.rs",
       "set": "lci"
     },
@@ -39809,8 +39808,8 @@
     {
       "name": "Wail of the Forgotten",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/wail_of_the_forgotten.rs",
       "set": "lci"
     },
@@ -39993,8 +39992,8 @@
     {
       "name": "Warden of the Inner Sky",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/warden_of_the_inner_sky.rs",
       "set": "lci"
     },
@@ -40193,8 +40192,8 @@
     {
       "name": "Waterlogged Hulk // Watertight Gondola",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/waterlogged_hulk_watertight_gondola.rs",
       "set": "lci"
     },
@@ -41529,8 +41528,8 @@
     {
       "name": "Zoetic Glyph",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/zoetic_glyph.rs",
       "set": "lci"
     },
@@ -41577,8 +41576,8 @@
     {
       "name": "Zoyowa Lava-Tongue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/zoyowa_lava_tongue.rs",
       "set": "lci"
     },

@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2683fe5b8f82ced91a0e98c0a7ed0d502890bd2c53cd8ad3c2538d509bc0e8a0"
   },
-  "physical_metadata_sha256": "5743241c26ea8cb77343dd2c9fdad1554a0f0c2348ea03c3ea21d906015fd328"
+  "physical_metadata_sha256": "5743241c26ea8cb77343dd2c9fdad1554a0f0c2348ea03c3ea21d906015fd328",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PanickedAltisaur.java",
+  "java_sha256": "515420e3d92f28fa010779c60a55a51587232e2706e0776c9b8e54f338239eb8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_b.rs"
 }

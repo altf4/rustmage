@@ -3,10 +3,26 @@
   "catalogue_id": 616,
   "oracle_id": "558135b3-babc-40b6-9d9d-57ab0965ee3d",
   "facts_sha256": "06c2c0904a11e966519d442892d3502d32eb3ce4a3e0e6e0edd67d824bf0f734",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1f9d81c5c46fcf20c7c2bd62a410ce9508905a1bba0da7eb581a73b91e4a5e40"
   },
-  "physical_metadata_sha256": "33747dcd95fbc96e3faefb051b5309a6a32c190c2b4d0061884eb5d3fe136553"
+  "physical_metadata_sha256": "33747dcd95fbc96e3faefb051b5309a6a32c190c2b4d0061884eb5d3fe136553",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CalamitousCaveIn.java",
+  "java_sha256": "ed6d873c8a924e412262d913747160eb1a60624d77e02f131b44d40298f6bf20",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CavesControlledAndInGraveCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1b010dca82cb952b659c8a905f8d830d16d1a6374164ee4306e5aab365476f39"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0b4150468bb32f733a8cbc6485ae511b5141e87a1efc8b744911d62a7648c313"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_caves_equipment"
 }

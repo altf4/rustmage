@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7e0cbf2df313a9ee0f4b8afa2bf811e4ae588adf97cad18c2e4d3c2c2d644eff"
   },
-  "physical_metadata_sha256": "e0837de8d1d95ce39bb6c64484fa24b8713313626e668d580512111940463dd1"
+  "physical_metadata_sha256": "e0837de8d1d95ce39bb6c64484fa24b8713313626e668d580512111940463dd1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HulkingRaptor.java",
+  "java_sha256": "2337ffe06ccfe67ea110f0f00ec0be95a3c6e16a2daa2bd26fb1b28bea736534",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_b.rs"
 }

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b2352411594b9894fddaf3276402de7a5a9186c835fc6765c9d874f2f73efe6e"
   },
-  "physical_metadata_sha256": "7fe05f8c32b8b5903bcc8095a05ee1f9f1c876032ecd6479222f5c54e46f9075"
+  "physical_metadata_sha256": "7fe05f8c32b8b5903bcc8095a05ee1f9f1c876032ecd6479222f5c54e46f9075",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeekerOfSunlight.java",
+  "java_sha256": "dee5bf04206ac52806cb142d06acfe437b6480b4ae80241327eec87be9dcf99a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ExploreSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bea53262d78910213aa3abece1783af6344516a7840fc5623ea5f06033feafc4"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_b.rs"
 }

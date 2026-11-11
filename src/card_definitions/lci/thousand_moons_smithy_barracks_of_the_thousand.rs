@@ -1,16 +1,48 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const GNOME_SOLDIER: Card = Card::from_catalogue_id(5573);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    extras: &CardExtras {
+        transforming_double_face: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens {
+                token: GNOME_SOLDIER,
+                amount: 1,
+                tapped: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AtStep {
+                step: TriggerStep::Main1,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::ChooseObjects {
+                    kind: EffectChoiceKind::TapPermanents(5),
+                    players: PlayerSet::Controller,
+                    filter: SacrificeFilter {
+                        keywords: Keywords::NONE,
+                        source_only: false,
+                        kinds: 1 | 16,
+                        nonland: false,
+                        other: false,
+                        tokens: None,
+                        artifact_enchantment_or_token: false,
+                        subtype: None,
+                    },
+                    amount: 5,
+                    optional_skip: Some(1),
+                },
+                Instruction::TransformSource,
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

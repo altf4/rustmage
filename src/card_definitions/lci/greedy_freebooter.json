@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GreedyFreebooter.java",
   "java_sha256": "6d81831813fd314f9361ff305f1d552a3383d6efd1ad754c318c85eb31416069",
-  "rules_tests": "src/assurance/requested_freebooter.rs",
+  "rules_tests": "tests/lci_cards_d_m_inherited_b.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8af2fde5baee3065fedb2d5d8f5efdf101f781b9f18b4e905b3f45a4384985c"
   },
-  "physical_metadata_sha256": "ad28d0092042f34e1c0d5748a76cc4d1ce54581e2b37c5fc8ac3dd5713f20d91"
+  "physical_metadata_sha256": "ad28d0092042f34e1c0d5748a76cc4d1ce54581e2b37c5fc8ac3dd5713f20d91",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnluckyDrop.java",
+  "java_sha256": "9c4d8da64f89450838714e374c963afa5587a100d25d50bb5ef66550e3a88843",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutOnTopOrBottomLibraryTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "95bb260b732c9424cbbd22d60f7904ae468ce3b0277707decdeef4466034be30"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_inherited_tail.rs"
 }

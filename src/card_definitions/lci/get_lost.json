@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "943b81ecb41dcd12f365b4b5d04ec06d3b3379a379ba21b23f6b35b6d500e305"
   },
-  "physical_metadata_sha256": "2d0920577ee0c55b04b3052c45e9e2977ad516ce81e74301105a09bc88041816"
+  "physical_metadata_sha256": "2d0920577ee0c55b04b3052c45e9e2977ad516ce81e74301105a09bc88041816",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GetLost.java",
+  "java_sha256": "63bf12e6a78cf5e7cd4c9196201c76406ea78fedb1efc1956fad9cd85d2a863d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenControllerTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ee33348ac4782cb614e73ec2dfab077cbf80dd86c9d71f5fdb7cd45c6c0c7139"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs"
 }

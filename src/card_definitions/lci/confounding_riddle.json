@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "edc18663d38ff2c09b29c7a027c3757e96dd72b2c1e246c10a3547e75c57a808"
   },
-  "physical_metadata_sha256": "590f4f6e2d4a6f3f26318068101cd3a53f63d474afe53d7c3c186c99f14d1bb6"
+  "physical_metadata_sha256": "590f4f6e2d4a6f3f26318068101cd3a53f63d474afe53d7c3c186c99f14d1bb6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConfoundingRiddle.java",
+  "java_sha256": "59786231ec59b77fd96e31aecf11ce776b20798b4ce7b860174a54f461788775",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ],
+  "rules_tests": "lci_cards_a_d_inherited_cd"
 }

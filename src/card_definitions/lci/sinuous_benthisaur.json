@@ -3,10 +3,31 @@
   "catalogue_id": 3885,
   "oracle_id": "d3cad867-142c-4e9d-bcd8-0e7ed1fd2f77",
   "facts_sha256": "e6761e88eb45e2a98e381f08529be788c82aa742a75b530c61d9ae40c538bb07",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fa5a2867b7aef87cbe22a850a1f51e172f25c5173f563dc5be0a5052a18379b"
   },
-  "physical_metadata_sha256": "379ec4698ea7bb7cb2b58edf78a396bf78577e291270120a9a73e62bf7bb70f6"
+  "physical_metadata_sha256": "379ec4698ea7bb7cb2b58edf78a396bf78577e291270120a9a73e62bf7bb70f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SinuousBenthisaur.java",
+  "java_sha256": "7d63a1d86f2d484b251706236fc1479b016d040ddcf11b159b5ee2cd7583d522",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CavesControlledAndInGraveCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1b010dca82cb952b659c8a905f8d830d16d1a6374164ee4306e5aab365476f39"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_live.rs"
 }

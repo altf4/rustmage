@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aac667a7b3d38c256415ea8ddfc20f690af8a7adee6eed364bcb08d68243c480"
   },
-  "physical_metadata_sha256": "306e458482959fcbdfedf66d3439d98511055e8efc68dda6069d6e45863da3cb"
+  "physical_metadata_sha256": "306e458482959fcbdfedf66d3439d98511055e8efc68dda6069d6e45863da3cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KutzilMalametExemplar.java",
+  "java_sha256": "4842428a663adc27d8a611385f181a22a49d43f40c27730b59c7cd61dd4fb58b",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/OneOrMoreCombatDamagePlayerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bd049af604d636cbafb61dcbb6ef46b80207734f4f606bc6c902f017ada0a2e1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/CantCastDuringYourTurnEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "eaae2c161a24b18f272dc7b26a726f1c171f68bdf2d4ee7c3a6902ea2247a276"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_d_m_inherited_b.rs"
 }

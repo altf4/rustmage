@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e5551b886381210164ae9dc562a41fe8c5c758e311d23869b6d1680d0ae4c759"
   },
-  "physical_metadata_sha256": "c501cafae70372cd58fc237c408caff8f7a4531bce9c42acaee7c92474b2a64b"
+  "physical_metadata_sha256": "c501cafae70372cd58fc237c408caff8f7a4531bce9c42acaee7c92474b2a64b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MerfolkCaveDiver.java",
+  "java_sha256": "2ce3206a89438ae048938bcaed92d02166db1b2ebfcc57b3743c4c9aab1fc2e7",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreatureExploresTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dc13f851ef57f9701e08901712c85c3f02f28b7fa369058d0c66cd02227667c6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_m_s_inherited_a.rs"
 }
