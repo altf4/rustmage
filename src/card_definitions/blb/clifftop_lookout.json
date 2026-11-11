@@ -3,10 +3,31 @@
   "catalogue_id": 769,
   "oracle_id": "446db5a4-21b0-44c1-b12b-d365313dd67a",
   "facts_sha256": "cd61fe1e1fc39e21781f21a234019876d6b0fd7f97165840b364d9ba88882db3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d8044ad139f095dee36b401cace4ba5df319b0f66b2932c49c90613305e492a"
   },
-  "physical_metadata_sha256": "a82e179a20a94bacffc34ac5d53ace9819ac696105f6dcd2ff4a94d04715d1da"
+  "physical_metadata_sha256": "a82e179a20a94bacffc34ac5d53ace9819ac696105f6dcd2ff4a94d04715d1da",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClifftopLookout.java",
+  "java_sha256": "ef36ead10136dd855424dc78ea58b772ed940805ae804ccb7b5e7790cab549c9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_entries.rs"
 }
