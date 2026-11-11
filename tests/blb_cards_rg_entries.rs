@@ -73,6 +73,7 @@ fn clifftop_reveals_to_the_first_land_and_greenshell_keeps_private_land_choices(
     assert_eq!(stats(&hand, source), (4, 6));
 
     act(&mut turtle, Action::SelectLibrary { card: land });
+    act(&mut turtle, Action::FinishLibrarySelection);
     settle(&mut turtle);
     assert_eq!(turtle.object_view(land).zone, Zone::Battlefield);
     assert!(turtle.object_view(land).tapped);
