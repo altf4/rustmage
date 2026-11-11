@@ -211,6 +211,21 @@ fn prairie_dog_counter_replacements_stack_and_a_hand_cast_in_response_suppresses
     quiet(&mut response);
     assert_eq!(counters(&response, dog), 0);
 
+    reach(&mut game, |g| {
+        g.observe(player).replacement_choice.is_some()
+    });
+    let choices = game
+        .observe(player)
+        .replacement_choice
+        .unwrap()
+        .resolved_counter_effects;
+    assert_eq!(choices.len(), 2);
+    act(
+        &mut game,
+        Action::ChooseResolvedCounterReplacement {
+            effect: choices[0].id,
+        },
+    );
     quiet(&mut game);
     assert_eq!(counters(&game, dog), 3);
     let turn = game.state.turn;
