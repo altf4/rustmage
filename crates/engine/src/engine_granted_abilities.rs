@@ -10,15 +10,9 @@ impl Game {
             && self.on_battlefield(recipient.card)
             && self.object_ref(recipient.card) == recipient
             && if ability_world::CharacteristicWorld::is_aura(self, grantor) {
-                self.aura_can_enchant_with_colors(
-                    giver.card,
-                    giver.controller,
-                    ability_world::CharacteristicWorld::colors(self, grantor),
-                    recipient,
-                )
+                self.battlefield_aura_can_enchant(grantor, recipient)
             } else {
-                ability_world::CharacteristicWorld::is_equipment(self, grantor)
-                    && self.is_creature(recipient.card)
+                equipment::can_attach(self, self.object_ref(grantor), recipient)
             })
         .then_some(recipient)
     }
@@ -42,6 +36,7 @@ impl Game {
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
+                            | TriggerCondition::ModalSpellCastByYou
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
@@ -52,6 +47,7 @@ impl Game {
                             | TriggerCondition::SelfDamaged
                             | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
+                            | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
                             | TriggerCondition::AtStep { .. }
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp

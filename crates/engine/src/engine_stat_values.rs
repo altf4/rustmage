@@ -264,12 +264,17 @@ impl Game {
                         && legendary(*id)
                 })
                 .count() as i128,
-            StatValue::TappedCount(filter) => objects()
-                .filter(|&(id, o)| {
-                    o.tapped
-                        && Self::count_object_matches(filter, source, owner, id, o, subtypes, kinds)
-                })
-                .count() as i128,
+            StatValue::TappedCount(filter) | StatValue::UntappedCount(filter) => {
+                let tapped = matches!(value, StatValue::TappedCount(_));
+                objects()
+                    .filter(|&(id, o)| {
+                        o.tapped == tapped
+                            && Self::count_object_matches(
+                                filter, source, owner, id, o, subtypes, kinds,
+                            )
+                    })
+                    .count() as i128
+            }
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
                     world,
@@ -514,6 +519,14 @@ impl Game {
             StatValue::SpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].spells_cast_this_turn)
             }
+            StatValue::CommittedCrimeThisTurn => {
+                i128::from(self.state.players[owner.index()].committed_crime_this_turn)
+            }
+            StatValue::SpellsCastAfterFirstThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .spells_cast_this_turn
+                    .saturating_sub(1),
+            ),
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
             }
@@ -759,6 +772,7 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::CrewContributorCount => self.crew_contributors(source).len() as u128,
             AmountValue::SourceDamageReceivedThisTurn => self.damage_received_this_turn(source),
             AmountValue::CraftMaterialManaValue => self
                 .crafted_exiled_cards(source)
@@ -851,6 +865,8 @@ impl Game {
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
+            | AmountValue::OtherSpellsCastThisTurn
+            | AmountValue::NoncreatureSpellsCastByCastingPlayer
             | AmountValue::CaveManaSpent
             | AmountValue::DiscoverEventAmount
             | AmountValue::DiscoverManaValueShortfall
@@ -865,6 +881,7 @@ impl Game {
             | AmountValue::TappedCostCreaturePower
             | AmountValue::ChosenCostCreaturePower
             | AmountValue::TargetCreaturePower
+            | AmountValue::EnteringCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower
@@ -872,6 +889,7 @@ impl Game {
             | AmountValue::SourceEquipmentCount
             | AmountValue::DeclaredAttackerCount
             | AmountValue::EventObjectTotalCounters
+            | AmountValue::OtherZombieEntriesThisTurn
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DiscardedCardManaValue
@@ -881,6 +899,7 @@ impl Game {
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DepartureCounterCount(_)
             | AmountValue::DeathEventPower
+            | AmountValue::SacrificeEventManaValue
             | AmountValue::DeathEventCounterTotal
             | AmountValue::DeathEventToughness
             | AmountValue::DamageReceivedAmount => 0, // Off-stack expressions have no cast parameter.

@@ -1,16 +1,40 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const ZOMBIE_ROGUE: Card = Card::from_catalogue_id(5305);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 3),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::When {
+                guard: StepGuard::YourTurn,
+                event: &TriggerCondition::When {
+                    guard: StepGuard::Expression {
+                        value: StatValue::SpellsCastThisTurn,
+                        minimum: Some(2),
+                        maximum: None,
+                    },
+                    event: &TriggerCondition::SpellCast {
+                        relation: CastRelation::You,
+                        filter: CastFilter::Any,
+                        ordinal: None,
+                    },
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens {
+                token: ZOMBIE_ROGUE,
+                amount: 1,
+                tapped: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::FilteredEntersYou(EntryPredicate::SubtypeAny(&["Zombie"])),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCountersScaled {
+                subject: Subject::Entering,
+                kind: CounterKind::PlusOne,
+                amount: AmountValue::OtherZombieEntriesThisTurn,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

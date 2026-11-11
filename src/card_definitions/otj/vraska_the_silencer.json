@@ -3,10 +3,61 @@
   "catalogue_id": 4948,
   "oracle_id": "e7c5a568-3855-4a20-9edf-01a8a6a4ba97",
   "facts_sha256": "846385ff9157782d3be81751e1c8bd5e245da625894f138a555da109a6580cb0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "149557b6cb9531f5b67dadad6c801e7d2c7a077e02ca548db9d7f67a547dc5ff"
   },
-  "physical_metadata_sha256": "32018bd619fda044f0002d64968cf586fdde2c5993460b9993ec137e527f2aaf"
+  "physical_metadata_sha256": "32018bd619fda044f0002d64968cf586fdde2c5993460b9993ec137e527f2aaf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VraskaTheSilencer.java",
+  "java_sha256": "e22fdf77a6931804d023fec82d24f814f3adf40541e168ff98ff4bed8ff10416",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffect.java",
+      "sha256": "deea4c7c61bc169d2cc284d082e13df8322434d8784d94f2a744244ad96d24d9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/TreasureAbility.java",
+      "sha256": "d0b4701fc40514cb0d6efe11255d4644b28e4d6b9f5d5acf3c92093c571b5bae"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }

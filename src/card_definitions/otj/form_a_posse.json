@@ -3,10 +3,26 @@
   "catalogue_id": 1596,
   "oracle_id": "8923462f-0540-41e8-931e-97b5f1dadd51",
   "facts_sha256": "b779643a62cc3c82b0bd5bc23c1c170eca461c6eccbdb16ae8b4847ef947c9dd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56a172ea91a3183676322696b7b90ef90e5fe2605f3f7267a58a567ca3ac5589"
   },
-  "physical_metadata_sha256": "9cc24ce55bbbc540bdee451cdfbb72f512466e7505c610bc5583183c1e0961fa"
+  "physical_metadata_sha256": "d1159ca874db1bf352313821633871a3534f4f5e427b0ccc7547fb48da474846",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FormAPosse.java",
+  "java_sha256": "d140026ef5f95a9240b2bdc84546ed086a1d13a283a1536bf1306f7eaf489144",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

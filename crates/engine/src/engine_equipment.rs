@@ -1,5 +1,6 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
+use crate::cards::TriggeredAbility;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// CR303.4b: attachment, irrespective of Aura controller or pending SBA,
@@ -95,7 +96,10 @@ impl Game {
         {
             return false;
         }
+        self.forget_control_attachment(object);
+        self.forget_attachment_origin(object);
         self.renew_copy_grant_origin(object, false);
+        self.prune_source_bound_copies();
         true
     }
     pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
@@ -106,13 +110,93 @@ impl Game {
             return false;
         }
         if self.state.objects[source.card as usize].attached_to != Some(target) {
+            self.forget_control_attachment(source);
+            self.forget_attachment_origin(source);
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
+            self.state.objects[source.card as usize].attached_to = Some(target);
+            self.prune_source_bound_copies();
+            self.self_attachment_triggers(source, target);
         }
-        self.state.objects[source.card as usize].attached_to = Some(target);
         true
     }
+
+    pub(super) fn queue_attachment_trigger(
+        &mut self,
+        observer: &ObjectView,
+        index: usize,
+        attachment: &ObjectView,
+        recipient: ObjectRef,
+    ) {
+        let roles = self.state.roles.get_or_insert_default();
+        let origin = roles
+            .attachment_origin(attachment.reference)
+            .unwrap_or_else(|| {
+                let origin = roles.next_acquisition();
+                roles
+                    .attachment_origins
+                    .push((attachment.reference, origin));
+                origin
+            });
+        let event = AttachmentTriggerView {
+            grantor: attachment.reference,
+            granting_card: attachment.card,
+            recipient,
+            defender: None,
+            granted: false,
+            origin: Some(origin),
+        };
+        if self.queue_trigger_from(observer, index, Some(Box::new(event))) {
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .refer_objects([attachment.reference, recipient]);
+        }
+    }
+
+    pub(super) fn forget_attachment_origin(&mut self, source: ObjectRef) {
+        if let Some(roles) = &mut self.state.roles {
+            roles
+                .attachment_origins
+                .retain(|(object, _)| *object != source);
+        }
+    }
+
+    pub(super) fn exact_attachment_event_is_live(&self, event: &AttachmentTriggerView) -> bool {
+        event.origin.is_some()
+            && self.attachment_is_live(event.grantor, event.recipient)
+            && self
+                .state
+                .roles
+                .as_ref()
+                .and_then(|roles| roles.attachment_origin(event.grantor))
+                == event.origin
+    }
+
+    pub(super) fn self_attachment_triggers(&mut self, attachment: ObjectRef, recipient: ObjectRef) {
+        let card = self.state.objects[attachment.card as usize].card;
+        let observes = |ability: &TriggeredAbility| {
+            ability.condition.event() == TriggerCondition::SelfBecomesAttachedToCreature
+        };
+        if !card.triggers().iter().any(observes)
+            || !self.attachment_is_live(attachment, recipient)
+            || !self.is_creature(recipient.card)
+        {
+            return;
+        }
+        let source = self.object_view(attachment.card);
+        for (index, _) in card
+            .triggers()
+            .iter()
+            .enumerate()
+            .filter(|(_, ability)| observes(ability))
+        {
+            self.queue_attachment_trigger(&source, index, &source, recipient);
+        }
+    }
+
     pub(super) fn new_source_attachment_pair(
         &self,
         item: &SpellView,
@@ -231,12 +315,18 @@ impl Game {
             })
             .collect();
         for &source in &equipment {
+            self.forget_control_attachment(source);
+            self.forget_attachment_origin(source);
             self.state.objects[source.card as usize].attached_to = Some(recipient);
         }
         for &source in &equipment {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
+        }
+        self.prune_source_bound_copies();
+        for &source in &equipment {
+            self.self_attachment_triggers(source, recipient);
         }
         equipment
     }
@@ -249,8 +339,19 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
     source: ObjectRef,
     target: ObjectRef,
 ) -> bool {
+    world.object(source.card).zone == Zone::Battlefield
+        && can_attach_as(world, source, target, world.object(source.card).controller)
+}
+
+/// An exact existing or prospective Equipment controlled by this player.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn can_attach_as<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: ObjectRef,
+    target: ObjectRef,
+    controller: Player,
+) -> bool {
     source != target
-        && world.object(source.card).zone == Zone::Battlefield
         && world.reference(source.card) == source
         && world.is_equipment(source.card)
         && world.kinds(source.card) & 1 == 0
@@ -262,6 +363,11 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
             .protects_from_controller(
                 world.colors(source.card),
                 world.kinds(source.card),
-                world.object(source.card).controller != world.object(target.card).controller,
+                controller != world.object(target.card).controller,
             )
+        && !world.protected_from_subtype(target.card, |subtype| {
+            world
+                .subtypes(source.card)
+                .has(world.definition(source.card), subtype)
+        })
 }

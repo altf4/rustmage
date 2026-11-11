@@ -28,6 +28,9 @@ pub struct TurnFactsView {
     /// Actual spells or land plays outside this player's hand.
     #[serde(skip_serializing_if = "is_false")]
     pub played_from_outside_own_hand: bool,
+    /// A committed spell, excluding lands and special actions, from this player's hand.
+    #[serde(skip_serializing_if = "is_false")]
+    pub cast_spell_from_own_hand: bool,
     /// Actual stack mana value, including the chosen face and X.
     #[serde(skip_serializing_if = "is_false")]
     pub cast_mana_value_at_least_four: bool,
@@ -81,6 +84,7 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
             | StepGuard::ArtifactEnteredThisTurn
             | StepGuard::HeroEnteredOrAttackedThisTurn
             | StepGuard::PlayedFromOutsideOwnHandThisTurn
+            | StepGuard::NoSpellCastFromOwnHandThisTurn
             | StepGuard::CastManaValueAtLeastFourThisTurn
             | StepGuard::FirstCombatPhase
     )
@@ -141,7 +145,11 @@ impl Game {
                 continue;
             }
             let id = event.after.card;
-            let controller = self.state.objects[id as usize].controller;
+            let object = &self.state.objects[id as usize];
+            let controller = object.controller;
+            let subtypes = self.granted_subtypes(id);
+            let zombie = subtypes.has(object.card, "Zombie");
+            facts[controller.index()].hero_entered |= subtypes.has(object.card, "Hero");
             // Registration predates the full simultaneous entry. Freeze the
             // actual controller now that continuous control has settled.
             if let Some(entry) = self
@@ -151,6 +159,7 @@ impl Game {
                 .and_then(|rows| rows.iter_mut().find(|entry| entry.object == event.after))
             {
                 entry.controller = controller;
+                entry.zombie = zombie;
             }
             let kinds = self.current_kinds(id);
             facts[controller.index()].artifact_entered |= kinds & 16 != 0;
@@ -160,7 +169,6 @@ impl Game {
                     .checked_add(1)
                     .capacity("land entry history exhausted");
             }
-            facts[controller.index()].hero_entered |= self.has_subtype(id, "Hero");
         }
         for (player, event) in self.state.players.iter_mut().zip(facts) {
             player.turn_facts.artifact_entered |= event.artifact_entered;

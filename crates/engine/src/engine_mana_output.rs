@@ -570,10 +570,8 @@ impl Game {
         }
         if let Some(pending) = output.resume {
             self.state.pending = *pending;
-        } else if let Some(payment) = &self.state.attack_payment {
-            self.state.pending = Pending::AttackPayment {
-                player: payment.player,
-            };
+        } else if let Some(payment) = &self.state.combat_payment {
+            self.state.pending = payment.pending();
         } else {
             self.state.pending = Pending::Priority;
         }

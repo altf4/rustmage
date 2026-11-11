@@ -445,8 +445,15 @@ impl Game {
                 }
                 let mut movement = self.entry_move(id, Zone::Battlefield, group.tapped);
                 if let Some(context) = instructions {
-                    if context.attacking {
-                        movement.attacking = Some(CombatDefender::Player(player.other()));
+                    match context.attack {
+                        temporary_tokens::TokenAttack::None => (),
+                        temporary_tokens::TokenAttack::DefendingPlayer => {
+                            movement.attacking = Some(CombatDefender::Player(player.other()));
+                        }
+                        temporary_tokens::TokenAttack::ChooseDefender => {
+                            movement.choose_attacking_defender =
+                                self.attacking_return_combat(player);
+                        }
                     }
                     if context.keywords != Keywords::NONE {
                         movement.keywords_after = context

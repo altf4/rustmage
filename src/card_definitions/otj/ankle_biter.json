@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "926f98045223678db29599a0887f1b2af8e588289d1f61ab7517960ecca979c3"
   },
-  "physical_metadata_sha256": "c5ef4248a1381b5794ee157cd99e7c910d734192dcb6315d8f7075c107fd5001"
+  "physical_metadata_sha256": "c5ef4248a1381b5794ee157cd99e7c910d734192dcb6315d8f7075c107fd5001",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnkleBiter.java",
+  "java_sha256": "ae89b51fd774923bd9ce63dcf360d27b65a5478f52450a0d4d601892430c95e7",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a_d_inherited.rs"
 }

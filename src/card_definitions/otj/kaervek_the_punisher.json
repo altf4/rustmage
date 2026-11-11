@@ -3,10 +3,41 @@
   "catalogue_id": 2304,
   "oracle_id": "fa9a6083-75ab-41ae-b607-39d21d9a3d3a",
   "facts_sha256": "da0de495144407739d27c41754c24a329071cb99d994ba5b635b854ee89192f6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d14813f01d64bf2c626952714fb374379eac7660820306dc6e2b4562dd757070"
   },
-  "physical_metadata_sha256": "07467af00144bb84b8033bf512ae3f9019baf833d50f01fe8e5cda0377f8e79a"
+  "physical_metadata_sha256": "07467af00144bb84b8033bf512ae3f9019baf833d50f01fe8e5cda0377f8e79a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KaervekThePunisher.java",
+  "java_sha256": "ab0e6a300f2c4eb44d3d06a0716693724bf6e60a872265f0e7c527ebdb6910d6",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/SpellAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4e4176a30f97131904087a7dd383dcc0751afc17514457761eb2ceeaa7e71354"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_k_l.rs"
 }

@@ -233,33 +233,14 @@ impl Game {
                 if self.is_creature(id) && object.attached_to.is_some() {
                     batch.detached.push(self.object_ref(id));
                 } else if !self.printed_abilities_available(id)
-                    || !object.attached_to.is_some_and(|target| {
-                        self.aura_can_enchant_with_colors(
-                            object.card,
-                            object.controller,
-                            ability_world::CharacteristicWorld::colors(self, id),
-                            target,
-                        )
-                    })
+                    || !object
+                        .attached_to
+                        .is_some_and(|target| self.battlefield_aura_can_enchant(id, target))
                 {
                     batch.deaths.push(id);
                 }
             } else if let Some(target) = object.attached_to
-                && (!ability_world::CharacteristicWorld::is_equipment(self, id)
-                    || self.is_creature(id)
-                    || target == self.object_ref(id)
-                    || !self.on_battlefield(target.card)
-                    || self.object_ref(target.card) != target
-                    || !self.is_creature(target.card)
-                    || characteristics
-                        .get_or_init(|| self.characteristic_query())
-                        .keywords(target.card)
-                        .protects_from_controller(
-                            ability_world::CharacteristicWorld::colors(self, id),
-                            self.current_kinds(id),
-                            object.controller
-                                != self.state.objects[target.card as usize].controller,
-                        ))
+                && !equipment::can_attach(self, self.object_ref(id), target)
             {
                 batch.detached.push(self.object_ref(id));
             }
@@ -551,12 +532,21 @@ impl Game {
             .deaths
             .iter()
             .filter(|&&id| self.saga_sacrifice_required(id))
-            .map(|&id| (self.state.objects[id as usize].controller, id))
+            .map(|&id| {
+                (
+                    self.state.objects[id as usize].controller,
+                    id,
+                    self.object_mana_value(id),
+                )
+            })
             .collect();
         let mut events = self.move_objects_raw(&batch.deaths, Zone::Graveyard);
         for event in &mut events {
-            if let Some(&(actor, _)) = sacrifices.iter().find(|&&(_, id)| id == event.before.id) {
+            if let Some(&(actor, _, mana_value)) =
+                sacrifices.iter().find(|&&(_, id, _)| id == event.before.id)
+            {
                 event.sacrificed_by = Some(actor);
+                event.granted_departure_mana_value = mana_value;
             }
         }
         self.food_sacrifice_triggers(&events, &sources);

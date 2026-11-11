@@ -3,10 +3,41 @@
   "catalogue_id": 2205,
   "oracle_id": "a825bdea-3ea2-46b2-93b9-21586643aab0",
   "facts_sha256": "81b3cf2847990a0f057927bc1664f9b0b70a9f6717e2952bb83372484706f421",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2302fb1189958fc8aa1c6d6581a3c89bda08517bebbe510c07ded021ef004363"
   },
-  "physical_metadata_sha256": "e485ee003fba40387c21e8f3fa69fd1f593cacda8ccc907e3f7367bd5a9d3a73"
+  "physical_metadata_sha256": "e485ee003fba40387c21e8f3fa69fd1f593cacda8ccc907e3f7367bd5a9d3a73",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IntrepidStablemaster.java",
+  "java_sha256": "31c7bf2c96b18bc6e486a50844c5e7bf83d57a67241f2e3b89021b12fe32f36d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/GreenManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "77cae7fc213823ee0bdb2f8447f60c1323776dae061b5062edacc26fd304808c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/conditional/ConditionalSpellManaBuilder.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ce56830a429737325b5010a205e0d800b41ac7f2e4c59367598f4fa99e1d246e"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_h_j.rs"
 }

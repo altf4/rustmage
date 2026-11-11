@@ -123,12 +123,19 @@ impl Game {
                 })
                 .map(|(id, _)| power_damage_event(source, Target::Card(id as CardId)))
                 .collect(),
-            CreaturePowerDamageRecipients::TargetGroupAndSelf(group) => item
+            CreaturePowerDamageRecipients::TargetGroup(group)
+            | CreaturePowerDamageRecipients::TargetGroupAndSelf(group) => item
                 .targets
                 .iter()
                 .filter(|&&target| target.group == group && self.same_target_object(target))
                 .map(|target| target.target)
-                .chain(std::iter::once(Target::Card(creature)))
+                .chain(
+                    matches!(
+                        recipients,
+                        CreaturePowerDamageRecipients::TargetGroupAndSelf(_)
+                    )
+                    .then_some(Target::Card(creature)),
+                )
                 .map(|target| power_damage_event(source, target))
                 .collect(),
         };

@@ -3,10 +3,31 @@
   "catalogue_id": 4865,
   "oracle_id": "c649d5ae-2f38-4737-8123-8069a2ba0bde",
   "facts_sha256": "89dbd086e3f4572526a5c86c1c448da42a473ea1ea963366563d8ab597d72765",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4c9a6582cf4bff57693fe484387806100722fcce570ceb32a72dfa77fe06f5d1"
   },
-  "physical_metadata_sha256": "6cf05e5a2a65a1d5f037cfdafdc4d9af2b2d415f648fa7cfacf0a894a8664fd1"
+  "physical_metadata_sha256": "6cf05e5a2a65a1d5f037cfdafdc4d9af2b2d415f648fa7cfacf0a894a8664fd1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VengefulTownsfolk.java",
+  "java_sha256": "0819e1ffa011bc47a308096645e98aecf2d6554b76c19e3ab351ceb912d0fcc5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesOneOrMoreTriggeredAbility.java",
+      "sha256": "b49e5371dbfe352ecc94d8a04316431327dc5a33ab4fd0c3dd08685b922bbfb3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }

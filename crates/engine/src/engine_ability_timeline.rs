@@ -83,6 +83,7 @@ impl Card {
                             | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_)
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }
                             | StaticAbilityFragment::SourceConditionalKeywords { .. }
@@ -105,6 +106,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
@@ -267,7 +269,26 @@ impl Game {
         source: ObjectRef,
         keywords: Keywords,
     ) {
-        if ids.is_empty() || keywords == Keywords::NONE {
+        let rules = keywords.resolution_rules();
+        self.record_keyword_grants(ids, source, keywords.without(rules), rules);
+    }
+    pub(super) fn grant_keyword_abilities(
+        &mut self,
+        ids: &[CardId],
+        source: ObjectRef,
+        keywords: Keywords,
+    ) {
+        self.record_keyword_grants(ids, source, keywords, Keywords::NONE);
+    }
+    fn record_keyword_grants(
+        &mut self,
+        ids: &[CardId],
+        source: ObjectRef,
+        keywords: Keywords,
+        rules: Keywords,
+    ) {
+        let granted = keywords.union(rules);
+        if ids.is_empty() || granted == Keywords::NONE {
             return;
         }
         // One instruction is one effect, including every simultaneous recipient.
@@ -275,7 +296,7 @@ impl Game {
         for &id in ids {
             let recipient = self.object_ref(id);
             let object = &mut self.state.objects[id as usize];
-            object.gained_keywords = object.gained_keywords.union(keywords);
+            object.gained_keywords = object.gained_keywords.union(granted);
             self.state
                 .roles
                 .as_mut()
@@ -284,8 +305,8 @@ impl Game {
                 .push(KeywordEffectView {
                     recipient,
                     origin: KeywordEffectOrigin::Resolution { source },
-                    keywords: keywords.without(keywords.resolution_rules()),
-                    rules: keywords.resolution_rules(),
+                    keywords,
+                    rules,
                     timestamp,
                     expires_turn: Some(self.state.turn),
                 });

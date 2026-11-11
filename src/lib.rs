@@ -26,8 +26,8 @@ pub use rustmage_core::engine::{
     AbilityAvailabilityView, AbilityResolutionView, AbilitySourceTimestampView, Action,
     ActivationCostRoute, AdditionalCostView, AdditionalEndStepsView, AdventurePermission,
     AnimationView, AttachmentTriggerView, AttackDeclaration, AttackPaymentView, AuraAttachmentView,
-    AuraEntryView, BaseStatsEffectView, BorrowedAbilityView, BoundTarget, CardId, CascadeView,
-    CastCostClause, CastCostRow, CastCostTransaction, CastCreatureSubjectsView,
+    AuraEntryView, BaseStatsEffectView, BlockPaymentView, BorrowedAbilityView, BoundTarget, CardId,
+    CascadeView, CastCostClause, CastCostRow, CastCostTransaction, CastCreatureSubjectsView,
     CastEntryCounterView, CastFace, CastInfo, CastMethod, CastPaymentEvent, CasualtyDeclaration,
     CasualtyGrant, CombatDamagePlayerView, CombatDefender, Config, ConniveChoiceView, ConniverView,
     ConspireDeclaration, ConspireGrant, ControlledPlayer, ConvokeChoiceView, ConvokeContribution,
@@ -86,7 +86,7 @@ pub use rustmage_core::engine::{
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
-    MeldedPermanentView,
+    MeldedPermanentView, NoncombatDamageIncreaseView,
 };
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;

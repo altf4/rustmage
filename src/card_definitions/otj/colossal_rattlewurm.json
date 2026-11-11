@@ -3,10 +3,91 @@
   "catalogue_id": 802,
   "oracle_id": "510659d6-69b4-4b04-8836-08b76213954e",
   "facts_sha256": "75bcd1ee60b18e2ccf33fcbd80006353cd3337b84d45da0ca9f97053a4200fe8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2f1bcc1a817f1e676c5895c58d413228459349ad6586407fe15ae01018fa8920"
   },
-  "physical_metadata_sha256": "042936eedf6476af164e90c00a75755718a68d679d917306ca6708bea82b0551"
+  "physical_metadata_sha256": "042936eedf6476af164e90c00a75755718a68d679d917306ca6708bea82b0551",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ColossalRattlewurm.java",
+  "java_sha256": "16276b90a36193ae2e0dce053cf5e9ea61f43352ec3db6ad05beac19f570a71b",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_c_d.rs"
 }

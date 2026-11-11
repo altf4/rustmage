@@ -128,7 +128,9 @@ fn source_type_forms<W: CharacteristicWorld + ?Sized>(
         .filter_map(move |row| {
             let (kinds, change) = match row.kind {
                 SourceLinkedEffectKind::LandUntilControllerNextTurn => (2, SubtypeChange::LandOnly),
-                SourceLinkedEffectKind::Treasure => (16, SubtypeChange::TreasureOnly),
+                SourceLinkedEffectKind::Treasure | SourceLinkedEffectKind::ReturnedTreasure => {
+                    (16, SubtypeChange::TreasureOnly)
+                }
                 _ => return None,
             };
             (row.recipient == recipient && source_linked_effects::active(world, row))

@@ -432,13 +432,16 @@ impl FundingState<'_> {
                                 | CostReduction(..)
                                 | TargetCostReduction(..)
                                 | OpponentNoncreatureSpellTax(_)
+                                | OpponentGraveyardOrExileSpellTax(_)
+                                | SpellCastLimit(_)
                                 | ChosenCardTypeSpellTax(_)
                                 | AdditionalTriggers { .. }
                                 | AttachedChosenColor
                                 | BasicLandTapManaBonus(_)
                                 | ControlledBasicLandManaMultiplier(_)
                                 | ControlledLandTapManaBonus(_)
-                                | ControlledLandColorlessTapManaBonus => false,
+                                | ControlledLandColorlessTapManaBonus
+                                | ControlledArtifactTokenTapManaBonus => false,
                                 // This replacement changes only damage amounts;
                                 // pure tap/AddMana payments never deal damage.
                                 Replacement(
@@ -2123,6 +2126,11 @@ impl Game {
         world.reachable(&goal, &mut HashSet::new())
     }
     pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
+        if self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card) {
+            return a
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(a, cost));
+        }
         a.cost_options().any(|cost| {
             let mut choice = a.clone();
             choice.cost = Some(cost);

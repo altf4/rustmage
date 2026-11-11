@@ -8,5 +8,71 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28d5e1517f072ef92cde3e197a834dfc0032fc44d7cef938703cdd739140110a"
   },
-  "physical_metadata_sha256": "265b1b349221ffd02640dd8b91d3d141113d82913aff58ce6ddd7de30378c6ba"
+  "physical_metadata_sha256": "265b1b349221ffd02640dd8b91d3d141113d82913aff58ce6ddd7de30378c6ba",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReachForTheSky.java",
+  "java_sha256": "940b802bbf20e47081324fc70eb0b9ce9c881460a2ddef40176db583da00bc25",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d68a84aa9f0e48cb7d0847b1bcd5fe447d39b876eef5f1b972a2b448db04ce37"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

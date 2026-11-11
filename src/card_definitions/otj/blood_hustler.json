@@ -3,10 +3,61 @@
   "catalogue_id": 453,
   "oracle_id": "bb02e64c-0c4a-41ae-972e-ce83e6fc4cb9",
   "facts_sha256": "024a427a8159364f847c51617008e39fcfef594f6f2b1f520385a298c73ffd83",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ec13f276dd8085876c4d7a76b4abbcb8ec7189f0b85accba32b37f55cf7eb42e"
   },
-  "physical_metadata_sha256": "04b00854fb8bd71908af739b7a9d7b74e64f4bb9e5b81059937445b38f6b6fc3"
+  "physical_metadata_sha256": "04b00854fb8bd71908af739b7a9d7b74e64f4bb9e5b81059937445b38f6b6fc3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloodHustler.java",
+  "java_sha256": "ccdd048b718452dd16f84401a0d2ec70e93b646fc77a4fc3f9ee16b1216f9a22",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_b.rs"
 }

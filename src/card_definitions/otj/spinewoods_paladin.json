@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b05008dca35d855dc9e9c0a41b5e5624db4befdf09b3e85f9bb1e739ca0458ac"
   },
-  "physical_metadata_sha256": "073676f3cca5ca708d23018e550c93bd5135237c055fb9129ae26ba93883519f"
+  "physical_metadata_sha256": "073676f3cca5ca708d23018e550c93bd5135237c055fb9129ae26ba93883519f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpinewoodsPaladin.java",
+  "java_sha256": "5387e61af0a0a760189ab3151ad50465203c30c66a1b23e2cc901231a33bf6d3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::plotted_woodland_creatures_and_stagecoach_security_keep_distinct_entry_effects"
 }

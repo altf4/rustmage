@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a8424985ddaa42853bc29239fca5800ae533b600fbc81e784138f4531bf378fb"
   },
-  "physical_metadata_sha256": "92d65172b452e5b4bdc717c404fcefb0aa3270173d92231d2cdfa2ad744f9316"
+  "physical_metadata_sha256": "92d65172b452e5b4bdc717c404fcefb0aa3270173d92231d2cdfa2ad744f9316",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MapTheFrontier.java",
+  "java_sha256": "bf6d0047a1a2a872d3cb44b930b0439c24102d1389dcc377c1301acae046f7de",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

@@ -3,10 +3,41 @@
   "catalogue_id": 686,
   "oracle_id": "165bdc68-1da0-47db-a069-978fc4c04b3f",
   "facts_sha256": "9d41633a6fb3d531c486364607a0c30b60b188a53f3801d761727e11c01ce1f1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c456273a63c1e120aee9de2f11295804ba995f9203b83bbcbde23f050a91b2f2"
   },
-  "physical_metadata_sha256": "9c3f4391aefbf2ac6bdad4b9167af86ae76fc50591f8eaf45b3b99cae2dce510"
+  "physical_metadata_sha256": "9c3f4391aefbf2ac6bdad4b9167af86ae76fc50591f8eaf45b3b99cae2dce510",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CausticBronco.java",
+  "java_sha256": "c47249157913f4c772e205a06a669293575ee41a8f7695b88bdfa3b675027917",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SaddledCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0d02e0cd3fc68ba3bbda2cda5539f4147d93073b06cc5df3acf352f7927c5dad"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_c_d.rs"
 }

@@ -743,21 +743,6 @@ impl Game {
         self.open_payment_announcement(item, Counters::default(), None);
     }
 
-    pub(super) fn grant_flexible_exile_permission_this_turn(
-        &mut self,
-        player: Player,
-        object: ObjectRef,
-        cast_only: bool,
-    ) {
-        let expiry = ExilePlayExpiry::Turn(self.state.turn);
-        if let Some(row) =
-            self.grant_exile_play_permission_with_expiry(player, object, None, expiry)
-        {
-            row.spend_any_mana = true;
-            row.cast_only = cast_only;
-        }
-    }
-
     pub(super) fn exile_top_choose_play(
         &mut self,
         player: Player,
@@ -983,13 +968,17 @@ impl Game {
                 }
             })
         };
-        self.batch_graveyard_entry_triggers(events, &sources, entry_suppression);
+        self.batch_creature_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();
         for event in events {
             if event.moved && event.destination == Zone::Battlefield {
                 let entered = self.object_view(event.after.card);
+                if let Some(recipient) = entered.attached_to {
+                    self.self_attachment_triggers(entered.reference, recipient);
+                    self.aura_attachment_triggers(&entered, recipient, &sources);
+                }
                 if entered.kinds & entry_suppression != 0 {
                     continue;
                 }
@@ -1004,13 +993,19 @@ impl Game {
         }
         for source in &sources {
             let tokens = &token_entered[source.controller.index()];
-            if source.zone != Zone::Battlefield || (tokens.is_empty() && exile_creatures.is_empty())
+            let opponent_tokens = &token_entered[source.controller.other().index()];
+            if source.zone != Zone::Battlefield
+                || (tokens.is_empty() && opponent_tokens.is_empty() && exile_creatures.is_empty())
             {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let entrants = match ability.condition.event() {
                     TriggerCondition::TokensEnterYou => tokens,
+                    TriggerCondition::TokensEnterOpponent => {
+                        self.queue_entry_copy_trigger(source, index, opponent_tokens);
+                        continue;
+                    }
                     TriggerCondition::NontokenCreaturesEnterFromExile => &exile_creatures,
                     _ => continue,
                 };

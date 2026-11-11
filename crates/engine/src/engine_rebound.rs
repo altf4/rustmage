@@ -38,6 +38,14 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if self.object_ref(source.id) != source.object {
+            return false;
+        }
+        let plot = self
+            .state
+            .zone_rules
+            .as_ref()
+            .is_some_and(|rules| rules.plot_spells.contains(&source.object));
         let rebound = (item
             .cast
             .is_some_and(|cast| cast.origin == Zone::Hand && cast.caster == item.controller)
@@ -46,7 +54,7 @@ impl Game {
             && self.spell_has_rebound(item))
         .then_some(item.controller);
         let dream = self.mark_dream_spell_resolving(item);
-        if rebound.is_none() && !dream {
+        if rebound.is_none() && !dream && !plot {
             return false;
         }
         let before = self.chosen_spell_before(item);
@@ -59,6 +67,7 @@ impl Game {
             None,
             |rules| {
                 rules.rebound = rebound;
+                rules.plot = plot;
                 rules.resolution_face = Some((item.controller, face));
             },
         );
@@ -109,6 +118,7 @@ impl Game {
         let player = item.controller;
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,

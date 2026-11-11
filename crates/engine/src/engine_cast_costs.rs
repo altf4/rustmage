@@ -93,6 +93,16 @@ impl Announcement {
             self.add_cast_cost_clause(CastCostClause::Life(life));
         }
     }
+    pub(super) fn add_target_life_costs(&mut self, fees: impl Iterator<Item = u32>) {
+        for amount in fees {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            // Each provider contributes a distinct cost even if the amounts coincide.
+            self.cast_costs.as_mut().unwrap().clauses.push(CastCostRow {
+                clause: CastCostClause::Life(amount),
+                paid: false,
+            });
+        }
+    }
     pub(super) fn has_ordered_life_cost(&self) -> bool {
         self.cast_costs.as_ref().is_some_and(|costs| {
             costs

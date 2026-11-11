@@ -1,0 +1,24 @@
+{
+  "name": "@token/otj-scorpion-dragon",
+  "catalogue_id": 5615,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "f740519220efa80920635c98d43096ec6f669f30dbd37693b188b427d9e2fb84",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ScorpionDragonToken.java",
+  "java_sha256": "e6d42a86f7de0ae5e87582ee27bd5296d994edb328a5da1f9802ecc0aee18c6c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
+}

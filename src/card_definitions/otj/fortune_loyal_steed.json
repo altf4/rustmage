@@ -3,10 +3,71 @@
   "catalogue_id": 1602,
   "oracle_id": "dc440b62-0bf0-4f23-9210-3550ff0a8d4d",
   "facts_sha256": "4a963903fed216d3b752a845715879a95635b45b29eacc06c8cc872111582dfb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "19a266b64f38b436939330928b8b31d5341d91a78bf744a795092f9a68dc0115"
   },
-  "physical_metadata_sha256": "41f622496741c340f31efb0fd949cc859eb749adbdd349dc4f804ecb547fbab2"
+  "physical_metadata_sha256": "41f622496741c340f31efb0fd949cc859eb749adbdd349dc4f804ecb547fbab2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FortuneLoyalSteed.java",
+  "java_sha256": "7219b87cee150dff5da53a0a5f669d663ff6dd332e10aff8e67b918d482d4c0a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWhileSaddledTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "23e4eb0abffe4afaa712ebecc2442d6d20101beb32c15b826f0ef521d8c3c297"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheEndOfCombatDelayedTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "002e2647f2a140f6779712baab32f0c9677bc25421148a9c457ac978e8896c33"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

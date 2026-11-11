@@ -1383,6 +1383,7 @@ impl Game {
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
+            | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::ExileControlledLinked
             | EffectChoiceKind::ExileGrantingAttachment
@@ -1421,6 +1422,12 @@ impl Game {
             | EffectChoiceKind::HandCreatureAndLand
             | EffectChoiceKind::HandPermanent { .. }
             | EffectChoiceKind::HandLand { .. }
+            | EffectChoiceKind::SaddleRider(_)
+            | EffectChoiceKind::BlinkControlledCreatures
+            | EffectChoiceKind::HandCreatures { .. }
+            | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+            | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
+            | EffectChoiceKind::ReturnAttachmentRecipient { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
@@ -1500,8 +1507,13 @@ impl Game {
                     a.item.sacrificed_power = Some(Box::new(self.stats(object.card).power));
                 }
                 if a.item.program().is_some_and(|(_, p)| {
-                    p.iter()
-                        .any(|i| matches!(i, Instruction::IfSacrificedVehicle { .. }))
+                    p.iter().any(|i| {
+                        matches!(
+                            i,
+                            Instruction::IfSacrificedVehicle { .. }
+                                | Instruction::IfSacrificedOutlaw { .. }
+                        )
+                    })
                 }) {
                     a.item.paid_additional_cost = Some(Box::new(
                         self.sacrifice_cost_batch_outcome(&[(a.item.controller, object.card)])

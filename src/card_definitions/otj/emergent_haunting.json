@@ -3,10 +3,71 @@
   "catalogue_id": 1313,
   "oracle_id": "9f4d0133-0ecc-4498-8a47-4906321faae2",
   "facts_sha256": "fcb04559b50c9132daf7ec22bb7715a02b0bd3ffb34a008ee31358d022051c7d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2aca8ad9c7740fd32bc4928e51a5f075c5ddb76f95007d8083bdc0327c80652e"
   },
-  "physical_metadata_sha256": "1862567ba79acfa9a56e6c3e084027547953f8f0aea1c32b462c78c7aadfd5c3"
+  "physical_metadata_sha256": "1862567ba79acfa9a56e6c3e084027547953f8f0aea1c32b462c78c7aadfd5c3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmergentHaunting.java",
+  "java_sha256": "564e4e3464185cae7c7d292483c60c5ead8f12bd865b2942728459f2f11620f3",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/CompoundCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1577f41ffe084565cd38c201fb8b0ac92bf6eae3b2ee2618966495ee10f3898f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/InvertCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3bd5731d01a01bb9951b6fef270b5b71cb926f26e6af0ae5b726f0463fc313c8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HaventCastSpellFromHandThisTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f97a36110457f23a6fb9757d15c7fcbb0a66d4e03ea54fe08f933c59796b89d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceMatchesFilterCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "30cc4e1338f78c1c24ceb55906ae9deeb24423c0bd057e236fa20def3c14d9ee"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4f35026b08e3f86b0822d43ed5b03cf2458e1b2ed5829627dd5c617cd5d597a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

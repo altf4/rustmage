@@ -3,10 +3,56 @@
   "catalogue_id": 1820,
   "oracle_id": "45687a24-e8cb-4864-8721-410eb8320aab",
   "facts_sha256": "9c4b8e4a49c3bf5c18f1bda93bedd53594ee4371d2d8af3bbd7957c56898d78d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "04f6bb6d8072c6a0253f7333f81bb48b344028016f0500ad9e67352449713a84"
   },
-  "physical_metadata_sha256": "eeb7e3c01088cd8e9d595da8daf396c586e8128d2b8fe706605ba257c303758b"
+  "physical_metadata_sha256": "eeb7e3c01088cd8e9d595da8daf396c586e8128d2b8fe706605ba257c303758b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoldRush.java",
+  "java_sha256": "8f46c27ed8921bae49dd6f5afc7a102720d4b477fde2dbd92210aa7354d420ac",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

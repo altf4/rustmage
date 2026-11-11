@@ -163,10 +163,8 @@ impl Announcement {
             CastMethod::ExileLife
             | CastMethod::LibraryLife
             | CastMethod::Free
-            | CastMethod::Plot => Some(ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            }),
+            | CastMethod::Plot
+            | CastMethod::GrantedZeroFlashback => Some(ManaCost::ZERO),
             _ => None,
         })
     }
@@ -258,6 +256,7 @@ impl Announcement {
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::GrantedZeroFlashback
                     | CastMethod::Miracle
                     | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
@@ -531,14 +530,11 @@ impl Announcement {
                             | CastMethod::LibraryLife
                             | CastMethod::Plot
                             | CastMethod::Free
+                            | CastMethod::GrantedZeroFlashback
                     )
                 }) =>
             {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                })
-                .chain([].iter().copied())
+                std::iter::once(ManaCost::ZERO).chain([].iter().copied())
             }
             StackKind::Spell => self
                 .item
@@ -2094,12 +2090,12 @@ impl Game {
         }
     }
 
-    fn target_source_qualities(
-        &self,
+    fn target_source_context<'a>(
+        &'a self,
         source: ObjectRef,
-        qualification: Option<TargetSourceCharacteristics<'_>>,
-    ) -> Option<(u8, u16)> {
-        let packets = || {
+        qualification: Option<TargetSourceCharacteristics<'a>>,
+    ) -> Option<TargetSourceCharacteristics<'a>> {
+        qualification.or_else(|| {
             self.state
                 .stack
                 .iter()
@@ -2107,15 +2103,43 @@ impl Game {
                 .chain(&self.state.ordering_triggers)
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
                 .find(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source)
                 })
                 .map(TargetSourceCharacteristics::from_item)
-        });
+        })
+    }
+
+    fn target_source_subtypes<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(Card, GrantedSubtypes)> {
+        let qualification = self.target_source_context(source, qualification);
+        let source = qualification.map_or(source, |q| q.reference);
+        let snapshot = qualification.and_then(|q| q.snapshot);
+        if let Some(spell) = qualification.and_then(|q| q.spell) {
+            Some((
+                spell,
+                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes),
+            ))
+        } else if self.state.objects.get(source.card as usize).is_some()
+            && world.reference(source.card) == source
+        {
+            Some((world.definition(source.card), world.subtypes(source.card)))
+        } else {
+            snapshot.map(|facts| (facts.card, facts.granted_subtypes))
+        }
+    }
+
+    fn target_source_qualities(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(u8, u16)> {
+        let qualification = self.target_source_context(source, qualification);
         let source = qualification.map_or(source, |q| q.reference);
         let current = self
             .state
@@ -2322,13 +2346,14 @@ impl Game {
                         u128::from(world.mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
-                    TargetPredicate::CrewedSourceThisTurn => {
-                        self.state.crew.as_ref().is_some_and(|state| {
-                            state.history.iter().any(|entry| {
-                                entry.vehicle == source
-                                    && entry.contributors.contains(&world.reference(id))
-                            })
-                        })
+                    TargetPredicate::CrewedSourceThisTurn => self
+                        .crew_contributors(source)
+                        .contains(&world.reference(id)),
+                    TargetPredicate::SaddledSourceThisTurn => {
+                        object.zone == Zone::Battlefield
+                            && self
+                                .saddle_contributors(source)
+                                .contains(&world.reference(id))
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::OtherThanPhysicalSource => id != source.card,
@@ -2424,10 +2449,11 @@ impl Game {
                     TargetPredicate::Legendary => world.legendary(id),
                     TargetPredicate::Nonlegendary => !world.legendary(id),
                     TargetPredicate::Nonbasic => !object.card.is_basic_land(),
-                    TargetPredicate::NonOutlaw => {
-                        !["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                    TargetPredicate::Outlaw | TargetPredicate::NonOutlaw => {
+                        let outlaw = crate::cards::OUTLAW_SUBTYPES
                             .iter()
-                            .any(|subtype| has_subtype(id, subtype))
+                            .any(|subtype| has_subtype(id, subtype));
+                        outlaw == (*predicate == TargetPredicate::Outlaw)
                     }
                 };
             }
@@ -2475,6 +2501,18 @@ impl Game {
                                 })
                 }) {
                     return false;
+                }
+                if obj.zone == Zone::Battlefield {
+                    let source_subtypes = std::cell::OnceCell::new();
+                    if world.protected_from_subtype(id, |subtype| {
+                        source_subtypes
+                            .get_or_init(|| {
+                                self.target_source_subtypes(world, source, qualification)
+                            })
+                            .is_some_and(|(card, types)| types.has(card, subtype))
+                    }) {
+                        return false;
+                    }
                 }
                 if let Some(keywords) = battlefield_keywords
                     && obj.controller != controller
@@ -2560,18 +2598,26 @@ impl Game {
         rule: TargetRule,
         mut emit: impl FnMut(Target) -> bool,
     ) -> bool {
-        self.visit_targets_in_world(
-            self,
-            rule,
-            item.controller,
-            item.target_source(),
-            Some(TargetSourceCharacteristics::from_item(item)),
-            |target| {
-                target != Target::Stack(item.id)
-                    && self.paid_cost_target_matches(item, target)
-                    && emit(target)
-            },
-        )
+        let source = item.target_source();
+        let qualification = Some(TargetSourceCharacteristics::from_item(item));
+        let filter = |target| {
+            target != Target::Stack(item.id)
+                && self.paid_cost_target_matches(item, target)
+                && emit(target)
+        };
+        if item.kind == StackKind::Spell
+            && let Some(world) = self.cast_departure(source, item.controller)
+        {
+            return self.visit_targets_in_world(
+                &world,
+                rule,
+                item.controller,
+                source,
+                qualification,
+                filter,
+            );
+        }
+        self.visit_targets_in_world(self, rule, item.controller, source, qualification, filter)
     }
     pub(super) fn visit_targets(
         &self,
@@ -3242,7 +3288,14 @@ impl Game {
                     )
                     .expect("validated target spell cost")
                 };
+                let fees = self.locked_target_life_costs(announcement);
+                let can_contribute = !fees.is_empty()
+                    && convoke::cost_potential(self, announcement.item.source.unwrap().card);
                 let announcement = self.state.announcing.as_mut().unwrap();
+                if !fees.is_empty() {
+                    announcement.add_target_life_costs(fees.into_iter());
+                    announcement.initialize_cast_costs(can_contribute);
+                }
                 announcement.harmonize_discount = discount;
                 announcement.total_cost = Some(total);
             }
@@ -3476,10 +3529,8 @@ impl Game {
             if self.restore_mana_announcement() {
                 return;
             }
-            if let Some(payment) = &self.state.attack_payment {
-                self.state.pending = Pending::AttackPayment {
-                    player: payment.player,
-                };
+            if let Some(payment) = &self.state.combat_payment {
+                self.state.pending = payment.pending();
                 return;
             }
         } else {
@@ -3561,6 +3612,12 @@ impl Game {
         {
             return true;
         }
+        if object.zone == Zone::Library
+            && self.top_library_card(object.owner) == Some(id)
+            && self.can_plot_library_top(object.owner)
+        {
+            return true;
+        }
         // Existing graveyard cast rows grant flashback-like abilities, rather than
         // merely allowing an out-of-zone cast. They count even while unusable.
         object.zone == Zone::Graveyard
@@ -3574,6 +3631,7 @@ impl Game {
                             && matches!(
                                 row.kind,
                                 crate::cards::GraveyardCastKind::Flashback
+                                    | crate::cards::GraveyardCastKind::FlashbackZero
                                     | crate::cards::GraveyardCastKind::Harmonize
                             )
                             && row.available_at(self.state.turn)

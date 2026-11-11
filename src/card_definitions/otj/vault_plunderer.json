@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "365cdc91eaf640510636be100988d25b99ec7ed7ce774d348d8f8a73a757c21b"
   },
-  "physical_metadata_sha256": "cdc848046ac51e237b9ed479f3460f248fa63dc5fc3efcaf9de962910220bfe8"
+  "physical_metadata_sha256": "cdc848046ac51e237b9ed479f3460f248fa63dc5fc3efcaf9de962910220bfe8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VaultPlunderer.java",
+  "java_sha256": "d4a4ba178d6a6a655ae9bf40bcd45a75f9d42259278d5229cb2bd72c5b97119b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::vial_smasher_only_hits_the_opponent_and_vault_plunderer_can_choose_either_player"
 }

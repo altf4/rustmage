@@ -4540,7 +4540,7 @@
     0,
     2,
     2,
-    0,
+    2,
     1,
     2,
     9,
@@ -5617,7 +5617,14 @@
     0,
     1,
     4,
-    2
+    2,
+    8,
+    4,
+    16,
+    8,
+    2,
+    0,
+    1
   ],
   "aliases": [
     [
@@ -6743,6 +6750,34 @@
     [
       "@token/ninja_turtle_spirit_1_1_white",
       5491
+    ],
+    [
+      "@token/otj-blue-bird",
+      5616
+    ],
+    [
+      "@token/otj-flying-spirit",
+      5618
+    ],
+    [
+      "@token/otj-green-elemental",
+      5614
+    ],
+    [
+      "@token/otj-mercenary",
+      5612
+    ],
+    [
+      "@token/otj-meteorite",
+      5617
+    ],
+    [
+      "@token/otj-scorpion-dragon",
+      5615
+    ],
+    [
+      "@token/otj-vampire-rogue",
+      5613
     ],
     [
       "@token/phyrexian_goblin_1_1_red",
@@ -30345,6 +30380,48 @@
       "name": "Vampire Demon Token",
       "subtypes": "Vampire Demon",
       "colors": 5
+    },
+    {
+      "factory_identity": "@token/otj-mercenary",
+      "name": "Mercenary Token",
+      "subtypes": "Mercenary",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/otj-vampire-rogue",
+      "name": "Vampire Rogue Token",
+      "subtypes": "Vampire Rogue",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/otj-green-elemental",
+      "name": "Elemental Token",
+      "subtypes": "Elemental",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/otj-scorpion-dragon",
+      "name": "Scorpion Dragon Token",
+      "subtypes": "Scorpion Dragon",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/otj-blue-bird",
+      "name": "Bird Token",
+      "subtypes": "Bird",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/otj-meteorite",
+      "name": "Meteorite",
+      "subtypes": "",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/otj-flying-spirit",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 1
     }
   ],
   "emblems": [
@@ -35936,14 +36013,14 @@
       "basic": false,
       "mana_color": null,
       "colored": [
-        0,
+        1,
         0,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 174,
@@ -76867,10 +76944,10 @@
       "basic": false,
       "mana_color": null,
       "colored": [
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0,
         0
       ],
@@ -83360,7 +83437,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -88372,7 +88449,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
@@ -161714,29 +161791,29 @@
     {
       "index": 4534,
       "module": "card_4534",
-      "path": "legacy/this_town_ain_t_big_enough.rs",
-      "set": "legacy",
+      "path": "otj/this_town_ain_t_big_enough.rs",
+      "set": "otj",
       "category": "physical",
       "name": "This Town Ain't Big Enough",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "2550c2ae-834d-46e7-9ab4-d7bf7bfa6a78",
+      "facts_sha256": "0f3f8475c19a16bd2f2b076a4c70870673745821fe322aa7cb779ea6bcd02ca7",
+      "mana_cost": "{4}{U}",
+      "type_line": "Instant",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 8,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 4
     },
     {
       "index": 4535,
@@ -192543,6 +192620,204 @@
       "legendary": false,
       "basic": false,
       "face_parent": 5000
+    },
+    {
+      "index": 5612,
+      "module": "card_5612",
+      "path": "synthetic/token_otj_mercenary.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-mercenary",
+      "mana_cost": "",
+      "type_line": "Creature — Mercenary",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5613,
+      "module": "card_5613",
+      "path": "synthetic/token_otj_vampire_rogue.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-vampire-rogue",
+      "mana_cost": "",
+      "type_line": "Creature — Vampire Rogue",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Lifelink"
+      ]
+    },
+    {
+      "index": 5614,
+      "module": "card_5614",
+      "path": "synthetic/token_otj_green_elemental.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-green-elemental",
+      "mana_cost": "",
+      "type_line": "Creature — Elemental",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5615,
+      "module": "card_5615",
+      "path": "synthetic/token_otj_scorpion_dragon.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-scorpion-dragon",
+      "mana_cost": "",
+      "type_line": "Creature — Scorpion Dragon",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying",
+        "Haste"
+      ]
+    },
+    {
+      "index": 5616,
+      "module": "card_5616",
+      "path": "synthetic/token_otj_blue_bird.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-blue-bird",
+      "mana_cost": "",
+      "type_line": "Creature — Bird",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ]
+    },
+    {
+      "index": 5617,
+      "module": "card_5617",
+      "path": "synthetic/token_otj_meteorite.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-meteorite",
+      "mana_cost": "",
+      "type_line": "Artifact",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5618,
+      "module": "card_5618",
+      "path": "synthetic/token_otj_flying_spirit.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/otj-flying-spirit",
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": [
+        "Flying"
+      ]
     }
   ]
 }

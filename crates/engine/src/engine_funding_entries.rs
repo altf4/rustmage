@@ -513,6 +513,7 @@ impl FundingState<'_> {
             StepGuard::PlayedFromOutsideOwnHandThisTurn => {
                 state.turn_facts.played_from_outside_own_hand
             }
+            StepGuard::NoSpellCastFromOwnHandThisTurn => !state.turn_facts.cast_spell_from_own_hand,
             StepGuard::CastManaValueAtLeastFourThisTurn => {
                 state.turn_facts.cast_mana_value_at_least_four
             }
@@ -523,6 +524,7 @@ impl FundingState<'_> {
             StepGuard::YourMainPhase => {
                 self.active == player && matches!(self.game.state.step, Step::Main1 | Step::Main2)
             }
+            StepGuard::YourCombatPhase => self.game.attacking_return_combat(player),
             StepGuard::GainedLife => self.gained_life(player),
             StepGuard::ScriedOrSurveilledThisTurn => state.scried_or_surveilled_this_turn,
             StepGuard::LoyaltyAbilityActivatedThisTurn => state.loyalty_ability_activated_this_turn,
@@ -537,6 +539,7 @@ impl FundingState<'_> {
             }
             StepGuard::OpponentLostLife => self.lost_life(player.other()),
             StepGuard::CommittedCrimeThisTurn => state.committed_crime_this_turn,
+            StepGuard::SourceSaddled => self.game.source_saddled(source),
             StepGuard::CardExiledThisTurn => {
                 self.game.state.cards_exiled_this_turn
                     || self.resources.iter().any(|r| {
@@ -599,10 +602,11 @@ impl FundingState<'_> {
                     player,
                 )
             }
-            StepGuard::SourceCreature => {
+            StepGuard::SourceCreature | StepGuard::SourceNoncreature => {
                 self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
-                    && CharacteristicWorld::kinds(self, source.card) & 1 != 0
+                    && (CharacteristicWorld::kinds(self, source.card) & 1 != 0)
+                        == (guard == StepGuard::SourceCreature)
             }
             StepGuard::SourcePowerAtLeast(n) => {
                 self.reference(source.card) == source
@@ -620,7 +624,7 @@ impl FundingState<'_> {
             StepGuard::Outlaw => self.resources.iter().any(|r| {
                 r.object.zone == Zone::Battlefield
                     && r.object.controller == player
-                    && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                    && crate::cards::OUTLAW_SUBTYPES
                         .iter()
                         .any(|s| self.subtypes(r.id).has(r.object.card, s))
             }),
@@ -629,7 +633,7 @@ impl FundingState<'_> {
                 minimum,
                 maximum,
             } => {
-                let v = self.value(value, source.card);
+                let v = self.game.stat_value_in_world(self, value, source, player);
                 minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n)
             }
             StepGuard::Threshold {
@@ -758,13 +762,23 @@ impl FundingState<'_> {
                     }
                 }
                 EntryCounterAmount::Fixed(n) => u64::from(n),
+                EntryCounterAmount::FixedCounters(amounts) => {
+                    for &(kind, amount) in amounts {
+                        counters.add(kind, amount);
+                    }
+                    continue;
+                }
                 EntryCounterAmount::WebSlingingReturnedManaValue => m
                     .cast_event
                     .as_ref()
                     .and_then(|cast| cast.web_slinging_return_mana_value)
                     .unwrap_or(0),
-                EntryCounterAmount::Stat(v) => u64::try_from(self.value(v, m.before.id).max(0))
-                    .capacity("entry counter amount exhausted"),
+                EntryCounterAmount::Stat(v) => u64::try_from(
+                    self.game
+                        .stat_value_in_world(self, v, m.before.reference, m.controller)
+                        .max(0),
+                )
+                .capacity("entry counter amount exhausted"),
             };
             counters.add(CounterKind::PlusOne, amount);
         }
@@ -1148,25 +1162,14 @@ impl FundingState<'_> {
         }
     }
     fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
-        let Some(spec) = m.before.card.aura() else {
-            return false;
-        };
-        let o = self.object(target.card);
-        o.zone == Zone::Battlefield
-            && self.reference(target.card) == target
-            && !characteristic_query::CharacteristicQuery::in_world(self)
-                .keywords(target.card)
-                .protects_from_controller(
-                    m.before.card.colors(),
-                    m.before.card.kind_mask(),
-                    o.controller != m.controller,
-                )
-            && ability_world::aura_kind_matches(self, m.before.card, target.card)
-            && match spec.relation {
-                0 => o.controller == m.controller,
-                1 => o.controller != m.controller,
-                _ => true,
-            }
+        ability_world::aura_can_enchant(
+            self,
+            m.before.card,
+            m.controller,
+            m.before.card.colors(),
+            || Game::entry_choice_subtypes(m),
+            target,
+        )
     }
     fn visit_entry_values(
         &self,
@@ -1763,6 +1766,7 @@ impl FundingState<'_> {
                     .push(EntryTurnFact {
                         object: source,
                         controller: o.controller,
+                        zombie: false,
                     });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection
@@ -1977,6 +1981,19 @@ impl FundingState<'_> {
                     static_source: false,
                     permanent: true,
                 });
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
+                && let Some(source) = m.as_entry_treasure_source()
+            {
+                let recipient = next.reference(m.before.id);
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .roles
+                    .grant_returned_treasure(recipient, source, m.controller);
             }
         }
         for m in &moves {
@@ -2302,6 +2319,7 @@ impl Game {
                 | Action::ChooseEntryReplacement { .. }
                 | Action::ChooseEntryTimestamp { .. }
                 | Action::ChooseReplacement { .. }
+                | Action::ChooseResolvedCounterReplacement { .. }
         ) {
             return true;
         }
@@ -2402,10 +2420,14 @@ impl Game {
             return complete(&world);
         };
         world.prepare_entry_projection();
-        let counter_choice = if let Some(Action::ChooseReplacement { source, ability }) = action {
-            Some((*source, *ability))
-        } else {
-            None
+        let counter_choice = match action {
+            Some(Action::ChooseReplacement { source, ability }) => Some(
+                replacements::CounterReplacementId::Printed(*source, *ability),
+            ),
+            Some(Action::ChooseResolvedCounterReplacement { effect }) => {
+                Some(replacements::CounterReplacementId::Resolved(*effect))
+            }
+            _ => None,
         };
         world.entry_projection.as_mut().unwrap().counter =
             self.projected_entry_counter(counter_choice);
@@ -2554,7 +2576,9 @@ impl Game {
                 };
                 batch.timestamp_order.push(i);
             }
-            Some(Action::ChooseReplacement { .. }) => {
+            Some(
+                Action::ChooseReplacement { .. } | Action::ChooseResolvedCounterReplacement { .. },
+            ) => {
                 if world.entry_projection.as_ref().unwrap().counter.is_none() {
                     return true;
                 }

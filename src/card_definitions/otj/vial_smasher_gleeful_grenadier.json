@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d8e14cadad1799ff2f319be3bc2473b6c2d179ba464b5cf587a26cf9817b9da"
   },
-  "physical_metadata_sha256": "4575d8c6b84d5a56dd1004d8b544c961effab070322240ed3c5eba20250e0fc4"
+  "physical_metadata_sha256": "4575d8c6b84d5a56dd1004d8b544c961effab070322240ed3c5eba20250e0fc4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VialSmasherGleefulGrenadier.java",
+  "java_sha256": "a7318a5f5c55676ab4aa854f43a5b667ccd72015772eb9f215ca674d25ad1bf3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::vial_smasher_only_hits_the_opponent_and_vault_plunderer_can_choose_either_player"
 }

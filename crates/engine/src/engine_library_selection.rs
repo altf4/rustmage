@@ -32,6 +32,7 @@ pub(super) enum LibrarySelectionCompletion {
     RememberHandCount,
     MayTransform,
     ReflexiveEquipment(u16),
+    RememberExile,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -278,6 +279,11 @@ impl Game {
             LibrarySelectionCompletion::RememberHandCount => {
                 assert_eq!(effect.destination, LibraryPickDestination::Hand);
             }
+            LibrarySelectionCompletion::RememberExile => {
+                assert_eq!(effect.destination, LibraryPickDestination::Exile);
+                assert_eq!(effect.spec.count, LibrarySelectionCount::Fixed(1));
+                self.state.resolving.as_mut().unwrap().milled.clear();
+            }
             LibrarySelectionCompletion::MayTransform
             | LibrarySelectionCompletion::ReflexiveEquipment(_) => {
                 assert_eq!(effect.destination, LibraryPickDestination::Battlefield);
@@ -504,6 +510,7 @@ impl Game {
                 LibraryRemainder::BottomRandom
                     | LibraryRemainder::Shuffle
                     | LibraryRemainder::OptionalGraveyard
+                    | LibraryRemainder::OptionalBottom
             )
         {
             return self.finish_library_selection_internal();
@@ -789,8 +796,10 @@ impl Game {
             self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             return true;
         }
-        if f.spec.remainder == LibraryRemainder::OptionalGraveyard
-            && !f.remaining.is_empty()
+        if matches!(
+            f.spec.remainder,
+            LibraryRemainder::OptionalGraveyard | LibraryRemainder::OptionalBottom
+        ) && !f.remaining.is_empty()
             && !f.ordering
         {
             f.ordering = true;
@@ -908,6 +917,7 @@ impl Game {
             LibraryPickDestination::Hand => self.move_objects_raw(&ids, Zone::Hand),
             LibraryPickDestination::Graveyard => self.move_objects_raw(&ids, Zone::Graveyard),
             LibraryPickDestination::Exile
+            | LibraryPickDestination::ExilePlotted
             | LibraryPickDestination::ExileCastThisTurn
             | LibraryPickDestination::ExileFaceDownPlay { .. } => {
                 self.move_objects_raw(&ids, Zone::Exile)
@@ -963,6 +973,11 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        if f.destination == LibraryPickDestination::ExilePlotted {
+            for event in &events {
+                self.commit_plotted_move(event);
+            }
+        }
         if f.destination == LibraryPickDestination::Top {
             let library = &mut self.state.players[owner.index()].library;
             library.retain(|id| !ids.contains(id));
@@ -990,6 +1005,13 @@ impl Game {
                 .collect();
             self.stage_entries(moves, None);
             return;
+        }
+        if f.completion == LibrarySelectionCompletion::RememberExile {
+            self.state.resolving.as_mut().unwrap().milled = events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Exile)
+                .map(|event| event.after)
+                .collect();
         }
         self.commit_library_remainder(owner, *f);
     }
@@ -1062,7 +1084,9 @@ impl Game {
                 let events = self.move_objects_raw(&ids, Zone::Hand);
                 self.finish_zone_events(&events, &[]);
             }
-            LibraryRemainder::BottomAny | LibraryRemainder::BottomRandom => {
+            LibraryRemainder::BottomAny
+            | LibraryRemainder::BottomRandom
+            | LibraryRemainder::OptionalBottom => {
                 if f.spec.remainder == LibraryRemainder::BottomRandom {
                     f.bottom = std::mem::take(&mut f.remaining);
                     self.state.rng.shuffle(&mut f.bottom);
@@ -1252,12 +1276,14 @@ impl Game {
                 LibraryPickDestination::Top => "top",
                 LibraryPickDestination::Hideaway => "hideaway",
                 LibraryPickDestination::Exile => "exile",
+                LibraryPickDestination::ExilePlotted => "exile_plotted",
                 LibraryPickDestination::ExileCastThisTurn => "exile_cast_this_turn",
                 LibraryPickDestination::ExileFaceDownPlay { .. } => "exile_face_down_play",
             },
             remainder: match f.spec.remainder {
                 LibraryRemainder::Keep => "keep",
                 LibraryRemainder::OptionalGraveyard => "optional_graveyard",
+                LibraryRemainder::OptionalBottom => "optional_bottom",
                 LibraryRemainder::Graveyard => "graveyard",
                 LibraryRemainder::Hand => "hand",
                 LibraryRemainder::Shuffle => "shuffle",

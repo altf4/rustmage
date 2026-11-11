@@ -3,10 +3,46 @@
   "catalogue_id": 2658,
   "oracle_id": "70bea459-f6e9-411a-bd33-339bf95ea47a",
   "facts_sha256": "ef685ca141178dc08793e8aa6cccea071dd3d7394bbb21647bc84c82304d36ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5d53075fdc1f9a67728f8d4d83be877d198523502df4d51d3f2b151edfbec7e0"
   },
-  "physical_metadata_sha256": "396bb4e97118ae0e05300d27d623d6353330d39a9e97400dc65a8b5990d5a23e"
+  "physical_metadata_sha256": "396bb4e97118ae0e05300d27d623d6353330d39a9e97400dc65a8b5990d5a23e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MaraudingSphinx.java",
+  "java_sha256": "14d8f1a38d753efd029ed2607618c2d617cc28720a660a9961e17efc8819f8bd",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

@@ -3,10 +3,66 @@
   "catalogue_id": 249,
   "oracle_id": "6d39d218-254a-4886-907a-89df605d7ce4",
   "facts_sha256": "be8b1da1aba92cd3d437e3db856613de9635211a1054ca0a887e3336c28c8e80",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d41d4b33a41d105f87b2e1eade41f0d0fb4287a3c14f1d63488684a07ab851a1"
   },
-  "physical_metadata_sha256": "5b60eabf87bc39b766196114f79251a43291b7d41c65fe5a30440f7966d9c367"
+  "physical_metadata_sha256": "5b60eabf87bc39b766196114f79251a43291b7d41c65fe5a30440f7966d9c367",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AssimilationAegis.java",
+  "java_sha256": "02d021d64f4b6743a4cc3d1ca7dbd60dee94c7eb9c26c8ef6975d6768aa2d15a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttachedToCreatureSourceTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "15f337d13ea16c560a1345cfee92e18a05e67649e550d3451ea4268de4e2330d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInExile.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "6f780da5ddeae8d933e0ae6900c6b38ff1e466089310d72c487ac3b6159f9b0c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a.rs"
 }

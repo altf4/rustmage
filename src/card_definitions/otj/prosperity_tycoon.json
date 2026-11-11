@@ -3,10 +3,66 @@
   "catalogue_id": 3261,
   "oracle_id": "07acb7e5-7aae-4d89-aabf-cbd329b3480b",
   "facts_sha256": "29c802806156531616baef99224d750539b1f8e7b551eb143d379fd50e363c8f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "95a393e208ace277fd916cbe204de514791e6f7229b16105715a3820cbf51684"
   },
-  "physical_metadata_sha256": "07e1e0ba206967b84ad200ab5bb997c97477e5a53942b30a751a90ee11470316"
+  "physical_metadata_sha256": "07e1e0ba206967b84ad200ab5bb997c97477e5a53942b30a751a90ee11470316",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ProsperityTycoon.java",
+  "java_sha256": "7f16d68e458604b60123ba8480630851903683ad14beb6bfdd3c0aaa30375b0a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a912f8d2328afba2be2060a9b044621afd2d83bf48f05489962eec2ee29cff0d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/MercenaryToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e3da133ae91b84af428f1ec547e285f0fcd0a89bbd6e287f66f309fcf0704668"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

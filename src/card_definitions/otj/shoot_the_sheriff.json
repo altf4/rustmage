@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b14b6d792c233315e0c2c3e290e9d0ab5356fa260fd78ed0664f7fca45b03456"
   },
-  "physical_metadata_sha256": "5f03b18f3a4c56ab2bd83c79d7ede34eb732ce52ea1ecbed92c465f7adbf45d7"
+  "physical_metadata_sha256": "5f03b18f3a4c56ab2bd83c79d7ede34eb732ce52ea1ecbed92c465f7adbf45d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShootTheSheriff.java",
+  "java_sha256": "b572e3962452e35107a998cf8453b401fb1ca23e675f82eb5b50f5dd21a642cc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::scorching_shot_and_shoot_the_sheriff_enforce_creature_and_outlaw_targeting"
 }

@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "13d6bc64371645f36e1ab4678ba5b6a61674a279c191b6e6039590abd4ab3821"
   },
-  "physical_metadata_sha256": "1ebd78ab1d126f270e272ec5473c150c16fc140423dcd1cb3dfe1a14a596d051"
+  "physical_metadata_sha256": "1ebd78ab1d126f270e272ec5473c150c16fc140423dcd1cb3dfe1a14a596d051",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WylieDukeAtiinHero.java",
+  "java_sha256": "02bd2dd96c06d56a25497b58846d8f216d7557354f739ab21e84a7069d7d4926",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTappedSourceTriggeredAbility.java",
+      "sha256": "8a11b9ab0cb2d8e82af1f0bea26253e728f0a8f2c8d2e7847d99db88aa97519c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::wylie_vigilance_and_tap_trigger_interact_with_steeds_saddle_four"
 }

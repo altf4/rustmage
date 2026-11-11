@@ -134,5 +134,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[DESTROY, NEXT_TARGET, DESTROY, LAST_TARGET, DESTROY],
         },
     ]),
+    mode_counts: Some(&[3; 10]),
     ..CardRules::EMPTY
 };

@@ -90,5 +90,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         cast_mode_requirements: &[(3, DESCEND), (4, DESCEND), (5, DESCEND), (6, DESCEND)],
         ..CardExtras::EMPTY
     },
+    mode_counts: Some(&[1, 1, 1, 2, 2, 2, 3]),
     ..CardRules::EMPTY
 };

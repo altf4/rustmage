@@ -78,6 +78,7 @@ impl Game {
             .collect();
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,
@@ -108,6 +109,11 @@ impl Game {
             zone_replacements::ZoneMoveCompletion::Rebound(player) => {
                 if was_card {
                     self.schedule_rebound(before, object, player);
+                }
+            }
+            zone_replacements::ZoneMoveCompletion::Plot => {
+                if was_card {
+                    self.remember_plotted(before.owner, object);
                 }
             }
             zone_replacements::ZoneMoveCompletion::Adventure(player) => {

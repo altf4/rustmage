@@ -1162,8 +1162,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .flat_map(|roles| &roles.source_linked_effects)
             .filter(|row| {
-                row.kind == SourceLinkedEffectKind::Treasure
-                    && source_linked_effects::active(game, row)
+                row.kind.grants_treasure_mana() && source_linked_effects::active(game, row)
             })
             .collect();
         let resources = game
@@ -1213,11 +1212,12 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
+                                        | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
                             })
-                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
+                            || object.card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_) | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_) | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn | crate::cards::StaticAbilityFragment::OtherControlledExhaustGenericReduction(_) | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_) | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_) | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_) | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. } | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. } | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_) | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. } | crate::cards::StaticAbilityFragment::AttachedAllCreatureTypes | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..) | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. } | crate::cards::StaticAbilityFragment::LandMana { .. } | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_) | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. } | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_) | crate::cards::StaticAbilityFragment::ChosenCreatureType | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. } | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_) | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. } | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered | crate::cards::StaticAbilityFragment::SourceOffTurnCreature | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. } | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. } | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_) | crate::cards::StaticAbilityFragment::ChosenBasicLandType | crate::cards::StaticAbilityFragment::ChosenModifier(..) | crate::cards::StaticAbilityFragment::DeathBaronLord | crate::cards::StaticAbilityFragment::SourceCounterSubtype { .. } | crate::cards::StaticAbilityFragment::SourceCounterCreature { .. } | crate::cards::StaticAbilityFragment::SourceCelebrationCreatureForm { .. } | crate::cards::StaticAbilityFragment::SourceGraveyardAllTypes { .. } | crate::cards::StaticAbilityFragment::SourceConditionalKeywords { .. } | crate::cards::StaticAbilityFragment::SourceCounterKeywords { .. } | crate::cards::StaticAbilityFragment::SourcePlusOnePlacedKeywords(..) | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. } | crate::cards::StaticAbilityFragment::CounterKeywordOwnTurn(..) | crate::cards::StaticAbilityFragment::CounterKeywordOther(..))))
                             || object.controller == goal.actor
                                 && subtypes
                                     .iter()
@@ -3491,6 +3491,13 @@ impl<'g> FundingState<'g> {
                             *total = total.saturating_add(u128::from(amount));
                         }
                     }
+                    ControlledArtifactTokenTapManaBonus
+                        if !fixed_control || self.object(id).controller == self.actor =>
+                    {
+                        for total in &mut bonus {
+                            *total = total.saturating_add(1);
+                        }
+                    }
                     AdditionalTriggers { .. } => {
                         multiplicity = multiplicity.saturating_add(1);
                     }
@@ -5527,6 +5534,13 @@ impl Game {
         if a.needs_behold() {
             return self.behold_intent_fundable(a, false) || self.behold_intent_fundable(a, true);
         }
+        if a.item.kind == StackKind::Spell
+            && a.item.source.is_some_and(|source| {
+                self.cast_uses_target_life_costs(a.item.controller, source.card)
+            })
+        {
+            return self.target_life_announcement_fundable(a, cost);
+        }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }
@@ -5785,7 +5799,11 @@ impl Game {
             && a.item.cast.is_some_and(|c| {
                 matches!(
                     c.method,
-                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle | CastMethod::Airbend
+                    CastMethod::Free
+                        | CastMethod::Plot
+                        | CastMethod::Miracle
+                        | CastMethod::Airbend
+                        | CastMethod::GrantedZeroFlashback
                 )
             })
         {
@@ -6202,8 +6220,11 @@ impl Game {
     }
     /// Complete coupled allocation constraints after every nonmana selection.
     pub fn mana_payment_domain(&self) -> Option<ManaPaymentDomain> {
-        if matches!(self.state.pending, Pending::AttackPayment { .. }) {
-            let request = self.state.attack_payment.as_ref()?;
+        if matches!(
+            self.state.pending,
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. }
+        ) {
+            let request = self.state.combat_payment.as_ref()?;
             let available = self.available_mana(request.player, mana_lots::Purpose::Other);
             return payable(available.map(u128::from), [0; 6], request.generic).then_some(
                 ManaPaymentDomain {
@@ -6785,21 +6806,21 @@ impl Game {
             emit,
         )
     }
+    pub(super) fn library_top_plot_fundable(&self, request: PlotPaymentView) -> bool {
+        let goal = request.goal();
+        let mut state = FundingState::from_game(self, &goal);
+        state.set_purpose(mana_lots::Purpose::Other);
+        state.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
+            request.source_is_current(world) && world.cost_completion()
+        })
+    }
+
     pub(super) fn visit_plot_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let request = self.plot_payment().unwrap();
-        if self.object_ref(request.object.card) != request.object
-            || self.state.objects[request.object.card as usize].zone != Zone::Hand
-            || self.state.objects[request.object.card as usize].owner != request.controller
-        {
+        if !request.source_is_current(self) {
             return false;
         }
-        let goal = FundingGoal {
-            reserve: None,
-            actor: request.controller,
-            required: request.cost.colored,
-            generic: request.cost.generic,
-            source: None,
-        };
+        let goal = request.goal();
         let state = FundingState::from_game(self, &goal);
         if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
@@ -7024,8 +7045,8 @@ impl Game {
                     a.evidence.as_ref().map(|e| e.threshold),
                 )
             }
-            Pending::AttackPayment { .. } => {
-                let request = self.state.attack_payment.as_ref().unwrap();
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
+                let request = self.state.combat_payment.as_ref().unwrap();
                 (
                     FundingGoal {
                         actor,
@@ -7038,20 +7059,7 @@ impl Game {
                     None,
                 )
             }
-            Pending::PlotPayment { .. } => {
-                let request = self.plot_payment().unwrap();
-                (
-                    FundingGoal {
-                        actor,
-                        required: request.cost.colored,
-                        generic: request.cost.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    false,
-                    None,
-                )
-            }
+            Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None),
             Pending::FaceUpPayment { .. } => {
                 let request = self.face_up_payment().unwrap();
                 (
@@ -7448,7 +7456,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn attack_tax_fundable(&self, player: Player, generic: u32) -> bool {
+    pub(super) fn combat_tax_fundable(&self, player: Player, generic: u32) -> bool {
         let goal = FundingGoal {
             reserve: None,
             actor: player,
@@ -7458,8 +7466,8 @@ impl Game {
         };
         FundingState::from_game(self, &goal).reachable(&goal, &mut HashSet::new())
     }
-    pub(super) fn visit_attack_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        let payment = self.state.attack_payment.as_ref().unwrap();
+    pub(super) fn visit_combat_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let payment = self.state.combat_payment.as_ref().unwrap();
         let goal = FundingGoal {
             reserve: None,
             actor: payment.player,
@@ -7472,11 +7480,7 @@ impl Game {
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
             goal.generic,
-            |payment| {
-                emit(Action::PayAttackCost {
-                    payment: concrete_payment(payment),
-                })
-            },
+            |mana| emit(payment.payment_action(concrete_payment(mana))),
         ) {
             return true;
         }
@@ -7683,11 +7687,10 @@ impl FundingState<'_> {
         }
         next.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
             let valid = match pending {
-                Pending::PlotPayment { .. } => world.game.plot_payment().is_some_and(|r| {
-                    world.reference(r.object.card) == r.object
-                        && world.object(r.object.card).zone == Zone::Hand
-                        && world.object(r.object.card).owner == r.controller
-                }),
+                Pending::PlotPayment { .. } => world
+                    .game
+                    .plot_payment()
+                    .is_some_and(|request| request.source_is_current(world)),
                 _ => true,
             };
             valid && world.cost_completion()
@@ -7698,16 +7701,13 @@ impl FundingState<'_> {
 impl Game {
     pub(super) fn guided_mana_goal(&self, pending: &Pending) -> Option<FundingGoal> {
         let (actor, required, generic) = match pending {
-            Pending::PlotPayment { .. } => {
-                let r = self.plot_payment()?;
-                (r.controller, r.cost.colored, r.cost.generic)
-            }
+            Pending::PlotPayment { .. } => return Some(self.plot_payment()?.goal()),
             Pending::FaceUpPayment { .. } => {
                 let r = self.face_up_payment()?;
                 (r.controller, r.cost.colored, r.cost.generic)
             }
-            Pending::AttackPayment { .. } => {
-                let r = self.state.attack_payment.as_ref()?;
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
+                let r = self.state.combat_payment.as_ref()?;
                 (r.player, [0; 6], r.generic)
             }
             _ => return None,

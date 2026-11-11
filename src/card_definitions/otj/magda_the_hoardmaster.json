@@ -3,10 +3,46 @@
   "catalogue_id": 2613,
   "oracle_id": "7fd2beb8-f823-4723-beec-e59b62127490",
   "facts_sha256": "48d8ff725c8b1034729a3dd1f7cc9a966d660ca8b8e25dbf4a9e75fcf4d00c7e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bce5448e3e4822b3683e6cfcaba0cf7f06c3a0583b819d4eef0fc2afaaff5f85"
   },
-  "physical_metadata_sha256": "76fd5891d9767b673d73fcfe8f3ec7d5fe92b00ff5017e37a654dd3c5eb1673d"
+  "physical_metadata_sha256": "76fd5891d9767b673d73fcfe8f3ec7d5fe92b00ff5017e37a654dd3c5eb1673d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MagdaTheHoardmaster.java",
+  "java_sha256": "c0bbcccb58ef00ca90176f68a0fb9795d76ccde5dcda7875c60c9fd7d8f5d4be",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/ScorpionDragonToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e6d42a86f7de0ae5e87582ee27bd5296d994edb328a5da1f9802ecc0aee18c6c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

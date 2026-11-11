@@ -3,10 +3,41 @@
   "catalogue_id": 2001,
   "oracle_id": "15260fa6-6062-423a-a248-81292ea46178",
   "facts_sha256": "ccd2150da2a47d53fc3fd20a724d4944a35a55c641bfa9bab2fe72c2f87ec9ff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f16914541dde33c8b1d11318c8d9c67420d3f0a55cbd11d38eb6f7016d5b4499"
   },
-  "physical_metadata_sha256": "ed37733e35618b449416587124e055617bc3484ae291d484494a17c7957f5b5c"
+  "physical_metadata_sha256": "ed37733e35618b449416587124e055617bc3484ae291d484494a17c7957f5b5c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HellspurPosseBoss.java",
+  "java_sha256": "0be6053dc0bd75919390d058d6d49eaf35a73ff8ea6b369846a39a593c66b43b",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_h_j.rs"
 }

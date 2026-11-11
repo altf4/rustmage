@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8fc5e5c0a4737b7601ac2e57736bb254276561443b7f75a649a756c4ffe398ee"
   },
-  "physical_metadata_sha256": "801d5b6166f0575442cba7894b80a61846c304946f690b1922788e8ad0e75482"
+  "physical_metadata_sha256": "801d5b6166f0575442cba7894b80a61846c304946f690b1922788e8ad0e75482",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SpirebluffCanal.java",
+  "java_sha256": "f1d45d6877aa0976026f79646d6fe8b669d0822911721f4f11d0dbb307cb22ef",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedUnlessAbility.java",
+      "sha256": "389f076d5e9c21e7e868cef5ed4d35d7a346a8a33bccaf9516e09843c1fad1f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/YouControlPermanentCondition.java",
+      "sha256": "850fb219ff3e25ef2abbb7d0672a728d77699fbbd358ced81cbb17e6b553372a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/BlueManaAbility.java",
+      "sha256": "8b0ffaec3d6002607e0a62e142031604a31556313e44830d9ad44026872cdf1f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/RedManaAbility.java",
+      "sha256": "1648a5c546271d42dd7cb1e3b988d6be224431812867755b96dd633593a5b8ee"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::canal_threshold_and_soured_springs_entry_use_actual_lands_and_colors"
 }

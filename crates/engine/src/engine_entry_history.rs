@@ -32,6 +32,19 @@ impl Game {
                 .push(CreatureEntryHistoryView { object, controller });
         }
     }
+    pub(super) fn other_zombie_entries_this_turn(&self, item: &SpellView) -> u128 {
+        self.state
+            .entered_this_turn
+            .iter()
+            .flat_map(|entries| entries.iter())
+            .filter(|entry| {
+                entry.zombie
+                    && entry.controller == item.controller
+                    && Some(entry.object) != item.entering_object
+            })
+            .count() as u128
+    }
+
     pub(super) fn creature_entries_this_turn(
         &self,
         player: Player,

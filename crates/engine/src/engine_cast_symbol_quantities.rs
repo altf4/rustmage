@@ -43,9 +43,11 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
             !cave_only || amount(value, cave_only)
         }
         Instruction::AddCastEntryCountersForControlledSubtypes { .. }
-        | Instruction::GrantCastRebound => !cave_only,
+        | Instruction::GrantCastRebound
+        | Instruction::GrantCastPlotOnResolution => !cave_only,
         Instruction::UpToTargets(value)
         | Instruction::DiscoverScaled(value)
+        | Instruction::CastHandPermanentFreeUpTo(value)
         | Instruction::IfAmountAtLeast { value, .. }
         | Instruction::IfAmountParity { value, .. }
         | Instruction::PutLandCards { maximum: value, .. }

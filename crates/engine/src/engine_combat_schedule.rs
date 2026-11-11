@@ -1,4 +1,4 @@
-//! Main-relative extra combat phases and source-independent repeated combat packets.
+//! Inserted phases and source-independent repeated combat packets.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -8,6 +8,14 @@ pub struct MainPhaseCombatView {
     pub remaining: u64,
     /// Successor of the main phase captured when the effect resolved.
     pub resume: Step,
+}
+
+/// A run of identical phases at the next combat boundary, newest first in observations.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct AfterCombatPhaseView {
+    pub first_step: Step,
+    pub remaining: u128,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -173,11 +181,63 @@ impl Game {
             false
         }
     }
+    pub(super) fn add_combat(&mut self) {
+        self.insert_after_combat(Step::BeginCombat, 1);
+    }
+
+    pub(super) fn add_upkeeps_after_combat(&mut self, controller: Player, amount: u128) {
+        // CR 500.10a: "you get" cannot add phases to another player's turn.
+        if amount != 0 && self.attacking_return_combat(controller) {
+            self.insert_after_combat(Step::Upkeep, amount);
+        }
+    }
+
+    fn insert_after_combat(&mut self, first_step: Step, count: u128) {
+        let rules = self.state.combat_rules.get_or_insert_with(Default::default);
+        let phases = &mut rules.after_combat;
+        // CR 500.8: the latest added phase occurs first at the same boundary.
+        if let Some(last) = phases
+            .last_mut()
+            .filter(|last| last.first_step == first_step)
+        {
+            last.remaining = last
+                .remaining
+                .checked_add(count)
+                .capacity("additional phase count exhausted");
+        } else {
+            phases
+                .try_reserve(1)
+                .capacity("additional phase allocation exhausted");
+            phases.push(AfterCombatPhaseView {
+                first_step,
+                remaining: count,
+            });
+        }
+    }
+
+    fn take_after_combat_phase(&mut self) -> Option<Step> {
+        let rules = self.state.combat_rules.as_mut()?;
+        let phase = rules.after_combat.last_mut()?;
+        let step = phase.first_step;
+        phase.remaining -= 1;
+        if phase.remaining == 0 {
+            rules.after_combat.pop();
+        }
+        rules.in_inserted_upkeep = step == Step::Upkeep;
+        Some(step)
+    }
+
+    pub(super) fn step_after_inserted_upkeep(&mut self) -> Option<Step> {
+        let rules = self.state.combat_rules.as_mut()?;
+        if !std::mem::take(&mut rules.in_inserted_upkeep) {
+            return None;
+        }
+        Some(self.step_after_combat())
+    }
+
     pub(super) fn step_after_combat(&mut self) -> Step {
-        // An ability creating a combat during the current combat inserts it
-        // before the previously scheduled successors, without losing their return.
-        if self.take_additional_combat() {
-            return Step::BeginCombat;
+        if let Some(step) = self.take_after_combat_phase() {
+            return step;
         }
         if let Some(step) = self
             .state

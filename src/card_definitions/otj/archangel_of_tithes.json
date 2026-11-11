@@ -3,10 +3,46 @@
   "catalogue_id": 208,
   "oracle_id": "ff5caed4-0276-476d-8fae-edae2536df7f",
   "facts_sha256": "a3916a2f82a234a3a4ad59844519303307a38a3e83d1599e7f8b48716ff9bc82",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "36b11b8fb665382cb8626aa4ad12c1630b7df3a8bcb02832be92a1f1f8c40897"
   },
-  "physical_metadata_sha256": "9aa89782529faf1a3f47b82e3e3ee4ad8b3097f3ae43163c78b118c659ebd231"
+  "physical_metadata_sha256": "9aa89782529faf1a3f47b82e3e3ee4ad8b3097f3ae43163c78b118c659ebd231",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArchangelOfTithes.java",
+  "java_sha256": "8249ff54cbc50101597e6c14d7120e5bf14b28a4e49e9b93f37ce55c871eae90",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantAttackYouUnlessPayAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "da1a28f8954b1cc4be2b846b8cc1f3ec963242f8b4c25b3624c31df21a8d03cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockUnlessPayManaAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "bdd37cbdf437035b2f7e8443cddbc1bd21a466cea7b189e9e477cb082b821bb8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a.rs"
 }

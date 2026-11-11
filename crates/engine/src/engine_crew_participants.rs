@@ -1,6 +1,17 @@
 //! Committed Crew/Saddle contribution events retain post-tap effective abilities.
 use super::*;
 
+pub(super) fn remember_paid_contributors(history: &mut Vec<ObjectRef>, contributors: &[ObjectRef]) {
+    for &contributor in contributors {
+        if !history.contains(&contributor) {
+            history
+                .try_reserve(1)
+                .capacity("Crew or Saddle history capacity exhausted");
+            history.push(contributor);
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn capture_crew_saddle_participants(

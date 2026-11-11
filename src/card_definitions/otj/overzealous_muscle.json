@@ -3,10 +3,31 @@
   "catalogue_id": 3079,
   "oracle_id": "4cb63198-29b5-4607-bd4a-f449807fb764",
   "facts_sha256": "63cf58edf40790d4614311b9c8c3312703318a06f3129b4bdab5760c5bb58c13",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8e5b4f0be278e90e7f509a00871e059fc5001172a5904169e22741626ad7aa7"
   },
-  "physical_metadata_sha256": "c7cdb6bafe94d3f336ec906bd019aa8abd8ab2027785aead983a1d7f21245304"
+  "physical_metadata_sha256": "c7cdb6bafe94d3f336ec906bd019aa8abd8ab2027785aead983a1d7f21245304",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OverzealousMuscle.java",
+  "java_sha256": "323b5b88c0b61e6b73fd2008f9a34e026a3b002cb159ffceefe1669113733490",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

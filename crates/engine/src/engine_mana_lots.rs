@@ -1660,7 +1660,8 @@ impl Game {
             }
             Action::PayPlot { payment }
             | Action::PayResolutionMana { payment }
-            | Action::PayAttackCost { payment } => (*payment, Purpose::Other),
+            | Action::PayAttackCost { payment }
+            | Action::PayBlockCost { payment } => (*payment, Purpose::Other),
             _ => return true,
         };
         let pool = self.available_mana(actor, purpose);

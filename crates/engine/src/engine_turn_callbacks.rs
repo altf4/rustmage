@@ -46,16 +46,20 @@ impl Game {
         };
         let mut controlled = false;
         let mut named = false;
+        let mut player_targeted = false;
         for row in &rules.turn_callbacks {
             match row.event {
                 TurnCallbackEvent::ControlledCreatureCombatDamagePlayerOrPlaneswalker => {
                     controlled = true;
                 }
                 TurnCallbackEvent::NamedCreatureCombatDamagePlayer(_) => named = true,
+                TurnCallbackEvent::ControlledCreatureCombatDamagePlayer(_) => {
+                    player_targeted = true;
+                }
                 _ => {}
             }
         }
-        if !controlled && !named {
+        if !controlled && !named && !player_targeted {
             return;
         }
         let hits: std::collections::BTreeSet<_> = events
@@ -87,6 +91,9 @@ impl Game {
                 }
                 TurnCallbackEvent::NamedCreatureCombatDamagePlayer(chosen) => {
                     name.is_some_and(|name| chosen.matches(name))
+                }
+                TurnCallbackEvent::ControlledCreatureCombatDamagePlayer(player) => {
+                    row.item.controller == controller && recipient == Target::Player(player)
                 }
                 _ => false,
             });

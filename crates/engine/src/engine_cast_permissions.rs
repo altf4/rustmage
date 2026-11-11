@@ -228,6 +228,53 @@ impl Game {
             || (face == CastFace::Adventure
                 && self.has_graveyard_cast(player, card, GraveyardCastKind::Adventure))
     }
+    pub(super) fn visit_granted_flashback_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        sorcery: bool,
+        allow_surcharge: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        for (kind, method) in [
+            (GraveyardCastKind::Flashback, CastMethod::GrantedFlashback),
+            (
+                GraveyardCastKind::FlashbackZero,
+                CastMethod::GrantedZeroFlashback,
+            ),
+        ] {
+            if !self.has_graveyard_cast(player, card, kind) {
+                continue;
+            }
+            for flash_surcharge in [false, true] {
+                if (allow_surcharge || !flash_surcharge)
+                    && self.permitted_cast_available(
+                        player,
+                        card,
+                        method,
+                        CastFace::Normal,
+                        sorcery,
+                        flash_surcharge,
+                    )
+                    && emit(if kind == GraveyardCastKind::FlashbackZero {
+                        Action::AnnounceGrantedZeroFlashback {
+                            card,
+                            flash_surcharge,
+                        }
+                    } else {
+                        Action::AnnounceGrantedFlashback {
+                            card,
+                            flash_surcharge,
+                        }
+                    })
+                {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
     pub(super) fn grant_graveyard_cast(&mut self, item: &SpellView, kind: GraveyardCastKind) {
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
@@ -671,6 +718,7 @@ impl Game {
                 | CastMethod::Free
                 | CastMethod::Plot
                 | CastMethod::Flashback
+                | CastMethod::GrantedZeroFlashback
                 | CastMethod::Harmonize
                 | CastMethod::Mayhem
                 | CastMethod::WebSlinging
@@ -713,6 +761,7 @@ impl Game {
                             | CastMethod::Free
                             | CastMethod::Plot
                             | CastMethod::Flashback
+                            | CastMethod::GrantedZeroFlashback
                             | CastMethod::Harmonize
                             | CastMethod::GrantedHarmonize
                             | CastMethod::GrantedMayhem
@@ -725,6 +774,7 @@ impl Game {
             |spec| spec.x_symbols > 0,
         );
         if scalar_x
+            && !self.cast_uses_target_life_costs(actor, definition)
             && origin_life_cost.is_none()
             && warp.is_none()
             && exile_play_surcharge == 0

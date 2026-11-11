@@ -18,7 +18,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
         || observation.payment_request.is_some()
-        || observation.attack_payment.is_some();
+        || observation.attack_payment.is_some()
+        || observation.block_payment.is_some();
     let resolution_mana_score = |payment: crate::Mana, production: crate::Mana| {
         let request = observation.resolution_payment.as_ref().unwrap();
         let pool = observation.players[request.payer.index()].mana;
@@ -183,6 +184,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseDrawReplacement { .. }
             | Action::ChooseReplacement { .. }
             | Action::ChooseResolvedDamageReplacement { .. }
+            | Action::ChooseResolvedCounterReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageSource { .. }
@@ -368,6 +370,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceGrantedZeroFlashback { .. }
             | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }
@@ -399,11 +402,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. }
             | Action::AnnounceGrantedMayhem { .. } => 79,
-            Action::AnnouncePlot { .. } | Action::BeginFaceUp { .. } => 40,
+            Action::AnnouncePlot { .. }
+            | Action::AnnounceLibraryTopPlot { .. }
+            | Action::BeginFaceUp { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceArtifactFood { .. }
+            | Action::AnnounceCreatureGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceEmbalm { .. }
@@ -418,7 +424,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
             | Action::PayFaceUp { .. }
-            | Action::PayAttackCost { .. } => 100,
+            | Action::PayAttackCost { .. }
+            | Action::PayBlockCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
             Action::ChooseResolutionCost { .. } => {
                 if observation
@@ -754,6 +761,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChoosePowerThreshold { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment
+            | Action::CancelBlockDeclaration
+            | Action::AbortBlockPayment
             | Action::AbortFaceUpPayment => -100,
             Action::Pass
             | Action::FinishAttackers

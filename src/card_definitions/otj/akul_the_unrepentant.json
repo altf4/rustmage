@@ -3,10 +3,41 @@
   "catalogue_id": 120,
   "oracle_id": "d6b56d6d-e2f6-47f5-a9d1-cd0e17f94a0d",
   "facts_sha256": "4164091491259b345209116f85858da4e425d5028248292070c45cb1e6b00802",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a858fd44093e847eaad967d35369fcc5d252f4c365ac1f944612bf914ee3f151"
   },
-  "physical_metadata_sha256": "0d82a76ab83405d6157aff1f6c6d1a4223a198b38be0362a77c1221c6d58d325"
+  "physical_metadata_sha256": "0d82a76ab83405d6157aff1f6c6d1a4223a198b38be0362a77c1221c6d58d325",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AkulTheUnrepentant.java",
+  "java_sha256": "ca64b8bd9a2b4d0878d7ad00964bdf25593f0ef27646733e65d8654483d4f744",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/LimitedTimesPerTurnActivatedAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11b6039cca03fb60836b3339e38e2b2dccfb7a47bfa599964d14ebf12696cdf7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a.rs"
 }

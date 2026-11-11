@@ -110,24 +110,49 @@ impl Game {
         false
     }
 
+    pub(super) fn controlled_activation_grantors(&self, actor: Player) -> Vec<CardId> {
+        self.state
+            .static_sources
+            .iter()
+            .copied()
+            .filter(|&provider| {
+                let giver = &self.state.objects[provider as usize];
+                giver.zone == Zone::Battlefield
+                    && giver.controller == actor
+                    && giver.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(|fragment| {
+                            matches!(
+                                fragment,
+                                StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                                    | StaticAbilityFragment::ControlledArtifactFood(_)
+                                    | StaticAbilityFragment::ControlledArtifactActivation(_)
+                                    | StaticAbilityFragment::ControlledNontokenCreatureActivation(
+                                        _
+                                    )
+                            )
+                        })
+                    })
+            })
+            .collect()
+    }
+
     pub(super) fn visit_controlled_activation_grants(
         &self,
         card: CardId,
         actor: Player,
         sorcery: bool,
+        grantors: &[CardId],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let kinds = self.current_kinds(card);
-        if kinds & (16 | 64) == 0 {
+        let nontoken_creature = kinds & 1 != 0 && !self.state.objects[card as usize].is_token();
+        if kinds & (16 | 64) == 0 && !nontoken_creature {
             return false;
         }
         let source = self.object_ref(card);
         let mut view = None;
-        for &provider in &self.state.static_sources {
+        for &provider in grantors {
             let giver = &self.state.objects[provider as usize];
-            if giver.zone != Zone::Battlefield || giver.controller != actor {
-                continue;
-            }
             let grantor = self.object_ref(provider);
             for fragment in giver
                 .card
@@ -155,6 +180,18 @@ impl Game {
                         (
                             index,
                             Action::AnnounceArtifactFood {
+                                source,
+                                grantor,
+                                ability: index,
+                            },
+                        )
+                    }
+                    StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
+                        if nontoken_creature =>
+                    {
+                        (
+                            index,
+                            Action::AnnounceCreatureGrant {
                                 source,
                                 grantor,
                                 ability: index,

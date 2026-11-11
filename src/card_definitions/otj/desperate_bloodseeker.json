@@ -8,5 +8,36 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f91cf06c7bc02d27cd2c166e23b2c2a5af84affb995c968a8ee3e26205233fd3"
   },
-  "physical_metadata_sha256": "c9afccaab3869cc359ae02ef7726ddc251b79ff6c223097a7714540953990467"
+  "physical_metadata_sha256": "c9afccaab3869cc359ae02ef7726ddc251b79ff6c223097a7714540953990467",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DesperateBloodseeker.java",
+  "java_sha256": "5705b7eb3acefb1e60e10a9feae20afdb7303a6c56335cca3a43fa2066b6748d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a_d_inherited.rs"
 }

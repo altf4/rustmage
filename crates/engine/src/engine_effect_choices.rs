@@ -187,6 +187,10 @@ impl Game {
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
+        if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
+            return !choice.selected[player.index()].contains(&object)
+                && self.saddle_rider_candidate(choice.source, player, object, effect);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::RemoveCreatureCounters(1) {
             return self.resolution_counter_candidate(player, object)
                 && self.counter_amounts(object.card).has_any();
@@ -204,6 +208,10 @@ impl Game {
                 && choice.selected[player.index()].iter().all(|survivor| {
                     self.state.objects[survivor.card as usize].controller != o.controller
                 });
+        }
+        if let EffectChoiceKind::ReturnAttachmentRecipient { attachment } = choice.kind {
+            return choice.selected[player.index()].is_empty()
+                && self.returned_attachment_recipient(attachment, object, player);
         }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             return o.controller == player
@@ -350,7 +358,12 @@ impl Game {
             return o.zone == Zone::Graveyard
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && !choice.selected[player.index()].contains(&object);
+                && !choice.selected[player.index()].contains(&object)
+                && (choice.kind != EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        object.card,
+                    ));
         }
         if matches!(
             choice.kind.payment_kind(),
@@ -475,11 +488,34 @@ impl Game {
             return o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && (o.zone == Zone::Graveyard
-                    || o.zone == Zone::Hand && !self.graveyard_land_return_active())
+                && self.land_selection_zone(o.zone)
                 && o.card.is_land()
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
+        }
+        if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
+            return o.zone == Zone::Hand
+                && o.owner == player
+                && o.is_card()
+                && o.card.is_creature()
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object)
+                && choice.selected[player.index()].len() < usize::from(maximum);
+        }
+        if choice.kind == EffectChoiceKind::BlinkControlledCreatures {
+            return o.zone == Zone::Battlefield
+                && o.controller == player
+                && self.is_creature(object.card)
+                && self.object_ref(object.card) == object
+                && !choice.selected[player.index()].contains(&object);
+        }
+        if let EffectChoiceKind::MoveFaceUpExileToGraveyard { owner } = choice.kind {
+            return o.zone == Zone::Exile
+                && o.owner == owner
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && !self.exiled_face_down(object)
+                && choice.selected[player.index()].is_empty();
         }
         if let EffectChoiceKind::SacrificeOrDiscard { nonland } = choice.kind.payment_kind()
             && o.zone == Zone::Hand
@@ -635,7 +671,14 @@ impl Game {
                 && self.has_subtype(object.card, "Saga")))
     }
 
-    pub(super) fn start_half_choice(&mut self, item: &SpellView, kind: EffectChoiceKind) -> bool {
+    pub(super) fn start_half_choice(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+        kind: EffectChoiceKind,
+        filter: SacrificeFilter,
+        round_up: bool,
+    ) -> bool {
         let payment = kind.payment_kind();
         assert!(matches!(
             payment,
@@ -645,7 +688,7 @@ impl Game {
             discard_draw: None,
             discarded: None,
             kind,
-            filter: evidence::cost(0).filter,
+            filter,
             amount: 0,
             source: item
                 .source
@@ -662,9 +705,8 @@ impl Game {
             equipment_recipient: None,
             blight_copy_attacking: false,
         };
-        // Freeze both quotas before either player chooses. The following printed
-        // instruction computes new quotas after this entire event and its replacements.
-        for player in [self.state.active, self.state.active.other()] {
+        // Freeze all quotas before choices or replacements can move anything.
+        for player in self.program_players(players, item) {
             let mut matching = 0usize;
             let mut available = 0usize;
             let zone = if payment == EffectChoiceKind::Discard {
@@ -688,8 +730,13 @@ impl Game {
             }
             // Prohibited permanents count toward the amount to sacrifice.
             // If there are too few legal selections, do as much as possible.
-            choice.required[player.index()] = u32::try_from((matching / 2).min(available))
-                .capacity("half choice count exhausted");
+            let half = if round_up {
+                matching.div_ceil(2)
+            } else {
+                matching / 2
+            };
+            choice.required[player.index()] =
+                u32::try_from(half.min(available)).capacity("half choice count exhausted");
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()
@@ -878,6 +925,55 @@ impl Game {
             false,
             None,
         )
+    }
+    pub(super) fn start_hand_creatures(&mut self, item: &SpellView, maximum: u16) -> bool {
+        maximum > 0
+            && self.start_effect_choice_inner(
+                item,
+                EffectChoiceKind::HandCreatures { maximum },
+                PlayerSet::Controller,
+                evidence::cost(0).filter,
+                0,
+                None,
+                false,
+                None,
+            )
+    }
+    pub(super) fn finish_hand_creatures(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let moves = choice.selected[player.index()]
+            .iter()
+            .map(|reference| {
+                let mut movement = self.entry_move(reference.card, Zone::Battlefield, false);
+                movement.controller = player;
+                movement
+            })
+            .collect::<Vec<_>>();
+        if !moves.is_empty() {
+            self.stage_entries(moves, None);
+        }
+    }
+    pub(super) fn finish_repeat_blink_choice(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let choice = resolution.choice.take().unwrap();
+        let ids = choice.selected[player.index()]
+            .iter()
+            .map(|reference| reference.card)
+            .collect::<Vec<_>>();
+        let remaining = resolution
+            .repeat_blink_remaining
+            .take()
+            .expect("repeat blink count");
+        if remaining > 0 {
+            resolution.repeat_blink_remaining = Some(remaining - 1);
+            resolution.pc -= 1;
+        }
+        if !ids.is_empty() {
+            self.blink_battlefield_objects_immediately(&ids);
+        }
     }
     pub(super) fn start_hand_permanent(
         &mut self,
@@ -1076,6 +1172,15 @@ impl Game {
         })
     }
 
+    fn land_selection_zone(&self, zone: Zone) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        match resolution.program.get(resolution.pc.saturating_sub(1)) {
+            Some(Instruction::ChooseOwnGraveyardLandReturn { .. }) => zone == Zone::Graveyard,
+            Some(Instruction::PutHandLands { .. }) => zone == Zone::Hand,
+            _ => matches!(zone, Zone::Hand | Zone::Graveyard),
+        }
+    }
+
     pub(super) fn start_graveyard_land_return(&mut self, item: &SpellView, tapped: bool) -> bool {
         if !self.state.objects.iter().any(|object| {
             object.zone == Zone::Graveyard
@@ -1199,8 +1304,7 @@ impl Game {
                         && self.current_kinds(reference.card) & 2 != 0
                 } else {
                     object.owner == player
-                        && (object.zone == Zone::Graveyard
-                            || object.zone == Zone::Hand && !self.graveyard_land_return_active())
+                        && self.land_selection_zone(object.zone)
                         && object.card.is_land()
                 });
                 let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
@@ -1405,6 +1509,9 @@ impl Game {
                 return false;
             }
         }
+        if kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+            self.state.resolving.as_mut().unwrap().remembered_objects = None;
+        }
         if kind == EffectChoiceKind::ReturnRememberedCreature {
             assert_eq!(amount, 1, "one remembered creature return");
             assert_eq!(players, PlayerSet::Controller, "captured return controller");
@@ -1422,6 +1529,9 @@ impl Game {
                 optional_skip.is_none(),
                 "any-number resolution choice finishes with any subset"
             );
+        }
+        if matches!(kind, EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)) {
+            self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
         let resolution = self.state.resolving.as_ref().unwrap();
         let pc = resolution.pc;
@@ -1693,6 +1803,15 @@ impl Game {
             self.state.pending = Pending::EffectChoice { player };
             return true;
         }
+        if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if choice.selected[player.index()].len() >= usize::from(maximum) {
+                self.finish_hand_creatures();
+                return false;
+            }
+            self.state.pending = Pending::EffectChoice { player };
+            return true;
+        }
         if choice.kind.any_number_selection()
             || matches!(
                 choice.kind.payment_kind(),
@@ -1750,6 +1869,10 @@ impl Game {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }
+        }
+        if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
+            self.finish_saddle_rider_choice(effect);
+            return false;
         }
         if choice.kind == EffectChoiceKind::HandCreatureAndLand {
             self.finish_creature_and_land_selection();
@@ -1834,13 +1957,8 @@ impl Game {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let reference = choice.selected[player.index()][0];
             self.state.resolving.as_mut().unwrap().choice = None;
-            let events = self.move_objects_raw(&[reference.card], Zone::Exile);
-            for event in &events {
-                if event.moved && event.destination == Zone::Exile {
-                    self.remember_plotted(player, event.after);
-                }
-            }
-            self.finish_zone_events(&events, &[]);
+            let event = self.move_object(reference.card, Zone::Exile);
+            self.commit_plotted_move(&event);
             return false;
         }
         if matches!(
@@ -1983,6 +2101,15 @@ impl Game {
             selected.sort_unstable();
             self.state.resolving.as_mut().unwrap().remembered_objects =
                 (!selected.is_empty()).then(|| selected.into());
+            return false;
+        }
+        if let EffectChoiceKind::ReturnAttachmentRecipient { attachment } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            self.finish_returned_attachment(
+                attachment,
+                choice.selected[player.index()].first().copied(),
+                player,
+            );
             return false;
         }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
@@ -2138,9 +2265,21 @@ impl Game {
         }
         if matches!(
             choice.kind.payment_kind(),
-            EffectChoiceKind::ReturnToHand | EffectChoiceKind::ReturnGraveyardToHand { .. }
+            EffectChoiceKind::ReturnToHand
+                | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
             self.return_effect_choice_to_hand(*choice);
+            return false;
+        }
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
+        ) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(object) = choice.selected[player.index()].first() {
+                self.move_object(object.card, Zone::Graveyard);
+            }
             return false;
         }
         if let EffectChoiceKind::MeldPartner(pair) = choice.kind {
@@ -2354,6 +2493,16 @@ impl Game {
                     .flat_map(|rows| rows.iter().map(|r| r.card))
                     .collect();
                 let events = self.move_objects_raw(&ids, Zone::Exile);
+                if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+                    let mut actual: Vec<_> = events
+                        .iter()
+                        .filter(|event| event.moved && event.destination == Zone::Exile)
+                        .map(|event| event.after)
+                        .collect();
+                    actual.sort_unstable();
+                    self.state.resolving.as_mut().unwrap().remembered_objects =
+                        (!actual.is_empty()).then(|| actual.into());
+                }
                 if let EffectChoiceKind::ExileFromHandWithPlaySurcharge(surcharge) = choice.kind {
                     for event in &events {
                         if event.moved && event.destination == Zone::Exile {
@@ -2549,6 +2698,18 @@ impl Game {
             .collect();
         if !ids.is_empty() {
             let events = self.move_objects_raw(&ids, Zone::Hand);
+            if let EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) = choice.kind {
+                let count = events
+                    .iter()
+                    .filter(|event| {
+                        event.moved
+                            && event.destination == Zone::Hand
+                            && event.before.reference != choice.source
+                            && event.before.has_subtype(subtype)
+                    })
+                    .count();
+                self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
+            }
             self.finish_zone_events(&events, &[]);
         }
     }
@@ -2827,6 +2988,7 @@ impl Game {
                 | EffectChoiceKind::HandCreatureAndLand
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
+                | EffectChoiceKind::HandCreatures { .. }
         ) && !self.shares_information(viewer, actor)
         {
             return None;
@@ -2883,6 +3045,8 @@ impl Game {
                 || matches!(
                     choice.kind,
                     EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                        | EffectChoiceKind::HandCreatures { .. }
+                        | EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne)
                 ),
             required: choice.required,
             selected: std::array::from_fn(|index| {

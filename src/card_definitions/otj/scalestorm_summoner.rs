@@ -1,16 +1,30 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const CONTROLLED_CREATURES: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: false,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::IfAmountAtLeast {
+                value: AmountValue::GreatestCreaturePower(CONTROLLED_CREATURES),
+                minimum: 4,
+                skip: 1,
+            },
+            Instruction::CreateTokens {
+                token: Card(5570),
+                amount: 1,
+                tapped: false,
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };

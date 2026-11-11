@@ -3,10 +3,41 @@
   "catalogue_id": 1645,
   "oracle_id": "65e64c50-4757-4e8e-8043-bc61a5f21750",
   "facts_sha256": "1ecb1d3dbc8b2b598c41ffd05c127b9985a939a8232887552e16b4fe13e1d64c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed334772035405f9401fc04308d5c6bc4360b9d50f85f5f5ef62ab88204d727f"
   },
-  "physical_metadata_sha256": "3386711ccb9e8f4ea00238b74bd5e32c5e994cc1862c152f6d5ee73c3a77fa24"
+  "physical_metadata_sha256": "3386711ccb9e8f4ea00238b74bd5e32c5e994cc1862c152f6d5ee73c3a77fa24",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FullSteamAhead.java",
+  "java_sha256": "c1099e195bd3235c7901be0458a0d632d11a7f521a331ca67fbeea66d2833bba",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e63f7e004321ab1b5c11466c457149be4825c47f5ba41a37f6a501b1ac031c4d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

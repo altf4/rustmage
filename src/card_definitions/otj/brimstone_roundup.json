@@ -3,10 +3,31 @@
   "catalogue_id": 554,
   "oracle_id": "e79deeee-c14d-496d-9b0b-475a6a24274c",
   "facts_sha256": "e4d7ec1f9f5434df1ae8f22d883da88a706316e8529cee469dea628f489ede07",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b057d4fedae73afe2605fff6773bf8d17e86ab0dbba0bcb02530f28c84d1c7d5"
   },
-  "physical_metadata_sha256": "8743856d308cfdf8595de8c03485fac3b50fceb3fa57359eba40d645717b2053"
+  "physical_metadata_sha256": "8743856d308cfdf8595de8c03485fac3b50fceb3fa57359eba40d645717b2053",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrimstoneRoundup.java",
+  "java_sha256": "b3fead00bfe2f486117badb1516cf822c578dc3391cf702abe807440d5c7457f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_b.rs"
 }

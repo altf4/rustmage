@@ -27,9 +27,29 @@ impl Game {
     }
 
     pub(super) fn grant_exiled_result_play(&mut self, player: Player, next_turn: bool) {
+        let expiry = if next_turn {
+            ExilePlayExpiry::EndOfNextTurn
+        } else {
+            ExilePlayExpiry::Turn(self.state.turn)
+        };
+        self.grant_remembered_exile_permission(player, expiry, false, false);
+    }
+
+    pub(super) fn grant_remembered_exile_permission(
+        &mut self,
+        player: Player,
+        expiry: ExilePlayExpiry,
+        cast_only: bool,
+        spend_any_mana: bool,
+    ) {
         let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
         for object in objects {
-            self.grant_exile_play_permission(player, object, next_turn);
+            if let Some(permission) =
+                self.grant_exile_play_permission_with_expiry(player, object, None, expiry)
+            {
+                permission.cast_only = cast_only;
+                permission.spend_any_mana = spend_any_mana;
+            }
         }
     }
 

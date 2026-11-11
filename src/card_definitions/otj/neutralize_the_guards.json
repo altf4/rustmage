@@ -3,10 +3,46 @@
   "catalogue_id": 2922,
   "oracle_id": "b793141d-581c-4cc7-b09f-1fe8bd5536c5",
   "facts_sha256": "fb2554c02245cbc88f496b7ecd2e3e1fec85fca03944f308ad63ed374ef1328d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cccfac0c80988278aeb01192898aeb63d0b28771b27b57ae402e45cf91ea4fc9"
   },
-  "physical_metadata_sha256": "3560e706a8c3a608254be1cba484be56bb8738b3a1c9aa4ae0a5bb84fb618b26"
+  "physical_metadata_sha256": "3560e706a8c3a608254be1cba484be56bb8738b3a1c9aa4ae0a5bb84fb618b26",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NeutralizeTheGuards.java",
+  "java_sha256": "42182acde46c37f476e9e9e9daca645f3673cfd6e0e0678da42e302cbedfba1f",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AddContinuousEffectToGame.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3647d2fb3d84fed968d2b45c43d33d706a712ec4dc4f9ba7aa39d39cc3efa31e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

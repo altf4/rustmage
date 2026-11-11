@@ -3,10 +3,41 @@
   "catalogue_id": 2505,
   "oracle_id": "0757c5a7-e51b-4c39-bb4d-b32657c10cb4",
   "facts_sha256": "353ab4a82eae4cef35662fd27982e20c9766e1ebd62e0b7ba61c942b29a9f64e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98cc707b90c4d108567c08a10b3715328e4b8ef601796df8809857c2f2097209"
   },
-  "physical_metadata_sha256": "f4baabb4dce09aefdbaa093f9bbedfdca9e383ab120596482d580f26bc4dc2a5"
+  "physical_metadata_sha256": "f4baabb4dce09aefdbaa093f9bbedfdca9e383ab120596482d580f26bc4dc2a5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LilahUndefeatedSlickshot.java",
+  "java_sha256": "cd733b65787c4d277ee3ed6e09b0f8b399af89a8da45da5a11803afe62fbd844",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_k_l.rs"
 }

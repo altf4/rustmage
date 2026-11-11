@@ -295,6 +295,14 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if condition.event() == TriggerCondition::SelfEntersIfCastByController
+            && !item
+                .cast_event
+                .as_ref()
+                .is_some_and(|cast| cast.controller == item.controller)
+        {
+            return false;
+        }
         if condition.event() == TriggerCondition::DelayedTargetControlLostWhileAttached {
             return item.event_object.as_ref().is_some_and(|event| {
                 self.attached_to_controlled_creature(event.object, item.controller)
@@ -425,6 +433,9 @@ impl Game {
             StepGuard::PlayedFromOutsideOwnHandThisTurn => {
                 return p.turn_facts.played_from_outside_own_hand;
             }
+            StepGuard::NoSpellCastFromOwnHandThisTurn => {
+                return !p.turn_facts.cast_spell_from_own_hand;
+            }
             StepGuard::CastManaValueAtLeastFourThisTurn => {
                 return p.turn_facts.cast_mana_value_at_least_four;
             }
@@ -491,10 +502,11 @@ impl Game {
                 return self.state.active == player
                     && matches!(self.state.step, Step::Main1 | Step::Main2);
             }
-            StepGuard::SourceCreature => {
+            StepGuard::YourCombatPhase => return self.attacking_return_combat(player),
+            StepGuard::SourceCreature | StepGuard::SourceNoncreature => {
                 return self.on_battlefield(source.card)
                     && self.object_ref(source.card) == source
-                    && world.kinds(source.card) & 1 != 0;
+                    && (world.kinds(source.card) & 1 != 0) == (guard == StepGuard::SourceCreature);
             }
             StepGuard::SourcePowerAtLeast(minimum) => {
                 return self.on_battlefield(source.card)
@@ -510,7 +522,7 @@ impl Game {
                 return self.state.objects.iter().enumerate().any(|(id, o)| {
                     o.controller == player
                         && o.zone == Zone::Battlefield
-                        && ["Assassin", "Mercenary", "Pirate", "Rogue", "Warlock"]
+                        && crate::cards::OUTLAW_SUBTYPES
                             .iter()
                             .any(|s| world.subtypes(id as CardId).has(o.card, s))
                 });
@@ -545,6 +557,7 @@ impl Game {
                 return self.state.players[player.other().index()].life_lost_this_turn > 0;
             }
             StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
+            StepGuard::SourceSaddled => return self.source_saddled(source),
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {

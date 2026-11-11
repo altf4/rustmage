@@ -3,10 +3,41 @@
   "catalogue_id": 3395,
   "oracle_id": "eec7d4f4-4141-49ed-8978-aefacc0a6609",
   "facts_sha256": "f0138e87206bcedb8ab66d099e37dc5900746d81bf5fd93e3f8f10a023f8dc38",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fb62ee820afc5b0c215b11c8239e85e16f2951dd538e459e97fe4cceebc220c"
   },
-  "physical_metadata_sha256": "707a80b5e8e38ba37151aa949eca99a279f591daefee36156ff74fd62367a709"
+  "physical_metadata_sha256": "707a80b5e8e38ba37151aa949eca99a279f591daefee36156ff74fd62367a709",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RavenOfFellOmens.java",
+  "java_sha256": "6b371252194f2c4928f4f8d6e733180f65954be7d74bd2ad00976ec033ecd9db",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

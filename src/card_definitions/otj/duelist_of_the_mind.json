@@ -3,10 +3,51 @@
   "catalogue_id": 1201,
   "oracle_id": "ff78f166-cca2-44bc-abe3-3a338bf543be",
   "facts_sha256": "d8a2f9ba6b93a681436b9fcc685dfef35428c40054d6e5ed3da9dd3cb3ecdd5d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d6282baecf47d28a3fcc24e99bab0e6fc990e4ff468ac26e4a92248d06f891aa"
   },
-  "physical_metadata_sha256": "8a1f7be8f1a7082c4c9380c1da2e9afd763e0de1ada6fe18910133e794280c8c"
+  "physical_metadata_sha256": "8a1f7be8f1a7082c4c9380c1da2e9afd763e0de1ada6fe18910133e794280c8c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DuelistOfTheMind.java",
+  "java_sha256": "db77b6e057736226b66fe964f348ffb2131962948cf8bd591406f5ce6cbe1c56",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsDrawnThisTurnDynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "57ac3b7529b53309fdd1704e951fe94beda56014bd28293f3a8f9ee295787cc3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "07d7b0ba8fdb6f3e6eeb405c2768a37677e7fded311795af1425dc2bfdb9bbd1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_c_d.rs"
 }

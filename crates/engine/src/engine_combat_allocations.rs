@@ -17,7 +17,8 @@ pub struct PlayerCombatDamageView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct CombatRulesState {
-    pub additional_combats: u64,
+    pub after_combat: Vec<AfterCombatPhaseView>,
+    pub in_inserted_upkeep: bool,
     pub after_main: Option<MainPhaseCombatView>,
     pub inserted_phases: Vec<Step>,
     pub end_steps: AdditionalEndStepsView,
@@ -58,6 +59,7 @@ struct ExcessDamage {
 impl CombatRulesState {
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self.after_combat.len() * std::mem::size_of::<AfterCombatPhaseView>()
             + self.inserted_phases.len() * std::mem::size_of::<Step>()
             + self.attack_without_defender.len() * std::mem::size_of::<ObjectRef>()
             + self
@@ -399,7 +401,7 @@ impl Game {
         self.clear_tracked_excess_damage();
         amount
     }
-    pub(super) fn create_excess_tokens(&mut self, item: &SpellView, token: Card) {
+    pub(super) fn create_excess_tokens(&mut self, item: &SpellView, token: Card, tapped: bool) {
         let excess = self
             .state
             .combat_rules
@@ -408,7 +410,7 @@ impl Game {
         if let Some(excess) = excess {
             let amount = excess.dealt.saturating_sub(excess.lethal).max(0) as u128;
             if amount > 0 {
-                self.create_tokens(item.controller, token, amount, false);
+                self.create_tokens(item.controller, token, amount, tapped);
             }
         }
     }
@@ -436,26 +438,6 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
-    }
-    pub(super) fn add_combat(&mut self) {
-        let count = &mut self
-            .state
-            .combat_rules
-            .get_or_insert_with(Default::default)
-            .additional_combats;
-        *count = count
-            .checked_add(1)
-            .capacity("additional combat count exhausted");
-    }
-    pub(super) fn take_additional_combat(&mut self) -> bool {
-        if let Some(rules) = &mut self.state.combat_rules
-            && rules.additional_combats > 0
-        {
-            rules.additional_combats -= 1;
-            true
-        } else {
-            false
-        }
     }
     pub(super) fn require_blocks(&mut self, item: &SpellView, filter: CreatureFilter) {
         let recipients: Vec<_> = self

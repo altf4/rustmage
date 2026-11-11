@@ -5,15 +5,17 @@ use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Compute the wide pre-reduction generic increase from active sources.
-    pub(super) fn spell_generic_tax(&self, actor: Player, definition: Card) -> u64 {
+    pub(super) fn spell_generic_tax(&self, actor: Player, card: CardId, definition: Card) -> u64 {
         use crate::cards::StaticAbilityFragment::{
-            ChosenCardTypeSpellTax, OpponentNoncreatureSpellTax,
+            ChosenCardTypeSpellTax, OpponentGraveyardOrExileSpellTax, OpponentNoncreatureSpellTax,
         };
 
         let kinds = definition.kind_mask();
-        // A creature spell can only be taxed here if another one of its
-        // types was chosen. Preserve the common no-tax path for creatures.
-        if kinds & 1 != 0
+        let graveyard_or_exile = matches!(self.spell_origin(card), Zone::Graveyard | Zone::Exile);
+        // A creature cast from neither taxed zone needs a chosen-type tax
+        // to have any applicable generic increase.
+        if !graveyard_or_exile
+            && kinds & 1 != 0
             && !self.state.entry_values.as_ref().is_some_and(|rows| {
                 rows.iter().any(|row| {
                     matches!(row.value, EntryChoiceValue::CardType(kind) if kind.spell_mask() & kinds != 0)
@@ -37,6 +39,11 @@ impl Game {
                     .filter_map(|fragment| match *fragment {
                         OpponentNoncreatureSpellTax(amount)
                             if kinds & 1 == 0 && object.controller != actor =>
+                        {
+                            Some(amount)
+                        }
+                        OpponentGraveyardOrExileSpellTax(amount)
+                            if graveyard_or_exile && object.controller != actor =>
                         {
                             Some(amount)
                         }
@@ -104,7 +111,7 @@ impl Game {
     ) -> Option<ManaCost> {
         let raw = u64::from(base.generic)
             .checked_add(extra_generic)?
-            .checked_add(self.spell_generic_tax(actor, definition))?;
+            .checked_add(self.spell_generic_tax(actor, id, definition))?;
         let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(discount.colored[i]));
         let excess = (0..6)
             .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))
@@ -253,12 +260,10 @@ impl Game {
                         | CastMethod::LibraryLife
                         | CastMethod::Plot
                         | CastMethod::Free
+                        | CastMethod::GrantedZeroFlashback
                 )
             }) {
-                return ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                };
+                return ManaCost::ZERO;
             }
             if a.item
                 .cast
@@ -353,6 +358,21 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
+        if self.cast_uses_target_life_costs(actor, definition) {
+            let method = if flashback {
+                CastMethod::Flashback
+            } else {
+                CastMethod::Normal
+            };
+            return self.permitted_cast_available(
+                actor,
+                card,
+                method,
+                CastFace::Normal,
+                false,
+                true,
+            );
+        }
         let source = self.object_ref(card);
         let available = match definition.effect() {
             Effect::Modal(modes) => modes.iter().enumerate().any(|(index, mode)| {
@@ -439,11 +459,13 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.item
+        let card = a
+            .item
             .source
             .expect("cost announcement has object source")
-            .card
-            .has_target_cost_modifier()
+            .card;
+        if card.has_target_cost_modifier()
+            || self.cast_uses_target_life_costs(a.item.controller, card)
         {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }
@@ -468,6 +490,10 @@ impl Game {
     /// Announced spells already occupy the stack; retain their actual cast origin.
     /// During nested mana abilities the enclosing announcement remains authoritative.
     fn spell_origin(&self, id: CardId) -> Zone {
+        let zone = self.state.objects[id as usize].zone;
+        if zone != Zone::Stack {
+            return zone;
+        }
         let packet = self
             .state
             .announcing
@@ -483,7 +509,7 @@ impl Game {
             .find(|s| s.kind == StackKind::Spell && s.source.is_some_and(|source| source.id == id));
         packet
             .and_then(|s| s.cast.map(|c| c.origin))
-            .unwrap_or(self.state.objects[id as usize].zone)
+            .unwrap_or(zone)
     }
     fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
         self.spell_origin(id) != Zone::Hand || self.state.objects[id as usize].owner != actor

@@ -54,6 +54,8 @@ pub(super) struct RoleState {
     /// Each controller's rule lasts until that controller's next turn begins.
     pub prohibit_opponent_nonhand_casts: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
+    /// Cold rows only for attachments that have dispatched a duration trigger.
+    pub attachment_origins: Vec<(ObjectRef, u64)>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
     pub live_static: Vec<LiveStaticSourceView>,
@@ -77,6 +79,8 @@ pub(super) struct RoleState {
     pub player_damage_shields: Vec<return_links::PlayerDamageShieldView>,
     pub creature_damage_shields: Vec<CreatureDamageShieldView>,
     pub damage_doublers: Vec<DamageDoublerView>,
+    pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
+    pub creature_counter_increases: Vec<CreatureCounterIncreaseView>,
     pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -99,9 +103,16 @@ impl RoleState {
             .capacity("Ability origins exhausted");
         self.clock
     }
+    pub(super) fn attachment_origin(&self, source: ObjectRef) -> Option<u64> {
+        self.attachment_origins
+            .iter()
+            .find(|(object, _)| *object == source)
+            .map(|(_, origin)| *origin)
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
+            + self.attachment_origins.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.until_next_turn_stats.len() * std::mem::size_of::<UntilNextTurnStatsView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()
@@ -117,6 +128,10 @@ impl RoleState {
                 * std::mem::size_of::<return_links::PlayerDamageShieldView>()
             + self.creature_damage_shields.len() * std::mem::size_of::<CreatureDamageShieldView>()
             + self.damage_doublers.len() * std::mem::size_of::<DamageDoublerView>()
+            + self.noncombat_damage_increases.len()
+                * std::mem::size_of::<NoncombatDamageIncreaseView>()
+            + self.creature_counter_increases.len()
+                * std::mem::size_of::<CreatureCounterIncreaseView>()
             + self.chosen_creature_links.len() * std::mem::size_of::<ChosenCreatureLinkView>()
             + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()
@@ -222,6 +237,22 @@ impl Game {
         subject: Option<ObjectRef>,
     ) {
         self.queue_reflexive_objects(item, ability, subject);
+    }
+    pub(super) fn flip_coin_for_captured_spell(&mut self, item: &SpellView, win: u16, loss: u16) {
+        let ability = if self.flip_coins(item.controller, 1) == 1 {
+            win
+        } else {
+            loss
+        };
+        let before = self.state.pending_triggers.len();
+        self.queue_reflexive(item, ability, None);
+        if let Some(trigger) = self.state.pending_triggers.get_mut(before) {
+            trigger.copy_event = item.copy_event.clone();
+            trigger.cast_event = item.cast_event.clone();
+            if let Some(event) = trigger.cast_event.as_deref() {
+                trigger.refer_objects([event.object]);
+            }
+        }
     }
     pub(super) fn queue_reflexive_objects(
         &mut self,

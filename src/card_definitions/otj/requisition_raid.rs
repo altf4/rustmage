@@ -102,5 +102,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         generic(2),
         generic(3),
     ]),
+    mode_counts: Some(&[1, 1, 2, 1, 2, 2, 3]),
     ..CardRules::EMPTY
 };

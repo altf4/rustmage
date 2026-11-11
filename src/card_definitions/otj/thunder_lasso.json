@@ -8,5 +8,51 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a478145ebc6e2a2413068b1a1eb465a7f0c3b050419054017df782df34c78bd6"
   },
-  "physical_metadata_sha256": "1c9420c7713e0a451f748783c5a4b25887a4ebc84dce9aee3b20b6a251d43042"
+  "physical_metadata_sha256": "1c9420c7713e0a451f748783c5a4b25887a4ebc84dce9aee3b20b6a251d43042",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThunderLasso.java",
+  "java_sha256": "2f64d8e8a7c3858989863e3f81082f3d748ef901b51c653a4c3bf7f5c0ea2a0f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+      "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAttachToTarget.java",
+      "sha256": "e50af4bbb1c04c044c182d9d0acb58dcf41375d41a94e85a67fbcbfe39f2625b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::thunder_lasso_attaches_then_uses_the_equipped_attack_to_tap_an_opposing_creature"
 }

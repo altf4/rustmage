@@ -8,5 +8,46 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b5fdee88faa3b2404fbfe394e1b300775ff7aa8ba9376686718b320492a1b320"
   },
-  "physical_metadata_sha256": "5a798063b999682a86f7d9b91aaef1d3e1bf72e3e537c2ca024c4666cc2d45c3"
+  "physical_metadata_sha256": "5a798063b999682a86f7d9b91aaef1d3e1bf72e3e537c2ca024c4666cc2d45c3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StoicSphinx.java",
+  "java_sha256": "560d376fa61edb127bb702b293adae5dfb24609d2ff6c5c3fe6792853ce35c11",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HaventCastSpellThisTurnCondition.java",
+      "sha256": "bf4071560c595f1569a13e4a31198254cbc74a96115faa975ab694e46218451c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::stoic_sphinx_qualifies_hexproof_by_its_controller_casts_and_stop_cold_blanks_it"
 }

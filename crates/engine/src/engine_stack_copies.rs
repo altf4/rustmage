@@ -486,6 +486,7 @@ impl Game {
                     }
                     Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
                     Instruction::CopyCapturedSpellModified { .. }
+                    | Instruction::FlipCoinForCapturedSpell { .. }
                     | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
                     _ => None,
                 })
@@ -771,6 +772,23 @@ impl Game {
             false
         }
     }
+    pub(super) fn copy_target_spell_or_ability(&mut self, item: &SpellView, group: u16) -> bool {
+        let Some(kind) = item
+            .targets
+            .iter()
+            .find(|bound| bound.group == group)
+            .and_then(|bound| self.bound_stack_item(bound))
+            .map(|target| target.kind)
+        else {
+            return false;
+        };
+        if kind == StackKind::Spell {
+            self.copy_target_spell(item, group, true, CopyExceptions::NONE)
+        } else {
+            self.copy_target_ability(item, group, 1)
+        }
+    }
+
     pub(super) fn copy_target_ability(
         &mut self,
         item: &SpellView,
@@ -1013,12 +1031,12 @@ impl Game {
         });
         self.advance_copy_targets()
     }
-    /// Stack targeting needs the exact source's departure types for every copy
-    /// callback. Only callbacks reading source power replace the remaining facts.
+    /// Targeting copy callbacks retain the exact source's departure types.
+    /// Callbacks that read source power also retain the remaining facts.
     pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
         if let Some(state) = &mut self.state.stack_copy_data {
             for item in &mut state.delayed {
-                if item.remember_source_kinds_at_departure(before)
+                if item.remember_source_types_at_departure(before)
                     && delayed_copy_reads_source_power(item)
                 {
                     item.source.as_mut().expect("delayed source exists").facts =

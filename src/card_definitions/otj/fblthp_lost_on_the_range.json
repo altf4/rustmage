@@ -3,10 +3,51 @@
   "catalogue_id": 1459,
   "oracle_id": "764f6412-c4ff-4eec-9a9d-870661f97f8b",
   "facts_sha256": "ddf515ddfff893d6d5da818968a57c27d3448f02dcc693ced312b0ab327ffeab",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25ae64d9a4e56ceef8bc2b7ce69b0690abeb1d5fce6105cf76dbeea4d0fee093"
   },
-  "physical_metadata_sha256": "293cb769c3d9b8510a2b3225994f78c73fc2ae5c0b1db3adce3bfebfadb1a71a"
+  "physical_metadata_sha256": "293cb769c3d9b8510a2b3225994f78c73fc2ae5c0b1db3adce3bfebfadb1a71a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FblthpLostOnTheRange.java",
+  "java_sha256": "a09e012daee0e22a026464112bca9fe953ec47490d1566e0c1a80c697146dc10",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtTopCardOfLibraryAnyTimeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8f40c1e9eeee58bb7d6fb63ad5d4c76cfb0da76c6b823bb0ffaf0274c1cf0f8f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

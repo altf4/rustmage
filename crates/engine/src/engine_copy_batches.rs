@@ -19,7 +19,7 @@ impl Game {
                     .then(|| self.copiable_recipe(reference))
             })
             .collect();
-        self.stage_copy_recipes(item.controller, recipes);
+        self.stage_copy_recipes(item.controller, recipes, false);
     }
     /// Freeze all originals before one simultaneous token creation event.
     pub(super) fn copy_target_players_creatures_with_conditional_sacrifice(
@@ -53,7 +53,7 @@ impl Game {
                     ))
                 })
                 .collect();
-        self.stage_copy_recipes(item.controller, recipes);
+        self.stage_copy_recipes(item.controller, recipes, false);
     }
     pub(super) fn copy_controlled_nontoken_creatures_nonlegendary(&mut self, player: Player) {
         let recipes = self
@@ -78,6 +78,6 @@ impl Game {
                 Some(recipe)
             })
             .collect();
-        self.stage_copy_recipes(player, recipes);
+        self.stage_copy_recipes(player, recipes, false);
     }
 }

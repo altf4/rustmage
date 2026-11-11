@@ -17,6 +17,7 @@ pub enum ZoneReplacementKind {
     RevealShuffle,
     DreamExile,
     Rebound,
+    Plot,
     AdventureExile,
     OmenShuffle,
     /// The event is prevented; the object remains in its original zone.
@@ -135,6 +136,7 @@ pub(super) struct ZoneState {
     replay: Option<Box<Replay>>,
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
+    pub(super) plot_spells: SharedVec<ObjectRef>,
 }
 /// A checkpoint fixture for conservative schema projection tests.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -171,6 +173,7 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
 pub(super) struct FrozenRules {
     pub dream: Option<DreamExileView>,
     pub rebound: Option<Player>,
+    pub plot: bool,
     pub resolution_face: Option<(Player, CastFace)>,
     pub prevent: bool,
     pub shuffle_self: bool,
@@ -199,6 +202,7 @@ pub(super) enum ZoneShuffle {
 pub(super) enum ZoneMoveCompletion {
     Dream,
     Rebound(Player),
+    Plot,
     Adventure(Player),
     LinkedDeathExile(LinkedDeathExile),
 }
@@ -279,6 +283,7 @@ impl ZoneState {
         std::mem::size_of::<Self>()
             + self.reveals.len() * std::mem::size_of::<ZoneRevealView>()
             + self.graveyard_exile_spells.len() * std::mem::size_of::<ObjectRef>()
+            + self.plot_spells.len() * std::mem::size_of::<ObjectRef>()
             + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
             + self.choice.as_ref().map_or(0, |c| {
                 std::mem::size_of::<Choice>()
@@ -348,12 +353,15 @@ impl Game {
     }
     pub(super) fn forget_stack_graveyard_exile(&mut self, object: ObjectRef) {
         self.forget_dream_exile(object);
-        if let Some(rules) = &mut self.state.zone_rules
-            && rules.graveyard_exile_spells.contains(&object)
-        {
-            rules
-                .graveyard_exile_spells
-                .retain(|reference| *reference != object);
+        if let Some(rules) = &mut self.state.zone_rules {
+            if rules.graveyard_exile_spells.contains(&object) {
+                rules
+                    .graveyard_exile_spells
+                    .retain(|reference| *reference != object);
+            }
+            if rules.plot_spells.contains(&object) {
+                rules.plot_spells.retain(|reference| *reference != object);
+            }
         }
     }
     fn stack_graveyard_exile(&self, object: ObjectRef) -> bool {
@@ -563,6 +571,7 @@ impl Game {
         FrozenRules {
             dream: self.dream_resolution_mark(before.reference),
             rebound: None,
+            plot: false,
             resolution_face: None,
             prevent,
             reflexive_exiles,
@@ -608,6 +617,7 @@ impl Game {
                 // All other effects collapse to a single exile option.
                 rules.dream.is_some()
                     || rules.rebound.is_some()
+                    || rules.plot
                     || rules.resolution_face.is_some()
                     || rules.prevent
                     || rules.shuffle_self
@@ -776,6 +786,9 @@ impl Game {
         if rules.rebound.is_some() {
             choices.push(ZoneReplacementKind::Rebound);
         }
+        if rules.plot {
+            choices.push(ZoneReplacementKind::Plot);
+        }
         if let Some((_, face)) = rules.resolution_face {
             match face {
                 CastFace::Adventure => choices.push(ZoneReplacementKind::AdventureExile),
@@ -884,6 +897,7 @@ impl Game {
                 ZoneReplacementKind::Rebound => Some(ZoneMoveCompletion::Rebound(
                     rules.rebound.expect("marked rebound"),
                 )),
+                ZoneReplacementKind::Plot => Some(ZoneMoveCompletion::Plot),
                 ZoneReplacementKind::AdventureExile => Some(ZoneMoveCompletion::Adventure(
                     rules.resolution_face.expect("resolving adventure").0,
                 )),
@@ -913,6 +927,7 @@ impl Game {
                 }
                 ZoneReplacementKind::DreamExile
                 | ZoneReplacementKind::Rebound
+                | ZoneReplacementKind::Plot
                 | ZoneReplacementKind::AdventureExile
                 | ZoneReplacementKind::Exile
                 | ZoneReplacementKind::ExileReflexive { .. }

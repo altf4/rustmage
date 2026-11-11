@@ -86,6 +86,9 @@ impl Game {
                         .iter()
                         .any(|subtype| dealer.facts.has_subtype(subtype))
             }
+            DamageSubject::ControlledLegendaryCreatures => {
+                dealer.controller == source.controller && dealer.facts.legendary_creature
+            }
             DamageSubject::Source => dealer.reference == source.reference,
             DamageSubject::Attached => {
                 source.attached_to == Some(dealer.reference)
@@ -271,6 +274,66 @@ impl Game {
                     packet.refer_sources([DamageSourceRef::StackObject {
                         stack_object: spell_id,
                     }]);
+                }
+            }
+        }
+    }
+
+    /// The hit is measured after prevention and before its results, including
+    /// the counters placed by wither. Damage already marked never changes toughness.
+    pub(super) fn creature_toughness_damage_triggers(&mut self, events: &[DamageEvent]) {
+        let condition = TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness;
+        if !self.state.damage_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|ability| ability.condition.event() == condition)
+        }) {
+            return;
+        }
+        let mut hits = std::collections::BTreeMap::new();
+        for event in events {
+            if event.combat || event.amount <= 0 {
+                continue;
+            }
+            let Target::Card(id) = event.target else {
+                continue;
+            };
+            if self.on_battlefield(id) && self.is_creature(id) {
+                let amount = hits
+                    .entry((self.object_ref(id), event.source))
+                    .or_insert(0i128);
+                *amount = amount
+                    .checked_add(event.amount)
+                    .capacity("damage-received amount exhausted");
+            }
+        }
+        hits.retain(|(recipient, _), amount| self.stats(recipient.card).toughness == *amount);
+        if hits.is_empty() {
+            return;
+        }
+        for (observer, grant) in self.indexed_trigger_sources(&self.state.damage_sources) {
+            let definition = grant.map_or(observer.card, |grant| grant.granting_card);
+            for (index, ability) in definition.triggers().iter().enumerate() {
+                if ability.condition.event() != condition {
+                    continue;
+                }
+                for (&(recipient, dealer), &amount) in &hits {
+                    if dealer.controller == observer.controller
+                        && self.queue_trigger_from(&observer, index, grant.map(Box::new))
+                    {
+                        self.capture_damage_received_trigger(
+                            ability.program,
+                            recipient,
+                            amount as u128,
+                        );
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects([recipient, dealer.reference]);
+                    }
                 }
             }
         }

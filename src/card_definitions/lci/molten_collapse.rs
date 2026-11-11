@@ -49,5 +49,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         cast_mode_requirements: &[(2, StatValue::DescendedThisTurn)],
         ..CardExtras::EMPTY
     },
+    mode_counts: Some(&[1, 1, 2]),
     ..CardRules::EMPTY
 };

@@ -28,6 +28,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[SEARCH, RETURN],
         },
     ]),
+    mode_counts: Some(&[1, 1, 2]),
     mode_costs: Some(&[generic(1), generic(2), generic(3)]),
     ..CardRules::EMPTY
 };

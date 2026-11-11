@@ -3,10 +3,56 @@
   "catalogue_id": 2730,
   "oracle_id": "69c8e690-c0a2-4c4e-910d-123c9c5b922f",
   "facts_sha256": "a78c94818ed10d7488f8d91a68da6f58b2eafbfdf5b700204b02ed8aaa6cbc25",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ba3dd5222f62b2ec76bdf11289bfd380d151df2213c30e9f7c44a2d7e81b75af"
   },
-  "physical_metadata_sha256": "dd9da105b6bec4f3cdcd3d79c4a231afa22e1368f7c159b5f95ac90195e52e9b"
+  "physical_metadata_sha256": "dd9da105b6bec4f3cdcd3d79c4a231afa22e1368f7c159b5f95ac90195e52e9b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MetamorphicBlast.java",
+  "java_sha256": "2c0013eb05e0a1cd179c6a180c70a7d3d65bf2aa6feb23295d6f8b188c64bb4d",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/custom/CreatureToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "71de72a2543d4471901857cc0d58c1a06c383b25760e2a59e46b094862b2f31c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

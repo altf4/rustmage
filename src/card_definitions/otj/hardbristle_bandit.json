@@ -3,10 +3,31 @@
   "catalogue_id": 1942,
   "oracle_id": "116eea43-4235-4608-8c6a-599e860ae2f1",
   "facts_sha256": "fc62d765964a0105bc0bdf5ebdbaf6a11bc433e0cb875411bc4b05c072387df3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0d83ae306afe8600be2f84ce88bd3fe0c97b66cdbc3b9cc469eb0b8a55dc0dbe"
   },
-  "physical_metadata_sha256": "09c0f5e52296e5d75afe0556e16a09a7294d125071db74aa261c6be30b1ba3be"
+  "physical_metadata_sha256": "09c0f5e52296e5d75afe0556e16a09a7294d125071db74aa261c6be30b1ba3be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HardbristleBandit.java",
+  "java_sha256": "62aefea3460d9e28990e71506183debeee2d52a0a6f51d08bab5e35af937bedc",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8c7620af194cc7b4085783cc6bc7d8644e670a0c96931c087ecb4a3b7bd6ac71"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_h_j.rs"
 }

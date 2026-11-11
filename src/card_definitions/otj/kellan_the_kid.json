@@ -3,10 +3,46 @@
   "catalogue_id": 2343,
   "oracle_id": "afacc200-16ff-40f3-9d43-268438131d24",
   "facts_sha256": "76d54f20b448e3edfd9f5b2292d1dbe0353bff18661eeb7ac2e6391c8d764059",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "900f725ec59f92b8ec9717fcdc23b51c2d106d290675182fe85a085409391e57"
   },
-  "physical_metadata_sha256": "0b4315905b4bff24ce1f6ef6a7852bfb3fdf558cb0503230528468c027c65318"
+  "physical_metadata_sha256": "0b4315905b4bff24ce1f6ef6a7852bfb3fdf558cb0503230528468c027c65318",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanTheKid.java",
+  "java_sha256": "2bc4c5b6ee302c514ae8d138d21b253697fad8df5441cfa217ae4047f422dac4",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_k_l.rs"
 }

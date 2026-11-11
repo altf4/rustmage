@@ -34,5 +34,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[SEARCH, Instruction::ReturnToHand],
         },
     ]),
+    mode_counts: Some(&[1, 1, 2]),
     ..CardRules::EMPTY
 };

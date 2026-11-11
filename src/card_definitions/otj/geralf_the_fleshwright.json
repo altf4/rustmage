@@ -3,10 +3,81 @@
   "catalogue_id": 1714,
   "oracle_id": "a62e6cf4-1adb-4c28-b24b-91287bb23e96",
   "facts_sha256": "07fff672657a3c70565307fb43e08901ac305d4da70b76973979aca260c63f42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8b6553db54216fd0c64d20588943ae83d9abe2f56881a17e38afcff733c4a057"
   },
-  "physical_metadata_sha256": "30c268a51bf617d20870809264ce2bc72c4e36bbbeff17df652e78e69d119380"
+  "physical_metadata_sha256": "30c268a51bf617d20870809264ce2bc72c4e36bbbeff17df652e78e69d119380",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GeralfTheFleshwright.java",
+  "java_sha256": "f9df5bd627529c7461dfb19b8368eaf947226b30daabd7256e20bc63d39bbe03",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/Effect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92f49363848fa1b18215e3a0d516923e10d917638a38e5bbad73f274f6a1e917"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/Watcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9f13c8d5e69444bab89de1c7fd22feb9370606b56bb89fd6816f98439415868f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

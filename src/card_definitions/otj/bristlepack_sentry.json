@@ -3,10 +3,41 @@
   "catalogue_id": 560,
   "oracle_id": "05852d99-8f30-4318-913c-d0b1eaf8c222",
   "facts_sha256": "bf5b3a8b4f18f80c84867fd38d2d10b16328448f34eea750b23388f1b6ea497c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e712913a906a18f0810b0b1c3d166eaf9397dde34d9e9b34298861199e6c3c02"
   },
-  "physical_metadata_sha256": "f0bd4b535ac11b7d3b56cc3d78e5cb9fa4cc83dda8322781cb03d7a50d1bc0a7"
+  "physical_metadata_sha256": "f0bd4b535ac11b7d3b56cc3d78e5cb9fa4cc83dda8322781cb03d7a50d1bc0a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BristlepackSentry.java",
+  "java_sha256": "ca2a69a851315ff3a2a8bf2b83f8e48150330d11b438aa05cedb576af6a53741",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalAsThoughEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "40e0a82ae35b35c5434d1eb480e46ecff91ca69113a8cbc8e606dd1328bba618"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_b.rs"
 }

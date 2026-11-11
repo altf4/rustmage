@@ -35,6 +35,43 @@ impl Game {
         events
     }
 
+    pub(super) fn destroy_targets_unless_greater_creature_power(&mut self, item: &SpellView) {
+        if item.targets.is_empty() {
+            return;
+        }
+        let query = self.characteristic_query();
+        let greatest = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|&(id, object)| {
+                object.zone == Zone::Battlefield && self.is_creature(id as CardId)
+            })
+            .map(|(id, _)| query.stats(id as CardId).power)
+            .max();
+        let targets = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let object = bound.object?;
+                if !self.same_target_object(*bound) || !self.on_battlefield(object.card) {
+                    return None;
+                }
+                let power = if self.is_creature(object.card) {
+                    query.stats(object.card).power
+                } else {
+                    // CR 107.2 and 208.3: a noncreature's power is unavailable.
+                    0
+                };
+                greatest
+                    .is_none_or(|greatest| greatest <= power)
+                    .then_some(object)
+            })
+            .collect::<Vec<_>>();
+        self.destroy_objects_outcome(targets);
+    }
+
     pub(super) fn destroy_creatures_by_power(&mut self, minimum: u16) {
         // Read all powers before any creature leaves the battlefield.
         let query = self.characteristic_query();

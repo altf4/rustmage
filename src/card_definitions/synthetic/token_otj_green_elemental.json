@@ -1,0 +1,12 @@
+{
+  "name": "@token/otj-green-elemental",
+  "catalogue_id": 5614,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "cfa7017387e7d2e8e058e7463362ff67b365bb1fb61fe55659421216a60f5344",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ElementalXXGreenToken.java",
+  "java_sha256": "12a8918a4c23ae1feb26f5de65f2b2e56b1108fd0b73c5f2fc3c26d5e607686b",
+  "rules_tests": "tests/otj_cards_s_z.rs"
+}

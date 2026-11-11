@@ -319,9 +319,11 @@ impl Game {
         }
     }
     pub(super) fn grant_exiled_result_flexible_play(&mut self, player: Player, cast_only: bool) {
-        let objects = std::mem::take(&mut self.state.resolving.as_mut().unwrap().milled);
-        for object in objects {
-            self.grant_flexible_exile_permission_this_turn(player, object, cast_only);
-        }
+        self.grant_remembered_exile_permission(
+            player,
+            ExilePlayExpiry::Turn(self.state.turn),
+            cast_only,
+            true,
+        );
     }
 }

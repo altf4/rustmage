@@ -118,7 +118,79 @@ impl Game {
             }
         }
     }
-    pub(super) fn batch_graveyard_entry_triggers(
+    fn queue_entry_batch_without_spent_mana(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        events: &[ZoneChange],
+        suppression: u16,
+    ) {
+        let mut entrants = Vec::new();
+        for event in events {
+            if !event.moved
+                || event.destination != Zone::Battlefield
+                || !self.on_battlefield(event.after.card)
+                || self.object_ref(event.after.card) != event.after
+            {
+                continue;
+            }
+            let entrant = self.object_view(event.after.card);
+            if entrant.controller != source.controller
+                || entrant.kinds & suppression != 0
+                || (entrant.reference != source.reference
+                    && (!entrant.is_creature() || entrant.is_token()))
+            {
+                continue;
+            }
+            if event
+                .cast_event
+                .as_ref()
+                .is_some_and(|cast| cast.payment != [0; 6])
+            {
+                return;
+            }
+            entrants.push(entrant.reference);
+        }
+        if !entrants.is_empty() && self.queue_trigger(source, index) {
+            self.add_entry_trigger_multiplicity(source, &entrants);
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .refer_objects(entrants);
+        }
+    }
+
+    pub(super) fn queue_entry_copy_trigger(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        entrants: &[ObjectRef],
+    ) {
+        if entrants.is_empty() || !self.queue_trigger(source, index) {
+            return;
+        }
+        self.add_entry_trigger_multiplicity(source, entrants);
+        let rows = entrants
+            .iter()
+            .copied()
+            .map(|object| EntryBatchCopyView {
+                object,
+                recipe: self.copiable_recipe(object),
+            })
+            .collect();
+        let packet = self.state.pending_triggers.last_mut().unwrap();
+        packet.set_event_object(EventObjectView {
+            object: entrants[0],
+            facts: EventObjectFacts::CopiableGroup(rows),
+            semantic_objects: None,
+            conniver_creature: None,
+            subtype_lki: None,
+        });
+        packet.refer_objects(entrants.iter().copied());
+    }
+
+    pub(super) fn batch_creature_entry_triggers(
         &mut self,
         events: &[ZoneChange],
         sources: &[ObjectView],
@@ -126,12 +198,22 @@ impl Game {
     ) {
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::CreaturesFromGraveyardEnterYou { other } =
-                    ability.condition.event()
-                else {
-                    continue;
+                let other = match ability.condition.event() {
+                    TriggerCondition::CreaturesFromGraveyardEnterYou { other } => other,
+                    TriggerCondition::CreaturesEnterYouWithoutManaSpent
+                        if source.zone == Zone::Battlefield =>
+                    {
+                        self.queue_entry_batch_without_spent_mana(
+                            source,
+                            index,
+                            events,
+                            suppression,
+                        );
+                        continue;
+                    }
+                    _ => continue,
                 };
-                let rows: Vec<_> = events
+                let entrants: Vec<_> = events
                     .iter()
                     .filter_map(|event| {
                         if !event.moved
@@ -148,25 +230,10 @@ impl Game {
                         (entered.is_creature()
                             && entered.controller == source.controller
                             && entered.kinds & suppression == 0)
-                            .then(|| EntryBatchCopyView {
-                                object: event.after,
-                                recipe: self.copiable_recipe(event.after),
-                            })
+                            .then_some(event.after)
                     })
                     .collect();
-                if !rows.is_empty() && self.queue_trigger(source, index) {
-                    let objects: Vec<_> = rows.iter().map(|row| row.object).collect();
-                    self.add_entry_trigger_multiplicity(source, &objects);
-                    let packet = self.state.pending_triggers.last_mut().unwrap();
-                    packet.set_event_object(EventObjectView {
-                        object: objects[0],
-                        facts: EventObjectFacts::CopiableGroup(rows),
-                        semantic_objects: None,
-                        conniver_creature: None,
-                        subtype_lki: None,
-                    });
-                    packet.refer_objects(objects);
-                }
+                self.queue_entry_copy_trigger(source, index, &entrants);
             }
         }
     }

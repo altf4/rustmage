@@ -89,13 +89,23 @@ impl Game {
             return self.kicker_choice_fundable(&proposal, false)
                 || self.kicker_choice_fundable(&proposal, true);
         }
-        if a.item
+        let card = a
+            .item
             .source
             .expect("cost announcement has object source")
-            .card
-            .tiered_costs()
-            .is_none()
+            .card;
+        if a.pay_window
+            && a.item.kind == StackKind::Spell
+            && self.cast_uses_target_life_costs(a.item.controller, card)
         {
+            let mut proposal = a.clone();
+            proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
+            proposal.plan = self.target_spec(&proposal.item);
+            return proposal
+                .cost_options()
+                .any(|cost| self.announcement_cost_fundable(&proposal, cost));
+        }
+        if card.tiered_costs().is_none() {
             return self.announcement_target_fundable(
                 a,
                 Some(mode.targets),

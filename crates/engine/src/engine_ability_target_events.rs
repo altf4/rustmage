@@ -36,29 +36,62 @@ impl Game {
                 StackKind::ActivatedAbility { .. } | StackKind::TriggeredAbility { .. } => true,
                 _ => false,
             };
-        if committed
-            && !self.state.players[item.controller.index()].committed_crime_this_turn
-            && item
+        if !committed
+            || (self.state.players[item.controller.index()].committed_crime_this_turn
+                && self.state.ability_target_sources.is_none())
+            || !item
                 .targets
                 .iter()
                 .any(|&target| self.crime_target(item.controller, target))
         {
-            self.state.players[item.controller.index()].committed_crime_this_turn = true;
+            return;
+        }
+        self.state.players[item.controller.index()].committed_crime_this_turn = true;
+        let sources: Vec<_> = self
+            .state
+            .ability_target_sources
+            .iter()
+            .flat_map(|sources| sources.iter().copied())
+            .filter(|&id| {
+                let object = &self.state.objects[id as usize];
+                object.controller == item.controller
+                    && object
+                        .card
+                        .triggers()
+                        .iter()
+                        .any(|a| a.condition.event() == TriggerCondition::CommittedCrime)
+            })
+            .collect();
+        for id in sources {
+            let source = self.object_view(id);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::CommittedCrime {
+                    self.queue_trigger(&source, index);
+                }
+            }
         }
     }
     pub(super) fn register_ability_target_source(&mut self, id: CardId) {
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|a| {
-                matches!(
-                    a.condition.event(),
-                    TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
-                        | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
-                )
-            })
-        {
+        let object = &self.state.objects[id as usize];
+        if object.card.triggers().iter().any(|a| {
+            let event = a.condition.event();
+            match object.zone {
+                Zone::Battlefield => {
+                    a.condition.origin() != Some(TargetZone::Graveyard)
+                        && matches!(
+                            event,
+                            TriggerCondition::CommittedCrime
+                                | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
+                                | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
+                        )
+                }
+                Zone::Graveyard => {
+                    a.condition.origin() == Some(TargetZone::Graveyard)
+                        && event == TriggerCondition::CommittedCrime
+                }
+                _ => false,
+            }
+        }) {
             let sources = self.state.ability_target_sources.get_or_insert_default();
             if !sources.contains(&id) {
                 sources.push(id);

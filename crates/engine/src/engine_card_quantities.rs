@@ -106,6 +106,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::Mobilize { amount: value, .. }
             | Instruction::CounterUnlessPayScaled { amount: value, .. }
             | Instruction::CastHandFreeUpTo(value)
+            | Instruction::CastHandPermanentFreeUpTo(value)
             | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
@@ -225,6 +226,9 @@ impl Game {
                 .source
                 .is_some_and(|source| source.object == before.reference)
             {
+                if before.zone == Zone::Battlefield {
+                    item.remember_source_types_at_departure(before);
+                }
                 item.refresh_counter_quantities(|kind| before.counters.get(kind));
             }
         }

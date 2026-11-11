@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0b7ed73314e381b8434bbf19799a3b074ea597c4d54a72d6da05368761e62383"
   },
-  "physical_metadata_sha256": "2a4dbc8b85a3f2cc9cd95c691c71ef57242afcff7d0665ce3813b433d1d3ff9e"
+  "physical_metadata_sha256": "2a4dbc8b85a3f2cc9cd95c691c71ef57242afcff7d0665ce3813b433d1d3ff9e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MalcolmTheEyes.java",
+  "java_sha256": "e78d694dd9ad5f7d2da31c2bff5a4e6c15524bedd23882e4564dcf20671b46b8",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

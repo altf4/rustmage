@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3dc22349c6a97a68ef9693e0aab18575f99e1f3813259911731ebb5392f9d52c"
   },
-  "physical_metadata_sha256": "0ac2ffda40cddf3c3f538ddbd23fb8b4484722a0781a00795937def4af4c742a"
+  "physical_metadata_sha256": "0ac2ffda40cddf3c3f538ddbd23fb8b4484722a0781a00795937def4af4c742a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DjinnOfFoolsFall.java",
+  "java_sha256": "284e33afcfcbe6983e8b508e7a26fd769d6ca848fe11a5f287c5ed8da7a7e563",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a_d_inherited.rs"
 }

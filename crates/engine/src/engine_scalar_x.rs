@@ -331,6 +331,9 @@ impl Game {
         }]
     }
     pub fn x_choice(&self) -> Option<XChoiceView> {
+        if matches!(self.state.pending, Pending::PlotX { .. }) {
+            return self.plot_x_choice();
+        }
         if let Pending::ResolutionX { player } = self.state.pending {
             let mut lo = 0u64;
             let resolving = self.state.resolving.as_ref().unwrap();
@@ -497,6 +500,25 @@ impl Game {
                 .cast_event
                 .as_ref()
                 .map_or(0, |e| u128::from(e.mana_value)),
+            AmountValue::OtherSpellsCastThisTurn => {
+                let own_cast =
+                    !item.is_copy && item.cast.is_some_and(|cast| cast.caster == item.controller);
+                u128::from(
+                    self.state.players[item.controller.index()]
+                        .spells_cast_this_turn
+                        .saturating_sub(u64::from(own_cast)),
+                )
+            }
+            AmountValue::NoncreatureSpellsCastByCastingPlayer => {
+                item.cast_event.as_ref().map_or(0, |event| {
+                    let player = &self.state.players[event.controller.index()];
+                    u128::from(
+                        player
+                            .spells_cast_this_turn
+                            .saturating_sub(player.creature_spells_cast_this_turn),
+                    )
+                })
+            }
             AmountValue::CastCardTypeCount => u128::from(
                 self.state.players[item.controller.index()]
                     .turn_facts
@@ -544,6 +566,7 @@ impl Game {
                 .sacrificed_mana_value
                 .as_deref()
                 .map_or(0, |value| u128::from(*value) + u128::from(bonus)),
+            AmountValue::OtherZombieEntriesThisTurn => self.other_zombie_entries_this_turn(item),
             AmountValue::EventObjectTotalCounters => {
                 item.event_object.as_ref().map_or(0, |event| {
                     if self.on_battlefield(event.object.card)
@@ -601,6 +624,10 @@ impl Game {
                     .and_then(|facts| facts.iter().find(|f| f.group == r.target_group))
                     .map_or(0, |f| f.power.max(0) as u128)
             }
+            AmountValue::EnteringCreaturePower => self
+                .entering_subject(item)
+                .filter(|&id| self.is_creature(id))
+                .map_or(0, |id| self.stats(id).power.max(0) as u128),
             AmountValue::SourceLastKnownPower => item
                 .source
                 .filter(|source| source.facts.is_creature())
@@ -643,6 +670,12 @@ impl Game {
                     0
                 }
             }),
+            AmountValue::SacrificeEventManaValue => {
+                match item.event_object.as_deref().map(|event| &event.facts) {
+                    Some(EventObjectFacts::DepartureManaValue(value)) => u128::from(*value),
+                    _ => 0,
+                }
+            }
             AmountValue::DeathEventCounterTotal => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::DeathCounters(counters) = &event.facts {
                     counters.total()

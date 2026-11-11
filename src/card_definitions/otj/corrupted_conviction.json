@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed393f8e53f0b17d4acec6b4f0c672770e49cf37158bee8a6bc7c761de9bdbee"
   },
-  "physical_metadata_sha256": "b6e0215028dd373f4e6e160e1c37daa311afb13ec92cb008e1fc52ae4a3beefd"
+  "physical_metadata_sha256": "b6e0215028dd373f4e6e160e1c37daa311afb13ec92cb008e1fc52ae4a3beefd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CorruptedConviction.java",
+  "java_sha256": "49f0c793b7bc9120c7c6bd7b3a809014c5f97bab7c9fccf2d67f3633314e4e04",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a_d_inherited.rs"
 }

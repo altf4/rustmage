@@ -3,10 +3,51 @@
   "catalogue_id": 173,
   "oracle_id": "8095ca78-db19-4724-a6ff-eacc85fa2274",
   "facts_sha256": "35bf0aa272a6e7f1d8c4d19e5343fa1975dc0b5a386d438f256bef229e6c6c4f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a4a98f265bfc7b660c96ce64e6debf25de61ee8fad3ad5c0230ab90d68db89c2"
   },
-  "physical_metadata_sha256": "90b659cf15d2783594f7e5baca650978b5495734d4ee3f3db83d125e7dbe1f10"
+  "physical_metadata_sha256": "7370db1c2463004547e293f67f5a698c3c50c671bbad2b15a50a60bd69bd937c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnotherRound.java",
+  "java_sha256": "7f3b1b60634e37f96b07dfdfb4a5f7f535ce43c7e582212b3ec9c24f549d9f37",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_a.rs"
 }

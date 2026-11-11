@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const MERCENARY: Card = Card::from_catalogue_id(5612);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 4),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateTokens {
+                token: MERCENARY,
+                amount: 1,
+                tapped: false,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CopyCapturedActivatedAbility],
+        },
+    ],
     ..CardRules::EMPTY
 };

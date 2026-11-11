@@ -223,6 +223,35 @@
           "released_at": "2023-11-17"
         }
       }
+    },
+    {
+      "facts_sha256": "0f3f8475c19a16bd2f2b076a4c70870673745821fe322aa7cb779ea6bcd02ca7",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/otj/74",
+      "source_response_sha256": "7e0a344868a14783acf10254810df837e324fd03322f1b6589f8d573db634aaa",
+      "facts": {
+        "oracle_id": "2550c2ae-834d-46e7-9ab4-d7bf7bfa6a78",
+        "name": "This Town Ain't Big Enough",
+        "layout": "normal",
+        "mana_cost": "{4}{U}",
+        "cmc": 5.0,
+        "type_line": "Instant",
+        "oracle_text": "This spell costs {3} less to cast if it targets a permanent you control.\nReturn up to two target nonland permanents to their owners' hands.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "bb206e27-da4d-4abe-9d8c-6d18c5f2f52a",
+          "set": "otj",
+          "collector_number": "74",
+          "released_at": "2024-04-19"
+        }
+      }
     }
   ]
 }

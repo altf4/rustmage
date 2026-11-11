@@ -8,5 +8,46 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0ec2fba2706551c4a24f18f0194479697e201baeb61a5420e8d25b1c38bde85a"
   },
-  "physical_metadata_sha256": "23315aec27d05c11c8fd0dc42d83f541593c7e724d8f3cdfa329a6ec8a03fcde"
+  "physical_metadata_sha256": "23315aec27d05c11c8fd0dc42d83f541593c7e724d8f3cdfa329a6ec8a03fcde",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SandstormVerge.java",
+  "java_sha256": "46d79da40a25c7c88a495282c2bdeba5ad43c045daff0d7b5024d630b69f4aeb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ColorlessManaAbility.java",
+      "sha256": "4987cb71ee89f496075de0f3a30824281e53300d701d9c7442230e7a7ec2e03a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::sandstorm_verge_has_colorless_mana_and_a_sorcery_speed_block_restriction"
 }

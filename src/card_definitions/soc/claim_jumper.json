@@ -3,10 +3,56 @@
   "catalogue_id": 758,
   "oracle_id": "18f0cd0b-3e4f-4637-a62e-75dd1b2f3fce",
   "facts_sha256": "f796de9db651cba40b1cf0c1547799259198cc8c38bec994f8bf1ce7e0c90693",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "acfeb572e67b75aef1c9185c998edc558fa41c35ce5b2a890f937d46b6ff36b9"
   },
-  "physical_metadata_sha256": "2a69661e5d36710ba325b147a05128debe7c103ac7140248e1c89565e0e58e7c"
+  "physical_metadata_sha256": "2a69661e5d36710ba325b147a05128debe7c103ac7140248e1c89565e0e58e7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClaimJumper.java",
+  "java_sha256": "6e799748d3b943ac2548cd8e943238e37db935aa6c0302b57b3b0b20efa0e4ce",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentControlsMoreCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1851991ffc9adb3363d04f26a3532eac00d36f97b6aa6baa70bf1eaf53360ee3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_c_d.rs"
 }

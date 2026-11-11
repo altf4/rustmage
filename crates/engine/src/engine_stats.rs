@@ -17,12 +17,15 @@ impl Game {
     // Reuse sparse event indexes for explicit graveyard observers.
     pub(super) fn register_graveyard_sources(&mut self, id: CardId) {
         self.register_activation_observer(id);
+        self.register_ability_target_source(id);
         let triggers = self.state.objects[id as usize].card.triggers();
         if triggers.iter().any(|ability| {
             ability.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(
                     ability.condition.event(),
-                    TriggerCondition::SpellCast { .. } | TriggerCondition::SpellCastOrLandPlayed
+                    TriggerCondition::SpellCast { .. }
+                        | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::ModalSpellCastByYou
                 )
         }) {
             self.state.cast_sources.push(id);
@@ -56,6 +59,7 @@ impl Game {
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
     pub(super) fn unregister_graveyard_sources(&mut self, id: CardId) {
+        self.forget_ability_target_source(id);
         if self.state.cast_sources.contains(&id) {
             self.state.cast_sources.retain(|&source| source != id);
         }
@@ -76,6 +80,7 @@ impl Game {
             entries.push(EntryTurnFact {
                 object,
                 controller: self.state.objects[id as usize].controller,
+                zombie: false,
             });
         }
         self.register_battlefield_providers(id);
@@ -152,6 +157,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledSubtypeAttacks { .. }
+                    | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
@@ -207,11 +213,13 @@ impl Game {
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
+                    | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
                     | TriggerCondition::SourceDealtDamage
                     | TriggerCondition::SourceDealtDamageAtLeast(_)
                     | TriggerCondition::SourceDealtDamageToCreatureSubtype(_)
                     | TriggerCondition::SourceDealtCombatDamage
                     | TriggerCondition::AttachedDealtCombatDamage
+                    | TriggerCondition::AttachedDealtCombatDamageToPlayer
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {
@@ -250,6 +258,8 @@ impl Game {
                     | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
+                    | TriggerCondition::ControlledPermanentWithSubtypeDiesAny(_)
+                    | TriggerCondition::ControlledLegendaryCreatureDies
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
@@ -292,6 +302,7 @@ impl Game {
                         TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
+                            | TriggerCondition::ModalSpellCastByYou
                     )
             })
         {
@@ -318,6 +329,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
@@ -329,18 +341,25 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttachmentAttackingKeywords(..)
                             | crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
+                            | crate::cards::StaticAbilityFragment::AttackControllerOrPlaneswalkerTax { .. }
+                            | crate::cards::StaticAbilityFragment::BlockTaxWhileAttacking(_)
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
+                            | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)
                             | crate::cards::StaticAbilityFragment::NamedActivationGenericIncrease(_)
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
                             | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
+                            | crate::cards::StaticAbilityFragment::PlotFromLibraryTop
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                             | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
@@ -407,6 +426,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_)
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }

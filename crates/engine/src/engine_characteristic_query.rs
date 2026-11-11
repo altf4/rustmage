@@ -611,7 +611,23 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn keywords(&self, id: CardId) -> Keywords {
         let mut keywords = self.base_keywords(id);
         let target = self.object(id);
-        if target.zone != Zone::Stack || self.kinds(id) & (4 | 8) == 0 {
+        if target.zone != Zone::Stack {
+            return keywords;
+        }
+        // The ability that grants this spell flash functions on the stack (CR 113.6e).
+        if let Some(
+            condition @ (crate::cards::SelfCastTiming::FlashAfterCrime
+            | crate::cards::SelfCastTiming::FlashWhileControlSubtype(_)),
+        ) = self.effective_spell_card(id).self_cast_timing()
+            && super::cast_timing::self_cast_timing_applies(
+                self.world,
+                target.controller,
+                condition,
+            )
+        {
+            keywords = keywords.union(Keywords::FLASH);
+        }
+        if self.kinds(id) & (4 | 8) == 0 {
             return keywords;
         }
         for &source in self.static_sources() {

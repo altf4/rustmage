@@ -3,10 +3,36 @@
   "catalogue_id": 3113,
   "oracle_id": "ba7c1062-f777-4ba9-84df-ec340a9ec514",
   "facts_sha256": "094705df288ce50328ae4044af60b86970cc94618d70df439c7508291e0bfe82",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9ab37508047a6322b23155f44ad45fddc1a9df8122f0ee3aee90a4f9cf816628"
   },
-  "physical_metadata_sha256": "fedde47e424f417dfa44c7a6b04284cfd37de799ff483e6f3653194df99036a7"
+  "physical_metadata_sha256": "fedde47e424f417dfa44c7a6b04284cfd37de799ff483e6f3653194df99036a7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PatientNaturalist.java",
+  "java_sha256": "8049bdccf02b6ced76ce82b3440d126955de0673d05df200a11dd03340df96aa",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/TreasureToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "76bcec2847fbc47566c41b561b5bf8890073a94cc1da9cda19b369ff69782d2e"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

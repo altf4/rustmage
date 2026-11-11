@@ -14,6 +14,9 @@ pub struct PaidAdditionalCostView {
     pub total_mana_value: Option<u64>,
     /// Frozen immediately before an actual sacrifice, including redirected exile.
     pub sacrificed_vehicle: bool,
+    /// An actual sacrificed object's effective subtypes included an outlaw type.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub sacrificed_outlaw: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -195,6 +198,7 @@ impl Game {
                         selected: selected.len() as u64,
                         total_mana_value,
                         sacrificed_vehicle: false,
+                        sacrificed_outlaw: false,
                     };
                     self.stage_atomic_zone_cost(plans, checkpoint);
                     paid
@@ -210,6 +214,7 @@ impl Game {
                         selected: selected.len() as u64,
                         total_mana_value,
                         sacrificed_vehicle: false,
+                        sacrificed_outlaw: false,
                     };
                     self.finish_zone_events(&events, &[]);
                     paid

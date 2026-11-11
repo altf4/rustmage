@@ -8,5 +8,41 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd3ce6cd51d10c3f2d39c9543ea98b2d595bdeca1f96cbc61145fce45e6bdec4"
   },
-  "physical_metadata_sha256": "7e5d9bdfd244059c4b886fb957629cdcbdc624c16e3b97bbd9173bfce497bf9e"
+  "physical_metadata_sha256": "7e5d9bdfd244059c4b886fb957629cdcbdc624c16e3b97bbd9173bfce497bf9e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TrainedArynx.java",
+  "java_sha256": "cd81bed657746a51a52225ae382a3cc385f472e0101a3c81cfdf49bf4e1451f3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWhileSaddledTriggeredAbility.java",
+      "sha256": "23e4eb0abffe4afaa712ebecc2442d6d20101beb32c15b826f0ef521d8c3c297"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs::trained_arynx_saddled_attack_grants_first_strike_and_scries"
 }

@@ -66,13 +66,13 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**14 / 20 sets complete · 70%**
-
-`██████████████░░░░░░`
-
-**4,127 / 5,163 unique Standard cards supported in this checkout · 80%**
+**16 / 20 sets complete · 80%**
 
 `████████████████░░░░`
+
+**4,469 / 5,163 unique Standard cards supported in this checkout · 87%**
+
+`█████████████████░░░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -96,7 +96,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
 | Marvel's Spider-Man | SPM | 193/193 (100%) | ✅ Complete |
 | Murders at Karlov Manor | MKM | 86/279 (31%) | ⏳ Partial |
-| Outlaws of Thunder Junction | OTJ | 106/276 (38%) | ⏳ Partial |
+| Outlaws of Thunder Junction | OTJ | 276/276 (100%) | ✅ Complete |
 | Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |
 | Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
 | Tarkir: Dragonstorm | TDM | 276/276 (100%) | ✅ Complete |

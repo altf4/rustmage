@@ -72,6 +72,95 @@ pub struct EquipmentAttachmentView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn exact_graveyard_attachment(
+        &self,
+        attachment: ObjectRef,
+        controller: Player,
+    ) -> Option<(Card, bool)> {
+        let object = self.state.objects.get(attachment.card as usize)?;
+        if object.zone != Zone::Graveyard
+            || object.owner != controller
+            || self.object_ref(attachment.card) != attachment
+        {
+            return None;
+        }
+        let aura = self.has_subtype(attachment.card, "Aura");
+        (aura || self.has_subtype(attachment.card, "Equipment")).then_some((object.card, aura))
+    }
+
+    pub(super) fn return_target_attachment(&mut self, item: &SpellView) -> bool {
+        let Some(attachment) = item
+            .targets
+            .iter()
+            .find(|bound| self.same_target_object(**bound))
+            .and_then(|bound| bound.object)
+            .filter(|&object| {
+                self.exact_graveyard_attachment(object, item.controller)
+                    .is_some()
+            })
+        else {
+            return false;
+        };
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::ReturnAttachmentRecipient { attachment },
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            1,
+            None,
+        )
+    }
+
+    pub(super) fn returned_attachment_recipient(
+        &self,
+        attachment: ObjectRef,
+        recipient: ObjectRef,
+        controller: Player,
+    ) -> bool {
+        let Some((card, aura)) = self.exact_graveyard_attachment(attachment, controller) else {
+            return false;
+        };
+        if !self.on_battlefield(recipient.card)
+            || self.object_ref(recipient.card) != recipient
+            || self.state.objects[recipient.card as usize].controller != controller
+            || !self.is_creature(recipient.card)
+        {
+            return false;
+        }
+        if aura {
+            ability_world::aura_can_enchant(
+                self,
+                card,
+                controller,
+                card.colors(),
+                || self.granted_subtypes(attachment.card),
+                recipient,
+            )
+        } else {
+            equipment::can_attach_as(self, attachment, recipient, controller)
+        }
+    }
+
+    pub(super) fn finish_returned_attachment(
+        &mut self,
+        attachment: ObjectRef,
+        recipient: Option<ObjectRef>,
+        controller: Player,
+    ) {
+        let Some((_, aura)) = self.exact_graveyard_attachment(attachment, controller) else {
+            return;
+        };
+        let recipient = recipient
+            .filter(|&target| self.returned_attachment_recipient(attachment, target, controller));
+        if recipient.is_none() && aura {
+            return;
+        }
+        let mut movement = self.entry_move(attachment.card, Zone::Battlefield, false);
+        movement.controller = controller;
+        movement.attachment = recipient;
+        self.stage_entries(vec![movement], None);
+    }
+
     pub(super) fn may_attach_controlled_equipment(
         &mut self,
         item: &SpellView,

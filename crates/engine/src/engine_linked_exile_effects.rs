@@ -6,6 +6,7 @@ use super::*;
 pub(super) enum LinkedExileMode {
     ReturnCreature { plus_one: u64 },
     CopyMutant,
+    CopyWhileAttached,
 }
 
 fn mutant_copy(card: Card) -> CopyRecipe {
@@ -181,6 +182,30 @@ impl Game {
                 })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
+            Some(LinkedExileMode::CopyWhileAttached) => {
+                let item = &resolution.item;
+                let Some(event) = item.attachment_trigger.as_deref() else {
+                    return Vec::new();
+                };
+                if !self.exact_attachment_event_is_live(event) {
+                    return Vec::new();
+                }
+                self.state
+                    .exile_links
+                    .iter()
+                    .filter(|link| {
+                        let card = &self.state.objects[link.exiled.card as usize];
+                        link.source == source
+                            && link.ability_origin == item.source_ability_origin
+                            && self.object_ref(link.exiled.card) == link.exiled
+                            && card.zone == Zone::Exile
+                            && card.is_card()
+                            && card.card.is_creature()
+                            && !self.exiled_face_down(link.exiled)
+                    })
+                    .map(|link| link.exiled)
+                    .collect()
+            }
             None => self.linked_exile_candidates(source),
         }
     }
@@ -197,15 +222,18 @@ impl Game {
             .linked_choices
             .get_or_insert_default()
             .linked_exile_mode = Some(mode);
-        if self
-            .resolution_linked_exile_candidates(source.object)
-            .is_empty()
+        let candidates = self.resolution_linked_exile_candidates(source.object);
+        if candidates.is_empty()
+            || mode == LinkedExileMode::CopyWhileAttached && candidates.len() == 1
         {
             self.state
                 .linked_choices
                 .as_mut()
                 .unwrap()
                 .linked_exile_mode = None;
+            if let Some(&object) = candidates.first() {
+                self.finish_linked_exile_effect(mode, object);
+            }
             return false;
         }
         self.state.pending = Pending::LinkedExile {
@@ -234,6 +262,21 @@ impl Game {
             LinkedExileMode::CopyMutant => {
                 let recipe = mutant_copy(self.state.objects[object.card as usize].card);
                 self.stage_copy_creation(player, recipe, 1);
+            }
+            LinkedExileMode::CopyWhileAttached => {
+                let event = resolution.item.attachment_trigger.as_deref().copied();
+                if let Some(event) = event
+                    && self.exact_attachment_event_is_live(&event)
+                {
+                    self.apply_temporary_copy(
+                        event.recipient,
+                        CopyRecipe::new(self.state.objects[object.card as usize].card),
+                        CopyDeadline::WhileAttached {
+                            source: event.grantor,
+                            origin: event.origin.unwrap(),
+                        },
+                    );
+                }
             }
         }
     }
@@ -277,6 +320,7 @@ impl Game {
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid: None,

@@ -139,6 +139,7 @@ pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str],
         ReturnKind::HeroFinality => Some((&["Hero"], Keywords::NONE)),
         ReturnKind::Revival
         | ReturnKind::FlyingRobot
+        | ReturnKind::Treasure
         | ReturnKind::WithoutAbilities
         | ReturnKind::SkeletonWithoutAbilities
         | ReturnKind::Persist => None,
@@ -201,6 +202,9 @@ impl Game {
             }
             ReturnDeathFilter::ControlledSubtype(subtype) => {
                 before.controller == source.controller && before.has_subtype(subtype)
+            }
+            ReturnDeathFilter::OpposingNontokenCreature => {
+                before.is_creature() && before.controller != source.controller && !before.is_token()
             }
             ReturnDeathFilter::ControlledNontokenNonAngel => {
                 before.is_creature()
@@ -395,7 +399,28 @@ impl Game {
                 ids.push(id);
             }
         }
-        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.blink_battlefield_objects(
+            &ids,
+            counter,
+            tapped,
+            attacking.then_some(item.controller),
+            follow_public_move,
+        );
+    }
+
+    pub(super) fn blink_battlefield_objects_immediately(&mut self, ids: &[CardId]) {
+        self.blink_battlefield_objects(ids, None, false, None, false);
+    }
+
+    fn blink_battlefield_objects(
+        &mut self,
+        ids: &[CardId],
+        counter: Option<(CounterKind, u64)>,
+        tapped: bool,
+        attacking_controller: Option<Player>,
+        follow_public_move: bool,
+    ) {
+        let events = self.move_objects_raw(ids, Zone::Exile);
         let returning = events
             .iter()
             .filter(|event| {
@@ -408,11 +433,7 @@ impl Game {
             .map(|event| {
                 ReturnLinkView::from_event(
                     event,
-                    if attacking {
-                        item.controller
-                    } else {
-                        event.before.owner
-                    },
+                    attacking_controller.unwrap_or(event.before.owner),
                     counter,
                     tapped,
                     false,
@@ -424,7 +445,7 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
             rows: returning,
-            attacking,
+            attacking: attacking_controller.is_some(),
         }));
         self.finish_zone_events(&events, &[]);
     }
@@ -528,7 +549,9 @@ impl Game {
         };
         let mut link = (**link).clone();
         let counter = match kind {
-            ReturnKind::WithoutAbilities | ReturnKind::SkeletonWithoutAbilities => None,
+            ReturnKind::WithoutAbilities
+            | ReturnKind::SkeletonWithoutAbilities
+            | ReturnKind::Treasure => None,
             ReturnKind::Revival => {
                 let amount = link.counter.expect("captured revival counters").1;
                 assert!(amount > 0);
@@ -545,7 +568,12 @@ impl Game {
             ReturnKind::Demon => Some((CounterKind::PlusOne, 2)),
             ReturnKind::Angel => Some((CounterKind::PlusOne, 1)),
         };
-        link.set_recipient_values(link.controller, counter);
+        let controller = if kind == ReturnKind::Treasure {
+            item.controller
+        } else {
+            link.controller
+        };
+        link.set_recipient_values(controller, counter);
         let modification = (kind != ReturnKind::Persist).then_some((kind, source.object));
         self.stage_linked_return(&link, modification);
     }
@@ -586,8 +614,9 @@ impl Game {
             .cards()
             .filter(|&card| self.can_follow_return(card))
             .map(|card| {
-                let mut movement =
-                    self.entry_move(card.object.card, Zone::Battlefield, card.tapped);
+                let tapped = card.tapped
+                    || modification.is_some_and(|(kind, _)| kind == ReturnKind::Treasure);
+                let mut movement = self.entry_move(card.object.card, Zone::Battlefield, tapped);
                 movement.controller = card.controller;
                 movement.effect_counter = card.counter;
                 movement.return_modification = modification;

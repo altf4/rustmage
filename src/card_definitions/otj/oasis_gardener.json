@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c35c3a2ac51a26e60224fe0a986ff7e5e5b08c0050238a5bcd557db82cf361db"
   },
-  "physical_metadata_sha256": "d65cce7b575fefadd109ca2a0e02ddb920bcb03499f47ec1e8de645566871a1c"
+  "physical_metadata_sha256": "d65cce7b575fefadd109ca2a0e02ddb920bcb03499f47ec1e8de645566871a1c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OasisGardener.java",
+  "java_sha256": "a65b5b5e62d29a98ce5b40722d9071b9acda430aecd009315fc41dcbc38f240c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

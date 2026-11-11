@@ -11,6 +11,7 @@ impl Game {
                 matches!(
                     ability.condition.event(),
                     TriggerCondition::CreatureAbilityActivated
+                        | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
                         | TriggerCondition::NonmanaAbilityActivated
                         | TriggerCondition::ExhaustAbilityActivated
                         | TriggerCondition::LoyaltyAbilityActivated
@@ -137,9 +138,22 @@ impl Game {
                 .collect();
             for source in observers {
                 for (index, ability) in source.card.triggers().iter().enumerate() {
-                    if ability.condition.event() == TriggerCondition::NonmanaAbilityActivated
-                        && self.queue_trigger(&source, index)
-                    {
+                    let qualifies = match ability.condition.event() {
+                        TriggerCondition::NonmanaAbilityActivated => true,
+                        TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer => {
+                            item.targets.iter().any(|bound| match bound.target {
+                                Target::Player(_) => true,
+                                Target::Card(id) => {
+                                    self.same_target_object(*bound)
+                                        && self.on_battlefield(id)
+                                        && self.is_creature(id)
+                                }
+                                _ => false,
+                            })
+                        }
+                        _ => false,
+                    };
+                    if qualifies && self.queue_trigger(&source, index) {
                         self.state.pending_triggers.last_mut().unwrap().copy_event =
                             Some(Box::new(CopyEvent {
                                 spell: item.clone(),

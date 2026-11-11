@@ -3,10 +3,46 @@
   "catalogue_id": 3709,
   "oracle_id": "55ede1d4-593d-433c-943a-4db12eeb5fa8",
   "facts_sha256": "415f16282ceb85d3d21cafc05f95c4122efb360fe0f3569f0597ad504c18f1ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3094b1853f067c4a5a4232187ff4f8eede056df5404c5b59e664c033b7542883"
   },
-  "physical_metadata_sha256": "f7bbd2c12a382d8c3a420aeaf0fe1e007130e33c35ccf3088ed92ff08772d529"
+  "physical_metadata_sha256": "f7bbd2c12a382d8c3a420aeaf0fe1e007130e33c35ccf3088ed92ff08772d529",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScalestormSummoner.java",
+  "java_sha256": "f353d08f6bf0628a5dae2ed324f9e6e72de2564e180ac50de0c47b952a8339a6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FerociousCondition.java",
+      "sha256": "4cb67672f9434ee2230c941595cd3489a6b27658508e5cadaa3cecacbc8e84fa"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/hint/common/FerociousHint.java",
+      "sha256": "f8da304053e202617f65f5b24115dbd37451a21fde4e89147d4bc74ac266e05a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Dinosaur31Token.java",
+      "sha256": "ad89c1d82a8b1fa653a8cd3c274cf454290bcdb054ba4c2dfe20f896f23b2521"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }

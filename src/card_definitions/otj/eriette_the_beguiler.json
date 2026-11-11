@@ -3,10 +3,41 @@
   "catalogue_id": 1359,
   "oracle_id": "710a3499-64f8-4d2c-8c9c-d58950e47ea7",
   "facts_sha256": "12edf54b62233f93366c0d238f51473ceecaaae60c751561c4f183905b76af5d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bf04afbe76c7c6839c2d6a732108a86e87bd4b1b34e181c426cde425de31efe1"
   },
-  "physical_metadata_sha256": "5d2f026226a50b30a3015566e4ecec7b9055936f86adfca0243270c38d738792"
+  "physical_metadata_sha256": "5d2f026226a50b30a3015566e4ecec7b9055936f86adfca0243270c38d738792",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ErietteTheBeguiler.java",
+  "java_sha256": "75035cad820e988abe6333d8725c1bfeb0c2d221145372a38038e9773935971a",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainControlTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "93e055d129c924686ebca800aee72c6797220dfc56b829c70b715dd06a8c09ed"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

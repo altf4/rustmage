@@ -213,6 +213,7 @@ impl EntryMove {
         self.ghost_vacuum_after.is_some()
             || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
+            || self.as_entry_treasure_source().is_some()
             || self.before.copy_recipe.is_some()
             || self
                 .copy_preparation
@@ -240,7 +241,7 @@ impl EntryMove {
 
     pub(super) fn replacement_preview(&self) -> Self {
         let mut movement = self.clone();
-        if self.as_entry_skeleton_source().is_none() {
+        if self.as_entry_skeleton_source().is_none() && self.as_entry_treasure_source().is_none() {
             movement.return_modification = None;
         }
         movement
@@ -264,8 +265,12 @@ impl EntryMove {
             Game::entry_choice_subtypes(self).has(self.before.card, "Siege"),
         );
     }
+    pub(super) fn as_entry_treasure_source(&self) -> Option<ObjectRef> {
+        self.return_modification
+            .and_then(|(kind, source)| (kind == ReturnKind::Treasure).then_some(source))
+    }
     pub(super) fn entry_kinds(&self) -> u16 {
-        if self.food_return.is_some() {
+        if self.food_return.is_some() || self.as_entry_treasure_source().is_some() {
             16
         } else if self.artifact_return || self.enchantment_return {
             (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
@@ -498,31 +503,25 @@ impl Game {
         controller: Player,
         target: ObjectRef,
     ) -> bool {
-        self.aura_can_enchant_with_colors(aura, controller, aura.colors(), target)
+        ability_world::aura_can_enchant(
+            self,
+            aura,
+            controller,
+            aura.colors(),
+            GrantedSubtypes::default,
+            target,
+        )
     }
-    pub(super) fn aura_can_enchant_with_colors(
-        &self,
-        aura: Card,
-        controller: Player,
-        colors: u8,
-        target: ObjectRef,
-    ) -> bool {
-        let Some(spec) = aura.aura() else {
-            return false;
-        };
-        self.on_battlefield(target.card)
-            && self.object_ref(target.card) == target
-            && !self.keywords(target.card).protects_from_controller(
-                colors,
-                aura.kind_mask(),
-                self.state.objects[target.card as usize].controller != controller,
-            )
-            && ability_world::aura_kind_matches(self, aura, target.card)
-            && match spec.relation {
-                0 => self.state.objects[target.card as usize].controller == controller,
-                1 => self.state.objects[target.card as usize].controller != controller,
-                _ => true,
-            }
+    pub(super) fn battlefield_aura_can_enchant(&self, aura: CardId, target: ObjectRef) -> bool {
+        let object = &self.state.objects[aura as usize];
+        ability_world::aura_can_enchant(
+            self,
+            object.card,
+            object.controller,
+            ability_world::CharacteristicWorld::colors(self, aura),
+            || self.granted_subtypes(aura),
+            target,
+        )
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
         let mut movement = EntryMove::from_view(self.object_view(id), destination, tapped);
@@ -978,6 +977,12 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::FixedCounters(amounts) => {
+                        for &(kind, amount) in amounts {
+                            counters.add(kind, amount);
+                        }
+                        continue;
+                    }
                     EntryCounterAmount::WebSlingingReturnedManaValue => {
                         returned_mana_value.unwrap_or(0)
                     }
@@ -1098,6 +1103,7 @@ impl Game {
         let mut skeleton_results = Vec::new();
         let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
+        let mut treasure_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
         let mut animation_results = Vec::new();
@@ -1229,6 +1235,9 @@ impl Game {
                     ReturnKind::SkeletonWithoutAbilities => {
                         skeleton_results.push((event.after, source));
                     }
+                    ReturnKind::Treasure => {
+                        treasure_results.push((event.after, source, movement.controller));
+                    }
                     _ => self.apply_return_modification(event.after, kind, source),
                 }
             }
@@ -1357,7 +1366,9 @@ impl Game {
                     });
                 }
 
-                if let Some(target) = movement.attachment {
+                if event.destination == Zone::Battlefield
+                    && let Some(target) = movement.attachment
+                {
                     attachments.push((event.after, target));
                 }
                 if movement.reveal_hand && event.destination == Zone::Hand {
@@ -1472,6 +1483,12 @@ impl Game {
         // before the one simultaneous event batch freezes entry observers.
         for (recipient, definition) in food_results {
             self.apply_food_return(recipient, definition);
+        }
+        for (recipient, source, controller) in treasure_results {
+            self.state
+                .roles
+                .get_or_insert_default()
+                .grant_returned_treasure(recipient, source, controller);
         }
         for (recipient, source) in skeleton_results {
             return_links::apply_skeleton_return(
@@ -1912,8 +1929,14 @@ impl Game {
     pub(super) fn entry_candidate(&self, target: ObjectRef) -> bool {
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
-        self.aura_can_enchant(movement.before.card, movement.controller, target)
-            && batch.moves.iter().all(|m| m.before.id != target.card)
+        ability_world::aura_can_enchant(
+            self,
+            movement.before.card,
+            movement.controller,
+            movement.before.card.colors(),
+            || Self::entry_choice_subtypes(movement),
+            target,
+        ) && batch.moves.iter().all(|m| m.before.id != target.card)
     }
     pub(super) fn visit_entry_attacking_defenders(
         &self,

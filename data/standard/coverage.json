@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "c1222794a44168e11ebe4ed3d9d7372ff7616980d121df40493db630d5103d30",
+  "catalogue_version": "e0d509fa6ddc843773a3ed0df7954ee4e3f057486cede9890d1599a0091d18c7",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4300,
-  "implemented_total": 4313,
-  "token_definitions": 186,
+  "implemented_standard_cards": 4469,
+  "implemented_total": 4483,
+  "token_definitions": 193,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
   "omen_definitions": 13,
@@ -126,8 +126,7 @@
     },
     "otj": {
       "total": 264,
-      "complete": 97,
-      "gated": 167
+      "complete": 264
     },
     "pspl": {
       "total": 1,
@@ -139,8 +138,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 19,
-      "gated": 5
+      "complete": 21,
+      "gated": 3
     },
     "sos": {
       "total": 264,
@@ -1152,8 +1151,8 @@
     {
       "name": "Akul the Unrepentant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/akul_the_unrepentant.rs",
       "set": "otj"
     },
@@ -1280,8 +1279,8 @@
     {
       "name": "Aloe Alchemist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/aloe_alchemist.rs",
       "set": "otj"
     },
@@ -1544,16 +1543,16 @@
     {
       "name": "Annie Flash, the Veteran",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/annie_flash_the_veteran.rs",
       "set": "otj"
     },
     {
       "name": "Annie Joins Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/annie_joins_up.rs",
       "set": "otj"
     },
@@ -1576,8 +1575,8 @@
     {
       "name": "Another Round",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/another_round.rs",
       "set": "otj"
     },
@@ -1856,8 +1855,8 @@
     {
       "name": "Archangel of Tithes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/archangel_of_tithes.rs",
       "set": "otj"
     },
@@ -1904,8 +1903,8 @@
     {
       "name": "Archmage's Newt",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/archmage_s_newt.rs",
       "set": "otj"
     },
@@ -1952,8 +1951,8 @@
     {
       "name": "Arid Archway",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/arid_archway.rs",
       "set": "otj"
     },
@@ -2000,8 +1999,8 @@
     {
       "name": "Armored Armadillo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/armored_armadillo.rs",
       "set": "otj"
     },
@@ -2184,8 +2183,8 @@
     {
       "name": "Assimilation Aegis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/assimilation_aegis.rs",
       "set": "otj"
     },
@@ -2208,8 +2207,8 @@
     {
       "name": "At Knifepoint",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/at_knifepoint.rs",
       "set": "otj"
     },
@@ -2432,8 +2431,8 @@
     {
       "name": "Aven Interrupter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/aven_interrupter.rs",
       "set": "otj"
     },
@@ -2632,8 +2631,8 @@
     {
       "name": "Badlands Revival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/badlands_revival.rs",
       "set": "otj"
     },
@@ -2736,8 +2735,8 @@
     {
       "name": "Bandit's Haul",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/bandit_s_haul.rs",
       "set": "otj"
     },
@@ -2848,8 +2847,8 @@
     {
       "name": "Baron Bertram Graywater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/baron_bertram_graywater.rs",
       "set": "otj"
     },
@@ -3384,8 +3383,8 @@
     {
       "name": "Betrayal at the Vault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/betrayal_at_the_vault.rs",
       "set": "otj"
     },
@@ -3504,8 +3503,8 @@
     {
       "name": "Binding Negotiation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/binding_negotiation.rs",
       "set": "otj"
     },
@@ -3816,8 +3815,8 @@
     {
       "name": "Blood Hustler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/blood_hustler.rs",
       "set": "otj"
     },
@@ -4176,8 +4175,8 @@
     {
       "name": "Boneyard Desecrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/boneyard_desecrator.rs",
       "set": "otj"
     },
@@ -4192,8 +4191,8 @@
     {
       "name": "Boom Box",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/boom_box.rs",
       "set": "otj"
     },
@@ -4528,8 +4527,8 @@
     {
       "name": "Breeches, the Blastmaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/breeches_the_blastmaker.rs",
       "set": "otj"
     },
@@ -4624,8 +4623,8 @@
     {
       "name": "Brimstone Roundup",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/brimstone_roundup.rs",
       "set": "otj"
     },
@@ -4672,8 +4671,8 @@
     {
       "name": "Bristlepack Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/bristlepack_sentry.rs",
       "set": "otj"
     },
@@ -4688,8 +4687,8 @@
     {
       "name": "Bristly Bill, Spine Sower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/bristly_bill_spine_sower.rs",
       "set": "otj"
     },
@@ -4768,8 +4767,8 @@
     {
       "name": "Bruse Tarl, Roving Rancher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/bruse_tarl_roving_rancher.rs",
       "set": "otj"
     },
@@ -4792,8 +4791,8 @@
     {
       "name": "Bucolic Ranch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/bucolic_ranch.rs",
       "set": "otj"
     },
@@ -5104,8 +5103,8 @@
     {
       "name": "Cactusfolk Sureshot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/cactusfolk_sureshot.rs",
       "set": "otj"
     },
@@ -5136,8 +5135,8 @@
     {
       "name": "Calamity, Galloping Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/calamity_galloping_inferno.rs",
       "set": "otj"
     },
@@ -5280,8 +5279,8 @@
     {
       "name": "Canyon Crab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/canyon_crab.rs",
       "set": "otj"
     },
@@ -5664,8 +5663,8 @@
     {
       "name": "Caught in the Crossfire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/caught_in_the_crossfire.rs",
       "set": "otj"
     },
@@ -5680,8 +5679,8 @@
     {
       "name": "Caustic Bronco",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/caustic_bronco.rs",
       "set": "otj"
     },
@@ -6256,8 +6255,8 @@
     {
       "name": "Claim Jumper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/claim_jumper.rs",
       "set": "soc"
     },
@@ -6608,8 +6607,8 @@
     {
       "name": "Colossal Rattlewurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/colossal_rattlewurm.rs",
       "set": "otj"
     },
@@ -6904,8 +6903,8 @@
     {
       "name": "Consuming Ashes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/consuming_ashes.rs",
       "set": "otj"
     },
@@ -7816,8 +7815,8 @@
     {
       "name": "Dance of the Tumbleweeds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/dance_of_the_tumbleweeds.rs",
       "set": "otj"
     },
@@ -8376,8 +8375,8 @@
     {
       "name": "Deepmuck Desperado",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/deepmuck_desperado.rs",
       "set": "otj"
     },
@@ -8608,8 +8607,8 @@
     {
       "name": "Desert's Due",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/desert_s_due.rs",
       "set": "otj"
     },
@@ -9304,8 +9303,8 @@
     {
       "name": "Double Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/double_down.rs",
       "set": "otj"
     },
@@ -9800,8 +9799,8 @@
     {
       "name": "Duelist of the Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/duelist_of_the_mind.rs",
       "set": "otj"
     },
@@ -9856,8 +9855,8 @@
     {
       "name": "Dust Animus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/dust_animus.rs",
       "set": "otj"
     },
@@ -10696,8 +10695,8 @@
     {
       "name": "Emergent Haunting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/emergent_haunting.rs",
       "set": "otj"
     },
@@ -11064,8 +11063,8 @@
     {
       "name": "Eriette, the Beguiler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/eriette_the_beguiler.rs",
       "set": "otj"
     },
@@ -11096,8 +11095,8 @@
     {
       "name": "Ertha Jo, Frontier Mentor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/ertha_jo_frontier_mentor.rs",
       "set": "otj"
     },
@@ -11864,8 +11863,8 @@
     {
       "name": "Fblthp, Lost on the Range",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/fblthp_lost_on_the_range.rs",
       "set": "otj"
     },
@@ -12264,8 +12263,8 @@
     {
       "name": "Final Showdown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/final_showdown.rs",
       "set": "otj"
     },
@@ -12624,8 +12623,8 @@
     {
       "name": "Fleeting Reflection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/fleeting_reflection.rs",
       "set": "otj"
     },
@@ -12960,8 +12959,8 @@
     {
       "name": "Form a Posse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/form_a_posse.rs",
       "set": "otj"
     },
@@ -12992,8 +12991,8 @@
     {
       "name": "Forsaken Miner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/forsaken_miner.rs",
       "set": "otj"
     },
@@ -13008,8 +13007,8 @@
     {
       "name": "Fortune, Loyal Steed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/fortune_loyal_steed.rs",
       "set": "otj"
     },
@@ -13136,8 +13135,8 @@
     {
       "name": "Freestrider Lookout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/freestrider_lookout.rs",
       "set": "otj"
     },
@@ -13352,8 +13351,8 @@
     {
       "name": "Full Steam Ahead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/full_steam_ahead.rs",
       "set": "otj"
     },
@@ -13904,8 +13903,8 @@
     {
       "name": "Geralf, the Fleshwright",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/geralf_the_fleshwright.rs",
       "set": "otj"
     },
@@ -13968,8 +13967,8 @@
     {
       "name": "Getaway Glamer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/getaway_glamer.rs",
       "set": "otj"
     },
@@ -14032,8 +14031,8 @@
     {
       "name": "Ghired, Mirror of the Wilds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/ghired_mirror_of_the_wilds.rs",
       "set": "otj"
     },
@@ -14088,8 +14087,8 @@
     {
       "name": "Giant Beaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/giant_beaver.rs",
       "set": "otj"
     },
@@ -14248,8 +14247,8 @@
     {
       "name": "Gisa, the Hellraiser",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/gisa_the_hellraiser.rs",
       "set": "otj"
     },
@@ -14752,8 +14751,8 @@
     {
       "name": "Gold Rush",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/gold_rush.rs",
       "set": "otj"
     },
@@ -14776,8 +14775,8 @@
     {
       "name": "Goldvein Hydra",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/goldvein_hydra.rs",
       "set": "soc"
     },
@@ -15120,8 +15119,8 @@
     {
       "name": "Great Train Heist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/great_train_heist.rs",
       "set": "otj"
     },
@@ -15728,8 +15727,8 @@
     {
       "name": "Hardbristle Bandit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/hardbristle_bandit.rs",
       "set": "otj"
     },
@@ -16160,8 +16159,8 @@
     {
       "name": "Hell to Pay",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/hell_to_pay.rs",
       "set": "otj"
     },
@@ -16200,8 +16199,8 @@
     {
       "name": "Hellspur Posse Boss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/hellspur_posse_boss.rs",
       "set": "otj"
     },
@@ -16488,8 +16487,8 @@
     {
       "name": "High Noon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/high_noon.rs",
       "set": "otj"
     },
@@ -16544,8 +16543,8 @@
     {
       "name": "Highway Robbery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/highway_robbery.rs",
       "set": "otj"
     },
@@ -16640,8 +16639,8 @@
     {
       "name": "Hollow Marauder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/hollow_marauder.rs",
       "set": "otj"
     },
@@ -16664,8 +16663,8 @@
     {
       "name": "Holy Cow",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/holy_cow.rs",
       "set": "otj"
     },
@@ -17608,8 +17607,8 @@
     {
       "name": "Insatiable Avarice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/insatiable_avarice.rs",
       "set": "otj"
     },
@@ -17776,8 +17775,8 @@
     {
       "name": "Intimidation Campaign",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/intimidation_campaign.rs",
       "set": "otj"
     },
@@ -17832,8 +17831,8 @@
     {
       "name": "Intrepid Stablemaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/intrepid_stablemaster.rs",
       "set": "otj"
     },
@@ -17904,8 +17903,8 @@
     {
       "name": "Inventive Wingsmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/inventive_wingsmith.rs",
       "set": "otj"
     },
@@ -18288,8 +18287,8 @@
     {
       "name": "Jem Lightfoote, Sky Explorer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/jem_lightfoote_sky_explorer.rs",
       "set": "otj"
     },
@@ -18624,8 +18623,8 @@
     {
       "name": "Kaervek, the Punisher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/kaervek_the_punisher.rs",
       "set": "otj"
     },
@@ -18672,8 +18671,8 @@
     {
       "name": "Kambal, Profiteering Mayor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/kambal_profiteering_mayor.rs",
       "set": "otj"
     },
@@ -18888,8 +18887,8 @@
     {
       "name": "Kellan Joins Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/kellan_joins_up.rs",
       "set": "otj"
     },
@@ -18936,8 +18935,8 @@
     {
       "name": "Kellan, the Kid",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/kellan_the_kid.rs",
       "set": "otj"
     },
@@ -19448,8 +19447,8 @@
     {
       "name": "Kraum, Violent Cacophony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/kraum_violent_cacophony.rs",
       "set": "otj"
     },
@@ -19776,8 +19775,8 @@
     {
       "name": "Lassoed by the Law",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/lassoed_by_the_law.rs",
       "set": "otj"
     },
@@ -19832,8 +19831,8 @@
     {
       "name": "Laughing Jasper Flint",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/laughing_jasper_flint.rs",
       "set": "otj"
     },
@@ -19864,8 +19863,8 @@
     {
       "name": "Lazav, Familiar Stranger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/lazav_familiar_stranger.rs",
       "set": "otj"
     },
@@ -20232,8 +20231,8 @@
     {
       "name": "Lilah, Undefeated Slickshot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/lilah_undefeated_slickshot.rs",
       "set": "otj"
     },
@@ -20568,8 +20567,8 @@
     {
       "name": "Longhorn Sharpshooter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/longhorn_sharpshooter.rs",
       "set": "otj"
     },
@@ -20912,8 +20911,8 @@
     {
       "name": "Luxurious Locomotive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/luxurious_locomotive.rs",
       "set": "otj"
     },
@@ -21096,8 +21095,8 @@
     {
       "name": "Magda, the Hoardmaster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/magda_the_hoardmaster.rs",
       "set": "otj"
     },
@@ -21112,8 +21111,8 @@
     {
       "name": "Magebane Lizard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/magebane_lizard.rs",
       "set": "otj"
     },
@@ -21256,8 +21255,8 @@
     {
       "name": "Make Your Own Luck",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/make_your_own_luck.rs",
       "set": "otj"
     },
@@ -21456,8 +21455,8 @@
     {
       "name": "Marauding Sphinx",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/marauding_sphinx.rs",
       "set": "otj"
     },
@@ -21472,8 +21471,8 @@
     {
       "name": "Marchesa, Dealer of Death",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/marchesa_dealer_of_death.rs",
       "set": "otj"
     },
@@ -22032,8 +22031,8 @@
     {
       "name": "Metamorphic Blast",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/metamorphic_blast.rs",
       "set": "otj"
     },
@@ -22368,8 +22367,8 @@
     {
       "name": "Mine Raider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/mine_raider.rs",
       "set": "otj"
     },
@@ -22416,16 +22415,16 @@
     {
       "name": "Mirage Mesa",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/mirage_mesa.rs",
       "set": "otj"
     },
     {
       "name": "Miriam, Herd Whisperer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/miriam_herd_whisperer.rs",
       "set": "otj"
     },
@@ -22632,8 +22631,8 @@
     {
       "name": "Mobile Homestead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/mobile_homestead.rs",
       "set": "otj"
     },
@@ -23088,8 +23087,8 @@
     {
       "name": "Mourner's Surprise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/mourner_s_surprise.rs",
       "set": "otj"
     },
@@ -23568,8 +23567,8 @@
     {
       "name": "Neutralize the Guards",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/neutralize_the_guards.rs",
       "set": "otj"
     },
@@ -23624,8 +23623,8 @@
     {
       "name": "Nezumi Linkbreaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/nezumi_linkbreaker.rs",
       "set": "otj"
     },
@@ -23728,8 +23727,8 @@
     {
       "name": "Nimble Brigand",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/nimble_brigand.rs",
       "set": "otj"
     },
@@ -24024,8 +24023,8 @@
     {
       "name": "Nurturing Pixie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/nurturing_pixie.rs",
       "set": "otj"
     },
@@ -24064,8 +24063,8 @@
     {
       "name": "Obeka, Splitter of Seconds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/obeka_splitter_of_seconds.rs",
       "set": "otj"
     },
@@ -24312,8 +24311,8 @@
     {
       "name": "Omenport Vigilante",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/omenport_vigilante.rs",
       "set": "otj"
     },
@@ -24376,8 +24375,8 @@
     {
       "name": "One Last Job",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/one_last_job.rs",
       "set": "otj"
     },
@@ -24520,8 +24519,8 @@
     {
       "name": "Ornery Tumblewagg",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/ornery_tumblewagg.rs",
       "set": "otj"
     },
@@ -24664,8 +24663,8 @@
     {
       "name": "Outcaster Trailblazer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/outcaster_trailblazer.rs",
       "set": "otj"
     },
@@ -24680,8 +24679,8 @@
     {
       "name": "Outlaw Stitcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/outlaw_stitcher.rs",
       "set": "otj"
     },
@@ -24824,8 +24823,8 @@
     {
       "name": "Overzealous Muscle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/overzealous_muscle.rs",
       "set": "otj"
     },
@@ -25096,8 +25095,8 @@
     {
       "name": "Patient Naturalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/patient_naturalist.rs",
       "set": "otj"
     },
@@ -25360,8 +25359,8 @@
     {
       "name": "Phantom Interference",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/phantom_interference.rs",
       "set": "otj"
     },
@@ -25496,8 +25495,8 @@
     {
       "name": "Pillage the Bog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/pillage_the_bog.rs",
       "set": "otj"
     },
@@ -25592,8 +25591,8 @@
     {
       "name": "Pitiless Carnage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/pitiless_carnage.rs",
       "set": "otj"
     },
@@ -25624,8 +25623,8 @@
     {
       "name": "Plan the Heist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/plan_the_heist.rs",
       "set": "otj"
     },
@@ -25920,8 +25919,8 @@
     {
       "name": "Prairie Dog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/prairie_dog.rs",
       "set": "otj"
     },
@@ -26008,8 +26007,8 @@
     {
       "name": "Prickly Pair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/prickly_pair.rs",
       "set": "otj"
     },
@@ -26280,8 +26279,8 @@
     {
       "name": "Prosperity Tycoon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/prosperity_tycoon.rs",
       "set": "otj"
     },
@@ -26680,8 +26679,8 @@
     {
       "name": "Quick Draw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/quick_draw.rs",
       "set": "otj"
     },
@@ -26968,8 +26967,8 @@
     {
       "name": "Railway Brawler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/railway_brawler.rs",
       "set": "otj"
     },
@@ -27000,8 +26999,8 @@
     {
       "name": "Rakdos Joins Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rakdos_joins_up.rs",
       "set": "otj"
     },
@@ -27016,16 +27015,16 @@
     {
       "name": "Rakdos, the Muscle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rakdos_the_muscle.rs",
       "set": "otj"
     },
     {
       "name": "Rakish Crew",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rakish_crew.rs",
       "set": "otj"
     },
@@ -27072,8 +27071,8 @@
     {
       "name": "Rambling Possum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rambling_possum.rs",
       "set": "otj"
     },
@@ -27296,8 +27295,8 @@
     {
       "name": "Rattleback Apothecary",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rattleback_apothecary.rs",
       "set": "otj"
     },
@@ -27328,8 +27327,8 @@
     {
       "name": "Raucous Entertainer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/raucous_entertainer.rs",
       "set": "otj"
     },
@@ -27352,8 +27351,8 @@
     {
       "name": "Raven of Fell Omens",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/raven_of_fell_omens.rs",
       "set": "otj"
     },
@@ -27464,8 +27463,8 @@
     {
       "name": "Razzle-Dazzler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/razzle_dazzler.rs",
       "set": "otj"
     },
@@ -28016,8 +28015,8 @@
     {
       "name": "Resilient Roadrunner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/resilient_roadrunner.rs",
       "set": "otj"
     },
@@ -28224,8 +28223,8 @@
     {
       "name": "Return the Favor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/return_the_favor.rs",
       "set": "otj"
     },
@@ -28384,8 +28383,8 @@
     {
       "name": "Riku of Many Paths",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/riku_of_many_paths.rs",
       "set": "otj"
     },
@@ -29016,8 +29015,8 @@
     {
       "name": "Roxanne, Starfall Savant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/roxanne_starfall_savant.rs",
       "set": "otj"
     },
@@ -29208,8 +29207,8 @@
     {
       "name": "Rush of Dread",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/rush_of_dread.rs",
       "set": "otj"
     },
@@ -29240,8 +29239,8 @@
     {
       "name": "Ruthless Lawbringer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/ruthless_lawbringer.rs",
       "set": "otj"
     },
@@ -29720,8 +29719,8 @@
     {
       "name": "Satoru, the Infiltrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/satoru_the_infiltrator.rs",
       "set": "otj"
     },
@@ -29864,8 +29863,8 @@
     {
       "name": "Scalestorm Summoner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/scalestorm_summoner.rs",
       "set": "otj"
     },
@@ -30392,8 +30391,8 @@
     {
       "name": "Seize the Secrets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/seize_the_secrets.rs",
       "set": "otj"
     },
@@ -30464,8 +30463,8 @@
     {
       "name": "Selvala, Eager Trailblazer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/selvala_eager_trailblazer.rs",
       "set": "otj"
     },
@@ -30584,8 +30583,8 @@
     {
       "name": "Servant of the Stinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/servant_of_the_stinger.rs",
       "set": "otj"
     },
@@ -30624,8 +30623,8 @@
     {
       "name": "Shackle Slinger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/shackle_slinger.rs",
       "set": "otj"
     },
@@ -30800,8 +30799,8 @@
     {
       "name": "Shepherd of the Clouds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/shepherd_of_the_clouds.rs",
       "set": "otj"
     },
@@ -30816,16 +30815,16 @@
     {
       "name": "Sheriff of Safe Passage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/sheriff_of_safe_passage.rs",
       "set": "otj"
     },
     {
       "name": "Shifting Grift",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/shifting_grift.rs",
       "set": "otj"
     },
@@ -31152,8 +31151,8 @@
     {
       "name": "Silver Deputy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/silver_deputy.rs",
       "set": "otj"
     },
@@ -31344,8 +31343,8 @@
     {
       "name": "Skulduggery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/skulduggery.rs",
       "set": "otj"
     },
@@ -31568,16 +31567,16 @@
     {
       "name": "Slick Sequence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/slick_sequence.rs",
       "set": "otj"
     },
     {
       "name": "Slickshot Lockpicker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/slickshot_lockpicker.rs",
       "set": "otj"
     },
@@ -31592,8 +31591,8 @@
     {
       "name": "Slickshot Vault-Buster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/slickshot_vault_buster.rs",
       "set": "otj"
     },
@@ -31704,8 +31703,8 @@
     {
       "name": "Smuggler's Surprise",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/smuggler_s_surprise.rs",
       "set": "otj"
     },
@@ -32760,8 +32759,8 @@
     {
       "name": "Spring Splasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/spring_splasher.rs",
       "set": "otj"
     },
@@ -33232,8 +33231,8 @@
     {
       "name": "Steer Clear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/steer_clear.rs",
       "set": "otj"
     },
@@ -33248,8 +33247,8 @@
     {
       "name": "Step Between Worlds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/step_between_worlds.rs",
       "set": "otj"
     },
@@ -34728,8 +34727,8 @@
     {
       "name": "Taii Wakeen, Perfect Shot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/taii_wakeen_perfect_shot.rs",
       "set": "otj"
     },
@@ -34768,16 +34767,16 @@
     {
       "name": "Take for a Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/take_for_a_ride.rs",
       "set": "otj"
     },
     {
       "name": "Take the Fall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/take_the_fall.rs",
       "set": "otj"
     },
@@ -35392,8 +35391,8 @@
     {
       "name": "Terror of the Peaks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/terror_of_the_peaks.rs",
       "set": "otj"
     },
@@ -35784,8 +35783,8 @@
     {
       "name": "The Gitrog, Ravenous Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/the_gitrog_ravenous_ride.rs",
       "set": "otj"
     },
@@ -35848,8 +35847,8 @@
     {
       "name": "The Key to the Vault",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/the_key_to_the_vault.rs",
       "set": "otj"
     },
@@ -36464,10 +36463,10 @@
     {
       "name": "This Town Ain't Big Enough",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
-      "definition": "src/card_definitions/legacy/this_town_ain_t_big_enough.rs",
-      "set": "legacy"
+      "implemented": true,
+      "implementation": "typed_rust",
+      "definition": "src/card_definitions/otj/this_town_ain_t_big_enough.rs",
+      "set": "otj"
     },
     {
       "name": "Thistledown Players",
@@ -36720,8 +36719,8 @@
     {
       "name": "Three Steps Ahead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/three_steps_ahead.rs",
       "set": "otj"
     },
@@ -36792,8 +36791,8 @@
     {
       "name": "Throw from the Saddle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/throw_from_the_saddle.rs",
       "set": "otj"
     },
@@ -36832,8 +36831,8 @@
     {
       "name": "Thunder Salvo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/thunder_salvo.rs",
       "set": "otj"
     },
@@ -37040,8 +37039,8 @@
     {
       "name": "Tinybones Joins Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/tinybones_joins_up.rs",
       "set": "otj"
     },
@@ -37064,8 +37063,8 @@
     {
       "name": "Tinybones, the Pickpocket",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/tinybones_the_pickpocket.rs",
       "set": "otj"
     },
@@ -37488,8 +37487,8 @@
     {
       "name": "Trash the Town",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/trash_the_town.rs",
       "set": "otj"
     },
@@ -37640,8 +37639,8 @@
     {
       "name": "Trick Shot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/trick_shot.rs",
       "set": "otj"
     },
@@ -37784,8 +37783,8 @@
     {
       "name": "Tumbleweed Rising",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/tumbleweed_rising.rs",
       "set": "otj"
     },
@@ -38448,8 +38447,8 @@
     {
       "name": "Unfortunate Accident",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/unfortunate_accident.rs",
       "set": "otj"
     },
@@ -38560,8 +38559,8 @@
     {
       "name": "Unscrupulous Contractor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/unscrupulous_contractor.rs",
       "set": "otj"
     },
@@ -38768,8 +38767,8 @@
     {
       "name": "Vadmir, New Blood",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/vadmir_new_blood.rs",
       "set": "otj"
     },
@@ -39112,8 +39111,8 @@
     {
       "name": "Vengeful Townsfolk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/vengeful_townsfolk.rs",
       "set": "otj"
     },
@@ -39496,8 +39495,8 @@
     {
       "name": "Visage Bandit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/visage_bandit.rs",
       "set": "otj"
     },
@@ -39744,8 +39743,8 @@
     {
       "name": "Vraska Joins Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/vraska_joins_up.rs",
       "set": "otj"
     },
@@ -39776,8 +39775,8 @@
     {
       "name": "Vraska, the Silencer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/vraska_the_silencer.rs",
       "set": "otj"
     },
@@ -39944,8 +39943,8 @@
     {
       "name": "Wanted Griffin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/wanted_griffin.rs",
       "set": "otj"
     },
@@ -41144,8 +41143,8 @@
     {
       "name": "Wrangler of the Damned",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/wrangler_of_the_damned.rs",
       "set": "otj"
     },

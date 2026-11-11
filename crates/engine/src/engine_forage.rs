@@ -231,6 +231,23 @@ impl Game {
     fn forage_route_available(&self, route: ForageRoute) -> bool {
         let p = self.semantic_actor().unwrap();
         if let Some(a) = &self.state.announcing {
+            if a.item.kind == StackKind::Spell
+                && a.total_cost.is_none()
+                && self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card)
+            {
+                if route == ForageRoute::Black
+                    && a.additional_cost().unwrap().kind != EffectChoiceKind::ForageOrBlack
+                {
+                    return false;
+                }
+                let mut proposal = a.clone();
+                proposal.forage = Some(Box::new(ForageSelection {
+                    route: Some(route),
+                    selected: Vec::new(),
+                    skip_to: 0,
+                }));
+                return self.announcement_target_fundable(&proposal, None, None, None, None, false);
+            }
             let mut goal = self.funding_goal(a);
             // The current total already includes the black choice after declaration.
             if a.forage

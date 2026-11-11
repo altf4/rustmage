@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1ae7c6e612b81f93b06d84a3ad6fb1b84016fd89c1e78527b753ca337eeb7c2f"
   },
-  "physical_metadata_sha256": "a30e3db5d12bd82ffc76ef09ae6abf9bd2695185794131760077b90ec410e599"
+  "physical_metadata_sha256": "a30e3db5d12bd82ffc76ef09ae6abf9bd2695185794131760077b90ec410e599",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RodeoPyromancers.java",
+  "java_sha256": "3873a9c095f4d4c80e485f7ddcd74cbc5afca464a5996b6a33e8e7db84132060",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }

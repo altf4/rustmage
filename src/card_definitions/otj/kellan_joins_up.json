@@ -3,10 +3,41 @@
   "catalogue_id": 2337,
   "oracle_id": "9b3ddd31-c058-4846-8784-25c7a9bbcb31",
   "facts_sha256": "d5fff396e380b58dd2a4c0d024b2378457154e8d59bfafabf83a0629316642ef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "92b6354c9085b3c44f1c566c6ec24d04eadee6452605547ac030e035127c03e2"
   },
-  "physical_metadata_sha256": "43bff9a95bcbc34c2fd869361f4c23b3f0f7b659ca6b94a4330024331c1e7fa2"
+  "physical_metadata_sha256": "43bff9a95bcbc34c2fd869361f4c23b3f0f7b659ca6b94a4330024331c1e7fa2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanJoinsUp.java",
+  "java_sha256": "3a8c44dea4c08fef9321edd73bd299919efb0410efeffa70127d19be6d7317ff",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MayExileCardFromHandPlottedEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8f21d0121c8cceea6a0d3e3f40df375c087d7ae61f198d881b6dd27b3a8906b7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_k_l.rs"
 }

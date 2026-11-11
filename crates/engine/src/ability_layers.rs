@@ -48,6 +48,7 @@ pub enum ActivationReductionAmount {
 pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
+    ControlledLegendaryCreature,
     OtherControlledSubtype(&'static str),
     /// Abilities of another creature with this provider's active entry choice.
     OtherControlledCreatureOfChosenType,
@@ -113,6 +114,8 @@ pub enum StaticAbilityFragment {
     ControlledLandTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,
+    /// Add one mana of a type actually produced by a controlled artifact token tapped for mana.
+    ControlledArtifactTokenTapManaBonus,
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),
@@ -159,6 +162,8 @@ pub enum StaticAbilityFragment {
     AttackWithoutDefenderIfScried,
     /// This exact source can attack despite defender while the live condition holds.
     AttackWithoutDefenderIf(StatValue),
+    /// Check a live battlefield guard for this permanent's defender permission.
+    AttackWithoutDefenderWhen(StepGuard),
     /// Controlled creatures may attack despite defender.
     ControlledAttackWithoutDefender,
     /// This source cannot be attacked while attached to a creature.
@@ -183,6 +188,12 @@ pub enum StaticAbilityFragment {
     AdditionalDrawWithAtMostOneCard,
     /// Increase opponents' noncreature spell costs by generic mana.
     OpponentNoncreatureSpellTax(u32),
+    /// Generic cost increase on opposing casts from a graveyard or exile.
+    OpponentGraveyardOrExileSpellTax(u32),
+    /// Each player can cast at most this many spells per turn.
+    SpellCastLimit(u64),
+    /// Each opponent spell targeting this permanent costs an additional life payment.
+    OpponentSpellsTargetingSourceLifeCost(u32),
     /// Increase both players' spell costs for the type chosen as this source entered.
     ChosenCardTypeSpellTax(u32),
     /// Generic cost per creature declared attacking this source's controller.
@@ -190,6 +201,13 @@ pub enum StaticAbilityFragment {
         amount: u32,
         condition: StatValue,
     },
+    /// Generic cost per creature declared attacking this source's controller or their planeswalker.
+    AttackControllerOrPlaneswalkerTax {
+        amount: u32,
+        condition: StatValue,
+    },
+    /// Generic cost per declared blocker while this permanent is attacking.
+    BlockTaxWhileAttacking(u32),
     AdditionalTriggers {
         scope: AdditionalTriggerScope,
         condition: StatValue,
@@ -216,6 +234,8 @@ pub enum StaticAbilityFragment {
         ability: u16,
     },
     LookAtLibraryTop,
+    /// Nonland cards on top of this controller's library may be plotted, including for their mana cost.
+    PlotFromLibraryTop,
     CastCreatureFromLibraryTop,
     /// An ordinary cast from the current top, using the chosen spell face.
     CastFromLibraryTop(CastFilter),
@@ -263,6 +283,8 @@ pub enum StaticAbilityFragment {
         grant: CreatureSubtypeGrant,
         required_subtype: Option<&'static str>,
     },
+    /// Add this subtype to controlled creatures owned by another player.
+    ControlledForeignOwnedCreatureSubtype(&'static str),
     /// This source adds artifact and creature during another player’s turn.
     SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).
@@ -332,6 +354,8 @@ pub enum StaticAbilityFragment {
     },
     PlayerHexproof,
     PlayerProtectionFromOpponents,
+    /// This permanent has protection from sources with the specified effective subtype.
+    ProtectionFromSubtype(&'static str),
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
         kind: CounterKind,
@@ -520,6 +544,8 @@ pub enum StaticAbilityFragment {
     ControlledArtifactFood(u16),
     /// In layer six grant this indexed activation to controlled artifacts.
     ControlledArtifactActivation(u16),
+    /// In layer six, grant this indexed nonmana activation to controlled nontoken creatures.
+    ControlledNontokenCreatureActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {

@@ -3,10 +3,46 @@
   "catalogue_id": 3360,
   "oracle_id": "4b100e6f-6c19-49d2-b9c4-613d63d42151",
   "facts_sha256": "69fb2ef37687b06133a7e3052497bfff650ad77b3f7d0caf6bf53d9979fc3396",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aa905c4aae0085414d2900785e82c7c21a722653a234fbad3c8f7cbfc5c007a0"
   },
-  "physical_metadata_sha256": "d8e03fce40515c7c41bc228d1865ad46ae7ab87afa0bb675f8f625c3800ca1ab"
+  "physical_metadata_sha256": "d8e03fce40515c7c41bc228d1865ad46ae7ab87afa0bb675f8f625c3800ca1ab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RamblingPossum.java",
+  "java_sha256": "1d926135f7433eed2c6c4a1f1a350cee17b64fa517ba0adaf63ce11a09d4da48",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWhileSaddledTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "23e4eb0abffe4afaa712ebecc2442d6d20101beb32c15b826f0ef521d8c3c297"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SaddleAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ad652baf45e4662717bfe85771ddc22b35eacc9a7b7727bed1a07157ed473b3d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "otj_cards_m_r"
 }
