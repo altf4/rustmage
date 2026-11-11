@@ -1852,6 +1852,8 @@ pub enum MilledDestination {
         next_turn: bool,
     },
     Hand,
+    /// Record how many selected cards actually entered their owner's hand.
+    HandAndCount,
     /// Record how many cards of this subtype actually entered their owner's hand.
     HandAndCountSubtype(&'static str),
     Battlefield,
