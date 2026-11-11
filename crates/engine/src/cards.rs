@@ -3142,6 +3142,12 @@ pub enum Instruction {
     ChooseHalf {
         kind: EffectChoiceKind,
     },
+    /// The selected players sacrifice or discard half the matching objects, rounded up.
+    ChooseHalfRoundedUp {
+        players: PlayerSet,
+        kind: EffectChoiceKind,
+        filter: SacrificeFilter,
+    },
     DiscardAnyDraw {
         players: PlayerSet,
         bonus: u16,

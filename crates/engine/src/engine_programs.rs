@@ -7881,8 +7881,19 @@ impl Game {
                         self.lose_life(player, life / 2 + life % 2);
                     }
                 }
-                Instruction::ChooseHalf { kind } => {
-                    if self.start_half_choice(&item, kind) {
+                Instruction::ChooseHalf { .. } | Instruction::ChooseHalfRoundedUp { .. } => {
+                    let (players, kind, filter, round_up) = match instruction {
+                        Instruction::ChooseHalf { kind } => {
+                            (PlayerSet::Each, kind, evidence::cost(0).filter, false)
+                        }
+                        Instruction::ChooseHalfRoundedUp {
+                            players,
+                            kind,
+                            filter,
+                        } => (players, kind, filter, true),
+                        _ => unreachable!(),
+                    };
+                    if self.start_half_choice(&item, players, kind, filter, round_up) {
                         return;
                     }
                 }

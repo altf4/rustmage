@@ -666,7 +666,14 @@ impl Game {
                 && self.has_subtype(object.card, "Saga")))
     }
 
-    pub(super) fn start_half_choice(&mut self, item: &SpellView, kind: EffectChoiceKind) -> bool {
+    pub(super) fn start_half_choice(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+        kind: EffectChoiceKind,
+        filter: SacrificeFilter,
+        round_up: bool,
+    ) -> bool {
         let payment = kind.payment_kind();
         assert!(matches!(
             payment,
@@ -676,7 +683,7 @@ impl Game {
             discard_draw: None,
             discarded: None,
             kind,
-            filter: evidence::cost(0).filter,
+            filter,
             amount: 0,
             source: item
                 .source
@@ -693,9 +700,8 @@ impl Game {
             equipment_recipient: None,
             blight_copy_attacking: false,
         };
-        // Freeze both quotas before either player chooses. The following printed
-        // instruction computes new quotas after this entire event and its replacements.
-        for player in [self.state.active, self.state.active.other()] {
+        // Freeze all quotas before choices or replacements can move anything.
+        for player in self.program_players(players, item) {
             let mut matching = 0usize;
             let mut available = 0usize;
             let zone = if payment == EffectChoiceKind::Discard {
@@ -719,8 +725,13 @@ impl Game {
             }
             // Prohibited permanents count toward the amount to sacrifice.
             // If there are too few legal selections, do as much as possible.
-            choice.required[player.index()] = u32::try_from((matching / 2).min(available))
-                .capacity("half choice count exhausted");
+            let half = if round_up {
+                matching.div_ceil(2)
+            } else {
+                matching / 2
+            };
+            choice.required[player.index()] =
+                u32::try_from(half.min(available)).capacity("half choice count exhausted");
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
         self.advance_effect_choice()
