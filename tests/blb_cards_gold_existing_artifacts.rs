@@ -154,7 +154,11 @@ fn three_tree_mascot_filters_one_mana_once_each_turn_without_tapping() {
     assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 0, 0, 1]);
     assert!(!game.object_view(mascot).tapped);
     reject(&mut game, filter.clone());
+    let previous_turn = game.state.turn;
     game.finish_cleanup();
+    assert_eq!(game.state.turn, previous_turn + 1);
+    assert_eq!(game.actor(), Some(player.other()));
+    act(&mut game, Action::Pass);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
     act(&mut game, filter);
     assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 0, 0, 0]);

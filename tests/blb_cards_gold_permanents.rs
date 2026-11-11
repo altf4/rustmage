@@ -60,10 +60,10 @@ fn baylen_taps_distinct_tokens_for_mana_draw_and_counters() {
     game.state.objects[baylen as usize].summoning_sick = true;
     let physical = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let enemy = game.state.objects.len() as CardId;
-    game.create_tokens(player.other(), Card::from_catalogue_id(5304), 1, false);
+    game.create_tokens(player.other(), Card::from_catalogue_id(5246), 1, false);
     let start = game.state.objects.len() as CardId;
     game.create_tokens(player, Card::from_catalogue_id(5317), 2, false);
-    game.create_tokens(player, Card::from_catalogue_id(5304), 2, false);
+    game.create_tokens(player, Card::from_catalogue_id(5246), 2, false);
     game.state.players[player.index()].mana = [0; 6];
 
     let mut mana = game.clone();

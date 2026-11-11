@@ -133,8 +133,9 @@ fn stormcatch_reduces_only_instants_or_sorceries_and_angler_keeps_its_cast_count
     assert_eq!(stats(&game, mentor), (2, 2));
     assert_eq!(stats(&game, angler), (3, 3));
 
-    reject(&mut game, Action::AnnounceCast { card: equipment });
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
+    reject(&mut game, Action::AnnounceCast { card: equipment });
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
     cast(&mut game, equipment, None);
     idle(&mut game);
     assert_eq!(stats(&game, mentor), (3, 3));

@@ -1,4 +1,4 @@
-//! Four inherited BLB lands whose rules are not covered by the DFT reprint suite.
+//! Inherited Bloomburrow land choices, mana, and token costs.
 mod support;
 
 use rustmage as _;
@@ -176,7 +176,10 @@ fn uncharted_haven_enters_tapped_and_uses_the_color_of_its_current_incarnation()
             game.state.players[player.index()].mana = ZERO;
             let old = game.object_ref(haven);
             game.move_object(haven, Zone::Exile);
-            game.move_object(haven, Zone::Battlefield);
+            let return_haven = game.entry_move(haven, Zone::Battlefield, false);
+            game.stage_entries(vec![return_haven], None);
+            assert!(game.advance_entries());
+            assert!(matches!(game.state.pending, Pending::EntryValue { .. }));
             assert_ne!(game.object_ref(haven), old);
         }
     }

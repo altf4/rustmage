@@ -76,7 +76,7 @@ fn burrowguard_tracks_all_own_creatures_as_head_of_the_homestead_makes_two_rabbi
 }
 
 #[test]
-fn camellia_counts_other_squirrels_including_kindred_and_makes_food_for_its_sacrifice() {
+fn camellia_counts_other_squirrels_including_kindred_and_makes_a_squirrel_for_sacrificing_food() {
     let player = Player::P1;
     let mut game = scenario(player);
     let camellia = put(
@@ -114,11 +114,12 @@ fn camellia_counts_other_squirrels_including_kindred_and_makes_food_for_its_sacr
     idle(&mut game);
     assert_eq!(game.object_view(food).zone, Zone::Graveyard);
     let created = game.controlled_token_ids(player).next().unwrap();
-    assert!(game.has_subtype(created, "Food"));
-    for id in [core, squirrel] {
+    assert!(game.has_subtype(created, "Squirrel"));
+    assert!(game.keywords(created).contains(Keywords::MENACE));
+    for id in [core, squirrel, created] {
         assert_eq!(game.counter_count(id, CounterKind::PlusOne), 1);
     }
-    for id in [camellia, bear, opposing, created] {
+    for id in [camellia, bear, opposing] {
         assert_eq!(game.counter_count(id, CounterKind::PlusOne), 0);
     }
 }
@@ -140,6 +141,9 @@ fn cindering_cutthroat_uses_opponent_life_loss_and_has_two_menace_payment_colors
         mana[5] = 1;
         game.state.players[player.index()].mana = mana;
         activate(&mut game, lizard);
+        choose(&mut game, |action| {
+            matches!(action, Action::ChooseActivationCost { .. })
+        });
         act(&mut game, Action::PayCosts { payment: mana });
         idle(&mut game);
         assert!(game.keywords(lizard).contains(Keywords::MENACE));
@@ -201,6 +205,9 @@ fn mind_drill_gets_live_threshold_from_its_own_surveil_and_tidecaller_rechecks_t
     let enemy_land = put(&mut game, player.other(), "Forest", Zone::Battlefield);
     assert_eq!(stats(&game, mind), (2, 5));
     activate(&mut game, mind);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseActivationCost { .. })
+    });
     act(
         &mut game,
         Action::PayCosts {
@@ -368,6 +375,6 @@ fn vinereap_rewards_entry_and_death_but_vren_replaces_death_and_builds_scaling_r
     assert_eq!(rats.len(), 2);
     for rat in rats {
         assert!(game.has_subtype(rat, "Rat"));
-        assert_eq!(stats(&game, rat), (2, 2));
+        assert_eq!(stats(&game, rat), (3, 3));
     }
 }
