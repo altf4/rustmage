@@ -26,6 +26,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::Destroy, CREATE],
         },
     ]),
+    mode_counts: Some(&[1, 1, 2]),
     mode_costs: Some(&[
         DESTROY,
         generic(1),

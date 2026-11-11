@@ -6447,34 +6447,20 @@ impl Game {
                     return;
                 }
                 Instruction::CastTargetedGraveyardFree => {
-                    if self.offer_targeted_graveyard_cast(&item, None, true, false) {
+                    if self.offer_targeted_graveyard_cast(&item, None, true) {
                         return;
                     }
                 }
-                Instruction::CastTargetedGraveyardPaid { spend_any_mana, .. }
-                | Instruction::CastTargetedGraveyardPermanentPaid { spend_any_mana } => {
-                    let exile_on_graveyard = matches!(
-                        instruction,
-                        Instruction::CastTargetedGraveyardPaid {
-                            exile_on_graveyard: true,
-                            ..
-                        }
-                    );
-                    let permanent_spell_only = matches!(
-                        instruction,
-                        Instruction::CastTargetedGraveyardPermanentPaid { .. }
-                    );
+                Instruction::CastTargetedGraveyardPaid {
+                    spend_any_mana,
+                    exile_on_graveyard,
+                } => {
                     let paid = ResolutionPaidCast {
                         kinds: u8::MAX,
                         exile_instants_sorceries: false,
                         spend_any_mana,
                     };
-                    if self.offer_targeted_graveyard_cast(
-                        &item,
-                        Some(paid),
-                        exile_on_graveyard,
-                        permanent_spell_only,
-                    ) {
+                    if self.offer_targeted_graveyard_cast(&item, Some(paid), exile_on_graveyard) {
                         return;
                     }
                 }

@@ -205,6 +205,46 @@ fn return_the_favor_copies_one_spell_and_changes_the_other_spells_single_target(
 }
 
 #[test]
+fn every_outlaws_spree_variant_records_its_printed_mode_count() {
+    let two: &[u8] = &[1, 1, 2];
+    let three_singles_first: &[u8] = &[1, 1, 1, 2, 2, 2, 3];
+    let three_mask_order: &[u8] = &[1, 1, 2, 1, 2, 2, 3];
+    for (name, expected) in [
+        ("Caught in the Crossfire", two),
+        ("Dance of the Tumbleweeds", two),
+        ("Explosive Derailment", two),
+        ("Final Showdown", three_singles_first),
+        ("Getaway Glamer", two),
+        ("Great Train Heist", three_singles_first),
+        ("Insatiable Avarice", two),
+        ("Jailbreak Scheme", two),
+        ("Lively Dirge", two),
+        ("Metamorphic Blast", two),
+        ("One Last Job", three_mask_order),
+        ("Phantom Interference", two),
+        ("Requisition Raid", three_mask_order),
+        ("Return the Favor", two),
+        ("Rush of Dread", three_mask_order),
+        ("Rustler Rampage", two),
+        ("Shifting Grift", three_singles_first),
+        ("Smuggler's Surprise", three_singles_first),
+        ("Three Steps Ahead", three_singles_first),
+        ("Trash the Town", three_singles_first),
+        ("Unfortunate Accident", two),
+    ] {
+        let card = Card::from_name(name).unwrap();
+        assert!(card.info().oracle_keywords.contains(&"Spree"));
+        assert_eq!(
+            rustmage_core::cards::authored::rules(card)
+                .unwrap()
+                .mode_counts,
+            Some(expected),
+            "{name}"
+        );
+    }
+}
+
+#[test]
 fn riku_counts_selected_modes_including_repeated_and_zero_selections() {
     let player = Player::P1;
     let cases: &[(&str, u16, &[u16], u16)] = &[
@@ -212,6 +252,7 @@ fn riku_counts_selected_modes_including_repeated_and_zero_selections() {
         ("Metamorphic Blast", 1, &[0, 1, 2, 4], 4),
         ("Lively Dirge", 2, &[0, 1, 2, 3, 4, 5, 6], 6),
         ("Cosmium Confluence", 0, &[0, 1, 2, 3, 4, 5, 6, 7], 7),
+        ("Smuggler's Surprise", 6, &[0, 1, 2, 3, 4, 5, 6, 7], 7),
     ];
     for &(name, original_mode, expected, chosen) in cases {
         let mut game = scenario(player);

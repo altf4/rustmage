@@ -669,7 +669,7 @@ fn explosive_derailment_inherited_spree_choices_use_distinct_or_shared_targets()
 }
 
 #[test]
-fn geyser_drake_discounts_only_instants_during_the_opponents_turn() {
+fn geyser_drake_discounts_spells_during_the_opponents_turn() {
     let player = Player::P0;
     let mut game = scenario(player.other());
     let drake = put(&mut game, player, "Geyser Drake", Zone::Battlefield);
@@ -678,7 +678,15 @@ fn geyser_drake_discounts_only_instants_during_the_opponents_turn() {
     assert!(game.keywords(drake).contains(Keywords::FLYING));
     act(&mut game, Action::Pass);
     game.state.players[player.index()].mana = [1, 0, 0, 0, 0, 1];
-    reject(&mut game, Action::AnnounceCast { card: cow });
+    let mut own_turn = game.clone();
+    own_turn.state.active = player;
+    reject(&mut own_turn, Action::AnnounceCast { card: cow });
+
+    let mut off_turn_creature = game.clone();
+    cast(&mut off_turn_creature, cow, None);
+    assert_eq!(off_turn_creature.object_view(cow).zone, Zone::Stack);
+    assert_eq!(off_turn_creature.state.players[player.index()].mana, [0; 6]);
+
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 0];
     let mut own_turn = game.clone();
     own_turn.state.active = player;

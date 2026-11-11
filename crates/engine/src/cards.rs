@@ -2715,10 +2715,6 @@ pub enum Instruction {
         spend_any_mana: bool,
         exile_on_graveyard: bool,
     },
-    /// Offer a paid graveyard cast only if the selected face is a permanent spell.
-    CastTargetedGraveyardPermanentPaid {
-        spend_any_mana: bool,
-    },
     /// Optional paid cast from the controller’s graveyard, during resolution.
     CastGraveyard {
         kinds: u8,

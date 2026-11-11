@@ -866,7 +866,6 @@ impl Game {
         item: &SpellView,
         paid: Option<ResolutionPaidCast>,
         exile_on_graveyard: bool,
-        permanent_spell_only: bool,
     ) -> bool {
         let remaining: Vec<_> = item
             .targets
@@ -884,7 +883,7 @@ impl Game {
         }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             permanent_type: None,
-            permanent_spell_only,
+            permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
             paid,

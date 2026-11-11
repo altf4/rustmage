@@ -25,7 +25,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 0,
                 SpellReduction {
                     source_only: false,
-                    filter: CastFilter::Instant,
+                    filter: CastFilter::Any,
                     amount: SpellReductionAmount::Fixed(1),
                     turn: CostTurn::Other,
                     guard: StepGuard::Always,
@@ -47,7 +47,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     0,
                     SpellReduction {
                         source_only: false,
-                        filter: CastFilter::Instant,
+                        filter: CastFilter::Any,
                         amount: SpellReductionAmount::Fixed(1),
                         turn: CostTurn::Other,
                         guard: StepGuard::Always,
@@ -57,7 +57,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         ],
         cost_reductions: &[SpellReduction {
             source_only: false,
-            filter: CastFilter::Instant,
+            filter: CastFilter::Any,
             amount: SpellReductionAmount::Fixed(1),
             turn: CostTurn::Other,
             guard: StepGuard::Always,

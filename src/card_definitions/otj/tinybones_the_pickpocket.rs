@@ -16,8 +16,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             one_or_more: false,
         },
         targets: one(TargetRule::DamagedPlayerNonlandPermanentCard),
-        program: &[Instruction::CastTargetedGraveyardPermanentPaid {
+        program: &[Instruction::CastTargetedGraveyardPaid {
             spend_any_mana: true,
+            exile_on_graveyard: false,
         }],
     }],
     ..CardRules::EMPTY

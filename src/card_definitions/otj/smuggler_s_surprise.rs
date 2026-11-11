@@ -54,6 +54,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             &[MILL, RECOVER, DEPLOY, PROTECT],
         ),
     ]),
+    mode_counts: Some(&[1, 1, 1, 2, 2, 2, 3]),
     mode_costs: Some(&[
         generic(2),
         ManaCost {
