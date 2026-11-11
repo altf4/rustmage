@@ -1521,7 +1521,16 @@ fn sandstorm_verge_has_colorless_mana_and_a_sorcery_speed_block_restriction() {
     assert!(game.object_view(verge).has_subtype("Desert"));
     assert!(!game.object_view(verge).tapped);
     let mut mana = game.clone();
-    act(&mut mana, Action::TapMana { card: verge });
+    act(
+        &mut mana,
+        Action::ActivateMana {
+            card: verge,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 0, 0, 1],
+        },
+    );
     assert_eq!(mana.state.players[player.index()].mana[5], 9);
     let activate = Action::AnnounceActivate {
         card: verge,
