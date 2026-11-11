@@ -215,9 +215,9 @@ use crate::cards::{
     EntryChoiceValue, EntryCounterAmount, EntryPredicate, EntryTapped, InitialCounters,
     Instruction, ManaCost, ManaProduction, MillAmount, MilledCount, MilledDestination,
     MilledFilter, MilledSelectionSpec, NamedCounters, PlayerSet, RecoveryFilter, ResolvedStatValue,
-    ReturnKind, SacrificeFilter, SearchSpec, SpellMode, StatExpr, StatValue, Stats, StepGuard,
-    StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, TriggerStep, payments,
+    ReturnKind, SacrificeFilter, SaddleRiderEffect, SearchSpec, SpellMode, StatExpr, StatValue,
+    Stats, StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate,
+    TargetRule, TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[doc(hidden)]
 #[path = "engine_milled_selection.rs"]
@@ -5535,7 +5535,11 @@ impl Game {
                 {
                     return true;
                 }
-                if choice.kind.any_number_selection() && emit(Action::FinishEffectChoice) {
+                if (choice.kind.any_number_selection()
+                    || choice.kind
+                        == EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne))
+                    && emit(Action::FinishEffectChoice)
+                {
                     return true;
                 }
                 if (matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
@@ -5614,6 +5618,7 @@ impl Game {
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
                             | EffectChoiceKind::RememberPermanents { .. }
+                            | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -8996,6 +9001,9 @@ impl Game {
                         self.finish_lore_counter_selection();
                     }
                     EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    EffectChoiceKind::SaddleRider(effect) => {
+                        self.finish_saddle_rider_choice(effect)
+                    }
                     EffectChoiceKind::ExileGraveyardCreaturesReflexive { ability } => {
                         self.finish_reflexive_graveyard_exile(ability);
                     }

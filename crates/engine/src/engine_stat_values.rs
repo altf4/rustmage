@@ -767,6 +767,7 @@ impl Game {
                     .capacity("effect sum exhausted")
             }),
             AmountValue::Fixed(n) => u128::from(n),
+            AmountValue::CrewContributorCount => self.crew_contributors(source).len() as u128,
             AmountValue::SourceDamageReceivedThisTurn => self.damage_received_this_turn(source),
             AmountValue::CraftMaterialManaValue => self
                 .crafted_exiled_cards(source)

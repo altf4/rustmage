@@ -187,6 +187,10 @@ impl Game {
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
+        if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
+            return !choice.selected[player.index()].contains(&object)
+                && self.saddle_rider_candidate(choice.source, player, object, effect);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::RemoveCreatureCounters(1) {
             return self.resolution_counter_candidate(player, object)
                 && self.counter_amounts(object.card).has_any();
@@ -475,8 +479,7 @@ impl Game {
             return o.owner == player
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && (o.zone == Zone::Graveyard
-                    || o.zone == Zone::Hand && !self.graveyard_land_return_active())
+                && self.land_selection_zone(o.zone)
                 && o.card.is_land()
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
@@ -1076,6 +1079,15 @@ impl Game {
         })
     }
 
+    fn land_selection_zone(&self, zone: Zone) -> bool {
+        let resolution = self.state.resolving.as_ref().unwrap();
+        match resolution.program.get(resolution.pc.saturating_sub(1)) {
+            Some(Instruction::ChooseOwnGraveyardLandReturn { .. }) => zone == Zone::Graveyard,
+            Some(Instruction::PutHandLands { .. }) => zone == Zone::Hand,
+            _ => matches!(zone, Zone::Hand | Zone::Graveyard),
+        }
+    }
+
     pub(super) fn start_graveyard_land_return(&mut self, item: &SpellView, tapped: bool) -> bool {
         if !self.state.objects.iter().any(|object| {
             object.zone == Zone::Graveyard
@@ -1199,8 +1211,7 @@ impl Game {
                         && self.current_kinds(reference.card) & 2 != 0
                 } else {
                     object.owner == player
-                        && (object.zone == Zone::Graveyard
-                            || object.zone == Zone::Hand && !self.graveyard_land_return_active())
+                        && self.land_selection_zone(object.zone)
                         && object.card.is_land()
                 });
                 let mut movement = self.entry_move(reference.card, Zone::Battlefield, tapped);
@@ -1750,6 +1761,10 @@ impl Game {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }
+        }
+        if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
+            self.finish_saddle_rider_choice(effect);
+            return false;
         }
         if choice.kind == EffectChoiceKind::HandCreatureAndLand {
             self.finish_creature_and_land_selection();
@@ -2878,6 +2893,7 @@ impl Game {
                 || matches!(
                     choice.kind,
                     EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                        | EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne)
                 ),
             required: choice.required,
             selected: std::array::from_fn(|index| {

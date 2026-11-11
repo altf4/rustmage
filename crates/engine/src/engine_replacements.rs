@@ -2827,6 +2827,21 @@ impl Game {
         self.stage_copy_token_batch(TokenBatch::copy(player, recipe, amount, false, completion));
     }
 
+    pub(super) fn stage_tapped_attacking_copy(&mut self, item: &SpellView, recipe: CopyRecipe) {
+        self.stage_copy_token_batch(TokenBatch::copy(
+            item.controller,
+            recipe,
+            1,
+            true,
+            TokenCompletion::TemporaryTokens(Box::new(temporary_tokens::TokenInstructions {
+                item: item.clone(),
+                keywords: Keywords::NONE,
+                attack: temporary_tokens::TokenAttack::ChooseDefender,
+                cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+            })),
+        ));
+    }
+
     pub(super) fn stage_random_graveyard_copy(&mut self, player: Player) {
         let state = self.state.replacements.get_or_insert_with(|| {
             Box::new(ReplacementState {
@@ -2868,7 +2883,7 @@ impl Game {
                 temporary_tokens::TokenInstructions {
                     item: item.clone(),
                     keywords: Keywords::NONE,
-                    attacking: true,
+                    attack: temporary_tokens::TokenAttack::DefendingPlayer,
                     cleanup: temporary_tokens::TokenCleanup::OwnEndStepSacrifice,
                 },
             )),

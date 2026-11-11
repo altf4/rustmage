@@ -4892,6 +4892,11 @@ impl Game {
                 Instruction::Crew { .. } => self.resolve_crew(&item),
                 Instruction::BecomeSaddled { .. } => self.resolve_saddle(&item),
                 Instruction::MarkSaddled(subject) => self.mark_saddled_subject(&item, subject),
+                Instruction::ChooseSaddleRiders(effect) => {
+                    if self.start_saddle_rider_choice(&item, effect) {
+                        return;
+                    }
+                }
                 Instruction::AdditionalLandPlays(amount) => {
                     let granted =
                         &mut self.state.players[item.controller.index()].extra_land_plays_granted;
@@ -7394,7 +7399,7 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords: Keywords::HASTE,
-                                attacking: false,
+                                attack: temporary_tokens::TokenAttack::None,
                                 cleanup: temporary_tokens::TokenCleanup::NextEndStepDestroy,
                             },
                         )),
@@ -7415,8 +7420,13 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords: Keywords::NONE,
-                                attacking: attacking
-                                    && self.attacking_return_combat(item.controller),
+                                attack: if attacking
+                                    && self.attacking_return_combat(item.controller)
+                                {
+                                    temporary_tokens::TokenAttack::DefendingPlayer
+                                } else {
+                                    temporary_tokens::TokenAttack::None
+                                },
                                 cleanup,
                             },
                         )),
@@ -7436,7 +7446,7 @@ impl Game {
                             temporary_tokens::TokenInstructions {
                                 item: item.clone(),
                                 keywords,
-                                attacking: false,
+                                attack: temporary_tokens::TokenAttack::None,
                                 cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
                             },
                         )),
@@ -9300,6 +9310,13 @@ impl Game {
                 Instruction::PutLandCards { maximum, tapped } => {
                     let maximum = u32::try_from(self.item_amount(maximum, &item))
                         .capacity("land selection limit exhausted");
+                    if self.start_land_selection(&item, maximum, tapped) {
+                        return;
+                    }
+                }
+                Instruction::PutHandLands { maximum, tapped } => {
+                    let maximum =
+                        u32::try_from(self.item_amount(maximum, &item)).unwrap_or(u32::MAX);
                     if self.start_land_selection(&item, maximum, tapped) {
                         return;
                     }

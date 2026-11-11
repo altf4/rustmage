@@ -6,8 +6,16 @@ use super::*;
 pub(super) struct TokenInstructions {
     pub item: SpellView,
     pub keywords: Keywords,
-    pub attacking: bool,
+    pub attack: TokenAttack,
     pub cleanup: TokenCleanup,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum TokenAttack {
+    None,
+    DefendingPlayer,
+    ChooseDefender,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

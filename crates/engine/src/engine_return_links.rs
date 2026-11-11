@@ -395,7 +395,28 @@ impl Game {
                 ids.push(id);
             }
         }
-        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.blink_battlefield_objects(
+            &ids,
+            counter,
+            tapped,
+            attacking.then_some(item.controller),
+            follow_public_move,
+        );
+    }
+
+    pub(super) fn blink_battlefield_objects_immediately(&mut self, ids: &[CardId]) {
+        self.blink_battlefield_objects(ids, None, false, None, false);
+    }
+
+    fn blink_battlefield_objects(
+        &mut self,
+        ids: &[CardId],
+        counter: Option<(CounterKind, u64)>,
+        tapped: bool,
+        attacking_controller: Option<Player>,
+        follow_public_move: bool,
+    ) {
+        let events = self.move_objects_raw(ids, Zone::Exile);
         let returning = events
             .iter()
             .filter(|event| {
@@ -408,11 +429,7 @@ impl Game {
             .map(|event| {
                 ReturnLinkView::from_event(
                     event,
-                    if attacking {
-                        item.controller
-                    } else {
-                        event.before.owner
-                    },
+                    attacking_controller.unwrap_or(event.before.owner),
                     counter,
                     tapped,
                     false,
@@ -424,7 +441,7 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
             rows: returning,
-            attacking,
+            attacking: attacking_controller.is_some(),
         }));
         self.finish_zone_events(&events, &[]);
     }

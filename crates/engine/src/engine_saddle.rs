@@ -117,7 +117,6 @@ impl Game {
         self.saddle_history(mount).is_some_and(|row| row.saddled)
     }
 
-    #[cfg(feature = "test-support")]
     pub(super) fn saddle_contributors(&self, mount: ObjectRef) -> &[ObjectRef] {
         self.saddle_history(mount)
             .map_or(&[], |row| row.contributors.as_slice())
@@ -141,6 +140,95 @@ impl Game {
             });
         &mut history[index]
     }
+    pub(super) fn saddle_rider_candidate(
+        &self,
+        mount: ObjectRef,
+        player: Player,
+        object: ObjectRef,
+        effect: SaddleRiderEffect,
+    ) -> bool {
+        self.saddle_contributors(mount).contains(&object)
+            && self.on_battlefield(object.card)
+            && self.object_ref(object.card) == object
+            && self.is_creature(object.card)
+            && match effect {
+                SaddleRiderEffect::CopyNonlegendaryAttacking => {
+                    !ability_world::CharacteristicWorld::legendary(self, object.card)
+                }
+                SaddleRiderEffect::SacrificeOneForPower => {
+                    self.state.objects[object.card as usize].controller == player
+                        && !ability_world::CharacteristicWorld::sacrifice_prohibited(
+                            self,
+                            object.card,
+                        )
+                }
+                SaddleRiderEffect::ReturnAnyToHand | SaddleRiderEffect::BlinkSourceAndUpToOne => {
+                    true
+                }
+            }
+    }
+
+    pub(super) fn start_saddle_rider_choice(
+        &mut self,
+        item: &SpellView,
+        effect: SaddleRiderEffect,
+    ) -> bool {
+        if effect == SaddleRiderEffect::SacrificeOneForPower {
+            self.state.resolving.as_mut().unwrap().sacrificed_power = None;
+        }
+        self.start_effect_choice(
+            item,
+            EffectChoiceKind::SaddleRider(effect),
+            PlayerSet::Controller,
+            evidence::cost(0).filter,
+            u16::from(effect != SaddleRiderEffect::ReturnAnyToHand),
+            (effect == SaddleRiderEffect::SacrificeOneForPower).then_some(0),
+        )
+    }
+
+    pub(super) fn finish_saddle_rider_choice(&mut self, effect: SaddleRiderEffect) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let choice = resolution.choice.take().unwrap();
+        let controller = resolution.item.controller;
+        let chosen = &choice.selected[controller.index()];
+        match effect {
+            SaddleRiderEffect::ReturnAnyToHand => {
+                let ids: Vec<_> = chosen.iter().map(|object| object.card).collect();
+                let events = self.move_objects_raw(&ids, Zone::Hand);
+                self.finish_zone_events(&events, &[]);
+            }
+            SaddleRiderEffect::BlinkSourceAndUpToOne => {
+                let mount = choice.source;
+                let ids: Vec<_> = std::iter::once(mount)
+                    .chain(chosen.iter().copied())
+                    .filter(|&object| {
+                        self.on_battlefield(object.card) && self.object_ref(object.card) == object
+                    })
+                    .map(|object| object.card)
+                    .collect();
+                if !ids.is_empty() {
+                    self.blink_battlefield_objects_immediately(&ids);
+                }
+            }
+            SaddleRiderEffect::CopyNonlegendaryAttacking => {
+                if let Some(&object) = chosen.first() {
+                    let item = resolution.item.clone();
+                    let recipe = self.copiable_recipe(object);
+                    self.stage_tapped_attacking_copy(&item, recipe);
+                }
+            }
+            SaddleRiderEffect::SacrificeOneForPower => {
+                if let Some(&object) = chosen.first() {
+                    let power = self.stats(object.card).power;
+                    if self.sacrifice_cost_batch_atomic(&[(controller, object.card)]) {
+                        self.state.resolving.as_mut().unwrap().sacrificed_power =
+                            Some(Box::new(power));
+                    }
+                }
+            }
+        }
+    }
+
     fn saddle_eligible(&self, source: ObjectRef, p: Player, r: ObjectRef) -> bool {
         self.state.objects.get(r.card as usize).is_some_and(|o| {
             o.generation == r.generation

@@ -2322,13 +2322,14 @@ impl Game {
                         u128::from(world.mana_value(id))
                             <= self.state.players[controller.index()].life_gained_this_turn
                     }
-                    TargetPredicate::CrewedSourceThisTurn => {
-                        self.state.crew.as_ref().is_some_and(|state| {
-                            state.history.iter().any(|entry| {
-                                entry.vehicle == source
-                                    && entry.contributors.contains(&world.reference(id))
-                            })
-                        })
+                    TargetPredicate::CrewedSourceThisTurn => self
+                        .crew_contributors(source)
+                        .contains(&world.reference(id)),
+                    TargetPredicate::SaddledSourceThisTurn => {
+                        object.zone == Zone::Battlefield
+                            && self
+                                .saddle_contributors(source)
+                                .contains(&world.reference(id))
                     }
                     TargetPredicate::OtherThanSource => self.object_ref(id) != source,
                     TargetPredicate::OtherThanPhysicalSource => id != source.card,

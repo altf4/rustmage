@@ -512,6 +512,14 @@ impl Game {
         self.state.pending = Pending::Priority;
         self.state.passes = 0;
     }
+    pub(super) fn crew_contributors(&self, vehicle: ObjectRef) -> &[ObjectRef] {
+        self.state
+            .crew
+            .as_ref()
+            .and_then(|state| state.history.iter().find(|row| row.vehicle == vehicle))
+            .map_or(&[], |row| row.contributors.as_slice())
+    }
+
     pub(super) fn crewed_vehicle_attack_triggers(&mut self, declared: &[AttackDeclaration]) {
         if self
             .state
@@ -523,24 +531,13 @@ impl Game {
         }
         for attack in declared {
             let vehicle = self.object_ref(attack.card);
-            let Some(history) = self
-                .state
-                .crew
-                .as_ref()
-                .unwrap()
-                .history
-                .iter()
-                .find(|row| row.vehicle == vehicle)
-            else {
-                continue;
-            };
-            if !self.has_subtype(attack.card, "Vehicle") {
+            let contributors = self.crew_contributors(vehicle);
+            if contributors.is_empty() || !self.has_subtype(attack.card, "Vehicle") {
                 continue;
             }
             // The paid cost relates two incarnations, regardless of who
             // controls either one now or whether the activation resolved.
-            let observers: Vec<_> = history
-                .contributors
+            let observers: Vec<_> = contributors
                 .iter()
                 .filter(|crewer| {
                     self.on_battlefield(crewer.card)

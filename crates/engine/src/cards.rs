@@ -430,6 +430,7 @@ pub enum TargetPredicate {
     EnteredBattlefieldThisTurn,
     Basic,
     CrewedSourceThisTurn,
+    SaddledSourceThisTurn,
     ManaValueAtMostLifeGained,
     OtherThanSource,
     /// Exclude the source's physical card even after it changes zones.
@@ -1326,12 +1327,23 @@ pub struct MeldPair {
     pub combined: Card,
 }
 
+/// Operations on exact creatures that paid this mount's Saddle cost this turn.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum SaddleRiderEffect {
+    ReturnAnyToHand,
+    BlinkSourceAndUpToOne,
+    CopyNonlegendaryAttacking,
+    SacrificeOneForPower,
+}
+
 /// A resolution choice; discard here is a cost, not a forced discard effect.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum EffectChoiceKind {
     /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
+    SaddleRider(SaddleRiderEffect),
     KeepSharedCreatureTypes,
     /// The ability controller saves one qualifying creature per controlling player.
     KeepCreaturesByPowerForEachPlayer(i128),
@@ -1634,6 +1646,7 @@ impl EffectChoiceKind {
             Self::RemoveLoreForSourceCounters(_)
                 | Self::SacrificeSelection
                 | Self::ExileGraveyardCreaturesReflexive { .. }
+                | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
         )
     }
     pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {
@@ -2855,6 +2868,10 @@ pub enum Instruction {
         maximum: AmountValue,
         tapped: bool,
     },
+    PutHandLands {
+        maximum: AmountValue,
+        tapped: bool,
+    },
     /// Optional resolution payment: selecting a legal filtered hand permanent pays
     /// before any replacement changes the resulting move. Decline skips a block.
     PutHandFiltered {
@@ -3133,6 +3150,9 @@ pub enum Instruction {
     },
     /// A resolving designation, independent of any Saddle ability or payment.
     MarkSaddled(Subject),
+    /// Choose current exact riders without targeting. Repeat the instruction
+    /// for an independent choice from the same paid history.
+    ChooseSaddleRiders(SaddleRiderEffect),
     ExileTopChoosePlay {
         amount: u16,
         next_turn: bool,
@@ -4859,6 +4879,8 @@ pub enum AmountValue {
     Devotion(ChoiceColor),
     /// Frozen qualifying subjects of one attack declaration.
     DeclaredAttackerCount,
+    /// Distinct exact creatures that paid a Crew cost for this source this turn.
+    CrewContributorCount,
     /// Counters on the exact event permanent, or its latest departure snapshot.
     EventObjectTotalCounters,
     SourceEquipmentCount,
