@@ -279,6 +279,24 @@ impl Coverage {
     }
 }
 
+fn workload_index(view: &Observation) -> usize {
+    let smoke = policy::smoke_index_from_observation(view, &view.actions);
+    if matches!(view.actions[smoke], Action::PlayLand { .. }) {
+        return smoke;
+    }
+    view.actions
+        .iter()
+        .position(|action| {
+            let (Action::AnnounceCast { card } | Action::Cast { card, .. }) = action else {
+                return false;
+            };
+            view.objects
+                .iter()
+                .any(|object| object.id == *card && object.card.name().starts_with("Season of "))
+        })
+        .unwrap_or(smoke)
+}
+
 #[test]
 fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
     let workload: Workload =
@@ -354,7 +372,7 @@ fn bloomburrow_standard_games_finish_and_replay_with_real_mechanic_events() {
                 let actor = game.actor().unwrap();
                 let view = game.observe(actor);
                 check_privacy(&view, actor);
-                let index = policy::smoke_index_from_observation(&view, &view.actions);
+                let index = workload_index(&view);
                 let action = view.actions[index].clone();
                 assert_ne!(action, Action::Concede);
                 let private = private_choice(&view)

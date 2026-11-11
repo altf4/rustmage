@@ -185,7 +185,8 @@
         {"name": "Dour Port-Mage", "oracle_id": "cf58e309-00e8-438e-813e-2e1c1002db23", "count": 4},
         {"name": "Lilysplash Mentor", "oracle_id": "20194297-f2a4-4473-95bc-7c6835e5b6b3", "count": 4},
         {"name": "Splash Lasher", "oracle_id": "0d0c4c91-683a-4563-a0b0-39f3c04f6307", "count": 4},
-        {"name": "Polliwallop", "oracle_id": "efd2a4ca-1bd0-4762-a997-f099326b1746", "count": 4}
+        {"name": "Polliwallop", "oracle_id": "efd2a4ca-1bd0-4762-a997-f099326b1746", "count": 2},
+        {"name": "Season of Weaving", "oracle_id": "4b473a42-a0c5-43d5-93f9-c599e963a06b", "count": 2}
       ]
     }
   ],
