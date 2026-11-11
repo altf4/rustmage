@@ -1,16 +1,16 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const TREASURE: Card = Card::from_catalogue_id(5302);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        one(TargetRule::Creature),
+        &[
+            Instruction::DamageForExcess(AmountValue::ChosenX),
+            Instruction::CreateTappedExcessTokens(TREASURE),
+        ],
+    ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

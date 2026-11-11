@@ -3,10 +3,41 @@
   "catalogue_id": 2262,
   "oracle_id": "5802aa98-a9b7-4b0d-9d7c-c3938701870d",
   "facts_sha256": "df682bfc396ae6ea4e4d254b414b6dd2560c083f5816c57384d1e79e12117833",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d54ef19bd8ae0c7533c86899f7aafb8a1e2b23d5ba1a0dc63f7c8e915895b009"
   },
-  "physical_metadata_sha256": "6118ab789dd9aecc343427ec47ba4352ddbb8f5ab2b470fae85dfdf7df116ddb"
+  "physical_metadata_sha256": "6118ab789dd9aecc343427ec47ba4352ddbb8f5ab2b470fae85dfdf7df116ddb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JemLightfooteSkyExplorer.java",
+  "java_sha256": "7259e502ad183c9068ee4ce8c2a8411213b00462b52ac98fe75dc0995d991892",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HaventCastSpellFromHandThisTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f97a36110457f23a6fb9757d15c7fcbb0a66d4e03ea54fe08f933c59796b89d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_h_j.rs"
 }

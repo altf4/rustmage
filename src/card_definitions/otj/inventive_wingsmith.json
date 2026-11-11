@@ -3,10 +3,51 @@
   "catalogue_id": 2214,
   "oracle_id": "96186b7e-3dd3-44e7-ad23-79638787004c",
   "facts_sha256": "a70754f0132960b5bf9eb54686f9e73a8d54e2e6afbe43104c454cd42bb344a5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6fe21fb3ee0dfdddc52b152b7c4344bb753d1df08c51a68b39b1ebb145a2444f"
   },
-  "physical_metadata_sha256": "37df71f1d1db75f5a4fcd5cfa01dba85d2bb1e4391031e7965d4647de69d4e02"
+  "physical_metadata_sha256": "37df71f1d1db75f5a4fcd5cfa01dba85d2bb1e4391031e7965d4647de69d4e02",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InventiveWingsmith.java",
+  "java_sha256": "8de43852cf9ed296c6ce746e54ba970cc86bbaadd68b40a7c63d3a6c7217e9c5",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/CompoundCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1577f41ffe084565cd38c201fb8b0ac92bf6eae3b2ee2618966495ee10f3898f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/Condition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2bb4954fece34ca0921d09937e43ee498d0eb55cbd1d0902df94a3cd80fd3df0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HaventCastSpellFromHandThisTurnCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f97a36110457f23a6fb9757d15c7fcbb0a66d4e03ea54fe08f933c59796b89d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SourceHasCounterCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1d9315e6b952df62a1bbe5cf57ce6d75c095866a5a3d8d661cf45a7b44e3b549"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_h_j.rs"
 }
