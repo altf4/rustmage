@@ -82,9 +82,13 @@ fn remove_keywords_follows_the_surviving_player_role_and_only_current_creatures(
     let mut g = scenario(player);
     let own = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
     let enemy = put(&mut g, player.other(), "Goblin Piker", Zone::Battlefield);
-    g.state.objects[enemy as usize].gained_keywords = Keywords::FLYING
-        .union(Keywords::FIRST_STRIKE)
-        .union(Keywords::DOUBLE_STRIKE);
+    g.grant_keyword_effects(
+        &[enemy],
+        g.object_ref(enemy),
+        Keywords::FLYING
+            .union(Keywords::FIRST_STRIKE)
+            .union(Keywords::DOUBLE_STRIKE),
+    );
     let spell = put(&mut g, player, "Giant Growth", Zone::Hand);
     let grant = put(&mut g, player, "Opt", Zone::Hand);
     announce(
@@ -142,6 +146,7 @@ fn counter_cohort_uses_current_control_and_exact_entry_this_turn() {
     let mut g = scenario(player);
     let source = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
     let old = put(&mut g, player, "Bear Cub", Zone::Battlefield);
+    g.state.entered_this_turn = None;
     let new = put(&mut g, player, "Bear Cub", Zone::Hand);
     let seized = put(&mut g, player.other(), "Goblin Piker", Zone::Hand);
     let enemy = put(&mut g, player.other(), "Bear Cub", Zone::Hand);
@@ -161,6 +166,10 @@ fn counter_cohort_uses_current_control_and_exact_entry_this_turn() {
     settle(&mut g);
     assert!(g.object_view(source).tapped);
     for (id, counters) in [(source, 0), (old, 0), (new, 1), (seized, 1), (enemy, 0)] {
-        assert_eq!(g.counter_count(id, CounterKind::PlusOne), counters);
+        assert_eq!(
+            g.counter_count(id, CounterKind::PlusOne),
+            counters,
+            "permanent {id}"
+        );
     }
 }

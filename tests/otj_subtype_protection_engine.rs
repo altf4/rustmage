@@ -121,9 +121,7 @@ fn subtype_protection_and_haste_only_evasion_each_qualify_blockers_at_declaratio
         "Changeling Wayfinder",
         Zone::Battlefield,
     );
-    for creature in [haste, changeling] {
-        g.state.objects[creature as usize].gained_keywords = Keywords::HASTE;
-    }
+    g.grant_keyword_effects(&[haste, changeling], g.object_ref(source), Keywords::HASTE);
     assert!(g.has_subtype(changeling, "Coyote"));
     let forests: Vec<_> = (0..3)
         .map(|_| put(&mut g, player, "Forest", Zone::Battlefield))
@@ -184,6 +182,9 @@ fn target_preflight_and_resolution_use_effective_and_departed_source_subtypes() 
                     },
                 );
             }
+            if matches!(g.state.pending, Pending::PayCosts { .. }) {
+                pay(&mut g);
+            }
             let exact = g.object_ref(source);
             g.apply_temporary_copy(exact, CopyRecipe::new(coyote), CopyDeadline::EndOfTurn);
             assert!(g.has_subtype(source, "Coyote"));
@@ -227,7 +228,7 @@ fn subtype_protection_refuses_attachment_in_each_world_and_cleans_existing_attac
     let mut g = scenario(player);
     let bearer = put(&mut g, player, "Grizzly Bears", Zone::Battlefield);
     let bearer = g.object_ref(bearer);
-    let aura = put(&mut g, player, "Petrify", Zone::Hand);
+    let aura = put(&mut g, player, "Cooped Up", Zone::Hand);
     cast(&mut g, aura, Some(Target::Card(bearer.card)));
     settle(&mut g);
     let equipment = put(&mut g, player, "Swiftfoot Boots", Zone::Battlefield);

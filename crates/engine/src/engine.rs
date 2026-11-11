@@ -5706,6 +5706,7 @@ impl Game {
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
                             | EffectChoiceKind::RememberPermanents { .. }
                             | EffectChoiceKind::SaddleRider(_)
+                            | EffectChoiceKind::ReturnAttachmentRecipient { .. }
                             | EffectChoiceKind::BlinkControlledCreatures
                             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
