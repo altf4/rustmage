@@ -222,6 +222,8 @@ fn resolution_reads_live_saddle_or_the_departed_sources_designation() {
             g.move_object(mount, Zone::Battlefield);
             assert!(!g.object_view(mount).saddled);
         } else {
+            let forest = put(&mut g, player, "Forest", Zone::Battlefield);
+            act(&mut g, Action::TapMana { card: forest });
             let designate = put(&mut g, player, "Giant Growth", Zone::Hand);
             cast(&mut g, designate, Some(Target::Card(mount)));
         }
