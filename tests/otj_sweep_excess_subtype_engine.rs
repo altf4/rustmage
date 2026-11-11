@@ -49,6 +49,35 @@ const SWEEP: CardRules = CardRules {
     ),
     ..CardRules::EMPTY
 };
+const CONTROLLED: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: false,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
+const GRANTS: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::GrantCreatureKeywordAbilities {
+                filter: CONTROLLED,
+                keywords: Keywords::TRAMPLE.union(Keywords::MAX_ONE_BLOCKER),
+            },
+            Instruction::GrantCreatures {
+                filter: CreatureFilter {
+                    relation: 1,
+                    ..CONTROLLED
+                },
+                keywords: Keywords::MAX_ONE_BLOCKER,
+            },
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
 const TREASURE: Card = Card::from_catalogue_id(5302);
 const EXCESS: CardRules = CardRules {
     effect: Effect::Spell(
@@ -140,6 +169,34 @@ fn ability_removal_precedes_a_non_targeted_grant_and_creature_destruction() {
     assert!(game.keywords(chosen).contains(Keywords::INDESTRUCTIBLE));
     assert_eq!(game.object_view(rival).zone, Zone::Graveyard);
     assert_eq!(game.object_view(other).zone, Zone::Graveyard);
+}
+
+#[test]
+fn removing_abilities_ends_quoted_but_not_direct_blocking_limits() {
+    let _rules = fixture_rules::activate(&[(Card::Shock, &GRANTS), (Card::Divination, &SWEEP)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let recipient = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let opposing = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let grants = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, grants, None);
+    settle(&mut game);
+    assert!(game.keywords(recipient).contains(Keywords::TRAMPLE));
+    assert!(game.keywords(recipient).contains(Keywords::MAX_ONE_BLOCKER));
+    assert!(game.keywords(opposing).contains(Keywords::MAX_ONE_BLOCKER));
+
+    let sweep = put(&mut game, player, "Divination", Zone::Hand);
+    cast(&mut game, sweep, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(!game.keywords(recipient).contains(Keywords::TRAMPLE));
+    assert!(!game.keywords(recipient).contains(Keywords::MAX_ONE_BLOCKER));
+    assert!(game.keywords(opposing).contains(Keywords::MAX_ONE_BLOCKER));
 }
 
 #[test]

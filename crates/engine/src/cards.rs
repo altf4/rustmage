@@ -4413,6 +4413,12 @@ pub enum Instruction {
         filter: CreatureFilter,
         keywords: Keywords,
     },
+    /// Grant abilities to current matching creatures through cleanup, including
+    /// flags used for quoted blocking abilities that other effects can remove.
+    GrantCreatureKeywordAbilities {
+        filter: CreatureFilter,
+        keywords: Keywords,
+    },
     GrantCreaturesWithPowerAtLeast {
         filter: CreatureFilter,
         minimum: i32,
@@ -7670,8 +7676,8 @@ impl Keywords {
     pub const fn union(self, other: Self) -> Self {
         Self(self.0 | other.0)
     }
-    /// Existing resolving instructions use these bits for rule restrictions,
-    /// never for a quoted ability grant. Static/printed uses stay removable.
+    /// Default resolving grants use these bits for direct rule restrictions.
+    /// Explicit ability grants keep these bits in the removable ability set.
     pub(crate) const fn resolution_rules(self) -> Self {
         Self(
             self.0

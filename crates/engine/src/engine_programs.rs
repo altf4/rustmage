@@ -11094,6 +11094,7 @@ impl Game {
                     );
                 }
                 Instruction::GrantCreatures { filter, keywords }
+                | Instruction::GrantCreatureKeywordAbilities { filter, keywords }
                 | Instruction::GrantCreaturesWithPowerAtLeast {
                     filter, keywords, ..
                 } => {
@@ -11122,7 +11123,14 @@ impl Game {
                         .source
                         .expect("instruction requires an object source")
                         .object;
-                    self.grant_keyword_effects(&affected, source, keywords);
+                    if matches!(
+                        instruction,
+                        Instruction::GrantCreatureKeywordAbilities { .. }
+                    ) {
+                        self.grant_keyword_abilities(&affected, source, keywords);
+                    } else {
+                        self.grant_keyword_effects(&affected, source, keywords);
+                    }
                 }
                 Instruction::GrantRememberedCreatures(keywords)
                 | Instruction::GrantRememberedCreaturesUntilNextTurn(keywords) => {
