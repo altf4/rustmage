@@ -1354,6 +1354,7 @@ fn visage_bandit_can_decline_or_copy_only_a_controlled_creature_with_added_types
     let player = Player::P0;
     let mut game = scenario(player);
     let bandit = put(&mut game, player, "Visage Bandit", Zone::Hand);
+    let unmodified_bandit = put(&mut game, player, "Visage Bandit", Zone::Battlefield);
     let donor = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
     let enemy = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     game.add_counter(donor, CounterKind::PlusOne, 1);
@@ -1366,6 +1367,12 @@ fn visage_bandit_can_decline_or_copy_only_a_controlled_creature_with_added_types
     assert_eq!(stats(&decline, bandit), (2, 2));
     let foe = game.object_ref(enemy);
     reject(&mut game, Action::ChooseEntryCopy { object: Some(foe) });
+    let same = game.object_ref(unmodified_bandit);
+    for _ in 0..3 {
+        act(&mut game, Action::ChooseEntryCopy { object: Some(same) });
+        assert!(matches!(game.state.pending, Pending::EntryCopy { .. }));
+        assert_eq!(game.object_view(bandit).zone, Zone::Stack);
+    }
     let our_donor = game.object_ref(donor);
     act(
         &mut game,

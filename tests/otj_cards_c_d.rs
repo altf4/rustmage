@@ -44,6 +44,24 @@ fn cactusfolk_checks_current_power_and_excludes_itself_and_opposing_creatures() 
         assert!(!game.keywords(other).contains(granted));
     }
     assert!(game.keywords(source).contains(Keywords::REACH));
+
+    let opponent = player.other();
+    game.state.priority = opponent;
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(source)));
+    pass_pair(&mut game);
+    let ward = game.observe(opponent).resolution_payment.unwrap();
+    assert_eq!(ward.payer, opponent);
+    assert_eq!(
+        ward.cost,
+        ManaCost {
+            colored: [0; 6],
+            generic: 2
+        }
+    );
+    act(&mut game, Action::DeclineResolutionMana);
+    assert_eq!(game.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(source).damage, 0);
 }
 
 #[test]
@@ -185,6 +203,25 @@ fn claim_jumper_rechecks_after_each_optional_search_and_shuffles_once() {
     }
     resolve(&mut caught_up);
     assert_eq!(caught_up.state.players[player.index()].library.len(), 10);
+
+    let mut one_find = game.clone();
+    put(&mut one_find, player, "Forest", Zone::Battlefield);
+    let nonbasic = put(&mut one_find, player, "Hallowed Fountain", Zone::Library);
+    pass_pair(&mut one_find);
+    act(&mut one_find, Action::ChooseOptional { accept: true });
+    act(&mut one_find, Action::ChooseSearch { card: nonbasic });
+    act(&mut one_find, Action::FinishSearch);
+    let decline_life = Action::ChooseEntryLife { pay: false };
+    if one_find.legal_actions().contains(&decline_life) {
+        act(&mut one_find, decline_life);
+    }
+    assert!(one_find.on_battlefield(nonbasic) && one_find.object_view(nonbasic).tapped);
+    assert_eq!(one_find.state.pending, Pending::Priority);
+    assert!(one_find.state.stack.is_empty());
+    let mut one_rng = game.state.rng;
+    one_rng.shuffle(&mut [0; 10]);
+    assert_eq!(one_find.state.rng, one_rng);
+
     pass_pair(&mut game);
     let mut decline = game.clone();
     for _ in 0..2 {
@@ -227,6 +264,11 @@ fn colossal_rattlewurm_uses_desert_timing_and_exiles_its_graveyard_incarnation()
     let desert = put(&mut game, player, "Bristling Backwoods", Zone::Battlefield);
     cast(&mut game, spell, None);
     assert!(game.keywords(spell).contains(Keywords::FLASH));
+    let mut lost_desert = game.clone();
+    lost_desert.move_object(desert, Zone::Graveyard);
+    assert!(!lost_desert.keywords(spell).contains(Keywords::FLASH));
+    resolve(&mut lost_desert);
+    assert!(lost_desert.on_battlefield(spell));
     resolve(&mut game);
     assert!(game.keywords(spell).contains(Keywords::TRAMPLE));
     game.move_object(spell, Zone::Graveyard);
