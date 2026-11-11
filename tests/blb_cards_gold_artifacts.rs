@@ -61,11 +61,11 @@ fn fountainport_bell_may_search_and_its_paid_sacrifice_draws_the_selected_basic(
         game.state.players[player.index()].library.last(),
         Some(&basic)
     );
-    assert!(
-        game.observe(player.other())
-            .objects
-            .iter()
-            .any(|view| view.id == basic)
+    assert_eq!(
+        game.observe(player.other()).known_library_top[player.index()]
+            .as_ref()
+            .map(|top| top.object),
+        Some(game.object_ref(basic))
     );
 
     choose(&mut game, |action| {
