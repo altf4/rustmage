@@ -216,14 +216,14 @@ fn gev_counts_opponents_who_lost_life_and_its_ward_uses_the_targeting_payer() {
     act(&mut game, Action::Pass);
     cast(&mut game, removal, Some(Target::Card(gev)));
     advance(&mut game, |g| {
-        matches!(g.state.pending, Pending::ResolutionMana { .. })
+        matches!(g.state.pending, Pending::ResolutionLife { .. })
     });
     assert_eq!(game.actor(), Some(opponent));
     let mut paid = game.clone();
-    act(&mut game, Action::DeclineResolutionMana);
+    act(&mut game, Action::DeclineResolutionLife);
     idle(&mut game);
     assert_eq!(game.object_view(gev).zone, Zone::Battlefield);
-    act(&mut paid, Action::PayResolutionMana { payment: [0; 6] });
+    act(&mut paid, Action::PayResolutionLife);
     idle(&mut paid);
     assert_eq!(paid.state.players[opponent.index()].life, 17);
     assert_eq!(paid.object_view(gev).zone, Zone::Graveyard);
