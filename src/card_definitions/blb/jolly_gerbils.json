@@ -3,10 +3,26 @@
   "catalogue_id": 2287,
   "oracle_id": "8e22bf51-1b1b-459b-af78-91188b6e3f09",
   "facts_sha256": "e53ab4d1f49a4a87356cf26fec5de139eeced6cfc22123a9a10f0472deade181",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ac7bfc36f484a6acaf607618ef3308c5004799c1a4d5a8af9e24b8b22697f5aa"
   },
-  "physical_metadata_sha256": "cb69f434ff4e2af9ea15fb9c07e6bd7428955cf82c60b18502328f9798f13cf2"
+  "physical_metadata_sha256": "cb69f434ff4e2af9ea15fb9c07e6bd7428955cf82c60b18502328f9798f13cf2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JollyGerbils.java",
+  "java_sha256": "446158375ba3a9cc72d7720a80b20bb477d599ce579311a16e2d75a69d98a10d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_gift.rs"
 }

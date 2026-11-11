@@ -3,10 +3,46 @@
   "catalogue_id": 4097,
   "oracle_id": "7024532b-f99b-43a7-b0ed-5b3e7ec7592b",
   "facts_sha256": "94f74949e7359158fbb340bcd57ebc4a9e38db73a3baca3df733d1d300e1e612",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "672c5286016a9fe8f1c6d25686d707be82926f0609b3cdb93a851cb523995e28"
   },
-  "physical_metadata_sha256": "19f06d60710685456b83f65a28d280be172635554a7a430ae1048cd3d8e86842"
+  "physical_metadata_sha256": "19f06d60710685456b83f65a28d280be172635554a7a430ae1048cd3d8e86842",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StarfallInvocation.java",
+  "java_sha256": "12238a499d3467a7645af9647fe0b77f7d140955d8d6294efe4a61e3f000d028",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/GiftWasPromisedCondition.java",
+      "sha256": "7b28b417e88d1d55af10d36361441881e56d9c8d2760d167c3a167fbffef7d5a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/GiftAbility.java",
+      "sha256": "660fbaca01656c3d8d9bfe2979bd5858a0af9f92bde0272b9b8eef804a5b2593"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_gift.rs"
 }

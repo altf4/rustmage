@@ -3,10 +3,41 @@
   "catalogue_id": 5041,
   "oracle_id": "861e427f-cbb4-4ed5-8356-747ac638ac34",
   "facts_sha256": "e8e3c108ba649c2851476cc8811a2d08ac86ab0bb8c44ce40315348ee1f0b886",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4f2a406a55129aa40a96b004f8dafa7e8e4cb1aa5ddb9f7ea7f05632633ec617"
   },
-  "physical_metadata_sha256": "c7f5a9aacd218470ca9866abaf945874afa01caab89b8c538d65043ae69e73f5"
+  "physical_metadata_sha256": "c7f5a9aacd218470ca9866abaf945874afa01caab89b8c538d65043ae69e73f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WhiskervaleForerunner.java",
+  "java_sha256": "adb0e104f0e716f704131eb705de40d5ec34f36932fe3914c20b22641332584a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+      "sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetCard.java",
+      "sha256": "e4ac7e19f604b43a36475592a0d13f75fcd6e21b287a813a2381b9b42ca4740e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_gift.rs"
 }
