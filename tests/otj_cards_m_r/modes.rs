@@ -36,8 +36,8 @@ fn metamorphic_blast_sets_base_stats_type_and_color_while_preserving_abilities_a
 fn neutralize_the_guards_shrinks_only_the_opponents_current_creatures_and_surveils() {
     let player = Player::P1;
     let mut game = scenario(player);
-    let own = board(&mut game, player, "Bear Cub");
-    let small = board(&mut game, player.other(), "Bear Cub");
+    let own = board(&mut game, player, "Healer's Hawk");
+    let small = board(&mut game, player.other(), "Healer's Hawk");
     let bigger = board(&mut game, player.other(), "Grizzly Bears");
     let buried = top(&mut game, player, "Forest");
     let kept = top(&mut game, player, "Island");

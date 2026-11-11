@@ -34,6 +34,8 @@ fn reach(game: &mut Game, checkpoint: impl Fn(&Game) -> bool) {
         }
         match game.state.pending {
             Pending::Priority => act(game, Action::Pass),
+            Pending::Attackers => act(game, Action::FinishAttackers),
+            Pending::Blockers => act(game, Action::FinishBlockers),
             Pending::OrderTriggers { .. } => {
                 choose(game, |action| matches!(action, Action::PutTrigger { .. }))
             }

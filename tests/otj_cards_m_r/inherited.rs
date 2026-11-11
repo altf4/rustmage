@@ -45,6 +45,11 @@ fn inherited_desert_searches_choose_basic_or_desert_and_greenblade_scales_live()
     if has(&game, &Action::FinishSearch) {
         act(&mut game, Action::FinishSearch);
     }
+    let damage = Action::ChooseTarget {
+        target: Target::Player(player.other()),
+    };
+    until_action(&mut game, &damage);
+    act(&mut game, damage);
     quiet(&mut game);
     for land in [forest, desert] {
         assert_eq!(zone(&game, land), Zone::Battlefield);
