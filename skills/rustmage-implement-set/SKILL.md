@@ -45,10 +45,11 @@ assembly and test target while reusing the engine. Never add generated per-card
 IDs, admission arrays or new card-specific branches to the engine merely to wire
 up a definition. Check Cargo freshness records when this reuse is uncertain.
 
-If card authoring reveals a genuinely missed engine dependency, return to the
-engine phase: record and finish the shared fix, validate/review it, and rewarm the
-cache before resuming dependent cards. Do not interleave speculative engine
-changes with large parallel card batches. Keep the all-Standard goal open.
+If card authoring reveals a missed engine dependency, record it and return to the
+engine phase. Finish, validate and review the shared fix, then rewarm the cache
+before resuming dependent cards. Continue independent batches in isolated
+worktrees. Keep speculative engine changes separate from card batches and keep
+the all-Standard goal open.
 
 ## Select complete-card work
 
@@ -98,14 +99,15 @@ for that set work. The completed-set PR must include an update to the card
 progress tracker in `README.md`, reflecting the final verified supported-card
 counts and set completion status.
 
-Assign agents disjoint card
-files and integration-test targets; give a shared mechanic one owner. Begin
-parallel card authorship only after the engine checkpoint above. State each batch's
-base revision, source pins, dependencies and definition ownership. Let the
-integrator regenerate derived module links and catalogue artifacts instead of
-having every author edit a central generator. Keep the linker metadata-only.
-Use current centralized schema expectations; change a wire schema only for an
-actual wire change.
+Assign one validation owner and one owner per shared mechanic. Give agents
+disjoint card files and integration-test targets. While a guarded build runs on
+the frozen integration checkout, agents prepare scenarios and review code in
+isolated worktrees. After the engine checkpoint, they also author independent
+batches. Queue commits and integrate them once the running job terminates.
+State each batch's base revision, source pins, dependencies and ownership. The
+integrator regenerates module links and catalogue artifacts. Keep the linker
+metadata-only. Use current centralized schema expectations and change a wire
+schema only for an actual wire change.
 
 ## Plan tests and separate authoring from acceptance
 
@@ -128,37 +130,39 @@ set work. Do not run `cargo clean` between card batches. Build cold only when th
 required work cannot reuse a compatible cache. Reserve `--fresh` for checks
 that require a clean target.
 
-Choose validation by changed behavior and integration state, not card count:
+Choose validation by changed behavior and integration state.
 
-- **Author loop:** after a coherent card family or mechanic change, run its focused
-  rules tests and relevant existing regressions through the resource guard, using
-  one reusable development target per worktree under `~/.cache`. Select the
-  relevant integration test target so unrelated card tests need not recompile. A five-card work
-  chunk, agent handoff or progress update does not trigger full validation.
-- **Shared-rule checkpoint:** test the mechanic and its affected consumers/contracts
+- **Author loop.** Run focused rules tests and affected regressions for each
+  coherent card family or mechanic. Batch related test targets under the guard
+  on the same reusable Cargo target. Build them in one invocation when supported.
+- **Shared-rule checkpoint.** Test the mechanic and its affected consumers/contracts
   before expanding dependent card work. Broaden to native assurance when impact is
   wide or uncertain. Finish the core implementation's acceptance and reviews on
   the set branch before expanding dependent work, as required above.
-- **Completed-set PR acceptance:** assemble the entire completed set, including
-  its shared mechanics and README card progress tracker update, regenerate links,
-  freeze its inputs, then run the full release validator using
-  the verified reusable-target mode, with any additional checks required by the
-  checkout. Complete full-set acceptance before opening the single set PR.
-  Every merge candidate needs passing acceptance for its final
-  executable inputs. Repair failures with focused
-  tests first; repeat acceptance after substantive fixes are assembled. Reuse a
-  successful report for the same frozen inputs instead of rerunning it for each
-  worker, reviewer or status report.
-- **Set acceptance:** retain the complete-set game and interaction requirements
+- **Completed-set PR acceptance.** Start nonauthor rules review during focused
+  runs. Assemble the set and README tracker, regenerate links, and refresh and
+  check affected execution-input manifests, including Tarkir's via
+  `scripts/tdm_execution_inputs.py`. Run focused regressions for affected sets.
+  Set `CARGO_TARGET_DIR` to the reusable target and preflight production with
+  `python3 scripts/resource_guard.py -- cargo check --release -p rustmage --lib --bin benchmark`.
+  Freeze the candidate and run `python3 scripts/validate.py --release --python smoke`
+  with the verified reusable target and checkout-specific checks before opening
+  the PR. Batch related fixes, verify them with focused tests, and repeat full
+  acceptance for changed executable inputs. Reuse passing reports for matching
+  frozen inputs.
+- **Set acceptance.** Retain the complete-set game and interaction requirements
   below. Focused author checks never establish full-set acceptance.
 
-Coordinate one validation owner; other agents can author in separate worktrees
-while a frozen integration checkout is tested. All Cargo commands must use
-`python3 scripts/resource_guard.py -- cargo ...`; the repository's validation
-runners enter it automatically. Preserve its single build/test concurrency and
-6 GiB limit. Keep logs/reports under `~/.cache`. Distinguish build-slot wait,
-compilation, test execution and benchmark time before choosing broader checks.
-Do not launch a fresh full validator to diagnose a slow focused test.
+Run Cargo through `python3 scripts/resource_guard.py -- cargo ...`. The
+validation runners enter it automatically. Preserve its single build/test
+concurrency and 6 GiB limit. Keep logs and reports under `~/.cache`. Separate
+build-slot wait, compilation, test execution and benchmark time. Diagnose slow
+focused runs from their own logs.
+After an ordinary assertion failure, collect remaining failures from the same
+compiled binaries where practical. Keep the failing result and enforce the
+guard and existing timeouts. If relinking dominates, use Cargo's `--timings`
+under the guard to evaluate grouping small related scenarios into fewer
+integration-test targets.
 
 Keep execution inputs fixed until their consuming job terminates. Poll the same
 running process after observation timeouts. Reuse the worktree's development cache
