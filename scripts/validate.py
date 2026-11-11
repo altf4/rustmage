@@ -60,7 +60,7 @@ def snapshot_library(target, report_dir):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    windows = os.name == 'nt'
+    windows = sys.platform == 'win32'
     parser.add_argument('--release', action='store_true',
                         help='also build production library and run the bounded native benchmark')
     parser.add_argument('--python', choices=['none', 'smoke', 'full'], default='none',
