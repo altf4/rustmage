@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c585223a40b28a015568136f05f234cb0474c96260899fb288615f3863b6b19a"
   },
-  "physical_metadata_sha256": "59a39ab1849a866b0fb927044ed472a6eaa2df8744fc2a02e462b6ddf13efab5"
+  "physical_metadata_sha256": "59a39ab1849a866b0fb927044ed472a6eaa2df8744fc2a02e462b6ddf13efab5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RabidBite.java",
+  "java_sha256": "f2b04b8f49f2f0203c95e8e186effa62c42c432d48fdf6ddd5eda99c4598ca16",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_targets.rs"
 }

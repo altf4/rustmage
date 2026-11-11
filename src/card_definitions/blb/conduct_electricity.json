@@ -3,10 +3,31 @@
   "catalogue_id": 825,
   "oracle_id": "0369627e-3b83-4e5b-a8af-a99f944443b3",
   "facts_sha256": "3e09a2e643bbf38597ad1c11b6f362fa4405caab3c5097b2d2041ad46774e00f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1440a5365b927bc083190bba6c0112216724f9dbda445e2eb6c39b1b9516932"
   },
-  "physical_metadata_sha256": "cd0c1b43a3cf157de7644be515a4e75c981b4e826ed38ee4f6b27d8a74e033bd"
+  "physical_metadata_sha256": "cd0c1b43a3cf157de7644be515a4e75c981b4e826ed38ee4f6b27d8a74e033bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConductElectricity.java",
+  "java_sha256": "9b4a753cede60e971eb4c39b09f08d46c91b24e15cecb7993024bae761183d95",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetAndTargetEffect.java",
+      "sha256": "23bed77af2f847ef446bbb6c293ae9d3c1f8b38a50fb37eb828b628a34a6f27e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_targets.rs"
 }
