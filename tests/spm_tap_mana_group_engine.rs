@@ -105,7 +105,7 @@ fn two_summoning_sick_creatures_can_fund_the_only_cast_route_and_rollback_as_a_g
     game.state.objects[witness as usize].summoning_sick = true;
 
     // Keep the ordinary mana receipt for the focused failed-payment replay below.
-    game.begin_attack_rollback(player);
+    game.begin_combat_rollback(player);
     act(&mut game, announce);
     begin_mana(&mut game, source);
     let enemy_tap = tap_choice(&game, enemy);

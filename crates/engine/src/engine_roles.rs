@@ -54,6 +54,8 @@ pub(super) struct RoleState {
     /// Each controller's rule lasts until that controller's next turn begins.
     pub prohibit_opponent_nonhand_casts: [bool; 2],
     pub attached: Vec<RoleTimestampView>,
+    /// Cold rows only for attachments that have dispatched a duration trigger.
+    pub attachment_origins: Vec<(ObjectRef, u64)>,
     pub base_stats: Vec<BaseStatsEffectView>,
     pub until_next_turn_stats: Vec<UntilNextTurnStatsView>,
     pub live_static: Vec<LiveStaticSourceView>,
@@ -101,9 +103,16 @@ impl RoleState {
             .capacity("Ability origins exhausted");
         self.clock
     }
+    pub(super) fn attachment_origin(&self, source: ObjectRef) -> Option<u64> {
+        self.attachment_origins
+            .iter()
+            .find(|(object, _)| *object == source)
+            .map(|(_, origin)| *origin)
+    }
     pub fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.attached.len() * std::mem::size_of::<RoleTimestampView>()
+            + self.attachment_origins.len() * std::mem::size_of::<(ObjectRef, u64)>()
             + self.base_stats.len() * std::mem::size_of::<BaseStatsEffectView>()
             + self.until_next_turn_stats.len() * std::mem::size_of::<UntilNextTurnStatsView>()
             + self.live_static.len() * std::mem::size_of::<LiveStaticSourceView>()

@@ -1661,8 +1661,8 @@ pub struct AttachmentTriggerView {
     pub defender: Option<Player>,
     /// True when the actual creature owns an ability granted by the Equipment.
     pub granted: bool,
-    /// Copied static grantor or copy-created grant effect; never the recipient's
-    /// independent layer-one acquisition. Frozen with this granted packet.
+    /// For granted abilities, the copied static grantor or grant effect.
+    /// For becomes-attached triggers, the uninterrupted attachment's origin.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
 }
@@ -10548,6 +10548,7 @@ impl Game {
             self.capture_waiting_source_types(&before);
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
+            self.forget_attachment_origin(before.reference);
             self.forget_base_stats(before.reference);
             self.forget_animations(before.reference);
             self.forget_creature_types(before.reference);

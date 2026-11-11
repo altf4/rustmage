@@ -193,3 +193,71 @@ fn equipment_triggers_only_when_its_exact_attachment_changes() {
     }
     assert_eq!(game.state.players[player.index()].life, 22);
 }
+
+const ATTACHED_COPY: CardRules = CardRules {
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfBecomesAttachedToCreature,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CopyUntilDetachedFromLinkedExile],
+    }],
+    ..EQUIPMENT
+};
+
+#[test]
+fn linked_creature_copy_ends_at_the_first_detachment() {
+    let bow = Card::from_name("Short Bow").unwrap();
+    let _rules = fixture_rules::activate(&[(bow, &ATTACHED_COPY)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let subject = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let hill = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let hawk = put(
+        &mut game,
+        player.other(),
+        "Healer's Hawk",
+        Zone::Battlefield,
+    );
+    let [equipment, subject, hill, hawk] =
+        [source, subject, hill, hawk].map(|id| game.object_ref(id));
+    game.exile_objects_until_source_leaves(equipment, &[hill, hawk]);
+    let hill = game.object_ref(hill.card);
+    let hawk = game.object_ref(hawk.card);
+    assert!(game.attach_equipment(equipment, subject));
+    game.give_priority();
+    let old = attachment_packet(&mut game, source)
+        .attachment_trigger
+        .unwrap();
+    assert!(game.unattach(equipment));
+    assert!(game.attach_equipment(equipment, subject));
+    assert!(!game.exact_attachment_event_is_live(&old));
+    let new = game
+        .state
+        .pending_triggers
+        .last()
+        .unwrap()
+        .attachment_trigger
+        .as_deref()
+        .unwrap();
+    assert_ne!(new.origin, old.origin);
+    assert!(game.exact_attachment_event_is_live(new));
+    // Resolve the new attachment first, then the obsolete pending trigger.
+    game.give_priority();
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::ChooseLinkedExile { object: hawk });
+    assert_eq!(game.object_view(subject.card).card.name(), "Healer's Hawk");
+    settle(&mut game);
+    assert_eq!(game.object_view(subject.card).card.name(), "Healer's Hawk");
+
+    let saved = game.snapshot();
+    assert!(game.unattach(equipment));
+    assert_eq!(game.object_view(subject.card).card.name(), "Grizzly Bears");
+    game.restore(&saved).unwrap();
+    assert_eq!(game.object_view(subject.card).card.name(), "Healer's Hawk");
+    game.move_object(hawk.card, Zone::Graveyard);
+    assert_eq!(game.object_view(subject.card).card.name(), "Healer's Hawk");
+    game.move_object(source, Zone::Graveyard);
+    assert_eq!(game.object_view(subject.card).card.name(), "Grizzly Bears");
+    assert_eq!(game.object_view(hill.card).zone, Zone::Battlefield);
+}

@@ -2444,6 +2444,9 @@ pub enum Instruction {
     ExileGraveyardCaptureMutantCopy,
     CreateCapturedCopy,
     CopyLinkedExiledAsMutant,
+    /// Copy one creature card exiled by the attached source's linked ability
+    /// for the remainder of the attachment that caused this trigger.
+    CopyUntilDetachedFromLinkedExile,
     ExileOpponentUntilNonlandLinked,
     CastOneLinkedDuringResolution,
     ReturnGraveyardNameTapped,

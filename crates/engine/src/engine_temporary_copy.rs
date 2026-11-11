@@ -41,19 +41,20 @@ pub enum CopyDeadline {
     EndOfTurn,
     NextTurn { player: Player, created_turn: u32 },
     WhileSource { source: ObjectRef },
+    WhileAttached { source: ObjectRef, origin: u64 },
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CopyDeadline {
     pub(super) fn source(self) -> Option<ObjectRef> {
         match self {
-            Self::WhileSource { source } => Some(source),
+            Self::WhileSource { source } | Self::WhileAttached { source, .. } => Some(source),
             _ => None,
         }
     }
     fn expired(self, turn: u32, active: Player, cleanup: bool) -> bool {
         match self {
             Self::EndOfTurn => cleanup,
-            Self::WhileSource { .. } => false,
+            Self::WhileSource { .. } | Self::WhileAttached { .. } => false,
             Self::NextTurn {
                 player,
                 created_turn,
@@ -679,6 +680,7 @@ impl Game {
     /// Called only after the complete movement batch committed. Departure LKI
     /// was frozen before any recipient or lifetime-source moved.
     pub(super) fn prune_source_bound_copies(&mut self) -> bool {
+        let roles = self.state.roles.as_deref();
         let Some(rows) = &mut self.state.temporary_copies else {
             return false;
         };
@@ -697,9 +699,19 @@ impl Game {
             row.layers.last_mut().unwrap().used_abilities =
                 objects[row.object.card as usize].used_abilities;
             row.layers.retain(|layer| {
-                layer.value.deadline.source().is_none_or(|source| {
-                    objects[source.card as usize].zone == Zone::Battlefield
-                        && objects[source.card as usize].generation == source.generation
+                let deadline = layer.value.deadline;
+                deadline.source().is_none_or(|source| {
+                    let source_object = &objects[source.card as usize];
+                    source_object.zone == Zone::Battlefield
+                        && source_object.generation == source.generation
+                        && match deadline {
+                            CopyDeadline::WhileAttached { origin, .. } => {
+                                source_object.attached_to == Some(row.object)
+                                    && roles.and_then(|roles| roles.attachment_origin(source))
+                                        == Some(origin)
+                            }
+                            _ => true,
+                        }
                 })
             });
             if row.layers.len() != old_len

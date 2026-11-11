@@ -96,7 +96,9 @@ impl Game {
             return false;
         }
         self.forget_control_attachment(object);
+        self.forget_attachment_origin(object);
         self.renew_copy_grant_origin(object, false);
+        self.prune_source_bound_copies();
         true
     }
     pub(super) fn equipment_can_attach(&self, source: ObjectRef, target: ObjectRef) -> bool {
@@ -108,10 +110,12 @@ impl Game {
         }
         if self.state.objects[source.card as usize].attached_to != Some(target) {
             self.forget_control_attachment(source);
+            self.forget_attachment_origin(source);
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
             self.state.objects[source.card as usize].attached_to = Some(target);
+            self.prune_source_bound_copies();
             self.self_attachment_triggers(source, target);
         }
         true
@@ -124,13 +128,23 @@ impl Game {
         attachment: &ObjectView,
         recipient: ObjectRef,
     ) {
+        let roles = self.state.roles.get_or_insert_default();
+        let origin = roles
+            .attachment_origin(attachment.reference)
+            .unwrap_or_else(|| {
+                let origin = roles.next_acquisition();
+                roles
+                    .attachment_origins
+                    .push((attachment.reference, origin));
+                origin
+            });
         let event = AttachmentTriggerView {
             grantor: attachment.reference,
             granting_card: attachment.card,
             recipient,
             defender: None,
             granted: false,
-            origin: None,
+            origin: Some(origin),
         };
         if self.queue_trigger_from(observer, index, Some(Box::new(event))) {
             self.state
@@ -139,6 +153,25 @@ impl Game {
                 .unwrap()
                 .refer_objects([attachment.reference, recipient]);
         }
+    }
+
+    pub(super) fn forget_attachment_origin(&mut self, source: ObjectRef) {
+        if let Some(roles) = &mut self.state.roles {
+            roles
+                .attachment_origins
+                .retain(|(object, _)| *object != source);
+        }
+    }
+
+    pub(super) fn exact_attachment_event_is_live(&self, event: &AttachmentTriggerView) -> bool {
+        event.origin.is_some()
+            && self.attachment_is_live(event.grantor, event.recipient)
+            && self
+                .state
+                .roles
+                .as_ref()
+                .and_then(|roles| roles.attachment_origin(event.grantor))
+                == event.origin
     }
 
     pub(super) fn self_attachment_triggers(&mut self, attachment: ObjectRef, recipient: ObjectRef) {
@@ -282,6 +315,7 @@ impl Game {
             .collect();
         for &source in &equipment {
             self.forget_control_attachment(source);
+            self.forget_attachment_origin(source);
             self.state.objects[source.card as usize].attached_to = Some(recipient);
         }
         for &source in &equipment {
@@ -289,6 +323,7 @@ impl Game {
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
         }
+        self.prune_source_bound_copies();
         for &source in &equipment {
             self.self_attachment_triggers(source, recipient);
         }

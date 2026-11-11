@@ -318,7 +318,7 @@ impl Game {
         let Some(event) = item.attachment_trigger.as_deref() else {
             return;
         };
-        if self.attachment_is_live(event.grantor, event.recipient) {
+        if self.exact_attachment_event_is_live(event) {
             self.add_control_effect(
                 event.recipient,
                 item.controller,

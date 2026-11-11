@@ -4401,6 +4401,7 @@ impl Game {
                 }
                 Instruction::ChooseLinkedCreatureReturn
                 | Instruction::ChooseLinkedCreatureReturnWithCounters(_)
+                | Instruction::CopyUntilDetachedFromLinkedExile
                 | Instruction::CopyLinkedExiledAsMutant => {
                     use linked_exile_effects::LinkedExileMode;
                     let mode = match instruction {
@@ -4409,6 +4410,9 @@ impl Game {
                         }
                         Instruction::ChooseLinkedCreatureReturnWithCounters(plus_one) => {
                             LinkedExileMode::ReturnCreature { plus_one }
+                        }
+                        Instruction::CopyUntilDetachedFromLinkedExile => {
+                            LinkedExileMode::CopyWhileAttached
                         }
                         _ => LinkedExileMode::CopyMutant,
                     };
