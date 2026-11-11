@@ -295,6 +295,14 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if condition.event() == TriggerCondition::SelfEntersIfCastByController
+            && !item
+                .cast_event
+                .as_ref()
+                .is_some_and(|cast| cast.controller == item.controller)
+        {
+            return false;
+        }
         if condition.event() == TriggerCondition::DelayedTargetControlLostWhileAttached {
             return item.event_object.as_ref().is_some_and(|event| {
                 self.attached_to_controlled_creature(event.object, item.controller)

@@ -6694,6 +6694,8 @@ pub enum TriggerCondition {
     /// A paid promise belongs to this actual cast-to-battlefield entry event.
     SelfGiftEnters,
     SelfEntersIfCast,
+    /// This entrant was actually cast by the trigger's controller.
+    SelfEntersIfCastByController,
     /// The incoming object itself moved from a graveyard.
     SelfEntersFromGraveyard,
     /// The permanent spell was cast from the ability controller's graveyard.

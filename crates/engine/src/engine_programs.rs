@@ -1045,6 +1045,13 @@ impl Game {
                         unreachable!("unwrapped event")
                     }
                     TriggerCondition::SelfEntersIfCast => same && event.was_cast,
+                    TriggerCondition::SelfEntersIfCastByController => {
+                        same && event.was_cast
+                            && event
+                                .cast_event
+                                .as_ref()
+                                .is_some_and(|cast| cast.controller == source.controller)
+                    }
                     TriggerCondition::SelfEntersFromGraveyard => {
                         same && event.before.zone == Zone::Graveyard
                     }
