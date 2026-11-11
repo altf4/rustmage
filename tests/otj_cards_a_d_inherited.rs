@@ -466,7 +466,7 @@ fn discerning_peddler_draws_only_after_its_private_optional_discard() {
     assert!(game.observe(player).effect_choice.is_some());
     assert!(game.observe(player.other()).effect_choice.is_none());
     let mut decline = game.clone();
-    act(&mut decline, Action::FinishEffectChoice);
+    act(&mut decline, Action::DeclineEffectPayment);
     assert_eq!(decline.object_view(discarded).zone, Zone::Hand);
     assert_eq!(decline.object_view(drawn).zone, Zone::Library);
     let object = game.object_ref(discarded);
