@@ -3808,6 +3808,11 @@ pub enum Instruction {
     },
     CreateTokenIfControllerSacrificed(Card),
     OpponentsDiscardTwoDrawUnlessTwoNonland,
+    /// Each affected player discards one. Draw for each without a discard at this mana value or greater.
+    DiscardOneEachDrawUnlessManaValue {
+        players: PlayerSet,
+        minimum: u64,
+    },
     ChooseOutsideGameCard,
     SearchLibraryOrOutsideLegendarySplit {
         maximum: u16,

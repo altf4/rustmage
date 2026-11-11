@@ -33,6 +33,11 @@ pub(super) enum DiscardAfter {
         ability: u16,
     },
     DrawUnlessOpponentDiscardedTwoNonland(Player),
+    DrawUnlessDiscardedManaValue {
+        controller: Player,
+        affected: [bool; 2],
+        minimum: u64,
+    },
     NonlandReflexive {
         controller: Player,
         ability: u16,
@@ -457,6 +462,20 @@ impl Game {
                 if nonland < 2 {
                     self.draw_many(controller, 1);
                 }
+            }
+            Some(DiscardAfter::DrawUnlessDiscardedManaValue {
+                controller,
+                mut affected,
+                minimum,
+            }) => {
+                for event in events
+                    .iter()
+                    .filter(|event| event.moved && event.before.card.fixed_mana_value() >= minimum)
+                {
+                    affected[event.before.owner.index()] = false;
+                }
+                let draws = affected.into_iter().filter(|&qualifies| qualifies).count();
+                self.draw_many(controller, draws as u128);
             }
             Some(DiscardAfter::DrawCardTypes(player)) => {
                 let types = events

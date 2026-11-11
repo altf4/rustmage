@@ -10100,6 +10100,20 @@ impl Game {
                         ),
                     );
                 }
+                Instruction::DiscardOneEachDrawUnlessManaValue { players, minimum } => {
+                    let mut affected = [false; 2];
+                    for player in self.program_players(players, &item) {
+                        affected[player.index()] = true;
+                    }
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards = affected.map(usize::from);
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::DrawUnlessDiscardedManaValue {
+                            controller: item.controller,
+                            affected,
+                            minimum,
+                        });
+                }
                 Instruction::DiscardThenDrawForTypes { players, amount } => {
                     for player in self.program_players(players, &item) {
                         self.state.resolving.as_mut().unwrap().discards[player.index()] =
