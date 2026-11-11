@@ -274,13 +274,15 @@ impl Game {
         completion: LibrarySelectionCompletion,
     ) -> bool {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
-        if completion == LibrarySelectionCompletion::RememberExile {
-            self.state.resolving.as_mut().unwrap().milled.clear();
-        }
         match completion {
             LibrarySelectionCompletion::None => {}
             LibrarySelectionCompletion::RememberHandCount => {
                 assert_eq!(effect.destination, LibraryPickDestination::Hand);
+            }
+            LibrarySelectionCompletion::RememberExile => {
+                assert_eq!(effect.destination, LibraryPickDestination::Exile);
+                assert_eq!(effect.spec.count, LibrarySelectionCount::Fixed(1));
+                self.state.resolving.as_mut().unwrap().milled.clear();
             }
             LibrarySelectionCompletion::MayTransform
             | LibrarySelectionCompletion::ReflexiveEquipment(_) => {

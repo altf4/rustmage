@@ -1,5 +1,6 @@
 //! Exact-incarnation attachment links and continuous Equipment bonuses.
 use super::*;
+use crate::cards::TriggeredAbility;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// CR303.4b: attachment, irrespective of Aura controller or pending SBA,

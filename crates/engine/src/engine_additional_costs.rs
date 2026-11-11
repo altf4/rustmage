@@ -1426,6 +1426,7 @@ impl Game {
             | EffectChoiceKind::HandCreatures { .. }
             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
+            | EffectChoiceKind::ReturnAttachmentRecipient { .. }
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
