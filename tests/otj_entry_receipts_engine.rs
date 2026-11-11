@@ -97,21 +97,17 @@ fn a_batch_including_the_uncast_observer_triggers_only_once_and_ignores_other_to
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
 
-    let tokens = put(&mut game, player, "Raise the Alarm", Zone::Hand);
-    cast(&mut game, tokens, None);
-    for _ in 0..12 {
-        if game.state.stack.is_empty()
-            && game.state.resolving.is_none()
-            && game.state.pending == Pending::Priority
-        {
-            break;
-        }
-        choose(&mut game, |action| {
-            matches!(action, Action::Pass | Action::ChooseEntryTimestamp { .. })
-        });
-    }
+    game.create_tokens(player, Card::from_catalogue_id(5323), 2, false);
+    order_entries(&mut game);
     assert!(game.state.stack.is_empty() && game.state.resolving.is_none());
-    assert_eq!(game.object_view(tokens).zone, Zone::Graveyard);
+    assert_eq!(
+        game.state
+            .objects
+            .iter()
+            .filter(|object| { object.zone == Zone::Battlefield && object.is_token() })
+            .count(),
+        2,
+    );
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
 }
 
