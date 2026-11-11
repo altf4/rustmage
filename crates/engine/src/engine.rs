@@ -2408,15 +2408,15 @@ impl SpellView {
                         TargetPlan::Single(spec)
                     }
                     TargetPlan::Single(mut spec) if spec.rule == TargetRule::DefendingCreature => {
-                        if let Some(event) = &self.attachment_trigger {
+                        let defender = match &self.attachment_trigger {
+                            Some(event) => Some(event.defender.unwrap_or(self.controller.other())),
+                            None => self.event_player,
+                        };
+                        if let Some(defender) = defender {
                             spec.rule = TargetRule::Object {
                                 zone: TargetZone::Battlefield,
                                 kinds: 1,
-                                relation: if event.defender == Some(self.controller) {
-                                    0
-                                } else {
-                                    1
-                                },
+                                relation: if defender == self.controller { 0 } else { 1 },
                                 other: false,
                                 nonland: false,
                                 tapped: false,

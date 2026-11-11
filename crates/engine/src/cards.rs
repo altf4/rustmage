@@ -342,7 +342,7 @@ pub enum TargetRule {
         maximum: Option<i128>,
     },
     Creature,
-    /// Bound to the captured attachment attack defender before target selection.
+    /// A creature controlled by the frozen defender of the attack event.
     DefendingCreature,
     DamagedPlayerPermanent {
         kinds: u8,
