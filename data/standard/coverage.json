@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8e63b01edc5ea40e0bbf9f28cbde991a8357e74b62208228b41ac32a2b3cb6cd",
+  "catalogue_version": "558c71c3a5329aee358bbe1d4ee5bc632f9eafbeae3482f44633a6b96fe89c4b",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4468,
-  "implemented_total": 4482,
+  "implemented_standard_cards": 4469,
+  "implemented_total": 4483,
   "token_definitions": 193,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -138,8 +138,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 20,
-      "gated": 4
+      "complete": 21,
+      "gated": 3
     },
     "sos": {
       "total": 264,
@@ -6255,8 +6255,8 @@
     {
       "name": "Claim Jumper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/claim_jumper.rs",
       "set": "soc"
     },

@@ -179,7 +179,26 @@ fn claim_jumper_rechecks_after_each_optional_search_and_shuffles_once() {
     expected_rng.shuffle(&mut [0; 8]);
     cast(&mut game, source, None);
     pass_pair(&mut game);
+    let mut caught_up = game.clone();
+    for _ in 0..2 {
+        put(&mut caught_up, player, "Forest", Zone::Battlefield);
+    }
+    resolve(&mut caught_up);
+    assert_eq!(caught_up.state.players[player.index()].library.len(), 10);
     pass_pair(&mut game);
+    let mut decline = game.clone();
+    for _ in 0..2 {
+        act(&mut decline, Action::ChooseOptional { accept: false });
+    }
+    assert_eq!(decline.state.rng, game.state.rng);
+    assert_eq!(decline.state.players[player.index()].library.len(), 10);
+    let mut find_none = game.clone();
+    act(&mut find_none, Action::ChooseOptional { accept: true });
+    act(&mut find_none, Action::FinishSearch);
+    act(&mut find_none, Action::ChooseOptional { accept: false });
+    let mut unsuccessful_rng = game.state.rng;
+    unsuccessful_rng.shuffle(&mut [0; 10]);
+    assert_eq!(find_none.state.rng, unsuccessful_rng);
     for selected in [first, second] {
         act(&mut game, Action::ChooseOptional { accept: true });
         act(&mut game, Action::ChooseSearch { card: selected });
@@ -189,6 +208,12 @@ fn claim_jumper_rechecks_after_each_optional_search_and_shuffles_once() {
     }
     assert_eq!(game.state.rng, expected_rng);
     assert!(game.keywords(source).contains(Keywords::VIGILANCE));
+
+    let mut even = scenario(player);
+    let source = put(&mut even, player, "Claim Jumper", Zone::Hand);
+    cast(&mut even, source, None);
+    pass_pair(&mut even);
+    assert!(even.state.stack.is_empty());
 }
 
 #[test]
