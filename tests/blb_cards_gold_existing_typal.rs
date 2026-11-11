@@ -204,6 +204,7 @@ fn mind_drill_gets_live_threshold_from_its_own_surveil_and_tidecaller_rechecks_t
     let enemy = put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
     let enemy_land = put(&mut game, player.other(), "Forest", Zone::Battlefield);
     assert_eq!(stats(&game, mind), (2, 5));
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 2];
     activate(&mut game, mind);
     choose(&mut game, |action| {
         matches!(action, Action::ChooseActivationCost { .. })
@@ -224,7 +225,9 @@ fn mind_drill_gets_live_threshold_from_its_own_surveil_and_tidecaller_rechecks_t
         },
     );
     assert_eq!(stats(&game, mind), (5, 5));
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
 
+    game.state.players[player.index()].mana = [0, 1, 1, 0, 0, 1];
     cast(&mut game, tide, None);
     next(&mut game);
     next(&mut game);
