@@ -3,10 +3,46 @@
   "catalogue_id": 2848,
   "oracle_id": "fcae4f9d-8f81-42f9-93a3-82a482851bdd",
   "facts_sha256": "7373457bf46c3f8a4bce3b4828ef2be3cdd07b331c4259a56cdce20a927ab859",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27630505f450c63ad34fb82f740a3f2de7006f74c960effc25a2b4f3af42d789"
   },
-  "physical_metadata_sha256": "9c6a2b7b144961ead4fe5ebad411fd4a877796ffd3b4c1c04fb1f69025e73b92"
+  "physical_metadata_sha256": "9c6a2b7b144961ead4fe5ebad411fd4a877796ffd3b4c1c04fb1f69025e73b92",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MoonstoneHarbinger.java",
+  "java_sha256": "62b8e3492fc83d6e134260f036235132554c9a5d89d49b395454e6057b3790d7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLoseLifeYourTurnTriggeredAbility.java",
+      "sha256": "b2c65601bdc7cff39464df0e3caa479dccca98815036c11a6fe3c2a32c3a145a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_black_01.rs"
 }

@@ -3,9 +3,10 @@
   "catalogue_id": 5619,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "bbb93580fe3da98c4999778f7fda0cdec4e1a3745d125b0593e38b1a7c60625b",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/CragflameToken.java",
-  "java_sha256": "3e75ab40222f737cbfd9b70530bf36f407e60c9add604ff514b6e9cfbd59bd57"
+  "java_sha256": "3e75ab40222f737cbfd9b70530bf36f407e60c9add604ff514b6e9cfbd59bd57",
+  "rules_tests": "tests/blb_cards_black_01.rs"
 }
