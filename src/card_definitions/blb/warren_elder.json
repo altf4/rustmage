@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b1d8e7202c91096a594a1a1c669b927dec8497e3a519e18cfb6df73eddff2185"
   },
-  "physical_metadata_sha256": "426a34965e207f5b2274596c5611c8416b27603689020c00ceb2f30740ff0e2c"
+  "physical_metadata_sha256": "426a34965e207f5b2274596c5611c8416b27603689020c00ceb2f30740ff0e2c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WarrenElder.java",
+  "java_sha256": "73c24d45696c78fc73998f69e7ba89bcc251236dccbd8a9613778f241353ee39",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_white.rs"
 }

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "938a3ddbd4631a03cbaf148ab9cb9f8f1ed4fa1679b01b973dbf5ce6ac475102"
   },
-  "physical_metadata_sha256": "8968ad6424bc3b9bf417629df0f4a1d8d69fa697d2da522f5fcc8f5ae98ddd91"
+  "physical_metadata_sha256": "8968ad6424bc3b9bf417629df0f4a1d8d69fa697d2da522f5fcc8f5ae98ddd91",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightshellDuo.java",
+  "java_sha256": "e2ef60f0ad0f7c298e4d5d9c931660fd679a062fe2ec9503fa3f12a39e04cfe2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_blue.rs"
 }

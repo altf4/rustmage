@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9d90daa3268b34e6b02f029a3aa46dbbb4147eaea7b1cc2833def9ba8cfce0ff"
   },
-  "physical_metadata_sha256": "b3ff1904f84e5805a0f4c8cbd387dbf7f9af54c6b8c3ac10d6aee0630731c9f4"
+  "physical_metadata_sha256": "b3ff1904f84e5805a0f4c8cbd387dbf7f9af54c6b8c3ac10d6aee0630731c9f4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HopToIt.java",
+  "java_sha256": "bd25c2d1a3b26a37da200269e823c7ec45b9738ca632bb85029f644a2a7cf801",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_white.rs"
 }
