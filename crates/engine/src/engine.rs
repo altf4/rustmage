@@ -1717,6 +1717,7 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
             amount: 0,
             colorless: 0,
             land_at_tap: None,
+            artifact_token_at_tap: false,
             ..
         }) => serializer.serialize_u32(*red),
         Some(ManaTapBonus {
@@ -1724,6 +1725,7 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
             amount: 0,
             colorless: 0,
             land_at_tap: None,
+            artifact_token_at_tap: false,
             ..
         }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),

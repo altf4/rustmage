@@ -328,6 +328,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
+                            | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
                             | crate::cards::StaticAbilityFragment::BasicLandTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)

@@ -440,7 +440,8 @@ impl FundingState<'_> {
                                 | BasicLandTapManaBonus(_)
                                 | ControlledBasicLandManaMultiplier(_)
                                 | ControlledLandTapManaBonus(_)
-                                | ControlledLandColorlessTapManaBonus => false,
+                                | ControlledLandColorlessTapManaBonus
+                                | ControlledArtifactTokenTapManaBonus => false,
                                 // This replacement changes only damage amounts;
                                 // pure tap/AddMana payments never deal damage.
                                 Replacement(

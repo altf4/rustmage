@@ -114,6 +114,8 @@ pub enum StaticAbilityFragment {
     ControlledLandTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,
+    /// Add one mana of a type actually produced by a controlled artifact token tapped for mana.
+    ControlledArtifactTokenTapManaBonus,
     AttachedChosenColor,
     AttachmentManaBonus(ManaProduction),
     BasicLandTapManaBonus(u16),

@@ -24,13 +24,15 @@ impl LandAtTap {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct ManaTapBonus {
     pub fixed: Mana,
-    /// One freely selected type actually produced by the land, per trigger.
+    /// One freely selected type actually produced by the permanent, per trigger.
     pub amount: u32,
     // Evaluated after paying costs, against the base mana event's output.
     #[serde(skip)]
     pub(super) colorless: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(super) land_at_tap: Option<LandAtTap>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub(super) artifact_token_at_tap: bool,
     #[serde(skip)]
     multiplier: u64,
 }
@@ -42,6 +44,7 @@ impl Default for ManaTapBonus {
             amount: 0,
             colorless: 0,
             land_at_tap: None,
+            artifact_token_at_tap: false,
             multiplier: 1,
         }
     }
@@ -49,7 +52,10 @@ impl Default for ManaTapBonus {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaTapBonus {
     pub(super) fn has_any(self) -> bool {
-        self.has_trigger_bonuses() || self.land_at_tap.is_some() || self.multiplier != 1
+        self.has_trigger_bonuses()
+            || self.land_at_tap.is_some()
+            || self.artifact_token_at_tap
+            || self.multiplier != 1
     }
     pub(super) fn has_trigger_bonuses(self) -> bool {
         self.fixed != [0; 6] || self.amount != 0 || self.colorless != 0
@@ -64,23 +70,26 @@ impl ManaTapBonus {
             base: self,
             sources: Vec::new(),
         };
-        let Some(land) = source else { return receipt };
+        let Some(permanent) = source else {
+            return receipt;
+        };
         if world.static_sources().is_empty() {
             return receipt;
         }
-        // CR106.12: check the providers as the mana ability produces mana,
-        // after paying its activation costs. Retain a departed land's identity.
-        let live =
-            world.reference(land.card) == land && world.object(land.card).zone == Zone::Battlefield;
-        let land_kind = if live {
-            (world.kinds(land.card) & 2 != 0)
-                .then(|| LandAtTap::from_card(world.definition(land.card)))
-        } else {
-            self.land_at_tap
-        };
-        let Some(land_kind) = land_kind else {
+        // CR106.12: providers must be active when the ability produces mana.
+        // A source that departed while paying costs keeps its tap-time identity.
+        let object = world.object(permanent.card);
+        let live = world.reference(permanent.card) == permanent && object.zone == Zone::Battlefield;
+        let kinds = live.then(|| world.kinds(permanent.card));
+        let land_kind = kinds.map_or(self.land_at_tap, |kinds| {
+            (kinds & 2 != 0).then(|| LandAtTap::from_card(world.definition(permanent.card)))
+        });
+        let artifact_token = kinds.map_or(self.artifact_token_at_tap, |kinds| {
+            kinds & 16 != 0 && object.is_token()
+        });
+        if land_kind.is_none() && !artifact_token {
             return receipt;
-        };
+        }
         let query = characteristic_query::CharacteristicQuery::in_world(world);
         for &source in world.static_sources() {
             let provider = world.object(source);
@@ -100,7 +109,7 @@ impl ManaTapBonus {
                 };
                 let (production, amount, colorless) = match *fragment {
                     StaticAbilityFragment::ControlledBasicLandManaMultiplier(factor)
-                        if provider.controller == actor && land_kind == LandAtTap::Basic =>
+                        if provider.controller == actor && land_kind == Some(LandAtTap::Basic) =>
                     {
                         if available() {
                             // Each replacement applies once. A saturated factor is
@@ -113,23 +122,30 @@ impl ManaTapBonus {
                         continue;
                     }
                     StaticAbilityFragment::ControlledLandTapManaBonus(mana)
-                        if provider.controller == actor =>
+                        if provider.controller == actor && land_kind.is_some() =>
                     {
                         (Some(ManaProduction::Fixed(mana)), 0, 0)
                     }
                     StaticAbilityFragment::ControlledLandColorlessTapManaBonus
-                        if provider.controller == actor =>
+                        if provider.controller == actor && land_kind.is_some() =>
                     {
                         (None, 0, 1u32)
                     }
+                    StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
+                        if provider.controller == actor && artifact_token =>
+                    {
+                        (None, 1u32, 0)
+                    }
                     StaticAbilityFragment::BasicLandTapManaBonus(amount)
-                        if land_kind == LandAtTap::Basic =>
+                        if land_kind == Some(LandAtTap::Basic) =>
                     {
                         (None, u32::from(amount), 0)
                     }
                     // CR303.4m: a departed land has no current Aura.
                     StaticAbilityFragment::AttachmentManaBonus(production)
-                        if live && provider.attached_to == Some(land) =>
+                        if live
+                            && land_kind.is_some()
+                            && provider.attached_to == Some(permanent) =>
                     {
                         (Some(production), 0, 0)
                     }
@@ -335,12 +351,14 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> ManaTapBonus {
     let object = world.object(id);
-    let land_at_tap = (object.zone == Zone::Battlefield
-        && object.controller == actor
-        && world.kinds(id) & 2 != 0)
-        .then(|| LandAtTap::from_card(world.definition(id)));
+    let kinds = if object.zone == Zone::Battlefield && object.controller == actor {
+        world.kinds(id)
+    } else {
+        0
+    };
     ManaTapBonus {
-        land_at_tap,
+        land_at_tap: (kinds & 2 != 0).then(|| LandAtTap::from_card(world.definition(id))),
+        artifact_token_at_tap: kinds & 16 != 0 && object.is_token(),
         ..ManaTapBonus::default()
     }
 }
