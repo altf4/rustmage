@@ -332,14 +332,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
         | StaticAbilityFragment::ControlledArtifactFood(ability)
-        | StaticAbilityFragment::ControlledArtifactActivation(ability) => {
-            let kinds = if matches!(
-                fragment,
-                StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
-            ) {
-                64
-            } else {
-                16
+        | StaticAbilityFragment::ControlledArtifactActivation(ability)
+        | StaticAbilityFragment::ControlledNontokenCreatureActivation(ability) => {
+            let kinds = match fragment {
+                StaticAbilityFragment::ControlledPlaneswalkerActivation(_) => 64,
+                StaticAbilityFragment::ControlledNontokenCreatureActivation(_) => {
+                    if target.is_token() {
+                        return None;
+                    }
+                    1
+                }
+                _ => 16,
             };
             if !own || world.kinds(id) & kinds == 0 {
                 return None;
@@ -590,6 +593,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
@@ -828,6 +832,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledArtifactFood(_)
                         | StaticAbilityFragment::ControlledArtifactActivation(_)
+                        | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)

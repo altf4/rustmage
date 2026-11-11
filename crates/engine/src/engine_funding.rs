@@ -1212,6 +1212,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
+                                        | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))

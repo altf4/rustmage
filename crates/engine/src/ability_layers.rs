@@ -538,6 +538,8 @@ pub enum StaticAbilityFragment {
     ControlledArtifactFood(u16),
     /// In layer six grant this indexed activation to controlled artifacts.
     ControlledArtifactActivation(u16),
+    /// In layer six, grant this indexed nonmana activation to controlled nontoken creatures.
+    ControlledNontokenCreatureActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {

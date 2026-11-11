@@ -409,6 +409,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
             | Action::AnnounceArtifactFood { .. }
+            | Action::AnnounceCreatureGrant { .. }
             | Action::AnnounceSelfGrantedAbility { .. }
             | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceEmbalm { .. }

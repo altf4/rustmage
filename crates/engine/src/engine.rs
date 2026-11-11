@@ -950,6 +950,7 @@ define_actions! {
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
     AnnouncePlaneswalkerGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceArtifactFood { source: ObjectRef, grantor: ObjectRef, ability: u16 },
+    AnnounceCreatureGrant { source: ObjectRef, grantor: ObjectRef, ability: u16 },
     AnnounceRetainedCopyAbility { source: ObjectRef },
     AnnounceEmbalm { source:ObjectRef, acquisition:u64 },
     AnnounceSelfGrantedAbility {
@@ -5932,6 +5933,7 @@ impl Game {
                     s.casting_prohibited || self.static_casting_prohibited(actor);
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
+                let controlled_activation_grantors = self.controlled_activation_grantors(actor);
                 let warp_grants = if casting_prohibited {
                     Vec::new()
                 } else {
@@ -6071,8 +6073,15 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Battlefield
+                        && !controlled_activation_grantors.is_empty()
                         && !self.nonmana_actions_prohibited()
-                        && self.visit_controlled_activation_grants(card, actor, sorcery, &mut emit)
+                        && self.visit_controlled_activation_grants(
+                            card,
+                            actor,
+                            sorcery,
+                            &controlled_activation_grantors,
+                            &mut emit,
+                        )
                     {
                         return true;
                     }
@@ -7642,6 +7651,11 @@ impl Game {
                 ability,
             }
             | Action::AnnounceArtifactFood {
+                source,
+                grantor,
+                ability,
+            }
+            | Action::AnnounceCreatureGrant {
                 source,
                 grantor,
                 ability,

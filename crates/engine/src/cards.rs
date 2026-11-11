@@ -8235,6 +8235,7 @@ impl Card {
                         | F::ControlledPlaneswalkerActivation(ability)
                         | F::ControlledArtifactFood(ability)
                         | F::ControlledArtifactActivation(ability)
+                        | F::ControlledNontokenCreatureActivation(ability)
                         | F::OtherControlledSubtypeTapManaActivation { ability, .. }
                         | F::SourceMaxSpeedActivation(ability)
                         | F::SourceEntryModeActivation { ability, .. }
