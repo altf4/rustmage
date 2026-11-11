@@ -52,7 +52,7 @@ fn targeted_half_choices_round_up_use_only_opponent_and_preserve_hidden_selectio
         (Card::from_name("Divination").unwrap(), &SPELL),
         (Card::HillGiant, &IMMUNE),
     ]);
-    for (available, prohibited, hand) in [(5, 0, 5), (2, 3, 1), (0, 0, 0)] {
+    for (available, prohibited, hand) in [(5usize, 0, 5usize), (2, 3, 1), (0, 0, 0)] {
         let player = Player::P1;
         let opponent = player.other();
         let mut g = scenario(player);
@@ -72,7 +72,7 @@ fn targeted_half_choices_round_up_use_only_opponent_and_preserve_hidden_selectio
         announce(&mut g, spell, &[Target::Player(opponent); 3]);
         act(&mut g, Action::Pass);
         act(&mut g, Action::Pass);
-        let required = ((available + prohibited + 1) / 2).min(available);
+        let required = (available + prohibited).div_ceil(2).min(available);
         if required != 0 {
             assert_eq!(g.state.pending, Pending::EffectChoice { player: opponent });
             for excluded in [g.object_ref(own), g.object_ref(land)] {
@@ -86,7 +86,7 @@ fn targeted_half_choices_round_up_use_only_opponent_and_preserve_hidden_selectio
                 assert_eq!(g.state.objects[card as usize].zone, Zone::Battlefield);
             }
         }
-        let discard_count = (hand + 1) / 2;
+        let discard_count = hand.div_ceil(2);
         for (index, &card) in cards.iter().take(discard_count).enumerate() {
             assert_eq!(g.state.pending, Pending::EffectChoice { player: opponent });
             assert!(g.observe(player).effect_choice.is_none());
