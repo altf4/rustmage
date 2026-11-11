@@ -7,5 +7,27 @@
   "physical_metadata_sha256": "c43d510bc1d8efba910483b79847edfc351ac4838bca3e6bbdd916b95b147041",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/MeteoriteToken.java",
-  "java_sha256": "eff6bbac64e9ceb0e581f14b000c762a9ef26d2b3d7d79313a58f06b0899f4fa"
+  "java_sha256": "eff6bbac64e9ceb0e581f14b000c762a9ef26d2b3d7d79313a58f06b0899f4fa",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    }
+  ]
 }

@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4265e1a0955fe29cae0ba1c7e0dd32ad0ffaf416ddf40ca8d4e272d88c6ed0ea"
   },
-  "physical_metadata_sha256": "1257edf130e3ccd85c8f05581727888b7975b156229655dbd814dcd7bac69b9d"
+  "physical_metadata_sha256": "1257edf130e3ccd85c8f05581727888b7975b156229655dbd814dcd7bac69b9d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RattlebackApothecary.java",
+  "java_sha256": "7405f16f84110fd228eeed578b5ad6fd3f83d3b26f082c9a8d618c0acd60bbc7",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainsChoiceOfAbilitiesEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa49281058acd322aa947ca2930690fe936281953eab784b9585954f44893553"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ]
 }

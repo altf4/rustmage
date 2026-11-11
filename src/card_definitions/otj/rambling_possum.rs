@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete typed behavior from the pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(3, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacksWhileSaddled,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::Grow {
+                subject: Subject::Source,
+                power: 1,
+                toughness: 2,
+            },
+            Instruction::ChooseSaddleRiders(SaddleRiderEffect::ReturnAnyToHand),
+        ],
+    }],
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost::ZERO,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::BecomeSaddled { minimum: 1 }],
+        sorcery: true,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

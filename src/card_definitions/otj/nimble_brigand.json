@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "26b2ee367d24736bd1477a56cb886212c277ed9213ce67add7f6f8fd06c152cb"
   },
-  "physical_metadata_sha256": "28f4cefc21cc8d33ecca871fcc31a0019866d118813350fa8bb0f5715ce75836"
+  "physical_metadata_sha256": "28f4cefc21cc8d33ecca871fcc31a0019866d118813350fa8bb0f5715ce75836",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NimbleBrigand.java",
+  "java_sha256": "9f8fb5b7d043941d2e13a0c1f4d38722b3894664d9f6b5436e2055c256eaff40",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CommittedCrimeCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9bd7ecfddcfac5de68ddaf16212d7893f39999b22057d4bd09406bc9317657e2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalRestrictionEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1fa2a1d2f8bdcfdd9e3b62d643b7c07d1dd174162686bdff05615432d5e28aa8"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CommittedCrimeWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ded2521df7d1f000535a2ae91f2d1ab75538c036a578af155f9f170f304c2728"
+    }
+  ]
 }

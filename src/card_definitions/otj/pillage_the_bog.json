@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7854c56b37285c0c8a451c8c1b9e2786c12218a10ee2f98f51f469588b73cc8d"
   },
-  "physical_metadata_sha256": "5cc92b80a2ce55ec93935fac115ca390c8b847dac51d55795bcb1f0f26d80511"
+  "physical_metadata_sha256": "5cc92b80a2ce55ec93935fac115ca390c8b847dac51d55795bcb1f0f26d80511",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PillageTheBog.java",
+  "java_sha256": "d2e9defb758e6d5c220bdfc3b868f17b1921e2f4754d970c001953e5fe44f467",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/DynamicValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41710c2c824a913c1f9b2bf48d5e9e8c8beb40e1d4f16aee077621445b300ab6"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/MultipliedValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d8e70d3468d5bfaf3ab1f030aebb4a66738648af642ab39502a5cffffd38c314"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/PermanentsOnBattlefieldCount.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5379ebfc3d684f5e1b4209f1423d842a38604fff48bf0805da46842d6bb54f5d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/Hint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5b3e37a154109935f244c02a79a0182695daad1bee2180f5f0b407bdf630509a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ValueHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "d0748934608e742b2bb47c3dab958c95246fc69ef40a54a5f4d95c64cb79e99a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ]
 }

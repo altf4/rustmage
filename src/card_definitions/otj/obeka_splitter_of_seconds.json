@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "79401bdea0a061906cfa44d1feb3124dee85dcc53ddf173476ea40e854a95c59"
   },
-  "physical_metadata_sha256": "2be20ae91bd8b35626591817f7cfb101d5144800f1807ede4cddf90d59e76925"
+  "physical_metadata_sha256": "2be20ae91bd8b35626591817f7cfb101d5144800f1807ede4cddf90d59e76925",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/ObekaSplitterOfSeconds.java",
+  "java_sha256": "387c937ce15197a96b975910de64b28ed417e27cb0a5e822426198f3553f6ab7",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }

@@ -1,16 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Complete typed behavior from the pinned Oracle and XMage implementation.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(4, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEntersOrAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokens {
+            token: Card(5617),
+            amount: 1,
+            tapped: true,
+        }],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::ControlledArtifactTokenTapManaBonus],
+    }],
     ..CardRules::EMPTY
 };

@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "35772515ab72adf3960a98588a5f077711a66616a07a73dc3d265d9e4d23aa60"
   },
-  "physical_metadata_sha256": "a3109b3ec056d59fe89b5fa915e75346c655595aa3e12a51c42a2ebb537b3410"
+  "physical_metadata_sha256": "a3109b3ec056d59fe89b5fa915e75346c655595aa3e12a51c42a2ebb537b3410",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RazzleDazzler.java",
+  "java_sha256": "b3b372e896d6993626b158af27b285c1e7deb512f18985afc6e7f8aa3de20cc6",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "546b73507803da1667ee058a20486c5f3387357e38d1419a82f952b94ebb93d7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    }
+  ]
 }

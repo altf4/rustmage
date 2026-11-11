@@ -8,5 +8,25 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88dd1f381e2b0d41871347a9570b8fb97f5eb684e66adf716e544e95d0ca7aad"
   },
-  "physical_metadata_sha256": "b0240d878ecd480bb3d9f1b6b73cd86b0502e94818acbcabf4355ee25072ad26"
+  "physical_metadata_sha256": "b0240d878ecd480bb3d9f1b6b73cd86b0502e94818acbcabf4355ee25072ad26",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MakeYourOwnLuck.java",
+  "java_sha256": "56c2f9ece85d5176cfab065fbc36ce7cb2ef5632d3e46f279ddde4767ffbb1db",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ]
 }

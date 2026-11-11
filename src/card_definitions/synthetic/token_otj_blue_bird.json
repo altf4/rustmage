@@ -7,5 +7,12 @@
   "physical_metadata_sha256": "e4c0d9d8bda29f458fe393bad715a4c46d9306e41ba6a539967e8bf98135d130",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/BlueBirdToken.java",
-  "java_sha256": "454942cfbe29a886ecdd1160efa55718bec9bfabfee9b913eb704ac730dd8ebc"
+  "java_sha256": "454942cfbe29a886ecdd1160efa55718bec9bfabfee9b913eb704ac730dd8ebc",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ]
 }

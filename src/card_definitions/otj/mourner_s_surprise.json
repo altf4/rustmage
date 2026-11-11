@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fb2f646f0cc81d5696dd989cefeb1fa0d34b0bf4dd460895bbe916f51f57b57"
   },
-  "physical_metadata_sha256": "5b44b7fb2301f5ec30acfb0a72887e44923aee1eb179d352771f86b1c78c9ff4"
+  "physical_metadata_sha256": "5b44b7fb2301f5ec30acfb0a72887e44923aee1eb179d352771f86b1c78c9ff4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MournersSurprise.java",
+  "java_sha256": "55b019a7f2499c03202f23d548f11933d58167e4945bf1a68446e5fc2c6acc7b",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/MercenaryToken.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e3da133ae91b84af428f1ec547e285f0fcd0a89bbd6e287f66f309fcf0704668"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ]
 }

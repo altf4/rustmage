@@ -8,5 +8,35 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9babcc717b61434525504a7e12c9a9eeccbb3bf4c9cc149d8c211a88889dfab4"
   },
-  "physical_metadata_sha256": "9d3e1441425c8ca444bb5d532cb21cc8dfe7c699bd6c252b6767673d11f5af67"
+  "physical_metadata_sha256": "9d3e1441425c8ca444bb5d532cb21cc8dfe7c699bd6c252b6767673d11f5af67",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PlanTheHeist.java",
+  "java_sha256": "f083c2f0787f9047b854868a4f385de3b5acc0152d81839604bbc66216e7bb9c",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HellbentCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3d45855754d8e51b32915d3cde6c4fb050b40b0b76cbd13a1abf5cb76a86b713"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/PlotAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "11ff0a1ea1516eea72acac3bb8cdb65228e0e683c3ae16b9808912af88bf270c"
+    }
+  ]
 }

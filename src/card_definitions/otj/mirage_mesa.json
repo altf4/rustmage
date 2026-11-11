@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c0c4f3cfcd33e57aa8410a6ba608da5e4addbe734eee6822b4014d7ac26515dc"
   },
-  "physical_metadata_sha256": "a09bba84f9a6d692a902f6afa47e4aee2ec80b1b2f273aedb9990d3824198f8f"
+  "physical_metadata_sha256": "a09bba84f9a6d692a902f6afa47e4aee2ec80b1b2f273aedb9990d3824198f8f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MirageMesa.java",
+  "java_sha256": "7fd047090dd1b3b2d730130d7f14076c7dadeca7c25114fb4a68ad870b8f7f01",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/mana/SimpleManaAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ffbd6c3be6ec8684aa67a8fc907e8ac29726751ae3f37cda50a024843e650bba"
+    }
+  ]
 }

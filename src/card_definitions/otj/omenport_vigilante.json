@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8891d8a0da8901a498650ebe3a94a885327f213ff3105fb8e1918a53dec48f3a"
   },
-  "physical_metadata_sha256": "271b72038c080a697f42edc18734aaa0503d74f525af0b9f86eca5cd947f7eef"
+  "physical_metadata_sha256": "271b72038c080a697f42edc18734aaa0503d74f525af0b9f86eca5cd947f7eef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OmenportVigilante.java",
+  "java_sha256": "70599ba06429ee59983ea2ecbd5cb99185e6b2269511447a3c38e76ff1e05598",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CommittedCrimeCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9bd7ecfddcfac5de68ddaf16212d7893f39999b22057d4bd09406bc9317657e2"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/CommittedCrimeWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ded2521df7d1f000535a2ae91f2d1ab75538c036a578af155f9f170f304c2728"
+    }
+  ]
 }

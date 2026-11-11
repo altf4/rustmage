@@ -8,5 +8,30 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "73894d60e9def620e38a7227ae025fb79d61ddcf5cdec68ef8c364bd81bdd8a1"
   },
-  "physical_metadata_sha256": "f920a46a22e5bf1bf23d2023626e399ec55837df05ab5b9debc5f322f1fde799"
+  "physical_metadata_sha256": "f920a46a22e5bf1bf23d2023626e399ec55837df05ab5b9debc5f322f1fde799",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MagebaneLizard.java",
+  "java_sha256": "5a49432f049d3a2549556cbbb7e5168d53b4b50b22dc57d02eeeab1b9c726376",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastAllTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "7837dc850438ff0b6ee06931b9578252338a1abd3306475a94d92d1333df4988"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/SpellsCastWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cd80bcc11ba9cb5774cf81148c1ab251c8a3b6b529a67af9ed084c64f88600a8"
+    }
+  ]
 }

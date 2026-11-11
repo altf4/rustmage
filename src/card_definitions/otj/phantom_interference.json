@@ -8,5 +8,45 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1aa751396470f434c14226f6cb82b762a1c075e3bb80a6b484b1d41d016564ec"
   },
-  "physical_metadata_sha256": "0b76aff31505ba8e051c6266655454036783fbe4a9747bd4f2a286538537536a"
+  "physical_metadata_sha256": "0b76aff31505ba8e051c6266655454036783fbe4a9747bd4f2a286538537536a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PhantomInterference.java",
+  "java_sha256": "53d0668b000c9f04b62002c319e818f2c63d6fd508d45a1ab28a83e2cd3313af",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterUnlessPaysEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "5ffa921304ee0b483a705a1348d308bcfcbfd5f6093ab59e679b0d8f858a34e4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/game/permanent/token/Spirit22Token.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "97e78f86bd851873ab0787dce89e9af1303dfd0d944e2ca12835cb0d8186f764"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ]
 }

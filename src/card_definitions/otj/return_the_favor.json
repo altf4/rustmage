@@ -8,5 +8,40 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd0fa3cfb773748bb782d7775b3fe0ce3fcbb7e11ba3414e32cd12e6dfb92f15"
   },
-  "physical_metadata_sha256": "48bca7e600f1667f64f2fcb5626acd17ff5e5ce9bc325cb575977aeb770ef54d"
+  "physical_metadata_sha256": "48bca7e600f1667f64f2fcb5626acd17ff5e5ce9bc325cb575977aeb770ef54d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReturnTheFavor.java",
+  "java_sha256": "6f0d51ca0436bbb416d5e9a07f1a9580666369ad38d503564d5d58d00228e514",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseNewTargetsTargetEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "8762550b9eca7d3e2b0c25d47479691b4520397965c98b7f3d8428d3a4438153"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/SpreeAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "748a9f9ee829dca76fd302165682a269a26aa7e15bfe662727af0100b5e676a3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/TargetStackObject.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "99560fbe32eaeab547ae49a4777fd670f509879b2401942bfa1be73388292e0a"
+    }
+  ]
 }
