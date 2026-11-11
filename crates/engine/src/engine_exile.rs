@@ -993,13 +993,19 @@ impl Game {
         }
         for source in &sources {
             let tokens = &token_entered[source.controller.index()];
-            if source.zone != Zone::Battlefield || (tokens.is_empty() && exile_creatures.is_empty())
+            let opponent_tokens = &token_entered[source.controller.other().index()];
+            if source.zone != Zone::Battlefield
+                || (tokens.is_empty() && opponent_tokens.is_empty() && exile_creatures.is_empty())
             {
                 continue;
             }
             for (index, ability) in source.card.triggers().iter().enumerate() {
                 let entrants = match ability.condition.event() {
                     TriggerCondition::TokensEnterYou => tokens,
+                    TriggerCondition::TokensEnterOpponent => {
+                        self.queue_entry_copy_trigger(source, index, opponent_tokens);
+                        continue;
+                    }
                     TriggerCondition::NontokenCreaturesEnterFromExile => &exile_creatures,
                     _ => continue,
                 };

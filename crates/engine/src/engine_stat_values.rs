@@ -889,6 +889,7 @@ impl Game {
             | AmountValue::SourceEquipmentCount
             | AmountValue::DeclaredAttackerCount
             | AmountValue::EventObjectTotalCounters
+            | AmountValue::OtherZombieEntriesThisTurn
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DiscardedCardManaValue

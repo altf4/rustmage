@@ -161,6 +161,35 @@ impl Game {
         }
     }
 
+    pub(super) fn queue_entry_copy_trigger(
+        &mut self,
+        source: &ObjectView,
+        index: usize,
+        entrants: &[ObjectRef],
+    ) {
+        if entrants.is_empty() || !self.queue_trigger(source, index) {
+            return;
+        }
+        self.add_entry_trigger_multiplicity(source, entrants);
+        let rows = entrants
+            .iter()
+            .copied()
+            .map(|object| EntryBatchCopyView {
+                object,
+                recipe: self.copiable_recipe(object),
+            })
+            .collect();
+        let packet = self.state.pending_triggers.last_mut().unwrap();
+        packet.set_event_object(EventObjectView {
+            object: entrants[0],
+            facts: EventObjectFacts::CopiableGroup(rows),
+            semantic_objects: None,
+            conniver_creature: None,
+            subtype_lki: None,
+        });
+        packet.refer_objects(entrants.iter().copied());
+    }
+
     pub(super) fn batch_creature_entry_triggers(
         &mut self,
         events: &[ZoneChange],
@@ -184,7 +213,7 @@ impl Game {
                     }
                     _ => continue,
                 };
-                let rows: Vec<_> = events
+                let entrants: Vec<_> = events
                     .iter()
                     .filter_map(|event| {
                         if !event.moved
@@ -201,25 +230,10 @@ impl Game {
                         (entered.is_creature()
                             && entered.controller == source.controller
                             && entered.kinds & suppression == 0)
-                            .then(|| EntryBatchCopyView {
-                                object: event.after,
-                                recipe: self.copiable_recipe(event.after),
-                            })
+                            .then_some(event.after)
                     })
                     .collect();
-                if !rows.is_empty() && self.queue_trigger(source, index) {
-                    let objects: Vec<_> = rows.iter().map(|row| row.object).collect();
-                    self.add_entry_trigger_multiplicity(source, &objects);
-                    let packet = self.state.pending_triggers.last_mut().unwrap();
-                    packet.set_event_object(EventObjectView {
-                        object: objects[0],
-                        facts: EventObjectFacts::CopiableGroup(rows),
-                        semantic_objects: None,
-                        conniver_creature: None,
-                        subtype_lki: None,
-                    });
-                    packet.refer_objects(objects);
-                }
+                self.queue_entry_copy_trigger(source, index, &entrants);
             }
         }
     }

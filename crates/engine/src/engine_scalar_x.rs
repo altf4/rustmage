@@ -566,6 +566,7 @@ impl Game {
                 .sacrificed_mana_value
                 .as_deref()
                 .map_or(0, |value| u128::from(*value) + u128::from(bonus)),
+            AmountValue::OtherZombieEntriesThisTurn => self.other_zombie_entries_this_turn(item),
             AmountValue::EventObjectTotalCounters => {
                 item.event_object.as_ref().map_or(0, |event| {
                     if self.on_battlefield(event.object.card)

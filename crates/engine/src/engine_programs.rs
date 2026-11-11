@@ -1094,6 +1094,7 @@ impl Game {
                     | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                     | TriggerCondition::CommittedCrime
                     | TriggerCondition::TokensEnterYou
+                    | TriggerCondition::TokensEnterOpponent
                     | TriggerCondition::CreatureAbilityActivated
                     | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
                     | TriggerCondition::NonmanaAbilityActivated
@@ -5015,6 +5016,14 @@ impl Game {
                         };
                         return;
                     }
+                }
+                Instruction::CreateTappedCopiesOfEntryBatch => {
+                    let recipes = self
+                        .entry_batch_copy_options()
+                        .into_iter()
+                        .map(|row| row.recipe)
+                        .collect();
+                    self.stage_copy_recipes(item.controller, recipes, true);
                 }
                 Instruction::CopyControlledNonlandsFromTarget => {
                     self.copy_target_to_controlled_cohort(&item, true);

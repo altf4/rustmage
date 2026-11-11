@@ -3049,7 +3049,12 @@ impl Game {
             )),
         });
     }
-    pub(super) fn stage_copy_recipes(&mut self, player: Player, recipes: Vec<CopyRecipe>) {
+    pub(super) fn stage_copy_recipes(
+        &mut self,
+        player: Player,
+        recipes: Vec<CopyRecipe>,
+        tapped: bool,
+    ) {
         if recipes.is_empty() {
             return;
         }
@@ -3058,7 +3063,7 @@ impl Game {
             .map(|recipe| TokenGroupView {
                 token: recipe.definition,
                 amount: 1,
-                tapped: false,
+                tapped,
             })
             .collect();
         self.stage_copy_token_batch(TokenBatch {

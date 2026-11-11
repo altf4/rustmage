@@ -714,6 +714,7 @@ impl Player {
 pub(super) struct EntryTurnFact {
     pub object: ObjectRef,
     pub controller: Player,
+    pub zombie: bool,
 }
 
 #[doc(hidden)]

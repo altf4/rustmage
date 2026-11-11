@@ -80,6 +80,7 @@ impl Game {
             entries.push(EntryTurnFact {
                 object,
                 controller: self.state.objects[id as usize].controller,
+                zombie: false,
             });
         }
         self.register_battlefield_providers(id);

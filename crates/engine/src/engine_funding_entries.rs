@@ -1765,6 +1765,7 @@ impl FundingState<'_> {
                     .push(EntryTurnFact {
                         object: source,
                         controller: o.controller,
+                        zombie: false,
                     });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection

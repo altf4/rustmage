@@ -2789,6 +2789,8 @@ pub enum Instruction {
     /// One permanent copy effect over the frozen controlled nonland cohort.
     CopyControlledNonlandsFromTarget,
     CopyEntryBatchCreature,
+    /// Copy each exact entrant in the captured token batch, creating them tapped together.
+    CreateTappedCopiesOfEntryBatch,
     /// Choose a source now; prevent its next damage to this controller this turn,
     /// then queue the indexed reflexive ability with the actual prevented amount.
     PreventNextChosenSourceDamage {
@@ -5020,6 +5022,8 @@ pub enum AmountValue {
     CrewContributorCount,
     /// Counters on the exact event permanent, or its latest departure snapshot.
     EventObjectTotalCounters,
+    /// Zombies that entered under the trigger controller this turn, excluding the entrant.
+    OtherZombieEntriesThisTurn,
     SourceEquipmentCount,
     #[allow(
         dead_code,
@@ -7052,6 +7056,8 @@ pub enum TriggerCondition {
     OtherFilteredEntersYou(EntryPredicate),
     FilteredEntersYou(EntryPredicate),
     TokensEnterYou,
+    /// One event for a simultaneous batch containing any tokens under an opponent's control.
+    TokensEnterOpponent,
     OtherCreatureEntersYou,
     OtherCreatureEntersYouIfGreaterStats,
     CreatureEnters {
