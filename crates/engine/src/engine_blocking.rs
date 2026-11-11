@@ -100,6 +100,11 @@ impl Game {
                 self.current_kinds(blocker),
                 a.controller != b.controller,
             )
+            || ability_world::CharacteristicWorld::protected_from_subtype(
+                self,
+                attacker,
+                |subtype| self.has_subtype(blocker, subtype),
+            )
             || keywords.contains(Keywords::NO_HUMAN_BLOCKERS) && self.has_subtype(blocker, "Human")
             || keywords.contains(Keywords::NO_TOKEN_BLOCKERS) && b.is_token()
             || keywords.contains(Keywords::FLYING)

@@ -318,4 +318,9 @@ pub(super) fn can_attach<W: ability_world::CharacteristicWorld + ?Sized>(
                 world.kinds(source.card),
                 world.object(source.card).controller != world.object(target.card).controller,
             )
+        && !world.protected_from_subtype(target.card, |subtype| {
+            world
+                .subtypes(source.card)
+                .has(world.definition(source.card), subtype)
+        })
 }

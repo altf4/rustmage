@@ -498,31 +498,25 @@ impl Game {
         controller: Player,
         target: ObjectRef,
     ) -> bool {
-        self.aura_can_enchant_with_colors(aura, controller, aura.colors(), target)
+        ability_world::aura_can_enchant(
+            self,
+            aura,
+            controller,
+            aura.colors(),
+            GrantedSubtypes::default,
+            target,
+        )
     }
-    pub(super) fn aura_can_enchant_with_colors(
-        &self,
-        aura: Card,
-        controller: Player,
-        colors: u8,
-        target: ObjectRef,
-    ) -> bool {
-        let Some(spec) = aura.aura() else {
-            return false;
-        };
-        self.on_battlefield(target.card)
-            && self.object_ref(target.card) == target
-            && !self.keywords(target.card).protects_from_controller(
-                colors,
-                aura.kind_mask(),
-                self.state.objects[target.card as usize].controller != controller,
-            )
-            && ability_world::aura_kind_matches(self, aura, target.card)
-            && match spec.relation {
-                0 => self.state.objects[target.card as usize].controller == controller,
-                1 => self.state.objects[target.card as usize].controller != controller,
-                _ => true,
-            }
+    pub(super) fn battlefield_aura_can_enchant(&self, aura: CardId, target: ObjectRef) -> bool {
+        let object = &self.state.objects[aura as usize];
+        ability_world::aura_can_enchant(
+            self,
+            object.card,
+            object.controller,
+            ability_world::CharacteristicWorld::colors(self, aura),
+            || self.granted_subtypes(aura),
+            target,
+        )
     }
     pub(super) fn entry_move(&self, id: CardId, destination: Zone, tapped: bool) -> EntryMove {
         let mut movement = EntryMove::from_view(self.object_view(id), destination, tapped);
@@ -1918,8 +1912,14 @@ impl Game {
     pub(super) fn entry_candidate(&self, target: ObjectRef) -> bool {
         let batch = self.state.entry_batch.as_ref().unwrap();
         let movement = &batch.moves[batch.choices[batch.next]];
-        self.aura_can_enchant(movement.before.card, movement.controller, target)
-            && batch.moves.iter().all(|m| m.before.id != target.card)
+        ability_world::aura_can_enchant(
+            self,
+            movement.before.card,
+            movement.controller,
+            movement.before.card.colors(),
+            || Self::entry_choice_subtypes(movement),
+            target,
+        ) && batch.moves.iter().all(|m| m.before.id != target.card)
     }
     pub(super) fn visit_entry_attacking_defenders(
         &self,

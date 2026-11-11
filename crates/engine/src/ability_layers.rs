@@ -348,6 +348,8 @@ pub enum StaticAbilityFragment {
     },
     PlayerHexproof,
     PlayerProtectionFromOpponents,
+    /// This permanent has protection from sources with the specified effective subtype.
+    ProtectionFromSubtype(&'static str),
     ActivateControlledCreaturesAsHaste,
     PlayerHexproofIfSourceCounter {
         kind: CounterKind,

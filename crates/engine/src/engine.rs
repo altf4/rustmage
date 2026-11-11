@@ -1928,11 +1928,13 @@ impl SpellView {
             .with_event_effects(world, self.controller, source)
     }
 
-    pub(super) fn remember_source_kinds_at_departure(&mut self, before: &ObjectView) -> bool {
+    pub(super) fn remember_source_types_at_departure(&mut self, before: &ObjectView) -> bool {
         if let Some(source) = &mut self.source
             && source.object == before.reference
         {
             source.facts.kinds = before.kinds;
+            source.facts.card = before.card;
+            source.facts.granted_subtypes = before.granted_subtypes;
             true
         } else {
             false
@@ -10069,7 +10071,7 @@ impl Game {
 
     /// Waiting abilities may reach the stack after their exact sources leave.
     /// Preserve their event facts while retaining the source types used in targeting.
-    fn capture_waiting_source_kinds(&mut self, before: &ObjectView) {
+    fn capture_waiting_source_types(&mut self, before: &ObjectView) {
         let state = &mut self.state;
         for item in [
             state.delayed_artifact_copies.as_deref_mut(),
@@ -10086,7 +10088,7 @@ impl Game {
         .flatten()
         .flatten()
         {
-            item.remember_source_kinds_at_departure(before);
+            item.remember_source_types_at_departure(before);
         }
         for item in state
             .delayed_target_events
@@ -10118,7 +10120,7 @@ impl Game {
                     .map(|row| &mut row.source),
             )
         {
-            item.remember_source_kinds_at_departure(before);
+            item.remember_source_types_at_departure(before);
         }
         if let Some(batches) = &mut state.delayed_sacrifices {
             for batch in batches.iter_mut() {
@@ -10523,7 +10525,7 @@ impl Game {
         }
         if before.zone == Zone::Battlefield {
             self.capture_delayed_copy_source_departure(&before);
-            self.capture_waiting_source_kinds(&before);
+            self.capture_waiting_source_types(&before);
             self.forget_temporary_control(before.reference);
             self.forget_role(before.reference);
             self.forget_base_stats(before.reference);
@@ -11460,6 +11462,9 @@ impl Game {
                 event.source.facts.kinds,
                 self.state.objects[id as usize].controller != event.source.controller,
             )
+            || ability_world::CharacteristicWorld::protected_from_subtype(self, id, |subtype| {
+                event.source.facts.has_subtype(subtype)
+            })
     }
 
     fn commit_damage_batch(&mut self, events: &[DamageEvent], remembering: Option<u64>) {

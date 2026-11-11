@@ -1138,6 +1138,28 @@ pub(super) trait CharacteristicWorld {
                 })
         })
     }
+    fn protected_from_subtype(
+        &self,
+        target: CardId,
+        mut source_has_subtype: impl FnMut(&str) -> bool,
+    ) -> bool {
+        use crate::cards::StaticAbilityFragment::ProtectionFromSubtype;
+        let query = std::cell::OnceCell::new();
+        self.definition(target)
+            .static_ability_groups()
+            .iter()
+            .enumerate()
+            .any(|(index, group)| {
+                let matches_source = group.fragments.iter().any(|fragment| match fragment {
+                    ProtectionFromSubtype(subtype) => source_has_subtype(subtype),
+                    _ => false,
+                });
+                matches_source
+                    && query
+                        .get_or_init(|| characteristic_query::CharacteristicQuery::in_world(self))
+                        .continuous_group_available(self.reference(target), index, group)
+            })
+    }
     fn fragment_available(
         &self,
         id: CardId,
@@ -1757,6 +1779,39 @@ pub(super) fn player_protection_source<W: CharacteristicWorld + ?Sized>(
             && characteristic_query::CharacteristicQuery::in_world(world)
                 .continuous_fragment_available(id, grants_protection)
     })
+}
+
+/// Check the prospective Aura and its exact prospective recipient in the same world.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn aura_can_enchant<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    controller: Player,
+    colors: u8,
+    subtypes: impl Fn() -> GrantedSubtypes,
+    target: ObjectRef,
+) -> bool {
+    let Some(spec) = aura.aura() else {
+        return false;
+    };
+    let object = world.object(target.card);
+    let recipient = target.card;
+    let same_controller = object.controller == controller;
+    let source_subtypes = std::cell::OnceCell::new();
+    object.zone == Zone::Battlefield
+        && world.reference(recipient) == target
+        && !characteristic_query::CharacteristicQuery::in_world(world)
+            .keywords(recipient)
+            .protects_from_controller(colors, aura.kind_mask(), !same_controller)
+        && !world.protected_from_subtype(recipient, |subtype| {
+            source_subtypes.get_or_init(&subtypes).has(aura, subtype)
+        })
+        && aura_kind_matches(world, aura, recipient)
+        && match spec.relation {
+            0 => same_controller,
+            1 => !same_controller,
+            _ => true,
+        }
 }
 
 /// Evaluate the printed Aura restriction in either live or projected worlds.

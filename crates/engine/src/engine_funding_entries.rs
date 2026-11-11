@@ -1161,25 +1161,14 @@ impl FundingState<'_> {
         }
     }
     fn aura_candidate(&self, m: &entries::EntryMove, target: ObjectRef) -> bool {
-        let Some(spec) = m.before.card.aura() else {
-            return false;
-        };
-        let o = self.object(target.card);
-        o.zone == Zone::Battlefield
-            && self.reference(target.card) == target
-            && !characteristic_query::CharacteristicQuery::in_world(self)
-                .keywords(target.card)
-                .protects_from_controller(
-                    m.before.card.colors(),
-                    m.before.card.kind_mask(),
-                    o.controller != m.controller,
-                )
-            && ability_world::aura_kind_matches(self, m.before.card, target.card)
-            && match spec.relation {
-                0 => o.controller == m.controller,
-                1 => o.controller != m.controller,
-                _ => true,
-            }
+        ability_world::aura_can_enchant(
+            self,
+            m.before.card,
+            m.controller,
+            m.before.card.colors(),
+            || Game::entry_choice_subtypes(m),
+            target,
+        )
     }
     fn visit_entry_values(
         &self,

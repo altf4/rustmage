@@ -226,6 +226,9 @@ impl Game {
                 .source
                 .is_some_and(|source| source.object == before.reference)
             {
+                if before.zone == Zone::Battlefield {
+                    item.remember_source_types_at_departure(before);
+                }
                 item.refresh_counter_quantities(|kind| before.counters.get(kind));
             }
         }

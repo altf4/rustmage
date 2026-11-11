@@ -1031,12 +1031,12 @@ impl Game {
         });
         self.advance_copy_targets()
     }
-    /// Stack targeting needs the exact source's departure types for every copy
-    /// callback. Only callbacks reading source power replace the remaining facts.
+    /// Targeting copy callbacks retain the exact source's departure types.
+    /// Callbacks that read source power also retain the remaining facts.
     pub(super) fn capture_delayed_copy_source_departure(&mut self, before: &ObjectView) {
         if let Some(state) = &mut self.state.stack_copy_data {
             for item in &mut state.delayed {
-                if item.remember_source_kinds_at_departure(before)
+                if item.remember_source_types_at_departure(before)
                     && delayed_copy_reads_source_power(item)
                 {
                     item.source.as_mut().expect("delayed source exists").facts =

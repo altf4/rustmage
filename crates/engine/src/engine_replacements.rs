@@ -73,6 +73,7 @@ pub enum DamagePreventionKind {
     ProtectionInstantSorcery,
     ProtectionOpponents,
     ProtectionColor(crate::cards::ChoiceColor),
+    ProtectionSubtype,
     SourceLinkedDamage,
     ChosenSource(u64),
     UntilNextTurn,
@@ -1577,6 +1578,11 @@ impl Game {
                 && event.source.facts.kinds & (4 | 8) != 0
             {
                 add(DamagePreventionKind::ProtectionInstantSorcery);
+            }
+            if ability_world::CharacteristicWorld::protected_from_subtype(self, id, |subtype| {
+                event.source.facts.has_subtype(subtype)
+            }) {
+                add(DamagePreventionKind::ProtectionSubtype);
             }
             let protected_colors = keywords.protection_colors() & event.source.facts.colors;
             for color in crate::cards::ChoiceColor::ALL {

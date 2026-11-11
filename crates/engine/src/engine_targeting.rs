@@ -2090,12 +2090,12 @@ impl Game {
         }
     }
 
-    fn target_source_qualities(
-        &self,
+    fn target_source_context<'a>(
+        &'a self,
         source: ObjectRef,
-        qualification: Option<TargetSourceCharacteristics<'_>>,
-    ) -> Option<(u8, u16)> {
-        let packets = || {
+        qualification: Option<TargetSourceCharacteristics<'a>>,
+    ) -> Option<TargetSourceCharacteristics<'a>> {
+        qualification.or_else(|| {
             self.state
                 .stack
                 .iter()
@@ -2103,15 +2103,43 @@ impl Game {
                 .chain(&self.state.ordering_triggers)
                 .chain(self.state.announcing.iter().map(|a| &a.item))
                 .chain(self.state.resolving.iter().map(|r| &r.item))
-        };
-        let qualification = qualification.or_else(|| {
-            packets()
                 .find(|item| {
                     item.source
                         .is_some_and(|identity| identity.object == source)
                 })
                 .map(TargetSourceCharacteristics::from_item)
-        });
+        })
+    }
+
+    fn target_source_subtypes<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(Card, GrantedSubtypes)> {
+        let qualification = self.target_source_context(source, qualification);
+        let source = qualification.map_or(source, |q| q.reference);
+        let snapshot = qualification.and_then(|q| q.snapshot);
+        if let Some(spell) = qualification.and_then(|q| q.spell) {
+            Some((
+                spell,
+                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes),
+            ))
+        } else if self.state.objects.get(source.card as usize).is_some()
+            && world.reference(source.card) == source
+        {
+            Some((world.definition(source.card), world.subtypes(source.card)))
+        } else {
+            snapshot.map(|facts| (facts.card, facts.granted_subtypes))
+        }
+    }
+
+    fn target_source_qualities(
+        &self,
+        source: ObjectRef,
+        qualification: Option<TargetSourceCharacteristics<'_>>,
+    ) -> Option<(u8, u16)> {
+        let qualification = self.target_source_context(source, qualification);
         let source = qualification.map_or(source, |q| q.reference);
         let current = self
             .state
@@ -2473,6 +2501,18 @@ impl Game {
                                 })
                 }) {
                     return false;
+                }
+                if obj.zone == Zone::Battlefield {
+                    let source_subtypes = std::cell::OnceCell::new();
+                    if world.protected_from_subtype(id, |subtype| {
+                        source_subtypes
+                            .get_or_init(|| {
+                                self.target_source_subtypes(world, source, qualification)
+                            })
+                            .is_some_and(|(card, types)| types.has(card, subtype))
+                    }) {
+                        return false;
+                    }
                 }
                 if let Some(keywords) = battlefield_keywords
                     && obj.controller != controller
