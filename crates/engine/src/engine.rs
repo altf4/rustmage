@@ -535,6 +535,8 @@ pub mod blocking;
 #[path = "engine_combat_restrictions.rs"]
 pub mod combat_restrictions;
 pub use combat_restrictions::AttackPaymentView;
+use combat_restrictions::CombatDeclaration;
+pub type BlockPaymentView = AttackPaymentView;
 #[doc(hidden)]
 #[path = "engine_effect_choices.rs"]
 pub mod effect_choices;
@@ -1210,6 +1212,9 @@ define_actions! {
     CancelAttackDeclaration,
     PayAttackCost { payment: Mana },
     AbortAttackPayment,
+    CancelBlockDeclaration,
+    PayBlockCost { payment: Mana },
+    AbortBlockPayment,
     Block {
         blocker: CardId,
         attacker: CardId,
@@ -2700,6 +2705,9 @@ enum Pending {
     AttackPayment {
         player: Player,
     },
+    BlockPayment {
+        player: Player,
+    },
     SourceCounterAmount {
         player: Player,
     },
@@ -3081,7 +3089,7 @@ struct State {
     paradigm: Option<Box<paradigm::ParadigmState>>,
     linked_choices: Option<Box<linked_choices::ChoiceState>>,
     combat_rules: Option<Box<combat_allocations::CombatRulesState>>,
-    attack_payment: Option<Box<combat_restrictions::AttackPayment>>,
+    combat_payment: Option<Box<combat_restrictions::CombatPayment>>,
     ending_turn: bool,
     turn_skips: Option<Box<[u64; 2]>>,
     player_control: Option<Box<player_control::PlayerControlState>>,
@@ -3853,6 +3861,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attack_payment: Option<AttackPaymentView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub block_payment: Option<BlockPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub player_control: Option<PlayerControlView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub library_cast_look: Option<LibraryCastLookView>,
@@ -4454,7 +4464,7 @@ impl Game {
                 battle_combat_types: None,
                 combat_defender_types: None,
                 combat_rules: None,
-                attack_payment: None,
+                combat_payment: None,
                 permanent_damage_history: None,
                 tap_history: None,
                 counter_placement_history: None,
@@ -4679,6 +4689,7 @@ impl Game {
             | Pending::ResolutionLife { player }
             | Pending::ResolutionMana { player }
             | Pending::AttackPayment { player }
+            | Pending::BlockPayment { player }
             | Pending::AdditionalCost { player }
             | Pending::EntryTimestamp { player }
             | Pending::EntryReplacement { player }
@@ -4832,7 +4843,7 @@ impl Game {
                 || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
                 || self.face_up_payment().is_some()
-                || self.state.attack_payment.is_some()
+                || self.state.combat_payment.is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
                 && (!self.state.objects.ptr_eq(&checkpoint.objects)
@@ -4943,11 +4954,16 @@ impl Game {
                         self.state.announcing.as_ref().and_then(|a| a.additional),
                         Some(*payment),
                     )
-            } else if let Action::PayAttackCost { payment } = &action {
-                matches!(self.state.pending, Pending::AttackPayment { .. })
-                    && self
-                        .mana_payment_domain()
-                        .is_some_and(|d| d.contains(*payment))
+            } else if let Action::PayAttackCost { payment } | Action::PayBlockCost { payment } =
+                &action
+            {
+                self.state.combat_payment.as_ref().is_some_and(|context| {
+                    self.state.pending == context.pending()
+                        && action == context.payment_action(*payment)
+                        && self
+                            .mana_payment_domain()
+                            .is_some_and(|d| d.contains(*payment))
+                })
             } else if let Action::ChooseCounterRemoval { counters } = &action {
                 self.counter_removal_domain()
                     .is_some_and(|domain| domain.contains(counters))
@@ -5006,7 +5022,7 @@ impl Game {
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
                     && self.face_up_payment().is_none()
-                    && self.state.attack_payment.is_none()
+                    && self.state.combat_payment.is_none()
                 {
                     self.state_based_actions();
                     if self.state.entry_batch.is_some() {
@@ -5037,8 +5053,8 @@ impl Game {
         {
             let fundable = if self.state.announcing.is_some() {
                 self.current_cast_costs_fundable()
-            } else if let Some(payment) = &self.state.attack_payment {
-                self.attack_tax_fundable(payment.player, payment.generic)
+            } else if let Some(payment) = &self.state.combat_payment {
+                self.combat_tax_fundable(payment.player, payment.generic)
             } else if self.face_up_payment().is_some() {
                 self.face_up_payment_fundable()
             } else {
@@ -5046,12 +5062,14 @@ impl Game {
             };
             self.finish_cast_rollback(fundable);
         }
-        if matches!(self.state.pending, Pending::AttackPayment { .. })
-            && self
-                .state
-                .attack_payment
-                .as_ref()
-                .is_some_and(|p| !self.attack_tax_fundable(p.player, p.generic))
+        if matches!(
+            self.state.pending,
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. }
+        ) && self
+            .state
+            .combat_payment
+            .as_ref()
+            .is_some_and(|p| !self.combat_tax_fundable(p.player, p.generic))
         {
             self.finish_cast_rollback(false);
         }
@@ -6880,12 +6898,38 @@ impl Game {
                 }
             }
             Pending::AttackPayment { .. } => {
-                if emit(Action::AbortAttackPayment) || self.visit_attack_tax_payment(&mut emit) {
+                if emit(Action::AbortAttackPayment) || self.visit_combat_tax_payment(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::BlockPayment { .. } => {
+                if emit(Action::AbortBlockPayment) || self.visit_combat_tax_payment(&mut emit) {
                     return true;
                 }
             }
             Pending::Blockers => {
-                if self.blocks_complete() && emit(Action::FinishBlockers) {
+                let tax = self.block_tax_per_creature();
+                let mut funding = Vec::new();
+                let mut fundable = |count: usize| {
+                    if tax == 0 || count == 0 {
+                        return true;
+                    }
+                    if let Some(&(_, result)) = funding.iter().find(|&&(n, _)| n == count) {
+                        return result;
+                    }
+                    let result =
+                        self.combat_tax_fundable(actor, self.block_declaration_tax(tax, count));
+                    funding.push((count, result));
+                    result
+                };
+                if self.blocks_complete(tax != 0)
+                    && fundable(s.selected_blocks.len())
+                    && emit(Action::FinishBlockers)
+                {
+                    return true;
+                }
+                if tax != 0 && !s.selected_blocks.is_empty() && emit(Action::CancelBlockDeclaration)
+                {
                     return true;
                 }
                 for (i, _) in s.objects.iter().enumerate() {
@@ -6897,7 +6941,9 @@ impl Game {
                     }
                     for attacker in &s.attackers {
                         if self.can_block_pair(blocker, attacker.card)
-                            && self.block_preserves_completion(blocker, attacker.card)
+                            && self
+                                .minimum_block_declaration_with(blocker, attacker.card, tax != 0)
+                                .is_some_and(&mut fundable)
                             && emit(Action::Block {
                                 blocker,
                                 attacker: attacker.card,
@@ -8866,12 +8912,14 @@ impl Game {
                 })
             }
             Action::CancelAttackDeclaration => self.state.selected_attackers.clear(),
-            Action::AbortAttackPayment => self.finish_cast_rollback(false),
+            Action::AbortAttackPayment | Action::AbortBlockPayment => {
+                self.finish_cast_rollback(false)
+            }
             Action::FinishAttackers => {
                 if self.projected_attack_tax() == 0 {
                     self.finish_attack_declaration(actor, false);
                 } else {
-                    self.begin_attack_rollback(actor);
+                    self.begin_combat_rollback(actor);
                     let attackers = self
                         .state
                         .selected_attackers
@@ -8881,62 +8929,35 @@ impl Game {
                     self.tap_selected_attackers();
                     self.refresh_enduring_stories();
                     let generic = self.selected_attack_tax();
-                    self.state.attack_payment =
-                        Some(Box::new(combat_restrictions::AttackPayment {
-                            player: actor,
-                            generic,
-                            attackers,
-                        }));
-                    self.state.pending = Pending::AttackPayment { player: actor };
+                    self.start_combat_payment(actor, generic, CombatDeclaration::Attack(attackers));
                 }
             }
-            Action::PayAttackCost { payment } => {
-                self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
-                let context = self.state.attack_payment.take().unwrap();
-                let live: Vec<_> = context
-                    .attackers
-                    .iter()
-                    .filter(|r| {
-                        self.on_battlefield(r.card)
-                            && self.object_ref(r.card) == **r
-                            && self.state.objects[r.card as usize].controller == actor
-                            && self.is_creature(r.card)
-                    })
-                    .map(|r| r.card)
-                    .collect();
-                self.state
-                    .selected_attackers
-                    .retain(|a| live.contains(&a.card));
-                self.finish_attack_declaration(actor, true);
+            Action::PayAttackCost { payment } | Action::PayBlockCost { payment } => {
+                self.pay_combat_tax(actor, payment)
             }
             Action::Block { blocker, attacker } => {
                 self.state.selected_blocks.push((blocker, attacker))
             }
+            Action::CancelBlockDeclaration => self.state.selected_blocks.clear(),
             Action::FinishBlockers => {
-                let declared: Vec<CardId> = self
-                    .state
-                    .selected_blocks
-                    .iter()
-                    .map(|&(blocker, _)| blocker)
-                    .collect();
-                self.state
-                    .blocking
-                    .extend(self.state.selected_blocks.iter().map(|&(b, _)| b));
-                let first_new_block = self.state.blocks.len();
-                self.state.blocks.append(&mut self.state.selected_blocks);
-                self.attachment_block_triggers(actor);
-                self.self_block_triggers(&declared, first_new_block);
-                self.opponent_blocker_triggers(actor, &declared);
-                let mut newly_blocked = Vec::new();
-                for attacker in &mut self.state.attackers {
-                    let blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
-                    if blocked && !attacker.blocked {
-                        newly_blocked.push(attacker.card);
-                    }
-                    attacker.blocked |= blocked;
+                let generic = self.block_declaration_tax(
+                    self.block_tax_per_creature(),
+                    self.state.selected_blocks.len(),
+                );
+                if generic == 0 {
+                    self.finish_block_declaration(actor);
+                } else {
+                    self.begin_combat_rollback(actor);
+                    let blocks = self
+                        .state
+                        .selected_blocks
+                        .iter()
+                        .map(|&(blocker, attacker)| {
+                            (self.object_ref(blocker), self.object_ref(attacker))
+                        })
+                        .collect();
+                    self.start_combat_payment(actor, generic, CombatDeclaration::Block(blocks));
                 }
-                self.block_relationship_triggers(first_new_block, &newly_blocked);
-                self.give_priority();
             }
             Action::AssignDamage { target, amount } => {
                 let Target::Card(blocker) = target else {
@@ -11826,6 +11847,18 @@ impl Game {
             })
             .map(|(i, _)| query.object_view(i as CardId))
             .collect();
+        let attack_payment = s
+            .combat_payment
+            .as_ref()
+            .is_some_and(|p| matches!(p.declaration, CombatDeclaration::Attack(_)));
+        let block_payment = s
+            .combat_payment
+            .as_ref()
+            .is_some_and(|p| matches!(p.declaration, CombatDeclaration::Block(_)));
+        let payment_view = |p: &combat_restrictions::CombatPayment| AttackPaymentView {
+            player: p.player,
+            generic: p.generic,
+        };
         Observation {
             outside_choice: self.outside_choice_view(viewer),
             legendary_split_search: self.legendary_split_view(viewer),
@@ -11858,10 +11891,16 @@ impl Game {
             face_down_spells: self.face_down_spell_views(viewer),
             manifest_choice: self.manifest_choice_view(viewer),
             creature_type_choice: self.creature_type_tokens_view(),
-            attack_payment: s.attack_payment.as_ref().map(|p| AttackPaymentView {
-                player: p.player,
-                generic: p.generic,
-            }),
+            attack_payment: s
+                .combat_payment
+                .as_deref()
+                .filter(|_| attack_payment)
+                .map(payment_view),
+            block_payment: s
+                .combat_payment
+                .as_deref()
+                .filter(|_| block_payment)
+                .map(payment_view),
             player_control: self.player_control_view(),
             library_cast_look: self.library_cast_look_view(viewer),
             zone_search: self.zone_search_view(viewer),
@@ -12260,6 +12299,7 @@ impl Game {
                 Pending::CopiedSagaLore { .. } => "copied_saga_lore",
                 Pending::ResolutionMana { .. } => "resolution_mana",
                 Pending::AttackPayment { .. } => "attack_payment",
+                Pending::BlockPayment { .. } => "block_payment",
                 Pending::ResolutionLife { .. } => "resolution_life",
                 Pending::ConniveOrder { .. } => "connive_order",
                 Pending::OpeningHand { .. } => "opening_hand",
@@ -12951,26 +12991,24 @@ impl Game {
                         .collect()
                 })
                 .unwrap_or_default(),
-            attackers: if (owns_choice && s.pending == Pending::Attackers)
-                || s.attack_payment.is_some()
-            {
+            attackers: if (owns_choice && s.pending == Pending::Attackers) || attack_payment {
                 s.selected_attackers.iter().map(|a| a.card).collect()
             } else {
                 s.attackers.iter().map(|a| a.card).collect()
             },
             attack_declarations: if (owns_choice && s.pending == Pending::Attackers)
-                || s.attack_payment.is_some()
+                || attack_payment
             {
                 s.selected_attackers.clone()
             } else {
                 s.attackers.clone()
             },
-            blocking: if owns_choice && s.pending == Pending::Blockers {
+            blocking: if (owns_choice && s.pending == Pending::Blockers) || block_payment {
                 s.selected_blocks.iter().map(|&(b, _)| b).collect()
             } else {
                 s.blocking.clone()
             },
-            blocks: if owns_choice && s.pending == Pending::Blockers {
+            blocks: if (owns_choice && s.pending == Pending::Blockers) || block_payment {
                 s.selected_blocks.clone()
             } else {
                 s.blocks.clone()
@@ -13199,7 +13237,7 @@ impl Game {
                         .as_ref()
                         .map_or(0, |_| std::mem::size_of::<LimitedCastPermission>())
             })
-            + s.attack_payment.as_ref().map_or(0, |p| p.bytes())
+            + s.combat_payment.as_ref().map_or(0, |p| p.bytes())
             + s.exile_links.len() * std::mem::size_of::<ExileLink>()
             + s.exile_permissions.len() * std::mem::size_of::<ExilePlayPermission>()
             + s.borrowed_uses.as_ref().map_or(0, |rows| {

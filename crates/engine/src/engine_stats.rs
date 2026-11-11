@@ -335,6 +335,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::AttachmentAttackingKeywords(..)
                             | crate::cards::StaticAbilityFragment::AttachedAttackerMustBeBlocked
                             | crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
+                            | crate::cards::StaticAbilityFragment::AttackControllerOrPlaneswalkerTax { .. }
+                            | crate::cards::StaticAbilityFragment::BlockTaxWhileAttacking(_)
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)

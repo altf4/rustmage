@@ -158,8 +158,8 @@ impl Game {
         }
     }
 
-    pub(super) fn blocks_complete(&self) -> bool {
-        self.block_requirements_complete()
+    pub(super) fn blocks_complete(&self, taxed: bool) -> bool {
+        (taxed || self.block_requirements_complete())
             && self.state.attackers.iter().all(|a| {
                 let count = self
                     .state
@@ -173,7 +173,14 @@ impl Game {
             })
     }
 
-    pub(super) fn block_preserves_completion(&self, blocker: CardId, attacker: CardId) -> bool {
+    /// Minimum size of a structurally legal declaration extending this choice.
+    pub(super) fn minimum_block_declaration_with(
+        &self,
+        blocker: CardId,
+        attacker: CardId,
+        taxed: bool,
+    ) -> Option<usize> {
+        let selected = self.state.selected_blocks.len() + 1;
         if has_attacker_keyword(self, attacker, Keywords::MAX_ONE_BLOCKER)
             && self
                 .state
@@ -181,7 +188,7 @@ impl Game {
                 .iter()
                 .any(|&(_, id)| id == attacker)
         {
-            return false;
+            return None;
         }
         let needs: Vec<_> = self
             .state
@@ -201,13 +208,14 @@ impl Game {
             .flat_map(|(id, remaining)| std::iter::repeat_n(id, remaining))
             .collect();
         if needs.is_empty() {
-            return self.block_requirements_preserved(blocker, attacker);
+            return (taxed || self.block_requirements_preserved(blocker, attacker))
+                .then_some(selected);
         }
         if needs
             .iter()
             .any(|&id| has_attacker_keyword(self, id, Keywords::MAX_ONE_BLOCKER))
         {
-            return false;
+            return None;
         }
         let available: Vec<_> = self
             .state
@@ -223,7 +231,7 @@ impl Game {
             })
             .collect();
         if available.len() < needs.len() {
-            return false;
+            return None;
         }
         // Every outstanding minimum-count obligation needs one distinct unused
         // blocker. Augmenting paths find an exact covering matching.
@@ -263,10 +271,36 @@ impl Game {
                 &mut assigned,
                 &mut vec![false; available.len()],
             ) {
-                return false;
+                return None;
             }
         }
-        self.block_requirements_preserved(blocker, attacker)
+        (taxed || self.block_requirements_preserved(blocker, attacker))
+            .then_some(selected + needs.len())
+    }
+
+    pub(super) fn finish_block_declaration(&mut self, actor: Player) {
+        let declared: Vec<_> = self
+            .state
+            .selected_blocks
+            .iter()
+            .map(|&(blocker, _)| blocker)
+            .collect();
+        self.state.blocking.extend(declared.iter().copied());
+        let first_new_block = self.state.blocks.len();
+        self.state.blocks.append(&mut self.state.selected_blocks);
+        self.attachment_block_triggers(actor);
+        self.self_block_triggers(&declared, first_new_block);
+        self.opponent_blocker_triggers(actor, &declared);
+        let mut newly_blocked = Vec::new();
+        for attacker in &mut self.state.attackers {
+            let blocked = self.state.blocks.iter().any(|&(_, a)| a == attacker.card);
+            if blocked && !attacker.blocked {
+                newly_blocked.push(attacker.card);
+            }
+            attacker.blocked |= blocked;
+        }
+        self.block_relationship_triggers(first_new_block, &newly_blocked);
+        self.give_priority();
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

@@ -3474,10 +3474,8 @@ impl Game {
             if self.restore_mana_announcement() {
                 return;
             }
-            if let Some(payment) = &self.state.attack_payment {
-                self.state.pending = Pending::AttackPayment {
-                    player: payment.player,
-                };
+            if let Some(payment) = &self.state.combat_payment {
+                self.state.pending = payment.pending();
                 return;
             }
         } else {

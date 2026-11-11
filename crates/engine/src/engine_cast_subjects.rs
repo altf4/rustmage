@@ -173,22 +173,29 @@ impl Game {
             })
     }
 
-    pub(super) fn can_attack_any_defender(&self, actor: Player, attacker: CardId) -> bool {
-        self.can_attack_defender(attacker, CombatDefender::Player(actor.other()))
+    pub(super) fn can_attack_free_defender(
+        &self,
+        actor: Player,
+        attacker: CardId,
+        player_free: bool,
+        walkers_free: bool,
+    ) -> bool {
+        player_free && self.can_attack_defender(attacker, CombatDefender::Player(actor.other()))
             || self.state.objects.iter().enumerate().any(|(id, _)| {
                 let reference = self.object_ref(id as CardId);
                 self.battle_can_be_attacked_by(reference, actor)
                     && self.can_attack_defender(attacker, CombatDefender::Battle(reference))
             })
-            || self.state.objects.iter().enumerate().any(|(id, object)| {
-                object.zone == Zone::Battlefield
-                    && object.controller == actor.other()
-                    && self.current_kinds(id as CardId) & 64 != 0
-                    && self.can_attack_defender(
-                        attacker,
-                        CombatDefender::Planeswalker(self.object_ref(id as CardId)),
-                    )
-            })
+            || walkers_free
+                && self.state.objects.iter().enumerate().any(|(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == actor.other()
+                        && self.current_kinds(id as CardId) & 64 != 0
+                        && self.can_attack_defender(
+                            attacker,
+                            CombatDefender::Planeswalker(self.object_ref(id as CardId)),
+                        )
+                })
     }
 
     pub(super) fn flying_block_forbidden(&self, blocker: CardId, attacker: CardId) -> bool {

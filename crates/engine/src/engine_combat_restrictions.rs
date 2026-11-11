@@ -2,10 +2,16 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub(super) struct AttackPayment {
+pub(super) enum CombatDeclaration {
+    Attack(Vec<ObjectRef>),
+    Block(Vec<(ObjectRef, ObjectRef)>),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct CombatPayment {
     pub player: Player,
     pub generic: u32,
-    pub attackers: Vec<ObjectRef>,
+    pub declaration: CombatDeclaration,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -14,9 +20,37 @@ pub struct AttackPaymentView {
     pub generic: u32,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl AttackPayment {
+impl CombatPayment {
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.attackers.len() * std::mem::size_of::<ObjectRef>()
+        std::mem::size_of::<Self>()
+            + match &self.declaration {
+                CombatDeclaration::Attack(attackers) => std::mem::size_of_val(attackers.as_slice()),
+                CombatDeclaration::Block(blocks) => std::mem::size_of_val(blocks.as_slice()),
+            }
+    }
+
+    pub(super) fn pending(&self) -> Pending {
+        let player = self.player;
+        match self.declaration {
+            CombatDeclaration::Attack(_) => Pending::AttackPayment { player },
+            CombatDeclaration::Block(_) => Pending::BlockPayment { player },
+        }
+    }
+
+    pub(super) fn payment_action(&self, payment: Mana) -> Action {
+        match self.declaration {
+            CombatDeclaration::Attack(_) => Action::PayAttackCost { payment },
+            CombatDeclaration::Block(_) => Action::PayBlockCost { payment },
+        }
+    }
+}
+
+fn attack_tax(fragment: &crate::cards::StaticAbilityFragment) -> Option<(u32, StatValue, bool)> {
+    use crate::cards::StaticAbilityFragment::*;
+    match *fragment {
+        AttackControllerTax { amount, condition } => Some((amount, condition, false)),
+        AttackControllerOrPlaneswalkerTax { amount, condition } => Some((amount, condition, true)),
+        _ => None,
     }
 }
 /// Total requirement weight of a capacity-one defender assignment.
@@ -59,29 +93,145 @@ pub(super) fn maximum_attack_matching(edges: &mut [(usize, Vec<usize>)], slots: 
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Costs are attached to attacking a player, not their planeswalkers.
-    pub(super) fn attack_controller_tax(&self, defender: Player) -> u32 {
-        self.state.static_sources.iter().copied().filter(|&id| {
-            self.on_battlefield(id) && self.state.objects[id as usize].controller == defender
-        }).map(|id| {
-            self.state.objects[id as usize].card.static_ability_groups().iter().flat_map(|group| group.fragments.iter()).filter_map(|fragment| {
-                let crate::cards::StaticAbilityFragment::AttackControllerTax { amount, condition } = *fragment else { return None; };
-                (self.continuous_fragment_available(id, |f| matches!(f, crate::cards::StaticAbilityFragment::AttackControllerTax { amount: a, condition: c } if *a == amount && *c == condition))
-                    && self.stat_value(condition, self.object_ref(id), defender) != 0).then_some(amount)
-            }).fold(0u32, |a, b| a.checked_add(b).capacity("attack tax exhausted"))
-        }).fold(0u32, |a, b| a.checked_add(b).capacity("attack tax exhausted"))
+    /// The generic costs of attacking this player and of attacking their planeswalkers.
+    fn attack_controller_taxes(&self, defender: Player) -> (u32, u32) {
+        let mut player_cost = 0u32;
+        let mut walker_cost = 0u32;
+        for &source in &self.state.static_sources {
+            let object = &self.state.objects[source as usize];
+            if object.zone != Zone::Battlefield || object.controller != defender {
+                continue;
+            }
+            for fragment in object
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let Some((amount, condition, affects_walkers)) = attack_tax(fragment) else {
+                    continue;
+                };
+                if self.continuous_fragment_available(source, |candidate| {
+                    std::ptr::eq(candidate, fragment)
+                }) && self.stat_value(condition, self.object_ref(source), defender) != 0
+                {
+                    player_cost = player_cost
+                        .checked_add(amount)
+                        .capacity("attack tax exhausted");
+                    if affects_walkers {
+                        walker_cost = walker_cost
+                            .checked_add(amount)
+                            .capacity("attack tax exhausted");
+                    }
+                }
+            }
+        }
+        (player_cost, walker_cost)
     }
+
     pub(super) fn selected_attack_tax(&self) -> u32 {
+        let (player_cost, walker_cost) = self.attack_controller_taxes(self.state.active.other());
         self.state
             .selected_attackers
             .iter()
-            .filter_map(|attack| match attack.defender {
-                Some(CombatDefender::Player(p)) => Some(self.attack_controller_tax(p)),
-                _ => None,
+            .map(|attack| match attack.defender {
+                Some(CombatDefender::Player(_)) => player_cost,
+                Some(CombatDefender::Planeswalker(_)) => walker_cost,
+                _ => 0,
             })
             .fold(0u32, |a, b| {
                 a.checked_add(b).capacity("attack tax exhausted")
             })
+    }
+
+    pub(super) fn block_tax_per_creature(&self) -> u32 {
+        use crate::cards::StaticAbilityFragment::BlockTaxWhileAttacking;
+        self.state
+            .attackers
+            .iter()
+            .filter(|attack| self.on_battlefield(attack.card))
+            .flat_map(|attack| {
+                self.state.objects[attack.card as usize]
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments)
+                    .filter_map(|fragment| {
+                        let BlockTaxWhileAttacking(amount) = *fragment else {
+                            return None;
+                        };
+                        self.continuous_fragment_available(attack.card, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                        .then_some(amount)
+                    })
+            })
+            .fold(0u32, |a, b| {
+                a.checked_add(b).capacity("block tax exhausted")
+            })
+    }
+
+    pub(super) fn block_declaration_tax(&self, per_blocker: u32, blocker_count: usize) -> u32 {
+        u32::try_from(blocker_count)
+            .capacity("blocker count exhausted")
+            .checked_mul(per_blocker)
+            .capacity("block tax exhausted")
+    }
+
+    pub(super) fn start_combat_payment(
+        &mut self,
+        player: Player,
+        generic: u32,
+        declaration: CombatDeclaration,
+    ) {
+        let payment = CombatPayment {
+            player,
+            generic,
+            declaration,
+        };
+        self.state.pending = payment.pending();
+        self.state.combat_payment = Some(Box::new(payment));
+    }
+
+    pub(super) fn pay_combat_tax(&mut self, actor: Player, payment: Mana) {
+        self.spend_mana_for(actor, payment, mana_lots::Purpose::Other);
+        let context = self.state.combat_payment.take().unwrap();
+        match context.declaration {
+            CombatDeclaration::Attack(attackers) => {
+                let live: Vec<_> = attackers
+                    .into_iter()
+                    .filter(|&reference| self.live_combat_declarant(reference, actor))
+                    .map(|reference| reference.card)
+                    .collect();
+                self.state
+                    .selected_attackers
+                    .retain(|attack| live.contains(&attack.card));
+                self.finish_attack_declaration(actor, true);
+            }
+            CombatDeclaration::Block(blocks) => {
+                self.state.selected_blocks = blocks
+                    .into_iter()
+                    .filter(|&(blocker, attacker)| {
+                        self.live_combat_declarant(blocker, actor)
+                            && self.live_combat_declarant(attacker, actor.other())
+                            && self
+                                .state
+                                .attackers
+                                .iter()
+                                .any(|attack| attack.card == attacker.card)
+                    })
+                    .map(|(blocker, attacker)| (blocker.card, attacker.card))
+                    .collect();
+                self.finish_block_declaration(actor);
+            }
+        }
+    }
+
+    fn live_combat_declarant(&self, reference: ObjectRef, controller: Player) -> bool {
+        self.on_battlefield(reference.card)
+            && self.object_ref(reference.card) == reference
+            && self.state.objects[reference.card as usize].controller == controller
+            && self.is_creature(reference.card)
     }
 
     pub(super) fn tap_selected_attackers(&mut self) {
@@ -103,12 +253,7 @@ impl Game {
                     .static_ability_groups()
                     .iter()
                     .flat_map(|group| group.fragments.iter())
-                    .any(|fragment| {
-                        matches!(
-                            fragment,
-                            crate::cards::StaticAbilityFragment::AttackControllerTax { .. }
-                        )
-                    })
+                    .any(|fragment| attack_tax(fragment).is_some())
         })
     }
     pub(super) fn after_attacker_taps<T>(&self, f: impl FnOnce(&Game) -> T) -> T {
@@ -372,19 +517,22 @@ impl Game {
                     })
             })
             .collect();
-        let taxed = self.attack_controller_tax(actor.other()) != 0;
+        let (player_cost, walker_cost) = self.attack_controller_taxes(actor.other());
         let mut free = 0;
         let mut edges = Vec::new();
         for (id, requirements) in eligible {
             // A voluntarily selected taxable attack is already paid for purposes
             // of maximizing the remaining requirements; no unchosen attacker is
             // compelled to pay the tax.
-            let selected_paid = taxed
-                && self.state.selected_attackers.iter().any(|a| {
-                    a.card == id && a.defender == Some(CombatDefender::Player(actor.other()))
-                });
-            let player_free = selected_paid
-                || !taxed && self.can_attack_defender(id, CombatDefender::Player(actor.other()));
+            let player = CombatDefender::Player(actor.other());
+            let selected_defender = self
+                .state
+                .selected_attackers
+                .iter()
+                .find(|attack| attack.card == id)
+                .and_then(|attack| attack.defender);
+            let player_free = (player_cost == 0 || selected_defender == Some(player))
+                && self.can_attack_defender(id, player);
             if player_free {
                 // In a two-player game, only creatures of the effect's
                 // controller can attack another player besides that controller.
@@ -397,7 +545,10 @@ impl Game {
                     && self.can_attack_defender(id, CombatDefender::Battle(r))
             });
             let walker_free = walkers.iter().any(|&(r, limited)| {
-                !limited && self.can_attack_defender(id, CombatDefender::Planeswalker(r))
+                let defender = CombatDefender::Planeswalker(r);
+                !limited
+                    && (walker_cost == 0 || selected_defender == Some(defender))
+                    && self.can_attack_defender(id, defender)
             });
             if battle_free || walker_free {
                 free += requirements;
@@ -407,8 +558,11 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(n, &(r, limited))| {
-                    (limited && self.can_attack_defender(id, CombatDefender::Planeswalker(r)))
-                        .then_some(n)
+                    let defender = CombatDefender::Planeswalker(r);
+                    (limited
+                        && (walker_cost == 0 || selected_defender == Some(defender))
+                        && self.can_attack_defender(id, defender))
+                    .then_some(n)
                 })
                 .collect();
             if !slots.is_empty() {
@@ -453,27 +607,21 @@ impl Game {
         }
         let global = self.global_attack_requirements();
         if global == [0; 2] && !self.has_planeswalker_attack_limit_provider() {
+            let taxes = std::cell::OnceCell::new();
             return self.attack_requirement_sources().all(|id| {
                 !self.attacks_each_combat(id)
                     || !self.can_declare_attacker(actor, id)
-                    || !(if self.attack_controller_tax(actor.other()) == 0 {
-                        self.can_attack_any_defender(actor, id)
-                    } else {
-                        self.state.objects.iter().enumerate().any(|(n, o)| {
-                            let reference = self.object_ref(n as CardId);
-                            (o.zone == Zone::Battlefield
-                                && o.controller == actor.other()
-                                && self.current_kinds(n as CardId) & 64 != 0
-                                && self.can_attack_defender(
-                                    id,
-                                    CombatDefender::Planeswalker(reference),
-                                ))
-                                || (self.battle_can_be_attacked_by(reference, actor)
-                                    && self
-                                        .can_attack_defender(id, CombatDefender::Battle(reference)))
-                        })
-                    })
                     || chosen.iter().any(|attacker| attacker.card == id)
+                    || {
+                        let &(player_cost, walker_cost) =
+                            taxes.get_or_init(|| self.attack_controller_taxes(actor.other()));
+                        !self.can_attack_free_defender(
+                            actor,
+                            id,
+                            player_cost == 0,
+                            walker_cost == 0,
+                        )
+                    }
             });
         }
         let fulfilled = chosen

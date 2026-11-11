@@ -6206,8 +6206,11 @@ impl Game {
     }
     /// Complete coupled allocation constraints after every nonmana selection.
     pub fn mana_payment_domain(&self) -> Option<ManaPaymentDomain> {
-        if matches!(self.state.pending, Pending::AttackPayment { .. }) {
-            let request = self.state.attack_payment.as_ref()?;
+        if matches!(
+            self.state.pending,
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. }
+        ) {
+            let request = self.state.combat_payment.as_ref()?;
             let available = self.available_mana(request.player, mana_lots::Purpose::Other);
             return payable(available.map(u128::from), [0; 6], request.generic).then_some(
                 ManaPaymentDomain {
@@ -7028,8 +7031,8 @@ impl Game {
                     a.evidence.as_ref().map(|e| e.threshold),
                 )
             }
-            Pending::AttackPayment { .. } => {
-                let request = self.state.attack_payment.as_ref().unwrap();
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
+                let request = self.state.combat_payment.as_ref().unwrap();
                 (
                     FundingGoal {
                         actor,
@@ -7439,7 +7442,7 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn attack_tax_fundable(&self, player: Player, generic: u32) -> bool {
+    pub(super) fn combat_tax_fundable(&self, player: Player, generic: u32) -> bool {
         let goal = FundingGoal {
             reserve: None,
             actor: player,
@@ -7449,8 +7452,8 @@ impl Game {
         };
         FundingState::from_game(self, &goal).reachable(&goal, &mut HashSet::new())
     }
-    pub(super) fn visit_attack_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        let payment = self.state.attack_payment.as_ref().unwrap();
+    pub(super) fn visit_combat_tax_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let payment = self.state.combat_payment.as_ref().unwrap();
         let goal = FundingGoal {
             reserve: None,
             actor: payment.player,
@@ -7463,11 +7466,7 @@ impl Game {
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
             goal.generic,
-            |payment| {
-                emit(Action::PayAttackCost {
-                    payment: concrete_payment(payment),
-                })
-            },
+            |mana| emit(payment.payment_action(concrete_payment(mana))),
         ) {
             return true;
         }
@@ -7693,8 +7692,8 @@ impl Game {
                 let r = self.face_up_payment()?;
                 (r.controller, r.cost.colored, r.cost.generic)
             }
-            Pending::AttackPayment { .. } => {
-                let r = self.state.attack_payment.as_ref()?;
+            Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
+                let r = self.state.combat_payment.as_ref()?;
                 (r.player, [0; 6], r.generic)
             }
             _ => return None,

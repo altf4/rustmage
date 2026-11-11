@@ -205,7 +205,7 @@ impl Game {
             }
         }
     }
-    pub(super) fn begin_attack_rollback(&mut self, actor: Player) {
+    pub(super) fn begin_combat_rollback(&mut self, actor: Player) {
         assert!(self.state.cast_rollback.is_none());
         self.state.cast_rollback = Some(Box::new(CastRollback::new(
             self.state.clone(),
@@ -365,6 +365,20 @@ impl Game {
         self.preserve_irreversible_cast_library_changes(current, spell);
         self.restore_public_hand_knowledge(current, public_hand_cards, obscured_hand_cards);
         self.restore_public_face_down(current, public_face_down, obscured_face_down);
+        // A retained mana activation may have tapped a proposed blocker.
+        // After reversing the declaration it must qualify for a new choice.
+        if self.state.pending == Pending::Blockers
+            && !self
+                .state
+                .selected_blocks
+                .iter()
+                .all(|&(blocker, attacker)| {
+                    self.state.attackers.iter().any(|a| a.card == attacker)
+                        && self.can_block_pair(blocker, attacker)
+                })
+        {
+            self.state.selected_blocks.clear();
+        }
         // Undone proposal triggers disappear; retain the original priority holder.
         if self.state.resolving.is_none() && self.state.pending == Pending::Priority {
             self.state_based_actions();
@@ -391,7 +405,7 @@ impl Game {
                         .iter()
                         .any(|f| f.announcement.item.kind == StackKind::Spell)
                 });
-        if (!casting && self.state.attack_payment.is_none() && self.face_up_payment().is_none())
+        if (!casting && self.state.combat_payment.is_none() && self.face_up_payment().is_none())
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;

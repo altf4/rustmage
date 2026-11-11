@@ -657,10 +657,12 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                 assert!(g.object_view(producer).tapped);
                 assert_eq!(g.object_view(fuel).zone, Zone::Exile);
                 assert_ne!(g.object_ref(fuel), fuel_ref);
-                let receipt = g.state.attack_payment.as_ref().unwrap();
+                let receipt = g.state.combat_payment.as_ref().unwrap();
                 assert_eq!(receipt.player, p);
                 assert_eq!(receipt.generic, 2);
-                assert_eq!(receipt.attackers, vec![attacker_ref]);
+                assert!(
+                    matches!(&receipt.declaration, combat_restrictions::CombatDeclaration::Attack(rows) if rows == &[attacker_ref])
+                );
                 let visible = g.observe(p).attack_payment.unwrap();
                 assert_eq!(visible.player, p);
                 assert_eq!(visible.generic, 2);
@@ -677,7 +679,7 @@ fn fixed_announced_mana_receipt_resumes_exact_attack_payment_owned_and_can_pay_o
                     assert_eq!(g.state.players[p.index()].mana, ONE);
                 } else {
                     act(g, Action::PayAttackCost { payment: TWO });
-                    assert!(g.state.attack_payment.is_none());
+                    assert!(g.state.combat_payment.is_none());
                     assert_eq!(g.state.attackers.len(), 1);
                     assert_eq!(g.state.attackers[0].card, attacker);
                     assert_eq!(

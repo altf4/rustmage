@@ -195,6 +195,13 @@ pub enum StaticAbilityFragment {
         amount: u32,
         condition: StatValue,
     },
+    /// Generic cost per creature declared attacking this source's controller or their planeswalker.
+    AttackControllerOrPlaneswalkerTax {
+        amount: u32,
+        condition: StatValue,
+    },
+    /// Generic cost per declared blocker while this permanent is attacking.
+    BlockTaxWhileAttacking(u32),
     AdditionalTriggers {
         scope: AdditionalTriggerScope,
         condition: StatValue,
