@@ -158,14 +158,14 @@ fn normalized(mut after: State, before: &State, ids: &[CardId]) -> Option<State>
         // incarnations are retained for LKI damage generally, but add no choice
         // or observable difference in this closed cycle. Preserve every other
         // object's history and restore only these proven-inert IDs.
-        rows.retain(|row| !ids.contains(&row.card));
+        rows.retain(|row| !ids.contains(&row.object.card));
         let unchanged = before
             .entered_this_turn
             .as_ref()
             .map_or_else(Vec::new, |original| {
                 original
                     .iter()
-                    .filter(|row| !ids.contains(&row.card))
+                    .filter(|row| !ids.contains(&row.object.card))
                     .copied()
                     .collect()
             });

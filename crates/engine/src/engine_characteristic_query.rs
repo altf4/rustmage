@@ -1277,6 +1277,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             self.layered_stats(id)
         };
         let kinds = self.current_kinds(id);
+        let entry_controller_this_turn = self.entry_controller_this_turn(self.object_ref(id));
         ObjectView {
             additional_triggers: trigger_multiplicity::additional_triggers(self, id),
             additional_creature_death_triggers:
@@ -1321,7 +1322,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 && (obj.class_level > 1 || self.granted_subtypes(id).has(definition, "Class")))
             .then_some(obj.class_level),
             exhausted_abilities: obj.used_abilities & obj.card.exhaust_mask(),
-            entered_this_turn: CharacteristicWorld::entered_this_turn(self, self.object_ref(id)),
+            entered_this_turn: entry_controller_this_turn.is_some(),
+            entry_controller_this_turn,
             power_up_uses: self.power_up_use_views(self.object_ref(id)),
             face: self
                 .game()
@@ -1436,8 +1438,8 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn entry_values(&self) -> &[entry_choices::ChoiceRow] {
         self.world.entry_values()
     }
-    fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.world.entered_this_turn(source)
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.world.entry_controller_this_turn(source)
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)

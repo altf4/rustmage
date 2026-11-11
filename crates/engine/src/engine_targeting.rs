@@ -2058,11 +2058,42 @@ impl Game {
     ) -> bool {
         let qualification = Some(TargetSourceCharacteristics::for_spell(source, definition));
         if let Some(world) = self.cast_departure(source, controller) {
+            let rule = self.live_mana_value_target_rule(&world, rule, source, controller);
             self.target_matches_in_world(&world, rule, controller, source, target, qualification)
         } else {
+            let rule = self.live_mana_value_target_rule(self, rule, source, controller);
             self.target_matches_in_world(self, rule, controller, source, target, qualification)
         }
     }
+
+    // A live stat is available before a spell has a stack item. Read it in
+    // the same world that supplies the potential targets.
+    fn live_mana_value_target_rule<W: CharacteristicWorld + ?Sized>(
+        &self,
+        world: &W,
+        rule: TargetRule,
+        source: ObjectRef,
+        controller: Player,
+    ) -> TargetRule {
+        if let TargetRule::ManaValueAtMost {
+            base,
+            amount: AmountValue::Stat(value),
+            maximum: None,
+        } = rule
+        {
+            let maximum = self
+                .stat_value_in_world(world, value, source, controller)
+                .max(0);
+            TargetRule::ManaValueAtMost {
+                base,
+                amount: AmountValue::Stat(value),
+                maximum: Some(u64::try_from(maximum).unwrap_or(u64::MAX)),
+            }
+        } else {
+            rule
+        }
+    }
+
     fn target_source_qualities(
         &self,
         source: ObjectRef,
@@ -2578,6 +2609,7 @@ impl Game {
         if rule == TargetRule::None {
             return false;
         }
+        let rule = self.live_mana_value_target_rule(world, rule, source, controller);
         for player in [Player::P0, Player::P1] {
             let target = Target::Player(player);
             if self.target_matches_in_world(world, rule, controller, source, target, qualification)

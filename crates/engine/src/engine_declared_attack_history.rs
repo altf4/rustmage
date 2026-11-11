@@ -162,6 +162,19 @@ impl Game {
             history.queried.clear();
         }
     }
+    pub(super) fn declared_attackers_this_turn(&self, player: Player) -> usize {
+        self.state
+            .declared_attack_history
+            .as_ref()
+            .map_or(0, |history| {
+                history
+                    .rows
+                    .iter()
+                    .filter(|row| row.player == player)
+                    .count()
+            })
+    }
+
     pub(super) fn declared_subtype_attackers(&self, player: Player, subtype: &str) -> usize {
         let Some(history) = &self.state.declared_attack_history else {
             return 0;

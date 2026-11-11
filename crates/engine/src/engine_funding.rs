@@ -297,12 +297,15 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.borrowed_uses.contains(&(source, slot))
     }
-    fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.game.entered_this_turn(source)
-            || self
-                .entry_projection
-                .as_ref()
-                .is_some_and(|p| p.entered.contains(&source) || p.order.contains(&source))
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.game.entry_controller_this_turn(source).or_else(|| {
+            self.entry_projection
+                .as_ref()?
+                .entered
+                .iter()
+                .find(|entry| entry.object == source)
+                .map(|entry| entry.controller)
+        })
     }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.entry_projection
@@ -434,7 +437,7 @@ struct EntryFundingKey {
     copy_origins: Vec<(ObjectRef, Option<u64>)>,
     manifested: Vec<(ObjectRef, Card)>,
     order: Vec<ObjectRef>,
-    entered: Vec<ObjectRef>,
+    entered: Vec<(ObjectRef, usize)>,
     craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     lands_entered: [u64; 2],
     battle_protectors: Vec<(ObjectRef, usize)>,
@@ -3355,7 +3358,11 @@ impl<'g> FundingState<'g> {
                 copy_origins: p.copy_origins.clone(),
                 manifested: p.manifested.clone(),
                 order: p.order.clone(),
-                entered: p.entered.clone(),
+                entered: p
+                    .entered
+                    .iter()
+                    .map(|entry| (entry.object, entry.controller.index()))
+                    .collect(),
                 craft_materials: p.craft_materials.clone(),
                 lands_entered: p.lands_entered,
                 battle_protectors: p

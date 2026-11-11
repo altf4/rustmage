@@ -122,6 +122,9 @@ impl Game {
             StatValue::CreatureEntriesThisTurn { other } => {
                 self.creature_entries_this_turn(owner, source, other)
             }
+            StatValue::DeclaredAttackersThisTurn => {
+                self.declared_attackers_this_turn(owner) as i128
+            }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 self.declared_subtype_attackers(owner, subtype) as i128
             }
@@ -130,6 +133,9 @@ impl Game {
                     .turn_facts
                     .artifact_entered,
             ),
+            StatValue::SourceEnteredUnderYourControlThisTurn => {
+                i128::from(world.entry_controller_this_turn(source) == Some(owner))
+            }
             StatValue::SourceClassLevelAtLeast(level) => {
                 i128::from(objects().any(|(id, object)| {
                     id == source.card

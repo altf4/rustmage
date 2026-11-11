@@ -166,7 +166,7 @@ pub(super) struct EntryProjection {
     pub order: Vec<ObjectRef>,
     /// Every committed entry, independent of whether it provides a timestamped
     /// continuous effect. Power-up and public entry facts use this exact history.
-    pub entered: Vec<ObjectRef>,
+    pub entered: Vec<EntryTurnFact>,
     pub craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     pub lands_entered: [u64; 2],
     pub battle_protectors: Vec<(ObjectRef, Player)>,
@@ -1756,7 +1756,14 @@ impl FundingState<'_> {
             }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
-                next.entry_projection.as_mut().unwrap().entered.push(source);
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .entered
+                    .push(EntryTurnFact {
+                        object: source,
+                        controller: o.controller,
+                    });
                 if let Some(protector) = m.battle_protector {
                     next.entry_projection
                         .as_mut()
@@ -2137,10 +2144,18 @@ impl FundingState<'_> {
             }
             let source = next.reference(m.before.id);
             let kinds = CharacteristicWorld::kinds(&next, source.card);
+            let controller = next.object(source.card).controller;
+            let projection = next.entry_projection.as_mut().unwrap();
+            // The final control layer may differ from the movement's initial controller.
+            let entry = projection
+                .entered
+                .iter_mut()
+                .rev()
+                .find(|entry| entry.object == source)
+                .expect("projected battlefield entry");
+            entry.controller = controller;
             if kinds & 2 != 0 {
-                let controller = next.object(source.card).controller;
-                let count =
-                    &mut next.entry_projection.as_mut().unwrap().lands_entered[controller.index()];
+                let count = &mut projection.lands_entered[controller.index()];
                 *count = count
                     .checked_add(1)
                     .capacity("projected land entry history exhausted");

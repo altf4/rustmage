@@ -4963,6 +4963,8 @@ pub enum StatValue {
     CreatureEntriesThisTurn {
         other: bool,
     },
+    /// One count for each actual declaration by this player this turn.
+    DeclaredAttackersThisTurn,
     DeclaredSubtypeAttackersThisTurn(&'static str),
     /// Number of different planeswalker types among planeswalkers controlled by the source controller.
     DistinctControlledPlaneswalkerTypes,
@@ -5015,6 +5017,8 @@ pub enum StatValue {
     /// Gate a continuous effect on this exact permanent's current Class level.
     SourceClassLevelAtLeast(u8),
     ArtifactEnteredThisTurn,
+    /// This exact incarnation entered under the player evaluating the ability.
+    SourceEnteredUnderYourControlThisTurn,
     SourceModified,
     ControlledModifiedCreatures,
     SourceEquipmentCount,
@@ -6617,6 +6621,11 @@ pub enum TriggerCondition {
     /// Freeze the dying creature's positive counter kinds, including self.
     CreatureDiesWithCounters {
         relation: CastRelation,
+    },
+    /// The dying creature's last battlefield characteristics had this counter.
+    CreatureDiesWithCounter {
+        relation: CastRelation,
+        kind: CounterKind,
     },
     CreatureDies {
         relation: CastRelation,

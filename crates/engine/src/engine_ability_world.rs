@@ -1240,7 +1240,10 @@ pub(super) trait CharacteristicWorld {
         )
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.game().entered_this_turn(source)
+        self.entry_controller_this_turn(source).is_some()
+    }
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.game().entry_controller_this_turn(source)
     }
     /// Basic is a supertype; a basic land type alone is insufficient.
     /// Read this world so virtual departures and control changes take effect.
@@ -2070,8 +2073,8 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.parent.borrowed_activation_used(source, slot)
     }
-    fn entered_this_turn(&self, source: ObjectRef) -> bool {
-        self.parent.entered_this_turn(source)
+    fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
+        self.parent.entry_controller_this_turn(source)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

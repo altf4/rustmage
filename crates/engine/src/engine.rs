@@ -705,6 +705,14 @@ impl Player {
     }
 }
 
+/// Actual entry controller, retained even after control of the permanent changes.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct EntryTurnFact {
+    pub object: ObjectRef,
+    pub controller: Player,
+}
+
 #[doc(hidden)]
 #[path = "engine_ability_resolutions.rs"]
 pub mod ability_resolutions;
@@ -3106,7 +3114,7 @@ struct State {
     counter_placement_history: counter_placement_history::Rows,
     cast_entry_counters: cast_entry_counters::Rows,
     entry_values: entry_choices::Rows,
-    entered_this_turn: Option<SharedVec<ObjectRef>>,
+    entered_this_turn: Option<SharedVec<EntryTurnFact>>,
     creature_entry_history: Option<SharedVec<CreatureEntryHistoryView>>,
     power_up_uses: power_up::Rows,
     copy_recipes: copies::Rows,
@@ -3321,6 +3329,8 @@ pub struct ObjectView {
     /// Exhaust uses persist across turns for this exact permanent incarnation.
     pub exhausted_abilities: u64,
     pub entered_this_turn: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entry_controller_this_turn: Option<Player>,
     pub power_up_uses: Vec<PowerUpUseView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub face: Option<faces::FaceView>,
@@ -12976,8 +12986,9 @@ impl Game {
             + power_up::owned_bytes(&s.power_up_uses)
             + exert::owned_bytes(&s.exertions)
             + tap_history::owned_bytes(&s.tap_history)
-            + s.entered_this_turn.as_ref().map_or(0, |r| {
-                std::mem::size_of::<Vec<ObjectRef>>() + r.len() * std::mem::size_of::<ObjectRef>()
+            + s.entered_this_turn.as_ref().map_or(0, |rows| {
+                std::mem::size_of::<Vec<EntryTurnFact>>()
+                    + rows.len() * std::mem::size_of::<EntryTurnFact>()
             })
             + s.creature_entry_history.as_ref().map_or(0, |rows| {
                 std::mem::size_of::<Vec<CreatureEntryHistoryView>>()

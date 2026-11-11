@@ -827,9 +827,17 @@ impl Game {
                         TriggerCondition::SelfDies | TriggerCondition::SelfEntersOrDies => {
                             source.reference == event.before.reference
                         }
-                        TriggerCondition::CreatureDiesWithCounters { relation } => {
+                        condition @ (TriggerCondition::CreatureDiesWithCounters { relation }
+                        | TriggerCondition::CreatureDiesWithCounter { relation, .. }) => {
+                            let counters = &event.before.counters;
+                            let matches_counters = match condition {
+                                TriggerCondition::CreatureDiesWithCounter { kind, .. } => {
+                                    counters.get(kind) > 0
+                                }
+                                _ => counters.has_any(),
+                            };
                             event.before.is_creature()
-                                && event.before.counters.has_any()
+                                && matches_counters
                                 && match relation {
                                     CastRelation::You => {
                                         source.controller == event.before.controller
@@ -1145,6 +1153,7 @@ impl Game {
                     | TriggerCondition::ReturnDeath(_)
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
+                    | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
@@ -6030,7 +6039,8 @@ impl Game {
                         .as_ref()
                         .into_iter()
                         .flat_map(|rows| rows.iter())
-                        .filter(|&&r| {
+                        .map(|entry| entry.object)
+                        .filter(|&r| {
                             r != source
                                 && self.on_battlefield(r.card)
                                 && self.object_ref(r.card) == r

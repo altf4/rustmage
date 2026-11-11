@@ -72,8 +72,11 @@ impl Game {
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         let object = self.object_ref(id);
         let entries = self.state.entered_this_turn.get_or_insert_default();
-        if !entries.contains(&object) {
-            entries.push(object);
+        if !entries.iter().any(|entry| entry.object == object) {
+            entries.push(EntryTurnFact {
+                object,
+                controller: self.state.objects[id as usize].controller,
+            });
         }
         self.register_battlefield_providers(id);
     }
@@ -244,6 +247,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrDies
                     | TriggerCondition::CreatureDies { .. }
                     | TriggerCondition::CreatureDiesWithCounters { .. }
+                    | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
                     | TriggerCondition::AttachedCreatureDies
