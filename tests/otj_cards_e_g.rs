@@ -345,6 +345,7 @@ fn freestrider_lookout_searches_a_private_five_once_and_puts_a_land_in_tapped() 
     assert!(game.observe(player.other()).library_selection.is_none());
     reject(&mut game, Action::SelectLibrary { card: rest[0] });
     apply_raw_and_index(&mut game, pick);
+    act(&mut game, Action::FinishLibrarySelection);
     resolve(&mut game);
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
     assert!(game.object_view(land).tapped);
@@ -629,13 +630,7 @@ fn great_train_heist_all_modes_schedule_combat_and_tapped_hit_treasures() {
     assert!(!game.object_view(attacker).tapped);
     assert_eq!(stats(&game, attacker), (3, 2));
     assert!(game.keywords(attacker).contains(Keywords::FIRST_STRIKE));
-    assert_eq!(
-        game.observe(player).after_combat_phases.unwrap(),
-        [AfterCombatPhaseView {
-            first_step: Step::BeginCombat,
-            remaining: 1
-        }]
-    );
+    assert_eq!(game.observe(player).additional_combats, 1);
     attack(&mut game, attacker);
     advance(&mut game, |game| {
         game.state.step == Step::EndCombat && game.state.stack.is_empty()
