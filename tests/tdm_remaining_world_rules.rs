@@ -1870,9 +1870,9 @@ fn prevention_callback_can_read_both_the_damage_actor_and_its_latest_controller(
 #[test]
 fn source_prevention_layout_matches_the_integrated_shared_state_budget() {
     assert_eq!(std::mem::size_of::<Object>(), 160);
-    // The integrated layout includes the Web-slinging payment receipt and
-    // Spider-Man resolution packets. The hot permanent size stays at 160 bytes.
-    assert_eq!(std::mem::size_of::<State>(), 5072);
+    // The integrated layout includes the cast-subtype witness and deferred
+    // same-name exile search. The permanent record stays at 160 bytes.
+    assert_eq!(std::mem::size_of::<State>(), 5104);
     if let Ok(path) = std::env::var("RUSTMAGE_TDM_WORLD_LAYOUT") {
         let layout = serde_json::json!({
             "Object":std::mem::size_of::<Object>(),"ObjectView":std::mem::size_of::<ObjectView>(),
