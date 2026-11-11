@@ -1162,8 +1162,7 @@ impl<'g> FundingState<'g> {
             .iter()
             .flat_map(|roles| &roles.source_linked_effects)
             .filter(|row| {
-                row.kind == SourceLinkedEffectKind::Treasure
-                    && source_linked_effects::active(game, row)
+                row.kind.grants_treasure_mana() && source_linked_effects::active(game, row)
             })
             .collect();
         let resources = game

@@ -8,6 +8,8 @@ pub enum SourceLinkedEffectKind {
     RemoveAbilities,
     /// Replace types and abilities with those of a Treasure while the source remains.
     Treasure,
+    /// Source-independent Treasure form and mana grant for the exact returned permanent.
+    ReturnedTreasure,
     /// Type replacement and blue mana grant, ending at the captured controller's next turn.
     LandUntilControllerNextTurn,
     /// Source-independent removal lasting until cleanup.
@@ -35,10 +37,14 @@ impl SourceLinkedEffectKind {
                 | Self::BlankLandWhileBlighted
         )
     }
+    pub(super) fn grants_treasure_mana(self) -> bool {
+        matches!(self, Self::Treasure | Self::ReturnedTreasure)
+    }
     fn survives_source_departure(self) -> bool {
         matches!(
             self,
-            Self::RemoveAbilitiesUntilEndOfTurn
+            Self::ReturnedTreasure
+                | Self::RemoveAbilitiesUntilEndOfTurn
                 | Self::BlankLandWhileBlighted
                 | Self::GrantTwoColorlessUntilSourceCast
                 | Self::PreventActivationsUntilUntapped
@@ -53,6 +59,24 @@ pub struct SourceLinkedEffectView {
     pub controller: Player,
     pub kind: SourceLinkedEffectKind,
     pub timestamp: u64,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl roles::RoleState {
+    pub(super) fn grant_returned_treasure(
+        &mut self,
+        recipient: ObjectRef,
+        source: ObjectRef,
+        controller: Player,
+    ) {
+        let timestamp = self.next_timestamp();
+        self.source_linked_effects.push(SourceLinkedEffectView {
+            source,
+            recipient,
+            controller,
+            kind: SourceLinkedEffectKind::ReturnedTreasure,
+            timestamp,
+        });
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn active<W: CharacteristicWorld + ?Sized>(

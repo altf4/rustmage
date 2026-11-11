@@ -157,6 +157,9 @@ impl GrantedSubtypes {
     pub(super) fn food_only() -> Self {
         Self::only_artifact_subtype(ADDED_FOOD)
     }
+    pub(super) fn treasure_only() -> Self {
+        Self::only_artifact_subtype(ADDED_TREASURE)
+    }
     fn only_artifact_subtype(subtype: u32) -> Self {
         Self {
             added: SUPPRESS_PRINTED | subtype,
@@ -982,7 +985,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask = GrantedSubtypes::food_only();
             }
             characteristic_layers::SubtypeChange::TreasureOnly => {
-                mask = GrantedSubtypes::only_artifact_subtype(ADDED_TREASURE);
+                mask = GrantedSubtypes::treasure_only();
             }
             characteristic_layers::SubtypeChange::EquipmentOnly => {
                 mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
@@ -1404,6 +1407,9 @@ impl Game {
     fn entry_subtypes(m: &entries::EntryMove, include_return_effect: bool) -> GrantedSubtypes {
         if m.food_return.is_some() {
             return GrantedSubtypes::food_only();
+        }
+        if m.as_entry_treasure_source().is_some() {
+            return GrantedSubtypes::treasure_only();
         }
         let mut result = GrantedSubtypes::default();
         result.apply_copy_subtypes(m.before.copy_recipe);

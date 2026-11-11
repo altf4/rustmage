@@ -1475,6 +1475,7 @@ pub(super) trait CharacteristicWorld {
                         row.kind,
                         SourceLinkedEffectKind::GrantTwoColorlessUntilSourceCast
                             | SourceLinkedEffectKind::LandUntilControllerNextTurn
+                            | SourceLinkedEffectKind::ReturnedTreasure
                     ) && source_linked_effects::active(self, row)
                 })
             })

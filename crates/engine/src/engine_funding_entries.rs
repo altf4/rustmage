@@ -1984,6 +1984,19 @@ impl FundingState<'_> {
         for m in &moves {
             if !m.skipped
                 && m.destination == Zone::Battlefield
+                && let Some(source) = m.as_entry_treasure_source()
+            {
+                let recipient = next.reference(m.before.id);
+                next.entry_projection
+                    .as_mut()
+                    .unwrap()
+                    .roles
+                    .grant_returned_treasure(recipient, source, m.controller);
+            }
+        }
+        for m in &moves {
+            if !m.skipped
+                && m.destination == Zone::Battlefield
                 && let Some(source) = m.as_entry_skeleton_source()
             {
                 let recipient = next.reference(m.before.id);

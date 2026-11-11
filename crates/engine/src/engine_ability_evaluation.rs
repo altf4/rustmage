@@ -912,18 +912,24 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             let action = match row.kind {
                 SourceLinkedEffectKind::RemoveAbilities
                 | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
-                SourceLinkedEffectKind::Treasure => {
-                    LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {
+                SourceLinkedEffectKind::Treasure | SourceLinkedEffectKind::ReturnedTreasure => {
+                    let returned = row.kind == SourceLinkedEffectKind::ReturnedTreasure;
+                    let grants = vec![LayerSixGrant {
                         recipient: row.recipient.card,
                         keywords: Keywords::NONE,
                         abilities: Vec::new(),
                         mana: vec![GrantedManaAbility {
-                            source: row.source,
+                            source: if returned { row.recipient } else { row.source },
                             production: ManaProduction::any_color(1),
                             sacrifice: true,
                             subtype_derived: false,
                         }],
-                    }])
+                    }];
+                    if returned {
+                        LayerSixAction::GrantEach(grants)
+                    } else {
+                        LayerSixAction::RemoveAndGrant(grants)
+                    }
                 }
                 SourceLinkedEffectKind::BlankLandWhileBlighted => {
                     LayerSixAction::RemoveAndGrant(vec![LayerSixGrant {

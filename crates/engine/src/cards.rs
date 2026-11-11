@@ -6448,6 +6448,7 @@ pub enum ReturnDeathFilter {
     SourceRevival,
     SourceWithoutCounter(CounterKind),
     ControlledNontokenNonAngel,
+    OpposingNontokenCreature,
     ControlledSubtype(&'static str),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -6456,6 +6457,8 @@ pub enum ReturnKind {
     WithoutAbilities,
     SkeletonWithoutAbilities,
     FlyingRobot,
+    /// Return tapped under the resolving controller as a Treasure, retaining abilities.
+    Treasure,
     Demon,
     Angel,
     Revival,

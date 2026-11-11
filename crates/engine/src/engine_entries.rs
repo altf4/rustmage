@@ -213,6 +213,7 @@ impl EntryMove {
         self.ghost_vacuum_after.is_some()
             || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
+            || self.as_entry_treasure_source().is_some()
             || self.before.copy_recipe.is_some()
             || self
                 .copy_preparation
@@ -240,7 +241,7 @@ impl EntryMove {
 
     pub(super) fn replacement_preview(&self) -> Self {
         let mut movement = self.clone();
-        if self.as_entry_skeleton_source().is_none() {
+        if self.as_entry_skeleton_source().is_none() && self.as_entry_treasure_source().is_none() {
             movement.return_modification = None;
         }
         movement
@@ -264,8 +265,12 @@ impl EntryMove {
             Game::entry_choice_subtypes(self).has(self.before.card, "Siege"),
         );
     }
+    pub(super) fn as_entry_treasure_source(&self) -> Option<ObjectRef> {
+        self.return_modification
+            .and_then(|(kind, source)| (kind == ReturnKind::Treasure).then_some(source))
+    }
     pub(super) fn entry_kinds(&self) -> u16 {
-        if self.food_return.is_some() {
+        if self.food_return.is_some() || self.as_entry_treasure_source().is_some() {
             16
         } else if self.artifact_return || self.enchantment_return {
             (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
@@ -1098,6 +1103,7 @@ impl Game {
         let mut skeleton_results = Vec::new();
         let mut attack_trigger_results = Vec::new();
         let mut food_results = Vec::new();
+        let mut treasure_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
         let mut animation_results = Vec::new();
@@ -1228,6 +1234,9 @@ impl Game {
                     }
                     ReturnKind::SkeletonWithoutAbilities => {
                         skeleton_results.push((event.after, source));
+                    }
+                    ReturnKind::Treasure => {
+                        treasure_results.push((event.after, source, movement.controller));
                     }
                     _ => self.apply_return_modification(event.after, kind, source),
                 }
@@ -1472,6 +1481,12 @@ impl Game {
         // before the one simultaneous event batch freezes entry observers.
         for (recipient, definition) in food_results {
             self.apply_food_return(recipient, definition);
+        }
+        for (recipient, source, controller) in treasure_results {
+            self.state
+                .roles
+                .get_or_insert_default()
+                .grant_returned_treasure(recipient, source, controller);
         }
         for (recipient, source) in skeleton_results {
             return_links::apply_skeleton_return(
