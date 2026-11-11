@@ -1,4 +1,3 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(3, 3),
     triggers: &[TriggeredAbility {
@@ -42,15 +41,16 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             loyalty: None,
         },
         targets: TargetPlan::Single(TargetSpec::NONE),
-        program: &[Instruction::PutCreatureCounters {
-            filter: CreatureFilter {
+        program: &[Instruction::PutFilteredCounters {
+            filter: CountFilter {
+                zone: CountZone::Battlefield,
                 relation: 0,
-                other: true,
+                kind: 0,
+                exclude: 0,
                 subtype: Some("Squirrel"),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
+                basic: false,
+                other: true,
+                cards_only: false,
             },
             kind: CounterKind::PlusOne,
             amount: 1,
