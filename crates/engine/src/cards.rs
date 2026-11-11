@@ -6343,6 +6343,8 @@ pub enum SpellReductionAmount {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SelfCastTiming {
     ControlSubtype(&'static str),
+    /// This spell has flash while its controller has committed a crime this turn.
+    FlashAfterCrime,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

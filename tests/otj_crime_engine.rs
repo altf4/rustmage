@@ -2,7 +2,7 @@
 mod support;
 
 use rustmage as _;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -290,5 +290,90 @@ fn outlaw_sacrifice_uses_the_exact_cost_object_even_when_death_is_redirected() {
         quiet(&mut g);
         assert_eq!(g.state.players[p.index()].life, life, "{name}");
         assert_eq!(g.object_view(creature).zone, Zone::Exile);
+    }
+}
+
+const CRIME_FLASH: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[Instruction::Damage(1)],
+    ),
+    extras: &CardExtras {
+        self_cast_timing: Some(SelfCastTiming::FlashAfterCrime),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn conditional_flash_checks_the_caster_before_announcement_and_follows_the_spell_on_stack() {
+    let _rules = fixture_rules::activate(&[(Card::Divination, &CRIME_FLASH)]);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(opponent);
+        let ours = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let theirs = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+        let hand = put(&mut game, player, "Divination", Zone::Hand);
+        let exiled = put(&mut game, opponent, "Divination", Zone::Exile);
+        let opponent_shock = put(&mut game, opponent, "Shock", Zone::Hand);
+        let friendly_shock = put(&mut game, player, "Shock", Zone::Hand);
+        let hostile_shock = put(&mut game, player, "Shock", Zone::Hand);
+        game.grant_exile_play_permission(player, game.object_ref(exiled), false);
+        let announce_hand = Action::AnnounceCast { card: hand };
+        let announce_exile = Action::AnnounceExile { card: exiled };
+
+        cast(&mut game, opponent_shock, Some(Target::Player(player)));
+        act(&mut game, Action::Pass);
+        assert_eq!(game.actor(), Some(player));
+        // The exiled card's owner committed a crime. Its prospective caster has not.
+        assert!(game.state.players[opponent.index()].committed_crime_this_turn);
+        reject(&mut game, announce_hand.clone());
+        reject(&mut game, announce_exile.clone());
+        assert!(
+            !game
+                .legal_actions()
+                .iter()
+                .any(|action| { matches!(action, Action::Cast { card, .. } if *card == hand) })
+        );
+
+        cast(&mut game, friendly_shock, Some(Target::Card(ours)));
+        assert!(!game.state.players[player.index()].committed_crime_this_turn);
+        reject(&mut game, announce_hand);
+        reject(&mut game, announce_exile.clone());
+
+        // Committing the hostile cast is sufficient while it is still on the stack.
+        cast(&mut game, hostile_shock, Some(Target::Player(opponent)));
+        assert!(game.state.players[player.index()].committed_crime_this_turn);
+        assert!(!game.keywords(hand).contains(Keywords::FLASH));
+        assert!(!game.keywords(exiled).contains(Keywords::FLASH));
+        let mut exile_branch = game.clone();
+        act(&mut exile_branch, announce_exile);
+        act(
+            &mut exile_branch,
+            Action::ChooseTarget {
+                target: Target::Card(theirs),
+            },
+        );
+        pay(&mut exile_branch);
+        let spell = exile_branch.object_view(exiled);
+        assert_eq!(spell.zone, Zone::Stack);
+        assert_eq!(spell.controller, player);
+        assert_eq!(spell.owner, opponent);
+        assert!(spell.keywords.contains(Keywords::FLASH));
+
+        cast(&mut game, hand, Some(Target::Card(theirs)));
+        assert!(game.keywords(hand).contains(Keywords::FLASH));
+        settle(&mut game);
+        assert!(!game.keywords(hand).contains(Keywords::FLASH));
+
+        game.begin_step(Step::End);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert_eq!(game.state.active, player);
+        assert!(!game.state.players[player.index()].committed_crime_this_turn);
+        game.begin_step(Step::BeginCombat);
+        game.state.players[player.index()].mana = [8; 6];
+        let second = put(&mut game, player, "Divination", Zone::Hand);
+        reject(&mut game, Action::AnnounceCast { card: second });
     }
 }

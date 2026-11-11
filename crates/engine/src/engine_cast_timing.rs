@@ -11,8 +11,7 @@ impl Game {
         chosen: Card,
         additional_types: &[&str],
     ) -> bool {
-        // This is an announcement permission, never a keyword and never
-        // rechecked during mana abilities/payment after legality is approved.
+        // CR 601.3d checks conditional flash before beginning the announcement.
         let own_permission = chosen
             .self_cast_timing()
             .is_some_and(|condition| match condition {
@@ -24,6 +23,9 @@ impl Game {
                                 .granted_subtypes(id as CardId)
                                 .has(object.card, subtype)
                     })
+                }
+                crate::cards::SelfCastTiming::FlashAfterCrime => {
+                    self.state.players[actor.index()].committed_crime_this_turn
                 }
             });
         own_permission
