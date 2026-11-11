@@ -118,6 +118,7 @@ fn per_player_cast_limit_counts_a_countered_spell_before_the_provider_entered() 
     assert_eq!(game.object_view(plotted).zone, Zone::Exile);
 
     let opponent_second = put(&mut game, player.other(), "Shock", Zone::Hand);
+    let mountain = put(&mut game, player.other(), "Mountain", Zone::Battlefield);
     let mut off_turn = game.clone();
     act(&mut off_turn, Action::Pass);
     reject(
@@ -127,6 +128,7 @@ fn per_player_cast_limit_counts_a_countered_spell_before_the_provider_entered() 
         },
     );
     off_turn.move_object(provider, Zone::Graveyard);
+    act(&mut off_turn, Action::TapMana { card: mountain });
     cast(&mut off_turn, opponent_second, Some(Target::Player(player)));
     settle(&mut off_turn);
     assert_eq!(off_turn.state.players[player.index()].life, 18);
@@ -143,6 +145,7 @@ fn per_player_cast_limit_counts_a_countered_spell_before_the_provider_entered() 
     if game.actor() != Some(player.other()) {
         act(&mut game, Action::Pass);
     }
+    act(&mut game, Action::TapMana { card: mountain });
     cast(&mut game, opponent_second, Some(Target::Player(player)));
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, 18);
