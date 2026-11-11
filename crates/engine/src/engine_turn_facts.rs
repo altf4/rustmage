@@ -28,6 +28,9 @@ pub struct TurnFactsView {
     /// Actual spells or land plays outside this player's hand.
     #[serde(skip_serializing_if = "is_false")]
     pub played_from_outside_own_hand: bool,
+    /// A committed spell, excluding lands and special actions, from this player's hand.
+    #[serde(skip_serializing_if = "is_false")]
+    pub cast_spell_from_own_hand: bool,
     /// Actual stack mana value, including the chosen face and X.
     #[serde(skip_serializing_if = "is_false")]
     pub cast_mana_value_at_least_four: bool,
@@ -81,6 +84,7 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
             | StepGuard::ArtifactEnteredThisTurn
             | StepGuard::HeroEnteredOrAttackedThisTurn
             | StepGuard::PlayedFromOutsideOwnHandThisTurn
+            | StepGuard::NoSpellCastFromOwnHandThisTurn
             | StepGuard::CastManaValueAtLeastFourThisTurn
             | StepGuard::FirstCombatPhase
     )

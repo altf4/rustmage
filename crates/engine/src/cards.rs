@@ -6213,6 +6213,7 @@ pub enum StepGuard {
     ArtifactEnteredThisTurn,
     HeroEnteredOrAttackedThisTurn,
     PlayedFromOutsideOwnHandThisTurn,
+    NoSpellCastFromOwnHandThisTurn,
     CastManaValueAtLeastFourThisTurn,
     CardExiledThisTurn,
     OpponentHasMoreCardsInHand,
@@ -6480,6 +6481,8 @@ pub enum TriggerCondition {
     SelfAttacksWhileSaddled,
     SelfEntersOrAttacksWhileSaddled,
     SelfSaddledFirst,
+    /// The exact physical card acquired the plotted designation in exile.
+    SelfBecomesPlotted,
     /// This creature was tapped to pay a committed Crew or Saddle cost.
     SelfCrewsOrSaddles,
     SelfPaysTeamwork,

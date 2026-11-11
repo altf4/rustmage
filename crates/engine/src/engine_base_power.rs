@@ -73,20 +73,32 @@ impl Game {
                 .is_some_and(|r| self.spell_has_split_second(&r.item))
     }
     pub(super) fn static_casting_prohibited(&self, actor: Player) -> bool {
+        use crate::cards::StaticAbilityFragment::{
+            OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast, SpellCastLimit,
+        };
+
         let attacked = self.attacked_player_or_planeswalker_controllers(actor);
-        self.nonmana_actions_prohibited()
-            || self.state.static_sources.iter().any(|&id| {
-                let object = &self.state.objects[id as usize];
-                object.zone == Zone::Battlefield
-                    && object.controller != actor
-                    && ((object.controller == self.state.active
-                        && object.card.static_cast_restriction() & 1 != 0
-                        && self.printed_abilities_available(id))
-                        || (attacked & (1 << object.controller.index()) != 0
-                            && self.active_rule_fragment(id, |fragment| {
-                                matches!(fragment, crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast)
-                            })))
-            })
+        let cast_count = self.state.players[actor.index()].spells_cast_this_turn;
+        self.nonmana_actions_prohibited() || self.state.static_sources.iter().any(|&id| {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield {
+                return false;
+            }
+            self.active_rule_fragment(
+                id,
+                |fragment| matches!(*fragment, SpellCastLimit(maximum) if cast_count >= maximum),
+            ) || (object.controller != actor
+                && ((object.controller == self.state.active
+                    && object.card.static_cast_restriction() & 1 != 0
+                    && self.printed_abilities_available(id))
+                    || (attacked & (1 << object.controller.index()) != 0
+                        && self.active_rule_fragment(id, |fragment| {
+                            matches!(
+                                fragment,
+                                OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast
+                            )
+                        }))))
+        })
     }
     pub(super) fn put_power_excess_counters(&mut self, item: &SpellView, filter: CreatureFilter) {
         let Some(source) = item.source else {

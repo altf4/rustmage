@@ -1834,13 +1834,8 @@ impl Game {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let reference = choice.selected[player.index()][0];
             self.state.resolving.as_mut().unwrap().choice = None;
-            let events = self.move_objects_raw(&[reference.card], Zone::Exile);
-            for event in &events {
-                if event.moved && event.destination == Zone::Exile {
-                    self.remember_plotted(player, event.after);
-                }
-            }
-            self.finish_zone_events(&events, &[]);
+            let event = self.move_object(reference.card, Zone::Exile);
+            self.commit_plotted_move(&event);
             return false;
         }
         if matches!(

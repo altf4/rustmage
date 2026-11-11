@@ -76,25 +76,48 @@ impl Game {
         let pending = self.state.plot.as_mut().unwrap().payment.take().unwrap();
         self.spend_mana(pending.controller, payment);
         let event = self.move_object(pending.object.card, Zone::Exile);
-        self.remember_plotted(pending.controller, event.after);
+        self.commit_plotted_move(&event);
         self.state.pending = Pending::Priority;
         self.state.priority = pending.controller;
         self.state.passes = 0;
     }
+    pub(super) fn commit_plotted_move(&mut self, event: &ZoneChange) {
+        if event.moved && event.destination == Zone::Exile && event.was_card {
+            self.remember_plotted(event.before.owner, event.after);
+        }
+    }
+
     pub(super) fn remember_plotted(&mut self, owner: Player, object: ObjectRef) {
+        let card = &self.state.objects[object.card as usize];
+        if self.object_ref(object.card) != object
+            || card.zone != Zone::Exile
+            || !card.is_card()
+            || card.owner != owner
+        {
+            return;
+        }
         let cards = &mut self.state.plot.get_or_insert_with(Default::default).cards;
-        cards
-            .try_reserve(1)
-            .capacity("plotted permission allocation exhausted");
-        let at = cards.partition_point(|p| p.object.card < object.card);
-        cards.insert(
-            at,
-            PlottedCard {
-                object,
-                owner,
-                plotted_turn: self.state.turn,
-            },
-        );
+        let plotted = PlottedCard {
+            object,
+            owner,
+            plotted_turn: self.state.turn,
+        };
+        match cards.binary_search_by_key(&object.card, |entry| entry.object.card) {
+            Ok(index) if cards[index].object == object => return,
+            Ok(index) => cards[index] = plotted,
+            Err(index) => {
+                cards
+                    .try_reserve(1)
+                    .capacity("plotted permission allocation exhausted");
+                cards.insert(index, plotted);
+            }
+        }
+        let source = self.object_view(object.card);
+        for (index, ability) in source.card.triggers().iter().enumerate() {
+            if ability.condition.event() == TriggerCondition::SelfBecomesPlotted {
+                self.queue_trigger(&source, index);
+            }
+        }
     }
     pub(super) fn remove_plotted(&mut self, object: ObjectRef) {
         if let Some(p) = self.state.plot.as_mut() {
@@ -128,58 +151,20 @@ impl Game {
         card: CardId,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        let definition = self.state.objects[card as usize].card;
-        if !definition.is_land()
-            && self.spell_graveyard_requirement_holds(actor, card, definition)
-            && self.plotted_front_cast_fundable(actor, card, definition)
-            && emit(Action::AnnouncePlotted { card })
-        {
-            return true;
-        }
-        [CastFace::Adventure, CastFace::Omen, CastFace::Back]
-            .into_iter()
-            .any(|face| {
-                self.permitted_cast_available(actor, card, CastMethod::Plot, face, true, false)
-                    && emit(Action::AnnouncePlottedFace { card, face })
-            })
-    }
-
-    fn plotted_front_cast_fundable(&self, actor: Player, card: CardId, definition: Card) -> bool {
-        if definition.teamwork().is_some()
-            || definition.kicked_targets().is_some()
-            || definition.bargain_targets().is_some()
-        {
-            return self.permitted_cast_available(
-                actor,
-                card,
-                CastMethod::Plot,
-                CastFace::Normal,
-                true,
-                false,
-            );
-        }
-        let base = ManaCost {
-            colored: [0; 6],
-            generic: 0,
-        };
-        if definition.has_target_cost_modifier() {
-            return self.initial_target_cost_fundable(actor, card, base);
-        }
-        if definition.tiered_costs().is_some() {
-            return self.tiered_initial_fundable(actor, card, base);
-        }
-        let plan = match definition.effect() {
-            Effect::Modal(modes) => {
-                let source = self.object_ref(card);
-                return modes.iter().enumerate().any(|(index, mode)| {
-                    self.spell_mode_eligible(actor, source, definition, index)
-                        && self.cast_targets_available(mode.targets, actor, source)
-                }) && self.spell_can_fund(actor, card, base);
-            }
-            Effect::Spell(plan, _) | Effect::Aura(plan) => plan,
-            _ => TargetPlan::NONE,
-        };
-        self.cast_targets_available(plan, actor, self.object_ref(card))
-            && self.spell_can_fund(actor, card, base)
+        [
+            CastFace::Normal,
+            CastFace::Adventure,
+            CastFace::Omen,
+            CastFace::Back,
+        ]
+        .into_iter()
+        .any(|face| {
+            self.permitted_cast_available(actor, card, CastMethod::Plot, face, true, false)
+                && emit(if face == CastFace::Normal {
+                    Action::AnnouncePlotted { card }
+                } else {
+                    Action::AnnouncePlottedFace { card, face }
+                })
+        })
     }
 }

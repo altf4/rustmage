@@ -513,6 +513,7 @@ impl FundingState<'_> {
             StepGuard::PlayedFromOutsideOwnHandThisTurn => {
                 state.turn_facts.played_from_outside_own_hand
             }
+            StepGuard::NoSpellCastFromOwnHandThisTurn => !state.turn_facts.cast_spell_from_own_hand,
             StepGuard::CastManaValueAtLeastFourThisTurn => {
                 state.turn_facts.cast_mana_value_at_least_four
             }

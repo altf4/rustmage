@@ -425,6 +425,9 @@ impl Game {
             StepGuard::PlayedFromOutsideOwnHandThisTurn => {
                 return p.turn_facts.played_from_outside_own_hand;
             }
+            StepGuard::NoSpellCastFromOwnHandThisTurn => {
+                return !p.turn_facts.cast_spell_from_own_hand;
+            }
             StepGuard::CastManaValueAtLeastFourThisTurn => {
                 return p.turn_facts.cast_mana_value_at_least_four;
             }

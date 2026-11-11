@@ -1079,6 +1079,7 @@ impl Game {
                     | TriggerCondition::SelfEntersOrDies => same,
                     TriggerCondition::CreaturesFromGraveyardEnterYou { .. }
                     | TriggerCondition::NontokenCreaturesEnterFromExile
+                    | TriggerCondition::SelfBecomesPlotted
                     | TriggerCondition::SelfTransforms
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
@@ -2211,6 +2212,7 @@ impl Game {
         player.turn_facts.cast_card_kinds |= card.kind_mask();
         player.turn_facts.played_from_outside_own_hand |=
             origin.is_some_and(|origin| origin != (Zone::Hand, true));
+        player.turn_facts.cast_spell_from_own_hand |= origin == Some((Zone::Hand, true));
         player.turn_facts.cast_mana_value_at_least_four |= mana_value >= 4;
         let count = &mut player.spells_cast_this_turn;
         *count = count.checked_add(1).capacity("spell count exhausted");

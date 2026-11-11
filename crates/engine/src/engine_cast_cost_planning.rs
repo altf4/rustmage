@@ -432,6 +432,8 @@ impl FundingState<'_> {
                                 | CostReduction(..)
                                 | TargetCostReduction(..)
                                 | OpponentNoncreatureSpellTax(_)
+                                | OpponentGraveyardOrExileSpellTax(_)
+                                | SpellCastLimit(_)
                                 | ChosenCardTypeSpellTax(_)
                                 | AdditionalTriggers { .. }
                                 | AttachedChosenColor

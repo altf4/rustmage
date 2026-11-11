@@ -6589,8 +6589,11 @@ impl Game {
                                 }
                                 // Object-specific mana permissions cannot share the
                                 // printed-definition-only prefunding cache.
-                                if self.spell_generic_tax(actor, self.effective_spell_card(card))
-                                    != 0
+                                if self.spell_generic_tax(
+                                    actor,
+                                    card,
+                                    self.effective_spell_card(card),
+                                ) != 0
                                     || self.foreign_stash(actor, card)
                                     || self.exile_cast_modifiers(actor, card).0
                                     || convoke::potential(self, obj.card)
@@ -6651,7 +6654,7 @@ impl Game {
                         continue;
                     }
                     if target_cost
-                        && self.spell_generic_tax(actor, self.effective_spell_card(card)) == 0
+                        && self.spell_generic_tax(actor, card, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
                         && obj.card.offspring_cost().is_none()
                         && obj.card.kicker_cost().is_none()
@@ -6716,7 +6719,7 @@ impl Game {
                     }
                     if flashback
                         || exile
-                        || self.spell_generic_tax(actor, self.effective_spell_card(card)) != 0
+                        || self.spell_generic_tax(actor, card, self.effective_spell_card(card)) != 0
                         || target_cost
                         || obj.card.offspring_cost().is_some()
                         || obj.card.teamwork().is_some()
