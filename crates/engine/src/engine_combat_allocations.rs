@@ -401,7 +401,7 @@ impl Game {
         self.clear_tracked_excess_damage();
         amount
     }
-    pub(super) fn create_excess_tokens(&mut self, item: &SpellView, token: Card) {
+    pub(super) fn create_excess_tokens(&mut self, item: &SpellView, token: Card, tapped: bool) {
         let excess = self
             .state
             .combat_rules
@@ -410,7 +410,7 @@ impl Game {
         if let Some(excess) = excess {
             let amount = excess.dealt.saturating_sub(excess.lethal).max(0) as u128;
             if amount > 0 {
-                self.create_tokens(item.controller, token, amount, false);
+                self.create_tokens(item.controller, token, amount, tapped);
             }
         }
     }

@@ -905,39 +905,37 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             let origin = world.reference(source);
             for group in provider.card.static_ability_groups() {
                 for fragment in group.fragments {
-                    if let crate::cards::StaticAbilityFragment::ControlledCreatureSubtype {
-                        grant,
-                        required_subtype,
-                    } = *fragment
-                    {
-                        let typ = match grant {
-                            crate::cards::CreatureSubtypeGrant::Named(name) => Some(
-                                crate::cards::CreatureType::from_name(name)
-                                    .expect("authenticated immutable creature subtype grant"),
-                            ),
-                            crate::cards::CreatureSubtypeGrant::Chosen => {
-                                match world.entry_value(origin) {
-                                    Some(EntryChoiceValue::CreatureType(typ)) => Some(typ),
-                                    _ => None,
-                                }
-                            }
-                        };
-                        if let Some(typ) = typ {
-                            changes.push((
-                                source_time(origin).max(*dependency_time.get_or_insert_with(
-                                    || {
-                                        characteristic_layers::creature_addition_timestamp(
-                                            world, id,
-                                        )
-                                        .unwrap_or(0)
-                                    },
-                                )),
-                                characteristic_layers::SubtypeChange::Granted(
-                                    typ,
-                                    required_subtype,
-                                ),
-                            ));
+                    use crate::cards::{CreatureSubtypeGrant, StaticAbilityFragment};
+                    let (grant, required_subtype) = match *fragment {
+                        StaticAbilityFragment::ControlledCreatureSubtype {
+                            grant,
+                            required_subtype,
+                        } => (grant, required_subtype),
+                        StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(subtype)
+                            if target.owner != target.controller =>
+                        {
+                            (CreatureSubtypeGrant::Named(subtype), None)
                         }
+                        _ => continue,
+                    };
+                    let typ = match grant {
+                        CreatureSubtypeGrant::Named(name) => Some(
+                            crate::cards::CreatureType::from_name(name)
+                                .expect("authenticated immutable creature subtype grant"),
+                        ),
+                        CreatureSubtypeGrant::Chosen => match world.entry_value(origin) {
+                            Some(EntryChoiceValue::CreatureType(typ)) => Some(typ),
+                            _ => None,
+                        },
+                    };
+                    if let Some(typ) = typ {
+                        changes.push((
+                            source_time(origin).max(*dependency_time.get_or_insert_with(|| {
+                                characteristic_layers::creature_addition_timestamp(world, id)
+                                    .unwrap_or(0)
+                            })),
+                            characteristic_layers::SubtypeChange::Granted(typ, required_subtype),
+                        ));
                     }
                 }
             }

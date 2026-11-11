@@ -281,6 +281,8 @@ pub enum StaticAbilityFragment {
         grant: CreatureSubtypeGrant,
         required_subtype: Option<&'static str>,
     },
+    /// Add this subtype to controlled creatures owned by another player.
+    ControlledForeignOwnedCreatureSubtype(&'static str),
     /// This source adds artifact and creature during another player’s turn.
     SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).

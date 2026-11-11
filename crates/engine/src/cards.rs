@@ -2191,6 +2191,11 @@ pub enum Instruction {
         subject: Subject,
         duration: AnimationDuration,
     },
+    /// Remove the abilities of the selected players' exact current creatures.
+    RemovePlayerCreatureAbilities {
+        players: PlayerSet,
+        duration: AnimationDuration,
+    },
     SetPlayerCreatureCharacteristics {
         players: PlayerSet,
         additional_types: &'static [&'static str],
@@ -2398,6 +2403,8 @@ pub enum Instruction {
     /// Allow playing the preceding exact exile results with any type of mana until
     /// your next end step begins.
     GrantExiledResultFlexiblePlayUntilNextEndStep,
+    /// Allow paid spells only from the preceding exact exiles through cleanup.
+    GrantExiledResultFlexibleCast,
     ExileTopPlayScaled {
         amount: AmountValue,
         next_turn: bool,
@@ -3106,6 +3113,7 @@ pub enum Instruction {
     },
     DestroyDamagedSubtype,
     CreateExcessTokens(Card),
+    CreateTappedExcessTokens(Card),
     ExileExcessPlay {
         next_turn: bool,
     },

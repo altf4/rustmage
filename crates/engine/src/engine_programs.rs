@@ -6399,8 +6399,12 @@ impl Game {
                 Instruction::GrantExiledResultPlay { next_turn } => {
                     self.grant_exiled_result_play(item.controller, next_turn);
                 }
-                Instruction::GrantExiledResultFlexiblePlay => {
-                    self.grant_exiled_result_flexible_play(item.controller, false);
+                Instruction::GrantExiledResultFlexiblePlay
+                | Instruction::GrantExiledResultFlexibleCast => {
+                    self.grant_exiled_result_flexible_play(
+                        item.controller,
+                        instruction == Instruction::GrantExiledResultFlexibleCast,
+                    );
                 }
                 Instruction::GrantExiledResultCastUntilEndOfNextTurn => {
                     self.grant_remembered_exile_permission(
@@ -7846,7 +7850,14 @@ impl Game {
                     self.damage_for_subtype_destruction(&item, amount, subtype);
                 }
                 Instruction::DestroyDamagedSubtype => self.destroy_damaged_subtype(&item),
-                Instruction::CreateExcessTokens(token) => self.create_excess_tokens(&item, token),
+                Instruction::CreateExcessTokens(token)
+                | Instruction::CreateTappedExcessTokens(token) => {
+                    self.create_excess_tokens(
+                        &item,
+                        token,
+                        matches!(instruction, Instruction::CreateTappedExcessTokens(_)),
+                    );
+                }
                 Instruction::ExileExcessPlay { next_turn } => {
                     self.exile_excess_play(&item, next_turn)
                 }
@@ -11227,10 +11238,19 @@ impl Game {
                         self.grant_keyword_effects(&recipients, source.object, keywords);
                     }
                 }
-                Instruction::RemoveAbilities { subject, duration } => {
+                Instruction::RemoveAbilities { duration, .. }
+                | Instruction::RemovePlayerCreatureAbilities { duration, .. } => {
                     if let Some(source) = item.source {
-                        let recipients: Vec<_> = self
-                            .keyword_subjects(&item, subject)
+                        let recipients = match instruction {
+                            Instruction::RemoveAbilities { subject, .. } => {
+                                self.keyword_subjects(&item, subject)
+                            }
+                            Instruction::RemovePlayerCreatureAbilities { players, .. } => {
+                                self.player_creature_recipients(players, &item)
+                            }
+                            _ => unreachable!("ability removal recipients"),
+                        };
+                        let recipients: Vec<_> = recipients
                             .into_iter()
                             .filter(|&id| self.on_battlefield(id))
                             .map(|id| self.object_ref(id))
