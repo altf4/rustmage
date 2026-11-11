@@ -95,7 +95,8 @@ impl ManaOutput {
             | ManaProduction::AnyColorChangingSource(_)
             | ManaProduction::ChoiceStat { .. }
             | ManaProduction::TapSourcePowerChoice { .. }
-            | ManaProduction::DistinctCreaturePowers => {
+            | ManaProduction::DistinctCreaturePowers
+            | ManaProduction::LinkedExileCardColor => {
                 let mut colors = selected.iter().enumerate().filter(|(_, n)| **n != 0);
                 colors.next().and_then(|(color, _)| {
                     colors
@@ -168,6 +169,9 @@ impl ManaOutput {
                     world.departed_source_power(source).unwrap_or(fallback),
                 )
             }
+            ManaProduction::LinkedExileCardColor => {
+                ManaProduction::linked_exile_card_color(world, source, self.instance.source_origin)
+            }
             recipe => recipe.in_world_for_controller(world, source.card, self.controller),
         }
     }
@@ -237,6 +241,7 @@ impl ManaProduction {
                 | Self::Split(_)
                 | Self::TapSourcePowerChoice { .. }
                 | Self::DistinctCreaturePowers
+                | Self::LinkedExileCardColor
         )
     }
     /// Planning fixed domains uses concrete outputs once; real costly actions
@@ -436,6 +441,7 @@ impl Game {
             ManaProduction::Choice { .. }
                 | ManaProduction::Combination { .. }
                 | ManaProduction::AnyColorChangingSource(_)
+                | ManaProduction::LinkedExileCardColor
         ) && self.fixed_mana_choice_can_be_late(source, definition, index);
         // Pure tap-only fixed mana has no intervening information choice and
         // retains its original concrete action set. Real costs retain a full

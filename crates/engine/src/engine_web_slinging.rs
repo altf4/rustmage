@@ -181,8 +181,13 @@ impl Game {
         };
         let paid_graveyard = match origin {
             WebSlingingOrigin::GraveyardPaid { object, permission } if object.card == card => {
-                let Some(row) = self.paid_graveyard_permission(actor, object, face, permission)
-                else {
+                let Some(row) = self.paid_graveyard_permission(
+                    actor,
+                    object,
+                    face,
+                    CastMethod::WebSlinging,
+                    permission,
+                ) else {
                     return false;
                 };
                 Some(row)
@@ -296,8 +301,14 @@ impl Game {
             }
             WebSlingingOrigin::GraveyardPaid { object, permission } => {
                 paid_graveyard = Some(
-                    self.paid_graveyard_permission(actor, object, face, permission)
-                        .expect("approved exact graveyard Web-slinging permission"),
+                    self.paid_graveyard_permission(
+                        actor,
+                        object,
+                        face,
+                        CastMethod::WebSlinging,
+                        permission,
+                    )
+                    .expect("approved exact graveyard Web-slinging permission"),
                 );
             }
             WebSlingingOrigin::TaxedExile { surcharge } => exile_play_surcharge = Some(surcharge),

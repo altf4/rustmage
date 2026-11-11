@@ -129,6 +129,7 @@ impl Card {
                             | StaticAbilityFragment::LandMana { .. }
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)
                             | StaticAbilityFragment::CounterKeywordOther(..)

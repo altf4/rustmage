@@ -123,7 +123,11 @@ impl Game {
                 .is_some_and(|cast| cast.method == CastMethod::Sneak || cast.flash_surcharge)
             && !source.card.is_instant()
             && !source.card.info().keywords.contains(Keywords::FLASH)
-            && !self.cast_timing_granted(item.controller, source.card)
+            && !self.cast_timing_granted_with_types(
+                item.controller,
+                source.card,
+                self.cast_added_creature_types(source.object),
+            )
             && !(self.state.active == item.controller
                 && matches!(self.state.step, Step::Main1 | Step::Main2)
                 && self.state.stack.is_empty())

@@ -334,6 +334,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                             | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)

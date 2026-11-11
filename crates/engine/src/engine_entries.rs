@@ -374,9 +374,7 @@ impl EntryBatch {
                         })
                         + m.exile_preparation.as_ref().map_or(0, |p| p.bytes())
                         + m.devour_preparation.as_ref().map_or(0, |p| p.bytes())
-                        + m.copy_preparation
-                            .as_ref()
-                            .map_or(0, |_| std::mem::size_of::<entry_copies::Preparation>())
+                        + m.copy_preparation.as_ref().map_or(0, |copy| copy.bytes())
                         + m.counters.owned_bytes()
                         + m.before.owned_bytes()
                         + m.source_before

@@ -111,17 +111,12 @@ pub struct ManaSourcePayment {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize)]
 pub(super) struct SpellManaProvenance {
-    #[serde(rename = "mana_copy_sources", skip_serializing_if = "Vec::is_empty")]
-    pub copies: Vec<(ManaCopySource, u64)>,
-    #[serde(skip)]
     pub sources: Vec<ManaSourcePayment>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellManaProvenance {
     pub(super) fn owned_bytes(&self) -> usize {
-        std::mem::size_of::<Self>()
-            + self.copies.len() * std::mem::size_of::<(ManaCopySource, u64)>()
-            + self.sources.len() * std::mem::size_of::<ManaSourcePayment>()
+        std::mem::size_of::<Self>() + self.sources.len() * std::mem::size_of::<ManaSourcePayment>()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -130,6 +125,8 @@ pub(super) struct SpendOutcome {
     pub treasure_spent: bool,
     pub haste: bool,
     pub uncounterable: bool,
+    #[allow(clippy::box_collection)]
+    pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
     pub provenance: Option<Box<SpellManaProvenance>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -581,42 +578,22 @@ impl SpendRequest {
     fn concrete_allocation(&self, spent: &[Mana], mut remaining: [u128; 6]) -> Vec<Mana> {
         if let Some(plans) = &self.viable {
             return plans
-                .iter()
-                .min_by_key(|plan| {
-                    plan.iter()
-                        .zip(self.lots.iter())
-                        .filter(|(_, lot)| lot.quality.cave_source)
-                        .flat_map(|(amounts, _)| amounts.iter().map(|&n| u64::from(n)))
-                        .sum::<u64>()
-                })
+                .first()
                 .expect("guided allocation is feasible")
                 .clone();
         }
         for (left, ordinary) in remaining.iter_mut().zip(self.ordinary) {
             *left = left.saturating_sub(ordinary);
         }
-        let mut spent: Vec<_> = spent.iter().map(|amount| amount.map(u128::from)).collect();
-        let mut allocation = vec![[0; 6]; self.lots.len()];
-        // Keep unused Cave mana when the choice did not distinguish Cave status.
-        for cave in [false, true] {
-            for (index, lot) in self.lots.iter().enumerate().rev() {
-                if lot.quality.cave_source != cave {
-                    continue;
-                }
-                let debit = match self.group_by_lot[index] {
-                    Some(group) => &mut spent[group],
-                    None => &mut remaining,
-                };
-                for (color, left) in debit.iter_mut().enumerate() {
-                    let used = (*left).min(lot.amounts[color]);
-                    allocation[index][color] = u32::try_from(used).expect("concrete payment");
-                    *left -= used;
-                }
-            }
-        }
-        debug_assert_eq!(remaining, [0; 6]);
-        debug_assert!(spent.iter().all(|amount| *amount == [0; 6]));
-        allocation
+        lift_spending_allocation(
+            &self.lots,
+            &self.group_by_lot,
+            spent.iter().map(|amount| amount.map(u128::from)).collect(),
+            remaining,
+        )
+        .into_iter()
+        .map(|allocation| allocation.map(|used| u32::try_from(used).expect("concrete payment")))
+        .collect()
     }
 
     fn default_allocation(&self) -> Vec<Mana> {
@@ -1068,25 +1045,51 @@ impl Game {
             values,
         })
     }
-    fn observes_mana_producer(&self, producer: ObjectRef) -> bool {
-        if self.state.cast_sources.is_empty()
-            || !self.on_battlefield(producer.card)
-            || self.object_ref(producer.card) != producer
-        {
-            return false;
-        }
-        self.state.cast_sources.iter().any(|&id| {
-            let card = self.state.objects[id as usize].card;
-            card.triggers().iter().any(|ability| {
-                matches!(
+    fn has_source_mana_trigger(card: Card, granted: bool) -> bool {
+        card.triggers().iter().any(|ability| {
+            ability.condition.is_granted() == granted
+                && matches!(
                     ability.condition.event(),
                     TriggerCondition::SpellCastUsingSourceMana(_)
-                ) && if ability.condition.is_granted() {
-                    self.attachment_recipient(id) == Some(producer)
-                } else {
-                    id == producer.card
-                }
-            })
+                )
+        })
+    }
+
+    fn observes_mana_producer(&self, producer: ObjectRef) -> bool {
+        if !self.on_battlefield(producer.card) || self.object_ref(producer.card) != producer {
+            return false;
+        }
+        let card = self.state.objects[producer.card as usize].card;
+        // A transform keeps the exact producer. Preserve its payment choice
+        // while the publicly known other face can observe it this step.
+        if !self.is_face_down(producer)
+            && (Self::has_source_mana_trigger(card, false)
+                || self
+                    .physical_copy_faces(producer)
+                    .turned()
+                    .is_some_and(|(_, other)| Self::has_source_mana_trigger(other, false)))
+        {
+            return true;
+        }
+        if self.state.cast_sources.iter().any(|&id| {
+            Self::has_source_mana_trigger(self.state.objects[id as usize].card, true)
+                && self.attachment_recipient(id) == Some(producer)
+        }) {
+            return true;
+        }
+        // A public pending copy of an existing permanent can also leave a
+        // future observer on this same object. Neither identity depends on a
+        // concealed card or an unannounced action.
+        self.state.stack.iter().any(|item| {
+            item.source.is_some_and(|source| source.object == producer)
+                && item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|instruction| {
+                        matches!(instruction, Instruction::CopySourceFromRememberedPermanent)
+                    })
+                })
+        }) && self.state.cast_sources.iter().any(|&id| {
+            !self.is_face_down(self.object_ref(id))
+                && Self::has_source_mana_trigger(self.state.objects[id as usize].card, false)
         })
     }
 
@@ -1097,11 +1100,7 @@ impl Game {
             && cast_symbol_quantities::uses_cave_mana(spell)
     }
 
-    fn spending_lots(
-        &self,
-        lots: &[Lot],
-        distinguish_cave: bool,
-    ) -> (Vec<SpendingLot>, Vec<Option<usize>>) {
+    fn spending_lots(&self, lots: &[Lot]) -> (Vec<SpendingLot>, Vec<Option<usize>>) {
         let mut groups: Vec<SpendingLot> = Vec::new();
         let mut by_lot = Vec::with_capacity(lots.len());
         for (index, lot) in lots.iter().enumerate() {
@@ -1110,7 +1109,6 @@ impl Game {
                     .quality
                     .producer
                     .filter(|&source| self.observes_mana_producer(source)),
-                cave_source: distinguish_cave && lot.quality.cave_source,
                 ..lot.quality
             };
             if key == Quality::ORDINARY {
@@ -1142,6 +1140,15 @@ impl Game {
         (groups, by_lot)
     }
 
+    /// Search only distinguishes mana with different public spending rules.
+    pub(super) fn funding_lot_key(&self, lots: &[Lot]) -> Vec<Lot> {
+        self.spending_lots(lots)
+            .0
+            .into_iter()
+            .map(|group| group.lot)
+            .collect()
+    }
+
     pub(super) fn mana_lot_views(&self) -> Vec<ManaLotView> {
         let Some(state) = &self.state.mana_lots else {
             return Vec::new();
@@ -1157,7 +1164,7 @@ impl Game {
             let groups = if let Some(choice) = current {
                 &choice.request.groups
             } else {
-                ordinary = self.spending_lots(lots, true).0;
+                ordinary = self.spending_lots(lots).0;
                 &ordinary
             };
             views.extend(groups.iter().map(|group| {
@@ -1411,9 +1418,8 @@ impl Game {
         let selected = if let Some(selected) = replay {
             selected
         } else {
-            let observe_cave = matches!(purpose, Purpose::Spell(spell)
-                if self.cave_payment_requires_announcement(actor, spell.card));
-            let (groups, group_by_lot) = self.spending_lots(&lots, observe_cave);
+            // A payment may leave Cave mana available for a later cast.
+            let (groups, group_by_lot) = self.spending_lots(&lots);
             let mut fungible = ordinary;
             for (lot, group) in lots.iter().zip(&group_by_lot) {
                 if group.is_none() {
@@ -1495,9 +1501,8 @@ impl Game {
                 {
                     let amount = allocation.into_iter().map(u64::from).sum();
                     outcome
-                        .provenance
-                        .get_or_insert_with(Default::default)
                         .copies
+                        .get_or_insert_with(Default::default)
                         .push((source, amount));
                 } else {
                     // No qualifying event occurred. This DTA has become inert,
@@ -1579,10 +1584,36 @@ impl Game {
     }
 }
 
-/// Enumerate actual provenance allocations for the funding search. The common
-/// no-lot case emits once without recursion or a heap allocation.
+/// Assign the payment of each group to real producer rows in stable order.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn lift_spending_allocation(
+    lots: &[Lot],
+    groups: &[Option<usize>],
+    mut spent: Vec<[u128; 6]>,
+    mut remaining: [u128; 6],
+) -> Vec<[u64; 6]> {
+    let mut allocation = vec![[0; 6]; lots.len()];
+    for (index, lot) in lots.iter().enumerate().rev() {
+        let debit = match groups[index] {
+            Some(group) => &mut spent[group],
+            None => &mut remaining,
+        };
+        for (color, left) in debit.iter_mut().enumerate() {
+            let used = (*left).min(lot.amounts[color]);
+            allocation[index][color] = u64::try_from(used).expect("funding payment bound");
+            *left -= used;
+        }
+    }
+    debug_assert_eq!(remaining, [0; 6]);
+    debug_assert!(spent.iter().all(|amount| *amount == [0; 6]));
+    allocation
+}
+
+/// Enumerate distinct funding allocations and retain one exact witness per
+/// spending group. The common empty-pool case emits without recursion.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn visit_allocations(
+    game: &Game,
     pool: [u128; 6],
     lots: &[Lot],
     purpose: Purpose,
@@ -1631,14 +1662,39 @@ pub(super) fn visit_allocations(
             remaining[color] += amount;
         }
     }
+    let (groups, group_by_lot) = game.spending_lots(lots);
+    let grouped: Vec<_> = groups.into_iter().map(|group| group.lot).collect();
+    let unattributed = ordinary(pool, lots);
+    let mut lift = |grouped_spend: Vec<[u64; 6]>| {
+        let mut remaining = payment.map(u128::from);
+        let spent = grouped_spend
+            .into_iter()
+            .map(|allocation| {
+                let allocation = allocation.map(u128::from);
+                for (left, used) in remaining.iter_mut().zip(allocation) {
+                    *left -= used;
+                }
+                allocation
+            })
+            .collect();
+        for (left, ordinary) in remaining.iter_mut().zip(unattributed) {
+            *left = left.saturating_sub(ordinary);
+        }
+        emit(lift_spending_allocation(
+            lots,
+            &group_by_lot,
+            spent,
+            remaining,
+        ));
+    };
     walk(
-        lots,
-        ordinary(pool, lots),
+        &grouped,
+        ordinary(pool, &grouped),
         purpose,
         &mut payment.map(u128::from),
-        &mut vec![[0; 6]; lots.len()],
+        &mut vec![[0; 6]; grouped.len()],
         0,
-        &mut emit,
+        &mut lift,
     );
 }
 

@@ -350,15 +350,11 @@ impl Game {
         self.release_stack_copy_state();
     }
     pub(super) fn capture_mana_copies(&mut self, index: usize) {
-        let Some(provenance) = self.state.stack[index].mana_provenance.as_mut() else {
+        let Some(sources) = self.state.stack[index].mana_copy_sources.take() else {
             return;
         };
-        if provenance.copies.is_empty() {
-            return;
-        }
-        let sources = std::mem::take(&mut provenance.copies);
         let spell = self.state.stack[index].clone();
-        for (mut source, amount) in sources {
+        for (mut source, amount) in *sources {
             if self
                 .state
                 .objects
@@ -392,6 +388,7 @@ impl Game {
                 trigger.loyalty_x = None;
                 trigger.gift = None;
                 trigger.cast_event = None;
+                trigger.mana_copy_sources = None;
                 trigger.mana_provenance = None;
                 trigger.source_counter_lki = None;
                 trigger.source_quantity_lki = None;
@@ -678,6 +675,7 @@ impl Game {
             cast.spend_any_mana = false;
         }
         copy.copy_event = None;
+        copy.mana_copy_sources = None;
         copy.mana_provenance = None;
         copy.cast_event = None;
         if template

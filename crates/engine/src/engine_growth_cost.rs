@@ -620,9 +620,19 @@ impl SpellView {
             .then_some(grant.grantor)
     }
 
+    pub(super) fn attached_activation_sacrifice_cost(&self) -> Option<ObjectRef> {
+        let (grant, ability) = self.attached_activation_grant()?;
+        grant
+            .granting_card
+            .attached_activation_sacrifices(ability)
+            .then_some(grant.grantor)
+    }
+
     pub(super) fn attached_activation_reserve(&self) -> Option<(ObjectRef, AdditionalCost)> {
         let (grantor, kind) = if let Some(grantor) = self.attached_activation_tap_cost() {
             (grantor, EffectChoiceKind::TapPermanents(1))
+        } else if let Some(grantor) = self.attached_activation_sacrifice_cost() {
+            (grantor, EffectChoiceKind::Sacrifice)
         } else {
             (
                 self.attached_activation_exile_cost()?,

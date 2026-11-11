@@ -143,6 +143,7 @@ pub struct GrantedSubtypes {
     /// A layer-four effect replaces all previously held land subtypes.
     basic_land: Option<crate::cards::BasicLandType>,
     added_basic_lands: u8,
+    added_cave: bool,
     effective_basic_lands: Option<u8>,
     suppress_printed_land: bool,
     /// None retains printed types (including changeling); Some replaces only
@@ -163,6 +164,7 @@ impl GrantedSubtypes {
             additional_creature_types: CreatureTypeSet::default(),
             basic_land: None,
             added_basic_lands: 0,
+            added_cave: false,
             effective_basic_lands: None,
             suppress_printed_land: false,
             creature_types: Some(&[]),
@@ -188,7 +190,8 @@ impl GrantedSubtypes {
         {
             return false;
         }
-        self.basic_land.is_some_and(|kind| kind.name() == subtype)
+        (self.added_cave && subtype == "Cave")
+            || self.basic_land.is_some_and(|kind| kind.name() == subtype)
             || (self.added_basic_lands != 0
                 && crate::cards::BasicLandType::ALL.iter().any(|kind| {
                     kind.name() == subtype && self.added_basic_lands & (1 << kind.index()) != 0
@@ -284,6 +287,9 @@ impl GrantedSubtypes {
             if recipe.exceptions.reflection {
                 self.insert("Reflection");
             }
+            if recipe.exceptions.cave && recipe.kinds() & 2 != 0 {
+                self.added_cave = true;
+            }
             if recipe.exceptions.spider_human_hero {
                 self.insert("Spider");
                 self.insert("Human");
@@ -334,10 +340,11 @@ impl GrantedSubtypes {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Serialize for GrantedSubtypes {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        struct Added(u32);
+        struct Added(u32, bool);
         impl Serialize for Added {
             fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-                let mut out = serializer.serialize_seq(Some(self.0.count_ones() as usize))?;
+                let mut out = serializer
+                    .serialize_seq(Some(self.0.count_ones() as usize + usize::from(self.1)))?;
                 for (i, subtype) in JOB_TYPES.iter().enumerate() {
                     if self.0 & (1 << i) != 0 {
                         out.serialize_element(subtype)?;
@@ -360,6 +367,9 @@ impl Serialize for GrantedSubtypes {
                         out.serialize_element(subtype)?;
                     }
                 }
+                if self.1 {
+                    out.serialize_element("Cave")?;
+                }
                 out.end()
             }
         }
@@ -377,7 +387,7 @@ impl Serialize for GrantedSubtypes {
         out.serialize_field("land_only", &self.flag(LAND_ONLY))?;
         out.serialize_field("all_creature_types", &self.flag(ALL_CREATURE_TYPES))?;
         out.serialize_field("chosen", &self.chosen)?;
-        out.serialize_field("added", &Added(self.added & ADDED_MASK))?;
+        out.serialize_field("added", &Added(self.added & ADDED_MASK, self.added_cave))?;
         out.serialize_field("creature_types", &self.creature_types)?;
         if !self.additional_creature_types.is_empty() {
             out.serialize_field("additional_creature_types", &self.additional_creature_types)?;
@@ -994,6 +1004,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                 mask.set_flag(ALL_CREATURE_TYPES, false);
                 if all {
                     mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
+                    mask.added_cave = false;
                     mask.set_flag(SUPPRESS_PRINTED, true);
                     mask.set_flag(LAND_ONLY, false);
                 }
@@ -1005,6 +1016,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         mask.effective_basic_lands = Some(land_timeline.final_types);
         mask.suppress_printed_land = land_timeline.lost_original_types;
         mask.added_basic_lands &= land_timeline.final_types;
+        mask.added_cave &= !land_timeline.lost_original_types;
         if mask
             .basic_land
             .is_some_and(|kind| land_timeline.final_types & (1 << kind.index()) == 0)
@@ -1021,6 +1033,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
         })
     }) {
         mask.card_types = Some(kinds(id, target));
+    }
+    if mask.added_cave && kinds(id, target) & 2 == 0 {
+        mask.added_cave = false;
     }
     if kinds(id, target) & 16 == 0 {
         mask.set_flag(ADDED_ARTIFACT_SUBTYPES, false);
@@ -1410,6 +1425,7 @@ impl Game {
             && m.entry_kinds() & 2 != 0
         {
             result.basic_land = Some(kind);
+            result.added_cave = false;
         }
         if m.before.card.static_ability_groups().iter().any(|g| {
             g.fragments

@@ -66,6 +66,8 @@ pub struct CopyExceptions {
     pub spider_human_hero: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub reflection: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub cave: bool,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -96,6 +98,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         reflection: false,
+        cave: false,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
@@ -111,6 +114,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         reflection: false,
+        cave: false,
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_only_abilities: 1,
@@ -130,6 +134,7 @@ impl CopyExceptions {
         embalm: false,
         spider_human_hero: false,
         reflection: false,
+        cave: false,
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -144,6 +149,10 @@ impl CopyExceptions {
     pub const FRACTAL: Self = Self {
         fractal: true,
         base: Some((0, 0)),
+        ..Self::NONE
+    };
+    pub const CAVE: Self = Self {
+        cave: true,
         ..Self::NONE
     };
     pub fn union(self, other: Self) -> Self {
@@ -172,6 +181,7 @@ impl CopyExceptions {
             embalm: self.embalm || other.embalm,
             spider_human_hero: self.spider_human_hero || other.spider_human_hero,
             reflection: self.reflection || other.reflection,
+            cave: self.cave || other.cave,
         }
     }
 }
@@ -905,6 +915,8 @@ pub enum ManaProduction {
     MonocoloredPermanentColors,
     /// One mana of each color among the cards still exiled by this Craft.
     CraftMaterialColors,
+    /// Choose one color of the cards still in this source’s linked exile.
+    LinkedExileCardColor,
     /// Choose one color and produce one mana per distinct controlled creature power.
     DistinctCreaturePowers,
     Fixed(Mana),
@@ -1015,6 +1027,7 @@ impl ManaProduction {
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
             | Self::CraftMaterialColors
+            | Self::LinkedExileCardColor
             | Self::DistinctCreaturePowers
             | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
@@ -2039,6 +2052,10 @@ pub enum EntryCopySource {
     /// Select a creature card in any graveyard, then use the linked trigger template.
     GraveyardCreature {
         exile_trigger: u16,
+    },
+    /// Select a land card from either graveyard without moving it.
+    GraveyardLand {
+        tapped: bool,
     },
 }
 
@@ -8002,6 +8019,15 @@ impl Card {
             .contains(&index)
     }
 
+    pub(crate) fn attached_activation_sacrifices(self, index: u16) -> bool {
+        authored::rules(self).is_some_and(|rules| {
+            rules
+                .extras
+                .attachment_activation_sacrifice_costs
+                .contains(&index)
+        })
+    }
+
     pub(crate) fn grants_activation(self, index: u16) -> bool {
         use StaticAbilityFragment as F;
         self.static_ability_groups().iter().any(|group| {
@@ -8012,12 +8038,19 @@ impl Card {
                         | F::ControlledPlaneswalkerActivation(ability)
                         | F::ControlledArtifactFood(ability)
                         | F::ControlledArtifactActivation(ability)
+                        | F::OtherControlledSubtypeTapManaActivation { ability, .. }
                         | F::SourceMaxSpeedActivation(ability)
                         | F::SourceEntryModeActivation { ability, .. }
                         | F::SourceCelebrationCreatureForm { activation: ability, .. }
                         if ability == index
                 )
             })
+        })
+    }
+    pub(crate) fn controlled_subtype_mana_activation(self, index: Option<u16>) -> bool {
+        self.static_ability_groups().iter().flat_map(|group| group.fragments).any(|fragment| {
+            matches!(*fragment, StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability, .. }
+                if index.is_none_or(|index| index == ability))
         })
     }
     pub(crate) fn graveyard_activation_subtype(self) -> Option<&'static str> {

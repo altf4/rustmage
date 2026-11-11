@@ -324,3 +324,121 @@ fn normal_timing_and_cleanup_apply_to_an_unspent_graveyard_permission() {
     act(&mut g, Action::Pass);
     assert!(g.observe(p).paid_graveyard_cast_permissions.is_empty());
 }
+
+#[test]
+fn disguise_from_graveyard_uses_the_paid_permission_and_its_public_creature_types() {
+    let _rules = fixture_rules::activate(&[(card("Short Bow"), &GRANTOR)]);
+    let p = Player::P0;
+    let mut g = scenario(p);
+    let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
+    let cavern = put(&mut g, p, "Cavern of Souls", Zone::Battlefield);
+    g.set_entry_value(
+        g.object_ref(cavern),
+        EntryChoiceValue::CreatureType(CreatureType::from_name("Vampire").unwrap()),
+    );
+    let weapon = card("Concealed Weapon");
+    let spell = spawn(&mut g, p, weapon, Zone::Graveyard);
+    let foreign = spawn(&mut g, p.other(), weapon, Zone::Graveyard);
+    grant(&mut g, source);
+    g.move_object(source, Zone::Graveyard);
+    let row = g.observe(p).paid_graveyard_cast_permissions[0];
+    let disguise = |g: &Game, spell| Action::AnnounceGraveyardPaid {
+        object: g.object_ref(spell),
+        permission: row.id,
+        face: CastFace::Normal,
+        method: CastMethod::Disguise,
+        flash_surcharge: false,
+    };
+    let normal = route(&g, spell, row.id);
+    reject(&mut g, normal);
+    let foreign = disguise(&g, foreign);
+    reject(&mut g, foreign);
+    let action = disguise(&g, spell);
+    let mut out_of_time = g.clone();
+    out_of_time.state.step = Step::End;
+    reject(&mut out_of_time, action.clone());
+    let mut stale = g.clone();
+    stale.move_object(spell, Zone::Hand);
+    stale.move_object(spell, Zone::Graveyard);
+    reject(&mut stale, action.clone());
+
+    // An already tapped Cavern leaves only the two ordinary mana and the one
+    // restricted to a Vampire creature spell. Legality must see the added type.
+    g.state.players[p.index()].mana = [0, 0, 0, 2, 0, 0];
+    choose(&mut g, |a| {
+        matches!(a, Action::ActivateMana {card, ability: 1, production, ..}
+            if *card == cavern && *production == [0,1,0,0,0,0])
+    });
+    let index = g.legal_actions().iter().position(|a| *a == action).unwrap();
+    let revision = g.revision();
+    let saved = g.snapshot();
+    let mut indexed = g.clone();
+    act(&mut g, action.clone());
+    indexed.apply_index(p, revision, index).unwrap();
+    assert_eq!(g.snapshot(), indexed.snapshot());
+    let opponent = g.observe(p.other());
+    let stack_view = &opponent.spell_characteristics[0];
+    assert_eq!(stack_view.physical_card, card("@face-down/disguise"));
+    assert_eq!(stack_view.colors, 0);
+    assert_eq!(stack_view.mana_value, 0);
+    assert_eq!(stack_view.additional_creature_types, Some(&["Vampire"][..]));
+    assert_eq!(opponent.face_down_spells[0].underlying, Some(weapon));
+    assert_eq!(g.observe(p).paid_graveyard_cast_permissions, [row]);
+    for branch in [&mut g, &mut indexed] {
+        pay(branch);
+        assert!(branch.observe(p).paid_graveyard_cast_permissions.is_empty());
+        let spell_id = branch
+            .state
+            .stack
+            .iter()
+            .find(|packet| packet.kind == StackKind::Spell)
+            .unwrap()
+            .id;
+        assert!(
+            branch
+                .observe(p)
+                .uncounterable_spell_ids
+                .contains(&spell_id)
+        );
+        quiet(branch);
+        let object = branch.object_ref(spell);
+        assert!(branch.is_face_down(object));
+        assert!(branch.has_subtype(spell, "Vampire"));
+        assert_eq!(branch.counter_count(spell, CounterKind::Finality), 1);
+        branch.state.players[p.index()].mana = [0, 0, 0, 3, 0, 0];
+        choose(
+            branch,
+            |a| matches!(a, Action::BeginFaceUp {object: chosen, ..} if *chosen == object),
+        );
+        choose(branch, |a| matches!(a, Action::PayFaceUp { .. }));
+        assert_eq!(branch.object_ref(spell), object);
+        assert!(!branch.has_subtype(spell, "Vampire"));
+        assert_eq!(branch.counter_count(spell, CounterKind::Finality), 1);
+    }
+    assert_eq!(g.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    act(&mut indexed, action);
+    assert_eq!(indexed.observe(p).paid_graveyard_cast_permissions, [row]);
+}
+
+#[test]
+fn a_printed_graveyard_warp_keeps_its_separate_permission_and_payment() {
+    let _rules = fixture_rules::activate(&[(card("Short Bow"), &GRANTOR)]);
+    let p = Player::P1;
+    let mut g = scenario(p);
+    let source = put(&mut g, p, "Short Bow", Zone::Battlefield);
+    let spell = put(&mut g, p, "Timeline Culler", Zone::Graveyard);
+    grant(&mut g, source);
+    let permissions = g.observe(p).paid_graveyard_cast_permissions;
+    assert!(
+        g.legal_actions()
+            .contains(&route(&g, spell, permissions[0].id))
+    );
+    act(&mut g, Action::AnnounceWarp { card: spell });
+    quiet(&mut g);
+    assert_eq!(g.state.players[p.index()].life, 18);
+    assert_eq!(g.object_view(spell).zone, Zone::Battlefield);
+    assert_eq!(g.counter_count(spell, CounterKind::Finality), 0);
+    assert!(!g.has_subtype(spell, "Vampire"));
+    assert_eq!(g.observe(p).paid_graveyard_cast_permissions, permissions);
+}

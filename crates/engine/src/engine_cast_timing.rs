@@ -3,6 +3,14 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn cast_timing_granted(&self, actor: Player, chosen: Card) -> bool {
+        self.cast_timing_granted_with_types(actor, chosen, &[])
+    }
+    pub(super) fn cast_timing_granted_with_types(
+        &self,
+        actor: Player,
+        chosen: Card,
+        additional_types: &[&str],
+    ) -> bool {
         // This is an announcement permission, never a keyword and never
         // rechecked during mana abilities/payment after legality is approved.
         let own_permission = chosen
@@ -32,11 +40,15 @@ impl Game {
                         self.object_ref(source),
                         object.tapped,
                     )
-                    && object
-                        .card
-                        .cast_timing_grants()
-                        .iter()
-                        .any(|filter| filter.matches(chosen))
+                    && object.card.cast_timing_grants().iter().any(|filter| {
+                        filter.matches_mana_value_with(
+                            chosen,
+                            chosen.fixed_mana_value(),
+                            |subtype| {
+                                additional_types.contains(&subtype) || chosen.has_subtype(subtype)
+                            },
+                        )
+                    })
             })
     }
 }

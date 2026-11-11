@@ -160,6 +160,42 @@ impl CardRules {
                             "Celebration grant needs a battlefield activation slot"
                         );
                     }
+                    StaticAbilityFragment::OtherControlledSubtypeTapManaActivation {
+                        ability,
+                        ..
+                    } => {
+                        assert!(matches!(
+                            self.static_groups[group].first_layer,
+                            AbilityLayer::Ability
+                        ));
+                        assert!((ability as usize) < self.activated.len());
+                        let rules = &self.activated[ability as usize];
+                        let cost = rules.cost;
+                        assert!(
+                            matches!(rules.origin, ActivationOrigin::Battlefield)
+                                && matches!(rules.guard, ActivationGuard::Always)
+                                && cost.tap
+                                && !cost.sacrifice
+                                && !cost.discard
+                                && !cost.exile_self
+                                && cost.additional.is_none()
+                                && cost.remove.is_none()
+                                && cost.loyalty.is_none()
+                                && !rules.exhaust
+                                && !rules.once_per_turn
+                                && !rules.sorcery
+                                && !rules.cycling
+                                && matches!(rules.program, [Instruction::AddMana(_)])
+                                && matches!(
+                                    rules.targets,
+                                    TargetPlan::Single(TargetSpec {
+                                        rule: TargetRule::None,
+                                        ..
+                                    })
+                                ),
+                            "controlled subtype grant needs an unconditional tap mana ability"
+                        );
+                    }
                     grant @ (StaticAbilityFragment::ControlledArtifactFood(ability)
                     | StaticAbilityFragment::ControlledArtifactActivation(ability)) => {
                         assert!(
@@ -386,6 +422,8 @@ pub struct CardExtras {
     pub self_granted_activation_templates: &'static [u16],
     /// Attachment-granted templates that exile their exact grantor as a cost.
     pub attachment_activation_exile_costs: &'static [u16],
+    /// Attachment-granted templates that sacrifice their exact grantor as a cost.
+    pub attachment_activation_sacrifice_costs: &'static [u16],
     pub named_activation_lock: bool,
     pub zone_replacement: Option<ZoneReplacementRule>,
     pub opening_hand_battlefield: bool,
@@ -537,6 +575,7 @@ impl CardExtras {
         borrows_exiled_activations: false,
         self_granted_activation_templates: &[],
         attachment_activation_exile_costs: &[],
+        attachment_activation_sacrifice_costs: &[],
         zone_replacement: None,
         opening_hand_battlefield: false,
         power_up_abilities: &[],

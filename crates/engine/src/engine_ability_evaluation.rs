@@ -319,6 +319,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { subtype, ability } => {
+            if !own || id == source.card || !world.subtypes(id).has(target.card, subtype) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
         | StaticAbilityFragment::ControlledArtifactFood(ability)
         | StaticAbilityFragment::ControlledArtifactActivation(ability) => {
@@ -579,6 +590,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(_)
                     ) || (matches!(fragment, StaticAbilityFragment::EntryMode(_)) && source.card.has_layer6_provider())
@@ -800,6 +812,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                        | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)
                         | StaticAbilityFragment::CounterKeywordOther(..)

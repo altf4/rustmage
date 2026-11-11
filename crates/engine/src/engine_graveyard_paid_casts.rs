@@ -47,6 +47,7 @@ impl Game {
         actor: Player,
         object: ObjectRef,
         face: CastFace,
+        method: CastMethod,
         permission: u64,
     ) -> Option<PaidGraveyardCastPermission> {
         let card = self.state.objects.get(object.card as usize)?;
@@ -57,13 +58,20 @@ impl Game {
         {
             return None;
         }
-        let face = match face {
-            CastFace::Normal => Some(card.card),
-            CastFace::Adventure => card.card.adventure_spell(),
-            CastFace::Omen => card.card.omen_spell(),
-            CastFace::Back => card.card.back_face(),
+        let definition = if method == CastMethod::Disguise {
+            if face != CastFace::Normal {
+                return None;
+            }
+            self.disguise_cast_definition(object.card)
+        } else {
+            match face {
+                CastFace::Normal => Some(card.card),
+                CastFace::Adventure => card.card.adventure_spell(),
+                CastFace::Omen => card.card.omen_spell(),
+                CastFace::Back => card.card.back_face(),
+            }
         }?;
-        if !face.is_creature() || matches!(face.effect(), Effect::Unsupported) {
+        if !definition.is_creature() || matches!(definition.effect(), Effect::Unsupported) {
             return None;
         }
         self.state
@@ -90,13 +98,32 @@ impl Game {
             if row.player != actor || row.turn != self.state.turn {
                 continue;
             }
+            if let Some(permission) = self.paid_graveyard_permission(
+                actor,
+                object,
+                CastFace::Normal,
+                CastMethod::Disguise,
+                row.id,
+            ) && self.visit_paid_graveyard_method(
+                actor,
+                object,
+                CastFace::Normal,
+                CastMethod::Disguise,
+                false,
+                sorcery,
+                permission,
+                emit,
+            ) {
+                return true;
+            }
             for face in [
                 CastFace::Normal,
                 CastFace::Adventure,
                 CastFace::Omen,
                 CastFace::Back,
             ] {
-                let Some(permission) = self.paid_graveyard_permission(actor, object, face, row.id)
+                let Some(permission) =
+                    self.paid_graveyard_permission(actor, object, face, CastMethod::Normal, row.id)
                 else {
                     continue;
                 };
@@ -127,34 +154,58 @@ impl Game {
                     {
                         continue;
                     }
-                    if self.permitted_cast_with_alternative(
+                    if self.visit_paid_graveyard_method(
                         actor,
-                        card,
-                        method,
-                        face,
-                        sorcery,
-                        flash_surcharge,
-                        None,
-                        None,
-                        None,
-                        false,
-                        cast_permissions::OriginAlternative {
-                            paid_graveyard: Some(permission),
-                            ..Default::default()
-                        },
-                    ) && emit(Action::AnnounceGraveyardPaid {
                         object,
-                        permission: permission.id,
                         face,
                         method,
                         flash_surcharge,
-                    }) {
+                        sorcery,
+                        permission,
+                        emit,
+                    ) {
                         return true;
                     }
                 }
             }
         }
         false
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn visit_paid_graveyard_method(
+        &self,
+        actor: Player,
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+        flash_surcharge: bool,
+        sorcery: bool,
+        permission: PaidGraveyardCastPermission,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        self.permitted_cast_with_alternative(
+            actor,
+            object.card,
+            method,
+            face,
+            sorcery,
+            flash_surcharge,
+            None,
+            None,
+            None,
+            false,
+            cast_permissions::OriginAlternative {
+                paid_graveyard: Some(permission),
+                ..Default::default()
+            },
+        ) && emit(Action::AnnounceGraveyardPaid {
+            object,
+            permission: permission.id,
+            face,
+            method,
+            flash_surcharge,
+        })
     }
 
     pub(super) fn start_paid_graveyard_cast(
@@ -167,10 +218,15 @@ impl Game {
         flash_surcharge: bool,
     ) {
         let permission = self
-            .paid_graveyard_permission(actor, object, face, permission)
+            .paid_graveyard_permission(actor, object, face, method, permission)
             .expect("selected paid graveyard cast permission");
-        let mut item = self.cast_item(actor, object.card, [0; 6]);
+        let mut item = if method == CastMethod::Disguise {
+            self.cast_disguised_item(actor, object.card)
+        } else {
+            self.cast_item(actor, object.card, [0; 6])
+        };
         self.set_cast_face(&mut item, face);
+        item.cast.as_mut().unwrap().method = method;
         if method == CastMethod::Sneak {
             Self::configure_sneak(&mut item);
         }

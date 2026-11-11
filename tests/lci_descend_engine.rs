@@ -107,6 +107,21 @@ fn simultaneous_deaths_record_owner_and_exclude_tokens_and_exile_replacements() 
         assert_eq!(game.object_view(sweeper).zone, Zone::Graveyard);
         assert_eq!(descend_count(&game, player, sweeper), 1);
         assert_eq!(descend_count(&game, defender, sweeper), 1);
+        for viewer in [player, defender] {
+            let view = game.observe(viewer);
+            assert_eq!(
+                view.players[player.index()].controlled_creatures_died_this_turn,
+                3
+            );
+            assert_eq!(
+                view.players[player.index()].controlled_creature_departures_this_turn,
+                4
+            );
+            assert_eq!(
+                view.players[defender.index()].controlled_creature_departures_this_turn,
+                0
+            );
+        }
 
         put(&mut game, player, "Hill Giant", Zone::Battlefield);
         game.begin_step(Step::End);
@@ -152,7 +167,15 @@ fn mill_batch_descend_history_survives_graveyard_departure_and_owned_restore() {
         }
         assert_eq!(descend_count(&raw, player, spell), 2);
         assert_eq!(descend_count(&raw, player.other(), spell), 0);
+        assert_eq!(
+            raw.observe(player.other()).players[player.index()].descended_this_turn,
+            2
+        );
         indexed.restore(&checkpoint).unwrap();
+        assert_eq!(
+            indexed.observe(player.other()).players[player.index()].descended_this_turn,
+            0
+        );
         assert_eq!(descend_count(&indexed, player, spell), 0);
         assert_eq!(
             indexed.apply_index(actor, revision, pass),
@@ -180,6 +203,10 @@ fn mill_batch_descend_history_survives_graveyard_departure_and_owned_restore() {
         }
         assert_ne!(raw.state.turn, turn);
         assert_eq!(descend_count(&raw, player, spell), 0);
+        assert_eq!(
+            raw.observe(player.other()).players[player.index()].descended_this_turn,
+            0
+        );
     }
 }
 

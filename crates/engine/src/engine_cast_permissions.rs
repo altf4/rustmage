@@ -559,12 +559,20 @@ impl Game {
         if object.zone == Zone::Hand && self.hand_play_prohibited() {
             return false;
         }
-        let Some(definition) = (match face {
-            CastFace::Normal => Some(object.card),
-            CastFace::Adventure => object.card.adventure_spell(),
-            CastFace::Omen => object.card.omen_spell(),
-            CastFace::Back => object.card.back_face(),
-        }) else {
+        let definition = if method == CastMethod::Disguise {
+            if face != CastFace::Normal {
+                return false;
+            }
+            self.disguise_cast_definition(card)
+        } else {
+            match face {
+                CastFace::Normal => Some(object.card),
+                CastFace::Adventure => object.card.adventure_spell(),
+                CastFace::Omen => object.card.omen_spell(),
+                CastFace::Back => object.card.back_face(),
+            }
+        };
+        let Some(definition) = definition else {
             return false;
         };
         if method == CastMethod::Plot && definition.is_land() {
@@ -598,12 +606,17 @@ impl Game {
         if flash_surcharge && definition.flash_surcharge().is_none() {
             return false;
         }
-        if !sorcery
+        let normal_timing = sorcery
+            || definition.is_instant()
+            || definition.info().keywords.contains(Keywords::FLASH)
+            || self.cast_timing_granted_with_types(
+                actor,
+                definition,
+                paid_graveyard.map_or(&[], |permission| permission.additional_types),
+            );
+        if !normal_timing
             && method != CastMethod::Sneak
             && !flash_surcharge
-            && !definition.is_instant()
-            && !definition.info().keywords.contains(Keywords::FLASH)
-            && !self.cast_timing_granted(actor, definition)
             && !definition
                 .behold_cast()
                 .is_some_and(|spec| spec.grants_flash)
@@ -612,7 +625,21 @@ impl Game {
         }
         let mut item =
             self.cast_preview(actor, card, object.zone, self.object_ref(card), 0, [0; 6]);
-        self.set_cast_face(&mut item, face);
+        if method == CastMethod::Disguise {
+            let source = item.source.as_mut().expect("face-down preview source");
+            source.card = definition;
+            source.facts.card = definition;
+            source.facts.kinds = definition.kind_mask();
+            source.facts.colors = definition.colors();
+            source.facts.power = match definition.effect() {
+                Effect::Creature(power, _) => i128::from(power),
+                _ => unreachable!("face-down spell is a creature"),
+            };
+            source.facts.granted_subtypes = GrantedSubtypes::default();
+            item.source_keywords = definition.info().keywords;
+        } else {
+            self.set_cast_face(&mut item, face);
+        }
         item.cast.as_mut().unwrap().method = method;
         if method == CastMethod::Sneak {
             Self::configure_sneak(&mut item);
@@ -709,12 +736,7 @@ impl Game {
                 .is_empty();
         }
         let mut a = Announcement {
-            behold_required: !sorcery
-                && method != CastMethod::Sneak
-                && !flash_surcharge
-                && !definition.is_instant()
-                && !definition.info().keywords.contains(Keywords::FLASH)
-                && !self.cast_timing_granted(actor, definition),
+            behold_required: !normal_timing && method != CastMethod::Sneak && !flash_surcharge,
             equip_zero_available: false,
             exhaust_reuse_authorized: false,
             activation_cost_route: ActivationCostRoute::Printed,

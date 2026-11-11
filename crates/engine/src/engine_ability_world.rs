@@ -1335,6 +1335,32 @@ pub(super) trait CharacteristicWorld {
         };
         qualifies.then_some(production)
     }
+    fn controlled_subtype_mana_grants(
+        &self,
+        id: CardId,
+    ) -> Vec<(ability_order::GrantedAbilityKey, u16)> {
+        if self.object(id).zone != Zone::Battlefield
+            || !self.static_sources().iter().any(|&id| {
+                self.object(id).zone == Zone::Battlefield
+                    && self.definition(id).controlled_subtype_mana_activation(None)
+            })
+        {
+            return Vec::new();
+        }
+        ability_evaluation::evaluate_abilities(self).result.objects[id as usize]
+            .grants
+            .iter()
+            .filter_map(|&grant| {
+                let ability_order::GrantedAbilityKind::Template(index) = grant.kind else {
+                    return None;
+                };
+                grant
+                    .granting_card
+                    .controlled_subtype_mana_activation(Some(index))
+                    .then_some((grant, index))
+            })
+            .collect()
+    }
     /// Availability of an exact immutable activation template granted to its
     /// own source. This is not a printed-ability permission or a flattened tap
     /// mana grant: the activation retains its slot, costs and use identity.
@@ -1758,6 +1784,18 @@ pub(super) fn aura_artifact_or_non_aura_enchantment<W: CharacteristicWorld + ?Si
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaProduction {
+    pub(super) fn linked_exile_card_color<W: CharacteristicWorld + ?Sized>(
+        world: &W,
+        source: ObjectRef,
+        origin: Option<u64>,
+    ) -> Self {
+        let mask = world.game().linked_exile_colors(world, source, origin);
+        if mask == 0 {
+            Self::Fixed([0; 6])
+        } else {
+            Self::Choice { mask, amount: 1 }
+        }
+    }
     /// Evaluate against the actual game or a speculative funding overlay.
     pub(super) fn in_world<W: CharacteristicWorld + ?Sized>(
         self,
@@ -1862,6 +1900,11 @@ impl ManaProduction {
                     Self::any_color(amount)
                 }
             }
+            Self::LinkedExileCardColor => Self::linked_exile_card_color(
+                world,
+                world.reference(source),
+                world.ability_origin(source),
+            ),
             Self::CraftMaterialColors => {
                 let mask = world.game().craft_colors(world, world.reference(source));
                 Self::Fixed(std::array::from_fn(|index| {

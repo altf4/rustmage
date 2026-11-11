@@ -411,6 +411,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
             | Action::AnnounceGrantedMana { .. }
+            | Action::AnnounceGrantedManaTemplate { .. }
             | Action::AnnounceSelfGrantedMana { .. }
             | Action::AnnounceBorrowedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,

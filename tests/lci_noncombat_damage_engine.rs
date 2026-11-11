@@ -64,11 +64,15 @@ fn named(name: &str) -> Card {
 }
 
 fn damage(game: &Game, player: Player, source: CardId, color: ChoiceColor) -> i128 {
-    game.stat_value(
+    let count = game.stat_value(
         StatValue::NoncombatDamageDealtByColorThisTurn(color),
         game.object_ref(source),
         player,
-    )
+    );
+    let observed = game.observe(player.other()).players[player.index()]
+        .noncombat_damage_dealt_by_color_this_turn;
+    assert_eq!(observed[color.index()], u128::try_from(count).unwrap());
+    count
 }
 
 fn red_damage(game: &Game, player: Player, source: CardId) -> i128 {

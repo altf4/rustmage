@@ -1642,6 +1642,7 @@ impl Game {
                 .filter(|r| r.needs_source_snapshot())
                 .map(Box::new),
             source_ability_origin: ability_origin,
+            mana_copy_sources: None,
             mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
@@ -8125,6 +8126,7 @@ impl Game {
                         | ManaProduction::ChoiceStat { .. }
                         | ManaProduction::MonocoloredPermanentColors
                         | ManaProduction::CraftMaterialColors
+                        | ManaProduction::LinkedExileCardColor
                         | ManaProduction::DistinctCreaturePowers
                         | ManaProduction::CountSubtype { .. }
                         | ManaProduction::SourcePower { .. }

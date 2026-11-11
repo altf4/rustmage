@@ -2681,6 +2681,7 @@ impl Game {
             self.mark_spell_uncounterable(id);
         }
         item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
+        item.mana_copy_sources = outcome.copies;
         item.mana_provenance = outcome.provenance;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
@@ -2722,6 +2723,7 @@ impl Game {
             source_ability_origin: None,
             target_allocations: None,
             announced_division: None,
+            mana_copy_sources: None,
             mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
@@ -3369,6 +3371,7 @@ impl Game {
                 }
                 announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
                     outcome.treasure_spent;
+                announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.mana_provenance = outcome.provenance;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }

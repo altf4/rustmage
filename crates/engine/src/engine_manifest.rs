@@ -266,12 +266,7 @@ impl Game {
         self.disguise_mana_fundable_with_surcharge(player, id, 0)
     }
 
-    pub(super) fn disguise_mana_fundable_with_surcharge(
-        &self,
-        player: Player,
-        id: CardId,
-        surcharge: u32,
-    ) -> bool {
+    pub(super) fn disguise_cast_definition(&self, id: CardId) -> Option<Card> {
         let object = &self.state.objects[id as usize];
         let physical = object.card;
         if object.is_token()
@@ -284,8 +279,20 @@ impl Game {
                             == Card::from_name("Concealed Weapon")
                                 .expect("pinned catalogue identity")))
         {
-            return false;
+            return None;
         }
+        Card::from_name("@face-down/disguise")
+    }
+
+    pub(super) fn disguise_mana_fundable_with_surcharge(
+        &self,
+        player: Player,
+        id: CardId,
+        surcharge: u32,
+    ) -> bool {
+        let Some(definition) = self.disguise_cast_definition(id) else {
+            return false;
+        };
         3u32.checked_add(surcharge).is_some_and(|generic| {
             self.spell_can_fund_for_definition(
                 player,
@@ -294,7 +301,7 @@ impl Game {
                     colored: [0; 6],
                     generic,
                 },
-                Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
+                definition,
             )
         })
     }

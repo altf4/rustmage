@@ -1041,6 +1041,7 @@ define_actions! {
     // Mana ability granted to this permanent by an exact source.
     TapGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
     AnnounceGrantedMana { card: CardId, grantor: ObjectRef, production: Mana },
+    AnnounceGrantedManaTemplate { source: ObjectRef, grantor: ObjectRef, ability: u16, production: Mana },
     AnnounceCast {
         card: CardId,
     },
@@ -1802,7 +1803,10 @@ pub struct SpellView {
     /// Public resolving division frozen at announcement, not source-departure LKI.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub announced_division: Option<Box<u64>>,
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[allow(clippy::box_collection)]
+    pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
+    #[serde(skip)]
     mana_provenance: Option<Box<mana_lots::SpellManaProvenance>>,
     pub is_copy: bool,
     /// Defender of the unblocked attacker returned for a hand activation.
@@ -2047,6 +2051,10 @@ impl SpellView {
                 .captured_artifact_copy
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
+            + self.mana_copy_sources.as_ref().map_or(0, |sources| {
+                std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
+                    + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
+            })
             + self
                 .mana_provenance
                 .as_ref()
@@ -3468,6 +3476,11 @@ fn is_zero_u64(value: &u64) -> bool {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn no_colored_damage(value: &[u128; 5]) -> bool {
+    *value == [0; 5]
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
@@ -3507,13 +3520,23 @@ pub struct PlayerView {
     pub legend_rule_ignored_this_turn: bool,
     pub noncombat_damage_this_turn: bool,
     pub noncombat_damage_last_turn: bool,
+    /// Actual noncombat damage dealt by this player's sources, in WUBRG order.
+    #[serde(skip_serializing_if = "no_colored_damage")]
+    pub noncombat_damage_dealt_by_color_this_turn: [u128; 5],
     pub cards_discarded_this_turn: u64,
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub permanents_sacrificed_this_turn: u64,
     /// Number of actual library-to-graveyard moves this turn, without card identities.
     pub cards_library_to_graveyard_this_turn: u64,
+    /// Number of actual permanent card arrivals in this player's graveyard this turn.
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub descended_this_turn: u64,
     pub card_left_graveyard_this_turn: bool,
     pub controlled_creature_died_this_turn: bool,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub controlled_creatures_died_this_turn: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub controlled_creature_departures_this_turn: u64,
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub controlled_creatures_exiled_this_turn: u64,
     pub life_gain_events_this_turn: u64,
@@ -7689,6 +7712,10 @@ impl Game {
                     .card
                     .entry_choice()
                     .is_some()
+                    || self.state.objects[card as usize]
+                        .card
+                        .entry_copy()
+                        .is_some()
                     || self.has_entry_counter_replacements(self.state.objects[card as usize].card)
                     || self.may_enter_with_riot(self.state.objects[card as usize].card)
                 {
@@ -7714,6 +7741,16 @@ impl Game {
                     self.state.land_played = true;
                 }
                 self.state.passes = 0;
+            }
+            Action::AnnounceGrantedManaTemplate {
+                source,
+                grantor,
+                ability,
+                production,
+            } => {
+                let mut item = self.controlled_subtype_mana_packet(actor, source, grantor, ability);
+                item.id = self.next_stack_id();
+                self.open_payment_announcement(item, Counters::default(), Some(production));
             }
             Action::AnnounceGrantedMana {
                 card,
@@ -8508,6 +8545,7 @@ impl Game {
                         .as_mut()
                         .unwrap()
                         .treasure_mana_spent |= outcome.treasure_spent;
+                    self.state.stack.last_mut().unwrap().mana_copy_sources = outcome.copies;
                     self.state.stack.last_mut().unwrap().mana_provenance = outcome.provenance;
                     self.state
                         .stack
@@ -12253,12 +12291,19 @@ impl Game {
                 legend_rule_ignored_this_turn: s.players[i].legend_rule_ignored_this_turn,
                 noncombat_damage_this_turn: s.players[i].noncombat_damage_this_turn,
                 noncombat_damage_last_turn: s.players[i].noncombat_damage_last_turn,
+                noncombat_damage_dealt_by_color_this_turn: s.players[i]
+                    .noncombat_damage_dealt_by_color_this_turn,
                 cards_discarded_this_turn: s.players[i].cards_discarded_this_turn,
                 permanents_sacrificed_this_turn: s.players[i].permanents_sacrificed_this_turn,
                 cards_library_to_graveyard_this_turn: s.players[i]
                     .cards_library_to_graveyard_this_turn,
+                descended_this_turn: s.players[i].descended_this_turn,
                 card_left_graveyard_this_turn: s.players[i].card_left_graveyard_this_turn,
                 controlled_creature_died_this_turn: s.players[i].controlled_creature_died_this_turn,
+                controlled_creatures_died_this_turn: s.players[i]
+                    .controlled_creatures_died_this_turn,
+                controlled_creature_departures_this_turn: s.players[i]
+                    .controlled_creature_departures_this_turn,
                 controlled_creatures_exiled_this_turn: s.players[i]
                     .controlled_creatures_exiled_this_turn,
                 life_gain_events_this_turn: s.players[i].life_gain_events_this_turn,
