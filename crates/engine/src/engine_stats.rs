@@ -26,6 +26,7 @@ impl Game {
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastOrLandPlayed
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {
             self.state.cast_sources.push(id);
@@ -86,6 +87,7 @@ impl Game {
         self.register_battlefield_providers(id);
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
+        self.register_expend_source(id);
         self.register_trigger_multiplier_source(id);
         self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
@@ -228,7 +230,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::LifeGained { .. } | TriggerCondition::LifeLost { .. }
+                TriggerCondition::LifeGained { .. }
+                    | TriggerCondition::LifeLost { .. }
+                    | TriggerCondition::LifeGainedOrLostOwnTurn
             )
         }) {
             self.state.life_sources.push(id);
@@ -248,6 +252,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::BattlefieldDeparture(_)
+                    | TriggerCondition::BattlefieldDepartureBatch(_)
                     | TriggerCondition::OpponentHighestPowerCreatureDies
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
@@ -303,6 +308,7 @@ impl Game {
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::ModalSpellCastByYou
+                            | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                     )
             })
         {
@@ -358,6 +364,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
+                            | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_)
                             | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
                             | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
@@ -371,6 +378,7 @@ impl Game {
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
+                            | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
@@ -381,6 +389,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                            | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)

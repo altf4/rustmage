@@ -105,6 +105,7 @@ impl Card {
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
@@ -121,6 +122,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
+                            | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
@@ -186,6 +188,7 @@ impl Game {
                         StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                     )
                 })
             })

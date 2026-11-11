@@ -1,7 +1,39 @@
-//! Generic reductions and the total cost locked before mana abilities/payment.
+//! Reductions and the total cost locked before mana abilities/payment.
 use super::*;
-use crate::cards::CastFilter;
+use crate::cards::{CastFilter, SpellReductionAmount};
 use ability_world::CharacteristicWorld;
+
+/// Keep stacked reductions wide, including the amount that can spill into generic.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Default)]
+pub(crate) struct SpellCostReduction {
+    generic: u64,
+    colored: [u64; 6],
+}
+
+impl SpellCostReduction {
+    fn apply(self, base: [u32; 6], raw_generic: u64) -> Option<ManaCost> {
+        let mut generic_reduction = self.generic;
+        let mut colored = base;
+        if self.colored != [0; 6] {
+            for (cost, reduction) in colored.iter_mut().zip(self.colored) {
+                let used = u64::from(*cost).min(reduction);
+                generic_reduction = generic_reduction.saturating_add(reduction - used);
+                *cost -= used as u32;
+            }
+        }
+        Some(ManaCost {
+            colored,
+            generic: u32::try_from(raw_generic.saturating_sub(generic_reduction)).ok()?,
+        })
+    }
+
+    pub(crate) fn apply_to_printed(self, cost: ManaCost) -> ManaCost {
+        self.apply(cost.colored, u64::from(cost.generic))
+            .expect("a reduced printed cost fits its original representation")
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Compute the wide pre-reduction generic increase from active sources.
@@ -112,19 +144,16 @@ impl Game {
         let raw = u64::from(base.generic)
             .checked_add(extra_generic)?
             .checked_add(self.spell_generic_tax(actor, id, definition))?;
-        let colored = std::array::from_fn(|i| base.colored[i].saturating_sub(discount.colored[i]));
-        let excess = (0..6)
-            .map(|i| u64::from(discount.colored[i].saturating_sub(base.colored[i])))
-            .sum::<u64>();
-        let reductions = self
-            .spell_reduction_with_subtypes(actor, id, mana_value, definition, subtypes)
+        let mut reduction =
+            self.spell_reduction_with_subtypes(actor, id, mana_value, definition, subtypes);
+        reduction.generic = reduction
+            .generic
             .saturating_add(u64::from(discount.generic))
-            .saturating_add(extra_reduction)
-            .saturating_add(excess);
-        Some(ManaCost {
-            colored,
-            generic: u32::try_from(raw.saturating_sub(reductions)).ok()?,
-        })
+            .saturating_add(extra_reduction);
+        for (total, amount) in reduction.colored.iter_mut().zip(discount.colored) {
+            *total = total.saturating_add(u64::from(amount));
+        }
+        reduction.apply(base.colored, raw)
     }
     pub(super) fn spell_total_for_definition(
         &self,
@@ -358,7 +387,10 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
-        if self.cast_uses_target_life_costs(actor, definition) {
+        if self.cast_uses_target_life_costs(actor, definition)
+            || (self.state.objects[card as usize].zone == Zone::Library
+                && definition.x_symbols() > 0)
+        {
             let method = if flashback {
                 CastMethod::Flashback
             } else {
@@ -514,33 +546,32 @@ impl Game {
     fn spell_origin_is_nonhand(&self, actor: Player, id: CardId) -> bool {
         self.spell_origin(id) != Zone::Hand || self.state.objects[id as usize].owner != actor
     }
-    pub(super) fn spell_reduction(&self, actor: Player, id: CardId) -> u32 {
-        u32::try_from(self.spell_reduction_at_mana_value(
-            actor,
-            id,
-            self.effective_spell_card(id).fixed_mana_value(),
-        ))
-        .unwrap_or(u32::MAX)
-    }
-    pub(super) fn spell_reduction_at_mana_value(
+    pub(super) fn direct_spell_reduction(
         &self,
         actor: Player,
         id: CardId,
-        mana_value: u64,
-    ) -> u64 {
-        self.spell_reduction_for_definition(actor, id, mana_value, self.effective_spell_card(id))
-    }
-    pub(super) fn spell_reduction_for_definition(
-        &self,
-        actor: Player,
-        id: CardId,
-        mana_value: u64,
-        definition: Card,
-    ) -> u64 {
+        has_generic: bool,
+    ) -> SpellCostReduction {
+        let definition = self.effective_spell_card(id);
+        let has_colored_rule = |card: Card, source_only: bool| {
+            card.cost_reductions().iter().any(|rule| {
+                rule.source_only == source_only
+                    && matches!(rule.amount, SpellReductionAmount::ColoredStat { .. })
+            })
+        };
+        if !has_generic
+            && !has_colored_rule(definition, true)
+            && !self.state.static_sources.iter().any(|&source| {
+                let object = &self.state.objects[source as usize];
+                object.controller == actor && has_colored_rule(object.card, false)
+            })
+        {
+            return SpellCostReduction::default();
+        }
         self.spell_reduction_with_subtypes(
             actor,
             id,
-            mana_value,
+            definition.fixed_mana_value(),
             definition,
             self.spell_cost_subtypes(id),
         )
@@ -561,12 +592,15 @@ impl Game {
         mana_value: u64,
         definition: Card,
         subtypes: GrantedSubtypes,
-    ) -> u64 {
+    ) -> SpellCostReduction {
         if definition.cost_reductions().is_empty()
             && self.state.static_sources.is_empty()
             && self.affinity_grants(actor, definition) == 0
         {
-            return self.turn_spell_reduction(actor, definition);
+            return SpellCostReduction {
+                generic: self.turn_spell_reduction(actor, definition),
+                ..SpellCostReduction::default()
+            };
         }
         if let Some(world) = self.cast_departure(self.object_ref(id), actor) {
             self.spell_reduction_in_world(&world, actor, id, mana_value, definition, subtypes)
@@ -590,7 +624,7 @@ impl Game {
         mana_value: u64,
         definition: Card,
         subtypes: GrantedSubtypes,
-    ) -> u64 {
+    ) -> SpellCostReduction {
         let recipient = world.object(id);
         let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
@@ -717,7 +751,8 @@ impl Game {
                 };
                 u64::try_from(value.max(0)).unwrap_or(u64::MAX)
             }
-            crate::cards::SpellReductionAmount::Stat { value, factor } => {
+            SpellReductionAmount::Stat { value, factor }
+            | SpellReductionAmount::ColoredStat { value, factor, .. } => {
                 // Widen before multiplying: raw X plus printed generic may exceed
                 // u32 before a legal discount makes its payment representable.
                 let n = self
@@ -730,7 +765,10 @@ impl Game {
         };
         // Raw scalar requirements fit u64; discounts above u64::MAX are
         // equivalent and impose no artificial reducer-count limit.
-        let mut reduction = self.turn_spell_reduction(actor, definition);
+        let mut reduction = SpellCostReduction {
+            generic: self.turn_spell_reduction(actor, definition),
+            ..SpellCostReduction::default()
+        };
         let affinity_grants = self.affinity_grants(actor, definition);
         if affinity_grants != 0 {
             let artifacts = (0..self.state.objects.len())
@@ -742,11 +780,23 @@ impl Game {
                         && world.kinds(id) & 16 != 0
                 })
                 .count() as u64;
-            reduction = reduction.saturating_add(affinity_grants.saturating_mul(artifacts));
+            reduction.generic = reduction
+                .generic
+                .saturating_add(affinity_grants.saturating_mul(artifacts));
         }
+        let mut include = |rule: &crate::cards::SpellReduction, source| {
+            let amount = amount(rule, source);
+            let total = match rule.amount {
+                SpellReductionAmount::ColoredStat { color, .. } => {
+                    &mut reduction.colored[color.index()]
+                }
+                _ => &mut reduction.generic,
+            };
+            *total = total.saturating_add(amount);
+        };
         for rule in definition.cost_reductions() {
             if rule.source_only && applies(rule, id) {
-                reduction = reduction.saturating_add(amount(rule, id));
+                include(rule, id);
             }
         }
         for &source in &self.state.static_sources {
@@ -758,7 +808,7 @@ impl Game {
                 if rule.source_only || !world.fragment_available(source, |fragment| matches!(fragment,
                     crate::cards::StaticAbilityFragment::CostReduction(slot, _) if usize::from(*slot) == index)) { continue; }
                 if applies(rule, source) {
-                    reduction = reduction.saturating_add(amount(rule, source));
+                    include(rule, source);
                 }
             }
         }

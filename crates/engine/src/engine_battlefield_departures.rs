@@ -66,6 +66,9 @@ impl DepartureRule {
             && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
             && self
+                .subtype
+                .is_none_or(|subtype| before.has_subtype(subtype))
+            && self
                 .minimum_power
                 .is_none_or(|power| before.is_creature() && before.power >= i128::from(power))
     }
@@ -169,6 +172,7 @@ impl Game {
                             ability.condition.event(),
                             TriggerCondition::PermanentLeaves(_)
                                 | TriggerCondition::BattlefieldDeparture(_)
+                                | TriggerCondition::BattlefieldDepartureBatch(_)
                                 | TriggerCondition::SelfOrControlledPermanentDies(_)
                         )
                     }))
@@ -214,6 +218,57 @@ impl Game {
                 };
                 if matched && self.queue_zone_trigger(source, index, event) {
                     self.capture_battlefield_departure_facts(event, ability.program);
+                }
+            }
+        }
+    }
+
+    pub(super) fn battlefield_departure_batch_triggers(&mut self, events: &[ZoneChange]) {
+        let mut dispatched: Vec<&Arc<[DepartureObserver]>> = Vec::new();
+        for observers in events
+            .iter()
+            .filter_map(|event| event.battlefield_departure_observers.as_ref())
+        {
+            // A combined report may contain moves with different pre-event worlds.
+            if dispatched.iter().any(|group| Arc::ptr_eq(group, observers)) {
+                continue;
+            }
+            dispatched.push(observers);
+
+            for observer in observers.iter() {
+                let source = &observer.source;
+                for (index, ability) in source.card.triggers().iter().enumerate() {
+                    let TriggerCondition::BattlefieldDepartureBatch(rule) =
+                        ability.condition.event()
+                    else {
+                        continue;
+                    };
+                    let mut matching = events.iter().filter(|event| {
+                        event.moved
+                            && event.before.zone == Zone::Battlefield
+                            && event
+                                .battlefield_departure_observers
+                                .as_ref()
+                                .is_some_and(|group| Arc::ptr_eq(group, observers))
+                            && rule.matches(source, event)
+                    });
+                    let Some(first) = matching.next() else {
+                        continue;
+                    };
+                    if !self.queue_zone_trigger(source, index, first) {
+                        continue;
+                    }
+                    let mut includes_death = first.is_creature_death();
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    for event in matching {
+                        includes_death |= event.is_creature_death();
+                        packet.refer_zone_event(event);
+                    }
+                    if includes_death && !first.is_creature_death() {
+                        self.add_event_trigger_multiplicity(
+                            source.additional_creature_death_triggers,
+                        );
+                    }
                 }
             }
         }

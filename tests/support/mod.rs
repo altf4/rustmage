@@ -63,6 +63,7 @@ pub(crate) fn spawn(g: &mut Game, owner: Player, card: Card, zone: Zone) -> Card
         damage: 0,
         damaged_this_turn: false,
         dealt_damage_this_turn: false,
+        targeted_this_turn_by: 0,
         dealt_damage_this_incarnation: false,
         dealt_combat_damage_this_incarnation: false,
         deathtouch_since_sba: false,

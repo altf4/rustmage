@@ -209,12 +209,20 @@ impl EntryMove {
     }
 
     /// Copy recipes and applicable continuous effects can change the prospective entrant.
-    pub(super) fn requires_characteristic_preview(&self) -> bool {
+    pub(super) fn requires_characteristic_preview<
+        W: ability_world::CharacteristicWorld + ?Sized,
+    >(
+        &self,
+        world: &W,
+    ) -> bool {
         self.ghost_vacuum_after.is_some()
             || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
             || self.as_entry_treasure_source().is_some()
             || self.before.copy_recipe.is_some()
+            || (self.entry_kinds() & 1 != 0
+                && characteristic_layers::other_creatures_food_timestamp(world, self.before.id)
+                    .is_some())
             || self
                 .copy_preparation
                 .as_ref()
@@ -691,7 +699,7 @@ impl Game {
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
                     || self.opponent_entry_kinds_require_tapped(
-                        if movement.requires_characteristic_preview() {
+                        if movement.requires_characteristic_preview(self) {
                             self.ghost_entry_preview(&movement.replacement_preview())
                                 .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
                         } else {
@@ -790,13 +798,7 @@ impl Game {
                             .card
                             .replacement_effects()
                             .iter()
-                            .any(|e| {
-                                matches!(
-                                    e,
-                                    crate::cards::ReplacementSpec::Counters { .. }
-                                        | crate::cards::ReplacementSpec::CountersPlacedByController
-                                )
-                            })
+                            .any(|spec| spec.replaces_permanent_counters())
                     }))
         });
         // Atomic costs must always pass through advance_entries, even when
@@ -900,25 +902,16 @@ impl Game {
                 || card.x_complement_entry_counters().is_some()
                 || card.devour().is_some())
                 && (replacements::entry_kind_sensitive(self)
-                    || card.replacement_effects().iter().any(|e| {
-                        matches!(
-                            e,
-                            crate::cards::ReplacementSpec::Counters { .. }
-                                | crate::cards::ReplacementSpec::CountersPlacedByController
-                        )
-                    })
+                    || card
+                        .replacement_effects()
+                        .iter()
+                        .any(|spec| spec.replaces_permanent_counters())
                     || self.state.static_sources.iter().any(|&id| {
                         self.state.objects[id as usize]
                             .card
                             .replacement_effects()
                             .iter()
-                            .any(|e| {
-                                matches!(
-                                    e,
-                                    crate::cards::ReplacementSpec::Counters { .. }
-                                        | crate::cards::ReplacementSpec::CountersPlacedByController
-                                )
-                            })
+                            .any(|spec| spec.replaces_permanent_counters())
                     }))
     }
     pub(super) fn pre_entry_counters(&self, before: &ObjectView, destination: Zone) -> Counters {
@@ -1813,8 +1806,8 @@ impl Game {
                 if m.destination != Zone::Battlefield || m.skipped || m.counters.is_empty() {
                     continue;
                 }
-                let type_sensitive =
-                    m.requires_characteristic_preview() || replacements::entry_kind_sensitive(self);
+                let type_sensitive = m.requires_characteristic_preview(self)
+                    || replacements::entry_kind_sensitive(self);
                 let preview = if type_sensitive
                     || replacements::entry_power_sensitive(self, m.controller, m.before.card)
                 {
@@ -2272,6 +2265,7 @@ impl Game {
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                                     | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                                     | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
+                                    | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             )
                         })
                     })
@@ -2314,6 +2308,31 @@ impl Game {
                                 && let Some(amount) = self.entry_counter_bonus_by_mana_value(movement, filter, maximum, at_most, above)
                             {
                                 movement.counters.add(kind, amount);
+                            }
+                        }
+                    }
+                    if let StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat {
+                        kind,
+                        amount,
+                    } = *fragment
+                        && self.continuous_fragment_available(id, |f| std::ptr::eq(f, fragment))
+                    {
+                        let reference = self.object_ref(id);
+                        let count = self.stat_value(amount, reference, source.controller);
+                        if count > 0 {
+                            let count =
+                                u64::try_from(count).capacity("entry counter bonus exhausted");
+                            for movement in moves.iter_mut() {
+                                if movement.before.reference != reference
+                                    && self
+                                        .ghost_entry_preview(&movement.replacement_preview())
+                                        .is_some_and(|view| {
+                                            view.controller == source.controller
+                                                && view.is_creature()
+                                        })
+                                {
+                                    movement.counters.add(kind, count);
+                                }
                             }
                         }
                     }

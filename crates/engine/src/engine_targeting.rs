@@ -1048,6 +1048,15 @@ impl Game {
             return TargetPlan::Single(spec);
         }
         if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::OtherThanEventObject { base, .. } = spec.rule
+        {
+            spec.rule = TargetRule::OtherThanEventObject {
+                base,
+                excluded: item.event_object.as_ref().map(|event| event.object),
+            };
+            return TargetPlan::Single(spec);
+        }
+        if let TargetPlan::Single(mut spec) = plan
             && let TargetRule::ManaValueExactly { base, amount, .. } = spec.rule
         {
             spec.rule = TargetRule::ManaValueExactly {
@@ -1812,6 +1821,7 @@ impl Game {
     }
 
     pub(super) fn continue_announcement_choices(&mut self, needs_mode: bool) {
+        self.freeze_library_entry_counter_choice();
         let a = self.state.announcing.as_ref().unwrap();
         let player = a.item.controller;
         // CR601.2b announces the mode before a hybrid equivalent. Both
@@ -2178,6 +2188,18 @@ impl Game {
         let characteristics = || characteristic_query::CharacteristicQuery::in_world(world);
         let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
+            TargetRule::OtherThanEventObject { base, excluded } => {
+                return matches!(target, Target::Card(id) if lookup(id).is_some()
+                    && excluded.is_some_and(|object| world.reference(id) != object))
+                    && self.target_matches_in_world(
+                        world,
+                        *base,
+                        controller,
+                        source,
+                        target,
+                        qualification,
+                    );
+            }
             TargetRule::ManaValueExactly { base, value, .. } => {
                 return value.is_some_and(|value| matches!(target, Target::Card(id) if lookup(id).is_some_and(|_o| world.mana_value(id) == value)))
                     && self.target_matches_in_world(world, *base, controller, source, target, qualification);

@@ -6,7 +6,6 @@ use super::*;
 pub(super) struct LibraryEntryCounter {
     pub spell: u64,
     pub counter_faces: u8,
-    pub ordinary_faces: u8,
     pub selected: Option<bool>,
 }
 
@@ -17,7 +16,12 @@ impl Game {
         definition.is_creature()
             && self.top_library_card(player) == Some(card)
             && cast_origins::library_spell_with_counter_permission(self, player, definition)
-            && cast_origins::ordinary_library_spell_permission(self, player, definition)
+            && cast_origins::ordinary_library_spell_permission(
+                self,
+                player,
+                definition,
+                definition.fixed_mana_value(),
+            )
     }
 
     pub(super) fn library_entry_counter(
@@ -40,22 +44,17 @@ impl Game {
             definition.back_face(),
         ];
         let mut counter_faces = 0;
-        let mut ordinary_faces = 0;
         for (index, face) in faces.into_iter().enumerate() {
             if let Some(face) = face
                 && face.is_creature()
                 && cast_origins::library_spell_with_counter_permission(self, player, face)
             {
                 counter_faces |= 1 << index;
-                if cast_origins::ordinary_library_spell_permission(self, player, face) {
-                    ordinary_faces |= 1 << index;
-                }
             }
         }
         (counter_faces != 0).then_some(LibraryEntryCounter {
             spell: 0,
             counter_faces,
-            ordinary_faces,
             selected: None,
         })
     }
@@ -69,10 +68,36 @@ impl Game {
         if counter.spell != item.id || counter.counter_faces & (1 << cast.face as u8) == 0 {
             return None;
         }
-        if counter.ordinary_faces & (1 << cast.face as u8) != 0 {
-            counter.selected
-        } else {
-            Some(true)
+        let definition = item.source.expect("library spell has source").card;
+        if cast.method == CastMethod::Normal && item.x.is_none() && definition.x_symbols() > 0 {
+            return None;
+        }
+        counter.selected.or_else(|| {
+            (!cast_origins::ordinary_library_spell_permission(
+                self,
+                item.controller,
+                definition,
+                item.mana_value(),
+            ))
+            .then_some(true)
+        })
+    }
+
+    /// Lock the forced counter route once the spell's face and value are set.
+    /// Paying costs can remove a provider without reopening the origin choice.
+    pub(super) fn freeze_library_entry_counter_choice(&mut self) {
+        let Some(item) = self.state.announcing.as_ref().map(|a| &a.item) else {
+            return;
+        };
+        if self.library_entry_counter_choice(item) == Some(true) {
+            self.state
+                .linked_choices
+                .as_mut()
+                .unwrap()
+                .library_entry_counter
+                .as_mut()
+                .unwrap()
+                .selected = Some(true);
         }
     }
 
@@ -86,8 +111,8 @@ impl Game {
                     .and_then(|state| state.library_entry_counter)
                     .is_some_and(|counter| {
                         counter.spell == item.id
-                            && counter.ordinary_faces & (1 << cast.face as u8) != 0
-                            && counter.selected.is_none()
+                            && counter.counter_faces & (1 << cast.face as u8) != 0
+                            && self.library_entry_counter_choice(item).is_none()
                     })
         })
     }

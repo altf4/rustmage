@@ -299,6 +299,11 @@ pub enum StaticAbilityFragment {
     /// Controlled creatures enter with an additional +1/+1 counter per land
     /// that previously entered under this provider controller this turn.
     ControlledCreatureEntryCountersForLandsEntered,
+    /// Add a live quantity of counters to other controlled creatures as they enter.
+    OtherControlledCreatureEntryCountersByStat {
+        kind: CounterKind,
+        amount: StatValue,
+    },
     /// Additional counters on other controlled entrants, selected by effective mana value.
     OtherControlledEntryCountersByManaValue {
         filter: ReplacementFilter,
@@ -491,7 +496,8 @@ pub enum StaticAbilityFragment {
     /// The attached permanent's controller may privately view their library top.
     AttachmentLookAtLibraryTop,
     /// Each matching creature owns the indexed granted trigger template.
-    /// Scope is evaluated in layer six and frozen for departure events.
+    /// Scope is evaluated in layer six. Cast triggers sample the committed
+    /// battlefield; departure triggers retain the pre-move instance.
     ControlledCreatureTrigger {
         ability: u16,
         other: bool,
@@ -501,6 +507,11 @@ pub enum StaticAbilityFragment {
     ConditionalWard {
         condition: StatValue,
         filter: CountFilter,
+        ability: u16,
+    },
+    /// Grant the indexed ward to controlled permanents with at least one counter of any kind.
+    CounterBearingPermanentWard {
+        condition: StatValue,
         ability: u16,
     },
     /// During the provider's turn, grant both abilities to it and controlled creatures of these kinds.
@@ -542,6 +553,9 @@ pub enum StaticAbilityFragment {
     /// In layer four add Food to controlled artifacts. In layer six grant them
     /// this indexed activation template as part of the same continuous effect.
     ControlledArtifactFood(u16),
+    /// In layer four add the artifact type and Food subtype to every other
+    /// creature. In layer six grant each the indexed activation template.
+    OtherCreaturesFood(u16),
     /// In layer six grant this indexed activation to controlled artifacts.
     ControlledArtifactActivation(u16),
     /// In layer six, grant this indexed nonmana activation to controlled nontoken creatures.
@@ -663,6 +677,8 @@ pub enum PermanentForm {
     PreserveWithColors,
     Creature,
     Land,
+    /// Replace card types with artifact and add Food, keeping artifact subtypes.
+    FoodArtifact,
     /// Add creature type without removing other card or creature types.
     AddCreature,
     /// Add creature subtypes without changing card types or colors.

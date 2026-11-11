@@ -615,8 +615,11 @@ impl FundingState<'_> {
             object.zone,
             Zone::Hand | Zone::Graveyard | Zone::Exile | Zone::Library
         ) {
-            if object.zone == Zone::Graveyard {
-                self.graveyard_left[object.owner.index()] = true;
+            if object.zone == Zone::Graveyard && object.is_card() {
+                let count = &mut self.graveyard_left[object.owner.index()];
+                *count = count
+                    .checked_add(1)
+                    .capacity("projected graveyard departure history exhausted");
             }
             object.zone = Zone::Stack;
             object.controller = self.actor;
@@ -729,13 +732,17 @@ impl FundingState<'_> {
                     self.active_melds()
                         .find(|row| row.object == *r)
                         .map(|row| row.entry),
+                    object.is_card(),
+                    object.zone == Zone::Battlefield
+                        && requested == Zone::Graveyard
+                        && self.subtypes(r.card).has(self.definition(r.card), "Food"),
                 )
             })
             .collect();
         let destinations = objects
             .iter()
             .zip(&before_facts)
-            .map(|(r, &(_, _, _, kinds, _))| {
+            .map(|(r, &(_, _, _, kinds, _, _, _))| {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
@@ -826,7 +833,7 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![(initial, Vec::new())];
-        for ((r, choices), &(before_zone, controller, owner, kinds, meld)) in
+        for ((r, choices), &(before_zone, controller, owner, kinds, meld, was_card, food)) in
             objects.iter().zip(destinations).zip(&before_facts)
         {
             let mut next = Vec::new();
@@ -862,8 +869,14 @@ impl FundingState<'_> {
                             .checked_add(1)
                             .capacity("virtual death history exhausted");
                     }
-                    if before_zone == Zone::Graveyard {
-                        n.graveyard_left[owner.index()] = true;
+                    if before_zone == Zone::Graveyard && zone != Zone::Graveyard && was_card {
+                        let count = &mut n.graveyard_left[owner.index()];
+                        *count = count
+                            .checked_add(1)
+                            .capacity("projected graveyard departure history exhausted");
+                    }
+                    if food && zone != Zone::Battlefield {
+                        n.food_sacrificed[controller.index()] = true;
                     }
                     n.project_nonbattlefield_move(*r, zone, meld.map(|entry| entry.front_cards[0]));
                     if let Some(entry) = meld {
@@ -949,6 +962,7 @@ impl FundingState<'_> {
         object.damage = 0;
         object.damaged_this_turn = false;
         object.dealt_damage_this_turn = false;
+        object.targeted_this_turn_by = 0;
         object.dealt_damage_this_incarnation = false;
         object.dealt_combat_damage_this_incarnation = false;
         object.deathtouch_since_sba = false;

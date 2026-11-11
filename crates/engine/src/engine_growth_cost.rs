@@ -118,18 +118,16 @@ impl Game {
             .filter(|&provider| {
                 let giver = &self.state.objects[provider as usize];
                 giver.zone == Zone::Battlefield
-                    && giver.controller == actor
                     && giver.card.static_ability_groups().iter().any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(
-                                fragment,
-                                StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
-                                    | StaticAbilityFragment::ControlledArtifactFood(_)
-                                    | StaticAbilityFragment::ControlledArtifactActivation(_)
-                                    | StaticAbilityFragment::ControlledNontokenCreatureActivation(
-                                        _
-                                    )
-                            )
+                        group.fragments.iter().any(|fragment| match fragment {
+                            StaticAbilityFragment::OtherCreaturesFood(_) => true,
+                            StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
+                            | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::ControlledArtifactActivation(_)
+                            | StaticAbilityFragment::ControlledNontokenCreatureActivation(_) => {
+                                giver.controller == actor
+                            }
+                            _ => false,
                         })
                     })
             })
@@ -146,7 +144,7 @@ impl Game {
     ) -> bool {
         let kinds = self.current_kinds(card);
         let nontoken_creature = kinds & 1 != 0 && !self.state.objects[card as usize].is_token();
-        if kinds & (16 | 64) == 0 && !nontoken_creature {
+        if kinds & (1 | 16 | 64) == 0 {
             return false;
         }
         let source = self.object_ref(card);
@@ -162,7 +160,7 @@ impl Game {
             {
                 let (index, action) = match *fragment {
                     StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
-                        if kinds & 64 != 0 =>
+                        if giver.controller == actor && kinds & 64 != 0 =>
                     {
                         (
                             index,
@@ -175,7 +173,19 @@ impl Game {
                     }
                     StaticAbilityFragment::ControlledArtifactFood(index)
                     | StaticAbilityFragment::ControlledArtifactActivation(index)
-                        if kinds & 16 != 0 =>
+                        if giver.controller == actor && kinds & 16 != 0 =>
+                    {
+                        (
+                            index,
+                            Action::AnnounceArtifactFood {
+                                source,
+                                grantor,
+                                ability: index,
+                            },
+                        )
+                    }
+                    StaticAbilityFragment::OtherCreaturesFood(index)
+                        if source != grantor && kinds & 1 != 0 =>
                     {
                         (
                             index,
@@ -187,7 +197,7 @@ impl Game {
                         )
                     }
                     StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
-                        if nontoken_creature =>
+                        if giver.controller == actor && nontoken_creature =>
                     {
                         (
                             index,

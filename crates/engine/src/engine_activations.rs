@@ -1257,6 +1257,7 @@ impl Game {
                         matches!(fragment,
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
+                        | crate::cards::StaticAbilityFragment::OtherCreaturesFood(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
                         | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability: index, .. }

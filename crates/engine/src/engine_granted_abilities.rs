@@ -1,5 +1,7 @@
-//! Event-qualified ability grants reuse immutable Equipment programs and owned packets.
+//! Event-qualified ability grants reuse immutable programs and owned packets.
+use super::ability_world::CharacteristicWorld;
 use super::*;
+use crate::cards::StaticAbilityFragment;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn attachment_recipient(&self, grantor: CardId) -> Option<ObjectRef> {
@@ -37,6 +39,7 @@ impl Game {
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::ModalSpellCastByYou
+                            | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
@@ -100,5 +103,78 @@ impl Game {
             }
         }
         out
+    }
+
+    /// Controlled-creature grants are indexed by their provider, but each
+    /// surviving recipient owns a separate trigger. Keep the exact template
+    /// slot so a provider's other granted abilities cannot fire from this row.
+    pub(super) fn controlled_creature_cast_trigger_sources(
+        &self,
+        caster: Player,
+    ) -> Vec<(ObjectView, AttachmentTriggerView, usize)> {
+        let mut sources = Vec::new();
+        let query = std::cell::OnceCell::new();
+        for &id in &self.state.cast_sources {
+            let provider = &self.state.objects[id as usize];
+            if provider.zone != Zone::Battlefield {
+                continue;
+            }
+            let grantor = self.object_ref(id);
+            let granting_card = provider.card;
+            for (index, group) in granting_card.static_ability_groups().iter().enumerate() {
+                for fragment in group.fragments {
+                    let StaticAbilityFragment::ControlledCreatureTrigger {
+                        ability,
+                        other,
+                        nontoken,
+                    } = *fragment
+                    else {
+                        continue;
+                    };
+                    let condition = granting_card.triggers()[usize::from(ability)].condition;
+                    let TriggerCondition::SpellCast { relation, .. } = condition.event() else {
+                        continue;
+                    };
+                    if !condition.is_granted()
+                        || match relation {
+                            CastRelation::You => provider.controller != caster,
+                            CastRelation::Opponent => provider.controller == caster,
+                            CastRelation::Any => false,
+                        }
+                    {
+                        continue;
+                    }
+
+                    let world = query.get_or_init(|| self.characteristic_query());
+                    if !world.continuous_group_available(grantor, index, group) {
+                        continue;
+                    }
+                    for (recipient, object) in self.state.objects.iter().enumerate() {
+                        let recipient = recipient as CardId;
+                        if object.zone != Zone::Battlefield
+                            || !world.controlled_creature_trigger_applies(
+                                grantor, recipient, other, nontoken,
+                            )
+                        {
+                            continue;
+                        }
+                        let source = world.object_view(recipient);
+                        if !source.grant_available(grantor, granting_card, ability, None) {
+                            continue;
+                        }
+                        let grant = AttachmentTriggerView {
+                            grantor,
+                            granting_card,
+                            recipient: source.reference,
+                            defender: None,
+                            granted: true,
+                            origin: self.copied_grant_origin(grantor),
+                        };
+                        sources.push((source, grant, usize::from(ability)));
+                    }
+                }
+            }
+        }
+        sources
     }
 }

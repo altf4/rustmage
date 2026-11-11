@@ -107,7 +107,13 @@ pub(super) trait CharacteristicWorld {
         self.game().state.creatures_died_this_turn
     }
     fn card_left_graveyard(&self, player: Player) -> bool {
-        self.game().state.players[player.index()].card_left_graveyard_this_turn
+        self.graveyard_departure_count(player) > 0
+    }
+    fn graveyard_departure_count(&self, player: Player) -> u64 {
+        self.game().state.players[player.index()].cards_left_graveyard_this_turn
+    }
+    fn food_sacrificed(&self, player: Player) -> bool {
+        self.game().state.players[player.index()].food_sacrificed_this_turn
     }
     fn roles(&self) -> Option<&roles::RoleState> {
         self.game().state.roles.as_deref()
@@ -1296,25 +1302,45 @@ pub(super) trait CharacteristicWorld {
                     current & 1 != 0 && current & kinds != 0
                 }))
     }
-    fn conditional_ward_applies(
+    fn conditional_ward_ability(
         &self,
         source: ObjectRef,
-        condition: StatValue,
-        filter: CountFilter,
         id: CardId,
-    ) -> bool {
-        self.object(source.card).zone == Zone::Battlefield
-            && self.reference(source.card) == source
-            && self.value(condition, source.card) != 0
-            && Game::count_object_matches(
+        fragment: crate::cards::StaticAbilityFragment,
+    ) -> Option<u16> {
+        use crate::cards::StaticAbilityFragment;
+        let provider = self.object(source.card);
+        if provider.zone != Zone::Battlefield || self.reference(source.card) != source {
+            return None;
+        }
+        match fragment {
+            StaticAbilityFragment::ConditionalWard {
+                condition,
                 filter,
-                source,
-                self.object(source.card).controller,
-                id,
-                self.object(id),
-                &|id| self.subtypes(id),
-                &|id, _| self.kinds(id),
-            )
+                ability,
+            } if self.value(condition, source.card) != 0
+                && Game::count_object_matches(
+                    filter,
+                    source,
+                    provider.controller,
+                    id,
+                    self.object(id),
+                    &|id| self.subtypes(id),
+                    &|id, _| self.kinds(id),
+                ) =>
+            {
+                Some(ability)
+            }
+            StaticAbilityFragment::CounterBearingPermanentWard { condition, ability }
+                if self.object(id).zone == Zone::Battlefield
+                    && self.object(id).controller == provider.controller
+                    && self.counter_amounts(id).has_any()
+                    && self.value(condition, source.card) != 0 =>
+            {
+                Some(ability)
+            }
+            _ => None,
+        }
     }
     fn static_tap_mana(
         &self,
@@ -1742,8 +1768,11 @@ impl CharacteristicWorld for CastDepartureWorld<'_> {
             self.game.object(id)
         }
     }
-    fn card_left_graveyard(&self, player: Player) -> bool {
-        self.graveyard_owner == Some(player) || self.game.card_left_graveyard(player)
+    fn graveyard_departure_count(&self, player: Player) -> u64 {
+        self.game
+            .graveyard_departure_count(player)
+            .checked_add(u64::from(self.graveyard_owner == Some(player)))
+            .capacity("projected graveyard departure history exhausted")
     }
     fn life(&self, player: Player) -> i128 {
         self.game.life(player)
@@ -2111,8 +2140,11 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn creatures_died(&self) -> u64 {
         self.parent.creatures_died()
     }
-    fn card_left_graveyard(&self, p: Player) -> bool {
-        self.parent.card_left_graveyard(p)
+    fn graveyard_departure_count(&self, player: Player) -> u64 {
+        self.parent.graveyard_departure_count(player)
+    }
+    fn food_sacrificed(&self, player: Player) -> bool {
+        self.parent.food_sacrificed(player)
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
         self.parent.plus_one_placed_this_turn(object, p)

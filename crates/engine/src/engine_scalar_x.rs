@@ -2,6 +2,48 @@
 //! immutable threshold breakpoints and at most 33 funding queries per segment, never X.
 use super::*;
 use crate::cards::CastFilter;
+
+const SCALAR_X_END: u64 = u32::MAX as u64 + 1;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CastFilter {
+    pub(super) fn add_scalar_x_cuts(self, card: Card, cuts: &mut Vec<u64>) {
+        let symbols = u64::from(card.x_symbols());
+        if symbols == 0 {
+            return;
+        }
+        let cut = |mana_value: u64| {
+            mana_value
+                .saturating_sub(card.fixed_mana_value())
+                .div_ceil(symbols)
+                .min(SCALAR_X_END)
+        };
+        match self {
+            Self::ManaValueMinimum { filter, minimum } => {
+                cuts.push(cut(minimum));
+                filter.add_scalar_x_cuts(card, cuts);
+            }
+            Self::ManaValueMaximum { filter, maximum } => {
+                if let Some(first_excluded) = maximum.checked_add(1) {
+                    cuts.push(cut(first_excluded));
+                }
+                filter.add_scalar_x_cuts(card, cuts);
+            }
+            Self::AnyOf(filters) => {
+                for filter in filters {
+                    filter.add_scalar_x_cuts(card, cuts);
+                }
+            }
+            Self::Colors { filter, .. }
+            | Self::ManaSymbols { filter, .. }
+            | Self::TargetCount { filter, .. }
+            | Self::Targeted { filter, .. }
+            | Self::CasterOffTurn { filter } => filter.add_scalar_x_cuts(card, cuts),
+            _ => {}
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn scalar_x_total(
@@ -128,58 +170,26 @@ impl Game {
         if current.map_or(symbols, |a| u64::from(a.payment_x_symbols())) == 0 {
             return Vec::new();
         }
-        let end = u64::from(u32::MAX) + 1;
-        let mut cuts = vec![0, end];
-        fn thresholds(filter: CastFilter, base: u64, symbols: u64, end: u64, cuts: &mut Vec<u64>) {
-            if symbols == 0 {
-                return;
-            }
-            match filter {
-                CastFilter::ManaValueMinimum { filter, minimum } => {
-                    cuts.push(minimum.saturating_sub(base).div_ceil(symbols).min(end));
-                    thresholds(*filter, base, symbols, end, cuts);
-                }
-                CastFilter::ManaValueMaximum { filter, maximum } => {
-                    cuts.push(
-                        maximum
-                            .saturating_add(1)
-                            .saturating_sub(base)
-                            .div_ceil(symbols)
-                            .min(end),
-                    );
-                    thresholds(*filter, base, symbols, end, cuts);
-                }
-                CastFilter::AnyOf(filters) => {
-                    for f in filters {
-                        thresholds(*f, base, symbols, end, cuts);
-                    }
-                }
-                CastFilter::ManaSymbols { filter, .. } | CastFilter::Targeted { filter, .. } => {
-                    thresholds(*filter, base, symbols, end, cuts)
-                }
-                _ => {}
-            }
+        let ordinary_library = current.map_or_else(
+            || self.state.objects[id as usize].zone == Zone::Library,
+            |a| {
+                a.item.cast.is_some_and(|cast| {
+                    cast.origin == Zone::Library && cast.method != CastMethod::LibraryLife
+                }) && a.library_top_cast_permission().is_none()
+            },
+        ) && self.state.resolving.is_none();
+        let mut cuts = vec![0, SCALAR_X_END];
+        if ordinary_library {
+            cast_origins::add_library_spell_value_cuts(self, actor, card, &mut cuts);
         }
         for rule in card.cost_reductions() {
-            thresholds(
-                rule.filter,
-                card.fixed_mana_value(),
-                symbols,
-                end,
-                &mut cuts,
-            );
+            rule.filter.add_scalar_x_cuts(card, &mut cuts);
         }
         for &source in &self.state.static_sources {
             let o = &self.state.objects[source as usize];
             if o.controller == actor {
                 for rule in o.card.cost_reductions() {
-                    thresholds(
-                        rule.filter,
-                        card.fixed_mana_value(),
-                        symbols,
-                        end,
-                        &mut cuts,
-                    );
+                    rule.filter.add_scalar_x_cuts(card, &mut cuts);
                 }
             }
         }
@@ -189,7 +199,7 @@ impl Game {
                     minimum
                         .saturating_sub(card.fixed_mana_value())
                         .div_ceil(symbols)
-                        .min(end),
+                        .min(SCALAR_X_END),
                 )
             };
             if let Some(state) = &self.state.mana_lots {
@@ -241,6 +251,16 @@ impl Game {
         for ends in cuts.windows(2) {
             let lo = ends[0] as u32;
             let hi = (ends[1] - 1) as u32;
+            if ordinary_library
+                && !cast_origins::library_spell_value_permission(
+                    self,
+                    actor,
+                    card,
+                    card.fixed_mana_value() + symbols * u64::from(lo),
+                )
+            {
+                continue;
+            }
             if !fundable(lo) {
                 continue;
             }

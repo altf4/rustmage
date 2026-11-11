@@ -710,6 +710,17 @@ pub struct BasicLandTypesEffectView {
     pub source: ObjectRef,
     pub kind: crate::cards::BasicLandType,
     pub timestamp: u64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub while_counter: Option<CounterKind>,
+}
+
+impl BasicLandTypesEffectView {
+    pub(super) fn expires_with(self, object: ObjectRef, counters: &Counters) -> bool {
+        self.recipient == object
+            && self
+                .while_counter
+                .is_some_and(|kind| counters.get(kind) == 0)
+    }
 }
 
 /// Earlier subtype layers over actual or projected source registries.
@@ -954,6 +965,7 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     | characteristic_layers::SubtypeChange::BasicLand(_)
                     | characteristic_layers::SubtypeChange::AddBasicLand(_)
                     | characteristic_layers::SubtypeChange::EquipmentOnly
+                    | characteristic_layers::SubtypeChange::AddFood
             )
         })
         .map(|row| row.0);
@@ -985,6 +997,15 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             }
             characteristic_layers::SubtypeChange::FoodOnly => {
                 mask = GrantedSubtypes::food_only();
+            }
+            characteristic_layers::SubtypeChange::FoodArtifact => {
+                mask.replace_creature_types(&[]);
+                mask.set_flag(ALL_CREATURE_TYPES | LAND_ONLY, false);
+                mask.card_types = Some(kinds(id, target));
+                mask.set_flag(ADDED_FOOD, true);
+            }
+            characteristic_layers::SubtypeChange::AddFood => {
+                mask.set_flag(ADDED_FOOD, true);
             }
             characteristic_layers::SubtypeChange::TreasureOnly => {
                 mask = GrantedSubtypes::treasure_only();
@@ -1316,6 +1337,7 @@ impl Game {
         item: &SpellView,
         subject: Subject,
         kind: crate::cards::BasicLandType,
+        while_counter: Option<CounterKind>,
     ) {
         let Some(source) = item.source else {
             return;
@@ -1323,7 +1345,11 @@ impl Game {
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
             .into_iter()
-            .filter(|&id| self.on_battlefield(id) && self.current_kinds(id) & 2 != 0)
+            .filter(|&id| {
+                self.on_battlefield(id)
+                    && self.current_kinds(id) & 2 != 0
+                    && while_counter.is_none_or(|kind| self.counter_count(id, kind) > 0)
+            })
             .map(|id| self.object_ref(id))
             .collect();
         if recipients.is_empty() {
@@ -1340,6 +1366,7 @@ impl Game {
                     source: source.object,
                     kind,
                     timestamp,
+                    while_counter,
                 });
         }
     }

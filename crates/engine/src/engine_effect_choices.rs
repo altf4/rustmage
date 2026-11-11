@@ -2242,7 +2242,13 @@ impl Game {
             .unwrap()
             .program
             .get(self.state.resolving.as_ref().unwrap().pc.saturating_sub(1))
-            .is_some_and(|i| matches!(i, Instruction::CounterRelatedUnlessSacrifice(_)));
+            .is_some_and(|i| {
+                matches!(
+                    i,
+                    Instruction::CounterRelatedUnlessSacrifice(_)
+                        | Instruction::CounterRelatedUnlessSacrificeSubtype(_)
+                )
+            });
         if ward {
             let valid = choice.selected.iter().enumerate().all(|(seat, rows)| {
                 let player = if seat == 0 { Player::P0 } else { Player::P1 };
@@ -2862,7 +2868,11 @@ impl Game {
             .program
             .get(resolution.pc.saturating_sub(1))
             .is_some_and(|instruction| {
-                matches!(instruction, Instruction::CounterRelatedUnlessSacrifice(_))
+                matches!(
+                    instruction,
+                    Instruction::CounterRelatedUnlessSacrifice(_)
+                        | Instruction::CounterRelatedUnlessSacrificeSubtype(_)
+                )
             })
             .then_some(resolution.item.related_stack)
             .flatten();

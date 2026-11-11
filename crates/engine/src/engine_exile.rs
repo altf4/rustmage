@@ -878,7 +878,9 @@ impl Game {
             if event.moved
                 && let Some(player) = event.sacrificed_by
             {
-                let count = &mut self.state.players[player.index()].permanents_sacrificed_this_turn;
+                let player = &mut self.state.players[player.index()];
+                player.food_sacrificed_this_turn |= event.before.has_subtype("Food");
+                let count = &mut player.permanents_sacrificed_this_turn;
                 *count = count
                     .checked_add(1)
                     .capacity("permanent sacrifice history exhausted");
@@ -907,6 +909,7 @@ impl Game {
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
         self.death_batch_triggers(events, death_sources);
+        self.battlefield_departure_batch_triggers(events);
         self.creature_death_turn_callbacks(events);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
@@ -968,7 +971,7 @@ impl Game {
                 }
             })
         };
-        self.batch_creature_entry_triggers(events, &sources, entry_suppression);
+        self.batch_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();

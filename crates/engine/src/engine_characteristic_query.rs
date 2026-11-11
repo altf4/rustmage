@@ -1145,16 +1145,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             Some(ward)
                         }
-                        StaticAbilityFragment::ConditionalWard {
-                            condition,
-                            filter,
-                            ability,
-                        } if self
+                        StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::CounterBearingPermanentWard { .. } => self
                             .world
-                            .conditional_ward_applies(source, condition, filter, recipient) =>
-                        {
-                            Some(ability)
-                        }
+                            .conditional_ward_ability(source, recipient, *fragment),
                         StaticAbilityFragment::ControlledCreatureTrigger {
                             ability,
                             other,

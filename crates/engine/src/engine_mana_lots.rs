@@ -18,6 +18,7 @@ use crate::cards::{
 pub enum ManaRestrictionView {
     SpellManaValueAtLeast(u64),
     SpellManaValueAtLeastOrX(u64),
+    CreatureSpellManaValueAtLeastOrX(u64),
     ExceptCastFromHand,
     CastFromNonhand,
     CastFromExile,
@@ -189,6 +190,9 @@ impl Quality {
                 ManaRestriction::SpellManaValueAtLeastOrX(minimum) => {
                     ManaRestrictionView::SpellManaValueAtLeastOrX(minimum)
                 }
+                ManaRestriction::CreatureSpellManaValueAtLeastOrX(minimum) => {
+                    ManaRestrictionView::CreatureSpellManaValueAtLeastOrX(minimum)
+                }
                 ManaRestriction::ChosenSubtypeSpellOrActivation => {
                     match world.entry_value(world.reference(source)) {
                         Some(EntryChoiceValue::CreatureType(kind)) => {
@@ -287,6 +291,10 @@ impl Quality {
             ManaRestrictionView::SpellManaValueAtLeastOrX(minimum) => {
                 matches!(purpose, Purpose::Spell(source)
                     if source.mana_value >= minimum || source.card.x_symbols() != 0)
+            }
+            ManaRestrictionView::CreatureSpellManaValueAtLeastOrX(minimum) => {
+                matches!(purpose, Purpose::Spell(source) if source.card.is_creature()
+                    && (source.mana_value >= minimum || source.card.x_symbols() != 0))
             }
             ManaRestrictionView::ExceptCastFromHand => {
                 !matches!(purpose, Purpose::Spell(source) if source.cast_from_hand)
@@ -1479,6 +1487,9 @@ impl Game {
         }
         if self.mana_lots(actor).is_empty() {
             self.spend_ordinary_mana(actor, payment);
+            if matches!(purpose, Purpose::Spell(_)) {
+                self.record_expend(actor, payment);
+            }
             return SpendOutcome::default();
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
@@ -1610,6 +1621,9 @@ impl Game {
         player.combat_red_mana -= ordinary_payment[3].saturating_sub(ordinary_red);
         for (held, paid) in player.mana.iter_mut().zip(payment) {
             *held -= paid
+        }
+        if matches!(purpose, Purpose::Spell(_)) {
+            self.record_expend(actor, payment);
         }
         outcome
     }

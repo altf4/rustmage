@@ -236,6 +236,10 @@ impl Game {
                         web_slinging: Some(cost),
                         linked_exile_paid,
                         paid_graveyard,
+                        library_top: match origin {
+                            WebSlingingOrigin::LibraryTop { permission } => Some(permission),
+                            _ => None,
+                        },
                         ..Default::default()
                     },
                 ) && emit(Action::AnnounceWebSlinging {

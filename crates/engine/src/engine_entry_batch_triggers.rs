@@ -190,7 +190,65 @@ impl Game {
         packet.refer_objects(entrants.iter().copied());
     }
 
-    pub(super) fn batch_creature_entry_triggers(
+    pub(super) fn entry_predicate_matches(
+        &self,
+        predicate: crate::cards::EntryPredicate,
+        source: &ObjectView,
+        entered: &ObjectView,
+    ) -> bool {
+        use crate::cards::EntryPredicate;
+        let same = entered.reference == source.reference;
+        match predicate {
+            EntryPredicate::SourceOr(other) => {
+                same || self.entry_predicate_matches(*other, source, entered)
+            }
+            EntryPredicate::CreatureWithKeyword(keyword) => {
+                entered.is_creature() && entered.keywords.contains(keyword)
+            }
+            EntryPredicate::CreatureToughnessGreaterThanPower => {
+                entered.is_creature() && entered.toughness > entered.power
+            }
+            EntryPredicate::SourceChosenCreatureType => {
+                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if entered.has_subtype(typ.name()))
+            }
+            EntryPredicate::SourceOrSubtypeAny(subtypes) => {
+                same || subtypes.iter().any(|typ| entered.has_subtype(typ))
+            }
+            EntryPredicate::Token => entered.is_token(),
+            EntryPredicate::NontokenArtifact => !entered.is_token() && entered.kinds & 16 != 0,
+            EntryPredicate::NontokenEquipment => {
+                !entered.is_token() && entered.kinds & 16 != 0 && entered.has_subtype("Equipment")
+            }
+            EntryPredicate::LegendaryCreature => entered.is_creature() && entered.is_legendary(),
+            EntryPredicate::LegendarySubtype(subtype) => {
+                entered.is_legendary() && entered.has_subtype(subtype)
+            }
+            EntryPredicate::ArtifactManaValueAtLeast(minimum) => {
+                entered.kinds & 16 != 0 && self.object_mana_value(entered.id) >= u64::from(minimum)
+            }
+            EntryPredicate::CreatureManaValueAtLeast(minimum) => {
+                entered.is_creature() && self.object_mana_value(entered.id) >= u64::from(minimum)
+            }
+            EntryPredicate::CreatureWithoutSubtype(subtype) => {
+                entered.is_creature() && !entered.has_subtype(subtype)
+            }
+            EntryPredicate::CreaturePowerAtLeast(minimum) => {
+                entered.is_creature() && entered.power >= i128::from(minimum)
+            }
+            EntryPredicate::CreaturePowerAtMost(maximum) => {
+                entered.is_creature() && entered.power <= i128::from(maximum)
+            }
+            EntryPredicate::SubtypeAny(subtypes) => {
+                subtypes.iter().any(|subtype| entered.has_subtype(subtype))
+            }
+            EntryPredicate::KindOrSubtype { kinds, subtype } => {
+                entered.kinds & kinds != 0 || entered.has_subtype(subtype)
+            }
+            EntryPredicate::NoncreatureNonland => entered.kinds & (1 | 2) == 0,
+        }
+    }
+
+    pub(super) fn batch_entry_triggers(
         &mut self,
         events: &[ZoneChange],
         sources: &[ObjectView],
@@ -198,8 +256,13 @@ impl Game {
     ) {
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let other = match ability.condition.event() {
-                    TriggerCondition::CreaturesFromGraveyardEnterYou { other } => other,
+                let (other, predicate) = match ability.condition.event() {
+                    TriggerCondition::CreaturesFromGraveyardEnterYou { other } => (other, None),
+                    TriggerCondition::FilteredEntersBatchYou { predicate, other }
+                        if source.zone == Zone::Battlefield =>
+                    {
+                        (other, Some(predicate))
+                    }
                     TriggerCondition::CreaturesEnterYouWithoutManaSpent
                         if source.zone == Zone::Battlefield =>
                     {
@@ -218,7 +281,8 @@ impl Game {
                     .filter_map(|event| {
                         if !event.moved
                             || event.destination != Zone::Battlefield
-                            || (event.before.zone != Zone::Graveyard
+                            || (predicate.is_none()
+                                && event.before.zone != Zone::Graveyard
                                 && event.cast_origin != Some(Zone::Graveyard))
                             || (other && event.after == source.reference)
                             || !self.on_battlefield(event.after.card)
@@ -227,13 +291,27 @@ impl Game {
                             return None;
                         }
                         let entered = self.object_view(event.after.card);
-                        (entered.is_creature()
-                            && entered.controller == source.controller
-                            && entered.kinds & suppression == 0)
-                            .then_some(event.after)
+                        (entered.controller == source.controller
+                            && entered.kinds & suppression == 0
+                            && predicate.map_or_else(
+                                || entered.is_creature(),
+                                |predicate| {
+                                    self.entry_predicate_matches(predicate, source, &entered)
+                                },
+                            ))
+                        .then_some(event.after)
                     })
                     .collect();
-                self.queue_entry_copy_trigger(source, index, &entrants);
+                if predicate.is_none() {
+                    self.queue_entry_copy_trigger(source, index, &entrants);
+                } else if !entrants.is_empty() && self.queue_trigger(source, index) {
+                    self.add_entry_trigger_multiplicity(source, &entrants);
+                    self.state
+                        .pending_triggers
+                        .last_mut()
+                        .unwrap()
+                        .refer_objects(entrants);
+                }
             }
         }
     }

@@ -14,6 +14,9 @@ pub struct TurnFactsView {
     /// Counts begun combat phases, capped at two.
     #[serde(skip_serializing_if = "is_zero")]
     pub combat_phases_started: u8,
+    /// Counts begun main phases, capped after the second.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub main_phases_started: u8,
     #[serde(skip_serializing_if = "is_zero_kinds")]
     pub cast_card_kinds: u16,
     /// Human and legendary creature casts, each capped at two.
@@ -76,6 +79,72 @@ pub(super) struct AttackPowerEvent {
     pub total: i128,
 }
 
+/// Keep the immutable face and the uncommon effective subtype overrides.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct CreatureTypeCast {
+    object: ObjectRef,
+    controller: Player,
+    card: Card,
+    subtypes: Option<Box<GrantedSubtypes>>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn creature_type_cast_bytes(rows: &Option<SharedVec<CreatureTypeCast>>) -> usize {
+    rows.as_ref().map_or(0, |rows| {
+        rows.len() * std::mem::size_of::<CreatureTypeCast>()
+            + rows.iter().filter(|row| row.subtypes.is_some()).count()
+                * std::mem::size_of::<GrantedSubtypes>()
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn is_first_other_creature_type_cast(
+        &self,
+        caster: Player,
+        source: ObjectRef,
+        subtype: &str,
+        spell: Card,
+        spell_subtypes: GrantedSubtypes,
+    ) -> bool {
+        spell_subtypes.has(spell, subtype)
+            && !self
+                .state
+                .creature_type_casts
+                .iter()
+                .flat_map(|casts| casts.iter())
+                .any(|cast| {
+                    cast.controller == caster
+                    // Spell-to-permanent entry advances this physical object's
+                    // generation exactly once. Blink/recast has a new source.
+                    && !(cast.object.card == source.card
+                        && cast.object.generation.checked_add(1) == Some(source.generation))
+                    && cast.subtypes.as_deref().copied().unwrap_or_default().has(cast.card, subtype)
+                })
+    }
+
+    pub(super) fn record_creature_type_cast(
+        &mut self,
+        event: &CastPaymentEvent,
+        kinds: u16,
+        subtypes: GrantedSubtypes,
+    ) {
+        // Only creatures and kindred spells can have a creature type.
+        if kinds & (1 | 128) != 0 {
+            self.state
+                .creature_type_casts
+                .get_or_insert_default()
+                .push(CreatureTypeCast {
+                    object: event.object,
+                    controller: event.controller,
+                    card: event.card,
+                    subtypes: (subtypes != GrantedSubtypes::default()).then(|| Box::new(subtypes)),
+                });
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn guard_uses_facts(guard: StepGuard) -> bool {
     matches!(
@@ -87,6 +156,7 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
             | StepGuard::NoSpellCastFromOwnHandThisTurn
             | StepGuard::CastManaValueAtLeastFourThisTurn
             | StepGuard::FirstCombatPhase
+            | StepGuard::SecondMainPhase
     )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

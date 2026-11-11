@@ -203,11 +203,13 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::BeginImprovise
             | Action::BeginDelve
             | Action::BeginWaterbend
+            | Action::BeginCreatureTapPayment
             | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
             | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
+            | Action::ChooseCreatureTapPayment { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. }
             | Action::ChooseEntryAttackingDefender { .. }

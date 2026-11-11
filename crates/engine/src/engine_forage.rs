@@ -62,6 +62,26 @@ pub(super) fn food_cost() -> AdditionalCost {
         },
     }
 }
+impl ForageRoute {
+    pub(super) const MANA_COST_ROUTES: [Self; 2] = [Self::ExileThree, Self::Food];
+
+    pub(super) fn mana_cost(self) -> Option<(AdditionalCost, usize)> {
+        match self {
+            Self::ExileThree => Some((
+                AdditionalCost {
+                    kind: EffectChoiceKind::ExileGraveyard,
+                    filter: SacrificeFilter {
+                        subtype: None,
+                        ..food_cost().filter
+                    },
+                },
+                3,
+            )),
+            Self::Food => Some((food_cost(), 1)),
+            Self::Black => None,
+        }
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn food_sacrifice_triggers(
@@ -231,6 +251,28 @@ impl Game {
     fn forage_route_available(&self, route: ForageRoute) -> bool {
         let p = self.semantic_actor().unwrap();
         if let Some(a) = &self.state.announcing {
+            if a.production.is_some()
+                && a.additional_cost()
+                    .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
+            {
+                if route == ForageRoute::Black {
+                    return false;
+                }
+                let mut proposal = a.clone();
+                proposal.forage = Some(Box::new(ForageSelection {
+                    route: Some(route),
+                    selected: Vec::new(),
+                    skip_to: 0,
+                }));
+                return proposal
+                    .untargeted_activation_totals()
+                    .into_iter()
+                    .flatten()
+                    .any(|total| {
+                        proposal.total_cost = Some(total);
+                        self.activation_total_fundable(&proposal)
+                    });
+            }
             if a.item.kind == StackKind::Spell
                 && a.total_cost.is_none()
                 && self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card)
@@ -279,6 +321,24 @@ impl Game {
         let p = self.semantic_actor().unwrap();
         if self.object_ref(r.card) != r || f.selected.contains(&r) {
             return false;
+        }
+        if let Some(a) = &self.state.announcing
+            && a.production.is_some()
+            && a.additional_cost()
+                .is_some_and(|spec| spec.kind == EffectChoiceKind::Forage)
+        {
+            let Some((cost, count)) = f.route.and_then(ForageRoute::mana_cost) else {
+                return false;
+            };
+            let source = a.item.source.expect("mana activation has a source").object;
+            if f.selected.len() >= count
+                || !self.additional_candidate_for_funding(cost, p, source, r)
+            {
+                return false;
+            }
+            let mut proposal = a.clone();
+            proposal.forage.as_mut().unwrap().selected.push(r);
+            return self.activation_total_fundable(&proposal);
         }
         if self.cast_costs_mana_paid() {
             let valid = match f.route {

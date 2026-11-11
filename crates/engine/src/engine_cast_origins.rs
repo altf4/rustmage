@@ -131,12 +131,15 @@ pub(super) fn ordinary_library_spell_permission<W: ability_world::Characteristic
     world: &W,
     player: Player,
     definition: Card,
+    mana_value: u64,
 ) -> bool {
     !definition.is_land()
         && (world.game().state.players[player.index()].library_top_play
             || has_fragment_from(world, Some(player), |id, fragment| match fragment {
                 StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
-                StaticAbilityFragment::CastFromLibraryTop(filter) => filter.matches(definition),
+                StaticAbilityFragment::CastFromLibraryTop(filter) => {
+                    filter.matches_mana_value(definition, mana_value)
+                }
                 StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => {
                     source_attacked(world, id)
                 }
@@ -161,15 +164,80 @@ pub(super) fn library_spell_with_counter_permission<
         })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn add_library_spell_value_cuts<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    definition: Card,
+    cuts: &mut Vec<u64>,
+) {
+    for &id in world.static_sources() {
+        let object = world.object(id);
+        if object.zone != Zone::Battlefield || object.controller != player {
+            continue;
+        }
+        for fragment in object
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+        {
+            if let StaticAbilityFragment::CastFromLibraryTop(filter) = fragment
+                && world.fragment_available(id, |f| {
+                    matches!(f, StaticAbilityFragment::CastFromLibraryTop(current) if current == filter)
+                })
+            {
+                filter.add_scalar_x_cuts(definition, cuts);
+            }
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn library_spell_face_permission<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    definition: Card,
+) -> bool {
+    if library_spell_value_permission(world, player, definition, definition.fixed_mana_value()) {
+        return true;
+    }
+    let symbols = u64::from(definition.x_symbols());
+    if definition.is_land() || symbols == 0 {
+        return false;
+    }
+    let mut cuts = Vec::new();
+    add_library_spell_value_cuts(world, player, definition, &mut cuts);
+    cuts.into_iter()
+        .filter(|&x| x <= u64::from(u32::MAX))
+        .any(|x| {
+            ordinary_library_spell_permission(
+                world,
+                player,
+                definition,
+                definition.fixed_mana_value() + symbols * x,
+            )
+        })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn library_spell_value_permission<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    definition: Card,
+    mana_value: u64,
+) -> bool {
+    ordinary_library_spell_permission(world, player, definition, mana_value)
+        || library_spell_with_counter_permission(world, player, definition)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn library_spell_origin_available<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
     card: CardId,
     definition: Card,
 ) -> bool {
-    is_library_top(world, player, card)
-        && (ordinary_library_spell_permission(world, player, definition)
-            || library_spell_with_counter_permission(world, player, definition))
+    is_library_top(world, player, card) && library_spell_face_permission(world, player, definition)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn spends_any_type<W: ability_world::CharacteristicWorld + ?Sized>(
@@ -323,10 +391,7 @@ impl Game {
         ]
         .into_iter()
         .flatten()
-        .any(|definition| {
-            ordinary_library_spell_permission(self, player, definition)
-                || library_spell_with_counter_permission(self, player, definition)
-        })
+        .any(|definition| library_spell_face_permission(self, player, definition))
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
         let state = &self.state.players[player.index()];

@@ -137,13 +137,21 @@ impl Game {
                             continue;
                         }
                         for flash_surcharge in [false, true] {
-                            if self.permitted_cast_available(
+                            if self.permitted_cast_with_alternative(
                                 actor,
                                 card,
                                 method,
                                 face,
                                 sorcery,
                                 flash_surcharge,
+                                None,
+                                None,
+                                None,
+                                false,
+                                cast_permissions::OriginAlternative {
+                                    library_top: Some(permission),
+                                    ..Default::default()
+                                },
                             ) && emit(Action::AnnounceLibraryTop {
                                 object: self.object_ref(card),
                                 face,

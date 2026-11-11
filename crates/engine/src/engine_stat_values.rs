@@ -169,14 +169,22 @@ impl Game {
                         && has_counters(*id)
                 })
                 .count() as i128,
-            StatValue::ControlledCreaturesWithCounter(kind) => objects()
-                .filter(|&(id, object)| {
-                    object.zone == Zone::Battlefield
-                        && object.controller == owner
-                        && kinds(id, object) & 1 != 0
-                        && counter_count(id, kind) > 0
-                })
-                .count() as i128,
+            StatValue::ControlledCreaturesWithCounter(kind)
+            | StatValue::ControlledLandsWithCounter(kind) => {
+                let required = if matches!(value, StatValue::ControlledLandsWithCounter(_)) {
+                    2
+                } else {
+                    1
+                };
+                objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && kinds(id, object) & required != 0
+                            && counter_count(id, kind) > 0
+                    })
+                    .count() as i128
+            }
             StatValue::DistinctCreatureCounterKinds => {
                 // No allocation or source-owned counter copy, including sparse kinds.
                 let mut present = [false; CounterKind::ALL.len()];
@@ -360,6 +368,11 @@ impl Game {
                 i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
             }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
+            StatValue::OpponentLostLifeThisTurn => i128::from(world.lost_life(owner.other())),
+            StatValue::CardsLeftGraveyardThisTurn => {
+                i128::from(world.graveyard_departure_count(owner))
+            }
+            StatValue::FoodSacrificedThisTurn => i128::from(world.food_sacrificed(owner)),
             StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
                 object.zone == Zone::Exile
                     && object.owner == owner
@@ -529,6 +542,9 @@ impl Game {
             ),
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
+            }
+            StatValue::InstantSorcerySpellsCastThisTurn => {
+                i128::from(self.state.players[owner.index()].instant_sorcery_cast_this_turn)
             }
             StatValue::NoncreatureSpellsCastThisTurn => {
                 let player = &self.state.players[owner.index()];

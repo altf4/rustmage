@@ -938,6 +938,7 @@ fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
             kind, factor, add, ..
         } => (kind, factor, add),
         ReplacementSpec::CountersPlacedByController => (None, 1, 1),
+        ReplacementSpec::DoubleCountersPlacedByController { .. } => (None, 2, 0),
         _ => unreachable!(),
     };
     let mut result = Counters::default();
@@ -963,30 +964,37 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     used: &[CounterReplacementId],
 ) -> Vec<CounterReplacement> {
     let mut out = Vec::new();
-    let mut add = |reference: ObjectRef, card: Card, controller: Player| {
-        if controller != p.controller {
-            return;
+    for &id in world.static_sources() {
+        let provider = world.object(id);
+        if provider.zone != Zone::Battlefield
+            || (provider.controller != p.controller && provider.controller != p.placed_by)
+        {
+            continue;
         }
-        for (index, &spec) in card.replacement_effects().iter().enumerate() {
-            if world.object(reference.card).zone == Zone::Battlefield && world.reference(reference.card) == reference
-                    && !world.fragment_available(reference.card, |fragment| matches!(fragment,
-                        crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
+        let reference = world.reference(id);
+        for (index, &spec) in provider.card.replacement_effects().iter().enumerate() {
+            let applies = match spec {
+                ReplacementSpec::DoubleCountersPlacedByController { condition } => {
+                    provider.controller == p.placed_by
+                        && p.amount.has_any()
+                        && world.value(condition, id) != 0
+                }
+                _ => provider.controller == p.controller && counter_applies(spec, p),
+            };
             let ability = u16::try_from(index).expect("immutable replacement index");
-            if !used.contains(&CounterReplacementId::Printed(reference, ability))
-                && counter_applies(spec, p)
+            if applies
+                && !used.contains(&CounterReplacementId::Printed(reference, ability))
+                && world.fragment_available(id, |fragment| {
+                    matches!(fragment,
+                    crate::cards::StaticAbilityFragment::Replacement(slot, _) if *slot == ability)
+                })
             {
                 out.push(CounterReplacement::Printed(ReplacementEffectView {
                     source: reference,
-                    source_card: card,
+                    source_card: provider.card,
                     ability,
                 }));
             }
-        }
-    };
-    for &id in world.static_sources() {
-        let o = world.object(id);
-        if o.zone == Zone::Battlefield {
-            add(world.reference(id), o.card, o.controller);
         }
     }
     // The counter replacement variants above affect a general set of
@@ -1109,8 +1117,10 @@ impl Game {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn modified_player_counters(spec: ReplacementSpec, amount: u64) -> u64 {
-    let ReplacementSpec::PlayerCounters { factor, add, .. } = spec else {
-        unreachable!()
+    let (factor, add) = match spec {
+        ReplacementSpec::PlayerCounters { factor, add, .. } => (factor, add),
+        ReplacementSpec::DoubleCountersPlacedByController { .. } => (2, 0),
+        _ => unreachable!(),
     };
     amount
         .checked_mul(u64::from(factor))
@@ -1197,16 +1207,24 @@ impl Game {
                 continue;
             }
             let reference = self.object_ref(id);
-            for (index, spec) in object.card.replacement_effects().iter().enumerate() {
+            for (index, &spec) in object.card.replacement_effects().iter().enumerate() {
                 let ability = u16::try_from(index).expect("replacement index");
-                if player_counter_rule_matches(
-                    *spec,
-                    object.controller,
-                    player,
-                    placed_by,
-                    effect,
-                    kind,
-                ) && !used.contains(&(reference, ability))
+                let applies = match spec {
+                    ReplacementSpec::DoubleCountersPlacedByController { condition } => {
+                        object.controller == placed_by
+                            && ability_world::CharacteristicWorld::value(&world, condition, id) != 0
+                    }
+                    _ => player_counter_rule_matches(
+                        spec,
+                        object.controller,
+                        player,
+                        placed_by,
+                        effect,
+                        kind,
+                    ),
+                };
+                if applies
+                    && !used.contains(&(reference, ability))
                     && ability_world::CharacteristicWorld::fragment_available(
                         &world,
                         id,
@@ -1440,6 +1458,13 @@ impl Game {
                         event.source.controller == object.controller
                             && event.source.facts.has_subtype(subtype)
                     }
+                    ReplacementSpec::ControlledSubtypeDamagePlus { subtypes, .. } => {
+                        event.source.controller == object.controller
+                            && event.source.facts.battlefield
+                            && subtypes
+                                .iter()
+                                .any(|subtype| event.source.facts.has_subtype(subtype))
+                    }
                     ReplacementSpec::DoubleCreatureDamage => {
                         event.source.facts.battlefield
                             && event.source.facts.is_creature()
@@ -1460,6 +1485,14 @@ impl Game {
                         ..
                     } => {
                         event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                            && self.stat_value(condition, source, object.controller) != 0
+                    }
+                    ReplacementSpec::ConditionalNoncombatDamageToOpponentPlus {
+                        condition, ..
+                    } => {
+                        !event.combat
+                            && event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                             && self.stat_value(condition, source, object.controller) != 0
                     }
@@ -1728,6 +1761,8 @@ impl Game {
             | ReplacementSpec::DoubleOpponentDamage
             | ReplacementSpec::DoubleEquippedDamage => Self::double_damage(event),
             ReplacementSpec::NoncombatDamageToOpponentPlus(amount)
+            | ReplacementSpec::ControlledSubtypeDamagePlus { amount, .. }
+            | ReplacementSpec::ConditionalNoncombatDamageToOpponentPlus { amount, .. }
             | ReplacementSpec::ConditionalControlledDamageToOpponentPlus { amount, .. } => {
                 event.amount = event
                     .amount
@@ -2765,13 +2800,7 @@ impl Game {
                     .card
                     .replacement_effects()
                     .iter()
-                    .any(|e| {
-                        matches!(
-                            e,
-                            ReplacementSpec::Counters { .. }
-                                | ReplacementSpec::CountersPlacedByController
-                        )
-                    })
+                    .any(|spec| spec.replaces_permanent_counters())
             })
         {
             let before = self.state.objects[id as usize].counters.lore;
@@ -3773,7 +3802,7 @@ impl Game {
                             .as_ref()
                             .and_then(|b| b.moves.get(index))
                             .cloned()
-                        && (movement.requires_characteristic_preview()
+                        && (movement.requires_characteristic_preview(self)
                             || entry_kind_sensitive(self)
                             || entry_power_sensitive(
                                 self,

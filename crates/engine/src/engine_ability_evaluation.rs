@@ -158,14 +158,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
-        StaticAbilityFragment::ConditionalWard {
-            condition,
-            filter,
-            ability,
-        } => {
-            if !world.conditional_ward_applies(source, condition, filter, id) {
-                return None;
-            }
+        StaticAbilityFragment::ConditionalWard { .. }
+        | StaticAbilityFragment::CounterBearingPermanentWard { .. } => {
+            let ability = world.conditional_ward_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -321,6 +316,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { subtype, ability } => {
             if !own || id == source.card || !world.subtypes(id).has(target.card, subtype) {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
+        StaticAbilityFragment::OtherCreaturesFood(ability) => {
+            if world.reference(id) == source || world.kinds(id) & 1 == 0 {
                 return None;
             }
             return Some(LayerSixGrant {
@@ -592,6 +598,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
@@ -805,6 +812,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
@@ -831,6 +839,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledArtifactFood(_)
+                        | StaticAbilityFragment::OtherCreaturesFood(_)
                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
