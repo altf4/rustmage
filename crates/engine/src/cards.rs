@@ -6752,6 +6752,10 @@ pub enum TriggerCondition {
     },
     /// Look back at a controlled permanent's subtype on death, including self.
     ControlledPermanentWithSubtypeDies(&'static str),
+    /// One pre-departure event per controlled permanent matching any of these subtypes, including self.
+    ControlledPermanentWithSubtypeDiesAny(&'static [&'static str]),
+    /// A creature controlled by this observer was legendary immediately before it died.
+    ControlledLegendaryCreatureDies,
     OtherCreatureCountersAdded {
         kind: CounterKind,
         excluded_subtype: &'static str,

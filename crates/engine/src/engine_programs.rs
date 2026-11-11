@@ -871,12 +871,17 @@ impl Game {
                                 && (!nontoken || event.before.token.is_none())
                                 && subtype.is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
-                        TriggerCondition::OtherControlledPermanentWithSubtypeDies { subtypes } => {
-                            source.reference != event.before.reference
-                                && source.controller == event.before.controller
-                                && subtypes
-                                    .iter()
-                                    .any(|subtype| event.before.has_subtype(subtype))
+                        condition @ (TriggerCondition::OtherControlledPermanentWithSubtypeDies { subtypes }
+                        | TriggerCondition::ControlledPermanentWithSubtypeDiesAny(subtypes)) => {
+                            source.controller == event.before.controller
+                                && (matches!(condition, TriggerCondition::ControlledPermanentWithSubtypeDiesAny(_))
+                                    || source.reference != event.before.reference)
+                                && subtypes.iter().any(|subtype| event.before.has_subtype(subtype))
+                        }
+                        TriggerCondition::ControlledLegendaryCreatureDies => {
+                            source.controller == event.before.controller
+                                && event.before.is_creature()
+                                && event.before.is_legendary()
                         }
                         TriggerCondition::ControlledPermanentWithSubtypeDies(subtype) => {
                             source.controller == event.before.controller
@@ -1168,6 +1173,8 @@ impl Game {
                     | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
+                    | TriggerCondition::ControlledPermanentWithSubtypeDiesAny(_)
+                    | TriggerCondition::ControlledLegendaryCreatureDies
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }

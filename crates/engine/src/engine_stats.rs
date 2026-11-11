@@ -257,6 +257,8 @@ impl Game {
                     | TriggerCondition::CreatureDiesWithCounter { .. }
                     | TriggerCondition::OtherControlledPermanentWithSubtypeDies { .. }
                     | TriggerCondition::ControlledPermanentWithSubtypeDies(_)
+                    | TriggerCondition::ControlledPermanentWithSubtypeDiesAny(_)
+                    | TriggerCondition::ControlledLegendaryCreatureDies
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
