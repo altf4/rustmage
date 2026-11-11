@@ -79,12 +79,13 @@ impl Game {
 
         let attacked = self.attacked_player_or_planeswalker_controllers(actor);
         let cast_count = self.state.players[actor.index()].spells_cast_this_turn;
-        self.nonmana_actions_prohibited() || self.state.static_sources.iter().any(|&id| {
-            let object = &self.state.objects[id as usize];
-            if object.zone != Zone::Battlefield {
-                return false;
-            }
-            self.active_rule_fragment(
+        self.nonmana_actions_prohibited()
+            || self.state.static_sources.iter().any(|&id| {
+                let object = &self.state.objects[id as usize];
+                if object.zone != Zone::Battlefield {
+                    return false;
+                }
+                self.active_rule_fragment(
                 id,
                 |fragment| matches!(*fragment, SpellCastLimit(maximum) if cast_count >= maximum),
             ) || (object.controller != actor
@@ -98,7 +99,7 @@ impl Game {
                                 OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast
                             )
                         }))))
-        })
+            })
     }
     pub(super) fn put_power_excess_counters(&mut self, item: &SpellView, filter: CreatureFilter) {
         let Some(source) = item.source else {
