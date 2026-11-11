@@ -3,10 +3,56 @@
   "catalogue_id": 3116,
   "oracle_id": "50ab0194-c7dc-4f11-abc0-1a82393cc42e",
   "facts_sha256": "8e97b9ec7af86e0e8b2167e67d37bdfcb40ea173c1ae147ea251936353c5cd7f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "227bfe2eb76588077f9ffc08146ca22e0d0752b023f8c4e796648b68fbf69068"
   },
-  "physical_metadata_sha256": "36dbb1c8ca1d3c553ff1862e8eea4170e6f5ef1343de0c63b84e5bff618eb6e8"
+  "physical_metadata_sha256": "36dbb1c8ca1d3c553ff1862e8eea4170e6f5ef1343de0c63b84e5bff618eb6e8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PawpatchRecruit.java",
+  "java_sha256": "6ab5c846d630d7e1201b08a4009a8c0be30feecd67e24391aa6ce425ef5fdf24",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbility.java",
+      "sha256": "e2c6e35677bf97f6c0e8d6f852d1593814bf5f8ef8048f011c218a1bd534b9f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/DefineByTriggerTargetAdjuster.java",
+      "sha256": "31a7201b891e43217c4d937248f6d38b9dc2fe9fc0707f2fd1c0e4e4d2c4f709"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_offspring_valiant.rs"
 }

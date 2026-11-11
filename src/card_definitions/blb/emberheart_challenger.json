@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2f6d0212e02ad9513e589988342f3a4f0ef3f4eebbbffe6b737b331bc76e8590"
   },
-  "physical_metadata_sha256": "2db1eef94a4694a152a80bb46b884c0ca10d586de125cd597400a6983aa08e76"
+  "physical_metadata_sha256": "2db1eef94a4694a152a80bb46b884c0ca10d586de125cd597400a6983aa08e76",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EmberheartChallenger.java",
+  "java_sha256": "74a9768cc31efb5c605c6aa66cd63e092bbebab426e28c411379a2c41183f847",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ValiantTriggeredAbility.java",
+      "sha256": "5ec6124fd1d8ae17a88cdf8cad28666f5982db52a210c2cc7b8bc5c80ddf6d8a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_offspring_valiant.rs"
 }

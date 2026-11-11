@@ -1,11 +1,8 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::OncePerTurn(&TriggerCondition::SelfTargeted {
-            relation: CastRelation::You,
-            spells_only: false,
-        }),
+        condition: TriggerCondition::FirstTargetedByController,
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[
             Instruction::ChooseObjects {

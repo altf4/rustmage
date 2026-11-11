@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "534994b8eecb7b9d4eac19aa68dd5993560c18e7cb0dadf57ae5ea830b1c32fc"
   },
-  "physical_metadata_sha256": "f0381523e7f22d942b0dc9d42f5437ec108bc978692165a09ab725c03f8502aa"
+  "physical_metadata_sha256": "f0381523e7f22d942b0dc9d42f5437ec108bc978692165a09ab725c03f8502aa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CoruscationMage.java",
+  "java_sha256": "86869dea831e10879421d74cc8056011df5b085cbb9bca5b49aa7affe7eb2bad",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_offspring_valiant.rs"
 }
