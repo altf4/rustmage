@@ -11476,7 +11476,7 @@
     "src/card_definitions/woe/wildwood_mentor.json": "49f6b58ad1fd0a4aef00e98a9573cb970357d96125adedce017360670bc9bd39",
     "src/card_definitions/woe/wildwood_mentor.rs": "a0542a5d05578a66c12d2f16cdf44f18fc159d488743b2a960c53b2dd8beffef",
     "src/card_definitions/woe/will_scion_of_peace.json": "c0e03df2ff4bf6b25405fa0b9eb8462447fb8da0b38deb9992ddbdb0d36ee7fc",
-    "src/card_definitions/woe/will_scion_of_peace.rs": "42530a91519fa614795abe99339f938d7196fdb432af764841cf9400bcb7b2ce",
+    "src/card_definitions/woe/will_scion_of_peace.rs": "855a272a27e6b9ebfb6b209a698c7b14f7bcdf94912314610a8d2de4b5d118f4",
     "src/card_definitions/woe/witch_s_mark.json": "2dc90ba3011fc3769f0f438b68273fa01440ec4a369c02ca99cf6963e761c238",
     "src/card_definitions/woe/witch_s_mark.rs": "b67be0c177fd116140f614760eb1a560e66f8107a050e3b747992397f03f644a",
     "src/card_definitions/woe/witchstalker_frenzy.json": "16636afac5bb1ec63a322d928f4f61f1a1b9299e477dcf0d35960cfcf9ad9802",
@@ -11489,7 +11489,7 @@
     "src/card_definitions/znr/highborn_vampire.rs": "9e13e514d96f221fb9e99e2cd599554c8662b6abdd0c3c5d5933ca3c241cb27e",
     "src/catalogue.rs": "01554000ade12fdd9b611ac87667361f09ce1f2d590b63836ed6b7dfd9c0c438",
     "src/ffi.rs": "dc5d9c545f822822d3571619e108180db4c255c30c890774c8ebb26a45f1b94b",
-    "src/generated/catalogue.rs": "073dbd119833562616ee09e48d650fee0f9e41d25b980ed0fe134a2209a507c7",
+    "src/generated/catalogue.rs": "bd11c5f057952bb07b13455fd9b92672666f1efd487018fff2c4854af3eae9f0",
     "src/lib.rs": "92fd1dd6839a99176718e22d551dc0ed027833618ff3543afb754ef5937549aa",
     "tests/tdm_complete_games.rs": "c32cb72ee1eaa343fa6b4dc350fb03a2fa5401c9fc10bb3f5ff14d705cb82173"
   },

@@ -1,4 +1,6 @@
 // Direct typed behavior from the pinned Oracle and XMage sources.
+const WHITE_AND_BLUE: u8 = 0b00011;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 4),
     keywords: Keywords::VIGILANCE,
@@ -15,7 +17,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
         targets: TargetPlan::NONE,
         program: &[Instruction::ReduceColoredSpellCostsThisTurn {
-            colors: (1 << ChoiceColor::White.index()) | (1 << ChoiceColor::Blue.index()),
+            colors: WHITE_AND_BLUE,
             amount: AmountValue::LifeGainedThisTurn,
         }],
     }],
