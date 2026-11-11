@@ -192,15 +192,7 @@ fn a_copy_of_a_qualifying_spell_does_not_commit_another_crime() {
     let shock = put(&mut g, p, "Shock", Zone::Hand);
     let copy = put(&mut g, p, "Opt", Zone::Hand);
     cast(&mut g, shock, Some(Target::Player(p.other())));
-    let target = Target::Spell(
-        g.state
-            .stack
-            .iter()
-            .find(|s| s.kind == StackKind::Spell)
-            .unwrap()
-            .id,
-    );
-    cast(&mut g, copy, Some(target));
+    cast(&mut g, copy, Some(Target::Spell(shock)));
     quiet(&mut g);
     assert_eq!(g.state.players[p.index()].life, 21);
     assert_eq!(g.state.players[p.other().index()].life, 16);
