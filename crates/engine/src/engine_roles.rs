@@ -78,6 +78,7 @@ pub(super) struct RoleState {
     pub creature_damage_shields: Vec<CreatureDamageShieldView>,
     pub damage_doublers: Vec<DamageDoublerView>,
     pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
+    pub creature_counter_increases: Vec<CreatureCounterIncreaseView>,
     pub chosen_creature_links: Vec<ChosenCreatureLinkView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -120,6 +121,8 @@ impl RoleState {
             + self.damage_doublers.len() * std::mem::size_of::<DamageDoublerView>()
             + self.noncombat_damage_increases.len()
                 * std::mem::size_of::<NoncombatDamageIncreaseView>()
+            + self.creature_counter_increases.len()
+                * std::mem::size_of::<CreatureCounterIncreaseView>()
             + self.chosen_creature_links.len() * std::mem::size_of::<ChosenCreatureLinkView>()
             + self.exile_grant_cast_history.len() * std::mem::size_of::<ObjectRef>()
             + self.resolved_ability_modifications.len()

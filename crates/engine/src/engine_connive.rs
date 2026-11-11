@@ -192,6 +192,7 @@ impl Game {
         }
         Some(replacements::ReplacementChoiceView {
             self_counter_effects: Vec::new(),
+            resolved_counter_effects: Vec::new(),
             resolved_damage_effects: Vec::new(),
             noncombat_damage_increases: Vec::new(),
             kind: "Connive",

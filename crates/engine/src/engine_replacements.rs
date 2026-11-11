@@ -40,6 +40,17 @@ pub struct NoncombatDamageIncreaseView {
     pub controller: Player,
     pub amount: u32,
 }
+/// A source-independent replacement for counters placed by the controller on their creatures.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct CreatureCounterIncreaseView {
+    pub id: u64,
+    pub source: ObjectRef,
+    pub source_card: Card,
+    pub controller: Player,
+    pub kind: CounterKind,
+    pub amount: u32,
+}
 /// A resolved effect preventing damage to its controller or their current creatures this turn.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -112,6 +123,8 @@ pub struct ReplacementChoiceView {
     pub effects: Vec<ReplacementEffectView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub self_counter_effects: Vec<SelfPlayerCounterReplacement>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub resolved_counter_effects: Vec<CreatureCounterIncreaseView>,
     /// Current public damage event, before the next chosen replacement.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub damage: Option<DamageEvent>,
@@ -191,7 +204,53 @@ struct CounterBatch {
     completion: Option<Box<CounterCompletion>>,
     placements: Vec<CounterPlacement>,
     next: usize,
-    used: Vec<(ObjectRef, u16)>,
+    used: Vec<CounterReplacementId>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum CounterReplacementId {
+    Printed(ObjectRef, u16),
+    Resolved(u64),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+pub(super) enum CounterReplacement {
+    Printed(ReplacementEffectView),
+    Resolved(CreatureCounterIncreaseView),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CounterReplacement {
+    fn id(self) -> CounterReplacementId {
+        match self {
+            Self::Printed(effect) => CounterReplacementId::Printed(effect.source, effect.ability),
+            Self::Resolved(effect) => CounterReplacementId::Resolved(effect.id),
+        }
+    }
+    fn apply(self, placement: &mut CounterPlacement) {
+        let spec = match self {
+            Self::Printed(effect) => {
+                effect.source_card.replacement_effects()[usize::from(effect.ability)]
+            }
+            Self::Resolved(effect) => ReplacementSpec::Counters {
+                filter: ReplacementFilter::Creature,
+                kind: Some(effect.kind),
+                factor: 1,
+                add: effect.amount,
+                effects_only: false,
+            },
+        };
+        modify_counter(spec, placement);
+    }
+    fn action(self) -> Action {
+        match self.id() {
+            CounterReplacementId::Printed(source, ability) => {
+                Action::ChooseReplacement { source, ability }
+            }
+            CounterReplacementId::Resolved(effect) => {
+                Action::ChooseResolvedCounterReplacement { effect }
+            }
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn apply_own_player_counter_replacement(
@@ -614,7 +673,7 @@ impl ReplacementState {
                     .iter()
                     .map(|p| p.amount.owned_bytes())
                     .sum::<usize>()
-                + b.used.len() * std::mem::size_of::<(ObjectRef, u16)>()
+                + b.used.len() * std::mem::size_of::<CounterReplacementId>()
                 + b.completion.as_ref().map_or(0, |c| {
                     std::mem::size_of::<CounterCompletion>()
                         + match c.as_ref() {
@@ -751,13 +810,16 @@ pub(super) fn global_counters_prohibited<W: super::ability_world::Characteristic
             && world.fragment_available(id, |f| matches!(f, StaticAbilityFragment::CounterProhibition(mask) if *mask & kinds != 0))
     })
 }
-/// A live global prohibition makes the entrant’s effective types relevant even
-/// when no amount-replacement effect exists. Incoming general providers are absent.
+/// Evaluate effective entrant types for global prohibitions and resolved
+/// creature-counter replacements. Incoming general providers are absent.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn entry_kind_sensitive<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> bool {
     global_counters_prohibited(world, u16::MAX)
+        || world
+            .roles()
+            .is_some_and(|roles| !roles.creature_counter_increases.is_empty())
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn counters_prohibited<W: super::ability_world::CharacteristicWorld + ?Sized>(
@@ -898,8 +960,8 @@ fn modify_counter(spec: ReplacementSpec, p: &mut CounterPlacement) {
 pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     p: &CounterPlacement,
-    used: &[(ObjectRef, u16)],
-) -> Vec<ReplacementEffectView> {
+    used: &[CounterReplacementId],
+) -> Vec<CounterReplacement> {
     let mut out = Vec::new();
     let mut add = |reference: ObjectRef, card: Card, controller: Player| {
         if controller != p.controller {
@@ -910,12 +972,14 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
                     && !world.fragment_available(reference.card, |fragment| matches!(fragment,
                         crate::cards::StaticAbilityFragment::Replacement(slot, _) if usize::from(*slot) == index)) { continue; }
             let ability = u16::try_from(index).expect("immutable replacement index");
-            if !used.contains(&(reference, ability)) && counter_applies(spec, p) {
-                out.push(ReplacementEffectView {
+            if !used.contains(&CounterReplacementId::Printed(reference, ability))
+                && counter_applies(spec, p)
+            {
+                out.push(CounterReplacement::Printed(ReplacementEffectView {
                     source: reference,
                     source_card: card,
                     ability,
-                });
+                }));
             }
         }
     };
@@ -928,6 +992,23 @@ pub(super) fn counter_replacements<W: super::ability_world::CharacteristicWorld 
     // The counter replacement variants above affect a general set of
     // permanents. Under CR 614.12 they cannot apply from the incoming
     // permanent itself; self-only entry effects are handled by the entry plan.
+    if p.kind & 1 != 0
+        && p.placed_by == p.controller
+        && let Some(roles) = world.roles()
+    {
+        out.extend(
+            roles
+                .creature_counter_increases
+                .iter()
+                .copied()
+                .filter_map(|effect| {
+                    (effect.controller == p.controller
+                        && p.amount.get(effect.kind) > 0
+                        && !used.contains(&CounterReplacementId::Resolved(effect.id)))
+                    .then_some(CounterReplacement::Resolved(effect))
+                }),
+        );
+    }
     out
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1147,7 +1228,7 @@ impl Game {
 pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
     placement: &CounterPlacement,
-    used: &mut Vec<(ObjectRef, u16)>,
+    used: &mut Vec<CounterReplacementId>,
     refresh: &dyn Fn(&CounterPlacement) -> CounterPlacement,
     emit: &mut dyn FnMut(&Counters) -> bool,
 ) -> bool {
@@ -1159,13 +1240,18 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
     if choices.is_empty() {
         return emit(&placement.amount);
     }
-    for choice in choices {
+    for (index, &choice) in choices.iter().enumerate() {
+        // Identical resolved additions are interchangeable for funding. The live
+        // menu still identifies each resolution independently.
+        if let CounterReplacement::Resolved(effect) = choice
+            && choices[..index].iter().any(|prior| matches!(prior,
+                CounterReplacement::Resolved(prior) if prior.kind == effect.kind && prior.amount == effect.amount))
+        {
+            continue;
+        }
         let mut next = placement.clone();
-        modify_counter(
-            choice.source_card.replacement_effects()[usize::from(choice.ability)],
-            &mut next,
-        );
-        used.push((choice.source, choice.ability));
+        choice.apply(&mut next);
+        used.push(choice.id());
         if counter_outcomes(world, &next, used, refresh, emit) {
             return true;
         }
@@ -1178,13 +1264,13 @@ pub(super) fn counter_outcomes<W: super::ability_world::CharacteristicWorld + ?S
 pub(super) struct CounterPreview {
     pub index: usize,
     pub placement: CounterPlacement,
-    pub used: Vec<(ObjectRef, u16)>,
+    pub used: Vec<CounterReplacementId>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn projected_entry_counter(
         &self,
-        choice: Option<(ObjectRef, u16)>,
+        choice: Option<CounterReplacementId>,
     ) -> Option<CounterPreview> {
         let Event::Counters(batch) = self.state.replacements.as_ref()?.active.as_ref()? else {
             return None;
@@ -1192,15 +1278,13 @@ impl Game {
         let mut placement = batch.placements[batch.next].clone();
         let index = placement.entry_index?;
         let mut used = batch.used.clone();
-        if let Some((source, ability)) = choice {
-            let effect = counter_replacements(self, &placement, &used)
+        if let Some(id) = choice {
+            let effect = self
+                .counter_replacements(&placement, &used)
                 .into_iter()
-                .find(|e| e.source == source && e.ability == ability)?;
-            modify_counter(
-                effect.source_card.replacement_effects()[usize::from(ability)],
-                &mut placement,
-            );
-            used.push((source, ability));
+                .find(|effect| effect.id() == id)?;
+            effect.apply(&mut placement);
+            used.push(id);
         }
         Some(CounterPreview {
             index,
@@ -1273,6 +1357,29 @@ impl Game {
                 source_card: source.card,
                 controller: item.controller,
                 amount: item.x.expect("damage increase activation has a chosen X"),
+            });
+    }
+    pub(super) fn increase_own_creature_counters_this_turn(
+        &mut self,
+        item: &SpellView,
+        kind: CounterKind,
+        amount: u32,
+    ) {
+        if amount == 0 {
+            return;
+        }
+        let source = item.source.expect("resolved counter replacement source");
+        let roles = self.state.roles.get_or_insert_default();
+        let id = roles.next_acquisition();
+        roles
+            .creature_counter_increases
+            .push(CreatureCounterIncreaseView {
+                id,
+                source: source.object,
+                source_card: source.card,
+                controller: item.controller,
+                kind,
+                amount,
             });
     }
     pub(super) fn prevent_creature_damage_this_turn(
@@ -1769,8 +1876,8 @@ impl Game {
     fn counter_replacements(
         &self,
         p: &CounterPlacement,
-        used: &[(ObjectRef, u16)],
-    ) -> Vec<ReplacementEffectView> {
+        used: &[CounterReplacementId],
+    ) -> Vec<CounterReplacement> {
         // Counter replacements for a face-up event see the prospective face,
         // including its copy and continuous effects, while the real object
         // remains face down until the event is ready to commit.
@@ -3685,11 +3792,8 @@ impl Game {
                             batch.used.clear();
                         }
                         [only] => {
-                            modify_counter(
-                                only.source_card.replacement_effects()[only.ability as usize],
-                                &mut batch.placements[batch.next],
-                            );
-                            batch.used.push((only.source, only.ability));
+                            only.apply(&mut batch.placements[batch.next]);
+                            batch.used.push(only.id());
                         }
                         _ => {
                             self.state.pending = Pending::Replacement {
@@ -4216,17 +4320,10 @@ impl Game {
                 assert!(batch.player_events.mark_external(id, (source, ability)));
             }
             Event::Counters(batch) => {
-                let p = &mut batch.placements[batch.next];
-                let choice = self
-                    .counter_replacements(p, &batch.used)
-                    .into_iter()
-                    .find(|c| c.source == source && c.ability == ability)
-                    .unwrap();
-                modify_counter(
-                    choice.source_card.replacement_effects()[ability as usize],
-                    p,
+                self.apply_counter_replacement(
+                    batch,
+                    CounterReplacementId::Printed(source, ability),
                 );
-                batch.used.push((source, ability));
             }
             Event::Tokens(batch) => {
                 let choice = self
@@ -4247,6 +4344,27 @@ impl Game {
         self.state.replacements = Some(state);
         self.advance_replacements(true);
     }
+    fn apply_counter_replacement(&self, batch: &mut CounterBatch, id: CounterReplacementId) {
+        let placement = &mut batch.placements[batch.next];
+        let choice = self
+            .counter_replacements(placement, &batch.used)
+            .into_iter()
+            .find(|choice| choice.id() == id)
+            .expect("offered counter replacement");
+        choice.apply(placement);
+        batch.used.push(id);
+    }
+
+    pub(super) fn choose_resolved_counter_replacement(&mut self, effect: u64) {
+        let mut state = self.state.replacements.take().unwrap();
+        let Some(Event::Counters(batch)) = state.active.as_mut() else {
+            unreachable!("resolved counter replacement event");
+        };
+        self.apply_counter_replacement(batch, CounterReplacementId::Resolved(effect));
+        self.state.replacements = Some(state);
+        self.advance_replacements(true);
+    }
+
     pub(super) fn choose_resolved_damage_replacement(&mut self, effect: u64) {
         let mut state = self.state.replacements.take().unwrap();
         let Event::Damage(batch) = state.active.as_mut().unwrap() else {
@@ -4457,7 +4575,12 @@ impl Game {
                     &b.player_events.events()[b.next_player].applied_external,
                 )
             }
-            Event::Counters(b) => self.counter_replacements(&b.placements[b.next], &b.used),
+            Event::Counters(b) => {
+                return self
+                    .counter_replacements(&b.placements[b.next], &b.used)
+                    .into_iter()
+                    .any(|choice| emit(choice.action()));
+            }
             Event::Tokens(b) => self.token_replacements(b),
         };
         choices.into_iter().any(|c| {
@@ -4476,6 +4599,7 @@ impl Game {
         }
         match self.state.replacements.as_ref()?.active.as_ref()? {
             Event::Proliferate(batch) => Some(ReplacementChoiceView {
+                resolved_counter_effects: Vec::new(),
                 self_counter_effects: Vec::new(),
                 resolved_damage_effects: Vec::new(),
                 noncombat_damage_increases: Vec::new(),
@@ -4517,6 +4641,7 @@ impl Game {
                     }
                 }
                 Some(ReplacementChoiceView {
+                    resolved_counter_effects: Vec::new(),
                     self_counter_effects: Vec::new(),
                     kind: if choosing_replacement {
                         "Damage"
@@ -4551,6 +4676,7 @@ impl Game {
                 Some(ReplacementChoiceView {
                     resolved_damage_effects: Vec::new(),
                     noncombat_damage_increases: Vec::new(),
+                    resolved_counter_effects: Vec::new(),
                     self_counter_effects: batch
                         .self_effects
                         .iter()
@@ -4615,8 +4741,19 @@ impl Game {
                 if p.private && !self.shares_information(viewer, p.owner) {
                     return None;
                 }
+                let mut effects = Vec::new();
+                let mut resolved_counter_effects = Vec::new();
+                for choice in self.counter_replacements(p, &batch.used) {
+                    match choice {
+                        CounterReplacement::Printed(effect) => effects.push(effect),
+                        CounterReplacement::Resolved(effect) => {
+                            resolved_counter_effects.push(effect)
+                        }
+                    }
+                }
                 Some(ReplacementChoiceView {
                     self_counter_effects: Vec::new(),
+                    resolved_counter_effects,
                     resolved_damage_effects: Vec::new(),
                     noncombat_damage_increases: Vec::new(),
                     damage: None,
@@ -4632,10 +4769,11 @@ impl Game {
                     tokens: Vec::new(),
                     copy_recipes: Vec::new(),
                     role_attachments: Vec::new(),
-                    effects: self.counter_replacements(p, &batch.used),
+                    effects,
                 })
             }
             Event::Tokens(batch) => Some(ReplacementChoiceView {
+                resolved_counter_effects: Vec::new(),
                 self_counter_effects: Vec::new(),
                 resolved_damage_effects: Vec::new(),
                 noncombat_damage_increases: Vec::new(),

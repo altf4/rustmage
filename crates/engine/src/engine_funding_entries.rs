@@ -2317,6 +2317,7 @@ impl Game {
                 | Action::ChooseEntryReplacement { .. }
                 | Action::ChooseEntryTimestamp { .. }
                 | Action::ChooseReplacement { .. }
+                | Action::ChooseResolvedCounterReplacement { .. }
         ) {
             return true;
         }
@@ -2417,10 +2418,14 @@ impl Game {
             return complete(&world);
         };
         world.prepare_entry_projection();
-        let counter_choice = if let Some(Action::ChooseReplacement { source, ability }) = action {
-            Some((*source, *ability))
-        } else {
-            None
+        let counter_choice = match action {
+            Some(Action::ChooseReplacement { source, ability }) => Some(
+                replacements::CounterReplacementId::Printed(*source, *ability),
+            ),
+            Some(Action::ChooseResolvedCounterReplacement { effect }) => {
+                Some(replacements::CounterReplacementId::Resolved(*effect))
+            }
+            _ => None,
         };
         world.entry_projection.as_mut().unwrap().counter =
             self.projected_entry_counter(counter_choice);
@@ -2569,7 +2574,9 @@ impl Game {
                 };
                 batch.timestamp_order.push(i);
             }
-            Some(Action::ChooseReplacement { .. }) => {
+            Some(
+                Action::ChooseReplacement { .. } | Action::ChooseResolvedCounterReplacement { .. },
+            ) => {
                 if world.entry_projection.as_ref().unwrap().counter.is_none() {
                     return true;
                 }

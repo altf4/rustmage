@@ -2522,6 +2522,11 @@ pub enum Instruction {
     DoubleDamageToDamagedPlayerUntilNextTurn,
     /// Until cleanup, increase the controller's noncombat damage by the paid X.
     IncreaseControlledNoncombatDamageThisTurn,
+    /// Add to each positive placement of this kind by the controller on their own creatures.
+    IncreaseOwnCreatureCountersThisTurn {
+        kind: CounterKind,
+        amount: u32,
+    },
     BlinkUntilEndStep {
         under_owner: bool,
     },

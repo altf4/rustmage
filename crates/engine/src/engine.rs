@@ -345,11 +345,11 @@ pub mod sagas;
 #[path = "engine_shield_harness.rs"]
 pub mod shield_harness;
 pub use replacements::{
-    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureDamageShieldScope,
-    CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView, DamagePreventionKind,
-    DamagePreventionView, NoncombatDamageIncreaseView, PlayerCounterPlacementView,
-    ProliferateReplacementView, ReplacementChoiceView, ReplacementEffectView,
-    SelfPlayerCounterReplacement, TokenGroupView,
+    CopiedSagaLoreView, CreatedTokenChoiceView, CreatureCounterIncreaseView,
+    CreatureDamageShieldScope, CreatureDamageShieldView, DamageDoublerView, DamageEventOrderView,
+    DamagePreventionKind, DamagePreventionView, NoncombatDamageIncreaseView,
+    PlayerCounterPlacementView, ProliferateReplacementView, ReplacementChoiceView,
+    ReplacementEffectView, SelfPlayerCounterReplacement, TokenGroupView,
 };
 
 use crate::shared_vec::SharedVec;
@@ -865,6 +865,7 @@ define_actions! {
     DeclineEvidence,
     ChooseReplacement { source: ObjectRef, ability: u16 },
     ChooseResolvedDamageReplacement { effect: u64 },
+    ChooseResolvedCounterReplacement { effect: u64 },
     ChooseDrawReplacement { source: ObjectRef },
     ChooseSelfCounterReplacement { effect: u16 },
     ChooseDamagePrevention { source: ObjectRef, prevention: DamagePreventionKind },
@@ -4101,6 +4102,8 @@ pub struct Observation {
     pub damage_doublers: Vec<DamageDoublerView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub noncombat_damage_increases: Vec<NoncombatDamageIncreaseView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub creature_counter_increases: Vec<CreatureCounterIncreaseView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub resolved_ability_modifications: Option<Vec<ResolvedAbilityModificationView>>,
     pub legend_choices: Vec<LegendGroupView>,
@@ -7541,6 +7544,9 @@ impl Game {
             }
             Action::ChooseResolvedDamageReplacement { effect } => {
                 self.choose_resolved_damage_replacement(effect)
+            }
+            Action::ChooseResolvedCounterReplacement { effect } => {
+                self.choose_resolved_counter_replacement(effect);
             }
             Action::ChooseSelfCounterReplacement { effect } => {
                 self.choose_self_counter_replacement(effect)
@@ -11274,6 +11280,7 @@ impl Game {
         self.expire_source_prevention();
         if let Some(roles) = &mut self.state.roles {
             roles.noncombat_damage_increases.clear();
+            roles.creature_counter_increases.clear();
         }
         for player in &mut self.state.players {
             player.hexproof_until_end_turn = false;
@@ -12690,6 +12697,10 @@ impl Game {
                 .roles
                 .as_ref()
                 .map_or_else(Vec::new, |roles| roles.noncombat_damage_increases.clone()),
+            creature_counter_increases: s
+                .roles
+                .as_ref()
+                .map_or_else(Vec::new, |roles| roles.creature_counter_increases.clone()),
             resolved_ability_modifications: self.resolved_ability_modification_views(),
             role_timestamps: s
                 .roles

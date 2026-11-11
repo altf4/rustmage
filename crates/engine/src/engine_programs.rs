@@ -5780,6 +5780,9 @@ impl Game {
                 Instruction::IncreaseControlledNoncombatDamageThisTurn => {
                     self.increase_controlled_noncombat_damage_this_turn(&item)
                 }
+                Instruction::IncreaseOwnCreatureCountersThisTurn { kind, amount } => {
+                    self.increase_own_creature_counters_this_turn(&item, kind, amount);
+                }
                 Instruction::BlinkUntilEndStep { under_owner } => {
                     self.blink_group_until_end_step(&item, under_owner, false, false)
                 }

@@ -184,6 +184,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseDrawReplacement { .. }
             | Action::ChooseReplacement { .. }
             | Action::ChooseResolvedDamageReplacement { .. }
+            | Action::ChooseResolvedCounterReplacement { .. }
             | Action::ChooseSelfCounterReplacement { .. }
             | Action::ChooseDamagePrevention { .. }
             | Action::ChooseDamageSource { .. }

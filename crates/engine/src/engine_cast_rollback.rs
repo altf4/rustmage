@@ -233,6 +233,7 @@ impl Game {
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
                         | Action::ChooseResolvedDamageReplacement { .. }
+                        | Action::ChooseResolvedCounterReplacement { .. }
                         | Action::ChooseDrawReplacement { .. }
                         | Action::ChooseSelfCounterReplacement { .. }
                         | Action::ChooseZoneReplacement { .. }
