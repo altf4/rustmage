@@ -3,10 +3,76 @@
   "catalogue_id": 1835,
   "oracle_id": "96e6d220-87db-4dab-abaa-e80c9577d89a",
   "facts_sha256": "120a0e5c48559ce8446c7707e399a28cb2ced07885b15d3e7bbfe20f8c6f5e40",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7908f6c84412f9d366d6674e9362be7f22609b86dde7a74e824f1248033446de"
   },
-  "physical_metadata_sha256": "7cd72bad42933d1f3343f0d05878f7d6ea385bd9ed6db490059a9c4a9b1355f0"
+  "physical_metadata_sha256": "7cd72bad42933d1f3343f0d05878f7d6ea385bd9ed6db490059a9c4a9b1355f0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GossipsTalent.java",
+  "java_sha256": "45fa781b4ac379f2c44305b9b82efdc97d24517eafd72e13a0d99cfe28eaeccb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldControlledTriggeredAbility.java",
+      "sha256": "febb133cfc64c8de3ed6f341e228fd6b1f73c96a43a8fac22d378d279dad6065"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileThenReturnTargetEffect.java",
+      "sha256": "4217e01de7184be471a8a30f82298a81946260b08b239d049ab3b6700d034418"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainClassAbilitySourceEffect.java",
+      "sha256": "bc5041794cf52d768818df17da1cd5ba5813a11a4135e92a01349b4f1d8347ee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassLevelAbility.java",
+      "sha256": "fb46d20a239b9dc3f6afb4f16ebebe9502ee5d8bd5c34fd8f1bd43c039748d28"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ClassReminderAbility.java",
+      "sha256": "8dc32040fc68007c96ef75000bf14278cdaa04bb0998d663f2f80b86f2411ea4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_classes.rs"
 }

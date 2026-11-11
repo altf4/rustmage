@@ -3,10 +3,51 @@
   "catalogue_id": 658,
   "oracle_id": "5fe3aabd-3271-41bf-ae50-f6efaba7c4ae",
   "facts_sha256": "d565e7332d482002b5c898d21fdfef6ce3c8a6fc140e911c5620de8ae6005954",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2cb152efdcbb10eb871a52a812072e3256301a943cc73058e839584dab0faf7e"
   },
-  "physical_metadata_sha256": "bd393ccf587feca7f8429b9cb3cd1648bf5c5d525eb3174d6d53880256b08a23"
+  "physical_metadata_sha256": "bd393ccf587feca7f8429b9cb3cd1648bf5c5d525eb3174d6d53880256b08a23",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CarrotCake.java",
+  "java_sha256": "b402900232aac13a02fd7815a94d613217ca3288aa805e2c2917b1b497c6dd16",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificeSourceTriggeredAbility.java",
+      "sha256": "aaf077484872644c7f9b2d70c878b76f7880edae52611abf89575e0cd6ffc60c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/meta/OrTriggeredAbility.java",
+      "sha256": "c9914e0f4ca4c5081ba6240285f9190d1969bef1f9f42ba9f23f245250a0a4a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_classes.rs"
 }
