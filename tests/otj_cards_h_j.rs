@@ -387,3 +387,205 @@ fn jailbreak_scheme_combines_modes_and_lets_the_owner_choose_the_library_end() {
         Some(&foreign)
     );
 }
+
+#[test]
+fn harrier_strix_taps_a_land_then_can_draw_and_privately_discard() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let strix = put(&mut game, player, "Harrier Strix", Zone::Hand);
+    let land = put(&mut game, player.other(), "Forest", Zone::Battlefield);
+    let top = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, strix, None);
+    choose_when_ready(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(land),
+        },
+    );
+    resolve(&mut game);
+    assert!(game.object_view(land).tapped);
+    assert!(game.keywords(strix).contains(Keywords::FLYING));
+    announce_activation(&mut game, strix, 0);
+    pay(&mut game);
+    let discard = Action::Discard { card: top };
+    checkpoint(&mut game, discard.clone());
+    assert_eq!(game.object_view(top).zone, Zone::Hand);
+    assert!(
+        !game
+            .observe(player.other())
+            .objects
+            .iter()
+            .any(|object| object.id == top)
+    );
+    act(&mut game, discard);
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+}
+
+#[test]
+fn hellspur_brute_counts_each_controlled_outlaw_only_once() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(
+        &mut game,
+        player,
+        "Laughing Jasper Flint",
+        Zone::Battlefield,
+    );
+    let dual = put(
+        &mut game,
+        player.other(),
+        "Forsaken Miner",
+        Zone::Battlefield,
+    );
+    let exact = game.object_ref(dual);
+    game.record_control(exact, player, None);
+    assert!(game.object_view(dual).has_subtype("Rogue"));
+    assert!(game.object_view(dual).has_subtype("Mercenary"));
+    put(
+        &mut game,
+        player.other(),
+        "Forsaken Miner",
+        Zone::Battlefield,
+    );
+    let brute = put(&mut game, player, "Hellspur Brute", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
+    reject(&mut game, Action::AnnounceCast { card: brute });
+    game.state.players[player.index()].mana[5] += 1;
+    cast(&mut game, brute, None);
+    resolve(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert!(game.keywords(brute).contains(Keywords::TRAMPLE));
+}
+
+#[test]
+fn honest_rutstein_recovers_an_own_creature_and_reduces_its_generic_cast_cost() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let honest = put(&mut game, player, "Honest Rutstein", Zone::Hand);
+    let bear = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let opponent_bear = put(&mut game, player.other(), "Grizzly Bears", Zone::Graveyard);
+    cast(&mut game, honest, None);
+    let recover = Action::ChooseTarget {
+        target: Target::Card(bear),
+    };
+    checkpoint(&mut game, recover.clone());
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(opponent_bear),
+        },
+    );
+    act(&mut game, recover);
+    resolve(&mut game);
+    assert_eq!(game.object_view(bear).zone, Zone::Hand);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
+    cast(&mut game, bear, None);
+    resolve(&mut game);
+    assert_eq!(game.object_view(bear).zone, Zone::Battlefield);
+}
+
+#[test]
+fn inspiring_vantage_checks_two_other_lands_at_entry() {
+    let player = Player::P1;
+    for count in [2, 3] {
+        let mut game = scenario(player);
+        for _ in 0..count {
+            put(&mut game, player, "Forest", Zone::Battlefield);
+        }
+        let vantage = put(&mut game, player, "Inspiring Vantage", Zone::Hand);
+        act(&mut game, Action::PlayLand { card: vantage });
+        assert_eq!(game.object_view(vantage).tapped, count == 3);
+        if count == 2 {
+            let mut white = game.clone();
+            tap_for(&mut white, vantage, 0, [1, 0, 0, 0, 0, 0]);
+            tap_for(&mut game, vantage, 0, [0, 0, 0, 1, 0, 0]);
+        }
+    }
+}
+
+#[test]
+fn irascible_wolverine_exiles_its_library_top_on_entry_after_plot() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let wolverine = put(&mut game, player, "Irascible Wolverine", Zone::Hand);
+    let top = put(&mut game, player, "Forest", Zone::Library);
+    act(&mut game, Action::AnnouncePlot { card: wolverine });
+    choose(&mut game, |action| matches!(action, Action::PayPlot { .. }));
+    assert_eq!(game.object_view(top).zone, Zone::Library);
+    game.state.turn += 1;
+    act(&mut game, Action::AnnouncePlotted { card: wolverine });
+    pay(&mut game);
+    resolve(&mut game);
+    assert_eq!(game.object_view(top).zone, Zone::Exile);
+    act(&mut game, Action::PlayLand { card: top });
+    assert_eq!(game.object_view(top).zone, Zone::Battlefield);
+}
+
+#[test]
+fn iron_fist_pulverizer_deals_damage_and_scries_on_the_second_cast() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let giant = put(&mut game, player, "Iron-Fist Pulverizer", Zone::Battlefield);
+    let target = Target::Player(player.other());
+    let top = put(&mut game, player, "Forest", Zone::Library);
+    for number in 1..=3 {
+        let shock = put(&mut game, player, "Shock", Zone::Hand);
+        cast(&mut game, shock, Some(target));
+        if number == 2 {
+            choose_when_ready(&mut game, Action::ChooseTarget { target });
+            choose_when_ready(
+                &mut game,
+                Action::ArrangeLibrary {
+                    card: top,
+                    destination: LibraryDestination::Top,
+                },
+            );
+        }
+        resolve(&mut game);
+        assert_eq!(
+            game.state.players[player.other().index()].life,
+            20 - 2 * number - if number >= 2 { 2 } else { 0 }
+        );
+    }
+    assert!(game.keywords(giant).contains(Keywords::REACH));
+}
+
+#[test]
+fn jolene_gets_one_treasure_for_a_large_attack_and_pays_to_spend_it() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let jolene = put(
+        &mut game,
+        player,
+        "Jolene, Plundering Pugilist",
+        Zone::Battlefield,
+    );
+    let giant = put(&mut game, player, "Iron-Fist Pulverizer", Zone::Battlefield);
+    advance(&mut game, |game| game.state.pending == Pending::Attackers);
+    act(&mut game, Action::Attack { card: jolene });
+    act(&mut game, Action::Attack { card: giant });
+    act(&mut game, Action::FinishAttackers);
+    resolve(&mut game);
+    let [treasure] = tokens(&game, player, TREASURE)[..] else {
+        panic!("one declaration should produce one Treasure");
+    };
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];
+    announce_activation(&mut game, jolene, 0);
+    let target = Action::ChooseTarget {
+        target: Target::Player(player.other()),
+    };
+    let payment = Action::ChooseAdditionalCost {
+        object: game.object_ref(treasure),
+    };
+    if game.legal_actions().contains(&payment) {
+        act(&mut game, payment);
+        act(&mut game, target);
+    } else {
+        act(&mut game, target);
+        act(&mut game, payment);
+    }
+    pay(&mut game);
+    resolve(&mut game);
+    assert!(tokens(&game, player, TREASURE).is_empty());
+    assert_eq!(game.state.players[player.other().index()].life, 19);
+}

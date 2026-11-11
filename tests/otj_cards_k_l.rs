@@ -467,3 +467,26 @@ fn lively_dirge_tutors_before_its_nontargeted_graveyard_return() {
     assert_eq!(game.object_view(second).zone, Zone::Battlefield);
     assert_eq!(game.object_view(large).zone, Zone::Graveyard);
 }
+
+#[test]
+fn loan_shark_draws_only_if_its_entry_follows_two_casts_this_turn() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let shark = put(&mut game, player, "Loan Shark", Zone::Hand);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    let length = game.state.players[player.index()].library.len();
+    let mut first = game.clone();
+    cast(&mut first, shark, None);
+    resolve(&mut first);
+    assert_eq!(first.state.players[player.index()].library.len(), length);
+    act(&mut game, Action::AnnouncePlot { card: shark });
+    choose(&mut game, |action| matches!(action, Action::PayPlot { .. }));
+    assert_eq!(game.state.players[player.index()].library.len(), length);
+    game.state.turn += 1;
+    cast(&mut game, shock, Some(Target::Player(player.other())));
+    resolve(&mut game);
+    act(&mut game, Action::AnnouncePlotted { card: shark });
+    pay(&mut game);
+    resolve(&mut game);
+    assert_eq!(game.state.players[player.index()].library.len(), length - 1);
+}
