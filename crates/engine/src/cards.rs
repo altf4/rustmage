@@ -1457,6 +1457,8 @@ pub enum EffectChoiceKind {
     ExileGrantingAttachment,
     /// During resolution, choose a card from either graveyard without targeting.
     ExileCardFromAnyGraveyard,
+    /// Choose without targeting, and retain only cards actually moved to exile.
+    ExileCardFromAnyGraveyardRemember,
     /// Targeted player chooses a creature to exile with their graveyard.
     ExileCreatureAndGraveyard,
     CoverUpGraveyardCard,
@@ -1702,6 +1704,7 @@ impl EffectChoiceKind {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
+            Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeSelection => Self::Sacrifice,
             Self::ReturnTappedCreature => Self::ReturnToHand,
             Self::ReturnGraveyardToHandOrSubtype { kinds, .. }
@@ -2784,6 +2787,7 @@ pub enum Instruction {
     CopyTargetsFromCastSpell,
     /// Copy the chosen permanent's copiable values onto this exact source until cleanup.
     CopySourceFromRememberedPermanent,
+    CopySourceFromRememberedExiledCreature,
     /// Put counters on the exact remembered permanents in one event.
     PutRememberedPermanentCounters {
         kind: CounterKind,
@@ -4880,6 +4884,10 @@ pub enum Instruction {
     },
     /// Offer this block only while the ability's exact source is on the battlefield.
     MayIfSourceOnBattlefield {
+        skip: usize,
+    },
+    /// A choice is available only with the exact live source and exiled creature receipt.
+    MayIfRememberedExiledCreature {
         skip: usize,
     },
     /// Ask whether to draw, unless a current rule prohibits drawing.

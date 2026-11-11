@@ -358,7 +358,12 @@ impl Game {
             return o.zone == Zone::Graveyard
                 && o.is_card()
                 && self.object_ref(object.card) == object
-                && !choice.selected[player.index()].contains(&object);
+                && !choice.selected[player.index()].contains(&object)
+                && (choice.kind != EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+                    || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
+                        self,
+                        object.card,
+                    ));
         }
         if matches!(
             choice.kind.payment_kind(),
@@ -1504,6 +1509,9 @@ impl Game {
                 return false;
             }
         }
+        if kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+            self.state.resolving.as_mut().unwrap().remembered_objects = None;
+        }
         if kind == EffectChoiceKind::ReturnRememberedCreature {
             assert_eq!(amount, 1, "one remembered creature return");
             assert_eq!(players, PlayerSet::Controller, "captured return controller");
@@ -2485,6 +2493,16 @@ impl Game {
                     .flat_map(|rows| rows.iter().map(|r| r.card))
                     .collect();
                 let events = self.move_objects_raw(&ids, Zone::Exile);
+                if choice.kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+                    let mut actual: Vec<_> = events
+                        .iter()
+                        .filter(|event| event.moved && event.destination == Zone::Exile)
+                        .map(|event| event.after)
+                        .collect();
+                    actual.sort_unstable();
+                    self.state.resolving.as_mut().unwrap().remembered_objects =
+                        (!actual.is_empty()).then(|| actual.into());
+                }
                 if let EffectChoiceKind::ExileFromHandWithPlaySurcharge(surcharge) = choice.kind {
                     for event in &events {
                         if event.moved && event.destination == Zone::Exile {

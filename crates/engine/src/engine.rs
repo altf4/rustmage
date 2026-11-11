@@ -5676,6 +5676,7 @@ impl Game {
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
+                            | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
                             | EffectChoiceKind::RememberPermanents { .. }
                     ) {
                         Action::ChooseOptional { accept: false }

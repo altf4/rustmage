@@ -1383,6 +1383,7 @@ impl Game {
             | EffectChoiceKind::HandToTop
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
+            | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::ExileControlledLinked
             | EffectChoiceKind::ExileGrantingAttachment

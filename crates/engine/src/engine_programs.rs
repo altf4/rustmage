@@ -7685,6 +7685,11 @@ impl Game {
                         self.apply_temporary_copy(source.object, recipe, CopyDeadline::EndOfTurn);
                     }
                 }
+                Instruction::CopySourceFromRememberedExiledCreature => {
+                    if let Some((source, recipe)) = self.remembered_exiled_creature_copy(&item) {
+                        self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
+                    }
+                }
                 Instruction::PutRememberedPermanentCounters { kind, amount } => {
                     let changes = self
                         .live_remembered_permanents()
@@ -9808,6 +9813,7 @@ impl Game {
                 }
                 Instruction::May { skip }
                 | Instruction::MayIfSourceOnBattlefield { skip }
+                | Instruction::MayIfRememberedExiledCreature { skip }
                 | Instruction::MayDraw { skip }
                 | Instruction::MayExileTop { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
@@ -9818,6 +9824,9 @@ impl Game {
                                 self.on_battlefield(source.id)
                                     && self.object_ref(source.id) == source.object
                             })
+                        }
+                        Instruction::MayIfRememberedExiledCreature { .. } => {
+                            self.remembered_exiled_creature_copy(&item).is_some()
                         }
                         Instruction::MayDraw { .. } => !self.draws_prohibited(),
                         Instruction::MayExileTop { .. } => {

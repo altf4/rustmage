@@ -192,6 +192,30 @@ impl Game {
         }
     }
 
+    pub(super) fn remembered_exiled_creature_copy(
+        &self,
+        item: &SpellView,
+    ) -> Option<(ObjectRef, CopyRecipe)> {
+        let source = item.source?.object;
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return None;
+        }
+        self.state
+            .resolving
+            .as_ref()?
+            .remembered_objects
+            .as_ref()?
+            .iter()
+            .find_map(|&blueprint| {
+                let object = &self.state.objects[blueprint.card as usize];
+                (self.object_ref(blueprint.card) == blueprint
+                    && object.zone == Zone::Exile
+                    && object.is_card()
+                    && object.card.is_creature())
+                .then(|| (source, self.copiable_recipe(blueprint)))
+            })
+    }
+
     pub(super) fn resolve_in_place_copy(
         &mut self,
         item: &SpellView,
