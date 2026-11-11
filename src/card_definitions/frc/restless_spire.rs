@@ -35,7 +35,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::AnimateSourceColoredWithAbility {
                 spec: &AnimationSpec {
                     artifact: false,
-                    creature_types: AnimationCreatureTypes::Named(&["Elemental"]),
+                    creature_types: AnimationCreatureTypes::Additional(&["Elemental"]),
                     base: Some((2, 1)),
                     keywords: Keywords::NONE,
                     duration: AnimationDuration::EndOfTurn,

@@ -39,7 +39,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::AnimateSourceColored(
                 AnimationSpec {
                     artifact: false,
-                    creature_types: AnimationCreatureTypes::Named(&["Nightmare"]),
+                    creature_types: AnimationCreatureTypes::Additional(&["Nightmare"]),
                     base: Some((1, 4)),
                     keywords: Keywords::NONE,
                     duration: AnimationDuration::EndOfTurn,

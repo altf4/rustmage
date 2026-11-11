@@ -2041,6 +2041,60 @@ fn restless_lands_enter_tapped_make_both_colors_and_keep_land_type_while_animate
 }
 
 #[test]
+fn restless_animations_retain_existing_creature_types() {
+    let player = Player::P0;
+    for (name, payment, subtype) in [
+        ("Restless Bivouac", [1, 0, 0, 1, 0, 1], "Ox"),
+        ("Restless Cottage", [0, 0, 1, 0, 1, 2], "Horror"),
+        ("Restless Fortress", [1, 0, 1, 0, 0, 2], "Nightmare"),
+        ("Restless Spire", [0, 1, 0, 1, 0, 0], "Elemental"),
+        ("Restless Vinestalk", [0, 1, 0, 0, 1, 3], "Plant"),
+    ] {
+        let mut game = scenario(player);
+        let land = put(&mut game, player, name, Zone::Battlefield);
+        let brave = put(&mut game, player, "Brave the Wilds", Zone::Hand);
+        let food = spawn(&mut game, player, FOOD, Zone::Battlefield);
+        act(&mut game, Action::AnnounceCast { card: brave });
+        let sacrifice = Some(game.object_ref(food));
+        act(&mut game, Action::ChooseBargain { sacrifice });
+        let target = Target::Card(land);
+        act(&mut game, Action::ChooseTarget { target });
+        pay(&mut game);
+        pass_pair(&mut game);
+        act(&mut game, Action::FinishSearch);
+        assert!(game.object_view(land).has_subtype("Elemental"), "{name}");
+
+        let retained = if subtype == "Elemental" {
+            // The Spire already adds Elemental. A separate effect gives it Goblin.
+            let oko = put(&mut game, player, "Oko, Lorwyn Liege", Zone::Hand);
+            cast(&mut game, oko, None);
+            settle(&mut game);
+            choose(&mut game, |action| {
+                matches!(action, Action::Activate { card, ability: 0, target: Some(chosen), .. }
+                    if *card == oko && *chosen == target)
+            });
+            settle(&mut game);
+            "Goblin"
+        } else {
+            "Elemental"
+        };
+        assert!(game.object_view(land).has_subtype(retained), "{name}");
+
+        game.state.players[player.index()].mana = payment;
+        animate_restless_land(&mut game, land, payment);
+        let animated = game.object_view(land);
+        assert!(
+            animated.has_subtype(subtype),
+            "{name} should gain {subtype}"
+        );
+        assert!(
+            animated.has_subtype(retained),
+            "{name} should keep {retained}"
+        );
+    }
+}
+
+#[test]
 fn restless_bivouac_counters_itself_or_another_controlled_creature_only_when_it_can_attack() {
     for player in [Player::P0, Player::P1] {
         let mut fresh = scenario(player);
