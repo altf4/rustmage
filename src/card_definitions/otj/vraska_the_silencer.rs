@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 3),
     keywords: Keywords::DEATHTOUCH,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::DEATHTOUCH,
+        )],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::OpposingNontokenCreature),
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayPayMana {
+                cost: generic(1),
+                skip: 1,
+            },
+            Instruction::ReturnDeathCard(ReturnKind::Treasure),
+        ],
+    }],
     ..CardRules::EMPTY
 };

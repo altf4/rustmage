@@ -3,10 +3,36 @@
   "catalogue_id": 3894,
   "oracle_id": "9100530e-2bd0-487e-a4eb-13dabd55b678",
   "facts_sha256": "8645092774094985b43a8ede4ff1a80cb8c7f53726bfbc495c3da55ab45b6de5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "66d62342b91d76da81a3a00e28bb75a763e8bd4cd355eef9040abeba86041ff1"
   },
-  "physical_metadata_sha256": "6d47616f8fe6b7961d701b1e7514dd956a96a01380b0e1ba5ec299a87983e4e9"
+  "physical_metadata_sha256": "6d47616f8fe6b7961d701b1e7514dd956a96a01380b0e1ba5ec299a87983e4e9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Skulduggery.java",
+  "java_sha256": "1b7c172af6087488061971eee369545199292020578eef0a5003ea620d83a66b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }

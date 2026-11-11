@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const TOKEN_CREATURE: TargetRule = TargetRule::Filtered {
+    base: &TargetRule::Creature,
+    predicate: &TargetPredicate::Token,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::Groups(&[
+            TargetSpec::one(TargetRule::Creature),
+            TargetSpec {
+                rule: TargetRule::Grouped {
+                    base: &TOKEN_CREATURE,
+                    constraint: TargetGroupConstraint::OtherThanGroup(0),
+                },
+                min: 0,
+                max: 1,
+            },
+        ]),
+        &[Instruction::DamageByGroup { first: 6, other: 2 }],
+    ),
     ..CardRules::EMPTY
 };

@@ -1,16 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 2),
     keywords: Keywords::FLYING,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokens {
+            token: Card(5612),
+            amount: 1,
+            tapped: false,
+        }],
+    }],
     ..CardRules::EMPTY
 };

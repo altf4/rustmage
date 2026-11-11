@@ -3,10 +3,41 @@
   "catalogue_id": 3804,
   "oracle_id": "59e8747a-3e3f-48d2-aaee-af94ecee378b",
   "facts_sha256": "186d2a20949b50e2c7f1cc5a9a291ce00cb828d2d88109f3ef9bc1c3b191c4c8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "606222c98eff3832bb792b243a8c72b7048d00fb549702f3dff6af0a0ddf280a"
   },
-  "physical_metadata_sha256": "0bc4d06dcbed22be3a8828fa637646ce2f54c0e3986fe2311909ed28a5c3c4ad"
+  "physical_metadata_sha256": "0bc4d06dcbed22be3a8828fa637646ce2f54c0e3986fe2311909ed28a5c3c4ad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShackleSlinger.java",
+  "java_sha256": "6f4fa502cd8f38782066db5985b2bd0f5b6a8f5e2a1ce6dc14b0d9cfd1d158b3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/counters/CounterType.java",
+      "sha256": "4fbb9e86cbb05606d932a4e961c1bd25ef4b1e92fb7ba9271d2ce53c3311bcd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }

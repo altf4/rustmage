@@ -3,10 +3,46 @@
   "catalogue_id": 3925,
   "oracle_id": "2085642e-29be-4e13-81dc-1f2ff6c095eb",
   "facts_sha256": "bd0e5c0aa53ef1b1660d17eca379d1343a79564e3e2b40df1cf37f2a03956a42",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4dd4a4e94c6589f5385f480aaeb8f91e13c8f7cfabdc473fd9b553078950244f"
   },
-  "physical_metadata_sha256": "506d0abceee059a7064efe41199a46febe378c51e365a65aeaa54c66ef6f7ab9"
+  "physical_metadata_sha256": "506d0abceee059a7064efe41199a46febe378c51e365a65aeaa54c66ef6f7ab9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SlickshotVaultBuster.java",
+  "java_sha256": "5a280ed31928bbbbbadd9d839cff10b2a74a443b500e2370452f85acf89acdd3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CommittedCrimeCondition.java",
+      "sha256": "9bd7ecfddcfac5de68ddaf16212d7893f39999b22057d4bd09406bc9317657e2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CommittedCrimeWatcher.java",
+      "sha256": "ded2521df7d1f000535a2ae91f2d1ab75538c036a578af155f9f170f304c2728"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_s_z.rs"
 }
