@@ -846,38 +846,7 @@ impl Game {
             return None;
         }
         let timestamp = self.next_role_timestamp();
-        let row = AnimationView {
-            object,
-            timestamp,
-            artifact: spec.artifact,
-            land: matches!(type_mode, AnimationTypeMode::AddCreatureAndLand),
-            preserve_card_types: matches!(
-                type_mode,
-                AnimationTypeMode::PreserveCardTypes | AnimationTypeMode::AddLegendary
-            ),
-            creature_only: matches!(type_mode, AnimationTypeMode::ReplaceWithCreature),
-            legendary: matches!(type_mode, AnimationTypeMode::AddLegendary),
-            food_only: false,
-            artifact_noncreature: false,
-            equipment_name: None,
-            enchantment_noncreature: false,
-            colors,
-            creature_types: match spec.creature_types {
-                AnimationCreatureTypes::Named(t) | AnimationCreatureTypes::Additional(t) => Some(t),
-                _ => None,
-            },
-            all_creature_types: matches!(spec.creature_types, AnimationCreatureTypes::All),
-            additional_creature_types: matches!(
-                spec.creature_types,
-                AnimationCreatureTypes::Additional(_)
-            ),
-            base: spec.base,
-            keywords: spec.keywords,
-            expires_turn: match spec.duration {
-                AnimationDuration::EndOfTurn => Some(self.state.turn),
-                AnimationDuration::Permanent => None,
-            },
-        };
+        let row = animation_view(object, timestamp, spec, type_mode, colors, self.state.turn);
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -939,6 +908,50 @@ impl Game {
         let before = state.animations.len();
         state.animations.retain(|r| r.expires_turn.is_none());
         state.animations.len() != before
+    }
+}
+
+/// Build the same form in committed and projected characteristic worlds.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn animation_view(
+    object: ObjectRef,
+    timestamp: u64,
+    spec: AnimationSpec,
+    type_mode: AnimationTypeMode,
+    colors: Option<u8>,
+    turn: u32,
+) -> AnimationView {
+    AnimationView {
+        object,
+        timestamp,
+        artifact: spec.artifact,
+        land: matches!(type_mode, AnimationTypeMode::AddCreatureAndLand),
+        preserve_card_types: matches!(
+            type_mode,
+            AnimationTypeMode::PreserveCardTypes | AnimationTypeMode::AddLegendary
+        ),
+        creature_only: matches!(type_mode, AnimationTypeMode::ReplaceWithCreature),
+        legendary: matches!(type_mode, AnimationTypeMode::AddLegendary),
+        food_only: false,
+        artifact_noncreature: false,
+        equipment_name: None,
+        enchantment_noncreature: false,
+        colors,
+        creature_types: match spec.creature_types {
+            AnimationCreatureTypes::Named(t) | AnimationCreatureTypes::Additional(t) => Some(t),
+            _ => None,
+        },
+        all_creature_types: matches!(spec.creature_types, AnimationCreatureTypes::All),
+        additional_creature_types: matches!(
+            spec.creature_types,
+            AnimationCreatureTypes::Additional(_)
+        ),
+        base: spec.base,
+        keywords: spec.keywords,
+        expires_turn: match spec.duration {
+            AnimationDuration::EndOfTurn => Some(turn),
+            AnimationDuration::Permanent => None,
+        },
     }
 }
 

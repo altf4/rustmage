@@ -1,7 +1,7 @@
 //! Owned pre-entry attachment/life choices; no object moves until the batch is ready.
 use super::entry_tap::{EntryTapEffect, EntryTapEvent, EntryTapKind};
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{AnimationSpec, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -61,6 +61,8 @@ pub(super) struct EntryMove {
     pub food_return: Option<Card>,
     /// Set artifact card type as it enters, preserving abilities (CR205.1a/611.2e).
     pub artifact_return: bool,
+    /// Add a creature form at the same time this exact object enters.
+    pub animation: Option<&'static AnimationSpec>,
     /// Source-independent enchantment-only form as it enters.
     pub enchantment_return: bool,
     pub attacking: Option<CombatDefender>,
@@ -207,6 +209,7 @@ impl EntryMove {
     /// Copy recipes and applicable continuous effects can change the prospective entrant.
     pub(super) fn requires_characteristic_preview(&self) -> bool {
         self.ghost_vacuum_after.is_some()
+            || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
             || self.before.copy_recipe.is_some()
             || self
@@ -264,6 +267,8 @@ impl EntryMove {
             16
         } else if self.artifact_return || self.enchantment_return {
             (if self.enchantment_return { 32 } else { 16 }) | (self.before.kinds & (4 | 8))
+        } else if let Some(animation) = self.animation {
+            self.before.kinds | 1 | (16 * u16::from(animation.artifact))
         } else {
             self.before.kinds
         }
@@ -305,6 +310,7 @@ impl EntryMove {
             ghost_vacuum_after: None,
             food_return: None,
             artifact_return: false,
+            animation: None,
             enchantment_return: false,
             attacking: None,
             sneak_paid: false,
@@ -1088,6 +1094,7 @@ impl Game {
         let mut food_results = Vec::new();
         let mut artifact_results = Vec::new();
         let mut enchantment_results = Vec::new();
+        let mut animation_results = Vec::new();
         let mut ghost_results = Vec::new();
         let mut copy_results = Vec::new();
         let mut copy_exile_results = Vec::new();
@@ -1224,6 +1231,12 @@ impl Game {
                 && let Some(definition) = movement.food_return
             {
                 food_results.push((event.after, definition));
+            }
+            if event.moved
+                && event.destination == Zone::Battlefield
+                && let Some(animation) = movement.animation
+            {
+                animation_results.push((event.after, animation));
             }
             if event.moved && event.destination == Zone::Battlefield && movement.artifact_return {
                 artifact_results.push(event.after);
@@ -1459,6 +1472,13 @@ impl Game {
                 self.state.roles.get_or_insert_with(Default::default),
                 recipient,
                 source,
+            );
+        }
+        for (recipient, animation) in animation_results {
+            self.change_object_form(
+                recipient,
+                *animation,
+                characteristic_layers::AnimationTypeMode::AddCreature,
             );
         }
         for recipient in artifact_results {
@@ -2059,6 +2079,7 @@ impl Game {
                 .is_some_and(|copy| copy.recipe.is_some())
                 || m.artifact_return
                 || m.enchantment_return
+                || m.animation.is_some()
                 || m.ghost_vacuum_after.is_some()
                 || m.food_return.is_some()
                 || m.return_modification

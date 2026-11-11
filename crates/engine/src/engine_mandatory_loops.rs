@@ -218,7 +218,11 @@ impl Game {
         // cycle. No generated abilities, replacement/zone rules or copies.
         if self.state.mana_lots.is_some()
             || self.state.library_top.is_some()
-            || self.state.players.iter().any(|p| p.library_top_life_play)
+            || self
+                .state
+                .players
+                .iter()
+                .any(|p| p.library_top_life_play || p.library_top_play)
             || self.state.zone_rules.is_some()
             || self.state.replacements.is_some()
             || self.state.temporary_abilities.is_some()

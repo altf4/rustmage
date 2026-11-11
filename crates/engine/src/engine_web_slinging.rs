@@ -39,6 +39,10 @@ pub enum WebSlingingOrigin {
     LinkedExileCounters {
         source: ObjectRef,
     },
+    LinkedExilePaid {
+        object: ObjectRef,
+        source: ObjectRef,
+    },
     TaxedExile {
         surcharge: std::num::NonZeroU32,
     },
@@ -160,6 +164,17 @@ impl Game {
         else {
             return false;
         };
+        let linked_exile_paid = match origin {
+            WebSlingingOrigin::LinkedExilePaid { object, source } if object.card == card => {
+                let Some(permission) = self.linked_paid_permission(actor, source, object, face)
+                else {
+                    return false;
+                };
+                Some(permission)
+            }
+            WebSlingingOrigin::LinkedExilePaid { .. } => return false,
+            _ => None,
+        };
         let origin_counter_cost = match origin {
             WebSlingingOrigin::LinkedExileCounters { source } => {
                 self.linked_counter_permission(actor, source, card, face)
@@ -199,6 +214,7 @@ impl Game {
                     cast_permissions::OriginAlternative {
                         exile_play_surcharge,
                         web_slinging: Some(cost),
+                        linked_exile_paid,
                         ..Default::default()
                     },
                 ) && emit(Action::AnnounceWebSlinging {
@@ -229,6 +245,7 @@ impl Game {
         let mut origin_counter_cost = None;
         let mut origin_life_cost = None;
         let mut exile_play_surcharge = None;
+        let mut linked_exile_paid = None;
         match origin {
             WebSlingingOrigin::Ordinary | WebSlingingOrigin::LibraryTop { .. } => {}
             WebSlingingOrigin::GraveyardType {
@@ -254,6 +271,12 @@ impl Game {
             WebSlingingOrigin::LinkedExileCounters { source } => {
                 origin_counter_cost = self.linked_counter_permission(actor, source, card, face);
             }
+            WebSlingingOrigin::LinkedExilePaid { object, source } => {
+                linked_exile_paid = Some(
+                    self.linked_paid_permission(actor, source, object, face)
+                        .expect("approved exact linked Web-slinging permission"),
+                );
+            }
             WebSlingingOrigin::TaxedExile { surcharge } => exile_play_surcharge = Some(surcharge),
             WebSlingingOrigin::PaidResolution => {
                 self.cast_during_resolution_configured(
@@ -269,6 +292,9 @@ impl Game {
         let mut item = self.cast_item(actor, card, [0; 6]);
         self.set_cast_face(&mut item, face);
         Self::configure_web_slinging(&mut item);
+        if linked_exile_paid.is_some() {
+            self.select_linked_paid_cast(&mut item);
+        }
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if let Some(surcharge) = exile_play_surcharge {
             Self::configure_taxed_exile_cast(&mut item, surcharge.get());
@@ -291,6 +317,10 @@ impl Game {
                 if let WebSlingingOrigin::LibraryTop { permission } = origin {
                     announcement.limited_cast_permission =
                         Some(Box::new(LimitedCastPermission::LibraryTop(permission)));
+                }
+                if let Some(permission) = linked_exile_paid {
+                    announcement.limited_cast_permission =
+                        Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
                 }
                 announcement.origin_additional_cost = origin_additional_cost;
                 if let Some(life) = origin_life_cost {

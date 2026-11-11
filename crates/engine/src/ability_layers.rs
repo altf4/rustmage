@@ -49,6 +49,8 @@ pub enum AdditionalTriggerScope {
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     OtherControlledSubtype(&'static str),
+    /// Abilities of another creature with this provider's active entry choice.
+    OtherControlledCreatureOfChosenType,
     EquippedCreature,
     /// Abilities of this equipped source or of any Equipment attached to it.
     SourceAndAttachedEquipment,
@@ -86,6 +88,11 @@ pub enum StaticAbilityFragment {
     CantDrawCards,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
+    /// Cast owned cards linked to this permanent using ordinary mana costs.
+    LinkedExilePaidCast {
+        filter: CastFilter,
+        entry_counter: Option<CounterKind>,
+    },
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.

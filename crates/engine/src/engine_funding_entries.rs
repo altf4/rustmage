@@ -167,6 +167,7 @@ pub(super) struct EntryProjection {
     /// Every committed entry, independent of whether it provides a timestamped
     /// continuous effect. Power-up and public entry facts use this exact history.
     pub entered: Vec<ObjectRef>,
+    pub craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     pub lands_entered: [u64; 2],
     pub battle_protectors: Vec<(ObjectRef, Player)>,
     pub consumed: Vec<ObjectRef>,
@@ -214,6 +215,7 @@ impl EntryProjection {
             entry_values: w.entry_values().to_vec(),
             order: Vec::new(),
             entered: Vec::new(),
+            craft_materials: Vec::new(),
             lands_entered: std::array::from_fn(|p| w.game.state.players[p].lands_entered_this_turn),
             battle_protectors: Vec::new(),
             consumed: Vec::new(),
@@ -1607,6 +1609,7 @@ impl FundingState<'_> {
             .is_some_and(|copy| copy.recipe.is_some())
             || m.artifact_return
             || m.enchantment_return
+            || m.animation.is_some()
             || m.ghost_vacuum_after.is_some()
             || m.food_return.is_some()
             || m.return_modification
@@ -1762,6 +1765,9 @@ impl FundingState<'_> {
                         .push((source, protector));
                 }
                 let p = next.entry_projection.as_mut().unwrap();
+                if let Some(materials) = m.craft_materials.as_deref() {
+                    p.craft_materials.push((source, materials.clone()));
+                }
                 if !p.static_sources.contains(&row.id) {
                     p.static_sources.push(row.id)
                 }
@@ -1824,6 +1830,19 @@ impl FundingState<'_> {
                 CounterAmounts::from(&m.counters).keyword_amounts(),
                 Some(timestamp),
             );
+            if let Some(animation) = m.animation {
+                let timestamp = p.roles.next_timestamp();
+                p.roles
+                    .animations
+                    .push(characteristic_layers::animation_view(
+                        source,
+                        timestamp,
+                        *animation,
+                        characteristic_layers::AnimationTypeMode::AddCreature,
+                        None,
+                        self.game.state.turn,
+                    ));
+            }
             if m.artifact_return {
                 let timestamp = p.roles.next_timestamp();
                 p.roles
@@ -2649,6 +2668,7 @@ impl<'g> FundingState<'g> {
                 }
             }
             && self.game.state.death_exile_replacements.is_none()
+            && !self.game.state.players[self.actor.other().index()].exile_opposing_creature_deaths
             && self.counter_count(self.resources[step.resource].id, CounterKind::Finality) == 0
         {
             let mut next = self.clone();

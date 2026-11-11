@@ -76,6 +76,8 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::IfAmountParity { value, .. }
             | Instruction::PutLandCards { maximum: value, .. }
             | Instruction::DestroyTargetsAtMostManaValue(value)
+            | Instruction::DamageBattlefieldScaled { amount: value, .. }
+            | Instruction::DestroyManaValueExactly { amount: value, .. }
             | Instruction::DiscardScaled(_, value)
             | Instruction::AddCastEntryCounters { amount: value, .. }
             | Instruction::SearchScaled { maximum: value, .. }
@@ -115,6 +117,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::ReduceColoredSpellCostsThisTurn { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensAttackingScaled { amount: value, .. }
             | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
             | Instruction::CreateSizedToken { size: value, .. }

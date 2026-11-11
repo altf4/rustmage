@@ -35,7 +35,11 @@ impl Game {
         }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
-                && matches!(a.condition.event(), TriggerCondition::PlayerDamaged { .. })
+                && matches!(
+                    a.condition.event(),
+                    TriggerCondition::PlayerDamaged { .. }
+                        | TriggerCondition::CombatDamageToController
+                )
         }) {
             self.state.damage_sources.push(id);
         }
@@ -108,6 +112,7 @@ impl Game {
                 a.condition.event(),
                 TriggerCondition::AttachedCreatureBecomesTapped
                     | TriggerCondition::ControlledCreaturesBecomeTapped
+                    | TriggerCondition::ControlledPermanentsOfSubtypeTapped { .. }
                     | TriggerCondition::ControlledCreatureFirstTapOwnTurn
                     | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
@@ -143,6 +148,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                    | TriggerCondition::ControlledSubtypeAttacks { .. }
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
@@ -192,7 +198,9 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::CombatDamageToController
                     | TriggerCondition::CreatureDamaged { .. }
+                    | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                     | TriggerCondition::SelfDamaged
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
@@ -276,6 +284,7 @@ impl Game {
                     && matches!(
                         ability.condition.event(),
                         TriggerCondition::SpellCast { .. }
+                            | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                     )
             })
@@ -462,7 +471,7 @@ impl Game {
                 .card
                 .cast_timing_grants()
                 .is_empty()
-            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_))))
+            || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_) | crate::cards::StaticAbilityFragment::LinkedExilePaidCast { .. })))
             || zone_replacements::card_provides_prevention(self.state.objects[id as usize].card)
             || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))

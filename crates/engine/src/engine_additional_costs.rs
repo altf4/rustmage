@@ -1123,10 +1123,8 @@ impl Game {
                     })
                     .collect(),
             ));
-            self.finish_zone_events(&events, &[]);
-            for event in &events {
-                self.craft_exile_triggers(event, a.item.controller);
-            }
+            let craft_payer = a.ordered_craft().then_some(a.item.controller);
+            self.finish_zone_events_with_craft(&events, &[], craft_payer);
             a.additional_paid = true;
             return;
         }
@@ -1386,6 +1384,7 @@ impl Game {
             | EffectChoiceKind::ExileControlledLinked
             | EffectChoiceKind::ExileGrantingAttachment
             | EffectChoiceKind::ReturnRememberedCreature
+            | EffectChoiceKind::ReturnCraftedCreatureAttacking
             | EffectChoiceKind::CoverUpGraveyardCard
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
@@ -1435,10 +1434,7 @@ impl Game {
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
-                let event = self.move_object(object.card, Zone::Exile);
-                if a.ordered_craft() {
-                    self.craft_exile_triggers(&event, a.item.controller);
-                }
+                self.move_object(object.card, Zone::Exile);
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)

@@ -1,5 +1,6 @@
 //! Counter events qualify recipients, independently of the player placing them.
 use super::*;
+use crate::cards::AnimationSpec;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -11,6 +12,40 @@ impl Game {
         tapped: bool,
         after_entry: bool,
     ) {
+        let mut moves = self.target_entry_moves(item, origin, tapped);
+        for movement in &mut moves {
+            if after_entry {
+                movement.post_entry_counters = Some((item.controller, amounts));
+            } else {
+                movement.effect_counters = amounts;
+            }
+        }
+        self.stage_entries(moves, None);
+    }
+
+    pub(super) fn return_graveyard_targets_animated(
+        &mut self,
+        item: &SpellView,
+        animation: &'static AnimationSpec,
+        x_counters: Option<CounterKind>,
+    ) {
+        let amount = u64::from(item.x.unwrap_or(0));
+        let mut moves = self.target_entry_moves(item, Zone::Graveyard, false);
+        for movement in &mut moves {
+            movement.animation = Some(animation);
+            movement.effect_counter = x_counters
+                .filter(|_| amount != 0)
+                .map(|kind| (kind, amount));
+        }
+        self.stage_entries(moves, None);
+    }
+
+    fn target_entry_moves(
+        &self,
+        item: &SpellView,
+        origin: Zone,
+        tapped: bool,
+    ) -> Vec<entries::EntryMove> {
         let mut moves = Vec::new();
         for bound in &item.targets {
             if !self.same_target_object(*bound) {
@@ -28,14 +63,9 @@ impl Game {
             }
             let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
             movement.controller = item.controller;
-            if after_entry {
-                movement.post_entry_counters = Some((item.controller, amounts));
-            } else {
-                movement.effect_counters = amounts;
-            }
             moves.push(movement);
         }
-        self.stage_entries(moves, None);
+        moves
     }
 
     /// An event is first for an exact recipient, regardless of kind, controller,

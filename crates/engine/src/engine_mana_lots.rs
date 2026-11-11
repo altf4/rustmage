@@ -1,11 +1,11 @@
-//! Cold, owned mana provenance. Ordinary games retain their six-counter fast path.
-//! A lot records rules, never a producer pointer: source departure cannot change
-//! its restriction, and equivalent production merges instead of growing history.
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn is_false(value: &bool) -> bool {
-    !*value
-}
+//! Cold, owned mana provenance. Unattributed mana retains the six-counter fast path.
+//! Lots retain an exact source incarnation alongside their frozen spending rules.
 use super::*;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn is_zero(amount: &u64) -> bool {
+    *amount == 0
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const CREATURE_KIND: u16 = 1;
 use crate::cards::{
@@ -100,13 +100,36 @@ impl ManaCopySource {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct ManaSourcePayment {
+    pub source: ObjectRef,
+    pub amount: u64,
+    pub cave: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize)]
+pub(super) struct SpellManaProvenance {
+    #[serde(rename = "mana_copy_sources", skip_serializing_if = "Vec::is_empty")]
+    pub copies: Vec<(ManaCopySource, u64)>,
+    #[serde(skip)]
+    pub sources: Vec<ManaSourcePayment>,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellManaProvenance {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.copies.len() * std::mem::size_of::<(ManaCopySource, u64)>()
+            + self.sources.len() * std::mem::size_of::<ManaSourcePayment>()
+    }
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct SpendOutcome {
     pub treasure_spent: bool,
     pub haste: bool,
     pub uncounterable: bool,
-    #[allow(clippy::box_collection)]
-    pub copies: Option<Box<Vec<(ManaCopySource, u64)>>>,
+    pub provenance: Option<Box<SpellManaProvenance>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
@@ -115,6 +138,10 @@ pub(super) struct Quality {
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
     pub copy_source: Option<ManaCopySource>,
+    /// Exact source of this mana. A later copy or transform can acquire a listener.
+    pub producer: Option<ObjectRef>,
+    /// Frozen at production, including when a cost sacrifices the source.
+    pub cave_source: bool,
     pub treasure_source: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -123,17 +150,10 @@ pub(super) fn quality_from_world<W: ability_world::CharacteristicWorld + ?Sized>
     production: ManaProduction,
     source: CardId,
 ) -> Option<Quality> {
-    let treasure = world
-        .subtypes(source)
-        .has(world.object(source).card, "Treasure");
-    match production {
-        ManaProduction::Tagged { quality, .. } => Some(Quality::capture(world, source, *quality)),
-        _ if treasure => Some(Quality {
-            treasure_source: true,
-            ..Quality::ORDINARY
-        }),
-        _ => None,
-    }
+    Some(match production {
+        ManaProduction::Tagged { quality, .. } => Quality::capture(world, source, *quality),
+        _ => Quality::ORDINARY.with_producer(world, source),
+    })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Quality {
@@ -142,8 +162,22 @@ impl Quality {
         spell_bonus: ManaSpellBonusView::None,
         retention: ManaRetention::Step,
         copy_source: None,
+        producer: None,
+        cave_source: false,
         treasure_source: false,
     };
+    fn with_producer<W: ability_world::CharacteristicWorld + ?Sized>(
+        mut self,
+        world: &W,
+        source: CardId,
+    ) -> Self {
+        let card = world.object(source).card;
+        let subtypes = world.subtypes(source);
+        self.producer = Some(world.reference(source));
+        self.cave_source = subtypes.has(card, "Cave");
+        self.treasure_source = subtypes.has(card, "Treasure");
+        self
+    }
     pub(super) fn capture<W: ability_world::CharacteristicWorld + ?Sized>(
         world: &W,
         source: CardId,
@@ -222,12 +256,11 @@ impl Quality {
                 ManaSpellBonus::CopyRedInstantSorcery => ManaSpellBonusView::CopyRedInstantSorcery,
             },
             retention: quality.retention,
-            treasure_source: world
-                .subtypes(source)
-                .has(world.object(source).card, "Treasure"),
             copy_source: (quality.spell_bonus == ManaSpellBonus::CopyRedInstantSorcery)
                 .then(|| ManaCopySource::capture(world, source)),
+            ..Self::ORDINARY
         }
+        .with_producer(world, source)
     }
     pub(super) fn with_definition(mut self, definition: Card) -> Self {
         if let Some(source) = &mut self.copy_source {
@@ -243,7 +276,16 @@ impl Quality {
             && self.spell_bonus == other.spell_bonus
             && self.retention == other.retention
             && self.treasure_source == other.treasure_source
+            && self.producer == other.producer
+            && self.cave_source == other.cave_source
             && identity(self.copy_source) == identity(other.copy_source)
+    }
+    fn has_spending_rules(self) -> bool {
+        Self {
+            producer: None,
+            cave_source: false,
+            ..self
+        } != Self::ORDINARY
     }
     pub(super) fn eligible(self, purpose: Purpose) -> bool {
         match self.restriction {
@@ -431,7 +473,11 @@ pub struct ManaLotView {
     pub spell_bonus: ManaSpellBonusView,
     pub retention: ManaRetention,
     pub copy_source: Option<ManaCopySource>,
-    #[serde(skip_serializing_if = "is_false")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub producer: Option<ObjectRef>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub cave_source: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub treasure_source: bool,
     pub amounts: Mana,
 }
@@ -494,6 +540,85 @@ pub(super) struct SpendRequest {
     lots: SharedVec<Lot>,
     viable: Option<Vec<Vec<Mana>>>,
     ordinary: [u128; 6],
+    /// Only publicly distinguishable lots appear in the allocation continuation.
+    choice_lots: Vec<usize>,
+    fungible: [u128; 6],
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpendRequest {
+    fn bounds(&self, position: usize, color: usize, remaining: u128) -> (u32, u32) {
+        let lot = &self.lots[self.choice_lots[position]];
+        if !lot.quality.eligible(self.purpose) {
+            return (0, 0);
+        }
+        let future = self.choice_lots[position + 1..]
+            .iter()
+            .map(|&index| &self.lots[index])
+            .filter(|lot| lot.quality.eligible(self.purpose))
+            .fold(self.fungible[color], |total, lot| {
+                total + lot.amounts[color]
+            });
+        (
+            u32::try_from(remaining.saturating_sub(future)).expect("concrete payment"),
+            u32::try_from(remaining.min(lot.amounts[color])).expect("concrete payment"),
+        )
+    }
+
+    fn complete(&self, allocations: &mut [Mana], mut remaining: [u128; 6]) {
+        if let Some(plans) = &self.viable {
+            let plan = plans
+                .iter()
+                .min_by_key(|plan| {
+                    plan.iter()
+                        .zip(self.lots.iter())
+                        .enumerate()
+                        .filter(|(index, (_, lot))| {
+                            lot.quality.cave_source
+                                && self.choice_lots.binary_search(index).is_err()
+                        })
+                        .flat_map(|(_, (amounts, _))| amounts.iter().map(|&n| u64::from(n)))
+                        .sum::<u64>()
+                })
+                .expect("guided allocation is feasible");
+            allocations.copy_from_slice(plan);
+            return;
+        }
+        for (left, ordinary) in remaining.iter_mut().zip(self.ordinary) {
+            *left = left.saturating_sub(ordinary);
+        }
+        // Fungible allocations prefer unaffiliated mana, then other producers,
+        // and keep an unused Cave unit available if the next spell can use it.
+        for cave in [false, true] {
+            for (index, lot) in self.lots.iter().enumerate().rev() {
+                if lot.quality.cave_source != cave || self.choice_lots.binary_search(&index).is_ok()
+                {
+                    continue;
+                }
+                for (color, left) in remaining.iter_mut().enumerate() {
+                    let used = (*left).min(lot.amounts[color]);
+                    allocations[index][color] = u32::try_from(used).expect("concrete payment");
+                    *left -= used;
+                }
+            }
+        }
+        debug_assert_eq!(remaining, [0; 6]);
+    }
+
+    fn default_allocation(&self) -> Vec<Mana> {
+        let mut allocation = vec![[0; 6]; self.lots.len()];
+        let mut remaining = self.payment.map(u128::from);
+        if self.viable.is_none() {
+            for (position, &lot) in self.choice_lots.iter().enumerate() {
+                for (color, left) in remaining.iter_mut().enumerate() {
+                    let (minimum, _) = self.bounds(position, color, *left);
+                    allocation[lot][color] = minimum;
+                    *left -= u128::from(minimum);
+                }
+            }
+        }
+        self.complete(&mut allocation, remaining);
+        allocation
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -507,7 +632,8 @@ pub(super) struct SpendChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpendChoice {
-    fn bounds(&self, lot: usize, color: usize) -> (u32, u32, Option<Vec<u32>>) {
+    fn bounds(&self, position: usize, color: usize) -> (u32, u32, Option<Vec<u32>>) {
+        let lot = self.request.choice_lots[position];
         if let Some(plans) = &self.request.viable {
             let mut values: Vec<_> = plans.iter().map(|plan| plan[lot][color]).collect();
             values.sort_unstable();
@@ -517,25 +643,15 @@ impl SpendChoice {
             let holes = u64::from(maximum - minimum) + 1 != values.len() as u64;
             return (minimum, maximum, holes.then_some(values));
         }
-        let (minimum, maximum) = allocation_range(
-            &self.request.lots,
-            self.request.ordinary,
-            self.request.purpose,
-            self.remaining,
-            lot,
-            color,
-        );
-        (
-            u32::try_from(minimum).expect("concrete payment"),
-            u32::try_from(maximum).expect("concrete payment"),
-            None,
-        )
+        let (minimum, maximum) = self.request.bounds(position, color, self.remaining[color]);
+        (minimum, maximum, None)
     }
     fn range(&mut self) -> Option<ManaLotSpendRange> {
-        while self.cursor < self.request.lots.len() * 6 {
-            let lot = self.cursor / 6;
+        while self.cursor < self.request.choice_lots.len() * 6 {
+            let position = self.cursor / 6;
+            let lot = self.request.choice_lots[position];
             let color = self.cursor % 6;
-            let (minimum, maximum, values) = self.bounds(lot, color);
+            let (minimum, maximum, values) = self.bounds(position, color);
             if minimum != maximum {
                 return Some(ManaLotSpendRange {
                     action: self.action.clone(),
@@ -550,6 +666,7 @@ impl SpendChoice {
             self.remaining[color] -= u128::from(minimum);
             self.cursor += 1;
         }
+        self.request.complete(&mut self.allocations, self.remaining);
         None
     }
 }
@@ -693,7 +810,9 @@ impl Game {
         let mut quality = self
             .mana_quality(production, source.id)
             .unwrap_or(Quality::ORDINARY);
+        quality.producer = Some(source.object);
         if self.object_ref(source.id) != source.object {
+            quality.cave_source = source.facts.granted_subtypes.has(source.facts.card, "Cave");
             quality.treasure_source = source
                 .facts
                 .granted_subtypes
@@ -922,9 +1041,10 @@ impl Game {
             return None;
         }
         let choice = self.state.mana_lots.as_ref()?.choice.as_ref()?;
-        let lot = choice.cursor / 6;
+        let position = choice.cursor / 6;
+        let lot = choice.request.choice_lots[position];
         let color = choice.cursor % 6;
-        let (minimum, maximum, values) = choice.bounds(lot, color);
+        let (minimum, maximum, values) = choice.bounds(position, color);
         Some(ManaLotSpendRange {
             action: choice.action.clone(),
             lot,
@@ -934,6 +1054,35 @@ impl Game {
             values,
         })
     }
+    fn observes_mana_producer(&self, producer: ObjectRef) -> bool {
+        if self.state.cast_sources.is_empty()
+            || !self.on_battlefield(producer.card)
+            || self.object_ref(producer.card) != producer
+        {
+            return false;
+        }
+        self.state.cast_sources.iter().any(|&id| {
+            let card = self.state.objects[id as usize].card;
+            card.triggers().iter().any(|ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCastUsingSourceMana(_)
+                ) && if ability.condition.is_granted() {
+                    self.attachment_recipient(id) == Some(producer)
+                } else {
+                    id == producer.card
+                }
+            })
+        })
+    }
+
+    pub(super) fn cave_payment_requires_announcement(&self, actor: Player, spell: Card) -> bool {
+        self.mana_lots(actor)
+            .iter()
+            .any(|lot| lot.quality.cave_source)
+            && cast_symbol_quantities::uses_cave_mana(spell)
+    }
+
     pub(super) fn mana_lot_views(&self) -> Vec<ManaLotView> {
         let Some(state) = &self.state.mana_lots else {
             return Vec::new();
@@ -944,6 +1093,14 @@ impl Game {
                 state.pools[player.index()]
                     .iter()
                     .enumerate()
+                    .filter(move |(_, lot)| {
+                        let quality = lot.quality;
+                        quality.has_spending_rules()
+                            || quality.cave_source
+                            || quality
+                                .producer
+                                .is_some_and(|source| self.observes_mana_producer(source))
+                    })
                     .map(move |(index, lot)| ManaLotView {
                         lot: index,
                         player,
@@ -951,6 +1108,10 @@ impl Game {
                         spell_bonus: lot.quality.spell_bonus,
                         retention: lot.quality.retention,
                         copy_source: lot.quality.copy_source,
+                        producer: lot.quality.producer.filter(|source| {
+                            lot.quality.cave_source || self.observes_mana_producer(*source)
+                        }),
+                        cave_source: lot.quality.cave_source,
                         treasure_source: lot.quality.treasure_source,
                         amounts: lot
                             .amounts
@@ -1171,35 +1332,42 @@ impl Game {
         let selected = if let Some(selected) = replay {
             selected
         } else {
+            let observe_cave = matches!(purpose, Purpose::Spell(spell)
+                if self.cave_payment_requires_announcement(actor, spell.card));
+            let mut fungible = ordinary;
+            let mut choice_lots = Vec::new();
+            for (index, lot) in lots.iter().enumerate() {
+                let quality = lot.quality;
+                if quality.has_spending_rules()
+                    || quality.cave_source && observe_cave
+                    || quality
+                        .producer
+                        .is_some_and(|source| self.observes_mana_producer(source))
+                {
+                    choice_lots.push(index);
+                } else {
+                    for (amount, available) in fungible.iter_mut().zip(lot.amounts) {
+                        *amount += available;
+                    }
+                }
+            }
             let state = self.state.mana_lots.as_mut().unwrap();
             assert!(state.trace.is_none(), "one committed payment per action");
-            let viable = state.prepared.take();
-            state.trace = Some(SpendRequest {
-                viable: viable.clone(),
+            let request = SpendRequest {
+                viable: state.prepared.take(),
                 actor,
                 purpose,
                 payment,
                 lots: lots.clone(),
                 ordinary,
-            });
-            if let Some(viable) = viable {
-                viable
-                    .into_iter()
-                    .next()
-                    .expect("guided allocation is feasible")
-            } else {
-                let mut remaining = payment.map(u128::from);
-                let mut selected = vec![[0; 6]; lots.len()];
-                for (i, allocation) in selected.iter_mut().enumerate() {
-                    for color in 0..6 {
-                        let (minimum, _) =
-                            allocation_range(&lots, ordinary, purpose, remaining, i, color);
-                        allocation[color] = u32::try_from(minimum).expect("concrete payment bound");
-                        remaining[color] -= minimum;
-                    }
-                }
-                selected
+                choice_lots,
+                fungible,
+            };
+            let selected = request.default_allocation();
+            if !request.choice_lots.is_empty() {
+                state.trace = Some(request);
             }
+            selected
         };
         self.record_cast_mana_spent_lots(&lots, &selected);
         let mut outcome = SpendOutcome::default();
@@ -1211,6 +1379,30 @@ impl Game {
             .zip(&lots)
             .zip(selected)
         {
+            if allocation != [0; 6]
+                && matches!(purpose, Purpose::Spell(_))
+                && let Some(source) = original.quality.producer
+            {
+                let amount = allocation.into_iter().map(u64::from).sum();
+                let sources = &mut outcome
+                    .provenance
+                    .get_or_insert_with(Default::default)
+                    .sources;
+                if let Some(payment) = sources.iter_mut().find(|payment| {
+                    payment.source == source && payment.cave == original.quality.cave_source
+                }) {
+                    payment.amount = payment
+                        .amount
+                        .checked_add(amount)
+                        .capacity("mana source payment exhausted");
+                } else {
+                    sources.push(ManaSourcePayment {
+                        source,
+                        amount,
+                        cave: original.quality.cave_source,
+                    });
+                }
+            }
             if allocation != [0; 6] && original.quality.treasure_source {
                 outcome.treasure_spent = true;
             }
@@ -1231,8 +1423,9 @@ impl Game {
                 {
                     let amount = allocation.into_iter().map(u64::from).sum();
                     outcome
-                        .copies
+                        .provenance
                         .get_or_insert_with(Default::default)
+                        .copies
                         .push((source, amount));
                 } else {
                     // No qualifying event occurred. This DTA has become inert,

@@ -482,6 +482,10 @@ impl Game {
                     })
             }
             AmountValue::DiscoverManaValueShortfall => self.discover_mana_value_shortfall(),
+            AmountValue::CaveManaSpent => item
+                .cast_event
+                .as_ref()
+                .map_or(0, |event| u128::from(event.cave_mana_spent)),
             AmountValue::CastSpellManaValue => item
                 .cast_event
                 .as_ref()

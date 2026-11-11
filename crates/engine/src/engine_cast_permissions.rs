@@ -8,6 +8,7 @@ pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
     pub web_slinging: Option<ManaCost>,
+    pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -528,6 +529,7 @@ impl Game {
             granted_warp,
             exile_play_surcharge,
             web_slinging,
+            linked_exile_paid,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -619,6 +621,9 @@ impl Game {
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
         }
+        if linked_exile_paid.is_some() {
+            Self::configure_linked_paid_cast(&mut item);
+        }
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
         }
@@ -687,7 +692,12 @@ impl Game {
             },
             |spec| spec.x_symbols > 0,
         );
-        if scalar_x && origin_life_cost.is_none() && warp.is_none() && exile_play_surcharge == 0 {
+        if scalar_x
+            && origin_life_cost.is_none()
+            && warp.is_none()
+            && exile_play_surcharge == 0
+            && linked_exile_paid.is_none()
+        {
             return !self
                 .scalar_x_intervals_for_definition(actor, card, definition)
                 .is_empty();
@@ -707,7 +717,8 @@ impl Game {
             activation_choice: None,
             mana_output: None,
             activation_reductions: None,
-            limited_cast_permission: None,
+            limited_cast_permission: linked_exile_paid
+                .map(|permission| Box::new(LimitedCastPermission::LinkedExilePaid(permission))),
             origin_counter_cost,
             origin_additional_cost,
             origin_alternative_cost: granted_warp

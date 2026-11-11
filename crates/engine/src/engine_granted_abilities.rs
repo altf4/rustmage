@@ -40,12 +40,15 @@ impl Game {
                             | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
                             | TriggerCondition::SpellCast { .. }
+                            | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
                             | TriggerCondition::PlayerDamaged { .. }
+                            | TriggerCondition::CombatDamageToController
                             | TriggerCondition::CreatureDamaged { .. }
+                            | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                             | TriggerCondition::SelfDamaged
                             | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget

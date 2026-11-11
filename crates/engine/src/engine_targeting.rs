@@ -14,6 +14,7 @@ pub(super) struct ActivationCostChoice {
 pub(super) enum LimitedCastPermission {
     FreeHand(ObjectRef),
     LibraryTop(LibraryTopCastPermission),
+    LinkedExilePaid(linked_source_casts::LinkedExilePaidCast),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -22,6 +23,7 @@ impl LimitedCastPermission {
         match self {
             Self::FreeHand(source) => source,
             Self::LibraryTop(permission) => permission.source,
+            Self::LinkedExilePaid(permission) => permission.source,
         }
     }
 }
@@ -2639,7 +2641,7 @@ impl Game {
             self.mark_spell_uncounterable(id);
         }
         item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
-        item.mana_copy_sources = outcome.copies;
+        item.mana_provenance = outcome.provenance;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
         item.cast.as_mut().unwrap().exile_on_graveyard = modifiers.1;
@@ -2680,7 +2682,7 @@ impl Game {
             source_ability_origin: None,
             target_allocations: None,
             announced_division: None,
-            mana_copy_sources: None,
+            mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
             delayed_sacrifice: None,
@@ -3327,7 +3329,7 @@ impl Game {
                 }
                 announcement.item.cast.as_mut().unwrap().treasure_mana_spent =
                     outcome.treasure_spent;
-                announcement.item.mana_copy_sources = outcome.copies;
+                announcement.item.mana_provenance = outcome.provenance;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
             }
         }
@@ -3413,6 +3415,12 @@ impl Game {
                     }
                     LimitedCastPermission::LibraryTop(permission) => self
                         .use_library_top_cast_permission(announcement.item.controller, permission),
+                    LimitedCastPermission::LinkedExilePaid(permission) => {
+                        if let Some(kind) = permission.entry_counter {
+                            let spell = announcement.item.source.expect("paid spell").object;
+                            self.record_cast_entry_counters(spell, kind, 1);
+                        }
+                    }
                 }
             }
             self.queue_casualty_copies(&announcement);

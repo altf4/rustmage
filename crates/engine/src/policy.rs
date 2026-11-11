@@ -392,6 +392,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceLibraryTop { .. }
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceLinkedFree { .. }
+            | Action::AnnounceLinkedPaid { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }

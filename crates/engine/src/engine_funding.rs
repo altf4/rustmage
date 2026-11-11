@@ -134,6 +134,15 @@ pub(super) struct FundingState<'g> {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ability_world::CharacteristicWorld for FundingState<'_> {
+    fn projected_craft_materials(&self, source: ObjectRef) -> &[ObjectRef] {
+        self.entry_projection.as_ref().map_or(&[], |projection| {
+            projection
+                .craft_materials
+                .iter()
+                .find_map(|(object, materials)| (*object == source).then_some(materials.as_slice()))
+                .unwrap_or_default()
+        })
+    }
     fn void_active_this_turn(&self) -> bool {
         self.void_active_this_turn
     }
@@ -415,6 +424,7 @@ struct EntryFundingKey {
     manifested: Vec<(ObjectRef, Card)>,
     order: Vec<ObjectRef>,
     entered: Vec<ObjectRef>,
+    craft_materials: Vec<(ObjectRef, Vec<ObjectRef>)>,
     lands_entered: [u64; 2],
     battle_protectors: Vec<(ObjectRef, usize)>,
     values: Vec<(ObjectRef, EntryChoiceValue)>,
@@ -829,6 +839,7 @@ impl<'g> FundingState<'g> {
                 ManaProduction::Fixed(mana)
             }
             ManaProduction::MonocoloredPermanentColors
+            | ManaProduction::CraftMaterialColors
             | ManaProduction::ColorsAmongControlledPermanents
             | ManaProduction::ChosenColor => ManaProduction::Fixed([1, 1, 1, 1, 1, 0]),
             value => value,
@@ -3225,6 +3236,7 @@ impl<'g> FundingState<'g> {
                 manifested: p.manifested.clone(),
                 order: p.order.clone(),
                 entered: p.entered.clone(),
+                craft_materials: p.craft_materials.clone(),
                 lands_entered: p.lands_entered,
                 battle_protectors: p
                     .battle_protectors
@@ -5384,6 +5396,20 @@ impl Game {
             proposal.add_cast_cost_clause(CastCostClause::Life(a.item.x.unwrap_or(0)));
             proposal.initialize_cast_costs(false);
             return self.activation_packet_fundable(&proposal);
+        }
+        if matches!(
+            a.limited_cast_permission.as_deref(),
+            Some(LimitedCastPermission::LinkedExilePaid(_))
+        ) {
+            let source = a.item.source.expect("linked cast source");
+            return (a.item.cast.unwrap().method != CastMethod::Normal
+                || self.spell_cost_option_available_for_definition(
+                    a.item.controller,
+                    source.id,
+                    cost,
+                    source.card,
+                ))
+                && self.behold_announcement_fundable(a, cost);
         }
         if a.item
             .cast

@@ -76,6 +76,23 @@ impl Game {
                             );
                         }
                         let packet = self.state.pending_triggers.last_mut().unwrap();
+                        if ability.program.iter().any(|instruction| {
+                            matches!(
+                                instruction,
+                                Instruction::CreateSizedTokenFromDeathBatchPower { .. }
+                            )
+                        }) {
+                            let power = matching
+                                .iter()
+                                .filter(|event| event.before.is_creature())
+                                .try_fold(0i128, |sum, event| sum.checked_add(event.before.power))
+                                .capacity("death batch power exhausted");
+                            packet
+                                .event_object
+                                .as_mut()
+                                .expect("batch death receipt")
+                                .facts = EventObjectFacts::DeathBatchPower(power);
+                        }
                         for event in matching {
                             packet.refer_zone_event(event);
                         }

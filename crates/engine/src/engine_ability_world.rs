@@ -61,6 +61,9 @@ pub(super) trait CharacteristicWorld {
         own.is_some() && own >= greatest[player.other().index()]
     }
     fn game(&self) -> &Game;
+    fn projected_craft_materials(&self, _source: ObjectRef) -> &[ObjectRef] {
+        &[]
+    }
     fn void_active_this_turn(&self) -> bool {
         self.game().state.void_active_this_turn
     }
@@ -1850,6 +1853,12 @@ impl ManaProduction {
                     Self::any_color(amount)
                 }
             }
+            Self::CraftMaterialColors => {
+                let mask = world.game().craft_colors(world, world.reference(source));
+                Self::Fixed(std::array::from_fn(|index| {
+                    u32::from(index < 5 && mask & (1 << index) != 0)
+                }))
+            }
             Self::MonocoloredPermanentColors => {
                 let mut mask = 0u8;
                 for id in 0..world.game().state.objects.len() {
@@ -1911,6 +1920,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn game(&self) -> &Game {
         self.parent.game()
+    }
+    fn projected_craft_materials(&self, source: ObjectRef) -> &[ObjectRef] {
+        self.parent.projected_craft_materials(source)
     }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.parent.battle_protector(object)

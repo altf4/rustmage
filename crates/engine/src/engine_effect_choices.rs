@@ -263,6 +263,10 @@ impl Game {
                             && bound.object == Some(object)
                     });
         }
+        if choice.kind == EffectChoiceKind::ReturnCraftedCreatureAttacking {
+            return choice.selected[player.index()].is_empty()
+                && self.crafted_exiled_creature(choice.source, object);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
@@ -1922,6 +1926,18 @@ impl Game {
             if let Some(&object) = choice.selected[player.index()].first() {
                 let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
                 movement.controller = player;
+                self.stage_entries(vec![movement], None);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::ReturnCraftedCreatureAttacking {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            if let Some(&object) = choice.selected[player.index()].first()
+                && self.crafted_exiled_creature(choice.source, object)
+            {
+                let mut movement = self.entry_move(object.card, Zone::Battlefield, true);
+                movement.controller = player;
+                movement.choose_attacking_defender = true;
                 self.stage_entries(vec![movement], None);
             }
             return false;

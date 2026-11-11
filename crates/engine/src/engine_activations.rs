@@ -965,7 +965,7 @@ impl Game {
                 .filter(|r| r.needs_source_snapshot())
                 .map(Box::new),
             source_ability_origin: self.copy_ability_origin(self.object_ref(card)),
-            mana_copy_sources: None,
+            mana_provenance: None,
             is_copy: false,
             ninjutsu_defender: None,
             delayed_sacrifice: None,

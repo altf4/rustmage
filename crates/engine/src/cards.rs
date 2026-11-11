@@ -899,6 +899,8 @@ pub enum ManaProduction {
         mask: u8,
     },
     MonocoloredPermanentColors,
+    /// One mana of each color among the cards still exiled by this Craft.
+    CraftMaterialColors,
     /// Choose one color and produce one mana per distinct controlled creature power.
     DistinctCreaturePowers,
     Fixed(Mana),
@@ -1000,6 +1002,7 @@ impl ManaProduction {
             | Self::SourcePowerSplit { .. }
             | Self::TapSourcePowerChoice { .. }
             | Self::MonocoloredPermanentColors
+            | Self::CraftMaterialColors
             | Self::DistinctCreaturePowers
             | Self::CountSubtype { .. } => {
                 panic!("dynamic mana requires a characteristic world")
@@ -1466,6 +1469,8 @@ pub enum EffectChoiceKind {
     },
     /// Choose a creature card from the exact graveyard receipts of this program's destruction.
     ReturnRememberedCreature,
+    /// Optionally choose one still-exiled creature card used to craft this source.
+    ReturnCraftedCreatureAttacking,
     LandCards {
         maximum: u32,
         tapped: bool,
@@ -2601,6 +2606,10 @@ pub enum Instruction {
         token: Card,
         amount: u16,
     },
+    CreateTokensAttackingScaled {
+        token: Card,
+        amount: AmountValue,
+    },
     /// Copy each physical card linked to this acquired ability, tapped attacking opponents.
     CreateLinkedExileAttackingCopies,
     IfSneakPaid {
@@ -2619,6 +2628,8 @@ pub enum Instruction {
     },
     BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),
+    /// Copy a frozen cast spell's copiable values until cleanup without entering.
+    CopyTargetsFromCastSpell,
     /// Freeze one target blueprint and every other currently controlled creature.
     CopyTargetToOtherControlledCreatures,
     /// One permanent copy effect over the frozen controlled nonland cohort.
@@ -2680,6 +2691,8 @@ pub enum Instruction {
     },
     /// Register an exact current target for a direct exile replacement until cleanup.
     ExileIfDiesThisTurn,
+    /// Until cleanup, opposing creatures that would die are exiled instead.
+    ExileOpposingCreaturesThatWouldDieThisTurn,
     /// Damage by this spell records actual recipients for an until-cleanup death replacement.
     ExileDamagedIfDiesThisTurn,
     /// Queue a reflexive ability only when this exact Role actually enters attached.
@@ -2731,6 +2744,11 @@ pub enum Instruction {
     /// Branch on the legal target spell before any counter attempt changes zones.
     IfTargetManaValueAtMost {
         maximum: u64,
+        skip: usize,
+    },
+    /// Branch on the current incarnation of a surviving target in one group.
+    IfTargetEnteredThisTurn {
+        group: u16,
         skip: usize,
     },
     IfTargetSpellManaValueAtMost {
@@ -2836,6 +2854,11 @@ pub enum Instruction {
     CreateSizedToken {
         token: Card,
         size: AmountValue,
+    },
+    /// Set a token's copiable base power and toughness to the signed total
+    /// power of the creatures captured by the triggering death batch.
+    CreateSizedTokenFromDeathBatchPower {
+        token: Card,
     },
 
     Mobilize {
@@ -3059,6 +3082,8 @@ pub enum Instruction {
     },
     /// Look at and play the live top card, using a life alternative for spells.
     GrantLibraryTopLifePlayUntilEndTurn,
+    /// Grant normal play and private access to the live library top this turn.
+    GrantLibraryTopPlayUntilEndTurn,
     ExileTargetLibraryPlayLife {
         amount: AmountValue,
     },
@@ -3212,6 +3237,11 @@ pub enum Instruction {
         kinds: u16,
         maximum: AmountValue,
     },
+    /// Simultaneously destroy permanents of these kinds at exactly this mana value.
+    DestroyManaValueExactly {
+        kinds: u16,
+        amount: AmountValue,
+    },
     /// Destroy a simultaneous group using current toughness, optionally saving graveyard receipts.
     DestroyCreaturesByToughness {
         maximum: AmountValue,
@@ -3242,6 +3272,11 @@ pub enum Instruction {
         filters: &'static [BattlefieldFilter],
         players: Option<PlayerSet>,
         amount: i32,
+    },
+    /// Sample a resolution-time quantity once for all recipients.
+    DamageBattlefieldScaled {
+        filters: &'static [BattlefieldFilter],
+        amount: AmountValue,
     },
     /// Deal damage to the selected targets and a battlefield group in one event.
     DamageBattlefieldAndTargets {
@@ -3533,6 +3568,8 @@ pub enum Instruction {
         kind: CounterKind,
         skip: usize,
     },
+    /// Remove every counter of this kind from the exact battlefield source.
+    RemoveAllSourceCounters(CounterKind),
     /// Offer an optional removal only while the exact source has this counter.
     MayRemoveSourceCounter {
         kind: CounterKind,
@@ -4254,6 +4291,11 @@ pub enum Instruction {
     ReturnToBattlefieldWithCounter(CounterKind),
     /// One mixed pre-entry counter event, visible to entry observers.
     ReturnToBattlefieldWithCounters(&'static [(CounterKind, u64)]),
+    /// Return legal graveyard targets in a new creature form, optionally with X counters.
+    ReturnGraveyardTargetsAnimated {
+        animation: &'static AnimationSpec,
+        x_counters: Option<CounterKind>,
+    },
     /// Return exact exile targets tapped under the ability controller.
     ReturnExiledTargetTappedWithCounters(&'static [(CounterKind, u64)]),
     /// Return first, freeze entry observers, then counter only successful exact results.
@@ -4673,6 +4715,8 @@ pub enum AmountValue {
     ColorsSpent,
     SpellColors,
     CastSpellManaValue,
+    /// Actual mana from Cave sources paid for this cast, including additional mana.
+    CaveManaSpent,
     /// The value of the completed discovery that caused this trigger.
     DiscoverEventAmount,
     /// The value of the most recent discovery minus its found card's mana value.
@@ -4685,6 +4729,11 @@ pub enum AmountValue {
     /// Resolution-time derived quantity, floored at zero if no positive toughness exists.
     GreatestCreatureToughness,
     GreatestCreaturePower(CreatureFilter),
+    /// Greatest effective power in a live permanent set, with a floor.
+    GreatestPermanentPower {
+        filter: BattlefieldFilter,
+        minimum: u16,
+    },
     GreatestCreatureCardPowerInGraveyard,
     /// Count each current equipped creature controlled by this player once.
     EquippedCreaturesYouControl,
@@ -4703,6 +4752,8 @@ pub enum AmountValue {
     DamageReceivedAmount,
     /// Total actual damage to the exact source incarnation during the current turn.
     SourceDamageReceivedThisTurn,
+    /// Total mana value of the cards still exiled by this Craft.
+    CraftMaterialManaValue,
     /// Quantity actually placed on the qualifying recipient by the triggering counter event.
     CounterPlacementAmount,
     /// Quantity of this counter kind immediately before the triggering departure.
@@ -4811,6 +4862,8 @@ pub enum StatValue {
     /// Union of positive counter kinds among current controlled creatures.
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
+    /// Creatures that actually left the battlefield under this player's control.
+    ControlledCreatureDeparturesThisTurn,
     CardLeftGraveyardThisTurn,
     /// Whether the controller owns a face-up adventurer card in exile.
     OwnExiledAdventurerCard,
@@ -4875,10 +4928,16 @@ pub enum StatValue {
     LifeGainOccurredThisTurn,
     /// Whether an opponent has actually been dealt noncombat damage this turn.
     OpponentNoncombatDamageThisTurn,
+    /// Actual noncombat damage dealt by sources of this color you controlled.
+    NoncombatDamageDealtByColorThisTurn(ChoiceColor),
     LifeLostThisTurn,
     LinkedExileCardTypes,
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
+    /// Number of distinct colors among the cards still exiled by this Craft.
+    CraftMaterialColorCount,
+    /// Signed total power of the cards still exiled by this Craft.
+    CraftMaterialPower,
     ControllerLife,
     /// Persistent player designation; zero means the controller has no speed.
     ControllerSpeed,
@@ -5139,6 +5198,11 @@ pub enum ReplacementSpec {
     NoncombatDamagePlusSourcePower,
     /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.
     NoncombatDamageToOpponentPlus(u16),
+    /// Raise positive noncombat damage to an opposing player from a
+    /// controlled source of this color to the provider's current power.
+    NoncombatDamageToOpponentAtLeastSourcePower {
+        color: ChoiceColor,
+    },
     /// Add to any controlled-source damage to an opposing player or permanent.
     ConditionalControlledDamageToOpponentPlus {
         condition: StatValue,
@@ -5782,6 +5846,7 @@ pub enum CastFilter {
     /// A committed cast's mana value, or its creature spell's power or toughness.
     SourceChosenNumberMatchesSpell,
     PermanentAdventure,
+    Permanent,
     Any,
     Colorless,
     Creature,
@@ -5801,6 +5866,7 @@ pub enum CastFilter {
     #[allow(dead_code)]
     Enchantment,
     Subtype(&'static str),
+    CreatureSubtype(&'static str),
     AnyOf(&'static [CastFilter]),
     Multicolored,
     Colors {
@@ -5836,6 +5902,7 @@ impl CastFilter {
     pub(crate) fn matches_mana_value(self, card: Card, mana_value: u64) -> bool {
         match self {
             Self::Any => true,
+            Self::Permanent => card.kind_mask() & (1 | 16 | 32 | 64 | BATTLE_KIND) != 0,
             Self::Colorless => card.colors() == 0,
             Self::HasX => card.x_symbols() > 0,
             Self::PermanentAdventure => {
@@ -5877,6 +5944,7 @@ impl CastFilter {
             Self::Planeswalker => card.kind_mask() & 64 != 0,
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
+            Self::CreatureSubtype(subtype) => card.is_creature() && card.has_subtype(subtype),
             Self::AnyOf(filters) => filters
                 .iter()
                 .any(|filter| filter.matches_mana_value(card, mana_value)),
@@ -6197,6 +6265,8 @@ pub enum TriggerCondition {
     /// Global target acquisition, not a cast-completion or self-target event.
     ControlledAbilityTargetsPlayerOrPermanent,
     OpponentTargetsControlledCreatureOrSpell,
+    /// A completed cast used at least one mana unit from this exact permanent.
+    SpellCastUsingSourceMana(CastFilter),
     /// The physical source spell itself was cast; stack copies never dispatch it.
     SelfCast,
     /// The controller actually activates an ability of a creature permanent.
@@ -6349,12 +6419,18 @@ pub enum TriggerCondition {
     CreatureDamaged {
         relation: CastRelation,
     },
+    /// Once per completed damage batch with one or more excess noncombat hits.
+    ExcessNoncombatDamageToCreatures {
+        relation: CastRelation,
+    },
     PlayerDamaged {
         subject: DamageSubject,
         combat_only: bool,
         opponent_only: bool,
         one_or_more: bool,
     },
+    /// One combat damage batch to this observer's controller. EventPlayer is the attacker.
+    CombatDamageToController,
     LifeLost {
         relation: CastRelation,
     },
@@ -6548,6 +6624,12 @@ pub enum TriggerCondition {
     ControlledCreatureAttacksWithKeyword(Keywords),
     /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
     CrewedVehicleAttacks,
+    /// Each declared attacker, or one group of declared attackers, matching this subtype test.
+    ControlledSubtypeAttacks {
+        subtype: &'static str,
+        exclude: bool,
+        one_or_more: bool,
+    },
     /// Once per declaration, retaining the exact declared attackers of this subtype.
     ControlledSubtypeAttackDeclaration(&'static str),
     ControlledSubtypeAttackAtLeast {
@@ -6569,6 +6651,11 @@ pub enum TriggerCondition {
     SelfBecomesTapped,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,
+    /// One actual simultaneous tap group, including noncreature permanents of the subtype.
+    ControlledPermanentsOfSubtypeTapped {
+        subtype: &'static str,
+        nontoken: bool,
+    },
     /// Per-creature own-turn tap, with a first-tap intervening condition.
     ControlledCreatureFirstTapOwnTurn,
     /// The observer's controller caused an untapped opposing creature to tap.

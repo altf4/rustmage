@@ -192,7 +192,11 @@ impl Game {
         {
             return;
         }
-        if !self.state.players.iter().any(|p| p.library_top_life_play)
+        if !self
+            .state
+            .players
+            .iter()
+            .any(|p| p.library_top_life_play || p.library_top_play)
             && !self.state.objects.iter().any(|o| {
                 o.card.static_ability_groups().iter().any(|g| {
                     g.fragments

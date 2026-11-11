@@ -160,7 +160,8 @@ impl Game {
     ) {
         // Excess is the greatest result for every applicable permanent type
         // (CR 120.10), equivalently the least applicable threshold.
-        let lethal = self.excess_damage_threshold(source, target.card);
+        let lethal = self
+            .excess_damage_threshold(target.card, source.keywords.contains(Keywords::DEATHTOUCH));
         self.state
             .combat_rules
             .get_or_insert_with(Default::default)
@@ -173,9 +174,9 @@ impl Game {
             qualified_for_destruction: false,
         });
     }
-    fn excess_damage_threshold(&self, source: DamageSource, target: CardId) -> i128 {
+    fn excess_damage_threshold(&self, target: CardId, deathtouch: bool) -> i128 {
         let kinds = self.current_kinds(target);
-        let creature = (kinds & 1 != 0).then(|| self.lethal_assignment(source, target));
+        let creature = (kinds & 1 != 0).then(|| self.lethal_damage_to_creature(target, deathtouch));
         let loyalty =
             (kinds & 64 != 0).then(|| i128::from(self.counter_count(target, CounterKind::Loyalty)));
         let defense = (kinds & crate::cards::BATTLE_KIND != 0)
@@ -207,7 +208,10 @@ impl Game {
         }) else {
             return;
         };
-        let lethal = self.excess_damage_threshold(event.source, tracked.target.card);
+        let lethal = self.excess_damage_threshold(
+            tracked.target.card,
+            event.source.keywords.contains(Keywords::DEATHTOUCH),
+        );
         self.state
             .combat_rules
             .as_mut()
@@ -216,6 +220,51 @@ impl Game {
             .as_mut()
             .unwrap()
             .lethal = lethal;
+    }
+
+    /// Capture each exact recipient of excess damage before simultaneous
+    /// damage results change its marked damage, toughness, loyalty or defense.
+    pub(super) fn excess_noncombat_recipients(&self, events: &[DamageEvent]) -> Vec<ObjectRef> {
+        if !events.iter().any(|event| {
+            !event.combat && event.amount > 0 && matches!(event.target, Target::Card(_))
+        }) {
+            return Vec::new();
+        }
+        let observes_excess = self.state.damage_sources.iter().any(|&id| {
+            self.state.objects[id as usize]
+                .card
+                .triggers()
+                .iter()
+                .any(|ability| {
+                    matches!(
+                        ability.condition.event(),
+                        TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
+                    )
+                })
+        });
+        if !observes_excess {
+            return Vec::new();
+        }
+        let mut hits = std::collections::BTreeMap::<ObjectRef, (i128, bool)>::new();
+        for event in events {
+            let Target::Card(id) = event.target else {
+                continue;
+            };
+            if event.combat || event.amount <= 0 || !self.on_battlefield(id) {
+                continue;
+            }
+            let (amount, deathtouch) = hits.entry(self.object_ref(id)).or_default();
+            *amount = amount
+                .checked_add(event.amount)
+                .capacity("simultaneous excess damage quantity exhausted");
+            *deathtouch |= event.source.keywords.contains(Keywords::DEATHTOUCH);
+        }
+        hits.into_iter()
+            .filter_map(|(recipient, (amount, deathtouch))| {
+                (amount > self.excess_damage_threshold(recipient.card, deathtouch))
+                    .then_some(recipient)
+            })
+            .collect()
     }
 
     /// Called only for actual positive damage, after replacement/prevention and

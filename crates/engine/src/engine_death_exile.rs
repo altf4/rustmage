@@ -1,4 +1,4 @@
-//! Exact-incarnation, until-cleanup replacements for battlefield-to-graveyard moves.
+//! Until-cleanup replacements for battlefield-to-graveyard moves.
 use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -76,10 +76,16 @@ impl Game {
         }
     }
 
+    pub(super) fn opponent_death_exile_applies(&self, controller: Player, kinds: u16) -> bool {
+        kinds & 1 != 0
+            && self.state.players[controller.other().index()].exile_opposing_creature_deaths
+    }
+
     pub(super) fn death_exile_destination(&self, before: &ObjectView, requested: Zone) -> Zone {
         if before.zone == Zone::Battlefield
             && requested == Zone::Graveyard
             && (before.counters.get(CounterKind::Finality) > 0
+                || self.opponent_death_exile_applies(before.controller, before.kinds)
                 || self
                     .state
                     .death_exile_replacements

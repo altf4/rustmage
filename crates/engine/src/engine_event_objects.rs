@@ -32,6 +32,8 @@ impl CreatureComparisonFacts {
 pub enum EventObjectFacts {
     /// Immutable pre-death multiset; never refreshed from a live/new incarnation.
     DeathCounters(Counters),
+    /// Signed sum of the triggering creatures' power as they last existed.
+    DeathBatchPower(i128),
     /// Refresh at departure for a program that reads the exact permanent at resolution.
     CounterTotal(u128),
     /// Identity only; no private or unused event characteristics are captured.
@@ -388,6 +390,7 @@ impl Game {
                 }
                 e.facts = match e.facts {
                     EventObjectFacts::DeathCounters(_)
+                    | EventObjectFacts::DeathBatchPower(_)
                     | EventObjectFacts::CopiableGroup(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)

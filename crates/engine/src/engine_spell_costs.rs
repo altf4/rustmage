@@ -120,7 +120,20 @@ impl Game {
         card: CardId,
         cost: ManaCost,
     ) -> bool {
-        let definition = self.effective_spell_card(card);
+        self.spell_cost_option_available_for_definition(
+            actor,
+            card,
+            cost,
+            self.effective_spell_card(card),
+        )
+    }
+    pub(super) fn spell_cost_option_available_for_definition(
+        &self,
+        actor: Player,
+        card: CardId,
+        cost: ManaCost,
+        definition: Card,
+    ) -> bool {
         let (colored, generic) = definition.cost();
         cost == ManaCost { colored, generic }
             || definition.cost_alternative_guard().is_none_or(|guard| {

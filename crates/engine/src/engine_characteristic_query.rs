@@ -1356,6 +1356,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn game(&self) -> &Game {
         self.game
     }
+    fn projected_craft_materials(&self, source: ObjectRef) -> &[ObjectRef] {
+        self.world.projected_craft_materials(source)
+    }
     fn object(&self, id: CardId) -> &Object {
         self.world.object(id)
     }

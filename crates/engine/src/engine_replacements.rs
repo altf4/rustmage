@@ -528,7 +528,7 @@ enum Work {
     DamageResults {
         events: Vec<DamageEvent>,
         remembering: Option<u64>,
-        gains: Vec<LifeTriggerView>,
+        results: DamageResults,
     },
     Counters(CounterBatch),
     Tokens(TokenBatch),
@@ -644,9 +644,13 @@ impl ReplacementState {
                     Work::DamageCounters(rows) => {
                         rows.len() * std::mem::size_of::<(ObjectRef, Player, u64)>()
                     }
-                    Work::DamageResults { events, gains, .. } => {
+                    Work::DamageResults {
+                        events, results, ..
+                    } => {
                         events.len() * std::mem::size_of::<DamageEvent>()
-                            + gains.len() * std::mem::size_of::<LifeTriggerView>()
+                            + results.gains.len() * std::mem::size_of::<LifeTriggerView>()
+                            + results.excess_noncombat_recipients.len()
+                                * std::mem::size_of::<ObjectRef>()
                     }
                     Work::Proliferate(b) => b.used.len() * std::mem::size_of::<(ObjectRef, u16)>(),
                     Work::Counters(b) => counter_bytes(b),
@@ -1329,6 +1333,14 @@ impl Game {
                             && event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::NoncombatDamageToOpponentAtLeastSourcePower { color } => {
+                        !event.combat
+                            && event.target == Target::Player(object.controller.other())
+                            && event.source.controller == object.controller
+                            && event.source.facts.has_color(color)
+                            && self.is_creature(id)
+                            && event.amount < self.stats(id).power
+                    }
                     ReplacementSpec::DoubleEquippedDamage => {
                         object.attached_to.is_some_and(|recipient| {
                             recipient == event.source.reference
@@ -1575,6 +1587,9 @@ impl Game {
                     .checked_add(self.stats(choice.source.card).power)
                     .capacity("damage replacement quantity exhausted")
                     .max(0);
+            }
+            ReplacementSpec::NoncombatDamageToOpponentAtLeastSourcePower { .. } => {
+                event.amount = self.stats(choice.source.card).power;
             }
             ReplacementSpec::HealPreviousDamageToSelf => {
                 if !heals.contains(&choice.source) {
@@ -3248,9 +3263,9 @@ impl Game {
                     Some(Work::DamageResults {
                         events,
                         remembering,
-                        gains,
+                        results,
                     }) => {
-                        self.commit_unprevented_damage_batch(&events, remembering, &gains);
+                        self.commit_unprevented_damage_batch(&events, remembering, &results);
                         continue;
                     }
                     Some(Work::Counters(batch)) => state.active = Some(Event::Counters(batch)),
@@ -3416,19 +3431,19 @@ impl Game {
                                 .work
                                 .push_front(Work::DamageCounters(batch.damage_counters));
                         }
-                        let gains = self.prepare_damage_results(&events);
+                        let results = self.prepare_damage_results(&events);
                         let placements = self.wither_damage_counters(&events);
                         if placements.is_empty() {
                             self.commit_unprevented_damage_batch(
                                 &events,
                                 batch.remembering,
-                                &gains,
+                                &results,
                             );
                         } else {
                             state.work.push_front(Work::DamageResults {
                                 events,
                                 remembering: batch.remembering,
-                                gains,
+                                results,
                             });
                             state.work.push_front(Work::Counters(CounterBatch {
                                 player_events: Default::default(),

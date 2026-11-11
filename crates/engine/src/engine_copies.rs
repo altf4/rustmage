@@ -22,29 +22,40 @@ pub struct CopyRecipe {
     #[serde(skip)]
     pub(super) faces: Option<CopyFaces>,
 }
-/// A nonzero upper limb keeps None compact without increasing recipe alignment.
+/// Signed sampled base with a niche for None and the recipe's existing alignment.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SampledTokenSize {
     upper: std::num::NonZeroU64,
     lower: u64,
+    negative: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SampledTokenSize {
     pub(super) fn new(size: u128) -> Self {
-        assert!(size <= i128::MAX as u128, "validated token size");
+        Self::signed(i128::try_from(size).capacity("token base size exhausted"))
+    }
+    pub(super) fn signed(size: i128) -> Self {
+        let magnitude = size.unsigned_abs();
         Self {
-            upper: std::num::NonZeroU64::new(((size >> 64) as u64) + 1).unwrap(),
-            lower: size as u64,
+            upper: std::num::NonZeroU64::new(((magnitude >> 64) as u64) + 1).unwrap(),
+            lower: magnitude as u64,
+            negative: size < 0,
         }
     }
-    pub fn value(self) -> u128 {
-        (u128::from(self.upper.get() - 1) << 64) | u128::from(self.lower)
+    pub fn value(self) -> i128 {
+        let magnitude = (u128::from(self.upper.get() - 1) << 64) | u128::from(self.lower);
+        if self.negative {
+            // Only the magnitude of i128::MIN cannot be represented as i128.
+            i128::try_from(magnitude).map_or(i128::MIN, |value| -value)
+        } else {
+            i128::try_from(magnitude).expect("validated positive token size")
+        }
     }
 }
 impl Serialize for SampledTokenSize {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        serializer.serialize_u128(self.value())
+        serializer.serialize_i128(self.value())
     }
 }
 
@@ -201,8 +212,8 @@ impl CopyRecipe {
     pub(super) fn copiable_base(self) -> Option<Stats> {
         self.sampled_size
             .map(|size| Stats {
-                power: size.value() as i128,
-                toughness: size.value() as i128,
+                power: size.value(),
+                toughness: size.value(),
             })
             .or_else(|| {
                 self.exceptions.base.map(|(power, toughness)| Stats {

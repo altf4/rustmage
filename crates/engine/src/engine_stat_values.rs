@@ -61,6 +61,7 @@ impl Game {
             return i128::from(world.gained_life(owner));
         }
         self.stat_value_with(
+            world,
             value,
             source,
             owner,
@@ -87,10 +88,12 @@ impl Game {
         )
     }
     /// The same earlier-layer evaluator serves concrete state and a borrowed
-    /// counterfactual object overlay. No derived keywords or stats are queried.
+    /// counterfactual object overlay. Craft power reads exiled printed power
+    /// and all-zone characteristic definitions without battlefield derived stats.
     #[allow(clippy::too_many_arguments)] // explicit borrowed type and object overlays
-    pub(super) fn stat_value_with<'a, F, I>(
+    pub(super) fn stat_value_with<'a, F, I, W>(
         &self,
+        world: &W,
         value: StatValue,
         source: ObjectRef,
         owner: Player,
@@ -113,6 +116,7 @@ impl Game {
     where
         F: Fn() -> I,
         I: Iterator<Item = (CardId, &'a Object)>,
+        W: CharacteristicWorld + ?Sized,
     {
         match value {
             StatValue::CreatureEntriesThisTurn { other } => {
@@ -214,6 +218,7 @@ impl Game {
                 }),
             StatValue::Parity { value, odd } => i128::from(
                 (self.stat_value_with(
+                    world,
                     *value,
                     source,
                     owner,
@@ -261,6 +266,7 @@ impl Game {
                 .count() as i128,
             StatValue::Not(value) => i128::from(
                 self.stat_value_with(
+                    world,
                     *value,
                     source,
                     owner,
@@ -460,6 +466,7 @@ impl Game {
                 .count() as i128,
             StatValue::AtLeast { value, minimum } => i128::from(
                 self.stat_value_with(
+                    world,
                     *value,
                     source,
                     owner,
@@ -479,6 +486,9 @@ impl Game {
                     life_lost,
                     graveyard_left,
                 ) >= i128::from(minimum),
+            ),
+            StatValue::ControlledCreatureDeparturesThisTurn => i128::from(
+                self.state.players[owner.index()].controlled_creature_departures_this_turn,
             ),
             StatValue::DescendedThisTurn => {
                 i128::from(self.state.players[owner.index()].descended_this_turn)
@@ -508,6 +518,11 @@ impl Game {
             StatValue::OpponentNoncombatDamageThisTurn => {
                 i128::from(self.state.players[owner.other().index()].noncombat_damage_this_turn)
             }
+            StatValue::NoncombatDamageDealtByColorThisTurn(color) => i128::try_from(
+                self.state.players[owner.index()].noncombat_damage_dealt_by_color_this_turn
+                    [color.index()],
+            )
+            .capacity("noncombat damage history representation exhausted"),
             StatValue::LinkedExileCardTypes => {
                 let mut mask = 0u16;
                 if let Some(links) = &self.state.linked_choices {
@@ -523,6 +538,10 @@ impl Game {
                 }
                 i128::from(mask.count_ones())
             }
+            StatValue::CraftMaterialColorCount => {
+                i128::from(self.craft_colors(world, source).count_ones())
+            }
+            StatValue::CraftMaterialPower => self.craft_material_power(world, source),
             StatValue::LifeLostThisTurn => i128::from(life_lost),
             StatValue::LifeGainedThisTurn => {
                 i128::try_from(self.state.players[owner.index()].life_gained_this_turn)
@@ -645,6 +664,7 @@ impl Game {
                 .count_ones() as i128,
             StatValue::GroupsOf { value, size } => {
                 self.stat_value_with(
+                    world,
                     *value,
                     source,
                     owner,
@@ -671,6 +691,7 @@ impl Game {
                 .iter()
                 .map(|&value| {
                     self.stat_value_with(
+                        world,
                         value,
                         source,
                         owner,
@@ -723,6 +744,11 @@ impl Game {
             }),
             AmountValue::Fixed(n) => u128::from(n),
             AmountValue::SourceDamageReceivedThisTurn => self.damage_received_this_turn(source),
+            AmountValue::CraftMaterialManaValue => self
+                .crafted_exiled_cards(source)
+                .into_iter()
+                .map(|object| u128::from(self.object_mana_value(object.card)))
+                .sum(),
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
             AmountValue::Devotion(color) => self
@@ -741,6 +767,16 @@ impl Game {
                 })
                 .map(|(_, object)| u128::from(object.card.mana_symbols_of_color(color)))
                 .sum(),
+            AmountValue::GreatestPermanentPower { filter, minimum } => {
+                let query = self.characteristic_query();
+                (0..self.state.objects.len())
+                    .map(|id| id as CardId)
+                    .filter(|&id| {
+                        battlefield_groups::filter_matches_in_world(&query, filter, owner, id)
+                    })
+                    .map(|id| query.stats(id).power)
+                    .fold(i128::from(minimum), i128::max) as u128
+            }
             AmountValue::GreatestCreaturePower(filter) => {
                 let query = self.characteristic_query();
                 (0..self.state.objects.len())
@@ -799,6 +835,7 @@ impl Game {
             | AmountValue::ManaSpent
             | AmountValue::CastCardTypeCount
             | AmountValue::CastSpellManaValue
+            | AmountValue::CaveManaSpent
             | AmountValue::DiscoverEventAmount
             | AmountValue::DiscoverManaValueShortfall
             | AmountValue::CastSpellManaSymbols(_)

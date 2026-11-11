@@ -760,6 +760,7 @@ impl FundingState<'_> {
                         }
                 }) || (o.zone == Zone::Battlefield
                     && (self.counter_count(r.card, CounterKind::Finality) > 0
+                        || self.game.opponent_death_exile_applies(o.controller, kinds)
                         || self
                             .game
                             .state

@@ -150,7 +150,8 @@ pub use zone_replacements::{
 #[path = "engine_mana_lots.rs"]
 pub mod mana_lots;
 pub use mana_lots::{
-    ManaCopySource, ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSpellBonusView,
+    ManaCopySource, ManaLotSpendRange, ManaLotView, ManaRestrictionView, ManaSourcePayment,
+    ManaSpellBonusView,
 };
 #[doc(hidden)]
 #[path = "engine_card_copies.rs"]
@@ -1015,6 +1016,7 @@ define_actions! {
     CastFreeDuringResolution { object: ObjectRef, face: CastFace },
     FinishResolutionCasts,
     AnnounceLinkedFree { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
+    AnnounceLinkedPaid { object: ObjectRef, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     FinishGraveyardSymbolCost,
     Mulligan,
@@ -1421,6 +1423,8 @@ struct PlayerState {
     mountain_mana_bonus: u32,
     jace_loyalty_anytime: bool,
     library_top_life_play: bool,
+    library_top_play: bool,
+    exile_opposing_creature_deaths: bool,
     /// Presence of a lasting grant; its authoritative order is in HandSizeState.
     no_maximum_hand_size: bool,
     extra_land_plays_remaining: u64,
@@ -1439,6 +1443,7 @@ struct PlayerState {
     legend_rule_ignored_this_turn: bool,
     noncombat_damage_this_turn: bool,
     noncombat_damage_last_turn: bool,
+    noncombat_damage_dealt_by_color_this_turn: [u128; 5],
     drew_in_own_draw_step: bool,
     cards_discarded_this_turn: u64,
     permanents_sacrificed_this_turn: u64,
@@ -1447,6 +1452,7 @@ struct PlayerState {
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
     controlled_creatures_died_this_turn: u64,
+    controlled_creature_departures_this_turn: u64,
     controlled_creatures_exiled_this_turn: u64,
     life_gain_events_this_turn: u64,
     life_gained_this_turn: u128,
@@ -1786,9 +1792,8 @@ pub struct SpellView {
     /// Public resolving division frozen at announcement, not source-departure LKI.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub announced_division: Option<Box<u64>>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[allow(clippy::box_collection)]
-    pub mana_copy_sources: Option<Box<Vec<(ManaCopySource, u64)>>>,
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    mana_provenance: Option<Box<mana_lots::SpellManaProvenance>>,
     pub is_copy: bool,
     /// Defender of the unblocked attacker returned for a hand activation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -2032,10 +2037,10 @@ impl SpellView {
                 .captured_artifact_copy
                 .as_ref()
                 .map_or(0, |_| std::mem::size_of::<CopyRecipe>())
-            + self.mana_copy_sources.as_ref().map_or(0, |sources| {
-                std::mem::size_of::<Vec<(ManaCopySource, u64)>>()
-                    + sources.len() * std::mem::size_of::<(ManaCopySource, u64)>()
-            })
+            + self
+                .mana_provenance
+                .as_ref()
+                .map_or(0, |provenance| provenance.owned_bytes())
             + self.copy_event.as_ref().map_or(0, |event| {
                 std::mem::size_of::<stack_copies::CopyEvent>() + event.spell.owned_bytes()
             })
@@ -2572,6 +2577,9 @@ impl DamageFacts {
     pub(super) fn colors(&self) -> u8 {
         self.colors
     }
+    pub(super) fn has_color(&self, color: crate::cards::ChoiceColor) -> bool {
+        self.colors() & (1 << color.index()) != 0
+    }
     fn from_view(view: &ObjectView) -> Self {
         Self {
             controller: view.controller,
@@ -2615,6 +2623,14 @@ pub struct DamageEvent {
     pub target: Target,
     pub amount: i128,
     pub combat: bool,
+}
+
+/// Damage facts that must survive any replacement choices for its results.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct DamageResults {
+    gains: Vec<LifeTriggerView>,
+    excess_noncombat_recipients: Vec<ObjectRef>,
 }
 
 /// A public life-gain or life-loss event captured when an observer triggers.
@@ -3851,6 +3867,9 @@ pub struct Observation {
     pub prohibit_opponent_nonhand_casts: Option<[bool; 2]>,
     pub damage_prevention_prohibited: bool,
     pub death_exile_replacements: Vec<ExileDeathReplacementView>,
+    /// Which players' opponents have their creature deaths exiled until cleanup.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub exile_opposing_creature_deaths: Option<[bool; 2]>,
     pub temporary_abilities: Vec<TemporaryAbilityView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub granted_exhaust_uses: Option<Vec<exhaust::GrantedExhaustUseView>>,
@@ -4245,6 +4264,8 @@ impl Game {
             mountain_mana_bonus: 0,
             jace_loyalty_anytime: false,
             library_top_life_play: false,
+            library_top_play: false,
+            exile_opposing_creature_deaths: false,
             no_maximum_hand_size: false,
             extra_land_plays_remaining: 0,
             extra_land_plays_granted: 0,
@@ -4262,6 +4283,7 @@ impl Game {
             legend_rule_ignored_this_turn: false,
             noncombat_damage_this_turn: false,
             noncombat_damage_last_turn: false,
+            noncombat_damage_dealt_by_color_this_turn: [0; 5],
             drew_in_own_draw_step: false,
             cards_discarded_this_turn: 0,
             permanents_sacrificed_this_turn: 0,
@@ -4270,6 +4292,7 @@ impl Game {
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
             controlled_creatures_died_this_turn: 0,
+            controlled_creature_departures_this_turn: 0,
             controlled_creatures_exiled_this_turn: 0,
             life_gain_events_this_turn: 0,
             life_gained_this_turn: 0,
@@ -5506,6 +5529,7 @@ impl Game {
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
+                            | EffectChoiceKind::ReturnCraftedCreatureAttacking
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -5530,6 +5554,7 @@ impl Game {
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
+                            | EffectChoiceKind::ReturnCraftedCreatureAttacking
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -6555,6 +6580,9 @@ impl Game {
                             return true;
                         }
                     }
+                    if self.cave_payment_requires_announcement(actor, obj.card) {
+                        continue;
+                    }
                     if target_cost
                         && self.spell_generic_tax(actor, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
@@ -7559,6 +7587,12 @@ impl Game {
                 face,
                 flash_surcharge,
             } => self.start_linked_free_cast(actor, card, source, face, flash_surcharge),
+            Action::AnnounceLinkedPaid {
+                object,
+                source,
+                face,
+                flash_surcharge,
+            } => self.start_linked_paid_cast(actor, object, source, face, flash_surcharge),
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source,
@@ -8427,7 +8461,7 @@ impl Game {
                         .as_mut()
                         .unwrap()
                         .treasure_mana_spent |= outcome.treasure_spent;
-                    self.state.stack.last_mut().unwrap().mana_copy_sources = outcome.copies;
+                    self.state.stack.last_mut().unwrap().mana_provenance = outcome.provenance;
                     self.state
                         .stack
                         .last_mut()
@@ -10178,9 +10212,14 @@ impl Game {
                 .capacity("creature death history exhausted");
         }
         if before.zone == Zone::Battlefield {
-            self.state.players[before.controller.index()]
-                .turn_facts
-                .permanent_left_battlefield = true;
+            let controller = &mut self.state.players[before.controller.index()];
+            controller.turn_facts.permanent_left_battlefield = true;
+            if before.is_creature() {
+                let departures = &mut controller.controlled_creature_departures_this_turn;
+                *departures = departures
+                    .checked_add(1)
+                    .capacity("controlled creature departure history exhausted");
+            }
             self.state.void_active_this_turn |= before.kinds & 2 == 0;
             self.capture_stat_subject_departure(&before);
             self.forget_vehicle_animation(before.reference);
@@ -10800,6 +10839,7 @@ impl Game {
             player.loyalty_ability_activated_this_turn = false;
             player.noncombat_damage_last_turn = player.noncombat_damage_this_turn;
             player.noncombat_damage_this_turn = false;
+            player.noncombat_damage_dealt_by_color_this_turn = [0; 5];
             player.cards_discarded_this_turn = 0;
             player.permanents_sacrificed_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
@@ -10807,6 +10847,7 @@ impl Game {
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
             player.controlled_creatures_died_this_turn = 0;
+            player.controlled_creature_departures_this_turn = 0;
             player.controlled_creatures_exiled_this_turn = 0;
             player.life_gain_events_this_turn = 0;
             player.life_gained_this_turn = 0;
@@ -10986,6 +11027,8 @@ impl Game {
             player.mountain_mana_bonus = 0;
             player.jace_loyalty_anytime = false;
             player.library_top_life_play = false;
+            player.library_top_play = false;
+            player.exile_opposing_creature_deaths = false;
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_temporary_ability_removals();
@@ -11180,11 +11223,11 @@ impl Game {
                     .collect::<Vec<_>>()
             });
         let events = dealt.as_deref().unwrap_or(events);
-        let gains = self.prepare_damage_results(events);
-        self.commit_unprevented_damage_batch(events, remembering, &gains);
+        let results = self.prepare_damage_results(events);
+        self.commit_unprevented_damage_batch(events, remembering, &results);
     }
 
-    fn prepare_damage_results(&mut self, events: &[DamageEvent]) -> Vec<LifeTriggerView> {
+    fn prepare_damage_results(&mut self, events: &[DamageEvent]) -> DamageResults {
         // Lifelink is simultaneous with the other damage results. Freeze
         // per-source gains after prevention, and settle their replacement
         // choices before exposing any of the damage results.
@@ -11215,7 +11258,10 @@ impl Game {
         self.refresh_excess_threshold(events);
         self.source_damage_triggers(events);
         self.controlled_spell_target_damage_triggers(events);
-        gains
+        DamageResults {
+            gains,
+            excess_noncombat_recipients: self.excess_noncombat_recipients(events),
+        }
     }
 
     /// Prevention and pre-damage thresholds are already fixed, including when
@@ -11224,7 +11270,7 @@ impl Game {
         &mut self,
         events: &[DamageEvent],
         remembering: Option<u64>,
-        gains: &[LifeTriggerView],
+        results: &DamageResults,
     ) {
         let mut losses = [0i128; 2];
         for event in events {
@@ -11302,6 +11348,7 @@ impl Game {
                     unreachable!("damage cannot target stack objects")
                 }
             }
+            self.record_noncombat_damage_dealt(event);
             // An ability can retain a departed source's last-known reference;
             // do not transfer this history to its new zone incarnation.
             if let Some(source) = self
@@ -11323,10 +11370,11 @@ impl Game {
         for player in [Player::P0, Player::P1] {
             self.life_lost_event(player, losses[player.index()]);
         }
-        for gain in gains {
+        for gain in &results.gains {
             self.commit_life_gain(gain.player, gain.amount);
         }
         self.record_combat_and_excess_damage(events);
+        self.excess_noncombat_damage_triggers(&results.excess_noncombat_recipients);
         self.creature_damage_events(events);
         self.creature_received_damage_triggers(events);
         self.player_damage_triggers(events);
@@ -11354,14 +11402,18 @@ impl Game {
     }
 
     fn lethal_assignment(&self, source: DamageSource, blocker: CardId) -> i128 {
-        let obj = &self.state.objects[blocker as usize];
+        self.lethal_damage_to_creature(blocker, source.keywords.contains(Keywords::DEATHTOUCH))
+    }
+
+    fn lethal_damage_to_creature(&self, recipient: CardId, deathtouch: bool) -> i128 {
+        let obj = &self.state.objects[recipient as usize];
         let remaining = self
-            .stats(blocker)
+            .stats(recipient)
             .toughness
             .checked_sub(obj.damage)
             .capacity("damage assignment representation exhausted")
             .max(0);
-        if source.keywords.contains(Keywords::DEATHTOUCH) {
+        if deathtouch {
             remaining.min(1)
         } else {
             remaining
@@ -11697,7 +11749,9 @@ impl Game {
                         source,
                         amount,
                         token,
-                        token_size: sampled_size.map(copies::SampledTokenSize::value),
+                        token_size: sampled_size.map(|size| {
+                            u128::try_from(size.value()).expect("nonnegative endure token size")
+                        }),
                     }),
                     _ => None,
                 }
@@ -11827,6 +11881,11 @@ impl Game {
                 .death_exile_replacements
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.as_ref().clone()),
+            exile_opposing_creature_deaths: {
+                let flags = [Player::P0, Player::P1]
+                    .map(|p| s.players[p.index()].exile_opposing_creature_deaths);
+                flags.contains(&true).then_some(flags)
+            },
             animations: s
                 .roles
                 .as_ref()
