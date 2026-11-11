@@ -1440,6 +1440,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()
     }
+    fn controlled_creatures_died(&self, player: Player) -> u64 {
+        self.world.controlled_creatures_died(player)
+    }
     fn card_left_graveyard(&self, player: Player) -> bool {
         self.world.card_left_graveyard(player)
     }

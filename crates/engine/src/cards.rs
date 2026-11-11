@@ -1202,6 +1202,9 @@ pub enum LibraryPickDestination {
     },
     /// A single forced candidate; evaluate the threshold before any entry choices.
     BattlefieldIfManaValueAtMostElseHand(AmountValue),
+    /// Reveal one selected card, then offer battlefield entry on the chooser's turn.
+    /// If the exact card remains in the library, put it in hand.
+    MayEnterBattlefieldOnOwnTurn,
     BattlefieldTapped,
     BattlefieldTappedAttacking,
     LandsTappedRestHand,
@@ -1363,6 +1366,8 @@ pub enum DelayedTargetEvent {
     /// Exact watched permanent enters a graveyard under this packet's controller.
     GraveyardUnderControllerOnce,
     CombatDamageToPlayer,
+    /// One event per exact dealer, regardless of which recipients it damages.
+    CombatDamage,
     /// Each loss this turn, if the subject is attached to a creature you control.
     ControlLostWhileAttached,
 }
@@ -1404,6 +1409,8 @@ pub enum EffectChoiceKind {
     },
     /// Count actual moves of another permanent with this effective subtype.
     ReturnToHandCountingOtherSubtype(&'static str),
+    /// Count exact chosen permanents that actually move to their owner's hand.
+    ReturnToHandCounting,
     MoveFaceUpExileToGraveyard {
         owner: Player,
     },
@@ -1882,6 +1889,7 @@ impl AdditionalCost {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum MilledFilter {
     Any,
+    Permanent,
     Kinds(u8),
     KindsOrSubtype { kinds: u8, subtype: &'static str },
     Adventure,
@@ -2256,6 +2264,8 @@ pub enum Instruction {
     /// Grow the exact current attack/block event creature by its absolute stat difference.
     GrowEventPowerToughnessDifference,
     ChooseColor,
+    /// Choose a permanent type on resolution, then destroy that entire group at once.
+    DestroyAllOfChosenPermanentType(&'static [PermanentType]),
     /// Choose a number on resolution, then simultaneously destroy creatures with at least that power.
     ChooseNumberDestroyPowerAtLeast {
         minimum: u16,
@@ -2572,6 +2582,8 @@ pub enum Instruction {
         tapped: bool,
     },
     BlinkControlledCreaturesRepeated,
+    /// Exile the exact combat-damage dealer and return it under its owner's control.
+    BlinkCombatDamageDealer,
     /// Exact historical cast origin; copied spells were not cast.
     IfCastFromGraveyard {
         skip: usize,
@@ -2853,6 +2865,8 @@ pub enum Instruction {
     CopyTargetsFromCastSpell,
     /// Copy the chosen permanent's copiable values onto this exact source until cleanup.
     CopySourceFromRememberedPermanent,
+    /// Create a token copy of the exact still-present chosen permanent.
+    CreateCopyOfRememberedPermanent,
     CopySourceFromRememberedExiledCreature,
     /// Put counters on the exact remembered permanents in one event.
     PutRememberedPermanentCounters {
@@ -2880,6 +2894,11 @@ pub enum Instruction {
     CreateCopyToken {
         subject: Subject,
         amount: u16,
+    },
+    /// Create the resolved number of tokens with this subject's current copiable values.
+    CreateCopyTokensScaled {
+        subject: Subject,
+        amount: AmountValue,
     },
     /// Skip instructions unless this is the specified successful resolution this turn.
     IfThisAbilityResolutionNumber {
@@ -3507,6 +3526,8 @@ pub enum Instruction {
     },
     /// Choose exactly this many of your graveyard creature cards, or all if fewer.
     ChooseGraveyardReturnCount(AmountValue),
+    /// Choose one of your graveyard creature cards to return with an entry counter.
+    ChooseGraveyardReturnWithCounter(CounterKind),
     ReturnGraveyardManaValue {
         kinds: u16,
         value: AmountValue,
@@ -4537,6 +4558,8 @@ pub enum Instruction {
     /// Grant keywords to the remembered exact creature recipients until cleanup.
     GrantRememberedCreatures(Keywords),
     GrantRememberedCreaturesUntilNextTurn(Keywords),
+    /// Freeze all tokens controlled now as the recipients of this grant.
+    GrantControlledTokenKeywordsUntilNextTurn(Keywords),
     /// Freeze current creatures controlled by the selected players until cleanup.
     GrowPlayerCreatures {
         players: PlayerSet,
@@ -4622,6 +4645,7 @@ pub enum Instruction {
     },
     /// Move all legal target groups together, deduplicating exact incarnations.
     ReturnAllTargetsToHand,
+    ReturnNonlandNontokenPermanents,
     /// Destroy every surviving target role as one deduplicated event.
     DestroyAllTargets,
     /// Return owned graveyard targets to hand, with an optional creature entry instead.
@@ -4704,6 +4728,8 @@ pub enum Instruction {
     /// Return an exact graveyard target under your control, tapped and attacking
     /// a defender chosen as it enters.
     ReturnTargetTappedAttacking,
+    /// Return the exact source from the graveyard tapped and attacking.
+    ReturnSourceTappedAttacking,
     ReturnTargetAttackingWithCounter(CounterKind),
     Destroy,
     DestroyCounted {
@@ -4745,6 +4771,12 @@ pub enum Instruction {
     /// Place counters once per permanent in the union of the battlefield filters.
     PutPermanentGroupCounters {
         filters: &'static [BattlefieldFilter],
+        kind: CounterKind,
+        amount: u32,
+    },
+    /// Apply one simultaneous counter event to the union of live creature clauses.
+    PutCreatureGroupCounters {
+        filters: &'static [CreatureFilter],
         kind: CounterKind,
         amount: u32,
     },
@@ -5018,6 +5050,9 @@ pub enum Instruction {
     MayIfSourceOnBattlefield {
         skip: usize,
     },
+    MayIfCombatDamageDealerOnBattlefield {
+        skip: usize,
+    },
     /// A choice is available only with the exact live source and exiled creature receipt.
     MayIfRememberedExiledCreature {
         skip: usize,
@@ -5171,6 +5206,7 @@ pub enum AmountValue {
     GreatestCreatureCardPowerInGraveyard,
     /// Count each current equipped creature controlled by this player once.
     EquippedCreaturesYouControl,
+    TokensYouControl,
     NonbasicLandsYouControl,
     Devotion(ChoiceColor),
     /// Frozen qualifying subjects of one attack declaration.
@@ -5310,6 +5346,8 @@ pub enum StatValue {
     /// Union of positive counter kinds among current controlled creatures.
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
+    /// Creatures that died this turn while under this player's control.
+    ControlledCreaturesDiedThisTurn,
     /// Creatures that actually left the battlefield under this player's control.
     ControlledCreatureDeparturesThisTurn,
     CardLeftGraveyardThisTurn,
@@ -5319,6 +5357,8 @@ pub enum StatValue {
     CommittedCrimeThisTurn,
     /// Whether the controller owns a face-up adventurer card in exile.
     OwnExiledAdventurerCard,
+    /// Physical cards currently in your graveyard.
+    GraveyardCards,
     /// Physical cards in your graveyard that are instants, sorceries, or adventurers.
     GraveyardInstantSorceryAdventure,
     /// Live condition for a provider's own end step, including projected control.
@@ -5333,6 +5373,7 @@ pub enum StatValue {
     /// Actual permanent card arrivals in this player's graveyard this turn.
     DescendedThisTurn,
     ControllerHandSize,
+    OpponentHandSize,
     /// At least one player's current hand has at most this many cards.
     AnyPlayerHandSizeAtMost(u16),
     /// Number of distinct basic land types among lands the controller controls.
@@ -7223,6 +7264,8 @@ pub enum TriggerCondition {
     ControlledCreatureAttacks,
     /// One event for each declared attacker with the live keyword.
     ControlledCreatureAttacksWithKeyword(Keywords),
+    /// One event for each declared attacker carrying at least one counter of this kind.
+    ControlledCreatureAttacksWithCounter(CounterKind),
     /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
     CrewedVehicleAttacks,
     /// Each declared attacker, or one group of declared attackers, matching this subtype test.
@@ -7558,6 +7601,8 @@ pub enum ActivationOrigin {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ActivationGuard {
+    /// The ability may be activated only once in this exact source incarnation.
+    OncePerIncarnation(&'static ActivationGuard),
     SourceCounterAtLeast {
         kind: CounterKind,
         minimum: u64,
@@ -7601,8 +7646,13 @@ pub enum ActivationGuard {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivationGuard {
+    pub(crate) fn once_per_incarnation(self) -> bool {
+        matches!(self, Self::OncePerIncarnation(_))
+    }
+
     pub(crate) fn subtypes(self) -> &'static [&'static str] {
         match self {
+            Self::OncePerIncarnation(guard) => guard.subtypes(),
             Self::SourceCounterAtLeast { .. }
             | Self::SourceCounterExactly { .. }
             | Self::ClassLevelExactly(_)
@@ -7664,6 +7714,14 @@ pub struct ActivatedAbility {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
+    pub(crate) fn lifetime_use_limit(&self) -> bool {
+        self.exhaust || self.guard.once_per_incarnation()
+    }
+
+    pub(crate) fn has_use_limit(&self) -> bool {
+        self.once_per_turn || self.lifetime_use_limit()
+    }
+
     pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
         match self.program.first() {
             Some(
@@ -8127,6 +8185,26 @@ impl Card {
     }
     pub(crate) fn exhaust_mask(self) -> u64 {
         generated::exhaust_mask(self)
+    }
+    pub(crate) fn retain_lifetime_activation_uses(self, used: u64) -> u64 {
+        if used == 0 {
+            return 0;
+        }
+        let mut retained = used & self.exhaust_mask();
+        let mut candidates = used & !retained;
+        let abilities = self.activations();
+        while candidates != 0 {
+            let index = candidates.trailing_zeros();
+            let bit = 1 << index;
+            candidates &= !bit;
+            if abilities
+                .get(index as usize)
+                .is_some_and(|ability| ability.guard.once_per_incarnation())
+            {
+                retained |= bit;
+            }
+        }
+        retained
     }
     pub fn is_token(self) -> bool {
         self.token_info().is_some()

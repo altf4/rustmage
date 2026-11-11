@@ -56,6 +56,18 @@ impl Game {
         }) {
             self.state.death_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                        | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
+                        | TriggerCondition::ControlledSubtypeAttacks { .. }
+                        | TriggerCondition::ControlledSubtypeAttacksAny(_)
+                )
+        }) {
+            self.state.attack_sources.push(id);
+        }
     }
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
@@ -72,6 +84,9 @@ impl Game {
         }
         if self.state.damage_sources.contains(&id) {
             self.state.damage_sources.retain(|&source| source != id);
+        }
+        if self.state.attack_sources.contains(&id) {
+            self.state.attack_sources.retain(|&source| source != id);
         }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
@@ -162,6 +177,7 @@ impl Game {
                     | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
+                    | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)

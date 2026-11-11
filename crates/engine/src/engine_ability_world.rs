@@ -106,6 +106,9 @@ pub(super) trait CharacteristicWorld {
     fn creatures_died(&self) -> u64 {
         self.game().state.creatures_died_this_turn
     }
+    fn controlled_creatures_died(&self, player: Player) -> u64 {
+        self.game().state.players[player.index()].controlled_creatures_died_this_turn
+    }
     fn card_left_graveyard(&self, player: Player) -> bool {
         self.graveyard_departure_count(player) > 0
     }
@@ -368,9 +371,12 @@ pub(super) trait CharacteristicWorld {
                         && row.origin == Some(timestamp)
                         && row.definition == definition
                         && row.ability == ability
-                        && (rules.exhaust || row.turn == self.game().state.turn)
+                        && (rules.lifetime_use_limit() || row.turn == self.game().state.turn)
                 });
-        spent && ((rules.exhaust && !exhaust::reuse_available(self, actor)) || rules.once_per_turn)
+        spent
+            && (rules.guard.once_per_incarnation()
+                || rules.once_per_turn
+                || rules.exhaust && !exhaust::reuse_available(self, actor))
     }
     fn crew_saddle_eligible(&self, source: ObjectRef, actor: Player, object: ObjectRef) -> bool {
         let o = self.object(object.card);
@@ -732,7 +738,7 @@ pub(super) trait CharacteristicWorld {
                 rows.iter().any(|row| {
                     row.source == source
                         && row.slot == slot
-                        && (row.exhaust || row.turn == self.game().state.turn)
+                        && (row.lifetime || row.turn == self.game().state.turn)
                 })
             })
     }
@@ -2139,6 +2145,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn creatures_died(&self) -> u64 {
         self.parent.creatures_died()
+    }
+    fn controlled_creatures_died(&self, player: Player) -> u64 {
+        self.parent.controlled_creatures_died(player)
     }
     fn graveyard_departure_count(&self, player: Player) -> u64 {
         self.parent.graveyard_departure_count(player)

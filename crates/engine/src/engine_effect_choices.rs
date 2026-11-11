@@ -1171,8 +1171,13 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let item = &self.state.resolving.as_ref().unwrap().item;
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let item = &resolution.item;
         let player = item.controller;
+        let entry_counter = match resolution.program.get(resolution.pc.saturating_sub(1)) {
+            Some(Instruction::ChooseGraveyardReturnWithCounter(counter)) => Some((*counter, 1)),
+            _ => None,
+        };
         if matches!(
             choice.kind,
             EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
@@ -1200,6 +1205,7 @@ impl Game {
             .map(|r| {
                 let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
                 movement.controller = player;
+                movement.effect_counter = entry_counter;
                 movement
             })
             .collect::<Vec<_>>();
@@ -1360,6 +1366,17 @@ impl Game {
         if !movements.is_empty() {
             self.stage_entries(movements, None);
         }
+    }
+
+    pub(super) fn return_graveyard_tapped_attacking(&mut self, object: ObjectRef, player: Player) {
+        let card = &self.state.objects[object.card as usize];
+        if self.object_ref(object.card) != object || card.zone != Zone::Graveyard {
+            return;
+        }
+        let mut movement = self.entry_move(object.card, Zone::Battlefield, true);
+        movement.controller = player;
+        movement.choose_attacking_defender = true;
+        self.stage_entries(vec![movement], None);
     }
 
     pub(super) fn attacking_return_combat(&self, player: Player) -> bool {
@@ -1575,7 +1592,11 @@ impl Game {
                 "any-number resolution choice finishes with any subset"
             );
         }
-        if matches!(kind, EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)) {
+        if matches!(
+            kind,
+            EffectChoiceKind::ReturnToHandCounting
+                | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+        ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
         let resolution = self.state.resolving.as_ref().unwrap();
@@ -2317,6 +2338,7 @@ impl Game {
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::ReturnToHand
+                | EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                 | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
@@ -2749,14 +2771,23 @@ impl Game {
             .collect();
         if !ids.is_empty() {
             let events = self.move_objects_raw(&ids, Zone::Hand);
-            if let EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) = choice.kind {
+            if matches!(
+                choice.kind,
+                EffectChoiceKind::ReturnToHandCounting
+                    | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+            ) {
                 let count = events
                     .iter()
                     .filter(|event| {
                         event.moved
                             && event.destination == Zone::Hand
-                            && event.before.reference != choice.source
-                            && event.before.has_subtype(subtype)
+                            && match choice.kind {
+                                EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) => {
+                                    event.before.reference != choice.source
+                                        && event.before.has_subtype(subtype)
+                                }
+                                _ => true,
+                            }
                     })
                     .count();
                 self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);

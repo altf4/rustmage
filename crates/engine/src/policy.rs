@@ -62,6 +62,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateCopyTokensScaled { .. }
                 | Instruction::CreateCopyTokenWithExceptions { .. }
                 | Instruction::CreateCopyTokenUntilNextEndStep { .. }
                 | Instruction::CreateCounteredCopyToken { .. } => Some(true),
@@ -761,6 +762,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseToken { .. } => 10,
             Action::ChooseKeyword { .. }
             | Action::ChooseResolutionColor { .. }
+            | Action::ChoosePermanentType { .. }
             | Action::ChoosePowerThreshold { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment

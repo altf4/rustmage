@@ -88,6 +88,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Unprepare { subject }
         | Instruction::ChooseGrantKeywords { subject, .. }
         | Instruction::CreateCopyToken { subject, .. }
+        | Instruction::CreateCopyTokensScaled { subject, .. }
         | Instruction::Suspect { subject }
         | Instruction::CreateRole { subject, .. }
         | Instruction::CreateCopyTokenWithExceptions { subject, .. }

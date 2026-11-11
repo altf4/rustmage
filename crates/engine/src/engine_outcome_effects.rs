@@ -72,6 +72,23 @@ impl Game {
         self.destroy_objects_outcome(targets);
     }
 
+    pub(super) fn destroy_permanents_of_type(&mut self, kind: PermanentType) {
+        let query = self.characteristic_query();
+        let objects: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && ability_world::CharacteristicWorld::kinds(&query, id) & kind.mask() != 0)
+                    .then(|| self.object_ref(id))
+            })
+            .collect();
+        self.destroy_objects_outcome(objects);
+    }
+
     pub(super) fn destroy_creatures_by_power(&mut self, minimum: u16) {
         // Read all powers before any creature leaves the battlefield.
         let query = self.characteristic_query();

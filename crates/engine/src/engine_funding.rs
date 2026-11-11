@@ -300,6 +300,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     fn creatures_died(&self) -> u64 {
         self.creatures_died
     }
+    fn controlled_creatures_died(&self, player: Player) -> u64 {
+        self.controlled_creatures_died[player.index()]
+    }
     fn graveyard_departure_count(&self, player: Player) -> u64 {
         self.graveyard_left[player.index()]
     }
@@ -708,13 +711,14 @@ fn source_obligations(
     if exhaust_reuse_authorized {
         readiness.exhaust = false;
     }
-    if independent_use {
+    if independent_use
+        || definition.activation(*index).lifetime_use_limit() && definition.grants_activation(*index)
+    {
         readiness.exhaust = false;
         readiness.once_per_turn = false;
-    }
-    if definition.activation(*index).exhaust && definition.grants_activation(*index) {
-        readiness.exhaust = false;
-        readiness.once_per_turn = false;
+        if let ActivationGuard::OncePerIncarnation(condition) = readiness.guard {
+            readiness.guard = *condition;
+        }
     }
     let ability = &readiness;
     if ability.cost.life != 0 && i128::from(ability.cost.life) > life {
@@ -795,7 +799,7 @@ fn activation_gain_upper<'a>(
     }
     // A true repeatable positive engine keeps an unbounded upper bound. Exact
     // reachability still determines whether its seed cost/colors are attainable.
-    let mut uses = if cost.tap || ability.once_per_turn || ability.exhaust {
+    let mut uses = if cost.tap || ability.has_use_limit() {
         1
     } else {
         u128::MAX
@@ -1327,7 +1331,7 @@ impl<'g> FundingState<'g> {
                 .as_ref()
                 .map_or_else(Vec::new, |rows| {
                     rows.iter()
-                        .filter(|row| row.exhaust || row.turn == game.state.turn)
+                        .filter(|row| row.lifetime || row.turn == game.state.turn)
                         .map(|row| (row.source, row.slot))
                         .collect()
                 }),
@@ -1787,6 +1791,9 @@ impl<'g> FundingState<'g> {
     }
     fn guard_available(&self, guard: ActivationGuard, source: CardId, actor: Player) -> bool {
         match guard {
+            ActivationGuard::OncePerIncarnation(guard) => {
+                self.guard_available(*guard, source, actor)
+            }
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 ability_world::CharacteristicWorld::counter_count(self, source, kind) >= minimum
             }
@@ -2423,7 +2430,7 @@ impl<'g> FundingState<'g> {
                     ready_object.used_abilities = 0;
                 }
                 if borrowed.is_some_and(|a| {
-                    a.used && (a.once_per_turn || readiness.once_per_turn || readiness.exhaust)
+                    a.used && (a.once_per_turn || readiness.has_use_limit())
                 }) || !self.guard_available(ability.guard, entry.id, goal.actor)
                     || !Game::object_activation_available_with_kinds(
                         &ready_object,
@@ -2833,7 +2840,7 @@ impl<'g> FundingState<'g> {
         if let Some((definition, timestamp)) = step.self_grant
             && step.ability.is_some_and(|i| {
                 let rules = definition.activation(i);
-                rules.exhaust || rules.once_per_turn
+                rules.has_use_limit()
             })
         {
             self.self_grant_uses.push((self.reference(id), timestamp));
@@ -3924,7 +3931,7 @@ impl<'g> FundingState<'g> {
                 if object.tapped && cost.tap {
                     continue;
                 }
-                let mut uses = if cost.tap || ability.once_per_turn || ability.exhaust {
+                let mut uses = if cost.tap || ability.has_use_limit() {
                     1
                 } else {
                     u128::MAX
@@ -4677,7 +4684,7 @@ impl<'g> FundingState<'g> {
                     continue;
                 }
                 let cost = ability.cost;
-                let mut uses = if cost.tap || ability.once_per_turn || ability.exhaust {
+                let mut uses = if cost.tap || ability.has_use_limit() {
                     1
                 } else {
                     u64::MAX
@@ -7762,7 +7769,7 @@ impl FundingState<'_> {
             return;
         };
         if let Some(timestamp) = key.self_grant {
-            if rules.exhaust || rules.once_per_turn {
+            if rules.has_use_limit() {
                 self.self_grant_uses.push((key.source, timestamp));
             }
         } else if let Some(slot) = key.borrowed_slot {

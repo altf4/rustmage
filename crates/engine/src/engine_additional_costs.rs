@@ -1466,6 +1466,7 @@ impl Game {
             | EffectChoiceKind::SaddleRider(_)
             | EffectChoiceKind::BlinkControlledCreatures
             | EffectChoiceKind::HandCreatures { .. }
+            | EffectChoiceKind::ReturnToHandCounting
             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
             | EffectChoiceKind::ReturnAttachmentRecipient { .. }

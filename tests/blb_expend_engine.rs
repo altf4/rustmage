@@ -290,3 +290,58 @@ fn failed_cast_restores_payment_threshold_and_unstacked_expend_trigger() {
     assert_eq!(mana_spent(&game, player), 4);
     assert_eq!(game.state.players[player.index()].life, 21);
 }
+
+#[test]
+fn a_direct_cast_acquires_targets_before_spending_its_expend_mana() {
+    const BOTH: CardRules = CardRules {
+        triggers: &[
+            TriggeredAbility {
+                condition: TriggerCondition::FirstTargetedByController,
+                ..EXPEND_FOUR
+            },
+            TriggeredAbility {
+                condition: TriggerCondition::Expend(2),
+                ..EXPEND_FOUR
+            },
+        ],
+        ..WATCHER
+    };
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &BOTH)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let creature = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let spell = put(&mut game, player, "Lightning Strike", Zone::Hand);
+    choose(&mut game, |action| {
+        matches!(action, Action::Cast {
+            card, target: Some(Target::Card(target)), ..
+        } if *card == spell && *target == creature)
+    });
+
+    let source = game.object_ref(creature);
+    let mut triggers = game
+        .state
+        .pending_triggers
+        .iter()
+        .chain(&game.state.ordering_triggers)
+        .chain(&game.state.stack)
+        .filter_map(|item| {
+            if let StackKind::TriggeredAbility { ability } = item.kind
+                && item
+                    .source
+                    .is_some_and(|observer| observer.object == source)
+            {
+                return Some((item.id, ability));
+            }
+            None
+        })
+        .collect::<Vec<_>>();
+    triggers.sort_unstable();
+    assert_eq!(
+        triggers
+            .into_iter()
+            .map(|(_, ability)| ability)
+            .collect::<Vec<_>>(),
+        [0, 1]
+    );
+    assert_eq!(mana_spent(&game, player), 2);
+}

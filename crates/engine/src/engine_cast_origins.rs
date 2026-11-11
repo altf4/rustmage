@@ -742,14 +742,8 @@ impl Game {
             self.move_exact_exiles_to_hand(&exiled);
             return false;
         }
-        let pending = self.state.pending.clone();
         self.offer_exact_free_casts(player, exiled, Zone::Exile, None, true);
-        if self.visit_resolution_casts(player, &mut |action| action != Action::FinishResolutionCasts) {
-            return true;
-        }
-        self.state.pending = pending;
-        self.finish_resolution_free_casts();
-        false
+        true
     }
 
     fn exile_until_first_nonland(&mut self, player: Player) -> Option<ObjectRef> {

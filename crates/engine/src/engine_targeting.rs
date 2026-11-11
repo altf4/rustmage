@@ -870,15 +870,17 @@ impl Announcement {
         self.cast_costs.as_ref()?.sacrifice_discount_count
     }
     pub(super) fn declare_sacrifice_discount_count(&mut self, count: u32) {
-        self.cast_costs.get_or_insert_with(Default::default).sacrifice_discount_count = Some(count);
+        self.cast_costs
+            .get_or_insert_with(Default::default)
+            .sacrifice_discount_count = Some(count);
     }
     pub(super) fn needs_sacrifice_discount_count(&self) -> bool {
         self.item.kind == StackKind::Spell
             && self.sacrifice_discount_count().is_none()
             && (!self.has_x_cost() || self.item.x.is_some())
-            && self.printed_additional_cost().is_some_and(|spec| {
-                spec.kind == EffectChoiceKind::SacrificeForGenericReduction
-            })
+            && self
+                .printed_additional_cost()
+                .is_some_and(|spec| spec.kind == EffectChoiceKind::SacrificeForGenericReduction)
     }
     pub(super) fn needs_bargain(&self) -> bool {
         self.pay_window
@@ -2756,11 +2758,9 @@ impl Game {
     }
 
     pub(super) fn cast_item(&mut self, actor: Player, card: CardId, payment: Mana) -> SpellView {
-        let outcome = self.spend_mana_for(
-            actor,
-            payment,
-            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card)),
-        );
+        let purpose = (payment != [0; 6]).then(|| {
+            self.spell_mana_purpose_for_card(actor, card, self.effective_spell_card(card))
+        });
         self.state.passes = 0;
         let stash_origin = self.foreign_stash(actor, card);
         let library_counter = self.library_entry_counter(actor, card);
@@ -2792,11 +2792,8 @@ impl Game {
         self.finish_zone_events(std::slice::from_ref(&event), &[]);
         let object = event.after;
         self.advance_prepared_copy(event.before.reference, event.after);
-        if outcome.haste {
-            self.grant_stack_keywords(object, Keywords::HASTE);
-        }
         let id = self.next_stack_id();
-        let mut item = self.cast_preview(actor, card, origin, object, id, payment);
+        let mut item = self.cast_preview(actor, card, origin, object, id, [0; 6]);
         if let Some(mut counter) = library_counter {
             counter.spell = id;
             self.state
@@ -2812,16 +2809,38 @@ impl Game {
                 .play_approvals
                 .push((id, approval, independent_free));
         }
-        if outcome.uncounterable {
-            self.mark_spell_uncounterable(id);
-        }
-        item.cast.as_mut().unwrap().treasure_mana_spent |= outcome.treasure_spent;
-        item.mana_copy_sources = outcome.copies;
-        item.mana_provenance = outcome.provenance;
         item.cast.as_mut().unwrap().stash_origin = stash_origin;
         item.cast.as_mut().unwrap().spend_any_mana = modifiers.0;
         item.cast.as_mut().unwrap().exile_on_graveyard = modifiers.1;
+        if let Some(purpose) = purpose {
+            self.pay_direct_cast(&mut item, payment, purpose);
+        }
         item
+    }
+
+    /// A direct cast pays after its targets have been acquired (CR 601.2c, 601.2h).
+    pub(super) fn pay_direct_cast(
+        &mut self,
+        item: &mut SpellView,
+        payment: Mana,
+        purpose: mana_lots::Purpose,
+    ) {
+        let outcome = self.spend_mana_for(item.controller, payment, purpose);
+        if outcome.haste {
+            self.grant_stack_keywords(
+                item.source.expect("paid spell source").object,
+                Keywords::HASTE,
+            );
+            item.source_keywords = item.source_keywords.union(Keywords::HASTE);
+        }
+        if outcome.uncounterable {
+            self.mark_spell_uncounterable(item.id);
+        }
+        let cast = item.cast.as_mut().expect("paid spell metadata");
+        cast.payment = payment;
+        cast.treasure_mana_spent |= outcome.treasure_spent;
+        item.mana_copy_sources = outcome.copies;
+        item.mana_provenance = outcome.provenance;
     }
     pub(super) fn cast_preview(
         &self,

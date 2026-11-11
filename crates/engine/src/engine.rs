@@ -897,6 +897,7 @@ define_actions! {
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
+    ChoosePermanentType { permanent_type: PermanentType },
     ChoosePowerThreshold { value: u16 },
     PutHandCreature { object: ObjectRef },
     PutHandPermanent { object: ObjectRef },
@@ -1999,6 +2000,9 @@ impl SpellView {
                     } | Instruction::CreateCopyToken {
                         subject: Subject::Source,
                         ..
+                    } | Instruction::CreateCopyTokensScaled {
+                        subject: Subject::Source,
+                        ..
                     } | Instruction::CreateCopyTokenForPlayer {
                         subject: Subject::Source,
                         ..
@@ -3076,6 +3080,9 @@ enum Pending {
         tokens: &'static [Card],
     },
     ResolutionColor {
+        player: Player,
+    },
+    ResolutionPermanentType {
         player: Player,
     },
     PowerThreshold {
@@ -4777,6 +4784,7 @@ impl Game {
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
             | Pending::ResolutionColor { player }
+            | Pending::ResolutionPermanentType { player }
             | Pending::PowerThreshold { player, .. }
             | Pending::Proliferate { player }
             | Pending::EffectChoice { player }
@@ -5593,6 +5601,19 @@ impl Game {
                     }
                 }
             }
+            Pending::ResolutionPermanentType { .. } => {
+                let resolution = s.resolving.as_ref().expect("permanent type choice resolution");
+                let Instruction::DestroyAllOfChosenPermanentType(types) =
+                    resolution.program[resolution.pc - 1]
+                else {
+                    unreachable!("permanent type choice instruction");
+                };
+                for &kind in types {
+                    if emit(Action::ChoosePermanentType { permanent_type: kind }) {
+                        return true;
+                    }
+                }
+            }
             Pending::KeywordChoice { choices, .. } => {
                 for index in 0..choices.len() {
                     if emit(Action::ChooseKeyword {
@@ -5739,6 +5760,7 @@ impl Game {
                             | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::ReturnAttachmentRecipient { .. }
                             | EffectChoiceKind::BlinkControlledCreatures
+                            | EffectChoiceKind::ReturnToHandCounting
                             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
                             | EffectChoiceKind::MeldPartner(_) => {
@@ -8605,12 +8627,18 @@ impl Game {
                 target,
                 payment,
             } => {
-                let mut item = self.cast_item(actor, card, payment);
+                let purpose = self.spell_mana_purpose_for_card(
+                    actor,
+                    card,
+                    self.effective_spell_card(card),
+                );
+                let mut item = self.cast_item(actor, card, [0; 6]);
                 if let Some(target) = target {
                     let bound = self.bind_target(target);
                     self.target_becomes_bound(&item, bound);
                     item.targets.push(bound);
                 }
+                self.pay_direct_cast(&mut item, payment, purpose);
                 self.push_stack_item(item);
                 self.state.passes = 0;
             }
@@ -9087,6 +9115,10 @@ impl Game {
                 }
                 self.advance_damage_choices();
             }
+            Action::ChoosePermanentType { permanent_type: kind } => {
+                self.destroy_permanents_of_type(kind);
+                self.run_program();
+            }
             Action::ChoosePowerThreshold { value } => {
                 self.destroy_creatures_by_power(value);
                 self.run_program();
@@ -9400,6 +9432,9 @@ impl Game {
             }
             Action::ChooseOptional { accept } => {
                 if self.complete_optional_spell_copy(accept) {
+                    return;
+                }
+                if self.complete_optional_library_destination(accept) {
                     return;
                 }
                 if self.complete_library_entry_transform(accept) {
@@ -10657,6 +10692,16 @@ impl Game {
             self.forget_live_static_source(before.reference);
             self.forget_ability_source(before.reference);
             self.forget_hand_size_source(before.reference);
+            if let Some(facts) = self
+                .state
+                .resolving
+                .as_mut()
+                .and_then(|resolution| resolution.target_card_facts.as_mut())
+            {
+                for target in facts.iter_mut().filter(|fact| fact.object == before.reference) {
+                    target.controller = before.controller;
+                }
+            }
             // Abilities use the source's actual last-known keywords if it leaves,
             // including gains made after that ability was announced.
             for item in self
@@ -11239,7 +11284,7 @@ impl Game {
         self.state.blocks.clear();
         self.state.first_strikers.clear();
         if let Some(rows) = &mut self.state.borrowed_uses {
-            rows.retain(|row| row.exhaust || row.turn == self.state.turn);
+            rows.retain(|row| row.lifetime || row.turn == self.state.turn);
             if rows.is_empty() {
                 self.state.borrowed_uses = None;
             }
@@ -11247,7 +11292,7 @@ impl Game {
         for obj in &mut self.state.objects {
             obj.loyalty_activated_this_turn = false;
             if obj.used_abilities != 0 {
-                obj.used_abilities &= obj.card.exhaust_mask();
+                obj.used_abilities = obj.card.retain_lifetime_activation_uses(obj.used_abilities);
             }
             obj.damaged_this_turn = false;
             obj.dealt_damage_this_turn = false;
@@ -12548,6 +12593,7 @@ impl Game {
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
                 Pending::ResolutionColor { .. } => "resolution_color",
+                Pending::ResolutionPermanentType { .. } => "resolution_permanent_type",
                 Pending::PowerThreshold { .. } => "power_threshold",
                 Pending::Proliferate { .. } => "proliferate",
                 Pending::EffectChoice { .. } => "effect_choice",

@@ -3,6 +3,19 @@ use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn controlled_token_ids(&self, player: Player) -> impl Iterator<Item = CardId> + '_ {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(move |(id, object)| {
+                (object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token())
+                .then_some(id as CardId)
+            })
+    }
+
     pub(super) fn create_tokens(
         &mut self,
         controller: Player,

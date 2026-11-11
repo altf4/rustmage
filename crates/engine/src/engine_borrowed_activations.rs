@@ -61,7 +61,7 @@ pub(super) struct Use {
     pub source: ObjectRef,
     pub slot: u64,
     pub turn: u32,
-    pub exhaust: bool,
+    pub lifetime: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -464,19 +464,19 @@ impl Game {
         item.borrowed_slot = Some(descriptor.slot);
         item
     }
-    pub(super) fn record_borrowed_use(&mut self, source: ObjectRef, slot: u64, exhaust: bool) {
+    pub(super) fn record_borrowed_use(&mut self, source: ObjectRef, slot: u64, lifetime: bool) {
         if !self.state.borrowed_uses.as_ref().is_some_and(|rows| {
             rows.iter().any(|row| {
                 row.source == source
                     && row.slot == slot
-                    && (row.exhaust || row.turn == self.state.turn)
+                    && (row.lifetime || row.turn == self.state.turn)
             })
         }) {
             self.state.borrowed_uses.get_or_insert_default().push(Use {
                 source,
                 slot,
                 turn: self.state.turn,
-                exhaust,
+                lifetime,
             });
         }
     }
@@ -579,8 +579,7 @@ impl Game {
                 descriptor.definition,
                 descriptor.ability,
                 Some(descriptor.slot),
-            ) || descriptor.used
-                && (descriptor.once_per_turn || readiness.once_per_turn || readiness.exhaust)
+            ) || descriptor.used && (descriptor.once_per_turn || readiness.has_use_limit())
             {
                 continue;
             }
