@@ -8,7 +8,7 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56a172ea91a3183676322696b7b90ef90e5fe2605f3f7267a58a567ca3ac5589"
   },
-  "physical_metadata_sha256": "9cc24ce55bbbc540bdee451cdfbb72f512466e7505c610bc5583183c1e0961fa",
+  "physical_metadata_sha256": "d1159ca874db1bf352313821633871a3534f4f5e427b0ccc7547fb48da474846",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FormAPosse.java",
   "java_sha256": "d140026ef5f95a9240b2bdc84546ed086a1d13a283a1536bf1306f7eaf489144",
