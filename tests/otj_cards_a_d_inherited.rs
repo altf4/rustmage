@@ -469,8 +469,7 @@ fn discerning_peddler_draws_only_after_its_private_optional_discard() {
     act(&mut decline, Action::DeclineEffectPayment);
     assert_eq!(decline.object_view(discarded).zone, Zone::Hand);
     assert_eq!(decline.object_view(drawn).zone, Zone::Library);
-    let object = game.object_ref(discarded);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::Discard { card: discarded });
     assert_eq!(game.object_view(discarded).zone, Zone::Graveyard);
     assert_eq!(game.object_view(drawn).zone, Zone::Hand);
 }
