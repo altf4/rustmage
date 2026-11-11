@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "bff4dd471f4cb5a5fa0a5244c1cd48e780b1ecf0d7ee004eb49d5059d89ec770",
+  "catalogue_version": "8e63b01edc5ea40e0bbf9f28cbde991a8357e74b62208228b41ac32a2b3cb6cd",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4455,
-  "implemented_total": 4469,
+  "implemented_standard_cards": 4468,
+  "implemented_total": 4482,
   "token_definitions": 193,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -126,8 +126,7 @@
     },
     "otj": {
       "total": 264,
-      "complete": 251,
-      "gated": 13
+      "complete": 264
     },
     "pspl": {
       "total": 1,
@@ -5104,8 +5103,8 @@
     {
       "name": "Cactusfolk Sureshot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/cactusfolk_sureshot.rs",
       "set": "otj"
     },
@@ -5136,8 +5135,8 @@
     {
       "name": "Calamity, Galloping Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/calamity_galloping_inferno.rs",
       "set": "otj"
     },
@@ -5280,8 +5279,8 @@
     {
       "name": "Canyon Crab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/canyon_crab.rs",
       "set": "otj"
     },
@@ -5664,8 +5663,8 @@
     {
       "name": "Caught in the Crossfire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/caught_in_the_crossfire.rs",
       "set": "otj"
     },
@@ -5680,8 +5679,8 @@
     {
       "name": "Caustic Bronco",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/caustic_bronco.rs",
       "set": "otj"
     },
@@ -6608,8 +6607,8 @@
     {
       "name": "Colossal Rattlewurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/colossal_rattlewurm.rs",
       "set": "otj"
     },
@@ -6904,8 +6903,8 @@
     {
       "name": "Consuming Ashes",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/consuming_ashes.rs",
       "set": "otj"
     },
@@ -7816,8 +7815,8 @@
     {
       "name": "Dance of the Tumbleweeds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/dance_of_the_tumbleweeds.rs",
       "set": "otj"
     },
@@ -8376,8 +8375,8 @@
     {
       "name": "Deepmuck Desperado",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/deepmuck_desperado.rs",
       "set": "otj"
     },
@@ -8608,8 +8607,8 @@
     {
       "name": "Desert's Due",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/desert_s_due.rs",
       "set": "otj"
     },
@@ -9304,8 +9303,8 @@
     {
       "name": "Double Down",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/double_down.rs",
       "set": "otj"
     },
@@ -9800,8 +9799,8 @@
     {
       "name": "Duelist of the Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/duelist_of_the_mind.rs",
       "set": "otj"
     },
@@ -9856,8 +9855,8 @@
     {
       "name": "Dust Animus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/otj/dust_animus.rs",
       "set": "otj"
     },

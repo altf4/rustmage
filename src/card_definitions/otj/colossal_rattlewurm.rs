@@ -25,7 +25,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         once_per_turn: false,
     }],
     extras: &CardExtras {
-        self_cast_timing: Some(SelfCastTiming::ControlSubtype("Desert")),
+        self_cast_timing: Some(SelfCastTiming::FlashWhileControlSubtype("Desert")),
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

@@ -1,0 +1,436 @@
+{
+  "decks": [
+    {
+      "id": "trail-riders",
+      "name": "Green-white Saddle",
+      "cards": [
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 10
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        },
+        {
+          "name": "Creosote Heath",
+          "oracle_id": "c116b787-5f7e-47ef-a694-58709770dd32",
+          "count": 4
+        },
+        {
+          "name": "Frontier Seeker",
+          "oracle_id": "466cf331-2d9c-4ebc-84f6-30c890e1b637",
+          "count": 4
+        },
+        {
+          "name": "Giant Beaver",
+          "oracle_id": "2a4b42b3-6a95-41e1-9741-b35723d8da73",
+          "count": 4
+        },
+        {
+          "name": "Ornery Tumblewagg",
+          "oracle_id": "f8d7bcbd-9a1d-4fc6-abdd-88a7e01b9411",
+          "count": 4
+        },
+        {
+          "name": "Trained Arynx",
+          "oracle_id": "bc875500-f6df-4365-b2d6-7cf425daea97",
+          "count": 4
+        },
+        {
+          "name": "Seraphic Steed",
+          "oracle_id": "51622e89-aa5e-4dd6-a078-eb45e8ebb434",
+          "count": 4
+        },
+        {
+          "name": "Bounding Felidar",
+          "oracle_id": "b00f316d-7c82-40e6-80e5-9f36434590a3",
+          "count": 4
+        },
+        {
+          "name": "Bridled Bighorn",
+          "oracle_id": "6a1ad848-6fda-46dd-aad8-2f6a5c71a696",
+          "count": 4
+        },
+        {
+          "name": "Throw from the Saddle",
+          "oracle_id": "d6780d29-0dd7-4f04-95b8-4ca6a55308f2",
+          "count": 4
+        },
+        {
+          "name": "Aloe Alchemist",
+          "oracle_id": "97489ef7-98c3-4700-bbe6-185215d41b25",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "outlaw-crew",
+      "name": "Black-red Crime",
+      "cards": [
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 10
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 10
+        },
+        {
+          "name": "Jagged Barrens",
+          "oracle_id": "64ee02f1-afdb-474b-a893-31538ad7219a",
+          "count": 4
+        },
+        {
+          "name": "Blood Hustler",
+          "oracle_id": "bb02e64c-0c4a-41ae-972e-ce83e6fc4cb9",
+          "count": 4
+        },
+        {
+          "name": "At Knifepoint",
+          "oracle_id": "bddb2064-afdb-4184-ae4a-633745e64a3c",
+          "count": 4
+        },
+        {
+          "name": "Forsaken Miner",
+          "oracle_id": "d37e0127-6f68-438e-8b9e-a71bb3c34733",
+          "count": 4
+        },
+        {
+          "name": "Nezumi Linkbreaker",
+          "oracle_id": "5d24fb6b-7176-407c-b917-6c88a6da40df",
+          "count": 4
+        },
+        {
+          "name": "Mourner's Surprise",
+          "oracle_id": "567fa6e0-fc7b-4502-9c51-f2538c411003",
+          "count": 4
+        },
+        {
+          "name": "Discerning Peddler",
+          "oracle_id": "a6584af7-583d-4d89-9b46-d61be8236413",
+          "count": 4
+        },
+        {
+          "name": "Consuming Ashes",
+          "oracle_id": "9ef676f0-53c5-4efe-9341-e960d00dbc69",
+          "count": 4
+        },
+        {
+          "name": "Shoot the Sheriff",
+          "oracle_id": "2038138e-2e52-41e4-90fc-443fa054c5c0",
+          "count": 4
+        },
+        {
+          "name": "Rakish Crew",
+          "oracle_id": "ddf34404-39dd-4dcf-a706-ec78d47167e9",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "train-heist",
+      "name": "Blue-red Spree and second spells",
+      "cards": [
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 9
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 9
+        },
+        {
+          "name": "Eroded Canyon",
+          "oracle_id": "852c6520-d148-4923-a312-05a9af821f24",
+          "count": 4
+        },
+        {
+          "name": "Spirebluff Canal",
+          "oracle_id": "eb0d8093-5f93-4b25-9384-08f9731bfb28",
+          "count": 2
+        },
+        {
+          "name": "Breeches, the Blastmaker",
+          "oracle_id": "8514f20a-50c7-4319-84cb-2bf263548234",
+          "count": 4
+        },
+        {
+          "name": "Slickshot Show-Off",
+          "oracle_id": "74c7a029-59aa-4511-8e4c-f8f167cda4e2",
+          "count": 4
+        },
+        {
+          "name": "Three Steps Ahead",
+          "oracle_id": "282dfeaa-6243-4f92-838a-5cb54fa85184",
+          "count": 4
+        },
+        {
+          "name": "Phantom Interference",
+          "oracle_id": "0db20037-35b3-4b1f-8dd6-3ee797c421ca",
+          "count": 4
+        },
+        {
+          "name": "Razzle-Dazzler",
+          "oracle_id": "a1ac6d5c-b2d0-4ca4-8af8-16fd3dd3b3b5",
+          "count": 4
+        },
+        {
+          "name": "Brimstone Roundup",
+          "oracle_id": "e79deeee-c14d-496d-9b0b-475a6a24274c",
+          "count": 4
+        },
+        {
+          "name": "Loan Shark",
+          "oracle_id": "15030c1d-7c0a-4273-a022-eb98d6c7a1ce",
+          "count": 4
+        },
+        {
+          "name": "Thunder Salvo",
+          "oracle_id": "d3ce7c83-986f-410a-ae00-6c1c1f918a2b",
+          "count": 4
+        },
+        {
+          "name": "Explosive Derailment",
+          "oracle_id": "b23dc81d-01bb-4bf0-9932-5d32a6b22cf7",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "sky-scouts",
+      "name": "White-blue Plot and spells from outside hand",
+      "cards": [
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Lonely Arroyo",
+          "oracle_id": "36508a8a-d1a4-400e-bfda-09436bc4d5d4",
+          "count": 4
+        },
+        {
+          "name": "Dust Animus",
+          "oracle_id": "494f8c29-7626-43ed-b0b8-fb9afd4cd5d3",
+          "count": 4
+        },
+        {
+          "name": "Jem Lightfoote, Sky Explorer",
+          "oracle_id": "5802aa98-a9b7-4b0d-9d7c-c3938701870d",
+          "count": 4
+        },
+        {
+          "name": "Prairie Dog",
+          "oracle_id": "70987216-f84d-43b9-8d75-bb21ff37747b",
+          "count": 4
+        },
+        {
+          "name": "Wrangler of the Damned",
+          "oracle_id": "0d8fded4-0393-43c2-82a1-383f29de65ce",
+          "count": 4
+        },
+        {
+          "name": "Plan the Heist",
+          "oracle_id": "a9471b33-b5b0-408a-9900-6964e5fe42da",
+          "count": 4
+        },
+        {
+          "name": "Djinn of Fool's Fall",
+          "oracle_id": "7dbb540f-ee96-4115-b6ef-28ffc73da8b7",
+          "count": 4
+        },
+        {
+          "name": "Aven Interrupter",
+          "oracle_id": "d31fd12f-b4dd-4bc3-ace4-703dabd0f607",
+          "count": 4
+        },
+        {
+          "name": "Archmage's Newt",
+          "oracle_id": "75ffebc4-8db9-4de6-a330-e3f41cdccecc",
+          "count": 4
+        },
+        {
+          "name": "The Key to the Vault",
+          "oracle_id": "7a75d565-b0a7-46bf-94a0-c9255c8abd6d",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "desert-crossing",
+      "name": "Red-green Desert and power",
+      "cards": [
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 9
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 9
+        },
+        {
+          "name": "Bristling Backwoods",
+          "oracle_id": "9cbc9f83-8979-42a5-a466-a8d89c8e6de8",
+          "count": 4
+        },
+        {
+          "name": "Conduit Pylons",
+          "oracle_id": "37f924e1-7c25-4f06-88bb-054693a21e5a",
+          "count": 2
+        },
+        {
+          "name": "Cactarantula",
+          "oracle_id": "18a5fe34-0c97-486c-b09a-80535a99e982",
+          "count": 4
+        },
+        {
+          "name": "Cactusfolk Sureshot",
+          "oracle_id": "05f15b7b-28bf-4b63-a4ca-b57712a1a66a",
+          "count": 4
+        },
+        {
+          "name": "Colossal Rattlewurm",
+          "oracle_id": "510659d6-69b4-4b04-8836-08b76213954e",
+          "count": 4
+        },
+        {
+          "name": "Outcaster Greenblade",
+          "oracle_id": "855a2579-8f78-46ce-a3a8-eddc808bd7b4",
+          "count": 4
+        },
+        {
+          "name": "Hardbristle Bandit",
+          "oracle_id": "116eea43-4235-4608-8c6a-599e860ae2f1",
+          "count": 4
+        },
+        {
+          "name": "Gila Courser",
+          "oracle_id": "bc983c67-eb5d-4a85-a12e-a410f85e949e",
+          "count": 4
+        },
+        {
+          "name": "Gold Rush",
+          "oracle_id": "45687a24-e8cb-4864-8721-410eb8320aab",
+          "count": 4
+        },
+        {
+          "name": "Dance of the Tumbleweeds",
+          "oracle_id": "7c57d4aa-d221-4b36-a544-9fa89d63ffbe",
+          "count": 4
+        },
+        {
+          "name": "Betrayal at the Vault",
+          "oracle_id": "f1dce3f0-30c8-488f-bbeb-b0533886c655",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "trail-riders",
+      "p1": "outlaw-crew",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 19,
+          "starting_player": 1
+        },
+        {
+          "seed": 31,
+          "starting_player": 0
+        }
+      ]
+    },
+    {
+      "p0": "outlaw-crew",
+      "p1": "train-heist",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 19,
+          "starting_player": 0
+        },
+        {
+          "seed": 31,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "train-heist",
+      "p1": "sky-scouts",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 19,
+          "starting_player": 1
+        },
+        {
+          "seed": 31,
+          "starting_player": 0
+        }
+      ]
+    },
+    {
+      "p0": "sky-scouts",
+      "p1": "desert-crossing",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 1
+        },
+        {
+          "seed": 19,
+          "starting_player": 0
+        },
+        {
+          "seed": 31,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "desert-crossing",
+      "p1": "trail-riders",
+      "runs": [
+        {
+          "seed": 7,
+          "starting_player": 0
+        },
+        {
+          "seed": 19,
+          "starting_player": 1
+        },
+        {
+          "seed": 31,
+          "starting_player": 0
+        }
+      ]
+    }
+  ]
+}
