@@ -269,7 +269,9 @@ impl Game {
                 ability.condition.origin() != Some(TargetZone::Graveyard)
                     && matches!(
                         ability.condition.event(),
-                        TriggerCondition::AtStep { .. } | TriggerCondition::Chapter { .. }
+                        TriggerCondition::AtStep { .. }
+                            | TriggerCondition::Chapter { .. }
+                            | TriggerCondition::OwnUntapStepUntaps
                     )
             })
         {
@@ -303,6 +305,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
+                            | crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast
                             | crate::cards::StaticAbilityFragment::Storied
                             | crate::cards::StaticAbilityFragment::StartYourEngines
                             | crate::cards::StaticAbilityFragment::ReuseExhaustBeforeFirstActivationOwnTurn
@@ -368,6 +371,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
+                            | crate::cards::StaticAbilityFragment::UntapDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)

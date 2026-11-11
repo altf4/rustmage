@@ -1360,6 +1360,7 @@ impl Game {
             EffectChoiceKind::Blight(_)
             | EffectChoiceKind::BlightXCost
             | EffectChoiceKind::KeepSharedCreatureTypes
+            | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
@@ -1420,6 +1421,7 @@ impl Game {
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
+            | EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)

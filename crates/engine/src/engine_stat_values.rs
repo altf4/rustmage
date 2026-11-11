@@ -548,6 +548,7 @@ impl Game {
                     .capacity("life gain count representation exhausted")
             }
             StatValue::ControllerLife => life,
+            StatValue::ControllerHasMostLife => i128::from(life >= opponent_life),
             StatValue::ControllerSpeed => i128::from(self.state.players[owner.index()].speed),
             StatValue::OpponentControlsMoreLands => {
                 let mut counts = [0usize; 2];
@@ -859,6 +860,7 @@ impl Game {
             | AmountValue::LifeEventAmount
             | AmountValue::DiscardEventAmount
             | AmountValue::DamageEventAmount
+            | AmountValue::UntapStepCount
             | AmountValue::CounterPlacementAmount
             | AmountValue::CreatureCombatDamageAmount
             | AmountValue::DepartureCounterCount(_)

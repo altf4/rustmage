@@ -198,6 +198,13 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
+            return self.object_ref(object.card) == object
+                && self.creature_survives_sweep(object.card, maximum)
+                && choice.selected[player.index()].iter().all(|survivor| {
+                    self.state.objects[survivor.card as usize].controller != o.controller
+                });
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             return o.controller == player
                 && choice.selected[player.index()].is_empty()
@@ -322,7 +329,8 @@ impl Game {
             ) && !choice.selected[player.index()].contains(&object);
         }
         let graveyard_filter = match choice.kind {
-            EffectChoiceKind::ReturnGraveyardToHand { kinds } => Some((kinds, None)),
+            EffectChoiceKind::ReturnGraveyardToHand { kinds }
+            | EffectChoiceKind::ReturnUpToGraveyardToHand { kinds } => Some((kinds, None)),
             EffectChoiceKind::ReturnGraveyardToHandOrSubtype { kinds, subtype } => {
                 Some((kinds, Some(subtype)))
             }
@@ -778,6 +786,10 @@ impl Game {
             None,
         )
     }
+    fn creature_survives_sweep(&self, card: CardId, maximum: i128) -> bool {
+        self.on_battlefield(card) && self.is_creature(card) && self.stats(card).power <= maximum
+    }
+
     pub(super) fn start_effect_choice(
         &mut self,
         item: &SpellView,
@@ -1020,6 +1032,13 @@ impl Game {
             .unwrap();
         let item = &self.state.resolving.as_ref().unwrap().item;
         let player = item.controller;
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+        ) {
+            self.return_effect_choice_to_hand(*choice);
+            return;
+        }
         if self.target_graveyard_return_active() {
             let battlefield = choice.selected[player.index()].first().copied();
             let moves = self.target_graveyard_return_entries(item, battlefield);
@@ -1421,6 +1440,18 @@ impl Game {
         };
         if let Some(skip_to) = choice.skip_to {
             assert!(skip_to <= self.state.resolving.as_ref().unwrap().program.len());
+        }
+        if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = kind {
+            let mut eligible = [false; 2];
+            for (index, object) in self.state.objects.iter().enumerate() {
+                let slot = &mut eligible[object.controller.index()];
+                if !*slot && self.creature_survives_sweep(index as CardId, maximum) {
+                    *slot = true;
+                }
+            }
+            choice.required[item.controller.index()] = eligible.into_iter().map(u32::from).sum();
+            self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
+            return self.advance_effect_choice();
         }
         // Unfiltered affordability follows the public hand count. A typed
         // restriction makes eligibility private, so retain its phase and quota.
@@ -1892,6 +1923,29 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+        ) {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let survivors = &choice.selected[player.index()];
+            let destroyed = self
+                .state
+                .objects
+                .iter()
+                .enumerate()
+                .filter_map(|(index, object)| {
+                    let card = index as CardId;
+                    let reference = self.object_ref(card);
+                    (object.zone == Zone::Battlefield
+                        && self.is_creature(card)
+                        && !survivors.contains(&reference))
+                    .then_some(reference)
+                })
+                .collect::<Vec<_>>();
+            self.destroy_objects_outcome(destroyed);
+            return false;
+        }
         if choice.kind == EffectChoiceKind::EquipmentRecipient {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             if let Some(&recipient) = choice.selected[player.index()].first() {
@@ -2760,7 +2814,12 @@ impl Game {
         Some(EffectChoiceView {
             kind: choice.kind,
             amount: choice.amount,
-            optional: choice.skip_to.is_some() || choice.kind.any_number_selection(),
+            optional: choice.skip_to.is_some()
+                || choice.kind.any_number_selection()
+                || matches!(
+                    choice.kind,
+                    EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                ),
             required: choice.required,
             selected: std::array::from_fn(|index| {
                 choice.selected[index]

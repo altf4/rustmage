@@ -428,3 +428,66 @@ fn a_cave_payment_branches_after_public_announcement_and_survives_unrelated_spen
         );
     }
 }
+
+const TAGGED: CardRules = CardRules {
+    effect: Effect::Permanent,
+    activated: &[ActivatedAbility {
+        program: &[Instruction::AddMana(ManaProduction::Tagged {
+            production: &ManaProduction::Fixed(WHITE_TWO),
+            quality: &ManaQuality {
+                restriction: ManaRestriction::CreatureSpells,
+                spell_bonus: ManaSpellBonus::None,
+                retention: ManaRetention::Step,
+            },
+        })],
+        ..producer(true, false)
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn equivalent_tagged_producers_share_one_spending_choice_and_keep_exact_receipts() {
+    let _fixture = fixture_rules::activate(&[(card("Short Bow"), &TAGGED)]);
+    let p = Player::P0;
+    for ordinary in [0, 1] {
+        let mut g = scenario(p);
+        g.state.players[p.index()].mana = [ordinary, 0, 0, 0, 0, 0];
+        let first = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        let second = put(&mut g, p, "Short Bow", Zone::Battlefield);
+        generate(&mut g, first);
+        generate(&mut g, second);
+        let lots = g.observe(p).mana_lots;
+        assert_eq!(lots.len(), 1);
+        assert_eq!(lots[0].amounts[0], 4);
+        assert_eq!(lots[0].restriction, ManaRestrictionView::CreatureSpells);
+        assert_eq!(g.mana_lots(p).len(), 2);
+        let spell = put(&mut g, p, "Healer's Hawk", Zone::Hand);
+        cast(&mut g, spell, None);
+        assert_eq!(
+            matches!(g.state.pending, Pending::ManaLotSpend { .. }),
+            ordinary > 0
+        );
+        if ordinary > 0 {
+            let range = g.observe(p).mana_lot_spend.unwrap();
+            assert_eq!((range.minimum, range.maximum), (0, 1));
+            act(&mut g, Action::ChooseManaLotSpend { amount: 1 });
+        }
+        let paid = g
+            .state
+            .stack
+            .last()
+            .unwrap()
+            .mana_provenance
+            .as_ref()
+            .unwrap();
+        assert_eq!(
+            paid.sources.as_slice(),
+            &[ManaSourcePayment {
+                source: g.object_ref(second),
+                amount: 1,
+                cave: false,
+            }]
+        );
+        assert_eq!(g.observe(p).mana_lots[0].amounts[0], 3);
+    }
+}

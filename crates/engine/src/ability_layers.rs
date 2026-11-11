@@ -136,6 +136,8 @@ pub enum StaticAbilityFragment {
     ReplaceLifePaymentWithLibraryExile,
     /// During combat no spells or nonmana activated abilities may be started.
     NoSpellsOrNonmanaDuringCombat,
+    /// Opponents who declared an attack on this controller or their planeswalker this turn can't cast.
+    OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast,
 
     /// Cast this exact owned graveyard card normally while the live predicate holds.
     /// This grants neither land plays nor flashback's alternative cost/destination.
@@ -390,6 +392,8 @@ pub enum StaticAbilityFragment {
         relation: crate::cards::CastRelation,
     },
     SelfUntap(UntapRestriction),
+    /// Include this permanent in the turn-based action on another player's turn.
+    UntapDuringOtherUntapSteps,
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
     /// Source-only ability grant whose earlier-layer condition remains live.

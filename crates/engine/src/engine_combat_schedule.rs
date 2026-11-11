@@ -43,6 +43,19 @@ impl Game {
             .map_or([0; 2], |rules| rules.require_all_attack_until_next_turn)
     }
 
+    pub(super) fn prohibit_attacks_on_controller_or_planeswalkers_this_turn(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+    ) {
+        for player in self.program_players(players, item) {
+            self.state
+                .combat_rules
+                .get_or_insert_with(Default::default)
+                .player_attack_prohibitions[player.index()] |= 1 << item.controller.index();
+        }
+    }
+
     pub(super) fn require_created_attacks_this_combat(&mut self, created: &[ObjectRef]) {
         if !matches!(
             self.state.step,

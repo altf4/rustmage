@@ -33,6 +33,8 @@ pub(super) struct CombatRulesState {
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
     pub require_all_attack_until_next_turn: [usize; 2],
+    /// Protected player seats, indexed by the attacking player.
+    pub player_attack_prohibitions: [u8; 2],
     pub damaged_players: Vec<CombatDamagePlayerView>,
     pub player_damage_this_turn: PlayerCombatDamageView,
     excess: Option<ExcessDamage>,

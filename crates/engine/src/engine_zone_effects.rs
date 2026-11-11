@@ -301,6 +301,69 @@ impl Game {
             .collect();
         self.stage_entries(moves, None);
     }
+    pub(super) fn sacrifice_other_creatures_remember_graveyard(&mut self, item: &SpellView) {
+        let source = item.source.expect("sacrifice effect source").object;
+        let creatures: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && self.object_ref(id) != source
+                    && self.is_creature(id))
+                .then_some((object.controller, id))
+            })
+            .collect();
+        let events = self.sacrifice_effect_batch_outcome(&creatures);
+        let graveyard_cards: SharedVec<_> = events
+            .iter()
+            .filter(|event| {
+                event.sacrificed_by.is_some()
+                    && event.was_card
+                    && event.destination == Zone::Graveyard
+            })
+            .flat_map(ZoneChange::objects_after)
+            .collect();
+        self.state.resolving.as_mut().unwrap().remembered_creatures =
+            (!graveyard_cards.is_empty()).then_some(graveyard_cards);
+    }
+
+    pub(super) fn return_graveyard_creatures_to_owners_except_remembered(&mut self) {
+        let excluded = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .remembered_creatures
+            .take();
+        let moves = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                if object.zone != Zone::Graveyard || !object.is_card() || !object.card.is_creature()
+                {
+                    return None;
+                }
+                let reference = self.object_ref(id);
+                if excluded
+                    .as_ref()
+                    .is_some_and(|objects| objects.contains(&reference))
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(id, Zone::Battlefield, false);
+                movement.controller = object.owner;
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries(moves, None);
+    }
+
     pub(super) fn return_graveyard_creatures(
         &mut self,
         item: &SpellView,

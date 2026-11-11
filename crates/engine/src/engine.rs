@@ -1397,14 +1397,16 @@ impl Object {
     fn is_card(&self) -> bool {
         !self.is_token() && !self.is_spell_copy() && !self.card.is_emblem()
     }
-    fn untap(&mut self) {
-        if self.tapped {
-            if self.counters.stun > 0 {
-                self.counters.stun -= 1;
-            } else {
-                self.tapped = false;
-            }
+    fn untap(&mut self) -> bool {
+        if !self.tapped {
+            return false;
         }
+        if self.counters.stun > 0 {
+            self.counters.stun -= 1;
+            return false;
+        }
+        self.tapped = false;
+        true
     }
 }
 
@@ -5486,8 +5488,12 @@ impl Game {
                 if choice.kind.any_number_selection() && emit(Action::FinishEffectChoice) {
                     return true;
                 }
-                if matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
+                if (matches!(choice.kind, EffectChoiceKind::GraveyardCreatures { .. })
                     && choice.skip_to.is_some()
+                    || matches!(
+                        choice.kind,
+                        EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+                    ))
                     && emit(Action::FinishGraveyardReturn)
                 {
                     return true;
@@ -5552,6 +5558,7 @@ impl Game {
                             }
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
@@ -9313,6 +9320,13 @@ impl Game {
     /// Sacrifices are an explicit action, including costs paid for mana abilities.
     /// Freeze every observer and departing object before the simultaneous batch.
     fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {
+        self.sacrifice_effect_batch_outcome(sacrifices);
+    }
+
+    fn sacrifice_effect_batch_outcome(
+        &mut self,
+        sacrifices: &[(Player, CardId)],
+    ) -> Vec<ZoneChange> {
         // Effects do as much as possible; prohibited permanents remain put.
         // All permitted sacrifices still share one frozen replacement boundary.
         let permitted: Vec<_> = sacrifices
@@ -9330,12 +9344,10 @@ impl Game {
             })
             .collect();
         if permitted.is_empty() {
-            return;
+            return Vec::new();
         }
-        assert!(
-            self.sacrifice_cost_batch_atomic(&permitted),
-            "legal sacrifice batch"
-        );
+        self.sacrifice_cost_batch_events(&permitted)
+            .expect("legal sacrifice batch")
     }
 
     /// Freeze and choose every replacement before committing a zone-change
@@ -9499,12 +9511,29 @@ impl Game {
     /// has been chosen and all proposed events remain possible. Redirected
     /// and prevented events are valid cost payments (CR 118.11).
     fn sacrifice_cost_batch_atomic(&mut self, sacrifices: &[(Player, CardId)]) -> bool {
-        self.sacrifice_cost_batch_outcome(sacrifices).is_some()
+        self.sacrifice_cost_batch_events(sacrifices).is_some()
     }
     fn sacrifice_cost_batch_outcome(
         &mut self,
         sacrifices: &[(Player, CardId)],
     ) -> Option<PaidAdditionalCostView> {
+        let events = self.sacrifice_cost_batch_events(sacrifices)?;
+        Some(PaidAdditionalCostView {
+            selected: sacrifices.len() as u64,
+            count: events
+                .iter()
+                .filter(|event| event.sacrificed_by.is_some())
+                .count() as u64,
+            sacrificed_vehicle: events
+                .iter()
+                .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+        })
+    }
+
+    fn sacrifice_cost_batch_events(
+        &mut self,
+        sacrifices: &[(Player, CardId)],
+    ) -> Option<Vec<ZoneChange>> {
         self.refresh_enduring_stories();
         if sacrifices.iter().enumerate().any(|(i, &(actor, id))| {
             let object = &self.state.objects[id as usize];
@@ -9552,18 +9581,8 @@ impl Game {
         self.food_sacrifice_triggers(&events, &sources);
         self.refresh_controllers_after(Some(control_watch));
         self.record_own_sacrifices(&events);
-        let paid = PaidAdditionalCostView {
-            selected: sacrifices.len() as u64,
-            count: events
-                .iter()
-                .filter(|event| event.sacrificed_by.is_some())
-                .count() as u64,
-            sacrificed_vehicle: events
-                .iter()
-                .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
-        };
         self.finish_zone_events(&events, &sources);
-        Some(paid)
+        Some(events)
     }
 
     /// Capture every pre-event characteristic before any simultaneous departure.
@@ -11018,6 +11037,7 @@ impl Game {
             rules.inserted_phases.clear();
             rules.end_steps = AdditionalEndStepsView::default();
             rules.attack_without_defender.clear();
+            rules.player_attack_prohibitions = [0; 2];
         }
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;

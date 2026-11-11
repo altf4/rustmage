@@ -39,6 +39,7 @@ pub enum EventObjectFacts {
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
     DamageActor(DamageSource),
+    UntapStepCount(u64),
     /// Frozen amount this exact event object dealt in one simultaneous damage event.
     DamageDealt {
         amount: u128,
@@ -392,6 +393,7 @@ impl Game {
                     EventObjectFacts::DeathCounters(_)
                     | EventObjectFacts::DeathBatchPower(_)
                     | EventObjectFacts::CopiableGroup(_)
+                    | EventObjectFacts::UntapStepCount(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)

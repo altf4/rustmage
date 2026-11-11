@@ -467,6 +467,13 @@ impl Game {
                     }
                 })
                 .unwrap_or(0),
+            AmountValue::UntapStepCount => item.event_object.as_ref().map_or(0, |event| {
+                if let EventObjectFacts::UntapStepCount(amount) = event.facts {
+                    u128::from(amount)
+                } else {
+                    0
+                }
+            }),
             AmountValue::ManaSpent => u128::from(
                 self.item_cast_payment(item)
                     .into_iter()

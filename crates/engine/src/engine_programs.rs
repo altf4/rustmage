@@ -1113,6 +1113,7 @@ impl Game {
                     | TriggerCondition::AttachedDealtCombatDamage
                     | TriggerCondition::DamagedCreatureDies
                     | TriggerCondition::StateCounterAtLeast { .. }
+                    | TriggerCondition::OwnUntapStepUntaps
                     | TriggerCondition::CounterThresholdCrossed { .. }
                     | TriggerCondition::PlayerDamaged { .. }
                     | TriggerCondition::CombatDamageToController
@@ -1165,6 +1166,7 @@ impl Game {
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksDefendingPlayer
+                    | TriggerCondition::SelfAttacksPlayerWithMostLife
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
@@ -2301,6 +2303,9 @@ impl Game {
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::LoseLife(PlayerSet::CastingPlayer, _)
+                                        | Instruction::ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(
+                                            PlayerSet::CastingPlayer
+                                        )
                                         | Instruction::CreateTokensFor {
                                             players: PlayerSet::CastingPlayer,
                                             ..
@@ -3314,6 +3319,11 @@ impl Game {
                 | TriggerCondition::SelfAttacksOrBlocks
                 | TriggerCondition::SelfEntersOrAttacks => true,
                 TriggerCondition::SelfFirstAttack => first_attack,
+                TriggerCondition::SelfAttacksPlayerWithMostLife => {
+                    matches!(defender, Some(CombatDefender::Player(player))
+                        if self.state.players[player.index()].life
+                            >= self.state.players[player.other().index()].life)
+                }
                 TriggerCondition::SelfAttacksAlone => declared_count == 1,
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
@@ -3321,7 +3331,11 @@ impl Game {
             };
             if matches
                 && self.queue_attack_trigger(source, index)
-                && condition == TriggerCondition::SelfAttacksDefendingPlayer
+                && matches!(
+                    condition,
+                    TriggerCondition::SelfAttacksDefendingPlayer
+                        | TriggerCondition::SelfAttacksPlayerWithMostLife
+                )
             {
                 let player = match defender {
                     Some(CombatDefender::Player(player)) => player,
@@ -3928,6 +3942,7 @@ impl Game {
             // immediately, before a later instruction can remove a permanent.
             self.refresh_enduring_stories();
             self.refresh_graveyard_borrowing();
+            self.queue_state_counter_triggers();
             if self.miracle_choice_pending() {
                 return;
             }
@@ -4062,6 +4077,9 @@ impl Game {
                     }
                 }
                 self.prune_linked_exiles();
+                if item.is_original_state_counter_trigger() {
+                    self.queue_state_counter_triggers();
+                }
                 self.give_priority();
                 return;
             };
@@ -6012,6 +6030,18 @@ impl Game {
                 Instruction::DestroyManaValueExactly { kinds, amount } => {
                     self.destroy_battlefield_mana_value(kinds, self.item_amount(amount, &item));
                 }
+                Instruction::DestroyCreaturesExceptChosenByPower(maximum) => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum),
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::DestroyCreaturesByToughness { maximum, remember } => {
                     let maximum =
                         i128::try_from(self.item_amount(maximum, &item)).unwrap_or(i128::MAX);
@@ -6027,6 +6057,12 @@ impl Game {
                     if self.start_graveyard_land_return(&item, tapped) {
                         return;
                     }
+                }
+                Instruction::SacrificeOtherCreaturesRememberGraveyard => {
+                    self.sacrifice_other_creatures_remember_graveyard(&item);
+                }
+                Instruction::ReturnGraveyardCreaturesToOwnersExceptRemembered => {
+                    self.return_graveyard_creatures_to_owners_except_remembered();
                 }
                 Instruction::ReturnGraveyardCreatures {
                     players,
@@ -6549,6 +6585,10 @@ impl Game {
                     self.start_controller_hand_permanent_deployment(&item);
                     return;
                 }
+                Instruction::DeployControllerHandCreatures => {
+                    self.start_controller_hand_creature_deployment(&item);
+                    return;
+                }
                 Instruction::DeployHandCreaturesEach => {
                     self.start_hand_deployment();
                     return;
@@ -6566,6 +6606,20 @@ impl Game {
                     if self.start_private_hand_discard_draw(&item) {
                         return;
                     }
+                }
+                Instruction::LookTargetHandMayExileUntilSourceLeaves => {
+                    if self.start_private_hand_exile_until_source_leaves(&item) {
+                        return;
+                    }
+                }
+                Instruction::TargetPlayerExilesHandCard => {
+                    if self.start_target_player_exiles_hand_card(&item) {
+                        return;
+                    }
+                }
+                Instruction::MayRevealHandSubtype { subtype, .. } => {
+                    self.start_optional_hand_reveal(&item, subtype);
+                    return;
                 }
                 Instruction::RevealTargetHandSubsetDiscard(amount) => {
                     if self.start_hand_subset_discard(&item, amount) {
@@ -7600,6 +7654,9 @@ impl Game {
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
                 Instruction::RequireAllAttacksUntilNextTurn => {
                     self.require_all_attacks_until_next_turn(item.controller);
+                }
+                Instruction::ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(players) => {
+                    self.prohibit_attacks_on_controller_or_planeswalkers_this_turn(&item, players);
                 }
                 Instruction::RestrictBlockerPower { group, minimum } => {
                     self.restrict_blocker_power(&item, group, minimum);

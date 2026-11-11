@@ -1303,6 +1303,8 @@ pub enum EffectChoiceKind {
     /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
     KeepSharedCreatureTypes,
+    /// The ability controller saves one qualifying creature per controlling player.
+    KeepCreaturesByPowerForEachPlayer(i128),
     /// Choose one legal controlled creature for the resolving Equipment source.
     EquipmentRecipient,
     /// Choose a controlled creature for one Equipment from the exact reflexive event.
@@ -1501,6 +1503,10 @@ pub enum EffectChoiceKind {
     ReturnGraveyardToHand {
         kinds: u16,
     },
+    /// Return any number up to the chosen effect's limit.
+    ReturnUpToGraveyardToHand {
+        kinds: u16,
+    },
     ReturnGraveyardToHandOrSubtype {
         kinds: u16,
         subtype: &'static str,
@@ -1614,9 +1620,8 @@ impl EffectChoiceKind {
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
             Self::SacrificeSelection => Self::Sacrifice,
             Self::ReturnTappedCreature => Self::ReturnToHand,
-            Self::ReturnGraveyardToHandOrSubtype { kinds, .. } => {
-                Self::ReturnGraveyardToHand { kinds }
-            }
+            Self::ReturnGraveyardToHandOrSubtype { kinds, .. }
+            | Self::ReturnUpToGraveyardToHand { kinds } => Self::ReturnGraveyardToHand { kinds },
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -3242,6 +3247,8 @@ pub enum Instruction {
         kinds: u16,
         amount: AmountValue,
     },
+    /// Choose one creature of at most this power per player when possible, then destroy the rest.
+    DestroyCreaturesExceptChosenByPower(i128),
     /// Destroy a simultaneous group using current toughness, optionally saving graveyard receipts.
     DestroyCreaturesByToughness {
         maximum: AmountValue,
@@ -3255,6 +3262,11 @@ pub enum Instruction {
     ChooseOwnGraveyardLandReturn {
         tapped: bool,
     },
+    /// Each player sacrifices all creatures they control except the exact source.
+    /// Remember the physical cards actually put into graveyards this way.
+    SacrificeOtherCreaturesRememberGraveyard,
+    /// Return each player's eligible cards simultaneously under their owners' control.
+    ReturnGraveyardCreaturesToOwnersExceptRemembered,
     ReturnGraveyardCreatures {
         players: PlayerSet,
         maximum_mana_value: u64,
@@ -3462,6 +3474,8 @@ pub enum Instruction {
     /// Exile creatures simultaneously and count only those actually exiled, including tokens.
     ExileAllCreaturesCount,
     DeployHandCreaturesEach,
+    /// The controller privately chooses any number of creature cards in hand.
+    DeployControllerHandCreatures,
     /// Privately choose any number of the resolving controller's hand permanents,
     /// then put the exact chosen cards onto the battlefield simultaneously.
     DeployHandPermanents,
@@ -3470,6 +3484,17 @@ pub enum Instruction {
     MayCounterSourceOtherwiseCast,
     /// Private look, optional exact card choice, then discard and a draw for that player.
     LookTargetHandMayDiscardThenDraw,
+    /// Inspect a targeted player's hand privately and optionally exile a nonland
+    /// card from it while the exact source remains on the battlefield.
+    LookTargetHandMayExileUntilSourceLeaves,
+    /// The targeted player chooses and exiles one card from their own hand.
+    TargetPlayerExilesHandCard,
+    /// Optionally reveal one card of this subtype from the controller's hand.
+    /// Declining skips the following instructions.
+    MayRevealHandSubtype {
+        subtype: &'static str,
+        skip: usize,
+    },
     RevealTargetHandSubsetDiscard(AmountValue),
     RevealTargetHandExileUntilSourceLeaves,
     RevealTargetHandExileLinked,
@@ -4489,6 +4514,8 @@ pub enum Instruction {
     /// Every creature must attack if able, preferring a player other than
     /// this effect's controller, until that controller's next turn.
     RequireAllAttacksUntilNextTurn,
+    /// The specified players can't attack this ability's controller or their planeswalkers this turn.
+    ProhibitAttacksOnControllerOrPlaneswalkersThisTurn(PlayerSet),
     /// Create the replacement-aware group, then register one departure clause
     /// if the exact original source is still on the battlefield.
     CreateTokensWithSourceDeparture {
@@ -4749,6 +4776,8 @@ pub enum AmountValue {
         reason = "Core quantity is scenario-tested while its consumer cards remain gated"
     )]
     DamageEventAmount,
+    /// The number of permanents the controller actually untapped in the triggering step.
+    UntapStepCount,
     DamageReceivedAmount,
     /// Total actual damage to the exact source incarnation during the current turn.
     SourceDamageReceivedThisTurn,
@@ -4939,6 +4968,8 @@ pub enum StatValue {
     /// Signed total power of the cards still exiled by this Craft.
     CraftMaterialPower,
     ControllerLife,
+    /// Whether this controller has the highest life total, including ties.
+    ControllerHasMostLife,
     /// Persistent player designation; zero means the controller has no speed.
     ControllerSpeed,
     /// Compare current land counts using the same actual or speculative world.
@@ -6595,6 +6626,8 @@ pub enum TriggerCondition {
     SelfAttacks,
     /// Capture the actual defending player for this exact attack declaration.
     SelfAttacksDefendingPlayer,
+    /// Declare this creature attacking a player whose life is highest, including ties.
+    SelfAttacksPlayerWithMostLife,
     /// Intervening equipped clause, with exact source-departure quantities.
     SelfAttacksIfEquipped,
     SelfAttacksOrBlocks,
@@ -6649,6 +6682,8 @@ pub enum TriggerCondition {
     AttachedAttacks,
     AttachedAttacksOrBlocks,
     SelfBecomesTapped,
+    /// The controller untapped at least one permanent during their untap step.
+    OwnUntapStepUntaps,
     /// One event after the complete simultaneous tap group, using post-event types.
     ControlledCreaturesBecomeTapped,
     /// One actual simultaneous tap group, including noncreature permanents of the subtype.
