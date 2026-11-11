@@ -448,7 +448,7 @@ fn hellspur_brute_counts_each_controlled_outlaw_only_once() {
         Zone::Battlefield,
     );
     let brute = put(&mut game, player, "Hellspur Brute", Zone::Hand);
-    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 1];
     reject(&mut game, Action::AnnounceCast { card: brute });
     game.state.players[player.index()].mana[5] += 1;
     cast(&mut game, brute, None);
