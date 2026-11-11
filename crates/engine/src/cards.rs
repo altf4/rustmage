@@ -4760,6 +4760,8 @@ pub enum StatValue {
     Not(&'static StatValue),
     CardsDrawnThisTurn,
     PermanentsSacrificedThisTurn,
+    /// Actual permanent card arrivals in this player's graveyard this turn.
+    DescendedThisTurn,
     ControllerHandSize,
     /// Number of distinct basic land types among lands the controller controls.
     ControllerDomain,
@@ -4846,6 +4848,8 @@ pub enum StatValue {
     Colors(CountFilter),
     CardTypes(CountFilter),
     GraveyardCardTypes,
+    /// Distinct permanent card types in this player's graveyard.
+    GraveyardPermanentTypes,
     /// Number of complete positive-sized groups in a nonnegative quantity.
     GroupsOf {
         value: &'static StatValue,
@@ -5199,6 +5203,8 @@ impl PlayerCounterKind {
 /// Card-type bit reserved for battles.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(crate) const BATTLE_KIND: u16 = 256;
+
+pub(crate) const PERMANENT_KINDS: u16 = 1 | 2 | 16 | 32 | 64 | BATTLE_KIND;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -6808,6 +6814,10 @@ pub enum ActivationGuard {
     ControlCreatureToughnessAtLeast(u16),
     SourceEnteredOrControlsBasicLand,
     HandSizeAtLeast(u16),
+    StatAtLeast {
+        value: StatValue,
+        minimum: u16,
+    },
     GraveyardCardsAtLeast {
         kind: u16,
         minimum: u16,
@@ -6836,6 +6846,7 @@ impl ActivationGuard {
             | Self::ControlCreatureToughnessAtLeast(_)
             | Self::SourceEnteredOrControlsBasicLand
             | Self::HandSizeAtLeast(_)
+            | Self::StatAtLeast { .. }
             | Self::GraveyardCardsAtLeast { .. }
             | Self::LifeAboveStarting(_) => &[],
             Self::ControlSubtypeAny(types) => types,

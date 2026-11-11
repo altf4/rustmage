@@ -1439,6 +1439,7 @@ struct PlayerState {
     cards_discarded_this_turn: u64,
     permanents_sacrificed_this_turn: u64,
     cards_library_to_graveyard_this_turn: u64,
+    descended_this_turn: u64,
     card_left_graveyard_this_turn: bool,
     controlled_creature_died_this_turn: bool,
     controlled_creatures_died_this_turn: u64,
@@ -4260,6 +4261,7 @@ impl Game {
             cards_discarded_this_turn: 0,
             permanents_sacrificed_this_turn: 0,
             cards_library_to_graveyard_this_turn: 0,
+            descended_this_turn: 0,
             card_left_graveyard_this_turn: false,
             controlled_creature_died_this_turn: false,
             controlled_creatures_died_this_turn: 0,
@@ -10495,6 +10497,16 @@ impl Game {
             self.record_nonland_entry(owner, id, self.current_kinds(id));
         } else if destination == Zone::Graveyard {
             self.register_graveyard_sources(id);
+            let card = &self.state.objects[id as usize];
+            // Read the physical card after the move. Each meld component
+            // follows this commit path and records its own arrival.
+            if before.zone != Zone::Graveyard
+                && card.is_card()
+                && card.card.kind_mask() & crate::cards::PERMANENT_KINDS != 0
+            {
+                let count = &mut self.state.players[card.owner.index()].descended_this_turn;
+                *count = count.checked_add(1).capacity("descended history exhausted");
+            }
         }
         if (manifested_physical.is_some() || disguised_spell.is_some()) && destination == Zone::Hand
         {
@@ -10777,6 +10789,7 @@ impl Game {
             player.cards_discarded_this_turn = 0;
             player.permanents_sacrificed_this_turn = 0;
             player.cards_library_to_graveyard_this_turn = 0;
+            player.descended_this_turn = 0;
             player.card_left_graveyard_this_turn = false;
             player.controlled_creature_died_this_turn = false;
             player.controlled_creatures_died_this_turn = 0;

@@ -480,6 +480,9 @@ impl Game {
                     graveyard_left,
                 ) >= i128::from(minimum),
             ),
+            StatValue::DescendedThisTurn => {
+                i128::from(self.state.players[owner.index()].descended_this_turn)
+            }
             StatValue::PermanentsSacrificedThisTurn => {
                 i128::from(self.state.players[owner.index()].permanents_sacrificed_this_turn)
             }
@@ -630,6 +633,12 @@ impl Game {
                     total.checked_add(i128::from(mana_value(id)))
                 })
                 .capacity("total mana value exhausted"),
+            StatValue::GraveyardPermanentTypes => objects()
+                .filter(|(_, o)| o.zone == Zone::Graveyard && o.owner == owner && o.is_card())
+                .fold(0u16, |mask, (id, o)| {
+                    mask | (kinds(id, o) & crate::cards::PERMANENT_KINDS)
+                })
+                .count_ones() as i128,
             StatValue::GraveyardCardTypes => objects()
                 .filter(|(_, o)| o.zone == Zone::Graveyard && o.is_card())
                 .fold(0u16, |mask, (_, o)| mask | o.card.kind_mask())

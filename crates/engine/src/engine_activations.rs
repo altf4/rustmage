@@ -322,6 +322,9 @@ impl Game {
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }
+            ActivationGuard::StatAtLeast { value, minimum } => {
+                self.stat_value(value, self.object_ref(source), actor) >= i128::from(minimum)
+            }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 graveyard_cards_at_least(self, actor, kind, minimum)
             }

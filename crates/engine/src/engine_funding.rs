@@ -1691,6 +1691,11 @@ impl<'g> FundingState<'g> {
             ActivationGuard::ControlCreatureToughnessAtLeast(minimum) => {
                 activations::controls_tough_creature(self, actor, minimum)
             }
+            ActivationGuard::StatAtLeast { value, minimum } => {
+                self.game
+                    .stat_value_in_world(self, value, self.reference(source), actor)
+                    >= i128::from(minimum)
+            }
             ActivationGuard::GraveyardCardsAtLeast { kind, minimum } => {
                 activations::graveyard_cards_at_least(self, actor, kind, minimum)
             }
