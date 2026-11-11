@@ -221,3 +221,38 @@ fn pitiless_carnage_counts_actual_sacrifices_including_lands_and_tokens() {
     assert!(tokens(&game, player, TREASURE).is_empty());
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
 }
+
+#[test]
+fn each_intrinsic_plot_route_charges_the_printed_color_and_generic_cost() {
+    let player = Player::P0;
+    for (name, payment) in [
+        ("Outcaster Trailblazer", [0, 0, 0, 0, 1, 2]),
+        ("Outlaw Stitcher", [0, 1, 0, 0, 0, 4]),
+        ("Pillage the Bog", [0, 0, 1, 0, 1, 1]),
+        ("Pitiless Carnage", [0, 0, 2, 0, 0, 1]),
+        ("Plan the Heist", [0, 1, 0, 0, 0, 3]),
+        ("Railway Brawler", [0, 0, 0, 0, 1, 3]),
+        ("Rictus Robber", [0, 0, 1, 0, 0, 2]),
+        ("Rise of the Varmints", [0, 0, 0, 0, 1, 2]),
+    ] {
+        let mut game = scenario(player);
+        let card = hand(&mut game, player, name);
+        game.state.players[player.index()].mana = payment;
+        let begin = Action::AnnouncePlot { card };
+        let mut underfunded = game.clone();
+        underfunded.state.players[player.index()].mana[5] -= 1;
+        reject(&mut underfunded, begin.clone());
+        act(&mut game, begin);
+        let pay = Action::PayPlot { payment };
+        assert!(has(&game, &pay), "{name}");
+        assert!(game.observe(player.other()).plot_payment.is_none());
+        act(&mut game, pay);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6], "{name}");
+        assert_eq!(
+            game.observe(player.other()).plotted_cards[0].object,
+            game.object_ref(card)
+        );
+        assert_eq!(game.state.players[player.index()].spells_cast_this_turn, 0);
+        reject(&mut game, Action::AnnouncePlotted { card });
+    }
+}

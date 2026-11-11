@@ -298,3 +298,22 @@ fn rush_of_dread_resolves_its_three_modes_in_order_and_rounds_all_counts_up() {
     assert_eq!(zone(&game, cards[2]), Zone::Hand);
     assert_eq!(life(&game, opponent), 10);
 }
+
+#[test]
+fn return_the_favor_can_copy_an_activation_whose_source_was_sacrificed() {
+    let active = Player::P0;
+    let player = active.other();
+    let mut game = scenario(active);
+    let lackey = board(&mut game, active, "Reckless Lackey");
+    activate(&mut game, lackey, 0, &[]);
+    assert_eq!(zone(&game, lackey), Zone::Graveyard);
+    let ability = game.state.stack.last().unwrap().id;
+    act(&mut game, Action::Pass);
+    let favor = hand(&mut game, player, "Return the Favor");
+    modal(&mut game, favor, 0, &[Target::Stack(ability)]);
+    quiet(&mut game);
+    for seat in [active, player] {
+        assert_eq!(tokens(&game, seat, TREASURE).len(), 1);
+        assert_eq!(game.state.players[seat.index()].cards_drawn_this_turn, 1);
+    }
+}
