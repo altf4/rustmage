@@ -12253,6 +12253,9 @@ impl Game {
                 Instruction::ReturnToBattlefieldAsSkeletonWithoutAbilities => {
                     self.return_targets_as_skeletons(&item);
                 }
+                Instruction::DestroyTargetsUnlessGreaterCreaturePower => {
+                    self.destroy_targets_unless_greater_creature_power(&item);
+                }
                 Instruction::DestroyTargetsAtMostPower(maximum) => {
                     let targets: Vec<_> = item
                         .targets

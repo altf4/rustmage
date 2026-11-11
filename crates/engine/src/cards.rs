@@ -4743,6 +4743,8 @@ pub enum Instruction {
     /// The exact permanent that caused the ability to trigger, without targeting it.
     DestroyEventPermanent,
     DestroyTargetsAtMostPower(i32),
+    /// Recheck whether any current creature has more power than the exact target.
+    DestroyTargetsUnlessGreaterCreaturePower,
     /// Choose and remove up to this many counters from one targeted permanent.
     RemoveUpToTargetCounters(u16),
     RemoveAnyTargetCounters,
