@@ -1065,6 +1065,7 @@ define_actions! {
     AnnounceExileFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
+    AnnounceGrantedZeroFlashback { card: CardId, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
     ChooseResolutionCost { index: u16 },
@@ -1542,6 +1543,7 @@ pub enum CastMethod {
     ExileLife,
     Airbend,
     GrantedFlashback,
+    GrantedZeroFlashback,
     Flashback,
     Harmonize,
     GrantedHarmonize,
@@ -1556,6 +1558,13 @@ pub enum CastMethod {
     LibraryLife,
 }
 impl CastMethod {
+    fn is_flashback(self) -> bool {
+        matches!(
+            self,
+            Self::Flashback | Self::GrantedFlashback | Self::GrantedZeroFlashback
+        )
+    }
+
     fn pays_life_for_mana_value(self) -> bool {
         matches!(self, Self::ExileLife | Self::LibraryLife)
     }
@@ -6360,22 +6369,9 @@ impl Game {
                                 }
                             }
                         }
-                        if self.has_graveyard_cast(actor, card, GraveyardCastKind::Flashback) {
-                            for flash_surcharge in [false, true] {
-                                if self.permitted_cast_available(
-                                    actor,
-                                    card,
-                                    CastMethod::GrantedFlashback,
-                                    CastFace::Normal,
-                                    sorcery,
-                                    flash_surcharge,
-                                ) && emit(Action::AnnounceGrantedFlashback {
-                                    card,
-                                    flash_surcharge,
-                                }) {
-                                    return true;
-                                }
-                            }
+                        if self.visit_granted_flashback_casts(actor, card, sorcery, true, &mut emit)
+                        {
+                            return true;
                         }
                     }
                     if !casting_prohibited
@@ -7963,12 +7959,41 @@ impl Game {
             Action::AnnounceGrantedFlashback {
                 card,
                 flash_surcharge,
+            }
+            | Action::AnnounceGrantedZeroFlashback {
+                card,
+                flash_surcharge,
             } => {
-                let mut item = self.cast_item(actor, card, [0; 6]);
-                item.cast.as_mut().unwrap().method = CastMethod::GrantedFlashback;
-                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-                self.state.objects[card as usize].flashback = true;
-                self.open_payment_announcement(item, Counters::default(), None);
+                let method = if matches!(action, Action::AnnounceGrantedZeroFlashback { .. }) {
+                    CastMethod::GrantedZeroFlashback
+                } else {
+                    CastMethod::GrantedFlashback
+                };
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
+                    self.cast_during_resolution_with_cost(
+                        actor,
+                        self.object_ref(card),
+                        CastFace::Normal,
+                        Some(method),
+                    );
+                } else {
+                    let mut item = self.cast_item(actor, card, [0; 6]);
+                    let cast = item.cast.as_mut().unwrap();
+                    cast.method = method;
+                    cast.flash_surcharge = flash_surcharge;
+                    if method == CastMethod::GrantedZeroFlashback
+                        && item
+                            .source
+                            .expect("flashback spell has a source")
+                            .card
+                            .x_symbols()
+                            > 0
+                    {
+                        item.x = Some(0);
+                    }
+                    self.state.objects[card as usize].flashback = true;
+                    self.open_payment_announcement(item, Counters::default(), None);
+                }
             }
             Action::AnnounceAirbend {
                 card,

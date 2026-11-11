@@ -1102,6 +1102,12 @@ impl Game {
                 }
                 if paid_graveyard
                     && face == CastFace::Normal
+                    && self.visit_granted_flashback_casts(player, object.card, true, false, emit)
+                {
+                    return true;
+                }
+                if paid_graveyard
+                    && face == CastFace::Normal
                     && physical.harmonize_cost().is_some()
                     && self.state.objects[object.card as usize].owner == player
                     && self.permitted_cast_available(
@@ -1220,12 +1226,16 @@ impl Game {
             });
         if matches!(
             method,
-            CastMethod::Free | CastMethod::Miracle | CastMethod::Flashback | CastMethod::Mayhem
+            CastMethod::Free
+                | CastMethod::Miracle
+                | CastMethod::Flashback
+                | CastMethod::GrantedZeroFlashback
+                | CastMethod::Mayhem
         ) && item.source.expect("cast spell has source").card.x_symbols() > 0
         {
             item.x = Some(0);
         }
-        if method == CastMethod::Flashback {
+        if method.is_flashback() {
             self.state.objects[object.card as usize].flashback = true;
         }
         self.remember_suspend_cast(object, item.id);

@@ -5785,7 +5785,11 @@ impl Game {
             && a.item.cast.is_some_and(|c| {
                 matches!(
                     c.method,
-                    CastMethod::Free | CastMethod::Plot | CastMethod::Miracle | CastMethod::Airbend
+                    CastMethod::Free
+                        | CastMethod::Plot
+                        | CastMethod::Miracle
+                        | CastMethod::Airbend
+                        | CastMethod::GrantedZeroFlashback
                 )
             })
         {

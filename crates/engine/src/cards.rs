@@ -203,7 +203,10 @@ pub enum GraveyardCastKind {
     Cast,
     /// Cast only this exact physical card's Adventure spell.
     Adventure,
+    /// This exact card gains flashback for its printed mana cost until cleanup.
     Flashback,
+    /// This exact card gains flashback for {0} until cleanup.
+    FlashbackZero,
     /// This exact card gains harmonize with its printed mana cost until cleanup.
     Harmonize,
 }

@@ -368,6 +368,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFreeFromPermission { .. }
             | Action::AnnounceFree { .. }
             | Action::AnnounceGrantedFlashback { .. }
+            | Action::AnnounceGrantedZeroFlashback { .. }
             | Action::AnnounceGrantedHarmonize { .. }
             | Action::AnnounceCounterGraveyard { .. }
             | Action::AnnounceGraveyardAdditionalCosts { .. }

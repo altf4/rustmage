@@ -260,12 +260,10 @@ impl Game {
                         | CastMethod::LibraryLife
                         | CastMethod::Plot
                         | CastMethod::Free
+                        | CastMethod::GrantedZeroFlashback
                 )
             }) {
-                return ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                };
+                return ManaCost::ZERO;
             }
             if a.item
                 .cast

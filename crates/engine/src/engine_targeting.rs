@@ -163,10 +163,8 @@ impl Announcement {
             CastMethod::ExileLife
             | CastMethod::LibraryLife
             | CastMethod::Free
-            | CastMethod::Plot => Some(ManaCost {
-                colored: [0; 6],
-                generic: 0,
-            }),
+            | CastMethod::Plot
+            | CastMethod::GrantedZeroFlashback => Some(ManaCost::ZERO),
             _ => None,
         })
     }
@@ -258,6 +256,7 @@ impl Announcement {
                     | CastMethod::Airbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::GrantedZeroFlashback
                     | CastMethod::Miracle
                     | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
@@ -531,14 +530,11 @@ impl Announcement {
                             | CastMethod::LibraryLife
                             | CastMethod::Plot
                             | CastMethod::Free
+                            | CastMethod::GrantedZeroFlashback
                     )
                 }) =>
             {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 0,
-                })
-                .chain([].iter().copied())
+                std::iter::once(ManaCost::ZERO).chain([].iter().copied())
             }
             StackKind::Spell => self
                 .item
@@ -3582,6 +3578,7 @@ impl Game {
                             && matches!(
                                 row.kind,
                                 crate::cards::GraveyardCastKind::Flashback
+                                    | crate::cards::GraveyardCastKind::FlashbackZero
                                     | crate::cards::GraveyardCastKind::Harmonize
                             )
                             && row.available_at(self.state.turn)
