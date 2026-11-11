@@ -2,7 +2,7 @@
 mod support;
 
 use rustmage as _;
-use rustmage_core::cards::authored::CardRules;
+use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -11,6 +11,10 @@ const REPEAT_BLINK: CardRules = CardRules {
         TargetPlan::NONE,
         &[Instruction::BlinkControlledCreaturesRepeated],
     ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
 
@@ -111,7 +115,7 @@ fn hidden_hand_group_enters_simultaneously_then_current_power_is_sampled() {
     let p = Player::P1;
     let mut g = scenario(p);
     put(&mut g, p, "Hill Giant", Zone::Battlefield);
-    let large = put(&mut g, p, "Colossal Dreadmaw", Zone::Hand);
+    let large = put(&mut g, p, "Daring Thunder-Thief", Zone::Hand);
     let small = put(&mut g, p, "Healer's Hawk", Zone::Hand);
     let land = put(&mut g, p, "Forest", Zone::Hand);
     let spell = put(&mut g, p, "Opt", Zone::Hand);
