@@ -522,6 +522,11 @@ impl Game {
             StatValue::CommittedCrimeThisTurn => {
                 i128::from(self.state.players[owner.index()].committed_crime_this_turn)
             }
+            StatValue::SpellsCastAfterFirstThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .spells_cast_this_turn
+                    .saturating_sub(1),
+            ),
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
             }
@@ -876,6 +881,7 @@ impl Game {
             | AmountValue::TappedCostCreaturePower
             | AmountValue::ChosenCostCreaturePower
             | AmountValue::TargetCreaturePower
+            | AmountValue::EnteringCreaturePower
             | AmountValue::SourceLastKnownPower
             | AmountValue::SacrificedToughness
             | AmountValue::SourcePower

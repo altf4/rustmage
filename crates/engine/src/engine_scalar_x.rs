@@ -623,6 +623,10 @@ impl Game {
                     .and_then(|facts| facts.iter().find(|f| f.group == r.target_group))
                     .map_or(0, |f| f.power.max(0) as u128)
             }
+            AmountValue::EnteringCreaturePower => self
+                .entering_subject(item)
+                .filter(|&id| self.is_creature(id))
+                .map_or(0, |id| self.stats(id).power.max(0) as u128),
             AmountValue::SourceLastKnownPower => item
                 .source
                 .filter(|source| source.facts.is_creature())

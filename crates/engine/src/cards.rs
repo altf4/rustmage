@@ -4223,6 +4223,11 @@ pub enum Instruction {
         filters: &'static [BattlefieldFilter],
         keywords: Keywords,
     },
+    /// Freeze the selected players' current creatures and remove these keywords until cleanup.
+    RemovePlayerCreatureKeywords {
+        players: PlayerSet,
+        keywords: Keywords,
+    },
     /// Grant target land colorless mana until the paid exiled source is cast.
     GrantLandManaUntilSourceCast,
     UntapPlayerCreatures(PlayerSet),
@@ -4644,6 +4649,12 @@ pub enum Instruction {
         ability: u16,
     },
     /// Place counters simultaneously on the current controlled tapped creatures.
+    /// One counter-placement batch for exact creatures that entered this turn.
+    PutCountersOnEnteredCreatures {
+        players: PlayerSet,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCountersOnTappedControlledCreatures {
         kind: CounterKind,
         amount: u32,
@@ -5046,6 +5057,8 @@ pub enum AmountValue {
     SacrificeCostManaValueWithBonus(u16),
     /// Frozen at the beginning of resolution, before target destruction.
     TargetCreaturePower,
+    /// Nonnegative current power of the same entering creature, or zero after it leaves.
+    EnteringCreaturePower,
     /// Battlefield mana value recorded by paying a sacrifice cost during this resolution.
     ResolutionSacrificedManaValue,
     /// Exact pre-event source facts for a death trigger, never a new incarnation.
@@ -5193,6 +5206,8 @@ pub enum StatValue {
         minimum: u16,
     },
     SpellsCastThisTurn,
+    /// Committed casts this turn excluding the first, independent of the resolving packet.
+    SpellsCastAfterFirstThisTurn,
     CreatureSpellsCastThisTurn,
     /// Count of this player's committed noncreature spell casts this turn.
     NoncreatureSpellsCastThisTurn,

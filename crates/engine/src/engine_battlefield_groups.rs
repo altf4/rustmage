@@ -139,8 +139,17 @@ impl Game {
         let Some(source) = item.source else {
             return;
         };
-        let keywords = keywords.without(keywords.resolution_rules());
         let recipients = self.battlefield_group(item, filters);
+        self.remove_group_keywords(source.object, recipients, keywords);
+    }
+
+    pub(super) fn remove_group_keywords(
+        &mut self,
+        source: ObjectRef,
+        recipients: Vec<CardId>,
+        keywords: Keywords,
+    ) {
+        let keywords = keywords.without(keywords.resolution_rules());
         if recipients.is_empty() || keywords == Keywords::NONE {
             return;
         }
@@ -154,9 +163,7 @@ impl Game {
                 .keyword_effects
                 .push(KeywordEffectView {
                     recipient,
-                    origin: KeywordEffectOrigin::ResolutionRemoval {
-                        source: source.object,
-                    },
+                    origin: KeywordEffectOrigin::ResolutionRemoval { source },
                     keywords,
                     rules: Keywords::NONE,
                     timestamp,

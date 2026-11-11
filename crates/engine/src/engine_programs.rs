@@ -10412,6 +10412,12 @@ impl Game {
                 Instruction::RemovePermanentGroupKeywords { filters, keywords } => {
                     self.remove_permanent_group_keywords(&item, filters, keywords);
                 }
+                Instruction::RemovePlayerCreatureKeywords { players, keywords } => {
+                    if let Some(source) = item.source {
+                        let recipients = self.player_creature_recipients(players, &item);
+                        self.remove_group_keywords(source.object, recipients, keywords);
+                    }
+                }
                 Instruction::UntapControlledLands => {
                     let ids: Vec<_> = self
                         .state
@@ -11596,6 +11602,20 @@ impl Game {
                             self.set_counters(id, Counters::default());
                         }
                     }
+                }
+                Instruction::PutCountersOnEnteredCreatures {
+                    players,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .player_creature_recipients(players, &item)
+                        .into_iter()
+                        .map(|id| self.object_ref(id))
+                        .filter(|&object| self.entered_this_turn(object))
+                        .map(|object| (object, Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::PutCountersOnTappedControlledCreatures { kind, amount } => {
                     let changes = (0..self.state.objects.len())
