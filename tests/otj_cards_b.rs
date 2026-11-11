@@ -93,7 +93,15 @@ fn blood_hustler_and_bandits_haul_trigger_once_each_from_paid_activations() {
     assert!(mana.object_view(haul).tapped);
     game.add_counter(haul, CounterKind::Loot, 1);
     let drawn = game.state.players[player.index()].cards_drawn_this_turn;
-    activate(&mut game, haul, 1, &[], &[]);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: haul,
+            ability: 1,
+            counter_payment: Counters::of(CounterKind::Loot, 2),
+        },
+    );
+    pay(&mut game);
     resolve(&mut game);
     assert_eq!(game.counter_count(haul, CounterKind::Loot), 0);
     assert_eq!(

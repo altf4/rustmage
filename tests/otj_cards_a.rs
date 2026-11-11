@@ -78,7 +78,7 @@ fn akul_requires_three_other_creatures_and_an_exact_optional_hand_choice() {
     reject(&mut game, Action::PutHandCreature { object: land });
     assert!(game.observe(player.other()).effect_choice.is_none());
     let mut decline = game.clone();
-    act(&mut decline, Action::FinishHandSelection);
+    act(&mut decline, Action::FinishEffectChoice);
     assert_eq!(decline.object_view(from_hand).zone, Zone::Hand);
     act(&mut game, Action::PutHandCreature { object: deployed });
     assert_eq!(game.object_view(from_hand).zone, Zone::Battlefield);
@@ -263,6 +263,7 @@ fn archangel_taxes_player_and_planeswalker_attacks_and_each_blocker_while_attack
     let mut game = scenario(player);
     let archangel = put(&mut game, player, "Archangel of Tithes", Zone::Battlefield);
     let blocker = put(&mut game, enemy, "Healer's Hawk", Zone::Battlefield);
+    put(&mut game, enemy, "Plains", Zone::Battlefield);
     game.state.step = Step::Attackers;
     game.state.pending = Pending::Attackers;
     act(&mut game, Action::Attack { card: archangel });

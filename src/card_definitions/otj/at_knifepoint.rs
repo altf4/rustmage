@@ -1,24 +1,28 @@
-const fn first_strike(subtype: &'static str, slot: u16) -> StaticAbilityFragment {
-    StaticAbilityFragment::KeywordGrant(
-        slot,
-        KeywordGrant {
-            condition: None,
-            requires_life_gain: false,
-            filter: CreatureFilter {
-                relation: 0,
-                other: false,
-                subtype: Some(subtype),
-                keyword: Keywords::NONE,
-                attacking: false,
-                tokens: None,
-                artifact: false,
-            },
-            source_only: false,
-            own_turn: true,
-            keywords: Keywords::FIRST_STRIKE,
+const fn first_strike(subtype: &'static str) -> KeywordGrant {
+    KeywordGrant {
+        condition: None,
+        requires_life_gain: false,
+        filter: CreatureFilter {
+            relation: 0,
+            other: false,
+            subtype: Some(subtype),
+            keyword: Keywords::NONE,
+            attacking: false,
+            tokens: None,
+            artifact: false,
         },
-    )
+        source_only: false,
+        own_turn: true,
+        keywords: Keywords::FIRST_STRIKE,
+    }
 }
+const GRANTS: &[KeywordGrant] = &[
+    first_strike(OUTLAW_SUBTYPES[0]),
+    first_strike(OUTLAW_SUBTYPES[1]),
+    first_strike(OUTLAW_SUBTYPES[2]),
+    first_strike(OUTLAW_SUBTYPES[3]),
+    first_strike(OUTLAW_SUBTYPES[4]),
+];
 
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Permanent,
@@ -26,11 +30,11 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         line: 0,
         first_layer: AbilityLayer::Ability,
         fragments: &[
-            first_strike(OUTLAW_SUBTYPES[0], 0),
-            first_strike(OUTLAW_SUBTYPES[1], 1),
-            first_strike(OUTLAW_SUBTYPES[2], 2),
-            first_strike(OUTLAW_SUBTYPES[3], 3),
-            first_strike(OUTLAW_SUBTYPES[4], 4),
+            StaticAbilityFragment::KeywordGrant(0, GRANTS[0]),
+            StaticAbilityFragment::KeywordGrant(1, GRANTS[1]),
+            StaticAbilityFragment::KeywordGrant(2, GRANTS[2]),
+            StaticAbilityFragment::KeywordGrant(3, GRANTS[3]),
+            StaticAbilityFragment::KeywordGrant(4, GRANTS[4]),
         ],
     }],
     triggers: &[TriggeredAbility {
@@ -42,5 +46,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             tapped: false,
         }],
     }],
+    extras: &CardExtras {
+        keyword_grants: GRANTS,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
