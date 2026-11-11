@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "322e53c2d88b233d546cc88cb4cb1cf3e46d792c1af385c5d8eb91558b948653",
+  "catalogue_version": "613fa932df2da3fa3e5820b85a22ebc078ec12a6660942ecd5af80f1f4a66dd1",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4127,
-  "implemented_total": 4139,
+  "implemented_standard_cards": 4135,
+  "implemented_total": 4147,
   "token_definitions": 186,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -96,8 +96,8 @@
     },
     "lci": {
       "total": 273,
-      "gated": 170,
-      "complete": 103
+      "gated": 162,
+      "complete": 111
     },
     "m19": {
       "total": 2,
@@ -16393,16 +16393,16 @@
     {
       "name": "Hidden Cataract",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hidden_cataract.rs",
       "set": "lci"
     },
     {
       "name": "Hidden Courtyard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hidden_courtyard.rs",
       "set": "lci"
     },
@@ -16425,24 +16425,24 @@
     {
       "name": "Hidden Necropolis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hidden_necropolis.rs",
       "set": "lci"
     },
     {
       "name": "Hidden Nursery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hidden_nursery.rs",
       "set": "lci"
     },
     {
       "name": "Hidden Volcano",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/hidden_volcano.rs",
       "set": "lci"
     },
@@ -30889,8 +30889,8 @@
     {
       "name": "Shipwreck Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/shipwreck_sentry.rs",
       "set": "lci"
     },
@@ -36617,16 +36617,16 @@
     {
       "name": "Thousand Moons Crackshot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/thousand_moons_crackshot.rs",
       "set": "lci"
     },
     {
       "name": "Thousand Moons Infantry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/lci/thousand_moons_infantry.rs",
       "set": "lci"
     },

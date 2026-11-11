@@ -3,10 +3,51 @@
   "catalogue_id": 3837,
   "oracle_id": "f05575f8-4961-4780-83fc-3584d9146a14",
   "facts_sha256": "9bc771781287f9aa1c6b8c5763b35b156f6f9564ead32f83acf3b002b592d3d7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3642f6861c345c97afc0de2e3d0f1f65fcb7777b5be90623cd263d2021308273"
   },
-  "physical_metadata_sha256": "b1baa56e8fd0e326ea4242f08390533b373c8699a0c2aca2cddc5baabedb4b7d"
+  "physical_metadata_sha256": "b1baa56e8fd0e326ea4242f08390533b373c8699a0c2aca2cddc5baabedb4b7d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShipwreckSentry.java",
+  "java_sha256": "2ee3562178034da7421a5f13689f709a63dc5629df5945ecd8b7f5be31fab75e",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/condition/common/ArtifactEnteredUnderYourControlCondition.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "dd5f36d0ec21da7009bb16253902186e50db2e60aa79c99584b8f368f8d9886d"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalAsThoughEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "40e0a82ae35b35c5434d1eb480e46ecff91ca69113a8cbc8e606dd1328bba618"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/hint/ConditionHint.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "272def725fb6168ac551239c85a0c7b4908d18ac1f51092cd7a5fd2e77e6d6ce"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    },
+    {
+      "path": "Mage/src/main/java/mage/watchers/common/ArtifactEnteredControllerWatcher.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a1f364da559cfe59d73e34963271cd4aebcb3780e727886dfcd56b57926b3339"
+    }
+  ],
+  "rules_tests": "tests/lci_cards_s_z_combat.rs"
 }
