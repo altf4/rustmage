@@ -3,10 +3,41 @@
   "catalogue_id": 1600,
   "oracle_id": "d37e0127-6f68-438e-8b9e-a71bb3c34733",
   "facts_sha256": "0fad0b23fe129c98727044421fea2d90f00263438c07b81cbe75708e13fa32ef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c25044ee0b3c143f98bd85b8b5914e6fecfea34a12cd96d73e49507aff28759"
   },
-  "physical_metadata_sha256": "6874282aa8e1845eddc36e0a1b9447bf7d3bf57f181e1a2669ff11866e3a4cd3"
+  "physical_metadata_sha256": "6874282aa8e1845eddc36e0a1b9447bf7d3bf57f181e1a2669ff11866e3a4cd3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/ForsakenMiner.java",
+  "java_sha256": "f7b9dce27473c7f8ba88be609b3275c3b95ba5a917a89dd817d4e81f358b4f18",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/CommittedCrimeTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "a8302c1bc025c75fc4a3a2063e2c0b44d41c3b51b6d063559e20b7a52c9203a7"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "16cae19ce2e7af02a635cb76afbd5f1139e792df2170daa35f5692a12412f54b"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }

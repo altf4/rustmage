@@ -1,18 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const TREASURE: Card = Card::from_catalogue_id(5302);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(0, 0),
+    keywords: Keywords::VIGILANCE
+        .union(Keywords::TRAMPLE)
+        .union(Keywords::HASTE),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTokensScaled {
+            token: TREASURE,
+            amount: AmountValue::SourcePower,
+            tapped: true,
+        }],
+    }],
+    extras: &CardExtras {
+        x_symbols: 1,
+        x_entry_counters: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::HASTE
-        .union(Keywords::VIGILANCE)
-        .union(Keywords::TRAMPLE),
     ..CardRules::EMPTY
 };

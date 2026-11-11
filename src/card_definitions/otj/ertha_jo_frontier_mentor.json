@@ -3,10 +3,41 @@
   "catalogue_id": 1363,
   "oracle_id": "0a66ce8b-af99-411f-8ecb-52a5d2f6af3d",
   "facts_sha256": "ef2884919db7319e450e5029a22d3f54850887fa7301256ce92d224b50b73bde",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aa2fc8c084302e7a7d962e4a759636203e937319c81e155803be5ce867cb8972"
   },
-  "physical_metadata_sha256": "783cd7614dafcc6de0c726e07534be604314c6cccd66976284cb3d1f090b9444"
+  "physical_metadata_sha256": "783cd7614dafcc6de0c726e07534be604314c6cccd66976284cb3d1f090b9444",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ErthaJoFrontierMentor.java",
+  "java_sha256": "4461d5753803facd2abb74901fa029035e70f69fc1dab543d65711c4f7d03313",
+  "xmage_dependencies": [
+    {
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyStackObjectEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ced1d8312809beaec71b62e4a4fafd1291d6b1b5ce3d4cd6322bd56253e694b0"
+    },
+    {
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTarget.java",
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "sha256": "ca18f88e54fc4900ca4ccf7f677caba3a537fcfb5a6cf598a8368640a46ee3dd"
+    }
+  ],
+  "rules_tests": "tests/otj_cards_e_g.rs"
 }
