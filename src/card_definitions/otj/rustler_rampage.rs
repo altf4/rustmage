@@ -36,5 +36,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         },
     ]),
     mode_costs: Some(&[generic(1), generic(1), generic(2)]),
+    mode_counts: Some(&[1, 1, 2]),
     ..CardRules::EMPTY
 };

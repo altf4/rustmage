@@ -81,5 +81,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     },
     entry: EntryTapped::Never,
     keywords: Keywords::NONE,
+    mode_counts: Some(&[1, 1, 2]),
     ..CardRules::EMPTY
 };

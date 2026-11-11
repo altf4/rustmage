@@ -97,5 +97,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[Instruction::ReturnAllTargetsToHand],
         },
     ]),
+    mode_counts: Some(&[0, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]),
     ..CardRules::EMPTY
 };

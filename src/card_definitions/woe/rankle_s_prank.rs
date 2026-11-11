@@ -56,5 +56,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[DISCARD, LOSE_LIFE, SACRIFICE],
         },
     ]),
+    mode_counts: Some(&[1, 1, 2, 1, 2, 2, 3]),
     ..CardRules::EMPTY
 };

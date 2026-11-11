@@ -37,5 +37,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             program: &[HUMAN, FOOD],
         },
     ]),
+    mode_counts: Some(&[2; 3]),
     ..CardRules::EMPTY
 };

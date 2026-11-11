@@ -43,5 +43,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         spell_cannot_be_copied: true,
         ..CardExtras::EMPTY
     },
+    mode_counts: Some(&[1, 1, 2]),
     ..CardRules::EMPTY
 };

@@ -232,5 +232,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             ],
         },
     ]),
+    mode_counts: Some(&[0, 1, 2, 3, 4, 1, 2, 3, 4, 2, 3, 4, 3, 4, 4]),
     ..CardRules::EMPTY
 };
