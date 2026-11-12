@@ -677,7 +677,7 @@ impl Announcement {
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .map(|cost| {
+            .map(move |cost| {
                 let evoked = source_mana_alternative.is_none()
                     && self.item.cast.is_some_and(|c| {
                         matches!(
