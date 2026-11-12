@@ -2961,98 +2961,37 @@ impl<'g> FundingState<'g> {
         // destination in the preserve-departure path.
         self.refresh_enduring_projection();
         if let Some(destination) = departure {
-            let from_battlefield = self.resources[step.resource].object.zone == Zone::Battlefield;
-            // Counter and tap payments precede the actual move, as in the real
-            // payment path. Capture characteristics before zone effects cease.
-            if !preserve_departure_counters {
-                if from_battlefield {
-                    let controller = self.resources[step.resource].object.controller;
-                    self.permanent_left_battlefield[controller.index()] = true;
-                    self.void_active_this_turn |= CharacteristicWorld::kinds(self, id) & 2 == 0;
-                }
+            if preserve_departure_counters {
+                self.resources[step.resource].object.zone = destination;
+            } else {
+                // The fast path has already ruled out replacements. Freeze
+                // the paid source before updating histories or normalizing it.
+                let before = self.reference(id);
                 self.remember_payment_departure(id);
-            }
-            let reference = self.reference(id);
-            // The fast path has already ruled out replacement effects. The
-            // slow path commits its replacement-adjusted destination through
-            // cost_departures, which accounts for death there instead.
-            if !preserve_departure_counters
-                && destination == Zone::Graveyard
-                && from_battlefield
-                && CharacteristicWorld::kinds(self, id) & 1 != 0
-            {
-                let controller = self.resources[step.resource].object.controller;
-                self.creatures_died = self
-                    .creatures_died
-                    .checked_add(1)
-                    .capacity("virtual death history exhausted");
-                let deaths = &mut self.controlled_creatures_died[controller.index()];
-                *deaths = deaths
-                    .checked_add(1)
-                    .capacity("virtual controlled death history exhausted");
-                self.non_zombie_creature_died |= !CharacteristicWorld::subtypes(self, id)
-                    .has(CharacteristicWorld::definition(self, id), "Zombie");
-            }
-            let face_down_physical = self.projected_face_down_physical(reference);
-            let physical_copy = self
-                .temporary_copy_rows_state()
-                .as_ref()
-                .and_then(|rows| rows.iter().find(|row| row.object == reference))
-                .map(|row| (row.physical_card, row.physical_kind));
-            let object = &mut self.resources[step.resource].object;
-            object.zone = destination;
-            if !preserve_departure_counters {
-                // A committed zone change creates a new incarnation in both the
-                // owned game and the projected world.
-                object.generation = object
-                    .generation
-                    .checked_add(1)
-                    .capacity("virtual generation exhausted");
-                // The slow path still needs the old face for replacement planning.
-                // Normalize only when this step commits the virtual departure.
-                if let Some((physical_card, physical_kind)) = physical_copy {
-                    object.card = physical_card;
-                    object.copy_kind = physical_kind;
-                } else {
-                    self.game.restore_projected_copy_identity(reference, object);
+                let object = &self.resources[step.resource].object;
+                if object.zone == Zone::Battlefield {
+                    let controller = object.controller;
+                    let kinds = CharacteristicWorld::kinds(self, id);
+                    self.permanent_left_battlefield[controller.index()] = true;
+                    self.void_active_this_turn |= kinds & 2 == 0;
+                    if destination == Zone::Graveyard && kinds & 1 != 0 {
+                        self.creatures_died = self
+                            .creatures_died
+                            .checked_add(1)
+                            .capacity("virtual death history exhausted");
+                        let deaths = &mut self.controlled_creatures_died[controller.index()];
+                        *deaths = deaths
+                            .checked_add(1)
+                            .capacity("virtual controlled death history exhausted");
+                        self.non_zombie_creature_died |= !CharacteristicWorld::subtypes(self, id)
+                            .has(CharacteristicWorld::definition(self, id), "Zombie");
+                    }
+                    if kinds & 16 != 0 {
+                        self.zone_change_turn_history
+                            .record_artifact_cost_departure(controller, destination, destination);
+                    }
                 }
-                if let Some(physical) = face_down_physical {
-                    object.card = physical.front_face();
-                } else if !object.is_token() && !object.is_spell_copy() {
-                    object.card = object.card.front_face();
-                }
-                object.controller = object.owner;
-                object.flashback = false;
-                object.cast_for_warp = false;
-                object.cast_for_impending = false;
-                object.tapped = false;
-                object.summoning_sick = false;
-                object.damage = 0;
-                object.damaged_this_turn = false;
-                object.dealt_damage_this_turn = false;
-                object.targeted_this_turn_by = 0;
-                object.dealt_damage_this_incarnation = false;
-                object.dealt_combat_damage_this_incarnation = false;
-                object.deathtouch_since_sba = false;
-                object.growth = Stats::default();
-                object.gained_keywords = Keywords::NONE;
-                object.counters = InitialCounters::default();
-                object.used_abilities = 0;
-                object.loyalty_activated_this_turn = false;
-                object.class_level = 1;
-                object.attached_to = None;
-                object.attached_to_player = None;
-                live_counters::set(&mut self.named_counters, reference, None);
-            }
-            if !preserve_departure_counters {
-                self.resources[step.resource].attacking = false;
-                if let Some(projection) = &mut self.entry_projection {
-                    projection
-                        .manifested
-                        .retain(|(object, _)| *object != reference);
-                }
-                let after = self.reference(id);
-                self.project_copy_departure(reference, after);
+                self.project_resource_nonbattlefield_move(step.resource, before, destination, None);
             }
         }
         // visit_applied commits source and selected additional cost components

@@ -2794,6 +2794,9 @@ impl<'g> FundingState<'g> {
             && self.entry_projection.is_none()
             && self.game.state.exile_links.is_empty()
             && self.game.state.zone_rules.is_none()
+            && self
+                .active_melds()
+                .all(|meld| meld.object.card != self.resources[step.resource].id)
             && {
                 #[cfg(feature = "test-support")]
                 {

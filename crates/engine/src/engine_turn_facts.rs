@@ -21,6 +21,22 @@ impl ZoneChangeTurnHistory {
             .capacity("creature card arrival history exhausted");
     }
 
+    pub(super) fn record_artifact_cost_departure(
+        &mut self,
+        controller: Player,
+        requested: Zone,
+        destination: Zone,
+    ) {
+        // Battlefield-to-graveyard cost proposals are sacrifices. A different
+        // destination can replace the move without changing its cause.
+        if requested == Zone::Graveyard && destination != Zone::Battlefield {
+            self.artifact_sacrifices[controller.index()] = true;
+        }
+        if destination == Zone::Graveyard {
+            self.record_artifact_permanent_arrival();
+        }
+    }
+
     pub(super) fn record_artifact_permanent_arrival(&mut self) {
         self.artifact_permanent_arrivals = self
             .artifact_permanent_arrivals

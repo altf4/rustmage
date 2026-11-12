@@ -297,6 +297,89 @@ fn artifact_sacrifices_qualify_the_payer_even_when_the_destination_is_exile() {
 }
 
 #[test]
+fn fast_mana_sacrifices_enable_history_guarded_mana_during_funding() {
+    const BLUE: Mana = [0, 1, 0, 0, 0, 0];
+    const TWO_COLORLESS: Mana = [0, 0, 0, 0, 0, 2];
+    const fn guarded_mana(value: StatValue) -> ActivatedAbility {
+        ActivatedAbility {
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            guard: ActivationGuard::StatAtLeast { value, minimum: 1 },
+            program: &[Instruction::AddMana(ManaProduction::Fixed(TWO_COLORLESS))],
+            ..ACTIVATION
+        }
+    }
+    const ARTIFACT_GUARD: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[guarded_mana(StatValue::ArtifactSacrificedThisTurn)],
+        ..CardRules::EMPTY
+    };
+    const CREATURE_GUARD: CardRules = CardRules {
+        effect: Effect::Permanent,
+        activated: &[guarded_mana(
+            StatValue::OwnCreatureCardsPutIntoGraveyardThisTurn,
+        )],
+        ..CardRules::EMPTY
+    };
+    const SACRIFICE_CREATURE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                sacrifice: true,
+                ..ActivationCost::ZERO
+            },
+            program: &[Instruction::AddMana(ManaProduction::Fixed(BLUE))],
+            ..ACTIVATION
+        }],
+        ..CardRules::EMPTY
+    };
+    let guarded = card("Soul-Guide Lantern");
+    let creature = card("Grizzly Bears");
+    let player = Player::P0;
+    for (treasure, rules) in [(true, &ARTIFACT_GUARD), (false, &CREATURE_GUARD)] {
+        let _rules = fixture_rules::activate(&[(guarded, rules), (creature, &SACRIFICE_CREATURE)]);
+        let mut game = scenario(player);
+        game.state.players[player.index()].mana = [0; 6];
+        let producer = spawn(&mut game, player, guarded, Zone::Battlefield);
+        let spell = put(&mut game, player, "Divination", Zone::Hand);
+        let announce = Action::AnnounceCast { card: spell };
+        let mana = |card, production| Action::ActivateMana {
+            card,
+            ability: 0,
+            payment: [0; 6],
+            counter_payment: Counters::default(),
+            production,
+        };
+        reject(&mut game, announce.clone());
+        let fuel = if treasure {
+            game.create_tokens(player, Card::from_catalogue_id(5302), 1, false);
+            game.controlled_token_ids(player).next().unwrap()
+        } else {
+            spawn(&mut game, player, creature, Zone::Battlefield)
+        };
+        reject(&mut game, mana(producer, TWO_COLORLESS));
+
+        act(&mut game, announce);
+        act(&mut game, mana(fuel, BLUE));
+        act(&mut game, mana(producer, TWO_COLORLESS));
+        pay(&mut game);
+        for _ in 0..2 {
+            if !matches!(game.state.pending, Pending::ManaLotSpend { .. }) {
+                break;
+            }
+            choose(&mut game, |action| {
+                matches!(action, Action::ChooseManaLotSpend { .. })
+            });
+        }
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    }
+}
+
+#[test]
 fn creature_card_arrivals_follow_the_destination_and_remain_after_departure() {
     let _rules = fixture_rules::activate(&[
         (card("Think Twice"), &MILL_BOTH),

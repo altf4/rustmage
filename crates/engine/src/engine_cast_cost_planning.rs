@@ -911,16 +911,8 @@ impl FundingState<'_> {
                         n.food_sacrificed[controller.index()] = true;
                     }
                     if before_zone == Zone::Battlefield && kinds & 16 != 0 {
-                        // Battlefield-to-graveyard cost proposals are sacrifices.
-                        // The payer is the controller in this pre-event world.
-                        if requested == Zone::Graveyard && zone != Zone::Battlefield {
-                            n.zone_change_turn_history.artifact_sacrifices[controller.index()] =
-                                true;
-                        }
-                        if zone == Zone::Graveyard {
-                            n.zone_change_turn_history
-                                .record_artifact_permanent_arrival();
-                        }
+                        n.zone_change_turn_history
+                            .record_artifact_cost_departure(controller, requested, zone);
                     }
                     n.project_nonbattlefield_move(*r, zone, meld.map(|entry| entry.front_cards[0]));
                     if let Some(entry) = meld {
@@ -955,12 +947,6 @@ impl FundingState<'_> {
         meld_front: Option<Card>,
     ) -> ObjectRef {
         debug_assert_eq!(self.reference(before.card), before);
-        let face_down_physical = self.projected_face_down_physical(before);
-        let physical_copy = self
-            .temporary_copy_rows_state()
-            .as_ref()
-            .and_then(|rows| rows.iter().find(|row| row.object == before))
-            .map(|row| (row.physical_card, row.physical_kind));
         let index = self
             .resources
             .iter()
@@ -975,6 +961,22 @@ impl FundingState<'_> {
                 });
                 index
             });
+        self.project_resource_nonbattlefield_move(index, before, zone, meld_front)
+    }
+
+    pub(super) fn project_resource_nonbattlefield_move(
+        &mut self,
+        index: usize,
+        before: ObjectRef,
+        zone: Zone,
+        meld_front: Option<Card>,
+    ) -> ObjectRef {
+        let face_down_physical = self.projected_face_down_physical(before);
+        let physical_copy = self
+            .temporary_copy_rows_state()
+            .as_ref()
+            .and_then(|rows| rows.iter().find(|row| row.object == before))
+            .map(|row| (row.physical_card, row.physical_kind));
         let resource = &mut self.resources[index];
         let object = &mut resource.object;
         let graveyard_arrival = object.zone != Zone::Graveyard && zone == Zone::Graveyard;
@@ -1031,14 +1033,13 @@ impl FundingState<'_> {
         }
         live_counters::set(&mut self.named_counters, before, None);
         self.project_copy_departure(before, after);
-        let card = self.object(after.card);
-        if graveyard_arrival
-            && card.is_card()
-            && CharacteristicWorld::kinds(self, after.card) & 1 != 0
-        {
-            let owner = card.owner;
-            self.zone_change_turn_history
-                .record_creature_card_arrival(owner);
+        if graveyard_arrival {
+            let card = &self.resources[index].object;
+            if card.is_card() && CharacteristicWorld::kinds(self, after.card) & 1 != 0 {
+                let owner = card.owner;
+                self.zone_change_turn_history
+                    .record_creature_card_arrival(owner);
+            }
         }
         after
     }
