@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5e4944438a79549aa22548f123125bc1a49cd5598ce3468d8dea9ef8f0a753bc"
   },
-  "physical_metadata_sha256": "67be76d4301b145a23d362dfdc25a30507ccef532a9e92bc89db8d0d793d09dc"
+  "physical_metadata_sha256": "67be76d4301b145a23d362dfdc25a30507ccef532a9e92bc89db8d0d793d09dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SampleCollector.java",
+  "java_sha256": "ad910a65b629222d947bd196b461a4acfa5f2b1e5d565bc71e5fe9a1f53db6dc",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    }
+  ]
 }

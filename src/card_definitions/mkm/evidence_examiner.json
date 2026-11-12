@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6aaa78ae21ce503e70b13f90137186f13c4e772d4cddd572bb74a79c7c97ca46"
   },
-  "physical_metadata_sha256": "674f713f63176d1440480f68359d86f01a280782297428e0ad56c9a62c59ed4a"
+  "physical_metadata_sha256": "674f713f63176d1440480f68359d86f01a280782297428e0ad56c9a62c59ed4a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EvidenceExaminer.java",
+  "java_sha256": "77207005b2fc0eefca46c3899f343ea57e2fee03fb9274060a76bbc74d0f80bd",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

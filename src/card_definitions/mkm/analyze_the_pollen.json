@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "42a7444b38c255a6f0955168ca22abfc00bc8177d098b08d15afb6de0f6c8d2e"
   },
-  "physical_metadata_sha256": "7a5878747ec36608b409abfc35e10b4ef1d28520290397913657ca165edb398f"
+  "physical_metadata_sha256": "7a5878747ec36608b409abfc35e10b4ef1d28520290397913657ca165edb398f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnalyzeThePollen.java",
+  "java_sha256": "f241d162ce134e77e1da27d5f012bec15c91b62b58dbe88423f36ca5d9c19e75",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    }
+  ]
 }
