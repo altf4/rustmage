@@ -3881,6 +3881,11 @@ pub enum Instruction {
         amount: u16,
         skip: usize,
     },
+    /// Offer and collect life from the player captured by the triggering event.
+    MayPayEventPlayerLife {
+        amount: u16,
+        skip: usize,
+    },
     DrawDamageAmount,
     PutDiscardCounters(CounterKind),
     DamageDiscardAmount(PlayerSet),

@@ -4554,6 +4554,8 @@ impl Game {
                             "back face definitions cannot be submitted in decks"
                         } else if card.inset_parent().is_some() {
                             "inset spell definitions cannot be submitted in decks"
+                        } else if card.room_parent().is_some() {
+                            "Room door definitions cannot be submitted in decks"
                         } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
                         } else {
@@ -9214,10 +9216,10 @@ impl Game {
             Action::ChooseX { value }
                 if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
             {
-                let item = {
+                let payer = {
                     let r = self.state.resolving.as_mut().unwrap();
                     r.item.x = Some(value);
-                    r.item.clone()
+                    r.item.controller
                 };
                 let resolving = self.state.resolving.as_ref().unwrap();
                 if value == 0
@@ -9229,7 +9231,7 @@ impl Game {
                     self.run_program();
                 } else {
                     self.start_optional_resolution_payment(
-                        &item,
+                        payer,
                         ManaCost {
                             colored: [0; 6],
                             generic: value,

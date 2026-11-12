@@ -516,7 +516,7 @@ impl Game {
     }
     pub(super) fn start_optional_resolution_payment(
         &mut self,
-        item: &SpellView,
+        payer: Player,
         cost: ManaCost,
         skip: usize,
     ) {
@@ -524,7 +524,7 @@ impl Game {
         let unpaid_pc = resolution.pc.checked_add(skip).expect("program offset");
         assert!(unpaid_pc <= resolution.program.len());
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
-            payer: item.controller,
+            payer,
             cost,
             alternatives: &[],
             life: None,
@@ -535,14 +535,29 @@ impl Game {
             unpaid_pc,
             choices: None,
         }));
-        self.state.pending = Pending::ResolutionMana {
-            player: item.controller,
-        };
+        self.state.pending = Pending::ResolutionMana { player: payer };
     }
     pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: i128) -> bool {
         if !self.start_resolution_payment(item, ManaCost::ZERO, CounterSubject::Related, false, 0) {
             return false;
         }
+        self.set_resolution_life(amount);
+        true
+    }
+    pub(super) fn start_optional_resolution_life(
+        &mut self,
+        payer: Player,
+        amount: i128,
+        unpaid_skip: usize,
+    ) -> bool {
+        if !self.resolution_life_available(payer, Some(amount)) {
+            return false;
+        }
+        self.start_optional_resolution_payment(payer, ManaCost::ZERO, unpaid_skip);
+        self.set_resolution_life(amount);
+        true
+    }
+    fn set_resolution_life(&mut self, amount: i128) {
         let request = self
             .state
             .resolving
@@ -555,7 +570,6 @@ impl Game {
         self.state.pending = Pending::ResolutionLife {
             player: request.payer,
         };
-        true
     }
 
     pub(super) fn start_resolution_costs(
@@ -572,7 +586,7 @@ impl Game {
                 return false;
             }
         } else {
-            self.start_optional_resolution_payment(item, ManaCost::ZERO, unpaid_skip);
+            self.start_optional_resolution_payment(item.controller, ManaCost::ZERO, unpaid_skip);
         }
         let options = costs
             .iter()

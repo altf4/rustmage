@@ -1137,16 +1137,18 @@ impl Game {
             .map(|r| r.card)
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Hand);
-        self.state.known_hand.extend(
-            events
-                .iter()
-                .filter(|e| {
-                    e.moved
-                        && e.destination == Zone::Hand
-                        && (frame.spec.reveal || follow_redirect && e.before.zone != Zone::Library)
-                })
-                .map(|e| e.after),
-        );
+        if frame.spec.reveal || follow_redirect {
+            self.state.known_hand.extend(
+                events
+                    .iter()
+                    .filter(|e| {
+                        e.moved
+                            && e.destination == Zone::Hand
+                            && (frame.spec.reveal || e.before.zone != Zone::Library)
+                    })
+                    .map(|e| e.after),
+            );
+        }
         self.finish_zone_events(&events, &[]);
     }
     fn public_top_land_redirect(&self, object: ObjectRef) -> bool {

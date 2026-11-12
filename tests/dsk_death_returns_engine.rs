@@ -7,6 +7,26 @@ use rustmage_core::{cards::*, engine::*};
 use support::*;
 
 const CREATURE: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Creature));
+const WATCHER: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::Creature(
+            CastRelation::Opponent,
+        )),
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayPayEventPlayerLife { amount: 3, skip: 1 },
+            Instruction::Skip(1),
+            Instruction::ReturnDeathCardWithCounters {
+                under_controller: true,
+                tapped: false,
+                counter: CounterKind::Finality,
+                amount: 1,
+            },
+        ],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn card(name: &str) -> Card {
     Card::from_name(name).unwrap()
@@ -140,27 +160,6 @@ fn destroy_and_return_uses_only_actual_creature_cards_and_sacrifices_exact_entra
 
 #[test]
 fn a_death_observer_can_use_the_pre_death_controller_even_for_a_token() {
-    const WATCHER: CardRules = CardRules {
-        effect: Effect::Permanent,
-        triggers: &[TriggeredAbility {
-            condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::Creature(
-                CastRelation::Opponent,
-            )),
-            targets: TargetPlan::NONE,
-            program: &[
-                Instruction::MayPayOpponentLife { amount: 3, skip: 2 },
-                Instruction::LoseLife(PlayerSet::EventPlayer, 3),
-                Instruction::Skip(1),
-                Instruction::ReturnDeathCardWithCounters {
-                    under_controller: true,
-                    tapped: false,
-                    counter: CounterKind::Finality,
-                    amount: 1,
-                },
-            ],
-        }],
-        ..CardRules::EMPTY
-    };
     let _scope = fixture_rules::activate(&[(card("Short Bow"), &WATCHER)]);
     let caster = Player::P0;
     let opponent = caster.other();
@@ -177,7 +176,14 @@ fn a_death_observer_can_use_the_pre_death_controller_even_for_a_token() {
         pass_pair(&mut game);
         pass_pair(&mut game);
         assert_eq!(game.actor(), Some(opponent));
-        act(&mut game, Action::ChooseOptional { accept: pay });
+        act(
+            &mut game,
+            if pay {
+                Action::PayResolutionLife
+            } else {
+                Action::DeclineResolutionLife
+            },
+        );
         settle(&mut game);
     }
     assert_eq!(game.state.players[opponent.index()].life, before - 3);
@@ -185,6 +191,79 @@ fn a_death_observer_can_use_the_pre_death_controller_even_for_a_token() {
     assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
     assert_eq!(game.counter_count(creature, CounterKind::Finality), 1);
     assert_eq!(game.state.objects[token as usize].zone, Zone::Outside);
+}
+
+#[test]
+fn copying_the_death_trigger_keeps_the_captured_payer_and_changes_the_recipient() {
+    const COPY: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Ability)),
+            &[Instruction::CopyTargetAbility { group: 0 }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(card("Short Bow"), &WATCHER), (card("Opt"), &COPY)]);
+    let caster = Player::P0;
+    let opponent = caster.other();
+    let mut game = scenario(caster);
+    put(&mut game, caster, "Short Bow", Zone::Battlefield);
+    let creature = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    let removal = put(&mut game, caster, "Murder", Zone::Hand);
+    cast(&mut game, removal, Some(Target::Card(creature)));
+    pass_pair(&mut game);
+    let original = game.state.stack.last().unwrap().id;
+
+    act(&mut game, Action::Pass);
+    assert_eq!(game.actor(), Some(opponent));
+    let copier = put(&mut game, opponent, "Opt", Zone::Hand);
+    cast(&mut game, copier, Some(Target::Stack(original)));
+    pass_pair(&mut game);
+    let copy = game.state.stack.last().unwrap();
+    assert!(copy.is_copy);
+    assert_eq!(copy.controller, opponent);
+    assert_eq!(copy.event_player, Some(opponent));
+
+    let mut poor = game.clone();
+    poor.state.players[opponent.index()].life = 2;
+    pass_pair(&mut poor);
+    assert_eq!(poor.state.pending, Pending::Priority);
+    assert_eq!(poor.object_view(creature).zone, Zone::Battlefield);
+    assert_eq!(poor.object_view(creature).controller, opponent);
+
+    pass_pair(&mut game);
+    assert_eq!(
+        game.state.pending,
+        Pending::ResolutionLife { player: opponent }
+    );
+    let saved = game.snapshot();
+    let before = game.state.players[opponent.index()].life;
+    assert_eq!(
+        game.apply(caster, Action::PayResolutionLife),
+        Err(Error::WrongActor)
+    );
+    assert_eq!(game.snapshot(), saved);
+    let mut paid = game.clone();
+    act(&mut paid, Action::PayResolutionLife);
+    assert_eq!(paid.state.players[opponent.index()].life, before - 3);
+    assert_eq!(paid.state.players[caster.index()].life, 20);
+    assert_eq!(paid.object_view(creature).zone, Zone::Graveyard);
+
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == Action::DeclineResolutionLife)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed
+        .apply_index(opponent, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, Action::DeclineResolutionLife);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(creature).controller, opponent);
+    assert_eq!(game.counter_count(creature, CounterKind::Finality), 1);
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.object_view(creature).zone, Zone::Graveyard);
 }
 
 #[test]

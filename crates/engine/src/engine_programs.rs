@@ -6032,6 +6032,17 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::MayPayEventPlayerLife { amount, skip } => {
+                    if let Some(payer) = item.event_player
+                        && self.start_optional_resolution_life(payer, i128::from(amount), skip)
+                    {
+                        return;
+                    }
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    let skip_to = resolution.pc.checked_add(skip).expect("program offset");
+                    assert!(skip_to <= resolution.program.len());
+                    resolution.pc = skip_to;
+                }
                 Instruction::MayPayOpponentLife { amount, skip }
                 | Instruction::MayPayControllerLife { amount, skip } => {
                     let player = if matches!(instruction, Instruction::MayPayControllerLife { .. })
@@ -9968,13 +9979,13 @@ impl Game {
                     return;
                 }
                 Instruction::MayPayMana { cost, skip } => {
-                    self.start_optional_resolution_payment(&item, cost, skip);
+                    self.start_optional_resolution_payment(item.controller, cost, skip);
                     return;
                 }
                 Instruction::MayPayManaAlternatives { costs, skip } => {
                     let (&cost, alternatives) =
                         costs.split_first().expect("nonempty payment choices");
-                    self.start_optional_resolution_payment(&item, cost, skip);
+                    self.start_optional_resolution_payment(item.controller, cost, skip);
                     self.state
                         .resolving
                         .as_mut()
