@@ -6027,6 +6027,8 @@ pub enum AmountValue {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ResolvedStatValue {
+    /// The X chosen for this exact spell or activation.
+    ChosenX,
     /// Capture a signed scalar once, when the instruction resolves.
     Stat(StatValue),
     /// Evaluate before creating the fixed, until-cleanup layer-7b effect.

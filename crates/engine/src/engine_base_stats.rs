@@ -182,6 +182,7 @@ impl Game {
         value: ResolvedStatValue,
     ) -> Option<i128> {
         match value {
+            ResolvedStatValue::ChosenX => item.x.map(i128::from),
             ResolvedStatValue::Stat(value) => {
                 Some(self.stat_value(value, item.source?.object, item.controller))
             }

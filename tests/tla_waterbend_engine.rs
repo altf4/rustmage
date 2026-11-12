@@ -83,6 +83,30 @@ const X_ACTIVATION: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const X_STATS_ACTIVATION: CardRules = CardRules {
+    effect: Effect::Creature(3, 3),
+    activated: &[ActivatedAbility {
+        program: &[
+            Instruction::WaterbendXCost { minimum: 1 },
+            Instruction::SetPermanentGroupBaseStats {
+                filters: &[BattlefieldFilter {
+                    kinds: 1,
+                    relation: 0,
+                    nonland: false,
+                    tapped: None,
+                    without: Keywords::NONE,
+                    subtype: None,
+                    max_mana: u32::MAX,
+                }],
+                exclude_source: false,
+                power: Some(ResolvedStatValue::ChosenX),
+                toughness: Some(ResolvedStatValue::ChosenX),
+            },
+        ],
+        ..X_ACTIVATION.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
 const RESOLUTION: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
@@ -583,4 +607,42 @@ fn zero_and_mana_only_waterbend_payments_trigger_once_and_copies_keep_the_receip
         settle(&mut game);
         assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 4);
     }
+}
+
+#[test]
+fn waterbend_x_sets_the_resolving_group_base_stats_and_expires_at_cleanup() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &X_STATS_ACTIVATION)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let recipient = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let opponent = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    game.add_counter(recipient, CounterKind::PlusOne, 1);
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: source,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    reject(&mut game, Action::ChooseX { value: 0 });
+    act(&mut game, Action::ChooseX { value: 4 });
+    pay(&mut game);
+    let before_resolution = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    settle(&mut game);
+    assert_eq!(stats(&game, source), (4, 4));
+    assert_eq!(stats(&game, recipient), (5, 5));
+    assert_eq!(stats(&game, before_resolution), (4, 4));
+    assert_eq!(stats(&game, opponent), (2, 2));
+    let late = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    assert_eq!(stats(&game, late), (2, 2));
+    game.finish_cleanup();
+    assert_eq!(stats(&game, source), (3, 3));
+    assert_eq!(stats(&game, recipient), (3, 3));
 }
