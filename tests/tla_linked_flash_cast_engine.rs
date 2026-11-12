@@ -212,3 +212,77 @@ fn linked_flash_preserves_disguise_and_keeps_behold_optional() {
     settle(&mut game);
     assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
 }
+
+#[test]
+fn linked_disguise_uses_the_proposed_creature_even_for_a_land_card() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &USURPER)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let branch = put(&mut game, opponent, "Branch of Vitu-Ghazi", Zone::Hand);
+    game.state.players[opponent.index()].mana = [0, 0, 0, 0, 0, 3];
+    let branch = announce_hand_disguise(&mut game, branch).card;
+    pay(&mut game);
+    settle(&mut game);
+    let disguised = game.object_ref(branch);
+    assert!(game.is_face_down(disguised));
+
+    game.state.active = player;
+    game.state.priority = player;
+    let provider = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, provider, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::SelectResolutionExile { object: disguised },
+    );
+    finish_choice(&mut game);
+    assert_eq!(game.object_view(branch).zone, Zone::Exile);
+    assert!(game.object_view(branch).card.is_land());
+
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
+    let normal = announce(&game, provider, branch);
+    reject(&mut game, normal);
+    reject(&mut game, Action::PlayLand { card: branch });
+
+    game.state.step = Step::BeginCombat;
+    let action = Action::AnnounceLinkedAlternative {
+        object: game.object_ref(branch),
+        source: game.object_ref(provider),
+        method: CastMethod::Disguise,
+    };
+    let mut off_turn = game.clone();
+    off_turn.state.active = opponent;
+    reject(&mut off_turn, action.clone());
+    let snapshot = game.snapshot();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|candidate| *candidate == action)
+        .expect("the proposed face-down creature has the exact linked permission");
+    let mut indexed = game.clone();
+    let revision = game.revision();
+    act(&mut game, action.clone());
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&snapshot).unwrap();
+    act(&mut indexed, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+
+    pay(&mut game);
+    settle(&mut game);
+    let permanent = game.object_view(branch);
+    assert_eq!(permanent.zone, Zone::Battlefield);
+    assert_eq!(permanent.owner, opponent);
+    assert_eq!(permanent.controller, player);
+    assert!(game.is_face_down(permanent.reference));
+}
