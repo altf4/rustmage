@@ -134,13 +134,15 @@ pub(super) fn ordinary_library_spell_permission<W: ability_world::Characteristic
     definition: Card,
     mana_value: u64,
 ) -> bool {
+    let subtypes = subtypes::spell_subtypes(world, player, definition, GrantedSubtypes::default());
     !definition.is_land()
         && (world.game().state.players[player.index()].library_top_play
             || has_fragment_from(world, Some(player), |id, fragment| match fragment {
                 StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
-                StaticAbilityFragment::CastFromLibraryTop(filter) => {
-                    filter.matches_mana_value(definition, mana_value)
-                }
+                StaticAbilityFragment::CastFromLibraryTop(filter) => filter
+                    .matches_mana_value_with(definition, mana_value, |subtype| {
+                        subtypes.has(definition, subtype)
+                    }),
                 StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => {
                     source_attacked(world, id)
                 }
@@ -155,10 +157,13 @@ pub(super) fn library_spell_with_counter_permission<
     player: Player,
     definition: Card,
 ) -> bool {
+    let subtypes = subtypes::spell_subtypes(world, player, definition, GrantedSubtypes::default());
     !definition.is_land()
         && has_fragment(world, player, |fragment| match fragment {
             StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
-                types.iter().any(|subtype| definition.has_subtype(subtype))
+                types
+                    .iter()
+                    .any(|subtype| subtypes.has(definition, subtype))
                     || definition.keywords().contains(Keywords::CHANGELING)
             }
             _ => false,
@@ -347,9 +352,16 @@ impl Game {
         let first_spell = self.state.active == player
             && self.state.players[player.index()].spells_cast_this_turn == 0;
         let only_controller = (!first_spell).then_some(player);
+        let subtypes =
+            subtypes::spell_subtypes(self, player, definition, GrantedSubtypes::default());
         has_fragment_from(self, only_controller, |id, fragment| match *fragment {
             StaticAbilityFragment::FreeSpellCast(filter) => {
-                self.state.objects[id as usize].controller == player && filter.matches(definition)
+                self.state.objects[id as usize].controller == player
+                    && filter.matches_mana_value_with(
+                        definition,
+                        definition.fixed_mana_value(),
+                        |subtype| subtypes.has(definition, subtype),
+                    )
             }
             StaticAbilityFragment::FreeFirstSpellOnOwnTurn => first_spell,
             _ => false,

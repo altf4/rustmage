@@ -539,7 +539,7 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && matches!(o.zone, Zone::Hand | Zone::Graveyard)
                 && o.card.is_creature()
-                && filter.matches(o.card)
+                && self.card_search_filter_matches(filter, player, object.card)
                 && choice.selected[player.index()].is_empty();
         }
         if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
@@ -658,7 +658,7 @@ impl Game {
                         o.card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256) != 0
                             && o.card.fixed_mana_value() <= maximum
                             && choice.hand_entry_filter.is_none_or(|filter| {
-                                filter.matches(o.card)
+                                self.card_search_filter_matches(filter, player, object.card)
                                     && self.hand_entry_payment_legal(player, object)
                             })
                     }

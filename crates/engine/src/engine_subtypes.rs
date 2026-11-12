@@ -757,6 +757,76 @@ impl BasicLandTypesEffectView {
     }
 }
 
+/// Add the live layer-four grant to an actual or proposed creature spell.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn spell_subtypes<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    controller: Player,
+    definition: Card,
+    mut subtypes: GrantedSubtypes,
+) -> GrantedSubtypes {
+    if definition.is_creature() {
+        add_chosen_creature_subtypes(world, controller, &mut subtypes);
+    }
+    subtypes
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn add_chosen_creature_subtypes<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    player: Player,
+    mask: &mut GrantedSubtypes,
+) {
+    // All providers need a choice. Inspect the sparse choices instead of all
+    // static sources for each card in a private search or look.
+    for row in world.entry_values() {
+        let EntryChoiceValue::CreatureType(typ) = row.value else {
+            continue;
+        };
+        let source = row.object.card;
+        let provider = world.object(source);
+        if provider.zone == Zone::Battlefield
+            && provider.controller == player
+            && world.reference(source) == row.object
+            && world.ability_origin(source) == row.origin
+            && provider.card.static_ability_groups().iter().any(|group| {
+                group.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
+                    )
+                }) && entry_modes::group_enabled(world, row.object, group)
+            })
+        {
+            // Layer-six ability removal follows this type-changing effect.
+            mask.additional_creature_types.insert(typ);
+        }
+    }
+}
+
+/// Copy and cast-receipt subtypes, before live layer-four grants.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn initial_subtypes<W: super::ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> GrantedSubtypes {
+    let mut mask = GrantedSubtypes::default();
+    let recipe = world.recipe(id);
+    mask.apply_copy_subtypes(Some(recipe));
+    if recipe
+        .overrides
+        .is_some_and(|o| o.keywords.contains(Keywords::CHANGELING))
+        && world.kinds(id) & CREATURE_OR_KINDRED != 0
+    {
+        // A noncreature, nonkindred copy cannot have creature subtypes (CR205.3d).
+        mask.set_flag(ALL_CREATURE_TYPES, true);
+    }
+    if world.object(id).zone == Zone::Stack {
+        mask.add_creature_types(cast_added_types(world.roles(), world.reference(id)));
+    }
+    mask
+}
+
 /// Earlier subtype layers over actual or projected source registries.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
@@ -770,35 +840,26 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             ..GrantedSubtypes::default()
         };
     }
+    let mut mask = initial_subtypes(world, id);
+    if target.zone != Zone::Battlefield {
+        let player = match target.zone {
+            Zone::Stack => Some(target.controller),
+            Zone::Outside => None,
+            _ => target.is_card().then_some(target.owner),
+        };
+        if let Some(player) = player
+            && !world.entry_values().is_empty()
+            && world.kinds(id) & 1 != 0
+        {
+            add_chosen_creature_subtypes(world, player, &mut mask);
+        }
+        return mask;
+    }
     let lookup = |source| Some(world.object(source));
     let counter_count = |source, kind| world.counter_count(source, kind);
     let kinds = |id, _: &Object| world.kinds(id);
     let mut changes = characteristic_layers::subtype_changes(world, id);
-    let mut mask = GrantedSubtypes::default();
-    let reference = ObjectRef {
-        card: id,
-        generation: target.generation,
-    };
-    let recipe = world.recipe(id);
-    mask.apply_copy_subtypes(Some(recipe));
-    // A keyword added by the copy exception is itself copiable (CR707.9).
-    // Changeling contributes types in layer four before later type changes.
-    if recipe
-        .overrides
-        .is_some_and(|o| o.keywords.contains(Keywords::CHANGELING))
-        && kinds(id, target) & CREATURE_OR_KINDRED != 0
-    {
-        // A noncreature, nonkindred copy can have changeling but cannot have
-        // creature subtypes (CR205.3d). A later animation can make them apply.
-        mask.set_flag(ALL_CREATURE_TYPES, true);
-    }
-    // Copy exceptions already exist while an owned token awaits entry.
-    if target.zone == Zone::Stack {
-        mask.add_creature_types(cast_added_types(world.roles(), reference));
-    }
-    if target.zone != Zone::Battlefield {
-        return mask;
-    }
+    let reference = world.reference(id);
     if let Some(state) = world.roles() {
         changes.extend(
             state
@@ -949,6 +1010,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
             }
             let origin = world.reference(source);
             for group in provider.card.static_ability_groups() {
+                if !entry_modes::group_enabled(world, origin, group) {
+                    continue;
+                }
                 for fragment in group.fragments {
                     use crate::cards::{CreatureSubtypeGrant, StaticAbilityFragment};
                     let (grant, required_subtype) = match *fragment {
@@ -956,6 +1020,9 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                             grant,
                             required_subtype,
                         } => (grant, required_subtype),
+                        StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones => {
+                            (CreatureSubtypeGrant::Chosen, None)
+                        }
                         StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(subtype)
                             if target.owner != target.controller =>
                         {

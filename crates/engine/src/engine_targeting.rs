@@ -2192,16 +2192,30 @@ impl Game {
         &self,
         world: &W,
         source: ObjectRef,
+        controller: Player,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> Option<(Card, GrantedSubtypes)> {
         let qualification = self.target_source_context(source, qualification);
         let source = qualification.map_or(source, |q| q.reference);
         let snapshot = qualification.and_then(|q| q.snapshot);
         if let Some(spell) = qualification.and_then(|q| q.spell) {
-            Some((
-                spell,
-                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes),
-            ))
+            let base =
+                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes);
+            let subtypes = if self.state.objects.get(source.card as usize).is_some()
+                && world.reference(source.card) == source
+            {
+                if self.state.objects[source.card as usize].zone == Zone::Stack
+                    && world.object(source.card).zone == Zone::Stack
+                    && self.effective_spell_card(source.card) == spell
+                {
+                    world.subtypes(source.card)
+                } else {
+                    subtypes::spell_subtypes(world, controller, spell, base)
+                }
+            } else {
+                base
+            };
+            Some((spell, subtypes))
         } else if self.state.objects.get(source.card as usize).is_some()
             && world.reference(source.card) == source
         {
@@ -2333,7 +2347,7 @@ impl Game {
                         && object.is_card()
                         && object.owner == controller
                         && object.card.is_creature()
-                        && !object.card.has_subtype(excluded_subtype)
+                        && !has_subtype(id, excluded_subtype)
                         && self.object_ref(id) != source
                         && maximum
                             .is_some_and(|max| i128::from(object.card.fixed_mana_value()) <= max)
@@ -2613,7 +2627,12 @@ impl Game {
                     if world.protected_from_subtype(id, |subtype| {
                         source_subtypes
                             .get_or_init(|| {
-                                self.target_source_subtypes(world, source, qualification)
+                                self.target_source_subtypes(
+                                    world,
+                                    source,
+                                    controller,
+                                    qualification,
+                                )
                             })
                             .is_some_and(|(card, types)| types.has(card, subtype))
                     }) {
@@ -2898,12 +2917,18 @@ impl Game {
         id: u64,
         payment: Mana,
     ) -> SpellView {
+        let mut facts = self.damage_facts(card);
+        if !CharacteristicWorld::entry_values(self).is_empty() {
+            // The packet holds cast receipts. The live grant uses the caster
+            // and selected spell face at the point of each characteristic query.
+            facts.granted_subtypes = subtypes::initial_subtypes(self, card);
+        }
         SpellView {
             source: Some(StackSourceView {
                 id: card,
                 object,
                 card: self.state.objects[card as usize].card,
-                facts: self.damage_facts(card),
+                facts,
             }),
             source_less_rule: None,
             additional_triggers: 0,
@@ -3769,6 +3794,7 @@ impl Game {
     ) -> bool {
         match filter {
             crate::SearchFilter::NoAbilities => !self.object_has_rules_abilities(id),
+            crate::SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
             crate::SearchFilter::AllOf(filters) => filters
                 .iter()
                 .all(|filter| self.object_search_filter_matches(*filter, id)),

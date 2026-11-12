@@ -636,6 +636,7 @@ impl Game {
         subtypes: GrantedSubtypes,
     ) -> SpellCostReduction {
         let recipient = world.object(id);
+        let subtypes = subtypes::spell_subtypes(world, actor, definition, subtypes);
         let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = world.object(source);

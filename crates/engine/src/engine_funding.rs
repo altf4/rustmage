@@ -3218,7 +3218,7 @@ impl<'g> FundingState<'g> {
         }
         let preferred = goal.map_or(min, |goal| {
             let first = split.first.index();
-            let available = mana_lots::available(self.mana, &self.lots, self.purpose);
+            let available = mana_lots::available(self.mana, &self.lots, self.live_mana_purpose());
             tap_bonus
                 .unreplaced_required(
                     u128::from(goal.required[first]).saturating_sub(available[first]),
@@ -3468,7 +3468,14 @@ impl<'g> FundingState<'g> {
                 if !spell_only {
                     return Some(lot);
                 }
-                if inert_spell_lots && !lot.quality.eligible(self.purpose) {
+                // A speculative mana ability can change which creature types
+                // the spell has. Such a lot can become usable later in the search.
+                let subtype_restricted = matches!(
+                    lot.quality.restriction,
+                    mana_lots::ManaRestrictionView::SpellSubtype(_)
+                        | mana_lots::ManaRestrictionView::CreatureSpell(_)
+                );
+                if inert_spell_lots && !subtype_restricted && !lot.quality.eligible(self.purpose) {
                     for (pool, amount) in key_mana.iter_mut().zip(lot.amounts) {
                         *pool -= amount;
                     }
@@ -4822,11 +4829,14 @@ impl<'g> FundingState<'g> {
             .map(|o| u128::from(o.card.fixed_mana_value()))
             .sum()
     }
-    /// Final-purpose facts follow the speculative world, not its original game.
-    /// Ordinary pools keep the existing constant-time path.
+    pub(super) fn live_mana_purpose(&self) -> mana_lots::Purpose {
+        self.purpose.with_live_spell_types(self, self.actor)
+    }
+    /// Final-purpose facts follow the speculative world, including subtype grants
+    /// lost or gained while mana abilities are activated.
     fn payment_purpose(&self, goal: &FundingGoal) -> mana_lots::Purpose {
         if self.lots.is_empty() || !matches!(self.purpose, mana_lots::Purpose::Activation(_)) {
-            return self.purpose;
+            return self.live_mana_purpose();
         }
         if let Some((object, ability, _, definition, _)) = goal.source.as_ref() {
             if let Some((_, facts, _)) = self
@@ -6986,8 +6996,8 @@ impl Game {
                 convoke::payable_in(
                     &state,
                     goal.actor,
-                    state.purpose,
-                    mana_lots::available(state.mana, &state.lots, state.purpose),
+                    state.live_mana_purpose(),
+                    mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
                     goal.required,
                     goal.generic,
                     &state.convoke_masks(),
@@ -7069,7 +7079,7 @@ impl Game {
         state.set_purpose(mana_lots::Purpose::FaceUp);
         if !manifest::face_up_prohibited(self, request.object)
             && visit_funding_payments(
-                mana_lots::available(state.mana, &state.lots, state.purpose),
+                mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
                 goal.required,
                 goal.generic,
                 |payment| {
@@ -7109,7 +7119,7 @@ impl Game {
         let mut world = FundingState::from_game(self, &goal);
         world.set_purpose(mana_lots::Purpose::UnlockDoor);
         if visit_funding_payments(
-            mana_lots::available(world.mana, &world.lots, world.purpose),
+            mana_lots::available(world.mana, &world.lots, world.live_mana_purpose()),
             goal.required,
             goal.generic,
             |payment| {
@@ -7150,7 +7160,7 @@ impl Game {
         let goal = request.goal();
         let state = FundingState::from_game(self, &goal);
         if visit_funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.purpose),
+            mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
             goal.required,
             goal.generic,
             |payment| {
@@ -7240,7 +7250,7 @@ impl Game {
             for goal in costs().map(goal_for) {
                 let state = FundingState::from_game(self, &goal);
                 if visit_funding_payments(
-                    mana_lots::available(state.mana, &state.lots, state.purpose),
+                    mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
                     goal.required,
                     goal.generic,
                     |payment| {
@@ -7814,7 +7824,7 @@ impl Game {
         };
         let state = FundingState::from_game(self, &goal);
         if visit_funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.purpose),
+            mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
             goal.required,
             goal.generic,
             |mana| emit(payment.payment_action(concrete_payment(mana))),

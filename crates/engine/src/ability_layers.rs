@@ -298,6 +298,8 @@ pub enum StaticAbilityFragment {
         grant: CreatureSubtypeGrant,
         required_subtype: Option<&'static str>,
     },
+    /// Add the source's chosen type to controlled creatures and creature spells, and owned creature cards.
+    ChosenCreatureSubtypeAcrossZones,
     /// Add this subtype to controlled creatures owned by another player.
     ControlledForeignOwnedCreatureSubtype(&'static str),
     /// This source adds artifact and creature during another player’s turn.

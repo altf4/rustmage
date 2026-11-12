@@ -108,7 +108,9 @@ pub(super) fn visit_behold_candidates<W: ability_world::CharacteristicWorld + ?S
                 object.controller == actor && world.subtypes(id).has(world.definition(id), subtype)
             }
             Zone::Hand => {
-                object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
+                object.owner == actor
+                    && object.is_card()
+                    && world.subtypes(id).has(world.definition(id), subtype)
             }
             _ => false,
         };
@@ -519,7 +521,9 @@ impl Game {
                     && self.on_battlefield(interaction.source.card)
                     && self.object_ref(interaction.source.card) == interaction.source
             }
-            HandChoiceKind::RevealOptional { subtype } => in_hand && o.card.has_subtype(subtype),
+            HandChoiceKind::RevealOptional { subtype } => {
+                in_hand && self.has_subtype(reference.card, subtype)
+            }
             HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
             HandChoiceKind::LookDiscardDraw
             | HandChoiceKind::ExileOwn
@@ -568,7 +572,7 @@ impl Game {
                     || (o.zone == Zone::Hand
                         && o.owner == interaction.controller
                         && o.is_card()
-                        && o.card.has_subtype(subtype))
+                        && self.has_subtype(reference.card, subtype))
             }
         }
     }

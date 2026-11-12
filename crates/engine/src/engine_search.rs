@@ -80,15 +80,16 @@ impl Game {
             .map(|fact| fact.controller)
     }
 
-    pub(super) fn library_search_filter_matches(
+    pub(super) fn card_search_filter_matches(
         &self,
         filter: crate::cards::SearchFilter,
         player: Player,
-        card: Card,
+        id: CardId,
     ) -> bool {
         use crate::cards::SearchFilter;
         match filter {
             SearchFilter::RoomWithoutSharedName => {
+                let card = self.state.objects[id as usize].card;
                 card.has_subtype("Room")
                     && !self.state.objects.iter().enumerate().any(|(id, object)| {
                         let id = id as CardId;
@@ -100,11 +101,12 @@ impl Game {
             }
             SearchFilter::AnyOf(filters) => filters
                 .iter()
-                .any(|&f| self.library_search_filter_matches(f, player, card)),
+                .any(|&f| self.card_search_filter_matches(f, player, id)),
             SearchFilter::AllOf(filters) => filters
                 .iter()
-                .all(|&f| self.library_search_filter_matches(f, player, card)),
-            _ => filter.matches(card),
+                .all(|&f| self.card_search_filter_matches(f, player, id)),
+            SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
+            _ => filter.matches(self.state.objects[id as usize].card),
         }
     }
 

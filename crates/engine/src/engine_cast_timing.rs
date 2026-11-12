@@ -39,6 +39,7 @@ impl Game {
         let own_permission = chosen
             .self_cast_timing()
             .is_some_and(|condition| self_cast_timing_applies(self, actor, condition));
+        let subtypes = subtypes::spell_subtypes(self, actor, chosen, GrantedSubtypes::default());
         own_permission
             || self.state.static_sources.iter().any(|&source| {
                 let object = &self.state.objects[source as usize];
@@ -58,7 +59,7 @@ impl Game {
                             chosen,
                             chosen.fixed_mana_value(),
                             |subtype| {
-                                additional_types.contains(&subtype) || chosen.has_subtype(subtype)
+                                additional_types.contains(&subtype) || subtypes.has(chosen, subtype)
                             },
                         )
                     })

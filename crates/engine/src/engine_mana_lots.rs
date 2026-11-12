@@ -414,6 +414,18 @@ impl Purpose {
             _ => Self::Other,
         }
     }
+
+    pub(super) fn with_live_spell_types<W: ability_world::CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        caster: Player,
+    ) -> Self {
+        let Self::Spell(mut spell) = self else {
+            return self;
+        };
+        spell.subtypes = subtypes::spell_subtypes(world, caster, spell.card, spell.subtypes);
+        Self::Spell(spell)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -926,6 +938,7 @@ impl Game {
         if self.state.mana_lots.is_none() {
             return pool;
         }
+        let purpose = purpose.with_live_spell_types(self, actor);
         available(pool.map(u128::from), self.mana_lots(actor), purpose)
             .map(|amount| u32::try_from(amount).expect("subset of concrete mana pool"))
     }
@@ -1525,6 +1538,7 @@ impl Game {
             return SpendOutcome::default();
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
+        let purpose = purpose.with_live_spell_types(self, actor);
         let lots = self.state.mana_lots.as_ref().unwrap().pools[actor.index()].clone();
         let ordinary = ordinary(pool, &lots);
         let available = available(pool, &lots, purpose);

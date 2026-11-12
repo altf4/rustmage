@@ -1536,11 +1536,12 @@ impl FundingState<'_> {
         let Some(cost) = c.mana else {
             return false;
         };
+        let purpose = self.live_mana_purpose();
         convoke::payable_in(
             self,
             c.actor,
-            self.purpose,
-            mana_lots::available(self.mana, &self.lots, self.purpose),
+            purpose,
+            mana_lots::available(self.mana, &self.lots, purpose),
             cost.colored,
             cost.generic,
             &self.convoke_masks(),
@@ -1555,7 +1556,8 @@ impl FundingState<'_> {
         let Some(cost) = c.mana else {
             return false;
         };
-        let pool = mana_lots::available(self.mana, &self.lots, self.purpose);
+        let purpose = self.live_mana_purpose();
+        let pool = mana_lots::available(self.mana, &self.lots, purpose);
         // Fail before assigning individual helpers when the current mana clause
         // cannot be paid at all. If it is last, exact Hall matching is the whole
         // obligation; later nonmana costs still use the original assignment walk.
@@ -1565,13 +1567,8 @@ impl FundingState<'_> {
         if rest.is_empty() {
             return true;
         }
-        let (required, generic) = cast_origins::payment_requirements(
-            self,
-            c.actor,
-            self.purpose,
-            cost.colored,
-            cost.generic,
-        );
+        let (required, generic) =
+            cast_origins::payment_requirements(self, c.actor, purpose, cost.colored, cost.generic);
         if payable(pool, required, generic) && self.complete_cost_rows(later, rest) {
             return true;
         }

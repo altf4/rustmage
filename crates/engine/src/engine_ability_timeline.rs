@@ -89,6 +89,7 @@ impl Card {
                             | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
                             | StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_)
                             | StaticAbilityFragment::AttachedAllCreatureTypes
                             | StaticAbilityFragment::SourceGraveyardAllTypes { .. }

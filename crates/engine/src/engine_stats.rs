@@ -461,6 +461,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | crate::cards::StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
                             | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_)
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord

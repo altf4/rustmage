@@ -2257,7 +2257,7 @@ impl Game {
         let spell_subtypes = stack
             .and_then(|i| self.state.stack[i].source)
             .map_or_else(GrantedSubtypes::default, |source| {
-                source.facts.granted_subtypes
+                self.granted_subtypes(source.id)
             });
         let mana_value = stack.map_or_else(
             || card.fixed_mana_value(),

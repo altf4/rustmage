@@ -110,13 +110,13 @@ impl Game {
         let c = self.state.objects[id as usize].card;
         match filter {
             LibrarySelectionFilter::SourceChosenCreatureType => {
-                chosen_type.is_some_and(|kind| c.has_subtype(kind.name()))
+                chosen_type.is_some_and(|kind| self.has_subtype(id, kind.name()))
             }
             LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
             LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
             LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
-            LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
+            LibrarySelectionFilter::Subtype(subtype) => self.has_subtype(id, subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
                 .any(|filter| self.library_selection_matches(*filter, id, chosen_type)),

@@ -62,7 +62,7 @@ impl Game {
         s.selected.filter(|r| {
             self.hand_library_zone(s, r.card)
                 && self.object_ref(r.card) == *r
-                && s.filter.matches(self.state.objects[r.card as usize].card)
+                && self.card_search_filter_matches(s.filter, s.player, r.card)
         })
     }
     pub(super) fn visit_hand_library_search(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
@@ -79,10 +79,10 @@ impl Game {
         if emit(Action::FinishSearch) {
             return true;
         }
-        for (id, o) in self.state.objects.iter().enumerate() {
+        for id in 0..self.state.objects.len() {
             let id = id as CardId;
             if self.hand_library_zone(s, id)
-                && s.filter.matches(o.card)
+                && self.card_search_filter_matches(s.filter, s.player, id)
                 && s.selected != Some(self.object_ref(id))
                 && emit(Action::ChooseSearch { card: id })
             {

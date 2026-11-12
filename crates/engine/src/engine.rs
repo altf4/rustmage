@@ -7652,11 +7652,7 @@ impl Game {
                     {
                         for &card in &s.players[player.index()].library {
                             if s.objects[card as usize].is_card()
-                                && self.library_search_filter_matches(
-                                    choice.spec.filter,
-                                    player,
-                                    s.objects[card as usize].card,
-                                )
+                                && self.card_search_filter_matches(choice.spec.filter, player, card)
                                 && !choice.selected.contains(&card)
                                 && choice.colors_allow(self, card)
                                 && (!choice.different_names
