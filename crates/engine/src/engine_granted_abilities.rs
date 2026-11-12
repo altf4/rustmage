@@ -57,6 +57,7 @@ impl Game {
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
                             | TriggerCondition::YouTurnPermanentFaceUp
                             | TriggerCondition::YouManifestDread
+                            | TriggerCondition::Eerie
                     )
             }) {
                 out.push((giver.clone(), None));

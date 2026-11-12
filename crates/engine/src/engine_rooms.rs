@@ -347,11 +347,19 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter(|(_, object)| {
-                    object.zone == Zone::Battlefield && object.controller == player
+                    object.zone == Zone::Battlefield
+                        && object
+                            .card
+                            .triggers()
+                            .iter()
+                            .any(|ability| ability.condition.event() == TriggerCondition::Eerie)
                 })
                 .map(|(id, _)| id as CardId)
                 .collect();
             for (source, grant) in self.indexed_trigger_sources(&ids) {
+                if source.controller != player {
+                    continue;
+                }
                 let definition = grant
                     .as_ref()
                     .map_or(source.card, |grant| grant.granting_card);

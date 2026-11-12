@@ -492,6 +492,8 @@ fn reduced_unlock_funding_owns_restricted_mana_and_branches_transactionally() {
     act(&mut raw, make_mana.clone());
     act(&mut indexed, make_mana);
     act(&mut raw, Action::AbortRoomUnlock);
+    act(&mut raw, Action::ChooseManaRollback { keep: false });
+    assert_eq!(raw.snapshot(), checkpoint);
     assert!(!raw.object_view(mana_source).tapped);
     assert_eq!(raw.state.players[player.index()].mana, [0; 6]);
     assert_eq!(raw.object_view(room).room_doors, Some(RoomDoors::default()));
