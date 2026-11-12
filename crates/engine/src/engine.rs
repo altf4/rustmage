@@ -9671,7 +9671,10 @@ impl Game {
                     EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
                         self.finish_lore_counter_selection();
                     }
-                    EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    EffectChoiceKind::SacrificeSelection
+                    | EffectChoiceKind::SacrificeSelectionForPower => {
+                        self.finish_sacrifice_selection()
+                    }
                     EffectChoiceKind::TapAnyUntappedPermanents => self.finish_tap_selection(),
                     EffectChoiceKind::BlinkControlledCreatures => self.finish_repeat_blink_choice(),
                     EffectChoiceKind::ExileFaceUpDisguiseCreatures => {

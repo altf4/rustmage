@@ -1709,6 +1709,8 @@ pub enum EffectChoiceKind {
     SacrificeExceptSourceAttachment,
     /// An unbounded resolution selection followed by one sacrifice batch.
     SacrificeSelection,
+    /// An unbounded selection whose actual sacrifices supply their total power.
+    SacrificeSelectionForPower,
     /// A creature sacrifice selection that excludes one effective creature subtype.
     SacrificeCreaturesExceptSubtype(&'static str),
     /// A declaration-bound sacrifice cost. None is the immutable X placeholder.
@@ -1839,6 +1841,7 @@ impl EffectChoiceKind {
             self,
             Self::RemoveLoreForSourceCounters(_)
                 | Self::SacrificeSelection
+                | Self::SacrificeSelectionForPower
                 | Self::TapAnyUntappedPermanents
                 | Self::ExileGraveyardCreaturesReflexive { .. }
                 | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
@@ -1873,6 +1876,7 @@ impl EffectChoiceKind {
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeSelection
+            | Self::SacrificeSelectionForPower
             | Self::SacrificeExceptAttackingAttachment
             | Self::SacrificeExceptSourceAttachment => Self::Sacrifice,
             Self::ReturnTappedCreature => Self::ReturnToHand,
@@ -4217,6 +4221,12 @@ pub enum Instruction {
     /// Immediate free casts from the damaged player's top X, each mana value
     /// at most the frozen actual damage X; no shared mana-value budget.
     ExileDamageEventLibraryCastFree,
+    /// Exile the controller's top cards. Immediately offer any number of spells
+    /// whose chosen faces match the mask from among this exact batch for free.
+    ExileTopCastFree {
+        amount: AmountValue,
+        kinds: u8,
+    },
     /// Reveal the targeted player's whole hand, then choose one matching card if able.
     /// Kind bits form a positive union; exile is permanent and has no source link.
     RevealTargetHandChoose {
@@ -4353,6 +4363,8 @@ pub enum Instruction {
     },
     /// Sacrifice any number of matching permanents together and remember the actual count.
     MaySacrificeAnyNumber(SacrificeFilter),
+    /// Save the actual sacrificed creatures' combined last-known power.
+    MaySacrificeAnyNumberForPower(SacrificeFilter),
     /// Optional non-targeted sacrifice of one controlled permanent.
     /// A paid sacrifice cost saves the chosen permanent’s prior battlefield mana value.
     MaySacrificeForManaValue {

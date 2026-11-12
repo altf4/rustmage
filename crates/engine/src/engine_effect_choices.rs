@@ -2999,10 +2999,21 @@ impl Game {
             .map(|object| (player, object.card))
             .collect();
         if !sacrifices.is_empty() {
-            let paid = self
-                .sacrifice_cost_batch_outcome(&sacrifices)
+            let events = self
+                .sacrifice_cost_batch_events(&sacrifices)
                 .expect("validated sacrifice selections");
-            self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
+            let actual = events
+                .iter()
+                .filter(|event| event.sacrificed_by == Some(player));
+            let resolution = self.state.resolving.as_mut().unwrap();
+            resolution.moved_count = Some(actual.clone().count() as u64);
+            if choice.kind == EffectChoiceKind::SacrificeSelectionForPower {
+                let power = actual
+                    .map(|event| event.before.power)
+                    .try_fold(0i128, |sum, power| sum.checked_add(power))
+                    .capacity("sacrificed power exhausted");
+                resolution.sacrificed_power = Some(Box::new(power));
+            }
         }
     }
 

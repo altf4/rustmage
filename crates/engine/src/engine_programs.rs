@@ -7652,6 +7652,18 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::ExileTopCastFree { amount, kinds } => {
+                    let amount = self.item_amount(amount, &item);
+                    if self.exile_top_offer_free_cast(
+                        item.controller,
+                        item.controller,
+                        amount,
+                        None,
+                        kinds,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::RevealTargetHandExileLinked => {
                     if self.start_revealed_hand_exile_linked(&item) {
                         return;
@@ -8212,16 +8224,19 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::MaySacrificeAnyNumber(filter) => {
-                    self.state.resolving.as_mut().unwrap().moved_count = Some(0);
-                    if self.start_effect_choice(
-                        &item,
-                        EffectChoiceKind::SacrificeSelection,
-                        PlayerSet::Controller,
-                        filter,
-                        0,
-                        None,
-                    ) {
+                Instruction::MaySacrificeAnyNumber(filter)
+                | Instruction::MaySacrificeAnyNumberForPower(filter) => {
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.moved_count = Some(0);
+                    let kind =
+                        if matches!(instruction, Instruction::MaySacrificeAnyNumberForPower(_)) {
+                            resolution.sacrificed_power = None;
+                            EffectChoiceKind::SacrificeSelectionForPower
+                        } else {
+                            EffectChoiceKind::SacrificeSelection
+                        };
+                    if self.start_effect_choice(&item, kind, PlayerSet::Controller, filter, 0, None)
+                    {
                         return;
                     }
                 }

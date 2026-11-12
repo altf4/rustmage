@@ -1467,6 +1467,7 @@ impl Game {
             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
             | EffectChoiceKind::LinkedCreature { .. }
             | EffectChoiceKind::SacrificeSelection
+            | EffectChoiceKind::SacrificeSelectionForPower
             | EffectChoiceKind::SacrificeExceptAttackingAttachment
             | EffectChoiceKind::SacrificeExceptSourceAttachment
             | EffectChoiceKind::MeldPartner(_)

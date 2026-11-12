@@ -725,6 +725,9 @@ pub struct ResolutionFreeCasts {
     pub siege_transformed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<ResolutionPaidCast>,
+    /// Nonzero masks constrain the type of each offered spell face.
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub spell_kinds: u8,
     /// Successful spells still permitted by this immediate casting instruction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub casts_remaining: Option<u16>,
@@ -832,6 +835,7 @@ impl Game {
                 permanent_spell_only: false,
                 uncast_to_hand: true,
                 siege_transformed: false,
+                spell_kinds: 0,
                 paid: None,
                 casts_remaining: Some(1),
                 pending_cast: None,
@@ -897,6 +901,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: Some(paid),
             casts_remaining,
             pending_cast: None,
@@ -965,6 +970,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
@@ -1004,6 +1010,7 @@ impl Game {
             permanent_spell_only,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
@@ -1040,6 +1047,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: Some(ResolutionPaidCast {
                 kinds,
                 exile_instants_sorceries,
@@ -1110,6 +1118,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid,
             casts_remaining: paid.map(|_| 1),
             pending_cast: None,
@@ -1145,6 +1154,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -1244,6 +1254,7 @@ impl Game {
             if free
                 .paid
                 .is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+                && (free.spell_kinds == 0 || free.spell_kinds & 1 != 0)
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
                 && self.disguise_mana_fundable(player, object.card)
@@ -1261,6 +1272,8 @@ impl Game {
                 let definition = face.definition(physical);
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
+                        && (free.spell_kinds == 0
+                            || card.kind_mask() & u16::from(free.spell_kinds) != 0)
                         && (!free.permanent_spell_only || CastFilter::Permanent.matches(card))
                         && free
                             .permanent_type
@@ -1595,7 +1608,29 @@ impl Game {
         let Some(damage) = item.damage_event else {
             return false;
         };
-        let ids = exile::top_library_cards(self, damage.player, damage.amount);
+        // The maximum is exclusive. At or above u64::MAX every represented
+        // mana value qualifies, so leave the offer uncapped.
+        let maximum_mana_value = u64::try_from(damage.amount)
+            .ok()
+            .and_then(|value| value.checked_add(1));
+        self.exile_top_offer_free_cast(
+            item.controller,
+            damage.player,
+            damage.amount,
+            maximum_mana_value,
+            0,
+        )
+    }
+
+    pub(super) fn exile_top_offer_free_cast(
+        &mut self,
+        player: Player,
+        library: Player,
+        amount: u128,
+        maximum_mana_value: Option<u64>,
+        spell_kinds: u8,
+    ) -> bool {
+        let ids = exile::top_library_cards(self, library, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let remaining: Vec<_> = events
             .iter()
@@ -1606,17 +1641,13 @@ impl Game {
         if remaining.is_empty() {
             return false;
         }
-        // Existing maximum is exclusive. At/above u64::MAX every represented
-        // card mana value qualifies; do not narrow the frozen damage first.
-        let maximum_mana_value = u64::try_from(damage.amount)
-            .ok()
-            .and_then(|value| value.checked_add(1));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -1626,12 +1657,10 @@ impl Game {
             origin: Zone::Exile,
             exile_on_graveyard: false,
             allow_lands: false,
-            player: item.controller,
+            player,
             remaining,
         }));
-        self.state.pending = Pending::ResolutionCasts {
-            player: item.controller,
-        };
+        self.state.pending = Pending::ResolutionCasts { player };
         true
     }
     pub(super) fn exile_target_top_cast_free(
@@ -1672,6 +1701,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,
