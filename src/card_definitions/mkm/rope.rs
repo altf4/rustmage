@@ -3,7 +3,7 @@ const EQUIPPED_BONUS: EquipmentSpec = EquipmentSpec {
         power: 1,
         toughness: 2,
     },
-    keywords: Keywords::REACH.union(Keywords::MAX_ONE_BLOCKER),
+    keywords: Keywords::REACH,
 };
 
 pub(in crate::cards) const RULES: CardRules = CardRules {
@@ -14,6 +14,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         fragments: &[
             StaticAbilityFragment::AttachmentStats(EQUIPPED_BONUS.stats),
             StaticAbilityFragment::AttachmentKeywords(EQUIPPED_BONUS.keywords),
+            StaticAbilityFragment::AttachmentRule(Keywords::MAX_ONE_BLOCKER),
         ],
     }],
     extras: &CardExtras {

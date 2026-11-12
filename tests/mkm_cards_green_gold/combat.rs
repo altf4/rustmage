@@ -315,6 +315,10 @@ fn rope_equips_reach_and_a_single_blocker_limit_then_can_be_sacrificed_as_a_clue
     );
     act(&mut menace, Action::FinishBlockers);
 
+    let piranhas = put(&mut game, player, "Eaten by Piranhas", Zone::Hand);
+    cast(&mut game, piranhas, Some(Target::Card(wearer)));
+    settle(&mut game);
+    assert!(!game.keywords(wearer).contains(Keywords::REACH));
     attack(&mut game, &[wearer]);
     pass_pair(&mut game);
     act(
