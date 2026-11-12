@@ -14,7 +14,6 @@ const WAVE: CardRules = CardRules {
             max: usize::MAX,
         }),
         &[
-            Instruction::UpToTargets(AmountValue::ChosenX),
             Instruction::Tap,
             Instruction::DistributeCountersAmongPermanents {
                 total: 3,
@@ -33,6 +32,7 @@ const WAVE: CardRules = CardRules {
     ),
     extras: &CardExtras {
         waterbend_additional: Some(WaterbendAdditional::RequiredX),
+        targets_up_to_x: true,
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

@@ -3,6 +3,7 @@ mod support;
 
 use rustmage as _;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
+use rustmage_core::engine::mana_lots::{ManaRestrictionView, Quality};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -381,6 +382,20 @@ fn ward_waterbend_is_paid_by_the_related_spell_controller() {
             act(&mut game, Action::Pass);
         }
         assert_eq!(game.actor(), Some(payer));
+        game.add_quality_mana(
+            payer,
+            [0, 0, 0, 0, 0, 2],
+            Some(Quality {
+                restriction: ManaRestrictionView::ArtifactSpell,
+                ..Quality::ORDINARY
+            }),
+        );
+        reject(
+            &mut game,
+            Action::PayResolutionMana {
+                payment: [0, 0, 0, 0, 0, 2],
+            },
+        );
         act(&mut game, Action::BeginWaterbend);
         assert!(game.observe(payer.other()).waterbend_choice.is_none());
         let action = waterbender(&game, foreign);

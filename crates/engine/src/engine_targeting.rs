@@ -1118,6 +1118,7 @@ struct TargetSourceCharacteristics<'a> {
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
     event_object: Option<&'a EventObjectView>,
+    damaged_player: Option<Player>,
     acquired_link_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1130,6 +1131,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             spell: Some(definition),
             chosen_creature_type: None,
             event_object: None,
+            damaged_player: None,
             acquired_link_cohort: None,
         }
     }
@@ -1148,6 +1150,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
                 .as_ref()
                 .map(|facts| facts.chosen_creature_type),
             event_object: item.event_object.as_deref(),
+            damaged_player: item.damage_event.map(|event| event.player),
             acquired_link_cohort: item.linked_activation_cohort(),
         }
     }
@@ -2376,6 +2379,28 @@ impl Game {
         let characteristics = || characteristic_query::CharacteristicQuery::in_world(world);
         let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
+            TargetRule::DamagedPlayerObject { zone, kinds } => {
+                let Some(player) = qualification.and_then(|facts| facts.damaged_player) else {
+                    return false;
+                };
+                return self.target_matches_in_world(
+                    world,
+                    TargetRule::Object {
+                        zone,
+                        kinds,
+                        relation: if player == controller { 0 } else { 1 },
+                        other: false,
+                        nonland: false,
+                        tapped: false,
+                        min_mana: 0,
+                        max_mana: u32::MAX,
+                    },
+                    controller,
+                    source,
+                    target,
+                    qualification,
+                );
+            }
             TargetRule::OtherThanEventObject { base, excluded } => {
                 let target_ref = match target {
                     Target::Card(id) if lookup(id).is_some() => world.reference(id),
