@@ -225,19 +225,16 @@ impl Game {
             }
         }
     }
-    pub(super) fn allow_source_attack_without_defender(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
-            return;
-        };
-        if !self.on_battlefield(source.id) || self.object_ref(source.id) != source.object {
+    pub(super) fn allow_attack_without_defender(&mut self, object: ObjectRef) {
+        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return;
         }
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
         rules
             .attack_without_defender
-            .retain(|r| r.card != source.id || *r == source.object);
-        if !rules.attack_without_defender.contains(&source.object) {
-            rules.attack_without_defender.push(source.object);
+            .retain(|r| r.card != object.card || *r == object);
+        if !rules.attack_without_defender.contains(&object) {
+            rules.attack_without_defender.push(object);
         }
     }
 }

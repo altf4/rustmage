@@ -793,6 +793,32 @@ impl Game {
                 names.dedup();
                 names.len() as i128
             }
+            StatValue::DistinctControlledCreatureTokenNames => {
+                let mut names: Vec<_> = objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && world.is_token(id)
+                            && kinds(id, object) & 1 != 0
+                    })
+                    .map(|(id, _)| crate::card_names::comparison_key(names(id)))
+                    .filter(|name| !name.is_empty())
+                    .collect();
+                names.sort_unstable();
+                names.dedup();
+                names.len() as i128
+            }
+            StatValue::OwnedGraveyardOrFaceUpExileNameOrSubtype { name, subtype } => objects()
+                .filter(|&(id, object)| {
+                    object.owner == owner
+                        && object.is_card()
+                        && (object.zone == Zone::Graveyard
+                            || object.zone == Zone::Exile
+                                && !self.exiled_face_down(world.reference(id)))
+                        && (names(id) == name || subtypes(id).has(object.card, subtype))
+                })
+                .count()
+                as i128,
             StatValue::CountUnion(filters) => objects()
                 .filter(|&(id, o)| {
                     filters.iter().any(|&filter| {

@@ -745,6 +745,22 @@ impl Game {
                     .max(0);
                 u64::try_from(maximum).unwrap_or(u64::MAX)
             }
+            SpellReductionAmount::TotalControlledCreatureToughness => {
+                let total = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, _)| {
+                        let object = world.object(*id as CardId);
+                        object.zone == Zone::Battlefield
+                            && object.controller == actor
+                            && world.kinds(*id as CardId) & 1 != 0
+                    })
+                    .map(|(id, _)| stats(id as CardId).toughness)
+                    .fold(0i128, i128::saturating_add);
+                u64::try_from(total.max(0)).unwrap_or(u64::MAX)
+            }
             crate::cards::SpellReductionAmount::SourcePower => {
                 u64::try_from(stats(source).power.max(0)).unwrap_or(u64::MAX)
             }

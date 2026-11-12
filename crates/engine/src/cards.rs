@@ -2773,6 +2773,7 @@ pub enum Instruction {
         ability: u16,
     },
     AttackWithoutDefenderThisTurn,
+    TargetsAttackWithoutDefenderThisTurn,
     CombatAndMainAfterCurrentMain(u16),
     ScheduleAttackTriggerThisTurn {
         ability: u16,
@@ -4962,6 +4963,7 @@ pub enum Instruction {
     GrantTargetPermanentTrigger(u16),
     /// Grant a triggered ability to this exact source until cleanup.
     GrantSourceTriggerUntilEndOfTurn(u16),
+    GrantTargetTriggerUntilEndOfTurn(u16),
     /// Grant keywords only to targets cast for their warp cost.
     GrantWarpedTargetsKeywords(Keywords),
     /// Register the exact targets for earthbend's delayed return.
@@ -5996,6 +5998,11 @@ pub enum StatValue {
     GreatestManaValue(CountFilter),
     TotalManaValue(CountFilter),
     DistinctNames(CountFilter),
+    DistinctControlledCreatureTokenNames,
+    OwnedGraveyardOrFaceUpExileNameOrSubtype {
+        name: &'static str,
+        subtype: &'static str,
+    },
     DistinctManaValues(CountFilter),
     /// Controlled creatures with the source's exact chosen creature type.
     CreaturesOfChosenType,
@@ -7119,6 +7126,7 @@ pub enum SpellReductionAmount {
     },
     SourcePower,
     GreatestCreatureToughness,
+    TotalControlledCreatureToughness,
     EquippedPower,
 }
 /// Permission belonging to the chosen spell, checked before costs (CR601.6a).
@@ -7436,6 +7444,7 @@ pub enum TriggerCondition {
     Proliferated(CastRelation),
     /// First declaration in the turn whose signed creature-power total reaches this threshold.
     FirstAttackWithTotalPowerAtLeast(u16),
+    PlayerAttacksWithAtLeast(u16),
     /// Pre-event observer and other permanent, with an actual owner-hand result.
     OtherControlledNonlandReturnedToOwnersHand,
     /// Global target acquisition, not a cast-completion or self-target event.

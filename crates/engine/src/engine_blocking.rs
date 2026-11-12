@@ -4,22 +4,28 @@ use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn source_power_forbids_block(&self, attacker: CardId) -> bool {
+    fn source_forbids_block(&self, attacker: CardId, blocker: CardId) -> bool {
         self.state.objects[attacker as usize]
             .card
             .static_ability_groups()
             .iter()
             .flat_map(|group| group.fragments)
             .any(|fragment| {
-                let crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(
-                    maximum,
-                ) = *fragment
-                else {
-                    return false;
+                let active = || {
+                    self.continuous_fragment_available(attacker, |candidate| {
+                        std::ptr::eq(candidate, fragment)
+                    })
                 };
-                self.continuous_fragment_available(attacker, |candidate| {
-                    std::ptr::eq(candidate, fragment)
-                }) && self.stats(attacker).power <= maximum
+                match *fragment {
+                    StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(maximum) => {
+                        active() && self.stats(attacker).power <= maximum
+                    }
+                    StaticAbilityFragment::CannotBeBlockedByNamelessCreatures => {
+                        active()
+                            && ability_world::CharacteristicWorld::name(self, blocker).is_empty()
+                    }
+                    _ => false,
+                }
             })
     }
 
@@ -97,7 +103,7 @@ impl Game {
             return false;
         }
         if self.flying_block_forbidden(blocker, attacker)
-            || self.source_power_forbids_block(attacker)
+            || self.source_forbids_block(attacker, blocker)
             || self.controlled_creature_block_forbidden(attacker, blocker)
             || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)

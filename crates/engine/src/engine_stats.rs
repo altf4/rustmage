@@ -165,6 +165,7 @@ impl Game {
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
+                    | TriggerCondition::PlayerAttacksWithAtLeast(_)
                     | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::CreaturesAttackDeclared { .. }

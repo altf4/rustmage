@@ -1244,6 +1244,7 @@ impl Game {
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
                     | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
+                    | TriggerCondition::PlayerAttacksWithAtLeast(_)
                     | TriggerCondition::OpponentAttacked
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
@@ -3255,6 +3256,7 @@ impl Game {
                                 ability.condition.event(),
                                 TriggerCondition::CreaturesAttackYou
                                     | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
+                                    | TriggerCondition::PlayerAttacksWithAtLeast(_)
                                     | TriggerCondition::OpponentAttacked
                             )
                         })
@@ -3274,6 +3276,18 @@ impl Game {
                 match ability.condition.event() {
                     TriggerCondition::OpponentAttacked if opponent_attacked => {
                         self.queue_attack_trigger(&source, index);
+                    }
+                    TriggerCondition::PlayerAttacksWithAtLeast(minimum)
+                        if declared.len() >= usize::from(minimum)
+                            && self.queue_attack_trigger(&source, index) =>
+                    {
+                        let cohort: Vec<_> = declared
+                            .iter()
+                            .map(|row| self.object_ref(row.card))
+                            .collect();
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.event_player = Some(actor);
+                        packet.refer_objects(cohort);
                     }
                     TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(minimum)
                         if source.controller != actor
@@ -4869,7 +4883,14 @@ impl Game {
                     }
                 }
                 Instruction::AttackWithoutDefenderThisTurn => {
-                    self.allow_source_attack_without_defender(&item)
+                    if let Some(source) = item.source {
+                        self.allow_attack_without_defender(source.object);
+                    }
+                }
+                Instruction::TargetsAttackWithoutDefenderThisTurn => {
+                    for recipient in self.keyword_subjects(&item, Subject::Targets) {
+                        self.allow_attack_without_defender(self.object_ref(recipient));
+                    }
                 }
                 Instruction::CombatAndMainAfterCurrentMain(count) => {
                     self.add_combat_main_pairs(count)
@@ -12074,6 +12095,12 @@ impl Game {
                     self.return_granted_source(&item, counter, role)
                 }
                 Instruction::GrantSelfAbility(kind) => self.grant_self_ability(&item, kind),
+                Instruction::GrantTargetTriggerUntilEndOfTurn(ability) => {
+                    let recipients = self.keyword_subjects(&item, Subject::Targets);
+                    if !recipients.is_empty() {
+                        self.grant_temporary_ability_to(&item, ability, &recipients);
+                    }
+                }
                 Instruction::GrantSourceTriggerUntilEndOfTurn(ability) => {
                     if self.on_battlefield(
                         item.source

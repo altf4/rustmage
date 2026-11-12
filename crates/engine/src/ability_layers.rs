@@ -722,6 +722,7 @@ pub enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    CannotBeBlockedByNamelessCreatures,
     CannotBeBlockedByCreaturesWithPowerAtLeast(i128),
     /// This permanent can block only attacking creatures with flying.
     CanBlockOnlyFlying,
