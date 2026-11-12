@@ -37,6 +37,15 @@ impl Game {
         }) {
             self.state.step_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CardDrawn { .. }
+                )
+        }) {
+            self.state.draw_sources.push(id);
+        }
         if triggers.iter().any(|a| {
             a.condition.origin() == Some(TargetZone::Graveyard)
                 && matches!(
@@ -84,6 +93,9 @@ impl Game {
         }
         if self.state.step_sources.contains(&id) {
             self.state.step_sources.retain(|&source| source != id);
+        }
+        if self.state.draw_sources.contains(&id) {
+            self.state.draw_sources.retain(|&source| source != id);
         }
         if self.state.damage_sources.contains(&id) {
             self.state.damage_sources.retain(|&source| source != id);
@@ -215,12 +227,13 @@ impl Game {
             self.state.scry_sources.push(id);
         }
         if triggers.iter().any(|ability| {
-            matches!(
-                ability.condition.event(),
-                TriggerCondition::CardDrawn { .. }
-                    | TriggerCondition::LibrarySearched { .. }
-                    | TriggerCondition::DiscoveredYou
-            )
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::CardDrawn { .. }
+                        | TriggerCondition::LibrarySearched { .. }
+                        | TriggerCondition::DiscoveredYou
+                )
         }) {
             self.state.draw_sources.push(id);
         }

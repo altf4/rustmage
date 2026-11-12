@@ -7299,6 +7299,8 @@ pub enum SpellReductionAmount {
 pub enum SelfCastTiming {
     /// Cast as though it had flash while controlling this subtype.
     ControlSubtype(&'static str),
+    /// Cast as though it had flash while enough cards of this subtype are in your graveyard.
+    AsThoughFlashWithGraveyardSubtype { subtype: &'static str, minimum: u16 },
     /// The spell has flash while controlling this subtype.
     FlashWhileControlSubtype(&'static str),
     /// This spell has flash while its controller has committed a crime this turn.

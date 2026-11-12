@@ -22,6 +22,21 @@ pub(super) fn self_cast_timing_applies<W: ability_world::CharacteristicWorld + ?
         SelfCastTiming::FlashAfterCrime => {
             world.game().state.players[actor.index()].committed_crime_this_turn
         }
+        SelfCastTiming::AsThoughFlashWithGraveyardSubtype { subtype, minimum } => {
+            let minimum = usize::from(minimum);
+            (0..world.game().state.objects.len())
+                .map(|id| id as CardId)
+                .filter(|&id| {
+                    let object = world.object(id);
+                    object.zone == Zone::Graveyard
+                        && object.owner == actor
+                        && object.is_card()
+                        && world.subtypes(id).has(world.definition(id), subtype)
+                })
+                .take(minimum)
+                .count()
+                == minimum
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
