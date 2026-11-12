@@ -56,7 +56,9 @@ fn simultaneous_deaths_retain_the_observer_and_each_exact_graveyard_arrival() {
     let instant = put(&mut game, player, "Shock", Zone::Library);
     let face_up = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     game.cloak_library_top(player, owner);
+    assert!(!game.advance_entries());
     game.cloak_library_top(player, player);
+    assert!(!game.advance_entries());
     let prior_land = game.object_ref(land);
     let prior_spell = game.object_ref(instant);
     let sweeper = put(&mut game, player, "Day of Judgment", Zone::Hand);
@@ -118,6 +120,7 @@ fn prohibited_turn_up_still_returns_a_known_unwarded_creature_face_down() {
     spawn(&mut game, owner, lock, Zone::Battlefield);
     let bear = put(&mut game, owner, "Grizzly Bears", Zone::Library);
     game.cloak_library_top(player, owner);
+    assert!(!game.advance_entries());
 
     let sweeper = put(&mut game, owner, "Day of Judgment", Zone::Hand);
     cast(&mut game, sweeper, None);
@@ -157,10 +160,13 @@ fn combat_damage_counts_only_controlled_face_down_creatures_and_groups_by_player
     let source = spawn(&mut game, player, watcher, Zone::Battlefield);
     let first = put(&mut game, player, "Forest", Zone::Library);
     game.cloak_library_top(player, player);
+    assert!(!game.advance_entries());
     let second = put(&mut game, opponent, "Forest", Zone::Library);
     game.cloak_library_top(player, opponent);
+    assert!(!game.advance_entries());
     let hostile = put(&mut game, opponent, "Forest", Zone::Library);
     game.cloak_library_top(opponent, opponent);
+    assert!(!game.advance_entries());
     let hit = |id, target, amount, combat| DamageEvent {
         source: game.damage_source(id),
         target: Target::Player(target),

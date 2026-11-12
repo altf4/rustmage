@@ -129,7 +129,10 @@ fn decline_is_private_without_candidates_and_filtered_payment_can_be_redirected(
             .is_empty()
     );
     assert!(no_match.observe(opponent).effect_choice.is_none());
-    assert_eq!(no_match.legal_actions(), [Action::DeclineEffectPayment]);
+    assert_eq!(
+        no_match.legal_actions(),
+        [Action::Concede, Action::DeclineEffectPayment]
+    );
     act(&mut no_match, Action::DeclineEffectPayment);
     for _ in 0..2 {
         choose(&mut no_match, |a| matches!(a, Action::Discard { .. }));

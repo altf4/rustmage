@@ -103,10 +103,12 @@ fn hand_cloak_accepts_noncreature_cards_and_keeps_the_choice_private() {
         branch.observe(player).face_down_permanents[0].underlying,
         Some(Card::Forest)
     );
-    assert_eq!(
-        serde_json::to_value(branch.observe(player.other())).unwrap(),
-        serde_json::to_value(game.observe(player.other())).unwrap(),
-    );
+    let public = |game: &Game| {
+        let mut view = game.observe(player.other());
+        view.revision = 0;
+        serde_json::to_value(view).unwrap()
+    };
+    assert_eq!(public(&branch), public(&game));
 }
 
 #[test]

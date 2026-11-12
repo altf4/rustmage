@@ -194,7 +194,9 @@ fn turn_up_prohibition_checks_the_effect_player_across_either_controller() {
     let owned = put(&mut game, player, "Forest", Zone::Library);
     let foreign = put(&mut game, opponent, "Forest", Zone::Library);
     game.cloak_library_top(player, player);
+    assert!(!game.advance_entries());
     game.cloak_library_top(opponent, opponent);
+    assert!(!game.advance_entries());
     let your_face = game.object_ref(owned);
     let their_face = game.object_ref(foreign);
     assert!(!game.turn_manifest_face_up(your_face, opponent));
