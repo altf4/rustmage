@@ -175,8 +175,8 @@ fn private_eye_buffs_only_other_controlled_detectives_and_targets_on_draw_two() 
     );
     let other = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     assert_eq!(game.stats(eye).power, 3);
-    assert_eq!(stats(&game, own).power, 2);
-    assert_eq!(stats(&game, opposing).power, 1);
+    assert_eq!(game.stats(own).power, 2);
+    assert_eq!(game.stats(opposing).power, 1);
     assert_eq!(game.stats(other).power, 2);
     let draw = put(&mut game, player, "Quick Study", Zone::Hand);
     cast(&mut game, draw, None);
