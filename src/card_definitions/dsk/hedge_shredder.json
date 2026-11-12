@@ -3,10 +3,32 @@
   "catalogue_id": 1988,
   "oracle_id": "f22665cd-4710-48df-83c1-3c9081097cb5",
   "facts_sha256": "4f745a3ebf1ff01d5ef65799b1866bdbd8316a3cd2dc4a03a45bae0c3b938037",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "b968f1137732ba0da2c124f5a58ce060941870c5d060c397b71759b4b6c7e03d"
-  },
-  "physical_metadata_sha256": "466f5d6d621dcde55670256f2aa0ee7991f2665956c4414f31e73cb4433e2049"
+  "complete": true,
+  "physical_metadata_sha256": "466f5d6d621dcde55670256f2aa0ee7991f2665956c4414f31e73cb4433e2049",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HedgeShredder.java",
+  "java_sha256": "50ab6d33271189fcad41c2691851569633bd3b04fe8adff6ec40687c5b57c060",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeBatchEvent.java",
+      "sha256": "779086d8ead6af88391bca75b4724ef865b1c0c2f879bf6128542db5245a8252"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

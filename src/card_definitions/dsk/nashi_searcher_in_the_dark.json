@@ -3,10 +3,22 @@
   "catalogue_id": 2909,
   "oracle_id": "ade8fc6f-efaa-4a24-96d8-99ef5026cd74",
   "facts_sha256": "072629eb49e9fca78424708277f80afef7d8ed01ddeea4d140a098356ed66215",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "61b64ac39902592ead705a440a4df8e0eed8570875327caa129cea20f1203717"
-  },
-  "physical_metadata_sha256": "1c989fc459a9556f4cfa7283012aedf6430579367a799ebb7475d0698c3b3675"
+  "complete": true,
+  "physical_metadata_sha256": "1c989fc459a9556f4cfa7283012aedf6430579367a799ebb7475d0698c3b3675",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NashiSearcherInTheDark.java",
+  "java_sha256": "d954842610a6d0ec811e95d548281310ac212a892eacd99098f4bc243fbbfabd",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ]
 }

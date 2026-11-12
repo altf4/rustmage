@@ -3,10 +3,32 @@
   "catalogue_id": 1103,
   "oracle_id": "7010bfbb-8aea-473b-a9a5-27488de13cc5",
   "facts_sha256": "dbf60402700144bed694762c1418f7ed3ba0823bd8e51bf1a26a18b6f0568898",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3452cfcf84fe21ea3590a08df67218f9bdc24ddce0b1db26b030fd9d785bc7bb"
-  },
-  "physical_metadata_sha256": "43e13014b4a2244af3c6699c4b7e96900f4ef76bbb6d6632cd5a8f0b4dd2ebb6"
+  "complete": true,
+  "physical_metadata_sha256": "43e13014b4a2244af3c6699c4b7e96900f4ef76bbb6d6632cd5a8f0b4dd2ebb6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DisturbingMirth.java",
+  "java_sha256": "fb448988336439e4cd2ed6461ac7fa8ba2cfc789b1c8c9f4b5a9a6ccf1e450dd",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificeSourceTriggeredAbility.java",
+      "sha256": "aaf077484872644c7f9b2d70c878b76f7880edae52611abf89575e0cd6ffc60c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    }
+  ]
 }

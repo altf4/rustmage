@@ -3,10 +3,32 @@
   "catalogue_id": 317,
   "oracle_id": "2dd32fec-5bc3-4cc0-a9b4-814229a64914",
   "facts_sha256": "98f07f220eb15d6aa7e5d40e9ed27b2e8c2c6c9e45c99f458beba0953aa4a2c3",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "26fd5f5b9a20170b06cfb28ecbe84793e0878f99c2d1bb302a4fa3b3238a4166"
-  },
-  "physical_metadata_sha256": "08a5c0b1ed9d92b06d8e0fd4cf0e3725af23c54fbc1fb0837f32e8a20c934aea"
+  "complete": true,
+  "physical_metadata_sha256": "08a5c0b1ed9d92b06d8e0fd4cf0e3725af23c54fbc1fb0837f32e8a20c934aea",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BalustradeWurm.java",
+  "java_sha256": "8dd949afc6845f0b1b9c12f23a6ed7ae53647fa74fe3e83531fc02495cbb8a4b",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBeCounteredSourceAbility.java",
+      "sha256": "ab592d3d97f245e6b3ca9971e1c559a7063c8717a4a5963b64564a13abd768de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    }
+  ]
 }

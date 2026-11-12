@@ -3,10 +3,27 @@
   "catalogue_id": 1468,
   "oracle_id": "018327d1-a3ba-4912-9c88-f0f0c54a1750",
   "facts_sha256": "d2787e4690e5c09c3ce504db3d5236c6c2ee0a92a162a73e5468bad57a855f10",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "7a65f601e79df5ed9d381e0995931d62470be761126938e3d13c516c2298d58c"
-  },
-  "physical_metadata_sha256": "8a2b7d2520275c15061e9a5d52b673d3ad5439233178575207754429d0406b61"
+  "complete": true,
+  "physical_metadata_sha256": "8a2b7d2520275c15061e9a5d52b673d3ad5439233178575207754429d0406b61",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfInfinity.java",
+  "java_sha256": "f406e7aef6ddff9ac28275c946c4b59eaf274e8287a90e0c99b77b7987259463",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CantBlockAbility.java",
+      "sha256": "e78337c6f4e0c6d913ed6085d1a91b4663b27f6985deb409d78303a0f565dda1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    }
+  ]
 }

@@ -3,10 +3,27 @@
   "catalogue_id": 3547,
   "oracle_id": "a7fea839-d7d7-48b4-aeaf-133767532e32",
   "facts_sha256": "73f6c1d3f07c90cf14512db91fa91c75963473f1d45c2e0ed8b0b9536ab3366a",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "7c2d871871b86f93cdcf63ea015e35dfa44848b5d62082bf69ad39af6fa7c85a"
-  },
-  "physical_metadata_sha256": "6b25a6f8f397bf0e017472d9931b3d6c6ada8c46719a184d052302264b415b4b"
+  "complete": true,
+  "physical_metadata_sha256": "6b25a6f8f397bf0e017472d9931b3d6c6ada8c46719a184d052302264b415b4b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiteOfTheMoth.java",
+  "java_sha256": "15f6204eb01b0331b13ceec3f59eb90a82a5393ec7ee7d43d250c235db65da5d",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldWithCounterTargetEffect.java",
+      "sha256": "0e7f52f88746be4b6bbb9acafadcf25b3ad14633151a2868726600cb1af9434c"
+    }
+  ]
 }

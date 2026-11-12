@@ -3,10 +3,27 @@
   "catalogue_id": 141,
   "oracle_id": "6591f243-f94c-4a83-bb16-1fb838d9eb14",
   "facts_sha256": "abd8c4aac22b63e5da78a931476c300779fcdc6c5e1c3f7c1047f5dccb9fad5c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "cd7951b94a0841f902c18bbcedcaf6173939177870e7047ba7638a9b89987350"
-  },
-  "physical_metadata_sha256": "a33535e798237709f1f2a74e975b06dac422960e05e6ece0cca1b209213cc761"
+  "complete": true,
+  "physical_metadata_sha256": "a33535e798237709f1f2a74e975b06dac422960e05e6ece0cca1b209213cc761",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AltanakTheThriceCalled.java",
+  "java_sha256": "542c307d0bb78f727cf4aee8b90a8b5eba1152264bd619d8f357e329dbb92a81",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesTargetSourceTriggeredAbility.java",
+      "sha256": "a02a6e1d236c20da057b2ca37087d096bc1c989bdb1ea6ff0c4d16d917e7c7e7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardSourceCost.java",
+      "sha256": "0045494e33e80e96962af6a6c95ec025700ed91cbfae230d624c749e91793ecf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

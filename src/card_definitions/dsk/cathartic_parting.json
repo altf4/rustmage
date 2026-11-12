@@ -3,10 +3,31 @@
   "catalogue_id": 682,
   "oracle_id": "0ea80bd9-ab7e-4a8f-85b0-167fe7fae43a",
   "facts_sha256": "f2c167148e6f2f054fad71bc85201029151531e709016045958841b16198eaef",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "87b68bd7f93dd3676777c6c041e921b0fb7718586e0036288e19cc8ba600fc54"
-  },
-  "physical_metadata_sha256": "b379c4b801871c46fa366b34d0d8849f91f8b0a81f7671881c486ea3fc049c33"
+  "complete": true,
+  "physical_metadata_sha256": "b379c4b801871c46fa366b34d0d8849f91f8b0a81f7671881c486ea3fc049c33",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CatharticParting.java",
+  "java_sha256": "a95d9aeda34b9379bae0cc99bdda3c09d3f622cef3bfae85d12098d67422a068",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ShuffleIntoLibraryTargetEffect.java",
+      "sha256": "453f0d6256823dca73013ff64fdee6296512c5cbc9ad1465f0dc72e165a2fe02"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/SecondTargetPointer.java",
+      "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The optional own-library shuffle remains legal with zero targeted cards from your graveyard."
+  }
 }

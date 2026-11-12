@@ -3,10 +3,32 @@
   "catalogue_id": 1151,
   "oracle_id": "ef4c478c-7019-4ec0-8edf-2a3078a8e97a",
   "facts_sha256": "b38afae9283ffe87faaaaef4067cb526b4293d5e607026449ba11685325a29b9",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "1d300527055501e6d0c96131122f4f4f8ce4468fc28b78805915bb300a6235d2"
-  },
-  "physical_metadata_sha256": "8d96acd30c1a53ef44f4d258c87d3f629cf5bc8679a10fbb327b5bbd7459c2b6"
+  "complete": true,
+  "physical_metadata_sha256": "8d96acd30c1a53ef44f4d258c87d3f629cf5bc8679a10fbb327b5bbd7459c2b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DragToTheRoots.java",
+  "java_sha256": "3de9a5788bf054e882c610ed3503a642da2c804588873bbe6cfef78a309a12f1",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetNonlandPermanent.java",
+      "sha256": "6e4720e1386bdaa8f84eaf97cc8d6646845307f0be8697190c25cd1285ba598a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }

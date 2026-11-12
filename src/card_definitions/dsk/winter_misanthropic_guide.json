@@ -3,10 +3,32 @@
   "catalogue_id": 5085,
   "oracle_id": "5a9baafb-bffd-4e28-bbe1-b4154cd86bf3",
   "facts_sha256": "3a9b1e34cf6b528c58289fe629c1249077038ba4ed28fc6400258d605e407018",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "fbc837dc305681e04faf8e12f9f03e333a2e002db66c1d44347497c45a6940ea"
-  },
-  "physical_metadata_sha256": "48874cb5932b71e5d009e0e35e9afa38ea16d662b8cbbd9175ddebb1194b3a5e"
+  "complete": true,
+  "physical_metadata_sha256": "48874cb5932b71e5d009e0e35e9afa38ea16d662b8cbbd9175ddebb1194b3a5e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WinterMisanthropicGuide.java",
+  "java_sha256": "1b885d7ff4454d1ae9903024c86d7e7049dc1e6b25a435be9ce7d525a0ed3bfb",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardAllEffect.java",
+      "sha256": "5b3765dc9312d604f2b036c5b80187c272e517741b529941c4fadbd862ae60fa"
+    }
+  ]
 }
