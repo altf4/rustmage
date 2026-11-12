@@ -12997,6 +12997,32 @@ impl Game {
                         .collect();
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
+                Instruction::PutCountersOnTargetsByController {
+                    relation,
+                    kind,
+                    amount,
+                } => {
+                    let changes = self
+                        .keyword_subjects(&item, Subject::Targets)
+                        .into_iter()
+                        .filter(|&id| {
+                            self.on_battlefield(id)
+                                && match relation {
+                                    CastRelation::You => {
+                                        self.state.objects[id as usize].controller
+                                            == item.controller
+                                    }
+                                    CastRelation::Opponent => {
+                                        self.state.objects[id as usize].controller
+                                            != item.controller
+                                    }
+                                    CastRelation::Any => true,
+                                }
+                        })
+                        .map(|id| (self.object_ref(id), Counters::of(kind, u64::from(amount))))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
+                }
                 Instruction::PutCountersOnTargetKinds {
                     kinds,
                     kind,

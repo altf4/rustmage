@@ -5352,6 +5352,12 @@ pub enum Instruction {
         kind: CounterKind,
         amount: u16,
     },
+    /// Put counters on the exact surviving targets with this live controller relation.
+    PutCountersOnTargetsByController {
+        relation: CastRelation,
+        kind: CounterKind,
+        amount: u16,
+    },
     PutCountersOnTargetKinds {
         kinds: u16,
         kind: CounterKind,

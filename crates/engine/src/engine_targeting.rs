@@ -1341,6 +1341,18 @@ impl Game {
             // abilities with targets need a source-optional target query.
             return plan == TargetPlan::NONE;
         }
+        if let Some(required) = self.exact_x_targets(item)
+            && required != 0
+        {
+            let TargetPlan::Single(spec) = plan else {
+                panic!("exact X requires one homogeneous target group");
+            };
+            let mut remaining = required;
+            return self.visit_item_targets(item, spec.rule, |_| {
+                remaining -= 1;
+                remaining == 0
+            });
+        }
         self.targets_available_with(
             plan,
             item.controller,
