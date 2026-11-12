@@ -56,7 +56,11 @@ fn fixture() -> Card {
 }
 
 fn announce(card: CardId) -> Action {
-    Action::AnnounceActivate { card, ability: 0 }
+    Action::AnnounceActivate {
+        card,
+        ability: 0,
+        counter_payment: Counters::default(),
+    }
 }
 
 fn choose_cost(game: &mut Game, card: CardId) {

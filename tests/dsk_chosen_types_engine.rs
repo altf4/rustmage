@@ -123,7 +123,7 @@ fn placed_provider(game: &mut Game, player: Player, name: &str) -> CardId {
 
 #[test]
 fn opening_choice_applies_by_control_on_the_battlefield_and_ownership_elsewhere() {
-    let definition = provider_definition();
+    let definition = named("Leyline Axe");
     let _rules = fixture_rules::activate(&[(definition, &TYPE_PROVIDER)]);
     let player = Player::P0;
     let opponent = player.other();
@@ -260,11 +260,11 @@ fn a_chosen_type_supports_paid_casting_and_prospective_entry_replacements() {
     absent.move_object(source, Zone::Exile);
     reject(&mut absent, announce.clone());
     act(&mut game, announce);
-    assert_eq!(game.mana_payment_domain().unwrap().generic, 0);
     choose(&mut game, |choice| {
         matches!(choice, Action::ActivateMana { card, ability: 1, production, .. }
             if *card == cavern && *production == [0, 0, 0, 0, 1, 0])
     });
+    assert_eq!(game.mana_payment_domain().unwrap().generic, 0);
     pay(&mut game);
     let spell_view = game
         .observe(opponent)
