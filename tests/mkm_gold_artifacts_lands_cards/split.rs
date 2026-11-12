@@ -15,6 +15,9 @@ fn begin_split(game: &mut Game, source: CardId, half: SplitHalf) {
             flash_surcharge: false,
         },
     );
+    choose(game, |action| {
+        matches!(action, Action::ChooseSpellCost { .. })
+    });
 }
 
 fn choose_card(game: &mut Game, card: CardId) {
