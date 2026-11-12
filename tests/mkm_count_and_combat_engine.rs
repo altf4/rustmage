@@ -128,3 +128,55 @@ fn total_toughness_discount_counts_every_controlled_creature_at_announcement() {
     act(&mut game, Action::PayCosts { payment });
     settle(&mut game);
 }
+
+const LOW_POWER_GRANT: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::GrantCreaturesWithPowerAtMost {
+            filter: CreatureFilter {
+                relation: 0,
+                other: false,
+                subtype: None,
+                keyword: Keywords::NONE,
+                attacking: false,
+                tokens: None,
+                artifact: false,
+            },
+            maximum: 2,
+            keywords: Keywords::DEATHTOUCH.union(Keywords::LIFELINK),
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_power_bounded_grant_keeps_the_exact_resolved_recipient_set() {
+    let spell = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(spell, &LOW_POWER_GRANT)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let qualified = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let excluded = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let hostile = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let id = spawn(&mut game, player, spell, Zone::Hand);
+    cast(&mut game, id, None);
+    settle(&mut game);
+    let granted = Keywords::DEATHTOUCH.union(Keywords::LIFELINK);
+    assert!(game.keywords(qualified).contains(granted));
+    assert!(!game.keywords(excluded).intersects(granted));
+    assert!(!game.keywords(hostile).intersects(granted));
+
+    let grow = put(&mut game, player, "Giant Growth", Zone::Hand);
+    cast(&mut game, grow, Some(Target::Card(qualified)));
+    settle(&mut game);
+    assert!(game.keywords(qualified).contains(granted));
+    game.state.step = Step::End;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(!game.keywords(qualified).intersects(granted));
+}

@@ -12271,6 +12271,9 @@ impl Game {
                 | Instruction::GrantCreatureKeywordAbilities { filter, keywords }
                 | Instruction::GrantCreaturesWithPowerAtLeast {
                     filter, keywords, ..
+                }
+                | Instruction::GrantCreaturesWithPowerAtMost {
+                    filter, keywords, ..
                 } => {
                     let affected: Vec<_> = (0..self.state.objects.len())
                         .map(|id| id as CardId)
@@ -12282,14 +12285,14 @@ impl Game {
                                     .expect("instruction requires an object source")
                                     .object,
                                 id,
-                            ) && if let Instruction::GrantCreaturesWithPowerAtLeast {
-                                minimum,
-                                ..
-                            } = instruction
-                            {
-                                self.stats(id).power >= i128::from(minimum)
-                            } else {
-                                true
+                            ) && match instruction {
+                                Instruction::GrantCreaturesWithPowerAtLeast { minimum, .. } => {
+                                    self.stats(id).power >= i128::from(minimum)
+                                }
+                                Instruction::GrantCreaturesWithPowerAtMost { maximum, .. } => {
+                                    self.stats(id).power <= i128::from(maximum)
+                                }
+                                _ => true,
                             }
                         })
                         .collect();

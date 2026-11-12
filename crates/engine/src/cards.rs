@@ -5022,6 +5022,11 @@ pub enum Instruction {
         minimum: i32,
         keywords: Keywords,
     },
+    GrantCreaturesWithPowerAtMost {
+        filter: CreatureFilter,
+        maximum: i32,
+        keywords: Keywords,
+    },
     /// Grant keywords to the remembered exact creature recipients until cleanup.
     GrantRememberedCreatures(Keywords),
     GrantRememberedCreaturesUntilNextTurn(Keywords),
