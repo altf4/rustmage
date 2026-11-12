@@ -800,3 +800,98 @@ fn winter_draws_for_both_players_sets_live_hand_size_and_charges_ward() {
         hands.map(|size| size + 2)
     );
 }
+
+#[test]
+fn victor_shares_one_resolution_count_between_room_unlock_and_enchantment_entry() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let victor = cast_named(&mut game, player, "Victor, Valgavoth's Seneschal", None);
+    settle(&mut game);
+    assert_eq!(stats(&game, victor), (3, 3));
+    let creature = put(&mut game, opponent, "Hill Giant", Zone::Graveyard);
+    let own_creature = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    let to_discard = put(&mut game, opponent, "Forest", Zone::Hand);
+    let kept = put(&mut game, player, "Island", Zone::Library);
+    let milled = put(&mut game, player, "Shock", Zone::Library);
+    let room = put(&mut game, player, "Smoky Lounge // Misty Salon", Zone::Hand);
+    act(
+        &mut game,
+        Action::AnnounceRoom {
+            card: room,
+            door: RoomDoor::Left,
+            flash_surcharge: false,
+        },
+    );
+    pay(&mut game);
+    progress_until(&mut game, |game| {
+        game.observe(player).library_choice.is_some()
+    });
+    assert_eq!(
+        game.observe(player).library_choice.unwrap().remaining.len(),
+        2
+    );
+    assert!(game.observe(opponent).library_choice.is_none());
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: milled,
+            destination: LibraryDestination::Graveyard,
+        },
+    );
+    act(
+        &mut game,
+        Action::ArrangeLibrary {
+            card: kept,
+            destination: LibraryDestination::Top,
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(milled).zone, Zone::Graveyard);
+
+    let object = game.object_ref(room);
+    act(
+        &mut game,
+        Action::BeginRoomUnlock {
+            object,
+            door: RoomDoor::Right,
+            cost: ManaCost {
+                colored: [0, 1, 0, 0, 0, 0],
+                generic: 3,
+            },
+        },
+    );
+    choose(&mut game, |action| {
+        matches!(action, Action::PayRoomUnlock { .. })
+    });
+    let discard = Action::Discard { card: to_discard };
+    progress_until(&mut game, |game| game.legal_actions().contains(&discard));
+    assert_eq!(game.actor(), Some(opponent));
+    act(&mut game, discard);
+    settle_ordered(&mut game);
+    assert_eq!(game.object_view(to_discard).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+
+    cast_named(&mut game, player, "Impact Tremors", None);
+    let return_creature = Action::SelectGraveyardReturn {
+        object: game.object_ref(creature),
+    };
+    progress_until(&mut game, |game| {
+        game.legal_actions().contains(&return_creature)
+    });
+    assert_eq!(game.actor(), Some(player));
+    reject(&mut game, Action::FinishGraveyardReturn);
+    act(&mut game, return_creature);
+    settle_ordered(&mut game);
+    let returned = game.object_view(creature);
+    assert_eq!(returned.zone, Zone::Battlefield);
+    assert_eq!((returned.owner, returned.controller), (opponent, player));
+    assert_eq!(game.object_view(own_creature).zone, Zone::Graveyard);
+
+    let untouched = put(&mut game, opponent, "Island", Zone::Hand);
+    cast_named(&mut game, player, "Doubling Season", None);
+    settle(&mut game);
+    assert_eq!(game.object_view(untouched).zone, Zone::Hand);
+    assert_eq!(game.object_view(kept).zone, Zone::Library);
+    assert_eq!(game.object_view(own_creature).zone, Zone::Graveyard);
+}

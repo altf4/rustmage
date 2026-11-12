@@ -3,10 +3,41 @@
   "catalogue_id": 4888,
   "oracle_id": "92bf8f05-cbfd-42d8-8bc1-d7f2e46f9872",
   "facts_sha256": "33b356c07c3cacf78b60a64d28ae69faf478319af3217b2ec32b2ade7b89aec4",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "281dd0b5ee61c59071451c468522a0b7b1ea7681af3b0b3d7ea3e4fc50b613d7"
-  },
-  "physical_metadata_sha256": "f8b2f838b9c4daaadbd70ec2112cb6822326242d1db1f930d03ef251ce2525d7"
+  "complete": true,
+  "physical_metadata_sha256": "f8b2f838b9c4daaadbd70ec2112cb6822326242d1db1f930d03ef251ce2525d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VictorValgavothsSeneschal.java",
+  "java_sha256": "e8beab8e21bb47e0f27bc57566e605f37a9e45b6f8932955eff37c28914d7331",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/IfAbilityHasResolvedXTimesEffect.java",
+      "sha256": "e4ba0c85e674f7ed051face45fc0140a7abcbb76f92754cb65cfccaa4a5da2d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/AbilityResolvedWatcher.java",
+      "sha256": "9f5cd5721700eb1dae7c7cad6a20a7a07fb79a1a6f1b8091c2bdb4fce13ae2ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardEachPlayerEffect.java",
+      "sha256": "f8ba858157ec21e41dbda51ea2176cba7c3e46cd51af4ff57e12af803f8fa24c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "One shared Eerie ability resolves its three effects in order and has no further effect in that turn."
+  }
 }
