@@ -23,5 +23,6 @@
       "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
       "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
     }
-  ]
+  ],
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

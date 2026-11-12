@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "02a13615d6960d5536b94cd20c87a73987baf2c712c7f4240a3405584d5a33e7"
   },
-  "physical_metadata_sha256": "e5a189a126d30147e6ecb98a734d6012c60ff4ac61a18a2cb76b9515dbe25187"
+  "physical_metadata_sha256": "e5a189a126d30147e6ecb98a734d6012c60ff4ac61a18a2cb76b9515dbe25187",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HomicideInvestigator.java",
+  "java_sha256": "1c6477d0816a5c24b257f242256a6b94fe61550a7e8325611262a437e4c7376b",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

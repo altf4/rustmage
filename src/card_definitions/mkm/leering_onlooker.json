@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d2caae437ae86740a352e6addd2dd76b690aa4c41e68d500517b31abad4dffdc"
   },
-  "physical_metadata_sha256": "f968e36f0cec6f5f8e7e2242e0694055a2350fd6737bd0bffd2d1f7e2e286402"
+  "physical_metadata_sha256": "f968e36f0cec6f5f8e7e2242e0694055a2350fd6737bd0bffd2d1f7e2e286402",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeeringOnlooker.java",
+  "java_sha256": "be63a8a0eb33d64a187f1ad14e3dbbbdb01a522201039963c6ac0c668fb45ce0",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BatToken.java",
+      "sha256": "3e82042630a3e0a06988bee6e5364322e4b251ba9b029767e7e34eeed6201864"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    }
+  ]
 }

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e23f398465573fa0198b769c88ffa2bcef177e7fbb3ba051201e77541a61977"
   },
-  "physical_metadata_sha256": "e6cc06eae37b13db7302449412e1b1e4ba5100c81e7f2c0c4de598242d9b6454"
+  "physical_metadata_sha256": "e6cc06eae37b13db7302449412e1b1e4ba5100c81e7f2c0c4de598242d9b6454",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PersonOfInterest.java",
+  "java_sha256": "757fabe52c680ddd0af7ee83cea80af2754f83e2ae5be9a2c12987d27c321d00",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+      "sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/DetectiveToken.java",
+      "sha256": "47f8432351e379fe651d32482b9aacb2d81831a6473a6b5a810b934ef9543af4"
+    }
+  ]
 }

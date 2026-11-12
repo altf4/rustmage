@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7761a1ab10fd167bd461532991e9ffaeabc1d8cb255dfa56a57de27a5bcbd1f0"
   },
-  "physical_metadata_sha256": "15a0d42f44ac4ef5b4c1a2fd67781a79bc4e5ef2eddc0943bafc43bf5ce35175"
+  "physical_metadata_sha256": "15a0d42f44ac4ef5b4c1a2fd67781a79bc4e5ef2eddc0943bafc43bf5ce35175",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/Murder.java",
+  "java_sha256": "8065902fac08cbb0ddd46ad350defcb4d289e38355d506a0efe6a19a77cf793d",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }

@@ -18,6 +18,9 @@ mod black;
 #[path = "mkm_black_red_cards/red.rs"]
 mod red;
 
+#[path = "mkm_black_red_cards/inherited.rs"]
+mod inherited;
+
 use rustmage_core::{cards::*, engine::*};
 use support::{act, choose, pay};
 

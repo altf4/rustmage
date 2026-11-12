@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/v/VengefulTracker.java",
   "java_sha256": "b1614a201c004dfb663d0051504cc6e2dc4b52d7522d9bca0dd1147c54c05b83",
-  "rules_tests": "src/assurance/hartford_sacrifice.rs",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

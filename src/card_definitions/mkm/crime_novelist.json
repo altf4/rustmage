@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2da510871c3286b0d2b9143d7d8876d7c8ae83cd2a20bafced249fb6f60b6f31"
   },
-  "physical_metadata_sha256": "371c165b820c0606885e367f5edd9f1a53c357b0452c6c91240a0add9b170f80"
+  "physical_metadata_sha256": "371c165b820c0606885e367f5edd9f1a53c357b0452c6c91240a0add9b170f80",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrimeNovelist.java",
+  "java_sha256": "09bd743400196f655ff6f79be4643a67f5bee160efbadc8d3369a5b1f501ff86",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    }
+  ]
 }

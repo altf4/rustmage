@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "51a3b69f699f5a55fc1ef3b8483b56385ea87f505b25f76a2922eeb2ed508355"
   },
-  "physical_metadata_sha256": "89bdd3e504259630f2ed7edb3cc105248e9e3750fcbb0f014ef62ee796a6f52b"
+  "physical_metadata_sha256": "89bdd3e504259630f2ed7edb3cc105248e9e3750fcbb0f014ef62ee796a6f52b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VeinRipper.java",
+  "java_sha256": "4ff5306502fab0d6618f11deb8f1fb8136b55a9d921cb9fe90fc74981a2ea907",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ]
 }
