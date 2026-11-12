@@ -57,3 +57,6 @@ mod links;
 
 #[path = "mkm_cards_green_gold/spells.rs"]
 mod spells;
+
+#[path = "mkm_cards_green_gold/exile_links.rs"]
+mod exile_links;
