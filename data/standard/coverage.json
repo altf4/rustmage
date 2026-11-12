@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "99d6db9a6e3a5e0d9d5b7945807b80f8ad1f54b533bb04d1fad8b6d14704dd58",
+  "catalogue_version": "b8a704ba9e2620de3c217fbb751a11a36cb3ae592ecbb5f6e0d6d0975743defd",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4875,
-  "implemented_total": 4893,
+  "implemented_standard_cards": 4939,
+  "implemented_total": 4957,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -48,8 +48,7 @@
     },
     "eoc": {
       "total": 8,
-      "gated": 1,
-      "complete": 7
+      "complete": 8
     },
     "eoe": {
       "total": 259,
@@ -101,8 +100,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 108,
-      "complete": 156
+      "complete": 218,
+      "gated": 46
     },
     "mom": {
       "total": 1,
@@ -134,8 +133,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 22,
-      "gated": 2
+      "complete": 23,
+      "gated": 1
     },
     "sos": {
       "total": 264,
@@ -299,8 +298,8 @@
     {
       "name": "A Killer Among Us",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/a_killer_among_us.rs",
       "set": "mkm"
     },
@@ -811,8 +810,8 @@
     {
       "name": "Aftermath Analyst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/eoc/aftermath_analyst.rs",
       "set": "eoc"
     },
@@ -1259,8 +1258,8 @@
     {
       "name": "Alley Assailant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/alley_assailant.rs",
       "set": "mkm"
     },
@@ -2283,8 +2282,8 @@
     {
       "name": "Audience with Trostani",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/audience_with_trostani.rs",
       "set": "mkm"
     },
@@ -2939,8 +2938,8 @@
     {
       "name": "Basilica Stalker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/basilica_stalker.rs",
       "set": "mkm"
     },
@@ -3819,8 +3818,8 @@
     {
       "name": "Blood Spatter Analysis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/blood_spatter_analysis.rs",
       "set": "mkm"
     },
@@ -4091,8 +4090,8 @@
     {
       "name": "Bolrac-Clan Basher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/bolrac_clan_basher.rs",
       "set": "mkm"
     },
@@ -4395,8 +4394,8 @@
     {
       "name": "Branch of Vitu-Ghazi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/branch_of_vitu_ghazi.rs",
       "set": "mkm"
     },
@@ -5819,8 +5818,8 @@
     {
       "name": "Chalk Outline",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/chalk_outline.rs",
       "set": "mkm"
     },
@@ -6763,8 +6762,8 @@
     {
       "name": "Concealed Weapon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/concealed_weapon.rs",
       "set": "mkm"
     },
@@ -7499,8 +7498,8 @@
     {
       "name": "Cryptex",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/cryptex.rs",
       "set": "mkm"
     },
@@ -7619,8 +7618,8 @@
     {
       "name": "Curious Cadaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/curious_cadaver.rs",
       "set": "mkm"
     },
@@ -7651,8 +7650,8 @@
     {
       "name": "Curious Inquiry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/curious_inquiry.rs",
       "set": "mkm"
     },
@@ -8451,8 +8450,8 @@
     {
       "name": "Delney, Streetwise Lookout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/delney_streetwise_lookout.rs",
       "set": "mkm"
     },
@@ -8675,8 +8674,8 @@
     {
       "name": "Detective's Satchel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/detective_s_satchel.rs",
       "set": "mkm"
     },
@@ -9387,8 +9386,8 @@
     {
       "name": "Drag the Canal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/drag_the_canal.rs",
       "set": "mkm"
     },
@@ -9571,8 +9570,8 @@
     {
       "name": "Dramatic Accusation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/dramatic_accusation.rs",
       "set": "mkm"
     },
@@ -9779,8 +9778,8 @@
     {
       "name": "Due Diligence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/due_diligence.rs",
       "set": "mkm"
     },
@@ -10483,8 +10482,8 @@
     {
       "name": "Eliminate the Impossible",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/eliminate_the_impossible.rs",
       "set": "mkm"
     },
@@ -11459,8 +11458,8 @@
     {
       "name": "Expose the Culprit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/expose_the_culprit.rs",
       "set": "mkm"
     },
@@ -11547,8 +11546,8 @@
     {
       "name": "Ezrim, Agency Chief",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/ezrim_agency_chief.rs",
       "set": "mkm"
     },
@@ -12923,8 +12922,8 @@
     {
       "name": "Forensic Gadgeteer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/forensic_gadgeteer.rs",
       "set": "mkm"
     },
@@ -13107,8 +13106,8 @@
     {
       "name": "Frantic Scapegoat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/frantic_scapegoat.rs",
       "set": "mkm"
     },
@@ -13323,8 +13322,8 @@
     {
       "name": "Fugitive Codebreaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/fugitive_codebreaker.rs",
       "set": "mkm"
     },
@@ -13411,8 +13410,8 @@
     {
       "name": "Furtive Courier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/furtive_courier.rs",
       "set": "mkm"
     },
@@ -14619,8 +14618,8 @@
     {
       "name": "Goblin Maskmaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/goblin_maskmaker.rs",
       "set": "mkm"
     },
@@ -15587,8 +15586,8 @@
     {
       "name": "Haazda Vigilante",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/haazda_vigilante.rs",
       "set": "mkm"
     },
@@ -16819,8 +16818,8 @@
     {
       "name": "Hotshot Investigators",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/hotshot_investigators.rs",
       "set": "mkm"
     },
@@ -17011,8 +17010,8 @@
     {
       "name": "Hunted Bonebrute",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/hunted_bonebrute.rs",
       "set": "mkm"
     },
@@ -17635,8 +17634,8 @@
     {
       "name": "Inside Source",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/inside_source.rs",
       "set": "mkm"
     },
@@ -17651,8 +17650,8 @@
     {
       "name": "Insidious Roots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/insidious_roots.rs",
       "set": "mkm"
     },
@@ -19531,8 +19530,8 @@
     {
       "name": "Krovod Haunch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/krovod_haunch.rs",
       "set": "mkm"
     },
@@ -20795,8 +20794,8 @@
     {
       "name": "Lumbering Laundry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/lumbering_laundry.rs",
       "set": "mkm"
     },
@@ -21187,8 +21186,8 @@
     {
       "name": "Magnetic Snuffler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/magnetic_snuffler.rs",
       "set": "mkm"
     },
@@ -21851,8 +21850,8 @@
     {
       "name": "Melek, Reforged Researcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/melek_reforged_researcher.rs",
       "set": "mkm"
     },
@@ -23683,8 +23682,8 @@
     {
       "name": "Nightdrinker Moroii",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/nightdrinker_moroii.rs",
       "set": "mkm"
     },
@@ -24115,8 +24114,8 @@
     {
       "name": "Offender at Large",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/offender_at_large.rs",
       "set": "mkm"
     },
@@ -26363,8 +26362,8 @@
     {
       "name": "Public Thoroughfare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/public_thoroughfare.rs",
       "set": "mkm"
     },
@@ -26555,8 +26554,8 @@
     {
       "name": "Pyrotechnic Performer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/pyrotechnic_performer.rs",
       "set": "mkm"
     },
@@ -27027,8 +27026,8 @@
     {
       "name": "Rakish Scoundrel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/rakish_scoundrel.rs",
       "set": "mkm"
     },
@@ -28363,8 +28362,8 @@
     {
       "name": "Riftburst Hellion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/riftburst_hellion.rs",
       "set": "mkm"
     },
@@ -29155,8 +29154,8 @@
     {
       "name": "Rune-Brand Juggler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/rune_brand_juggler.rs",
       "set": "mkm"
     },
@@ -29563,8 +29562,8 @@
     {
       "name": "Sanctuary Wall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/sanctuary_wall.rs",
       "set": "mkm"
     },
@@ -29667,8 +29666,8 @@
     {
       "name": "Sanguine Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/sanguine_savior.rs",
       "set": "mkm"
     },
@@ -29947,8 +29946,8 @@
     {
       "name": "Scene of the Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/scene_of_the_crime.rs",
       "set": "mkm"
     },
@@ -30651,8 +30650,8 @@
     {
       "name": "Shady Informant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/shady_informant.rs",
       "set": "mkm"
     },
@@ -30723,8 +30722,8 @@
     {
       "name": "Sharp-Eyed Rookie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/sharp_eyed_rookie.rs",
       "set": "mkm"
     },
@@ -31595,8 +31594,8 @@
     {
       "name": "Slime Against Humanity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/slime_against_humanity.rs",
       "set": "mkm"
     },
@@ -31979,8 +31978,8 @@
     {
       "name": "Soul Search",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/soul_search.rs",
       "set": "mkm"
     },
@@ -33867,8 +33866,8 @@
     {
       "name": "Sumala Sentry",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/sumala_sentry.rs",
       "set": "mkm"
     },
@@ -35475,8 +35474,8 @@
     {
       "name": "Teysa, Opulent Oligarch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/teysa_opulent_oligarch.rs",
       "set": "mkm"
     },
@@ -36435,8 +36434,8 @@
     {
       "name": "Thinking Cap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/thinking_cap.rs",
       "set": "mkm"
     },
@@ -37019,8 +37018,8 @@
     {
       "name": "Tin Street Gossip",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/tin_street_gossip.rs",
       "set": "mkm"
     },
@@ -37163,8 +37162,8 @@
     {
       "name": "Tolsimir, Midnight's Light",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/tolsimir_midnight_s_light.rs",
       "set": "mkm"
     },
@@ -37219,8 +37218,8 @@
     {
       "name": "Tomik, Wielder of Law",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/tomik_wielder_of_law.rs",
       "set": "soc"
     },
@@ -37539,8 +37538,8 @@
     {
       "name": "Treacherous Greed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/treacherous_greed.rs",
       "set": "mkm"
     },
@@ -38307,8 +38306,8 @@
     {
       "name": "Undercover Crocodelf",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/undercover_crocodelf.rs",
       "set": "mkm"
     },
@@ -38347,8 +38346,8 @@
     {
       "name": "Undergrowth Recon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/undergrowth_recon.rs",
       "set": "mkm"
     },
@@ -38715,8 +38714,8 @@
     {
       "name": "Urgent Necropsy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/urgent_necropsy.rs",
       "set": "mkm"
     },
@@ -39627,8 +39626,8 @@
     {
       "name": "Voja, Jaws of the Conclave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/voja_jaws_of_the_conclave.rs",
       "set": "mkm"
     },
@@ -40931,8 +40930,8 @@
     {
       "name": "Wispdrinker Vampire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/wispdrinker_vampire.rs",
       "set": "mkm"
     },
@@ -41019,8 +41018,8 @@
     {
       "name": "Wojek Investigator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/wojek_investigator.rs",
       "set": "mkm"
     },
@@ -41179,8 +41178,8 @@
     {
       "name": "Wrench",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/wrench.rs",
       "set": "mkm"
     },
@@ -41251,8 +41250,8 @@
     {
       "name": "Yarus, Roar of the Old Gods",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/yarus_roar_of_the_old_gods.rs",
       "set": "mkm"
     },
