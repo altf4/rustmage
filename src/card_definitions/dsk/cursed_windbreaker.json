@@ -3,10 +3,49 @@
   "catalogue_id": 939,
   "oracle_id": "8a265910-2e10-4e97-88ab-c0cb1a712eb8",
   "facts_sha256": "449858c0947c4611b4512ca792b2aef20b94d67e1ff8d43f5fe6f5634c788302",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "578ff9ec9d602c6e4cc73a68ec329044ac8db2acaa20ba8485bab35fe410755d"
   },
-  "physical_metadata_sha256": "762f6726bcc8c163c7dca64645d0594a5a623d5ddba209b4c054da4a36693923"
+  "physical_metadata_sha256": "762f6726bcc8c163c7dca64645d0594a5a623d5ddba209b4c054da4a36693923",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CursedWindbreaker.java",
+  "java_sha256": "4c7e023c78cf5194d1bd62d8c454bd8268c6cb1fad3f6ee81e31a0fa74e88d89",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ManifestDreadThenAttachEffect.java",
+      "sha256": "d1f1083b2f0e7e0d512763847ec571daacbf56fb311f8fbe3936bca9e9c824ac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityAttachedEffect.java",
+      "sha256": "f04988325ee2d39bf4ea8077947c9a9e9f3920452b1ea54668dd4db272b72fac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Manifest first and attach to the exact permanent it produced if the Equipment and creature are both still eligible. That attachment does not target. The Equipment grants flying and has an ordinary equip ability."
+  }
 }

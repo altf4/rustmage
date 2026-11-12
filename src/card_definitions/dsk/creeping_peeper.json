@@ -3,10 +3,44 @@
   "catalogue_id": 885,
   "oracle_id": "acf22340-7ff9-443f-a846-c44bb5a3f4e7",
   "facts_sha256": "404c291f05361048654077d7329111ebc5414473f273009fed3f71b1db19b8a7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cc23626273bbd98bf21fdbc8067d320d1828398e6bb5f0685845311c8317e660"
   },
-  "physical_metadata_sha256": "b5736b4af0417918c54670eab55cea5cccbe4b60c839c2a93510bd6e0b0b9cab"
+  "physical_metadata_sha256": "b5736b4af0417918c54670eab55cea5cccbe4b60c839c2a93510bd6e0b0b9cab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CreepingPeeper.java",
+  "java_sha256": "365e67dabbc50869950f0319ae4b5e7fe17f90ab20ae1278fa8af97e21b472d5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalColoredManaAbility.java",
+      "sha256": "4ca1b322894c2f7924ad49114c8e57fdbbab4313acec60374aa74b144eb18493"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/builder/ConditionalManaBuilder.java",
+      "sha256": "511937d592a02c2edb14e85d3408f3d7142cdace5e288881c8ac39aca03284cd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/ConditionalMana.java",
+      "sha256": "047e59c2853d61ed76b254b80e44971604ed2a3d022bdbb201255aaf1ed91276"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RoomUnlockAbility.java",
+      "sha256": "3f9bc61d4422af6cab250ba6132c071648148a573024af9ec9e28f39c1adf1e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnFaceUpAbility.java",
+      "sha256": "a69238310b80453d4b36167c099846478d9b0e7952f13ea5f243e7818631a57c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR106.6 and CR116.2. The blue mana's restriction follows the current spell characteristics or the actual door unlock or face-up special action. Other spells, costs and activated abilities cannot spend it."
+  }
 }

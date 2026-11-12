@@ -3,10 +3,39 @@
   "catalogue_id": 4725,
   "oracle_id": "55b0518e-9c87-4f0e-81c2-9c984f760be1",
   "facts_sha256": "d6830ed1ff09b3fa70ab09bff604c00d2a11c65c0ea0ce694500e874fb7c7305",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9346b5bc1352565595f40d5f54a088fb78993e8be58a0b028e69b599b3e8e9a5"
   },
-  "physical_metadata_sha256": "5cef05919caa095e5c68ac77eaabb46726abf787ba513c10dc2d0d37ba270bb2"
+  "physical_metadata_sha256": "5cef05919caa095e5c68ac77eaabb46726abf787ba513c10dc2d0d37ba270bb2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwistReality.java",
+  "java_sha256": "a9b2d013786905773e073f9531019a0f042f7640cefcb2e9115f6b542596b115",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CounterTargetEffect.java",
+      "sha256": "49282767e8f8d631bb38ae1d35bc91a29ab2ae8173030e3a89d3da495c1cf233"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR700.2 and CR701.62. Exactly one mode is chosen as the spell is cast. The counter mode requires a spell target; the manifest mode has no targets."
+  }
 }

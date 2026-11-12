@@ -3,10 +3,44 @@
   "catalogue_id": 30,
   "oracle_id": "b1a0e129-27f0-4a09-b00d-497e18777306",
   "facts_sha256": "19cd069a414eaacb5bd3dd3eeaeae76e5aa6086aa3f9f5a46ac23f090664a1d6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "311cda6659c00c906efded39a360213fa354f1bbd62dc36afe665fb81e14b3d5"
   },
-  "physical_metadata_sha256": "9a32dad5df004341c30066df9cab901a9b84a4f56ad19751f8c1182bb7e35bab"
+  "physical_metadata_sha256": "9a32dad5df004341c30066df9cab901a9b84a4f56ad19751f8c1182bb7e35bab",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbhorrentOculus.java",
+  "java_sha256": "00d9ae4d9c82d48aefc58d696de1acbb46c1d078e6c3aebc03abbc19e67254ee",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileFromGraveCost.java",
+      "sha256": "0fbd76b0759d6ff66e0517af68a598d62dfd5fca5a520f4ee834132b0275166e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR601.2f–h and CR701.62. The exact six own graveyard cards are a mandatory additional cost, even with a different mana payment. The controller manifests during an opponent's upkeep."
+  }
 }
