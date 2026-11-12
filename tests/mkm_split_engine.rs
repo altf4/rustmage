@@ -193,7 +193,7 @@ fn free_cast_during_resolution_offers_both_halves_and_halves_cannot_be_deck_card
     act(&mut game, Action::Pass);
     let object = game.object_ref(split);
     let options = [CastFace::SplitLeft, CastFace::SplitRight]
-        .map(|face| Action::CastFreeDuringResolution { object, face });
+        .map(|face| Action::CastExiledDuringResolution { object, face });
     assert!(
         options
             .iter()
@@ -201,7 +201,7 @@ fn free_cast_during_resolution_offers_both_halves_and_halves_cannot_be_deck_card
     );
     reject(
         &mut game,
-        Action::CastFreeDuringResolution {
+        Action::CastExiledDuringResolution {
             object,
             face: CastFace::Normal,
         },
