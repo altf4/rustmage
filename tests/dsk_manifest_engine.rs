@@ -5,6 +5,18 @@ use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+const ENCHANT_CREATURE: AuraSpec = AuraSpec {
+    kinds: 1,
+    relation: -1,
+    bonus: EquipmentSpec {
+        stats: Stats {
+            power: 0,
+            toughness: 0,
+        },
+        keywords: Keywords::NONE,
+    },
+};
+
 const REPEATED: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
@@ -586,17 +598,6 @@ fn restricted_mana_funds_the_face_up_special_action() {
 
 #[test]
 fn an_attached_face_up_prohibition_follows_the_exact_aura() {
-    const ENCHANT_CREATURE: AuraSpec = AuraSpec {
-        kinds: 1,
-        relation: -1,
-        bonus: EquipmentSpec {
-            stats: Stats {
-                power: 0,
-                toughness: 0,
-            },
-            keywords: Keywords::NONE,
-        },
-    };
     const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Rule,
@@ -647,6 +648,82 @@ fn an_attached_face_up_prohibition_follows_the_exact_aura() {
     assert_eq!(game.object_ref(bear.card), bear);
     assert_eq!(game.object_view(bear.card).card, Card::GrizzlyBears);
     assert_eq!(game.counter_count(bear.card, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn shuffling_uses_the_last_exact_attachment_then_manifests_even_if_it_left() {
+    const AURA: CardRules = CardRules {
+        effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
+        aura: Some(ENCHANT_CREATURE),
+        activated: &[ActivatedAbility {
+            cost: ActivationCost {
+                colored: [0, 2, 0, 0, 0, 0],
+                generic: 4,
+                ..ActivationCost::ZERO
+            },
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::ShuffleAttachedIntoOwnerLibrary,
+                Instruction::ManifestDread,
+            ],
+            cycling: false,
+            exhaust: false,
+            sorcery: true,
+            once_per_turn: false,
+        }],
+        extras: &CardExtras {
+            aura: Some(ENCHANT_CREATURE),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::from_name("Pacifism").unwrap(), &AURA)]);
+    let player = Player::P0;
+    let owner = player.other();
+    let (mut game, cards) = with_library(player, &["Forest", "Llanowar Elves"]);
+    let victim = put(&mut game, owner, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[victim as usize].controller = player;
+    let attached = game.object_ref(victim);
+    let aura = put(&mut game, player, "Pacifism", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Card(victim)));
+    settle(&mut game);
+    assert_eq!(game.object_view(aura).attached_to, Some(attached));
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: aura,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    pay(&mut game);
+    let destroy = put(&mut game, player, "Disenchant", Zone::Hand);
+    cast(&mut game, destroy, Some(Target::Card(aura)));
+    pass_pair(&mut game);
+    assert_eq!(game.object_view(aura).zone, Zone::Graveyard);
+    let old_library_size = game.state.players[owner.index()].library.len();
+    let mut new_incarnation = game.clone();
+    new_incarnation.move_object(victim, Zone::Hand);
+    new_incarnation.move_object(victim, Zone::Battlefield);
+    assert_ne!(new_incarnation.object_ref(victim), attached);
+
+    for (branch, zone, arrivals) in [
+        (&mut game, Zone::Library, 1),
+        (&mut new_incarnation, Zone::Battlefield, 0),
+    ] {
+        pass_pair(branch);
+        assert_eq!(branch.object_view(victim).zone, zone);
+        assert_eq!(
+            branch.state.players[owner.index()].library.len(),
+            old_library_size + arrivals
+        );
+        assert!(branch.observe(owner).manifest_choice.is_none());
+        let selected = selection(branch, cards[1]);
+        act(branch, selected);
+        assert!(branch.is_face_down(branch.object_ref(cards[1])));
+    }
 }
 
 #[test]

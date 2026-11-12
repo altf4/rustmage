@@ -4809,6 +4809,7 @@ pub enum Instruction {
     TakeCreaturesUntilEndTurn,
     /// Shuffle even when the exact source permanent has left (CR701.24c).
     ShuffleSourceIntoOwnerLibrary,
+    ShuffleAttachedIntoOwnerLibrary,
     ShuffleTargetIntoLibrary,
     /// Shuffle the live source and valid target into their owners' libraries together.
     ShuffleSourceAndTargetIntoLibraries,

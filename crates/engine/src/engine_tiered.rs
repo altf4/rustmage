@@ -249,7 +249,11 @@ impl Game {
             Some(u64::try_from(count).capacity("shuffled card count exhausted"));
     }
 
-    fn shuffle_cards_into_library(&mut self, player: Player, ids: &[CardId]) -> Vec<ZoneChange> {
+    pub(super) fn shuffle_cards_into_library(
+        &mut self,
+        player: Player,
+        ids: &[CardId],
+    ) -> Vec<ZoneChange> {
         let events = self.move_objects_raw(ids, Zone::Library);
         self.finish_zone_events(&events, &[]);
         // An instruction to shuffle still randomizes the library with no arrivals.

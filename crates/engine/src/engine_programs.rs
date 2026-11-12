@@ -5993,6 +5993,12 @@ impl Game {
                 Instruction::ShuffleSourceIntoOwnerLibrary => {
                     self.shuffle_source_into_owner_library(&item);
                 }
+                Instruction::ShuffleAttachedIntoOwnerLibrary => {
+                    if let Some(id) = self.attached_permanent(&item) {
+                        let owner = self.state.objects[id as usize].owner;
+                        self.shuffle_cards_into_library(owner, &[id]);
+                    }
+                }
                 Instruction::BlinkAttacking => self.blink_immediately_attacking(&item),
                 Instruction::BlinkFollowingPublicMove { .. } => {
                     self.blink_following_public_move(&item)
