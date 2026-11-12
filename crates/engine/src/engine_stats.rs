@@ -454,6 +454,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
                             | crate::cards::StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
@@ -511,6 +512,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }

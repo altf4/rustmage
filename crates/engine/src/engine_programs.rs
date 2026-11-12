@@ -2454,7 +2454,7 @@ impl Game {
                 })
         });
         let indexed = self.indexed_trigger_sources(&self.state.cast_sources);
-        let controlled = self.controlled_creature_cast_trigger_sources(caster);
+        let controlled = self.controlled_cast_trigger_sources(caster);
         let sources = indexed
             .into_iter()
             .map(|(source, grant)| (source, grant, None))
@@ -2691,7 +2691,7 @@ impl Game {
         );
         self.temporary_cast_triggers(caster, card, stack, spell_traits);
         self.capture_cast_creature_subjects(stack, first_trigger);
-        self.capture_cast_callbacks(stack, first_trigger, cast_event);
+        self.capture_cast_callbacks(stack, first_trigger, cast_event, spell_subtypes);
         if let Some(index) = stack {
             self.capture_mana_copies(index);
         }

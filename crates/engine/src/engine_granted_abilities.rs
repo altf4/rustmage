@@ -115,10 +115,10 @@ impl Game {
         out
     }
 
-    /// Controlled-creature grants are indexed by their provider, but each
+    /// Controlled-permanent grants are indexed by their provider, but each
     /// surviving recipient owns a separate trigger. Keep the exact template
     /// slot so a provider's other granted abilities cannot fire from this row.
-    pub(super) fn controlled_creature_cast_trigger_sources(
+    pub(super) fn controlled_cast_trigger_sources(
         &self,
         caster: Player,
     ) -> Vec<(ObjectView, AttachmentTriggerView, usize)> {
@@ -133,15 +133,17 @@ impl Game {
             let granting_card = provider.card;
             for (index, group) in granting_card.static_ability_groups().iter().enumerate() {
                 for fragment in group.fragments {
-                    let StaticAbilityFragment::ControlledCreatureTrigger {
-                        ability,
-                        other,
-                        nontoken,
-                    } = *fragment
-                    else {
+                    let ability = match *fragment {
+                        StaticAbilityFragment::ControlledCreatureTrigger { ability, .. }
+                        | StaticAbilityFragment::ControlledSubtypeCastTrigger { ability, .. } => {
+                            ability
+                        }
+                        _ => continue,
+                    };
+                    let Some(template) = granting_card.triggers().get(usize::from(ability)) else {
                         continue;
                     };
-                    let condition = granting_card.triggers()[usize::from(ability)].condition;
+                    let condition = template.condition;
                     let TriggerCondition::SpellCast { relation, .. } = condition.event() else {
                         continue;
                     };
@@ -162,9 +164,8 @@ impl Game {
                     for (recipient, object) in self.state.objects.iter().enumerate() {
                         let recipient = recipient as CardId;
                         if object.zone != Zone::Battlefield
-                            || !world.controlled_creature_trigger_applies(
-                                grantor, recipient, other, nontoken,
-                            )
+                            || world.controlled_trigger_ability(grantor, recipient, *fragment)
+                                != Some(ability)
                         {
                             continue;
                         }

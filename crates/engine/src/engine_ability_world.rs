@@ -1144,6 +1144,35 @@ pub(super) trait CharacteristicWorld {
             && (!other || self.reference(id) != source)
             && (!nontoken || !self.is_token(id))
     }
+    fn controlled_trigger_ability(
+        &self,
+        source: ObjectRef,
+        id: CardId,
+        fragment: StaticAbilityFragment,
+    ) -> Option<u16> {
+        match fragment {
+            StaticAbilityFragment::ControlledCreatureTrigger {
+                ability,
+                other,
+                nontoken,
+            } => self
+                .controlled_creature_trigger_applies(source, id, other, nontoken)
+                .then_some(ability),
+            StaticAbilityFragment::ControlledSubtypeCastTrigger {
+                ability,
+                other,
+                subtype,
+            } => {
+                let target = self.object(id);
+                (target.zone == Zone::Battlefield
+                    && target.controller == self.object(source.card).controller
+                    && (!other || self.reference(id) != source)
+                    && self.subtypes(id).has(self.definition(id), subtype))
+                .then_some(ability)
+            }
+            _ => None,
+        }
+    }
     fn other_tapped_legendary_creature_applies(
         &self,
         source: ObjectRef,

@@ -160,14 +160,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 }],
             });
         }
-        StaticAbilityFragment::ControlledCreatureTrigger {
-            ability,
-            other,
-            nontoken,
-        } => {
-            if !world.controlled_creature_trigger_applies(source, id, other, nontoken) {
-                return None;
-            }
+        StaticAbilityFragment::ControlledCreatureTrigger { .. }
+        | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. } => {
+            let ability = world.controlled_trigger_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -409,6 +404,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             keywords,
         } => {
             if !own || (other && id == source.card) || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ControlledPermanentAllKindsKeywords { kinds, keywords } => {
+            if !own || world.kinds(id) & kinds != kinds {
                 return None;
             }
             keywords
@@ -907,6 +908,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                        | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                         | StaticAbilityFragment::AttachmentTrigger(..)
                         | StaticAbilityFragment::AttachmentLookAtLibraryTop
@@ -927,6 +929,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::KeywordGrant(..)
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                        | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                         | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }

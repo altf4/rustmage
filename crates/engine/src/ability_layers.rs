@@ -393,6 +393,11 @@ pub enum StaticAbilityFragment {
         other: bool,
         keywords: Keywords,
     },
+    /// Grant keywords to controlled battlefield permanents that have every listed card type.
+    ControlledPermanentAllKindsKeywords {
+        kinds: u16,
+        keywords: Keywords,
+    },
     /// Live grant to equipped creatures, independent of the Equipment controller.
     ControlledEquippedCreatureKeywords(Keywords),
     ConditionalEquippedCreatureKeywords {
@@ -601,6 +606,12 @@ pub enum StaticAbilityFragment {
         ability: u16,
         other: bool,
         nontoken: bool,
+    },
+    /// Each controlled permanent of this subtype owns the indexed cast trigger.
+    ControlledSubtypeCastTrigger {
+        ability: u16,
+        other: bool,
+        subtype: &'static str,
     },
     /// A real Ward instance granted by a live conditional static ability.
     ConditionalWard {

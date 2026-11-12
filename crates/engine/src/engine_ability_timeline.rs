@@ -110,6 +110,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
+                            | StaticAbilityFragment::ControlledPermanentAllKindsKeywords { .. }
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
                             | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
@@ -142,6 +143,7 @@ impl Card {
                             | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
+                            | StaticAbilityFragment::ControlledSubtypeCastTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
                             | StaticAbilityFragment::AttachmentLookAtLibraryTop
                             | StaticAbilityFragment::AttachmentActivation { .. }

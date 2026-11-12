@@ -416,6 +416,7 @@ impl Game {
         stack: Option<usize>,
         first_trigger: usize,
         cast_event: Option<CastPaymentEvent>,
+        spell_subtypes: GrantedSubtypes,
     ) {
         let Some(index) = stack else { return };
         let spell = self.state.stack[index].clone();
@@ -426,6 +427,7 @@ impl Game {
             first_trigger,
             instant_or_sorcery,
             cast_event,
+            spell_subtypes,
         );
     }
 
@@ -435,6 +437,7 @@ impl Game {
         first_trigger: usize,
         instant_or_sorcery: bool,
         cast_event: Option<CastPaymentEvent>,
+        spell_subtypes: GrantedSubtypes,
     ) {
         let repeated = self
             .state
@@ -476,25 +479,29 @@ impl Game {
             SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
         };
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
-            if let Some((_, program)) = trigger.program()
-                && let Some(amount) = program.iter().find_map(|i| match i {
-                    Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
-                    Instruction::CopyCastSpell {
-                        prior_spells: false,
-                    } => Some(1),
-                    Instruction::CopyCastSpell { prior_spells: true } if instant_or_sorcery => {
-                        Some(prior)
-                    }
-                    Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
-                        Some(u64::from(spell.x.unwrap_or(0)))
-                    }
-                    Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
-                    Instruction::CopyCapturedSpellModified { .. }
-                    | Instruction::FlipCoinForCapturedSpell { .. }
-                    | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
-                    _ => None,
-                })
-            {
+            let Some((_, program)) = trigger.program() else {
+                continue;
+            };
+            if let Some(event) = cast_event {
+                trigger.bind_cast_spell_subtypes(program, event, spell_subtypes);
+            }
+            if let Some(amount) = program.iter().find_map(|i| match i {
+                Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
+                Instruction::CopyCastSpell {
+                    prior_spells: false,
+                } => Some(1),
+                Instruction::CopyCastSpell { prior_spells: true } if instant_or_sorcery => {
+                    Some(prior)
+                }
+                Instruction::CopyCastSpellChosenX if instant_or_sorcery => {
+                    Some(u64::from(spell.x.unwrap_or(0)))
+                }
+                Instruction::CopyPreparedCastSpell if instant_or_sorcery || prepared => Some(1),
+                Instruction::CopyCapturedSpellModified { .. }
+                | Instruction::FlipCoinForCapturedSpell { .. }
+                | Instruction::MayCopyCastSpellWithKeywords(_) => Some(1),
+                _ => None,
+            }) {
                 trigger.copy_event = Some(Box::new(CopyEvent {
                     spell: spell.clone(),
                     amount,
@@ -522,7 +529,7 @@ impl Game {
                 }
                 TriggerCondition::DelayedSpellCastAny => true,
                 TriggerCondition::DelayedSpellCastSubtype(subtype) => {
-                    cast_event.is_some_and(|event| self.has_subtype(event.object.card, subtype))
+                    cast_event.is_some_and(|event| spell_subtypes.has(event.card, subtype))
                 }
                 _ => instant_or_sorcery,
             };
@@ -611,7 +618,13 @@ impl Game {
         // Preserve an actual spell object and stack id, while substituting the
         // existing prepared-face marker. Classification is explicitly non-instant.
         spell.source.as_mut().unwrap().card = Card::test_index(5458);
-        self.capture_cast_callbacks_classified(spell, first_trigger, false, None);
+        self.capture_cast_callbacks_classified(
+            spell,
+            first_trigger,
+            false,
+            None,
+            GrantedSubtypes::default(),
+        );
     }
     pub(super) fn allocate_spell_copy(
         &mut self,

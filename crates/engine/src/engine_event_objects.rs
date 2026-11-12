@@ -51,6 +51,11 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    /// The actual spell face and its latest subtypes in the stack incarnation.
+    CastSpellSubtypes {
+        card: Card,
+        subtypes: GrantedSubtypes,
+    },
     DepartureArrival(ObjectRef),
     RevealedCreatureType(crate::cards::CreatureType),
     /// The live entrant's value, refreshed immediately before it departs.
@@ -268,6 +273,26 @@ impl SpellView {
             copy.spell.capture_chosen_cost_creature_departure(before);
         }
     }
+    pub(super) fn bind_cast_spell_subtypes(
+        &mut self,
+        program: &[Instruction],
+        event: CastPaymentEvent,
+        subtypes: GrantedSubtypes,
+    ) {
+        if uses_event_subtype(program) {
+            self.set_event_object(EventObjectView {
+                object: event.object,
+                facts: EventObjectFacts::CastSpellSubtypes {
+                    card: event.card,
+                    subtypes,
+                },
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+        }
+    }
+
     pub(super) fn set_event_object(&mut self, event: EventObjectView) {
         if let Some(previous) = self.event_object.take() {
             let primary = previous.object;
@@ -279,6 +304,21 @@ impl SpellView {
             self.event_object = Some(Box::new(event));
         }
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn uses_event_subtype(program: &[Instruction]) -> bool {
+    program.iter().any(|instruction| match instruction {
+        Instruction::IfEventObjectSubtype { .. } => true,
+        Instruction::Modal(modes)
+        | Instruction::ModalOnce(modes)
+        | Instruction::ModalOncePerTurn(modes)
+        | Instruction::ModalUpToX { modes, .. }
+        | Instruction::ModalUpToStat { modes, .. } => {
+            modes.iter().any(|mode| uses_event_subtype(mode.program))
+        }
+        _ => false,
+    })
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -465,6 +505,12 @@ impl Game {
                         EventObjectFacts::BattlefieldManaValue(mana_value.unwrap_or(old))
                     }
                     EventObjectFacts::Identity => EventObjectFacts::Identity,
+                    EventObjectFacts::CastSpellSubtypes { .. } => {
+                        EventObjectFacts::CastSpellSubtypes {
+                            card: damage.facts.card,
+                            subtypes: damage.facts.granted_subtypes,
+                        }
+                    }
                     EventObjectFacts::CounterTotal(_) => {
                         EventObjectFacts::CounterTotal(counters.total())
                     }
@@ -563,10 +609,7 @@ impl Game {
         entering: &ObjectView,
         program: &[Instruction],
     ) {
-        if !program
-            .iter()
-            .any(|instruction| matches!(instruction, Instruction::IfEventObjectSubtype { .. }))
-        {
+        if !uses_event_subtype(program) {
             return;
         }
         let packet = self.state.pending_triggers.last_mut().unwrap();
@@ -591,14 +634,29 @@ impl Game {
         let Some(event) = &item.event_object else {
             return false;
         };
-        if self.on_battlefield(event.object.card)
-            && self.object_ref(event.object.card) == event.object
+        let (zone, saved) = match event.facts {
+            EventObjectFacts::CastSpellSubtypes { card, subtypes } => {
+                (Zone::Stack, subtypes.has(card, subtype))
+            }
+            _ => (
+                Zone::Battlefield,
+                event
+                    .subtype_lki
+                    .is_some_and(|facts| facts.has_subtype(subtype)),
+            ),
+        };
+        if self
+            .state
+            .objects
+            .get(event.object.card as usize)
+            .is_some_and(|object| {
+                object.zone == zone && object.generation == event.object.generation
+            })
         {
-            return self.has_subtype(event.object.card, subtype);
+            self.has_subtype(event.object.card, subtype)
+        } else {
+            saved
         }
-        event
-            .subtype_lki
-            .is_some_and(|facts| facts.has_subtype(subtype))
     }
     pub(super) fn bind_creature_comparison(&mut self, source: &ObjectView, entering: &ObjectView) {
         let p = self.state.pending_triggers.last_mut().unwrap();

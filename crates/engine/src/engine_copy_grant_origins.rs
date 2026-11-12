@@ -111,6 +111,7 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                         | F::CounterBearingPermanentWard { .. }
                         | F::OwnTurnSourceAndKindCreatureWard { .. }
                         | F::ControlledCreatureTrigger { .. }
+                        | F::ControlledSubtypeCastTrigger { .. }
                         | F::SourceMaxSpeedActivation(_)
                         | F::AttachmentActivation { .. }
                         | F::ControlledPlaneswalkerActivation(_)
