@@ -181,6 +181,90 @@ const CANNOT_UNTAP: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const MULTIPLIER_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDoorUnlocked(RoomDoor::Left),
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[Instruction::CreateCopyTokenWithExceptions {
+            subject: Subject::Targets,
+            amount: 1,
+            exceptions: CopyExceptions {
+                reflection: true,
+                ..CopyExceptions::NONE
+            },
+        }],
+    }],
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::AdditionalTriggers {
+            scope: AdditionalTriggerScope::ControlledPermanent,
+            condition: StatValue::Fixed(1),
+        }],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[(0, RoomDoor::Left)],
+            static_groups: &[(1, RoomDoor::Right)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const DEPARTURE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+    }],
+    ..CardRules::EMPTY
+};
+
+const EACH_END: TriggerCondition = TriggerCondition::AtStep {
+    step: TriggerStep::End,
+    relation: CastRelation::Any,
+    guard: StepGuard::Always,
+};
+
+const LIMITED_TRIGGERS: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::OncePerTurn(&EACH_END),
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::GainLife(PlayerSet::Controller, 1),
+                Instruction::Reflexive { ability: 2 },
+                Instruction::ScheduleStep {
+                    step: TriggerStep::Upkeep,
+                    relation: CastRelation::Any,
+                    ability: 3,
+                },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::OncePerIncarnation(&EACH_END),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 2)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 4)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 8)],
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
 fn card(name: &str) -> Card {
     Card::from_name(name).unwrap()
 }
@@ -195,6 +279,14 @@ fn room_cast(card: CardId, door: RoomDoor) -> Action {
 
 fn begin_unlock(object: ObjectRef, door: RoomDoor, cost: ManaCost) -> Action {
     Action::BeginRoomUnlock { object, door, cost }
+}
+
+fn unlock_door(game: &mut Game, room: CardId, door: RoomDoor, cost: ManaCost) {
+    let object = game.object_ref(room);
+    act(game, begin_unlock(object, door, cost));
+    choose(game, |action| {
+        matches!(action, Action::PayRoomUnlock { .. })
+    });
 }
 
 fn settle_rooms(game: &mut Game) {
@@ -420,6 +512,188 @@ fn unlocking_an_off_turn_untap_door_adds_each_live_creature_to_one_untap_attempt
             }
         }
     }
+}
+
+#[test]
+fn each_unlocked_multiplier_adds_one_trigger_with_an_independent_target() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &MULTIPLIER_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+    ]);
+    let player = Player::P0;
+    for multiplier_count in 0..=2 {
+        let mut game = scenario(player);
+        let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+        let other_room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+        let foreign = spawn(&mut game, player.other(), ROOM, Zone::Battlefield);
+        let foreign = game.object_ref(foreign);
+        game.open_room_on_entry(foreign, RoomDoor::Right);
+        let chosen: Vec<_> = ["Grizzly Bears", "Healer's Hawk", "Hill Giant"]
+            .into_iter()
+            .take(multiplier_count + 1)
+            .map(|name| put(&mut game, player, name, Zone::Battlefield))
+            .collect();
+        for provider in [room, other_room].into_iter().take(multiplier_count) {
+            unlock_door(&mut game, provider, RoomDoor::Right, RED_COST);
+        }
+        unlock_door(&mut game, room, RoomDoor::Left, BLUE_COST);
+        for &target in &chosen {
+            if matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+                choose(&mut game, |action| {
+                    matches!(action, Action::PutTrigger { .. })
+                });
+            }
+            act(
+                &mut game,
+                Action::ChooseTarget {
+                    target: Target::Card(target),
+                },
+            );
+            if game.legal_actions().contains(&Action::FinishTargets) {
+                act(&mut game, Action::FinishTargets);
+            }
+        }
+        let stack = &game.state.stack;
+        assert_eq!(stack.len(), chosen.len());
+        for (item, &target) in stack.iter().zip(&chosen) {
+            assert!(!item.is_copy);
+            assert_eq!(item.targets[0].target, Target::Card(target));
+            assert_eq!(item.source.unwrap().id, room);
+        }
+        assert!(stack.windows(2).all(|pair| pair[0].id != pair[1].id));
+        let definitions: Vec<_> = chosen
+            .iter()
+            .map(|&target| game.object_view(target).card)
+            .collect();
+        settle_rooms(&mut game);
+        let copies: Vec<_> = game
+            .observe(player)
+            .objects
+            .into_iter()
+            .filter(|object| object.zone == Zone::Battlefield && object.is_token())
+            .collect();
+        assert_eq!(copies.len(), definitions.len());
+        for definition in definitions {
+            assert!(copies.iter().any(|copy| copy.card == definition
+                && copy.controller == player
+                && copy.has_subtype("Reflection")));
+        }
+    }
+}
+
+#[test]
+fn a_departing_multiplier_uses_the_same_pre_event_world_as_the_death_trigger() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &MULTIPLIER_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (Card::GrizzlyBears, &DEPARTURE),
+    ]);
+    let player = Player::P0;
+    for multiplier_open in [false, true] {
+        let mut game = scenario(player);
+        let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+        let yours = spawn(&mut game, player, Card::GrizzlyBears, Zone::Battlefield);
+        let theirs = spawn(
+            &mut game,
+            player.other(),
+            Card::GrizzlyBears,
+            Zone::Battlefield,
+        );
+        if multiplier_open {
+            unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+        }
+        let observers = game.death_trigger_sources();
+        let events = game.move_objects_raw(&[room, yours, theirs], Zone::Graveyard);
+        assert!(
+            events
+                .iter()
+                .all(|event| event.moved && event.destination == Zone::Graveyard)
+        );
+        game.finish_zone_events(&events, &observers);
+        game.prepare_triggers();
+        settle_rooms(&mut game);
+        assert_eq!(
+            game.state.players[player.index()].life,
+            21 + i128::from(multiplier_open)
+        );
+        assert_eq!(game.state.players[player.other().index()].life, 21);
+    }
+}
+
+#[test]
+fn the_multiplier_applies_to_mana_triggers_in_payment_planning_and_actual_taps() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &MULTIPLIER_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    put(
+        &mut game,
+        player,
+        "Groundchuck & Dirtbag",
+        Zone::Battlefield,
+    );
+    let spell = put(&mut game, player, "Outcaster Trailblazer", Zone::Hand);
+    let cast = Action::AnnounceCast { card: spell };
+    let mut locked = game.clone();
+    locked.state.players[player.index()].mana = [0; 6];
+    reject(&mut locked, cast.clone());
+
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    game.state.players[player.index()].mana = [0; 6];
+    act(&mut game, cast);
+    act(&mut game, Action::TapMana { card: land });
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 3, 0]);
+    assert!(game.state.stack.is_empty());
+    pay(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(game.state.stack.len(), 1);
+}
+
+#[test]
+fn limited_triggers_and_created_delayed_or_reflexive_abilities_resolve_once() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &MULTIPLIER_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (Card::GrizzlyBears, &LIMITED_TRIGGERS),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    spawn(&mut game, player, Card::GrizzlyBears, Zone::Battlefield);
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+
+    game.state.step = Step::Main2;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    settle_rooms(&mut game);
+    assert_eq!(game.state.step, Step::End);
+    assert_eq!(game.state.players[player.index()].life, 27);
+
+    game.begin_step(Step::End);
+    game.give_priority();
+    game.prepare_triggers();
+    settle_rooms(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 27);
+
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    settle_rooms(&mut game);
+    assert_eq!(game.state.step, Step::Upkeep);
+    assert_eq!(game.state.players[player.index()].life, 35);
+
+    game.state.step = Step::Main2;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    settle_rooms(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 40);
 }
 
 #[test]

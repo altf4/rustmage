@@ -144,7 +144,8 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                     if query.subtypes(id).has(recipient.card, kind.name())
                             )
                     }
-                    AdditionalTriggerScope::ControlledPermanentAttack
+                    AdditionalTriggerScope::ControlledPermanent
+                    | AdditionalTriggerScope::ControlledPermanentAttack
                     | AdditionalTriggerScope::ControlledPermanentEntry => {
                         recipient.controller == object.controller
                     }

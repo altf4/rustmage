@@ -46,6 +46,8 @@ pub enum ActivationReductionAmount {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AdditionalTriggerScope {
+    /// A triggered ability of a permanent this provider's controller controls.
+    ControlledPermanent,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     ControlledLegendaryCreature,
