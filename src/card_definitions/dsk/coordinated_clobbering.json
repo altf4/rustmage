@@ -3,10 +3,27 @@
   "catalogue_id": 844,
   "oracle_id": "b2b65b17-1fb4-42d6-9c6a-376d3f18851b",
   "facts_sha256": "7e8e81cc65127435570b53a4721cc5dae84f2ba33631c92593e459a591795b30",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e29bdc92965309e4d8f415bdfd51eef0c32797f98b9b12bbd43673f4f2f34069"
-  },
-  "physical_metadata_sha256": "902851254f3e2adb5f4ad3357eff7a9dc2ae1e210daa8bd8fee343f1acd1868e"
+  "complete": true,
+  "physical_metadata_sha256": "902851254f3e2adb5f4ad3357eff7a9dc2ae1e210daa8bd8fee343f1acd1868e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CoordinatedClobbering.java",
+  "java_sha256": "66369508cf52b1c8c307aee3a7aa995ef7bf9338f7e4a7cb3bf2e709d4fc8dcb",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TargetsDamageTargetsEffect.java",
+      "sha256": "9ef40a905c680d20d0f46e9d7d5e1e6e3176e7684bddd45d0d63fe0a5d3d3f4f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponentsCreaturePermanent.java",
+      "sha256": "4bf6d716acf0d6de0efaa5f057664a490a6d79a3a34bc879b43aad817ca5308a"
+    }
+  ]
 }

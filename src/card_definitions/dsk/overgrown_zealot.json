@@ -3,10 +3,31 @@
   "catalogue_id": 3068,
   "oracle_id": "5146b291-1170-481f-a4b9-709dd5c4b09c",
   "facts_sha256": "ccf7c081459ce0a3c8edd752d4d652b904d135e036242f3345a3f84211c8e25b",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "0211a4c23230c84f58d7f4be5d99ce930ac72437025b9b84771ddc4dad54ab60"
-  },
-  "physical_metadata_sha256": "44967eb28c8afa6ba0ba254a9da9e4697eb24512566e6e535aced2df5a355d50"
+  "complete": true,
+  "physical_metadata_sha256": "44967eb28c8afa6ba0ba254a9da9e4697eb24512566e6e535aced2df5a355d50",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OvergrownZealot.java",
+  "java_sha256": "b23f055dcf1fcffc4a20ffcaaf087fd082779f93be75b43cc4307ab67727a88f",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/ConditionalAnyColorManaAbility.java",
+      "sha256": "2042d72737462646216eea22a1ecdd05d338f1f2b3bfbb3c19fdb273f067c736"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnFaceUpAbility.java",
+      "sha256": "a69238310b80453d4b36167c099846478d9b0e7952f13ea5f243e7818631a57c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The pair of restricted mana can pay for the turn-face-up special action of a manifested, cloaked, morphed, or disguised permanent."
+  }
 }

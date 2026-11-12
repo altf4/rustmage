@@ -3,10 +3,22 @@
   "catalogue_id": 3533,
   "oracle_id": "c027f369-e445-46a8-94ad-93396321295a",
   "facts_sha256": "70af8f1bf497a31f8ef5a1e3e2b146b1ba92acd31f00ff377e890ed672b26f93",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "9882b1f6790dfc1e5be86228b452e720a09805020d805e9356742f18c4ab424c"
-  },
-  "physical_metadata_sha256": "bc7b0543294c9ae08b2d0e95a16469063c5ac5b11a80280d4e147135557b3eff"
+  "complete": true,
+  "physical_metadata_sha256": "bc7b0543294c9ae08b2d0e95a16469063c5ac5b11a80280d4e147135557b3eff",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RipSpawnHunter.java",
+  "java_sha256": "9f6c8051e14100cfcb6dae2f2d87201f9de9297d2a66016343c91a8d0e4941b8",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ]
 }

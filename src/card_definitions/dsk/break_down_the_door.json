@@ -3,10 +3,32 @@
   "catalogue_id": 537,
   "oracle_id": "a11d8372-87fb-40a2-b638-314c6a5af03b",
   "facts_sha256": "0142eee056f1d6c1d9f2bbab50896e131290d536ea75d147bbcc642a4634bacd",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "811ce1faf1dc0448613338f495fd7091454fe23db495da4d0af7e1fd48d008c0"
-  },
-  "physical_metadata_sha256": "5d119a3650e16e734087c28e191d3c954b0be6688c75bd89a1247e4eb39f4dc6"
+  "complete": true,
+  "physical_metadata_sha256": "5d119a3650e16e734087c28e191d3c954b0be6688c75bd89a1247e4eb39f4dc6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BreakDownTheDoor.java",
+  "java_sha256": "6436a897744e3db4c68788749eb97dc4edf31e402abd0d11acaa755107d083ca",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetArtifactPermanent.java",
+      "sha256": "7cbfb4763fc203a4f36b4b779bad8102d058066579a47e323b1ba1dc02153d53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetEnchantmentPermanent.java",
+      "sha256": "25825f6881ec923b5ecf330ff5d0c79a60e8e305cd5f6d7e08920f16924dbbae"
+    }
+  ]
 }

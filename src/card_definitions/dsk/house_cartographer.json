@@ -3,10 +3,26 @@
   "catalogue_id": 2082,
   "oracle_id": "76d93d50-4fc1-4ed4-a6dc-5fb193286b54",
   "facts_sha256": "15b5555999cff55867d40eb339c74e1743edaccc48bc0f9fa7c619bac498248c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a6e35f41ba4708325cd21a0f439259940fa6710184dbb132c0d152b2144d6b08"
-  },
-  "physical_metadata_sha256": "e6aac2b25527230cbb9e562951dacc5c01207a526f57f3f66b0f718532a29640"
+  "complete": true,
+  "physical_metadata_sha256": "e6aac2b25527230cbb9e562951dacc5c01207a526f57f3f66b0f718532a29640",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HouseCartographer.java",
+  "java_sha256": "8c1380d0bacfa268f9d299594281f75a188b77f8eb0262c50d6af1a2b69681e8",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealCardsFromLibraryUntilEffect.java",
+      "sha256": "a9fe0b1c05462c01f6d6cbb28ec59832b9353151a7a25c8b86eb6fa51a40c2e6"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "When no land is revealed, put all revealed cards on the bottom in a random order without shuffling."
+  }
 }

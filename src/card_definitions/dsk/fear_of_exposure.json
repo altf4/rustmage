@@ -3,10 +3,32 @@
   "catalogue_id": 1463,
   "oracle_id": "abec56eb-7b3d-4bd8-93c7-bd7049c859c3",
   "facts_sha256": "31fccc73642bb8025fcbfc8498a13d0a8419b8dc88ae58f2e29f62b4cbe3292d",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "e6da34a27af5d73be7003304251046a67469b2896a31569114b8e2c12b65618a"
-  },
-  "physical_metadata_sha256": "423d578e19e7ee941362d544bcae2bc1587d8d9c9f3a2f3eb824521175f21547"
+  "complete": true,
+  "physical_metadata_sha256": "423d578e19e7ee941362d544bcae2bc1587d8d9c9f3a2f3eb824521175f21547",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfExposure.java",
+  "java_sha256": "c90259b956dc428f01f16ceeb10f12459a08cb3573e052bd169cc589f4c79ffb",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapTargetCost.java",
+      "sha256": "50cd08137872171eb722841ac8da4a5f5fd9e834f886eabd31e61423ca0f6452"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledPermanent.java",
+      "sha256": "a3c23d23924140312c07b798cd975b7c1bd3b5fad30eed623d5b75f375b923e9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ]
 }
