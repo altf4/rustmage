@@ -1,6 +1,7 @@
 //! Resolution-owned payments and exact stack associations.
 use super::*;
 use crate::cards::{ResolutionCost, ResolutionObjectCost};
+use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ResolutionPayment {
