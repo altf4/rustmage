@@ -8873,6 +8873,9 @@ impl Game {
                     self.animate_noncreature_targets(&item, spec)
                 }
                 Instruction::AddArtifactToTargets => self.add_artifact_to_targets(&item),
+                Instruction::AddCharacteristics { subject, addition } => {
+                    self.add_characteristics(&item, subject, addition);
+                }
                 Instruction::ChangeSourceCreatureForm(spec) => self.change_source_form(
                     &item,
                     spec,

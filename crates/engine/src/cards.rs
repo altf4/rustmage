@@ -4,9 +4,9 @@ pub mod ability_layers;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub use ability_layers::{
     AbilityLayer, ActivationReductionAmount, AdditionalTriggerScope, AnimationCreatureTypes,
-    AnimationDuration, AnimationSpec, AttachedCharacteristics, CreatureSubtypeGrant,
-    LandManaRecipients, PermanentForm, SourceCreatureForm, StaticAbilityFragment,
-    StaticAbilityGroup, UntapRestriction,
+    AnimationDuration, AnimationSpec, AttachedCharacteristics, CharacteristicAddition,
+    CreatureSubtypeGrant, LandManaRecipients, PermanentForm, SourceCreatureForm,
+    StaticAbilityFragment, StaticAbilityGroup, UntapRestriction,
 };
 
 #[doc(hidden)]
@@ -4206,6 +4206,10 @@ pub enum Instruction {
     AnimateNoncreatureTargets(AnimationSpec),
     /// Add artifact without also granting creature or changing other characteristics.
     AddArtifactToTargets,
+    AddCharacteristics {
+        subject: Subject,
+        addition: CharacteristicAddition,
+    },
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
     /// Change targets' creature form without adding a card type.

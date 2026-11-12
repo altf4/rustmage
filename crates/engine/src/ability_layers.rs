@@ -710,6 +710,8 @@ pub enum PermanentForm {
     AddCreature,
     /// Add creature subtypes without changing card types or colors.
     AddCreatureSubtypes,
+    /// Add the given card types and the named creature subtypes.
+    AddCardTypes(u16),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
@@ -741,6 +743,15 @@ pub enum LandManaRecipients {
 pub enum AnimationDuration {
     EndOfTurn,
     Permanent,
+}
+/// Layer-four and layer-five additions to the same exact permanent.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct CharacteristicAddition {
+    pub card_types: u16,
+    pub creature_types: &'static [&'static str],
+    pub colors: u8,
+    pub duration: AnimationDuration,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

@@ -101,6 +101,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Connive { subject, .. }
         | Instruction::PutCountersScaled { subject, .. }
         | Instruction::AnimateSubject { subject, .. }
+        | Instruction::AddCharacteristics { subject, .. }
         | Instruction::SetBaseStats { subject, .. }
         | Instruction::SetBaseStatsFromSource { subject }
         | Instruction::SetResolvedBaseStats { subject, .. }
