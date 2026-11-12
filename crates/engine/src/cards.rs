@@ -3001,6 +3001,9 @@ pub enum Instruction {
     ExileTopMayCastPaidFrom(PlayerSet),
     /// Exile the exact targeted graveyard card and optionally cast its copy by paying.
     ExileTargetCopyCastPaid,
+    /// Exile an exact targeted graveyard card, then offer a free cast of its copy
+    /// from the public zone the original is in, including after a prevented move.
+    ExileTargetCopyCastFree,
     /// Exile the exact targeted graveyard cards and optionally cast each copy by paying.
     ExileTargetsCopyCastPaid,
     /// Skip the following instructions if that offered cast did not commit.

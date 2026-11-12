@@ -89,6 +89,36 @@ impl Game {
         true
     }
 
+    pub(super) fn exile_target_copy_offer_free_cast(&mut self, item: &SpellView) -> bool {
+        let [bound] = item.targets.as_slice() else {
+            return false;
+        };
+        let Target::Card(id) = bound.target else {
+            return false;
+        };
+        let target = &self.state.objects[id as usize];
+        if !self.same_target_object(*bound) || target.zone != Zone::Graveyard || !target.is_card() {
+            return false;
+        }
+        let event = self.move_object_raw(id, Zone::Exile);
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
+        let original = event.after;
+        let origin = self.state.objects[original.card as usize].zone;
+        if self.object_ref(original.card) != original
+            || !matches!(origin, Zone::Graveyard | Zone::Exile | Zone::Command)
+            || self.exiled_face_down(original)
+        {
+            return false;
+        }
+        // CR707.12: copy the tracked object in its actual zone. The copy
+        // instruction is independent of whether the preceding exile succeeded.
+        let recipe = self.copiable_recipe(original);
+        let copy = self.allocate_card_copy_in_zone(recipe.definition, item.controller, origin);
+        self.set_copy_recipe(copy, recipe);
+        self.offer_exact_free_cast(item.controller, copy, origin, None);
+        true
+    }
+
     pub(super) fn graveyard_symbol_total(&self, cards: &[ObjectRef], color: ChoiceColor) -> u128 {
         cards
             .iter()

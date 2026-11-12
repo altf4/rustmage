@@ -6,7 +6,19 @@ impl Game {
     /// CR707.12: the copy is neither a token nor an already-copied spell.
     /// Normal announcements of this public object count as casting spells.
     pub(super) fn allocate_card_copy(&mut self, definition: Card, controller: Player) -> ObjectRef {
+        self.allocate_card_copy_in_zone(definition, controller, Zone::Exile)
+    }
+    pub(super) fn allocate_card_copy_in_zone(
+        &mut self,
+        definition: Card,
+        controller: Player,
+        zone: Zone,
+    ) -> ObjectRef {
         assert!(!definition.is_token() && !definition.is_emblem());
+        assert!(matches!(
+            zone,
+            Zone::Graveyard | Zone::Exile | Zone::Command
+        ));
         let (id, generation) = self.replay_frozen_mana_copy_slot().unwrap_or_else(|| {
             self.state.free_tokens.pop().map_or_else(
                 || {
@@ -25,7 +37,7 @@ impl Game {
             copy_kind: CopyKind::Card,
             owner: controller,
             controller,
-            zone: Zone::Exile,
+            zone,
             generation,
             tapped: false,
             summoning_sick: false,
