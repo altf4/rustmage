@@ -38,5 +38,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::CopyNextSpell { ability: 1 },
         ],
     }],
+    extras: &CardExtras {
+        exhaust_mask: 1,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

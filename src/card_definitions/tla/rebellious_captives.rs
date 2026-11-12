@@ -38,5 +38,9 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         sorcery: false,
         once_per_turn: false,
     }],
+    extras: &CardExtras {
+        exhaust_mask: 1,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

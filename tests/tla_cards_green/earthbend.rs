@@ -249,6 +249,18 @@ fn haru_observes_another_friendly_ally_and_the_captives_exhaust_once() {
     settle(&mut game);
     assert_eq!(game.counter_count(captives, CounterKind::PlusOne), 2);
     assert_eq!(game.counter_count(land, CounterKind::PlusOne), 3);
+    reject(&mut game, action.clone());
+    let incarnation = game.object_ref(captives);
+    let turn = game.state.turn;
+    game.state.step = Step::End;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(game.state.turn > turn);
+    assert_eq!(game.object_ref(captives), incarnation);
+    if game.actor() != Some(player) {
+        act(&mut game, Action::Pass);
+    }
+    game.state.players[player.index()].mana = [8; 6];
     reject(&mut game, action);
 }
 
