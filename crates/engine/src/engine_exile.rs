@@ -1305,6 +1305,29 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
+    pub(super) fn exile_each_library_except_bottom_face_down(&mut self, keep: u16) {
+        // Freeze both selections before planning any replacements.
+        let cards: Vec<_> = [self.state.active, self.state.active.other()]
+            .into_iter()
+            .flat_map(|player| {
+                let count = self
+                    .library_card_count(player)
+                    .saturating_sub(usize::from(keep));
+                top_library_cards(self, player, count as u128)
+            })
+            .collect();
+        if cards.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&cards, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.remember_face_down_exile(event.after, 0, None);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn exile_top_face_down_play(
         &mut self,
         item: &SpellView,

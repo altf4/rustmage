@@ -9338,6 +9338,9 @@ impl Game {
                         spend_any_mana,
                     );
                 }
+                Instruction::ExileEachLibraryExceptBottomFaceDown(keep) => {
+                    self.exile_each_library_except_bottom_face_down(keep);
+                }
                 Instruction::ExileTopFaceDownPlay { amount, subtype } => {
                     self.exile_top_face_down_play(&item, amount, subtype)
                 }

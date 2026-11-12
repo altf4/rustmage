@@ -2437,6 +2437,8 @@ pub enum Instruction {
         amount: u16,
         spend_any_mana: bool,
     },
+    /// Exile every card above the retained bottom of each library in one face-down event.
+    ExileEachLibraryExceptBottomFaceDown(u16),
     ExileTopFaceDownPlay {
         amount: u16,
         subtype: &'static str,
