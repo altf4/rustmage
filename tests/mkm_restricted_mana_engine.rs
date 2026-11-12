@@ -50,7 +50,8 @@ fn restricted_lots_fund_disguise_from_an_untapped_source_and_reject_face_up_spel
     for player in [Player::P0, Player::P1] {
         let mut game = scenario(player);
         let producer = spawn(&mut game, player, source, Zone::Battlefield);
-        let disguise = put(&mut game, player, "Bubble Smuggler", Zone::Hand);
+        let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+        let disguise = spawn(&mut game, player, smuggler, Zone::Hand);
         let shock = put(&mut game, player, "Shock", Zone::Hand);
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
 
