@@ -3,10 +3,32 @@
   "catalogue_id": 1873,
   "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
   "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "2a0b14a18ddc76738023da9efe7be045a959edc7c7bee471446c8f8c685bf4ca"
-  },
-  "physical_metadata_sha256": "c1ab119a3c0fb612da962570c174c1fa0d6624c17aa841c361b06c45e4023c1b"
+  "complete": true,
+  "physical_metadata_sha256": "c1ab119a3c0fb612da962570c174c1fa0d6624c17aa841c361b06c45e4023c1b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreenhouseRicketyGazebo.java",
+  "java_sha256": "8045522344c212e2ea3fe7b1c7673168f55bbe567d4bf3e8c214f17315f1e110",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    }
+  ]
 }

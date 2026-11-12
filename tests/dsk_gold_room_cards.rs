@@ -496,3 +496,147 @@ fn skullsnap_surveils_once_on_entry_and_once_when_the_room_becomes_fully_unlocke
         Some(&second)
     );
 }
+
+#[test]
+fn gazebo_recovers_only_milled_permanents_and_greenhouse_enables_a_new_mana_color() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Forest", Zone::Battlefield);
+    let older = put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    let first = put(&mut game, player, "Oaken Siren", Zone::Library);
+    let second = put(&mut game, player, "Doubling Season", Zone::Library);
+    let land = put(&mut game, player, "Island", Zone::Library);
+    let instant = put(&mut game, player, "Shock", Zone::Library);
+    let room = put(
+        &mut game,
+        player,
+        "Greenhouse // Rickety Gazebo",
+        Zone::Hand,
+    );
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 3];
+    cast_room(&mut game, room, RoomDoor::Right);
+    progress_until(&mut game, |game| {
+        game.observe(player).milled_choice.is_some()
+    });
+    for card in [first, second, land, instant] {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    let select = |game: &Game, card| Action::SelectMilled {
+        object: game.object_ref(card),
+    };
+    let illegal = [select(&game, older), select(&game, instant)];
+    for action in illegal {
+        reject(&mut game, action);
+    }
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishMilledSelection);
+    assert_eq!(declined.object_view(first).zone, Zone::Graveyard);
+    assert_eq!(declined.object_view(second).zone, Zone::Graveyard);
+    for card in [first, second] {
+        let selection = select(&game, card);
+        act(&mut game, selection);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Hand);
+    assert_eq!(game.object_view(second).zone, Zone::Hand);
+    assert_eq!(game.object_view(land).zone, Zone::Graveyard);
+
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    let grantor = game.object_ref(room);
+    let tap_red = |card| Action::TapGrantedMana {
+        card,
+        grantor,
+        production: [0, 0, 0, 1, 0, 0],
+    };
+    let announce = Action::AnnounceCast { card: shock };
+    reject(&mut game, tap_red(forest));
+    reject(&mut game, announce.clone());
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 2];
+    unlock(
+        &mut game,
+        room,
+        RoomDoor::Left,
+        ManaCost {
+            colored: [0, 0, 0, 0, 1, 0],
+            generic: 2,
+        },
+    );
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    reject(&mut game, tap_red(foreign));
+    act(&mut game, announce);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    act(&mut game, tap_red(forest));
+    pay(&mut game);
+    settle(&mut game);
+    assert!(game.object_view(forest).tapped);
+    assert_eq!(game.observe(player).players[opponent.index()].life, 18);
+}
+
+#[test]
+fn restricted_office_checks_live_power_and_lecture_hall_protects_other_permanents() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let friendly = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Forest", Zone::Battlefield);
+    let stronger = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let smaller = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let room = put(
+        &mut game,
+        player,
+        "Restricted Office // Lecture Hall",
+        Zone::Hand,
+    );
+    cast_room(&mut game, room, RoomDoor::Left);
+    pass_pair(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    let mut unchanged = game.clone();
+    settle(&mut unchanged);
+    assert_eq!(unchanged.object_view(stronger).zone, Zone::Graveyard);
+    assert_eq!(unchanged.object_view(smaller).zone, Zone::Battlefield);
+    cast_named(
+        &mut game,
+        player,
+        "Giant Growth",
+        Some(Target::Card(smaller)),
+    );
+    settle(&mut game);
+    for card in [stronger, smaller] {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    assert_eq!(game.object_view(friendly).zone, Zone::Battlefield);
+    let hexproof = |game: &Game, card| game.object_view(card).keywords.contains(Keywords::HEXPROOF);
+    assert!(!hexproof(&game, land) && !hexproof(&game, artifact));
+
+    game.state.players[player.index()].mana = [0, 2, 0, 0, 0, 5];
+    unlock(
+        &mut game,
+        room,
+        RoomDoor::Right,
+        ManaCost {
+            colored: [0, 2, 0, 0, 0, 0],
+            generic: 5,
+        },
+    );
+    assert!(hexproof(&game, land) && hexproof(&game, artifact) && hexproof(&game, friendly));
+    assert!(!hexproof(&game, room) && !hexproof(&game, foreign));
+    act(&mut game, Action::Pass);
+    let removal = put(&mut game, opponent, "Disenchant", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: removal });
+    reject(&mut game, target(artifact));
+    act(&mut game, target(room));
+    finish_targets_and_pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(room).zone, Zone::Graveyard);
+    assert!(!hexproof(&game, land) && !hexproof(&game, artifact));
+}

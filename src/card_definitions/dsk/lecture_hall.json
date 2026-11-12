@@ -3,7 +3,7 @@
   "catalogue_id": 5654,
   "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
   "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
     "index": 1,
@@ -12,5 +12,18 @@
   "physical_metadata_sha256": "84fd2618a66a269651292ad78361bdedfa00a18b4d0aec8542cb0b9f71f540c5",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/r/RestrictedOfficeLectureHall.java",
-  "java_sha256": "e8848b0d22a108cdb0023341e38c1e690e563bea382cc474157ff678674e7e1c"
+  "java_sha256": "e8848b0d22a108cdb0023341e38c1e690e563bea382cc474157ff678674e7e1c",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    }
+  ]
 }

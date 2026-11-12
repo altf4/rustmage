@@ -3,7 +3,7 @@
   "catalogue_id": 5643,
   "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
   "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
     "index": 0,
@@ -12,5 +12,18 @@
   "physical_metadata_sha256": "a767b549f227c1e672f24ef839698d1da613b1b4e520f45cc972df00da1866d4",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GreenhouseRicketyGazebo.java",
-  "java_sha256": "8045522344c212e2ea3fe7b1c7673168f55bbe567d4bf3e8c214f17315f1e110"
+  "java_sha256": "8045522344c212e2ea3fe7b1c7673168f55bbe567d4bf3e8c214f17315f1e110",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ]
 }
