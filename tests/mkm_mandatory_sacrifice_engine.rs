@@ -22,7 +22,7 @@ const COUNTERS: Instruction = Instruction::PutCounters {
     amount: 2,
 };
 
-const fn required_program(amount: u32) -> [Instruction; 4] {
+const fn required_program(amount: u16) -> [Instruction; 4] {
     [
         Instruction::RememberCount(AmountValue::Fixed(9)),
         Instruction::ChooseObjects {
@@ -34,7 +34,7 @@ const fn required_program(amount: u32) -> [Instruction; 4] {
         },
         Instruction::IfAmountAtLeast {
             value: AmountValue::MovedCount,
-            minimum: 1,
+            minimum: amount as u128,
             skip: 1,
         },
         COUNTERS,
