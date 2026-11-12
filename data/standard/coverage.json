@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8f58429aeee8b2339ae8472f17260e8d5918e17f8b54974fdeb600712d4324ef",
+  "catalogue_version": "8b138ed1a227433ffc952c78034f906c72048626b3474b5ebe07b6ba5bb9daf0",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4628,
-  "implemented_total": 4644,
+  "implemented_standard_cards": 4639,
+  "implemented_total": 4655,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 99,
-      "gated": 165
+      "complete": 110,
+      "gated": 154
     },
     "ecc": {
       "total": 7,
@@ -3389,8 +3389,8 @@
     {
       "name": "Betrayer's Bargain",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/betrayer_s_bargain.rs",
       "set": "dsk"
     },
@@ -6653,8 +6653,8 @@
     {
       "name": "Come Back Wrong",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/come_back_wrong.rs",
       "set": "dsk"
     },
@@ -7189,8 +7189,8 @@
     {
       "name": "Cracked Skull",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cracked_skull.rs",
       "set": "dsk"
     },
@@ -11685,8 +11685,8 @@
     {
       "name": "Fanatic of the Harrowing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fanatic_of_the_harrowing.rs",
       "set": "dsk"
     },
@@ -14877,8 +14877,8 @@
     {
       "name": "Grab the Prize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/grab_the_prize.rs",
       "set": "dsk"
     },
@@ -18085,8 +18085,8 @@
     {
       "name": "Irreverent Gremlin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/irreverent_gremlin.rs",
       "set": "dsk"
     },
@@ -21749,8 +21749,8 @@
     {
       "name": "Meathook Massacre II",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/meathook_massacre_ii.rs",
       "set": "dsk"
     },
@@ -22077,8 +22077,8 @@
     {
       "name": "Miasma Demon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/miasma_demon.rs",
       "set": "dsk"
     },
@@ -32741,8 +32741,8 @@
     {
       "name": "Sporogenic Infection",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/sporogenic_infection.rs",
       "set": "dsk"
     },
@@ -36693,8 +36693,8 @@
     {
       "name": "Threats Around Every Corner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/threats_around_every_corner.rs",
       "set": "dsk"
     },
@@ -38605,8 +38605,8 @@
     {
       "name": "Unstoppable Slasher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unstoppable_slasher.rs",
       "set": "dsk"
     },
