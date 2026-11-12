@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8320e35fa66d2d5813db0c9ecd4c3e72ac57d94d25b67be91534a9c3b94822d5",
+  "catalogue_version": "8409dc6627a3cb4c500231b7905cca6c275f8402be5681311d62a026f33cb58a",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4814,
-  "implemented_total": 4831,
+  "implemented_standard_cards": 4837,
+  "implemented_total": 4854,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -101,8 +101,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 169,
-      "complete": 95
+      "gated": 146,
+      "complete": 118
     },
     "mom": {
       "total": 1,
@@ -867,8 +867,8 @@
     {
       "name": "Agency Coroner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/agency_coroner.rs",
       "set": "mkm"
     },
@@ -5475,16 +5475,16 @@
     {
       "name": "Case of the Burning Masks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_burning_masks.rs",
       "set": "mkm"
     },
     {
       "name": "Case of the Crimson Pulse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_crimson_pulse.rs",
       "set": "mkm"
     },
@@ -5507,8 +5507,8 @@
     {
       "name": "Case of the Gorgon's Kiss",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_gorgon_s_kiss.rs",
       "set": "mkm"
     },
@@ -5547,8 +5547,8 @@
     {
       "name": "Case of the Stashed Skeleton",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_stashed_skeleton.rs",
       "set": "mkm"
     },
@@ -7371,8 +7371,8 @@
     {
       "name": "Crowd-Control Warden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/crowd_control_warden.rs",
       "set": "mkm"
     },
@@ -7579,8 +7579,8 @@
     {
       "name": "Culvert Ambusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/culvert_ambusher.rs",
       "set": "mkm"
     },
@@ -8475,8 +8475,8 @@
     {
       "name": "Demand Answers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/demand_answers.rs",
       "set": "mkm"
     },
@@ -9163,8 +9163,8 @@
     {
       "name": "Dog Walker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/dog_walker.rs",
       "set": "mkm"
     },
@@ -11243,8 +11243,8 @@
     {
       "name": "Etrata, Deadly Fugitive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/etrata_deadly_fugitive.rs",
       "set": "mkm"
     },
@@ -11619,8 +11619,8 @@
     {
       "name": "Faerie Snoop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/faerie_snoop.rs",
       "set": "mkm"
     },
@@ -12723,8 +12723,8 @@
     {
       "name": "Flourishing Bloom-Kin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/flourishing_bloom_kin.rs",
       "set": "mkm"
     },
@@ -13459,8 +13459,8 @@
     {
       "name": "Gadget Technician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/gadget_technician.rs",
       "set": "mkm"
     },
@@ -13795,8 +13795,8 @@
     {
       "name": "Gearbane Orangutan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/gearbane_orangutan.rs",
       "set": "mkm"
     },
@@ -14955,8 +14955,8 @@
     {
       "name": "Granite Witness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/granite_witness.rs",
       "set": "mkm"
     },
@@ -15163,8 +15163,8 @@
     {
       "name": "Greenbelt Radical",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/greenbelt_radical.rs",
       "set": "mkm"
     },
@@ -16099,8 +16099,8 @@
     {
       "name": "Hedge Whisperer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/hedge_whisperer.rs",
       "set": "mkm"
     },
@@ -16443,8 +16443,8 @@
     {
       "name": "Hide in Plain Sight",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/hide_in_plain_sight.rs",
       "set": "mkm"
     },
@@ -21003,8 +21003,8 @@
     {
       "name": "Macabre Reconstruction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/macabre_reconstruction.rs",
       "set": "mkm"
     },
@@ -23531,8 +23531,8 @@
     {
       "name": "Nervous Gardener",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/nervous_gardener.rs",
       "set": "mkm"
     },
@@ -34411,8 +34411,8 @@
     {
       "name": "Suspicious Detonation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/suspicious_detonation.rs",
       "set": "mkm"
     },
@@ -37819,8 +37819,8 @@
     {
       "name": "Tunnel Tipster",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/tunnel_tipster.rs",
       "set": "mkm"
     },
@@ -39091,8 +39091,8 @@
     {
       "name": "Vengeful Creeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/vengeful_creeper.rs",
       "set": "mkm"
     },
