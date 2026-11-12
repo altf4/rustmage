@@ -182,6 +182,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
+                    | TriggerCondition::ControlledCreatureBecomesBlocked
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
@@ -422,6 +423,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
                             | crate::cards::StaticAbilityFragment::CantLoseFromNonpositiveLife
+                            | crate::cards::StaticAbilityFragment::OpposingCreatureHexproofAndWardDisabled
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::StackItemsCannotBeCountered
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }

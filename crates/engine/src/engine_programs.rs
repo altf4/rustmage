@@ -1240,6 +1240,7 @@ impl Game {
                     | TriggerCondition::AttackPlayerExcludingSubtype(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksDefendingPlayer
+                    | TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(_)
                     | TriggerCondition::SelfAttacksPlayerWithMostLife
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
@@ -1252,6 +1253,7 @@ impl Game {
                     | TriggerCondition::SelfBlocksCreatureWithKeyword(_)
                     | TriggerCondition::SelfBlocksOrBecomesBlockedByCreature
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
+                    | TriggerCondition::ControlledCreatureBecomesBlocked
                     | TriggerCondition::ControlledCreatureAttacks
                     | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
@@ -2591,12 +2593,13 @@ impl Game {
     pub(super) fn tap_objects_by(
         &mut self,
         assignments: impl IntoIterator<Item = (Player, CardId)>,
-    ) {
+    ) -> usize {
         let changed: Vec<_> = assignments
             .into_iter()
             .filter(|&(_, id)| self.tap_permanent(id))
             .collect();
         self.finish_tap_event(&changed);
+        changed.len()
     }
 
     fn tap_permanent(&mut self, id: CardId) -> bool {
@@ -3345,6 +3348,7 @@ impl Game {
                             matches!(
                                 ability.condition.event(),
                                 TriggerCondition::ControlledSubtypeBecomesBlocked(_)
+                                    | TriggerCondition::ControlledCreatureBecomesBlocked
                             )
                         })
             })
@@ -3352,14 +3356,15 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                let TriggerCondition::ControlledSubtypeBecomesBlocked(subtype) =
-                    ability.condition.event()
-                else {
-                    continue;
+                let subtype = match ability.condition.event() {
+                    TriggerCondition::ControlledSubtypeBecomesBlocked(subtype) => Some(subtype),
+                    TriggerCondition::ControlledCreatureBecomesBlocked => None,
+                    _ => continue,
                 };
                 for &id in newly_blocked {
                     if self.state.objects[id as usize].controller == source.controller
-                        && self.has_subtype(id, subtype)
+                        && self.is_creature(id)
+                        && subtype.is_none_or(|subtype| self.has_subtype(id, subtype))
                     {
                         self.queue_block_subject(&source, index, id);
                     }
@@ -3572,6 +3577,16 @@ impl Game {
                 self.state.pending_triggers.push(item);
             }
         }
+        let defending_player = match defender {
+            Some(CombatDefender::Player(player)) => player,
+            Some(CombatDefender::Planeswalker(object)) => {
+                self.state.objects[object.card as usize].controller
+            }
+            Some(CombatDefender::Battle(object)) => self
+                .battle_protector(object)
+                .unwrap_or(self.state.active.other()),
+            None => self.state.active.other(),
+        };
         for (index, ability) in source.card.triggers().iter().enumerate() {
             let condition = ability.condition.event();
             let matches = match condition {
@@ -3580,6 +3595,9 @@ impl Game {
                 | TriggerCondition::SelfAttacksIfEquipped
                 | TriggerCondition::SelfAttacksOrBlocks
                 | TriggerCondition::SelfEntersOrAttacks => true,
+                TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(subtype) => {
+                    !self.controls_creature_subtype(defending_player, subtype)
+                }
                 TriggerCondition::SelfFirstAttack => first_attack,
                 TriggerCondition::SelfAttacksPlayerWithMostLife => {
                     matches!(defender, Some(CombatDefender::Player(player))
@@ -3591,24 +3609,17 @@ impl Game {
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
             };
+            let event_player = matches!(
+                condition,
+                TriggerCondition::SelfAttacksDefendingPlayer
+                    | TriggerCondition::SelfAttacksPlayerWithMostLife
+                    | TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(_)
+            )
+            .then_some(defending_player);
             if matches
                 && self.queue_attack_trigger(source, index)
-                && matches!(
-                    condition,
-                    TriggerCondition::SelfAttacksDefendingPlayer
-                        | TriggerCondition::SelfAttacksPlayerWithMostLife
-                )
+                && let Some(player) = event_player
             {
-                let player = match defender {
-                    Some(CombatDefender::Player(player)) => player,
-                    Some(CombatDefender::Planeswalker(object)) => {
-                        self.state.objects[object.card as usize].controller
-                    }
-                    Some(CombatDefender::Battle(object)) => self
-                        .battle_protector(object)
-                        .unwrap_or(self.state.active.other()),
-                    None => self.state.active.other(),
-                };
                 self.state.pending_triggers.last_mut().unwrap().event_player = Some(player);
             }
         }
@@ -6168,6 +6179,16 @@ impl Game {
                         self.move_object(subject.card, Zone::Exile);
                     }
                 }
+                Instruction::ExileEventPermanentPlayThisTurn => {
+                    if let Some(id) = self.entering_subject(&item) {
+                        let event = self.move_object(id, Zone::Exile);
+                        if event.was_card && event.moved && event.destination == Zone::Exile {
+                            for exiled in event.objects_after() {
+                                self.grant_exile_play_permission(item.controller, exiled, false);
+                            }
+                        }
+                    }
+                }
                 Instruction::PutDepartedSourceOnLibraryBottom => {
                     self.put_departed_source_on_library_bottom(&item);
                 }
@@ -7736,6 +7757,20 @@ impl Game {
                         self.state.pending = Pending::KeywordChoice {
                             player: item.controller,
                             recipients: Box::new(recipients),
+                            choices,
+                        };
+                        return;
+                    }
+                }
+                Instruction::ChooseSourceCounterKind(choices) => {
+                    if let Some(source) = item.source.filter(|source| {
+                        self.on_battlefield(source.id)
+                            && self.object_ref(source.id) == source.object
+                    }) {
+                        assert!(!choices.is_empty(), "counter kind choice must have options");
+                        self.state.pending = Pending::SourceCounterKind {
+                            player: item.controller,
+                            source: source.object,
                             choices,
                         };
                         return;
@@ -10337,6 +10372,7 @@ impl Game {
                 }
                 Instruction::May { skip }
                 | Instruction::MayIfSourceOnBattlefield { skip }
+                | Instruction::MayIfEventPermanentOnBattlefield { skip }
                 | Instruction::MayIfCombatDamageDealerOnBattlefield { skip }
                 | Instruction::MayIfRememberedExiledCreature { skip }
                 | Instruction::MayDraw { skip }
@@ -10349,6 +10385,9 @@ impl Game {
                                 self.on_battlefield(source.id)
                                     && self.object_ref(source.id) == source.object
                             })
+                        }
+                        Instruction::MayIfEventPermanentOnBattlefield { .. } => {
+                            self.entering_subject(&item).is_some()
                         }
                         Instruction::MayIfCombatDamageDealerOnBattlefield { .. } => {
                             self.live_combat_damage_dealer(&item).is_some()

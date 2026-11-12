@@ -462,7 +462,7 @@ impl Game {
         }
         if matches!(
             choice.kind.payment_kind(),
-            EffectChoiceKind::TapPermanents(_)
+            EffectChoiceKind::TapPermanents(_) | EffectChoiceKind::TapAnyUntappedPermanents
         ) && o.tapped
         {
             return false;
@@ -1647,6 +1647,7 @@ impl Game {
             kind,
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+                | EffectChoiceKind::TapAnyUntappedPermanents
         ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
@@ -2870,6 +2871,20 @@ impl Game {
                 .expect("validated sacrifice selections");
             self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
         }
+    }
+
+    pub(super) fn finish_tap_selection(&mut self) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let player = resolution.item.controller;
+        let mut choice = resolution.choice.take().unwrap();
+        let selected = std::mem::take(&mut choice.selected[player.index()]);
+        let taps = selected
+            .into_iter()
+            .filter(|&object| self.effect_choice_candidate(&choice, player, object))
+            .map(|object| (player, object.card))
+            .collect::<Vec<_>>();
+        let count = self.tap_objects_by(taps) as u64;
+        self.state.resolving.as_mut().unwrap().moved_count = Some(count);
     }
 
     pub(super) fn finish_reflexive_graveyard_exile(&mut self, ability: u16) {

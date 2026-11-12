@@ -1573,6 +1573,8 @@ pub enum EffectChoiceKind {
     },
     /// Choose distinct untapped permanents as a non-targeting activation cost.
     TapPermanents(u32),
+    /// Choose any number of untapped permanents to tap in one resolution event.
+    TapAnyUntappedPermanents,
     /// Declare X, then choose exactly X distinct untapped permanents to tap.
     TapXPermanents,
     ExileGraveyardCards(u16),
@@ -1779,6 +1781,7 @@ impl EffectChoiceKind {
             self,
             Self::RemoveLoreForSourceCounters(_)
                 | Self::SacrificeSelection
+                | Self::TapAnyUntappedPermanents
                 | Self::ExileGraveyardCreaturesReflexive { .. }
                 | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
                 | Self::BlinkControlledCreatures
@@ -2271,6 +2274,7 @@ pub enum TurnCallbackEvent {
     SpellCast,
     NoncreatureCast,
     CreatureEntry,
+    ControlledCreatureDeath,
     ControlledNontokenCreatureDeath,
     ControlledCreatureCombatDamagePlayerOrPlaneswalker,
     NamedCreatureCombatDamagePlayer(crate::CardName),
@@ -2533,6 +2537,7 @@ pub enum Instruction {
         subject: Subject,
         choices: &'static [Keywords],
     },
+    ChooseSourceCounterKind(&'static [CounterKind]),
     /// Set the source's color and grant it hexproof from the chosen color this turn.
     ChooseSourceColorAndHexproof,
     PlayHideawayIfCoven,
@@ -3791,6 +3796,8 @@ pub enum Instruction {
     ReturnEventCardToHand,
     /// Exile the exact graveyard card referred to by this ability's event.
     ExileEventGraveyardCard,
+    /// Exile the exact event permanent, allowing its actual resulting cards to be played this turn.
+    ExileEventPermanentPlayThisTurn,
     /// Put the physical cards from this source's actual death on their owner's library bottom.
     PutDepartedSourceOnLibraryBottom,
     /// Attempt to pay the exact death-card cost before returning linked exiles.
@@ -5216,6 +5223,9 @@ pub enum Instruction {
     },
     /// Offer this block only while the ability's exact source is on the battlefield.
     MayIfSourceOnBattlefield {
+        skip: usize,
+    },
+    MayIfEventPermanentOnBattlefield {
         skip: usize,
     },
     MayIfCombatDamageDealerOnBattlefield {
@@ -7465,6 +7475,8 @@ pub enum TriggerCondition {
     SelfAttacks,
     /// Capture the actual defending player for this exact attack declaration.
     SelfAttacksDefendingPlayer,
+    /// Intervening condition using the same defender at declaration and resolution.
+    SelfAttacksUnlessDefenderControlsCreatureSubtype(&'static str),
     /// Declare this creature attacking a player whose life is highest, including ties.
     SelfAttacksPlayerWithMostLife,
     /// Intervening equipped clause, with exact source-departure quantities.
@@ -7476,6 +7488,7 @@ pub enum TriggerCondition {
     SelfBlocksOrBecomesBlockedByCreature,
     /// One event for each controlled attacker of this subtype newly blocked.
     ControlledSubtypeBecomesBlocked(&'static str),
+    ControlledCreatureBecomesBlocked,
     SelfFirstAttack,
     CreatureAttacksYou {
         colors: u8,

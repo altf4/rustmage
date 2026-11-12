@@ -314,6 +314,14 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if let TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(subtype) =
+            condition.event()
+            && item
+                .event_player
+                .is_none_or(|player| self.controls_creature_subtype(player, subtype))
+        {
+            return false;
+        }
         if condition.event() == TriggerCondition::SelfEntersIfCastByController
             && !item
                 .cast_event
@@ -377,6 +385,17 @@ impl Game {
             source.object,
             item.source_tapped,
         )
+    }
+
+    pub(super) fn controls_creature_subtype(&self, player: Player, subtype: &str) -> bool {
+        let query = self.characteristic_query();
+        self.state.objects.iter().enumerate().any(|(id, object)| {
+            let id = id as CardId;
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && query.kinds(id) & 1 != 0
+                && query.subtypes(id).has(object.card, subtype)
+        })
     }
 
     pub(super) fn first_combat_phase(&self) -> bool {

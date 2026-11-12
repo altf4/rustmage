@@ -29,12 +29,14 @@ impl Game {
         }
     }
     pub(super) fn creature_death_turn_callbacks(&mut self, events: &[ZoneChange]) {
-        let event_kind = TurnCallbackEvent::ControlledNontokenCreatureDeath;
         if !self.state.combat_rules.as_ref().is_some_and(|rules| {
-            rules
-                .turn_callbacks
-                .iter()
-                .any(|row| row.event == event_kind)
+            rules.turn_callbacks.iter().any(|row| {
+                matches!(
+                    row.event,
+                    TurnCallbackEvent::ControlledCreatureDeath
+                        | TurnCallbackEvent::ControlledNontokenCreatureDeath
+                )
+            })
         }) {
             return;
         }
@@ -43,9 +45,17 @@ impl Game {
                 && event.before.zone == Zone::Battlefield
                 && event.destination == Zone::Graveyard
                 && event.before.kinds & 1 != 0
-                && !event.before.is_token()
             {
-                self.queue_turn_callbacks(event_kind, event.before.controller, None);
+                self.queue_matching_turn_callbacks(None, |row| {
+                    row.item.controller == event.before.controller
+                        && match row.event {
+                            TurnCallbackEvent::ControlledCreatureDeath => true,
+                            TurnCallbackEvent::ControlledNontokenCreatureDeath => {
+                                !event.before.is_token()
+                            }
+                            _ => false,
+                        }
+                });
             }
         }
     }
@@ -144,7 +154,9 @@ impl Game {
     pub(super) fn expire_next_turn_callbacks(&mut self) {
         if let Some(rules) = &mut self.state.combat_rules {
             let expiry = Some(TurnCallbackExpiry::EndOfTurn(self.state.turn));
-            rules.turn_callbacks.retain(|row| row.expiry != expiry);
+            rules
+                .turn_callbacks
+                .retain(|row| row.expiry.is_some() && row.expiry != expiry);
         }
     }
 

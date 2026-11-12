@@ -906,6 +906,7 @@ define_actions! {
     ChooseLibraryCastPermission { with_counter: bool },
     ChooseToken { token: Card },
     ChooseKeyword { index: u16 },
+    ChooseSourceCounterKind { counter: CounterKind },
     ChooseResolutionColor { color: crate::cards::ChoiceColor },
     ChoosePermanentType { permanent_type: PermanentType },
     ChoosePowerThreshold { value: u16 },
@@ -3180,6 +3181,11 @@ enum Pending {
         recipients: Box<Vec<ObjectRef>>,
         choices: &'static [Keywords],
     },
+    SourceCounterKind {
+        player: Player,
+        source: ObjectRef,
+        choices: &'static [CounterKind],
+    },
     EffectChoice {
         player: Player,
     },
@@ -4908,6 +4914,7 @@ impl Game {
             | Pending::AuraEntry { player }
             | Pending::TokenChoice { player, .. }
             | Pending::KeywordChoice { player, .. }
+            | Pending::SourceCounterKind { player, .. }
             | Pending::ResolutionColor { player }
             | Pending::ResolutionPermanentType { player }
             | Pending::PowerThreshold { player, .. }
@@ -5775,6 +5782,13 @@ impl Game {
                     }
                 }
             }
+            Pending::SourceCounterKind { choices, .. } => {
+                for &counter in choices {
+                    if emit(Action::ChooseSourceCounterKind { counter }) {
+                        return true;
+                    }
+                }
+            }
             Pending::TokenChoice { tokens, .. } => {
                 for &token in tokens {
                     if emit(Action::ChooseToken { token }) {
@@ -5915,6 +5929,7 @@ impl Game {
                             | EffectChoiceKind::ReturnToHandCounting
                             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
+                            | EffectChoiceKind::TapAnyUntappedPermanents
                             | EffectChoiceKind::MeldPartner(_) => {
                                 Action::ChooseEffectObject { object }
                             }
@@ -9388,6 +9403,16 @@ impl Game {
                 self.grant_keyword_effects(&ids, source, keywords);
                 self.run_program();
             }
+            Action::ChooseSourceCounterKind { counter } => {
+                let Pending::SourceCounterKind { source, .. } = self.state.pending else {
+                    unreachable!()
+                };
+                self.effect_counters(
+                    vec![(source, Counters::of(counter, 1))],
+                    replacements::ResumeMode::Program,
+                );
+                self.run_program();
+            }
             Action::ChooseToken { token } => {
                 self.create_tokens(actor, token, 1, false);
                 self.run_program();
@@ -9448,6 +9473,7 @@ impl Game {
                         self.finish_lore_counter_selection();
                     }
                     EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
+                    EffectChoiceKind::TapAnyUntappedPermanents => self.finish_tap_selection(),
                     EffectChoiceKind::BlinkControlledCreatures => self.finish_repeat_blink_choice(),
                     EffectChoiceKind::HandCreatures { .. } => self.finish_hand_creatures(),
                     EffectChoiceKind::SaddleRider(effect) => {
@@ -12826,6 +12852,7 @@ impl Game {
                 Pending::HandDefender { .. } => "hand_defender",
                 Pending::TokenChoice { .. } => "token_choice",
                 Pending::KeywordChoice { .. } => "keyword_choice",
+                Pending::SourceCounterKind { .. } => "source_counter_kind",
                 Pending::ResolutionColor { .. } => "resolution_color",
                 Pending::ResolutionPermanentType { .. } => "resolution_permanent_type",
                 Pending::PowerThreshold { .. } => "power_threshold",

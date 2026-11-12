@@ -1506,6 +1506,7 @@ impl Game {
             | EffectChoiceKind::RemovePermanentCounters { .. }
             | EffectChoiceKind::BeholdMany(_)
             | EffectChoiceKind::TapPermanents(_)
+            | EffectChoiceKind::TapAnyUntappedPermanents
             | EffectChoiceKind::TapXPermanents
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
