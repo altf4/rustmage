@@ -248,7 +248,10 @@ fn repeated_investigations_keep_the_count_frozen_through_owned_replacements() {
                 .count()
         };
         assert_eq!(tokens(branch), initial);
-        while branch.state.pending == (Pending::Replacement { player }) {
+        for _ in 0..2 {
+            if branch.state.pending != (Pending::Replacement { player }) {
+                break;
+            }
             choose(
                 branch,
                 |action| matches!(action, Action::ChooseReplacement { source, .. } if source.card == choice),

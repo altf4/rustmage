@@ -4584,6 +4584,7 @@ impl Game {
                     | Instruction::ReturnAllTargetsToHand
                     | Instruction::DestroyAllTargets
                     | Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. }
+                    | Instruction::ReturnGraveyardTargetsAnimated { .. }
                     | Instruction::ExileAllTargetsLinkedToSource
                     | Instruction::ExileAllTargets
                     // These aggregate operations consume every independently

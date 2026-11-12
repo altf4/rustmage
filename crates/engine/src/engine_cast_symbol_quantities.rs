@@ -92,6 +92,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::GrowCreaturesScaled { amount: value, .. }
         | Instruction::GrowPermanentGroupScaled { amount: value, .. }
         | Instruction::CreateTokensScaled { amount: value, .. }
+        | Instruction::CreateTokensRepeated { amount: value, .. }
         | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
         | Instruction::EndureScaled { amount: value, .. }
         | Instruction::CreateSizedToken { size: value, .. }
