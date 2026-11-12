@@ -181,7 +181,7 @@ fn hand_payment_projects_exact_candidates_and_tracks_revealed_card_lki() {
     pay(&mut game);
     choose_clause(&mut game, player, CastCostClause::Additional);
 
-    game.move_object(revealed, Zone::Graveyard);
+    game.move_object(revealed, Zone::Library);
     game.move_object(revealed, Zone::Hand);
     let exact = game.object_ref(revealed);
     assert_ne!(exact, stale);
