@@ -3,10 +3,26 @@
   "catalogue_id": 1338,
   "oracle_id": "c4c1e49d-5f14-486c-acf2-1952512b12b2",
   "facts_sha256": "3ef273d00aafab044c13d0f85004e9e27a8b43d037c8793ebff20058faf92455",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1f587a7f631cad360f623e8d0b97936a8c19b576aa4cf16edb41ab7895c0ce22"
   },
-  "physical_metadata_sha256": "c03458d03b35061b72879de07cb4e3f4aac189d6990b4aac98edc23cdcc87e89"
+  "physical_metadata_sha256": "c03458d03b35061b72879de07cb4e3f4aac189d6990b4aac98edc23cdcc87e89",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/Energybending.java",
+  "java_sha256": "7e22e021ab2f8d62c563d340d0c174816b5d4408fa4d91289bca4550c15765a2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesAllBasicsControlledEffect.java",
+      "sha256": "ba5900bc0a9cc63dca9bd20736785c041bb79ff90a7dcd425dc33bca00e116f5"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }
