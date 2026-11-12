@@ -149,3 +149,178 @@ fn partial_target_failure_preserves_x_and_copies_only_the_live_copiable_values()
         assert_eq!((token.power, token.toughness), (2, 2));
     }
 }
+
+const DISCARD_DAMAGE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::Draw(PlayerSet::Controller, 2),
+            Instruction::IfAmountAtLeast {
+                value: AmountValue::Stat(StatValue::ControllerHandSize),
+                minimum: 2,
+                skip: 2,
+            },
+            Instruction::May { skip: 1 },
+            Instruction::DiscardExactlyReflexiveManaValue {
+                amount: 2,
+                ability: 0,
+            },
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Reflexive,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::DamagePlayerPermanents {
+            players: PlayerSet::Each,
+            kinds: 1,
+            amount: AmountValue::DiscardedCardManaValue,
+        }],
+    }],
+    ..CardRules::EMPTY
+};
+
+struct ClearPrevention;
+
+impl Drop for ClearPrevention {
+    fn drop(&mut self) {
+        zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|slot| slot.set(None));
+    }
+}
+
+#[test]
+fn exact_discards_capture_the_highest_value_for_a_separate_live_creature_sweep() {
+    let _rules = fixture_rules::activate(&[(named("Divination"), &DISCARD_DAMAGE)]);
+    let _clear = ClearPrevention;
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let peace = put(&mut game, opponent, "Rest in Peace", Zone::Battlefield);
+        let own_creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let large_creature = put(
+            &mut game,
+            opponent,
+            "Earthshaker Dreadmaw",
+            Zone::Battlefield,
+        );
+        let opposing_hand = put(&mut game, opponent, "Hill Giant", Zone::Hand);
+        let low = put(&mut game, player, "Grizzly Bears", Zone::Library);
+        let high = put(&mut game, player, "Hill Giant", Zone::Library);
+        let spell = put(&mut game, player, "Divination", Zone::Hand);
+        cast(&mut game, spell, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert_eq!(game.hand_count(player), 2);
+        assert_eq!(game.object_view(low).zone, Zone::Hand);
+        assert_eq!(game.object_view(high).zone, Zone::Hand);
+        assert!(matches!(game.state.pending, Pending::EffectOptional { .. }));
+
+        let mut declined = game.clone();
+        act(&mut declined, Action::ChooseOptional { accept: false });
+        assert!(declined.state.stack.is_empty());
+        assert_eq!(declined.hand_count(player), 2);
+        assert_eq!(declined.object_view(own_creature).damage, 0);
+
+        act(&mut game, Action::ChooseOptional { accept: true });
+        act(&mut game, Action::Discard { card: low });
+        reject(&mut game, Action::Discard { card: low });
+        reject(
+            &mut game,
+            Action::Discard {
+                card: opposing_hand,
+            },
+        );
+        reject(&mut game, Action::ChooseOptional { accept: false });
+        assert_eq!(game.object_view(low).zone, Zone::Hand);
+        assert!(game.observe(opponent).objects.iter().all(|o| o.id != low));
+
+        let discard = Action::Discard { card: high };
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == discard)
+            .unwrap();
+        let saved = game.snapshot();
+        let mut prevented = game.clone();
+        {
+            let _reset = ClearPrevention;
+            zone_replacements::TEST_PREVENT_ZONE_MOVE
+                .with(|slot| slot.set(Some(prevented.object_ref(high))));
+            act(&mut prevented, discard.clone());
+            act(
+                &mut prevented,
+                Action::ChooseZoneReplacement {
+                    effect: ZoneReplacementKind::Prevent,
+                },
+            );
+        }
+        assert_eq!(prevented.object_view(high).zone, Zone::Hand);
+        assert_eq!(prevented.object_view(low).zone, Zone::Exile);
+        assert!(prevented.state.stack.is_empty());
+        assert_eq!(prevented.object_view(own_creature).damage, 0);
+
+        let mut indexed = game.clone();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, discard.clone());
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        indexed.restore(&saved).unwrap();
+        act(&mut indexed, discard);
+        assert_eq!(game.snapshot(), indexed.snapshot());
+
+        assert_eq!(game.object_view(low).zone, Zone::Exile);
+        assert_eq!(game.object_view(high).zone, Zone::Exile);
+        assert_eq!(game.object_view(spell).zone, Zone::Exile);
+        assert_eq!(
+            game.state.players[player.index()].cards_discarded_this_turn,
+            2
+        );
+        let stack = &game.state.stack;
+        assert_eq!(stack.len(), 1);
+        assert_eq!(stack[0].kind, StackKind::TriggeredAbility { ability: 0 });
+        assert_eq!(
+            stack[0].event_object.as_ref().unwrap().facts,
+            EventObjectFacts::DiscardedManaValue(4)
+        );
+        assert_eq!(game.object_view(own_creature).damage, 0);
+
+        game.move_object(high, Zone::Hand);
+        let later_creature = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+        settle(&mut game);
+        assert_eq!(game.object_view(own_creature).zone, Zone::Exile);
+        assert_eq!(game.object_view(later_creature).zone, Zone::Exile);
+        assert_eq!(game.object_view(large_creature).damage, 4);
+        assert_eq!(game.object_view(peace).zone, Zone::Battlefield);
+        assert_eq!(game.state.players[opponent.index()].life, STARTING_LIFE);
+    }
+}
+
+#[test]
+fn exact_optional_discard_is_unavailable_with_an_insufficient_hand() {
+    const DRAW_LOCK: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::CantDrawCards],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (named("Divination"), &DISCARD_DAMAGE),
+        (named("Short Bow"), &DRAW_LOCK),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
+    let only = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let spell = put(&mut game, player, "Divination", Zone::Hand);
+    cast(&mut game, spell, None);
+    settle(&mut game);
+    assert_eq!(game.hand_count(player), 1);
+    assert_eq!(game.object_view(only).zone, Zone::Hand);
+    assert_eq!(
+        game.state.players[player.index()].cards_discarded_this_turn,
+        0
+    );
+}

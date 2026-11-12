@@ -11071,22 +11071,26 @@ impl Game {
                     }
                     self.discard_batch_caused(&selected, None, Some(item.controller));
                 }
-                Instruction::DiscardOneRememberCard
-                | Instruction::DiscardOneReflexiveManaValue(_) => {
+                Instruction::DiscardOneRememberCard => {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     resolution.discards[item.controller.index()] = 1;
-                    resolution.discard_after = Some(match instruction {
-                        Instruction::DiscardOneRememberCard => {
-                            discard_events::DiscardAfter::RememberOne(item.controller)
-                        }
-                        Instruction::DiscardOneReflexiveManaValue(ability) => {
-                            discard_events::DiscardAfter::ReflexiveManaValue {
-                                controller: item.controller,
-                                ability,
-                            }
-                        }
-                        _ => unreachable!(),
-                    });
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::RememberOne(item.controller));
+                }
+                Instruction::DiscardOneReflexiveManaValue(ability)
+                | Instruction::DiscardExactlyReflexiveManaValue { ability, .. } => {
+                    let amount = match instruction {
+                        Instruction::DiscardExactlyReflexiveManaValue { amount, .. } => amount,
+                        _ => 1,
+                    };
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[item.controller.index()] = amount;
+                    resolution.discard_after =
+                        Some(discard_events::DiscardAfter::ReflexiveManaValue {
+                            controller: item.controller,
+                            amount,
+                            ability,
+                        });
                 }
                 Instruction::CastRememberedDiscardFree => {
                     let card = self.state.resolving.as_mut().unwrap().discarded_card.take();

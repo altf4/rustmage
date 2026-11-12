@@ -4187,6 +4187,12 @@ pub enum Instruction {
     CastRememberedDiscardFree,
     /// Discard one card and queue a reflexive ability with its frozen mana value.
     DiscardOneReflexiveManaValue(u16),
+    /// Choose this many discards simultaneously. Queue the reflexive ability only
+    /// after that many cards actually moved, with their greatest known mana value.
+    DiscardExactlyReflexiveManaValue {
+        amount: u16,
+        ability: u16,
+    },
     /// Each distinct linked card owner creates one token sized by the sum of
     /// all cards still in exile for this exact acquired linked ability pair.
     CreateSizedTokensForLinkedExileOwners {
@@ -5772,6 +5778,7 @@ pub enum AmountValue {
     CardsDiscardedThisTurn,
     /// Actual cards in this packet's one completed simultaneous discard event.
     DiscardEventAmount,
+    /// Greatest known mana value in the actual discard event captured by this ability.
     DiscardedCardManaValue,
     /// Count the exact objects retained by this reflexive trigger, even if they moved again.
     ReflexiveSubjectCount,
