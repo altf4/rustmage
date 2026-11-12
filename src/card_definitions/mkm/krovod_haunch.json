@@ -3,10 +3,14 @@
   "catalogue_id": 2418,
   "oracle_id": "85fdfa3c-4912-496a-bbcb-1ae13a34e917",
   "facts_sha256": "9e671b788d5adaaadb0b13a81e4714848884c04c9dbcdbf6ef5ef3a70ff016ef",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "76a8d6ec2e63e3fabf39363b8edcf1959b90fd14803cf2d7e7730b8b559e6c07"
   },
-  "physical_metadata_sha256": "bce36d0227ab3f96b92a9a16c1066ab0ec7a8397713e1a99e2a759be0f99b75d"
+  "physical_metadata_sha256": "bce36d0227ab3f96b92a9a16c1066ab0ec7a8397713e1a99e2a759be0f99b75d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrovodHaunch.java",
+  "java_sha256": "d6b1b73f9309f6e9090af269695975f53aac74bbdd0a003e8d7b686343ef571d",
+  "rules_tests": "mkm_white_blue_cards"
 }

@@ -3,10 +3,14 @@
   "catalogue_id": 1033,
   "oracle_id": "245d0ccf-87b6-460a-8b99-9e2079f2d375",
   "facts_sha256": "f2b0cd1bd5bdd0e68d5c6124b0aed463f81708e90fbb10dd849e9b2f8fa0c796",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "595bcf14cac238cef8930f2088d10d0f01f3bc0fe3559e3b07235a5f5bb62f5f"
   },
-  "physical_metadata_sha256": "d1b0fbb425ff4e1a9ff1aa6ef8ca4eac498dd58eb6ac7398b5c5fa5b88742f49"
+  "physical_metadata_sha256": "d1b0fbb425ff4e1a9ff1aa6ef8ca4eac498dd58eb6ac7398b5c5fa5b88742f49",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DelneyStreetwiseLookout.java",
+  "java_sha256": "738c9b80fff88276514d7617c1fb6e304cdbb31422f76d9390f01481b5843bf8",
+  "rules_tests": "mkm_white_blue_cards"
 }

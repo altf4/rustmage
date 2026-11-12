@@ -11,3 +11,6 @@ mod disguise;
 
 #[path = "mkm_white_blue_cards/private_choices.rs"]
 mod private_choices;
+
+#[path = "mkm_white_blue_cards/abilities.rs"]
+mod abilities;
