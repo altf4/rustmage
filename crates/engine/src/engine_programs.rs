@@ -1,8 +1,28 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
 use crate::cards::{
-    CastFilter, CastTarget, StaticAbilityFragment, TriggerLimit, TurnCallbackEvent,
+    CastFilter, CastTarget, CreatureCastQualifier, StaticAbilityFragment, TriggerLimit,
+    TurnCallbackEvent,
 };
+
+/// Effective characteristics of the committed spell face at the cast event.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+pub(super) struct SpellCastTraits {
+    subtypes: GrantedSubtypes,
+    keywords: Keywords,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SpellCastTraits {
+    pub(super) fn matches_qualifier(self, qualifier: CreatureCastQualifier, card: Card) -> bool {
+        qualifier.matches(
+            card,
+            || self.keywords,
+            |subtype| self.subtypes.has(card, subtype),
+        )
+    }
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1977,11 +1997,11 @@ impl Game {
         caster: Player,
         source: &ObjectView,
         targets: &[BoundTarget],
-        spell_subtypes: GrantedSubtypes,
+        spell_traits: SpellCastTraits,
     ) -> bool {
         match filter {
             CastFilter::SourceChosenCreatureType => {
-                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if spell_subtypes.has(card, typ.name()))
+                matches!(source.entry_choice, Some(EntryChoiceValue::CreatureType(typ)) if spell_traits.subtypes.has(card, typ.name()))
             }
             CastFilter::CreatureManaValueEqualsSourcePower => {
                 card.is_creature() && i128::from(mana_value) == source.power
@@ -1997,7 +2017,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::NotOwnedByYou => {
@@ -2019,7 +2039,7 @@ impl Game {
                         .is_some_and(|count| count == wanted)
             }
             CastFilter::FirstQualifiedCreature(qualifier) => {
-                qualifier.matches(card)
+                spell_traits.matches_qualifier(qualifier, card)
                     && self.state.players[caster.index()]
                         .turn_facts
                         .qualified_creature_cast_count(qualifier)
@@ -2039,7 +2059,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::ManaSymbols { filter, color } => {
@@ -2052,7 +2072,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::AnyOf(filters) => filters.iter().any(|f| {
@@ -2064,7 +2084,7 @@ impl Game {
                     caster,
                     source,
                     targets,
-                    spell_subtypes,
+                    spell_traits,
                 )
             }),
             CastFilter::ManaValueMaximum { filter, maximum } => {
@@ -2077,7 +2097,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::ManaValueMinimum { filter, minimum } => {
@@ -2090,7 +2110,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::TargetCount { filter, count } => {
@@ -2103,7 +2123,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     )
             }
             CastFilter::Targeted {
@@ -2127,7 +2147,7 @@ impl Game {
                     caster,
                     source,
                     targets,
-                    spell_subtypes,
+                    spell_traits,
                 ) && targets.iter().any(|bound| {
                     if let Target::Player(player) = bound.target {
                         return target == CastTarget::OpponentOrCreature
@@ -2163,7 +2183,7 @@ impl Game {
                 })
             }
             _ => filter.matches_mana_value_with(card, card.fixed_mana_value(), |subtype| {
-                spell_subtypes.has(card, subtype)
+                spell_traits.subtypes.has(card, subtype)
             }),
         }
     }
@@ -2181,7 +2201,7 @@ impl Game {
         caster: Player,
         source: &ObjectView,
         targets: &[BoundTarget],
-        spell_subtypes: GrantedSubtypes,
+        spell_traits: SpellCastTraits,
     ) -> Vec<ObjectRef> {
         if !self.cast_filter_matches_value(
             owner,
@@ -2191,7 +2211,7 @@ impl Game {
             caster,
             source,
             targets,
-            spell_subtypes,
+            spell_traits,
         ) {
             return Vec::new();
         }
@@ -2207,7 +2227,7 @@ impl Game {
                     caster,
                     source,
                     targets,
-                    spell_subtypes,
+                    spell_traits,
                 ));
                 for bound in targets {
                     if self.cast_filter_matches_value(
@@ -2218,7 +2238,7 @@ impl Game {
                         caster,
                         source,
                         std::slice::from_ref(bound),
-                        spell_subtypes,
+                        spell_traits,
                     ) && let Some(object) = bound.object
                     {
                         objects.push(object);
@@ -2239,7 +2259,7 @@ impl Game {
                     caster,
                     source,
                     targets,
-                    spell_subtypes,
+                    spell_traits,
                 ));
             }
             CastFilter::AnyOf(filters) => {
@@ -2252,7 +2272,7 @@ impl Game {
                         caster,
                         source,
                         targets,
-                        spell_subtypes,
+                        spell_traits,
                     ));
                 }
             }
@@ -2357,6 +2377,25 @@ impl Game {
             .map_or_else(GrantedSubtypes::default, |source| {
                 self.granted_subtypes(source.id)
             });
+        let spell_traits = SpellCastTraits {
+            subtypes: spell_subtypes,
+            keywords: if card.is_creature() {
+                stack.map_or_else(
+                    || card.keywords(),
+                    |i| {
+                        let item = &self.state.stack[i];
+                        let source = item.source.expect("committed creature spell");
+                        if self.state.objects[source.id as usize].card == card {
+                            self.keywords(source.id)
+                        } else {
+                            item.source_keywords
+                        }
+                    },
+                )
+            } else {
+                card.keywords()
+            },
+        };
         let mana_value = stack.map_or_else(
             || card.fixed_mana_value(),
             |i| self.state.stack[i].mana_value(),
@@ -2379,7 +2418,9 @@ impl Game {
                 .capacity("qualifying spell count exhausted");
         }
         if CastFilter::Creature.matches(card) {
-            player.turn_facts.record_qualified_creature_cast(card);
+            player
+                .turn_facts
+                .record_qualified_creature_cast(card, spell_traits);
             let count = &mut player.creature_spells_cast_this_turn;
             *count = count
                 .checked_add(1)
@@ -2525,7 +2566,7 @@ impl Game {
                                 stack
                                     .map(|i| self.state.stack[i].targets.as_slice())
                                     .unwrap_or(&[]),
-                                spell_subtypes,
+                                spell_traits,
                             )
                         })
                         && wanted.is_none_or(|wanted| wanted == ordinal)
@@ -2543,7 +2584,7 @@ impl Game {
                                 caster,
                                 &source,
                                 targets,
-                                spell_subtypes,
+                                spell_traits,
                             );
                             let packet = self.state.pending_triggers.last_mut().unwrap();
                             packet.refer_objects(std::iter::once(event.object).chain(objects));
@@ -2637,7 +2678,7 @@ impl Game {
             cast_event.as_ref().map(|event| event.object),
             card.kind_mask() & 1 == 0,
         );
-        self.temporary_cast_triggers(caster, card, stack);
+        self.temporary_cast_triggers(caster, card, stack, spell_traits);
         self.capture_cast_creature_subjects(stack, first_trigger);
         self.capture_cast_callbacks(stack, first_trigger, cast_event);
         if let Some(index) = stack {
@@ -6615,6 +6656,15 @@ impl Game {
                 Instruction::ReturnSourceToHand(origin) => {
                     if let Some(source) = self.exact_source_in_zone(&item, origin) {
                         self.move_object(source, Zone::Hand);
+                    }
+                }
+                Instruction::ReturnAttachmentGrantorToHand => {
+                    if let Some(grant) = &item.attachment_trigger
+                        && grant.granted
+                        && self.on_battlefield(grant.grantor.card)
+                        && self.object_ref(grant.grantor.card) == grant.grantor
+                    {
+                        self.move_object(grant.grantor.card, Zone::Hand);
                     }
                 }
                 Instruction::PutSourceOnLibraryTop { origin } => {

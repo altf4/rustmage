@@ -338,7 +338,7 @@ pub enum TargetGroupConstraint {
     DistinctCardTypeSlots,
     /// Pair shares at least one current card type, not a subtype or supertype.
     SharedCardType,
-    /// Two graveyard cards that share at least one creature subtype.
+    /// Two cards or permanents in the same zone that share a creature subtype.
     SharedCreatureType,
     /// Controlled by the player chosen in a distinct target group.
     ControllerOfPlayerGroup(u16),
@@ -4086,6 +4086,8 @@ pub enum Instruction {
         exile: bool,
     },
     ReturnSourceToHand(TargetZone),
+    /// Return the exact battlefield permanent that granted this attached ability.
+    ReturnAttachmentGrantorToHand,
     ReturnSourceFromFirstPublicZoneToHand,
     /// Stop a targeted permanent’s activated abilities until its next actual untap.
     PreventTargetActivationsWhileTapped,
@@ -6072,6 +6074,8 @@ pub enum StatValue {
     SourceEnteredUnderYourControlThisTurn,
     SourceModified,
     ControlledModifiedCreatures,
+    /// Largest number of controlled creatures with any one effective creature type.
+    LargestControlledCreatureTypeGroup,
     SourceEquipmentCount,
     SourceAuraOrEquipmentCount,
     LegendaryCreaturesYouControl,
@@ -7062,20 +7066,29 @@ pub enum CastTarget {
 pub enum CreatureCastQualifier {
     Human,
     Legendary,
+    FlyingNonLemur,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CreatureCastQualifier {
-    pub(crate) const ALL: [Self; 2] = [Self::Human, Self::Legendary];
+    pub(crate) const ALL: [Self; 3] = [Self::Human, Self::Legendary, Self::FlyingNonLemur];
 
     pub(crate) const fn index(self) -> usize {
         self as usize
     }
 
-    pub(crate) fn matches(self, card: Card) -> bool {
+    pub(crate) fn matches(
+        self,
+        card: Card,
+        keywords: impl FnOnce() -> Keywords,
+        has_subtype: impl FnOnce(&str) -> bool,
+    ) -> bool {
         card.is_creature()
             && match self {
                 Self::Human => card.has_subtype("Human"),
                 Self::Legendary => card.is_legendary(),
+                Self::FlyingNonLemur => {
+                    !has_subtype("Lemur") && keywords().contains(Keywords::FLYING)
+                }
             }
     }
 }

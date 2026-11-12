@@ -1395,7 +1395,7 @@ impl Game {
             }
             let mut count = [0usize; 2];
             let mut seen_kinds = 0u16;
-            let mut seen_creature_types = None;
+            let mut seen_creature_types = [subtypes::CreatureTypeSet::default(); 2];
             let mut seen_names = Vec::new();
             self.visit_targets_in_world(world, spec.rule, actor, source, qualification, |target| {
                 if exclude_source && target == Target::Card(source.card) {
@@ -1427,16 +1427,16 @@ impl Game {
                     let Target::Card(id) = target else {
                         return false;
                     };
-                    let types = world.subtypes(id);
-                    let definition = world.object(id).card;
-                    let seen = seen_creature_types
-                        .get_or_insert_with(|| vec![false; crate::cards::CREATURE_TYPES.len()]);
-                    return crate::cards::CREATURE_TYPES
-                        .iter()
-                        .zip(seen)
-                        .any(|(name, seen)| {
-                            types.has(definition, name) && std::mem::replace(seen, true)
-                        });
+                    let object = world.object(id);
+                    let seen = match object.zone {
+                        Zone::Battlefield => &mut seen_creature_types[0],
+                        Zone::Graveyard => &mut seen_creature_types[1],
+                        _ => return false,
+                    };
+                    let types = world.subtypes(id).creature_type_set(object.card);
+                    let available = seen.intersects(types);
+                    seen.union(types);
+                    return available;
                 }
                 if matches!(
                     spec.rule,
@@ -1578,7 +1578,7 @@ impl Game {
             TargetGroupConstraint::SameGraveyard => object.zone == Zone::Graveyard && chosen.iter().filter(|b| b.group == group).all(|b| {
                 matches!(b.target, Target::Card(other) if self.state.objects.get(other as usize).is_some_and(|o| o.owner == object.owner))
             }),
-            TargetGroupConstraint::SharedCreatureType => object.zone == Zone::Graveyard
+            TargetGroupConstraint::SharedCreatureType => matches!(object.zone, Zone::Battlefield | Zone::Graveyard)
                 && chosen.iter().filter(|bound| bound.group == group).all(|bound| {
                     matches!(bound.target, Target::Card(other)
                         if self.same_target_object(*bound)
@@ -1593,64 +1593,46 @@ impl Game {
         }
     }
 
-    fn creature_type_facts(&self, id: CardId) -> (Card, GrantedSubtypes) {
-        (
-            self.state.objects[id as usize].card,
-            self.granted_subtypes(id),
-        )
-    }
-
-    fn types_intersect(
-        (first, first_types): (Card, GrantedSubtypes),
-        (second, second_types): (Card, GrantedSubtypes),
-    ) -> bool {
-        crate::cards::CREATURE_TYPES
-            .iter()
-            .any(|name| first_types.has(first, name) && second_types.has(second, name))
+    fn target_creature_types(&self, id: CardId) -> subtypes::CreatureTypeSet {
+        self.granted_subtypes(id)
+            .creature_type_set(self.state.objects[id as usize].card)
     }
 
     fn share_creature_type(&self, first: CardId, second: CardId) -> bool {
-        Self::types_intersect(
-            self.creature_type_facts(first),
-            self.creature_type_facts(second),
-        )
+        self.state.objects[first as usize].zone == self.state.objects[second as usize].zone
+            && self
+                .target_creature_types(first)
+                .intersects(self.target_creature_types(second))
     }
 
     pub(super) fn capture_target_types_departure(&mut self, before: &ObjectView) {
-        let (constraint, facts) = match before.zone {
-            Zone::Battlefield => (
-                TargetGroupConstraint::SharedCardType,
-                TargetTypeLki::CardTypes(before.kinds),
-            ),
-            Zone::Graveyard => (
-                TargetGroupConstraint::SharedCreatureType,
-                TargetTypeLki::CreatureTypes(before.card, before.granted_subtypes),
-            ),
-            _ => return,
-        };
-        fn remember(
-            item: &mut SpellView,
-            reference: ObjectRef,
-            constraint: TargetGroupConstraint,
-            facts: TargetTypeLki,
-        ) {
+        if !matches!(before.zone, Zone::Battlefield | Zone::Graveyard) {
+            return;
+        }
+        fn remember(item: &mut SpellView, before: &ObjectView, facts: &mut Option<TargetTypeLki>) {
             if item
                 .targets
                 .iter()
-                .any(|bound| bound.object == Some(reference))
-                && item.target_type_lki(reference).is_none()
-                && item.needs_target_relation_lki(constraint)
+                .any(|bound| bound.object == Some(before.reference))
+                && item.target_type_lki(before.reference).is_none()
+                && (item.needs_target_relation_lki(TargetGroupConstraint::SharedCreatureType)
+                    || before.zone == Zone::Battlefield
+                        && item.needs_target_relation_lki(TargetGroupConstraint::SharedCardType))
             {
+                let facts = *facts.get_or_insert_with(|| TargetTypeLki {
+                    kinds: before.kinds,
+                    creature_types: before.granted_subtypes.creature_type_set(before.card),
+                });
                 item.target_types_lki
                     .get_or_insert_with(|| Box::new(Vec::new()))
-                    .push((reference, facts));
+                    .push((before.reference, facts));
             }
             if let Some(event) = &mut item.copy_event {
-                remember(&mut event.spell, reference, constraint, facts);
+                remember(&mut event.spell, before, facts);
             }
         }
-        let mut remember =
-            |item: &mut SpellView| remember(item, before.reference, constraint, facts);
+        let mut facts = None;
+        let mut remember = |item: &mut SpellView| remember(item, before, &mut facts);
         self.state
             .stack
             .iter_mut()
@@ -1779,10 +1761,10 @@ impl Game {
                         if self.same_target_object(*other) && self.on_battlefield(other_id) {
                             Some(self.current_kinds(other_id))
                         } else {
-                            match other.object.and_then(|object| item.target_type_lki(object)) {
-                                Some(TargetTypeLki::CardTypes(kinds)) => Some(kinds),
-                                _ => None,
-                            }
+                            other
+                                .object
+                                .and_then(|object| item.target_type_lki(object))
+                                .map(|facts| facts.kinds)
                         };
                     other_kinds.is_some_and(|other| kinds & other != 0)
                 });
@@ -1799,7 +1781,8 @@ impl Game {
             let Target::Card(id) = bound.target else {
                 return false;
             };
-            let first = self.creature_type_facts(id);
+            let first = self.target_creature_types(id);
+            let zone = self.state.objects[id as usize].zone;
             return item
                 .targets
                 .iter()
@@ -1809,16 +1792,16 @@ impl Game {
                         return false;
                     };
                     let second = if self.same_target_object(*other)
-                        && self.state.objects[other_id as usize].zone == Zone::Graveyard
+                        && self.state.objects[other_id as usize].zone == zone
                     {
-                        self.creature_type_facts(other_id)
+                        Some(self.target_creature_types(other_id))
                     } else {
-                        match other.object.and_then(|object| item.target_type_lki(object)) {
-                            Some(TargetTypeLki::CreatureTypes(card, subtypes)) => (card, subtypes),
-                            _ => return false,
-                        }
+                        other
+                            .object
+                            .and_then(|object| item.target_type_lki(object))
+                            .map(|facts| facts.creature_types)
                     };
-                    Self::types_intersect(first, second)
+                    second.is_some_and(|types| first.intersects(types))
                 });
         }
         if let Some(TargetSpec {
@@ -2494,7 +2477,6 @@ impl Game {
                 let zone = match constraint {
                     TargetGroupConstraint::SameGraveyard
                     | TargetGroupConstraint::DistinctNames
-                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(_)
                     | TargetGroupConstraint::DistinctCardTypeSlots => Some(Zone::Graveyard),
                     TargetGroupConstraint::DifferentControllers
@@ -2502,6 +2484,7 @@ impl Game {
                     | TargetGroupConstraint::ControllerOfPlayerGroup(_)
                     | TargetGroupConstraint::AttachedToGroup(_) => Some(Zone::Battlefield),
                     TargetGroupConstraint::OtherThanGroup(_)
+                    | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| o.zone == zone)))

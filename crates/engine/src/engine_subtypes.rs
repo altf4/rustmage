@@ -122,6 +122,24 @@ impl CreatureTypeSet {
             *word |= extra;
         }
     }
+    pub(super) fn intersects(self, other: Self) -> bool {
+        self.0.into_iter().zip(other.0).any(|(a, b)| a & b != 0)
+    }
+    pub(super) fn indices(self) -> impl Iterator<Item = usize> {
+        self.0
+            .into_iter()
+            .enumerate()
+            .flat_map(|(block, mut word)| {
+                std::iter::from_fn(move || {
+                    if word == 0 {
+                        return None;
+                    }
+                    let offset = word.trailing_zeros() as usize;
+                    word &= word - 1;
+                    Some(block * u64::BITS as usize + offset)
+                })
+            })
+    }
     pub(super) fn contains(self, name: &str) -> bool {
         !self.is_empty()
             && crate::cards::CREATURE_TYPES

@@ -149,6 +149,9 @@ pub struct TurnFactsView {
     /// Human and legendary creature casts, each capped at two.
     #[serde(skip_serializing_if = "no_qualified_creature_casts")]
     pub qualified_creature_casts: [u8; 2],
+    /// Committed casts of flying non-Lemur creature spells, capped at two.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub flying_non_lemur_creature_casts: u8,
     /// Actual committed activation history, retained even before a provider enters.
     #[serde(skip_serializing_if = "is_false")]
     pub exhaust_activated_this_turn: bool,
@@ -182,13 +185,23 @@ fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TurnFactsView {
     pub(super) fn qualified_creature_cast_count(self, qualifier: CreatureCastQualifier) -> u8 {
-        self.qualified_creature_casts[qualifier.index()]
+        match qualifier {
+            CreatureCastQualifier::FlyingNonLemur => self.flying_non_lemur_creature_casts,
+            _ => self.qualified_creature_casts[qualifier.index()],
+        }
     }
 
-    pub(super) fn record_qualified_creature_cast(&mut self, card: Card) {
+    pub(super) fn record_qualified_creature_cast(
+        &mut self,
+        card: Card,
+        traits: programs::SpellCastTraits,
+    ) {
         for qualifier in CreatureCastQualifier::ALL {
-            let count = &mut self.qualified_creature_casts[qualifier.index()];
-            if *count < 2 && qualifier.matches(card) {
+            let count = match qualifier {
+                CreatureCastQualifier::FlyingNonLemur => &mut self.flying_non_lemur_creature_casts,
+                _ => &mut self.qualified_creature_casts[qualifier.index()],
+            };
+            if *count < 2 && traits.matches_qualifier(qualifier, card) {
                 *count += 1;
             }
         }

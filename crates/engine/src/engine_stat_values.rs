@@ -773,6 +773,19 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::LargestControlledCreatureTypeGroup => {
+                let mut counts = [0usize; crate::cards::CREATURE_TYPES.len()];
+                for (id, object) in objects().filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 1 != 0
+                }) {
+                    for index in subtypes(id).creature_type_set(object.card).indices() {
+                        counts[index] += 1;
+                    }
+                }
+                counts.into_iter().max().unwrap_or(0) as i128
+            }
             StatValue::CreaturesOfChosenType => {
                 let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
                     return 0;

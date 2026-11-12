@@ -1920,9 +1920,9 @@ pub enum SourceLessRule {
 /// Cold last-known facts for a relational target that changed zones.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum TargetTypeLki {
-    CardTypes(u16),
-    CreatureTypes(Card, GrantedSubtypes),
+pub(crate) struct TargetTypeLki {
+    kinds: u16,
+    creature_types: subtypes::CreatureTypeSet,
 }
 
 /// Object-backed stack source, absent for inherent game-rule abilities.

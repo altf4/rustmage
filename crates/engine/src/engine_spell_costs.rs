@@ -662,11 +662,24 @@ impl Game {
                     matches!(world.entry_value(world.reference(source)), Some(EntryChoiceValue::CreatureType(typ)) if subtypes.has(definition, typ.name()))
                 }
                 CastFilter::FirstQualifiedCreature(qualifier) => {
-                    qualifier.matches(definition)
-                        && self.state.players[actor.index()]
-                            .turn_facts
-                            .qualified_creature_cast_count(qualifier)
-                            == 0
+                    self.state.players[actor.index()]
+                        .turn_facts
+                        .qualified_creature_cast_count(qualifier)
+                        == 0
+                        && qualifier.matches(
+                            definition,
+                            || {
+                                if recipient.zone == Zone::Battlefield
+                                    || recipient.card != definition
+                                {
+                                    definition.keywords()
+                                } else {
+                                    characteristic_query::CharacteristicQuery::in_world(world)
+                                        .keywords(id)
+                                }
+                            },
+                            |subtype| subtypes.has(definition, subtype),
+                        )
                 }
                 CastFilter::CreatureToughnessGreaterThanPower => {
                     definition.is_creature() && {
