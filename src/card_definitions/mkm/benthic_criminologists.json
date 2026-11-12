@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f00d755c6a545c2eb198689ec8a4aeb87ca86b40718de90a2d4977db7844c9f2"
   },
-  "physical_metadata_sha256": "f8f651b421b14ef50959826a3a33f7ce497a7a6bf4ea61ffae9600a83517946a"
+  "physical_metadata_sha256": "f8f651b421b14ef50959826a3a33f7ce497a7a6bf4ea61ffae9600a83517946a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BenthicCriminologists.java",
+  "java_sha256": "258f34de8c0e83cee8cbb50a5929a8d1a7113974b969c0244fe665c3f7b07e84",
+  "rules_tests": "mkm_white_blue_cards"
 }

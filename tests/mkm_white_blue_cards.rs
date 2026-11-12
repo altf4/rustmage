@@ -14,3 +14,6 @@ mod private_choices;
 
 #[path = "mkm_white_blue_cards/abilities.rs"]
 mod abilities;
+
+#[path = "mkm_white_blue_cards/admitted.rs"]
+mod admitted;

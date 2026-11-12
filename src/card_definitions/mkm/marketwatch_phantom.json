@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8e2affaeee9782939e0cd87436515af3c9cff8fb9ca0ead9e8033c5f69e4877d"
   },
-  "physical_metadata_sha256": "062b6acec5f91f57ccc2bb3e86ab9834863b4165b6cb5df37dc5a619b2229b96"
+  "physical_metadata_sha256": "062b6acec5f91f57ccc2bb3e86ab9834863b4165b6cb5df37dc5a619b2229b96",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarketwatchPhantom.java",
+  "java_sha256": "4c4031d22e3ec0cb659e1f35f0eb40749aa3797e29be6c2c75dfb2cdaaab206c",
+  "rules_tests": "mkm_white_blue_cards"
 }

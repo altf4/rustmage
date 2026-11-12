@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c1976742948529389e0b80921558f4faf4618b7c4ad0b8e84d3dacc3ba91567"
   },
-  "physical_metadata_sha256": "be1862cd4ea3a68223385165a91c20d54e22ab7795f9a4437c49bcd78a43647f"
+  "physical_metadata_sha256": "be1862cd4ea3a68223385165a91c20d54e22ab7795f9a4437c49bcd78a43647f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OutCold.java",
+  "java_sha256": "042e63a14090ae1d0853d4e84c943e81457ab001f7663661236228f38e79b53c",
+  "rules_tests": "mkm_white_blue_cards"
 }

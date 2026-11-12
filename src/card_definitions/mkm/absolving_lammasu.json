@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a32631d700333bdc4a934947dc68f4195faabd33b48c6b2a14a7a5ed3e113b8f"
   },
-  "physical_metadata_sha256": "8e995508253dc7a6baa00d0f245b9bbc10fc11f9c669b04d679e15939d8d12f9"
+  "physical_metadata_sha256": "8e995508253dc7a6baa00d0f245b9bbc10fc11f9c669b04d679e15939d8d12f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AbsolvingLammasu.java",
+  "java_sha256": "39a8397f4902a88d904a12a3504820ee68d9eb34fe5d1a1e89f1e58742561fc9",
+  "rules_tests": "mkm_white_blue_cards"
 }

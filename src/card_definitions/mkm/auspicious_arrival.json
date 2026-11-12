@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb0fcfec40ebfcb7d64486716e9881f537999f0a63869b8efc0a9f8599c4f669"
   },
-  "physical_metadata_sha256": "81fc8659911ead072a3377f49314ca15876f3058b0284b9d2201621e6a26458c"
+  "physical_metadata_sha256": "81fc8659911ead072a3377f49314ca15876f3058b0284b9d2201621e6a26458c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AuspiciousArrival.java",
+  "java_sha256": "e3c6c32851cd176e697cf4c9f34d39aee9878e95dd37afafd659532e71b24d26",
+  "rules_tests": "mkm_white_blue_cards"
 }

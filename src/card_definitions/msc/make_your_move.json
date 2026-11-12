@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27b386423243090264750bd7fedbcb3780b774f3e0ebcba155e42c5951bcd0c9"
   },
-  "physical_metadata_sha256": "b6e96415001d39955f2d7933870a3de4ed9bb04d23d1a8559a4e93595e12b740"
+  "physical_metadata_sha256": "b6e96415001d39955f2d7933870a3de4ed9bb04d23d1a8559a4e93595e12b740",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MakeYourMove.java",
+  "java_sha256": "89538d0b8cb370df1512234e48977e91d196de8f50487ee0cb1b94fc504814c2",
+  "rules_tests": "mkm_white_blue_cards"
 }
