@@ -997,6 +997,13 @@ impl<'g> FundingState<'g> {
             _ => self.convoke,
         }
     }
+    fn set_tap_payment(&mut self, payment: Option<waterbend::TapPayment>) {
+        if self.activation_tap_payment != payment {
+            self.activation_tap_payment = payment;
+            self.set_purpose(self.purpose);
+        }
+    }
+
     fn has_contributions(&self) -> bool {
         self.convoke_available()
             || self.improvise_available()
@@ -1084,7 +1091,11 @@ impl<'g> FundingState<'g> {
             goal.source
                 .as_ref()
                 .and_then(|(source, index, _, definition, _)| {
-                    waterbend::TapPayment::for_activation(definition.activation(*index), *source)
+                    waterbend::TapPayment::for_activation(
+                        definition.activation(*index),
+                        *source,
+                        None,
+                    )
                 });
         // A prerequisite need not itself produce mana (e.g. a changeling for
         // Mox Jasper). Keep only relevant owned witnesses, including removable
@@ -4911,16 +4922,25 @@ impl<'g> FundingState<'g> {
             >= u128::from(goal.generic)
     }
     fn convoke_masks(&self) -> [u64; 32] {
+        let used = self
+            .cast_costs
+            .as_ref()
+            .map_or(0, |context| context.tap_payment_used);
+        self.contribution_masks(used)
+    }
+    fn contribution_masks(&self, tap_payment_used: usize) -> [u64; 32] {
+        let ordinary = (self.convoke_available(), self.improvise_available());
+        let mut masks = improvise::masks(self, self.actor, ordinary.0, ordinary.1, &[]);
         if let Some(payment) = self.activation_tap_payment {
-            return payment.masks(self, self.actor, &[]);
+            payment.add_exclusive_masks(
+                self,
+                self.actor,
+                &mut masks,
+                ordinary,
+                &[],
+                tap_payment_used,
+            );
         }
-        let mut masks = improvise::masks(
-            self,
-            self.actor,
-            self.convoke_available(),
-            self.improvise_available(),
-            &[],
-        );
         if self.delve_available() {
             masks[0] += delve::count(self, self.actor, self.payment_source, &[]);
         }
@@ -5708,6 +5728,7 @@ impl Game {
             || a.needs_teamwork()
             || a.needs_blight()
             || a.needs_kicker()
+            || a.needs_waterbend_cost()
             || a.needs_gift()
             || a.needs_bargain()
             || a.needs_evidence()
@@ -5779,6 +5800,7 @@ impl Game {
             ),
         );
         world.set_purpose(self.purpose_for_item(&a.item));
+        world.set_tap_payment(proposal.tap_payment());
         world.set_cost_context(Some(&proposal));
         world.reachable(&goal, &mut HashSet::new())
     }
@@ -5882,6 +5904,9 @@ impl Game {
         if a.needs_behold() {
             return self.behold_intent_fundable(a, false) || self.behold_intent_fundable(a, true);
         }
+        if a.needs_waterbend_cost() {
+            return self.waterbend_cost_fundable(a, false) || self.waterbend_cost_fundable(a, true);
+        }
         if a.item.kind == StackKind::Spell
             && a.item.source.is_some_and(|source| {
                 self.cast_requires_target_payment(a.item.controller, source.card)
@@ -5891,6 +5916,33 @@ impl Game {
         }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
+        }
+        if a.item.kind == StackKind::Spell && a.tap_payment().is_some() {
+            let mut proposal = a.clone();
+            proposal.cost = Some(cost);
+            proposal.plan = self.target_spec(&proposal.item);
+            return self
+                .target_proposal_total(
+                    &proposal,
+                    Self::announcement_base_cost(&proposal),
+                    proposal.plan,
+                    None,
+                    false,
+                    Self::announcement_optional_reduction(&proposal),
+                )
+                .is_some_and(|total| self.waterbend_spell_total_fundable(&proposal, total));
+        }
+        if matches!(
+            a.item.kind,
+            StackKind::ActivatedAbility { ability }
+                if matches!(
+                    a.item.source.expect("activation source").card.activation(ability).program.first(),
+                    Some(Instruction::WaterbendXCost { .. }),
+                )
+        ) {
+            let mut proposal = a.clone();
+            proposal.total_cost = Some(cost);
+            return self.activation_packet_fundable(&proposal);
         }
         if a.source_mana_alternative().is_some() || a.independent_additional_mana().is_some() {
             return self.behold_announcement_fundable(a, cost);
@@ -6789,6 +6841,29 @@ impl Game {
             &mut HashSet::new(),
         )
     }
+    pub(super) fn waterbend_cost_fundable(&self, announcement: &Announcement, pay: bool) -> bool {
+        let mut proposal = announcement.clone();
+        proposal.item.cast.as_mut().unwrap().waterbend = Some(pay);
+        proposal
+            .cost_options()
+            .any(|cost| self.announcement_cost_fundable(&proposal, cost))
+    }
+    pub(super) fn waterbend_spell_total_fundable(
+        &self,
+        announcement: &Announcement,
+        total: ManaCost,
+    ) -> bool {
+        let mut proposal = announcement.clone();
+        proposal.total_cost = Some(total);
+        let definition = proposal.item.source.expect("spell source").card;
+        let convoke = convoke::cost_potential(self, definition);
+        proposal.initialize_cast_costs(convoke);
+        let goal = self.funding_goal(&proposal);
+        let mut world = FundingState::from_game_with_convoke(self, &goal, convoke);
+        world.set_purpose(self.purpose_for_item(&proposal.item));
+        world.set_payment_context(&proposal);
+        world.reachable(&goal, &mut HashSet::new())
+    }
     pub(super) fn mana_packet_fundable(
         &self,
         packet: &SpellView,
@@ -6970,7 +7045,8 @@ impl Game {
         }
         let goal = self.funding_goal(announcement);
         let convoke = self.item_convoke(&announcement.item);
-        let state = FundingState::from_game_with_convoke(self, &goal, convoke);
+        let mut state = FundingState::from_game_with_convoke(self, &goal, convoke);
+        state.set_tap_payment(announcement.tap_payment());
         let mut done = false;
         let mut direct = state.clone();
         direct.mark_mana_clause_paid();
@@ -7068,10 +7144,15 @@ impl Game {
                         .expect("cost announcement has object source")
                         .card,
                 ));
-        let activation_tap = self
-            .item_activation_tap_payment(&announcement.item)
+        let activation_tap = announcement
+            .tap_payment()
             .and_then(|payment| match payment.kind {
-                waterbend::TapPaymentKind::Waterbend(_) => Some(Action::BeginWaterbend),
+                waterbend::TapPaymentKind::Waterbend(amount)
+                    if amount != 0 && goal.generic != 0 =>
+                {
+                    Some(Action::BeginWaterbend)
+                }
+                waterbend::TapPaymentKind::Waterbend(_) => None,
                 waterbend::TapPaymentKind::Creatures if goal.generic != 0 => {
                     Some(Action::BeginCreatureTapPayment)
                 }
@@ -7333,7 +7414,9 @@ impl Game {
             generic: cost.generic,
             source: None,
         };
-        let costs = || std::iter::once(request.cost).chain(request.alternatives.iter().copied());
+        let costs = || {
+            std::iter::once(request.remaining_mana()).chain(request.alternatives.iter().copied())
+        };
         let can_pay_life = self.resolution_life_available(request.payer, request.life);
         if !can_pay_life && request.choices.is_none() {
             return false;
@@ -7355,6 +7438,51 @@ impl Game {
                 }
             }
         }
+        if let Some(waterbend) = &request.waterbend {
+            let payment = waterbend::TapPayment::waterbend(u64::from(waterbend.amount));
+            let player = request.payer;
+            let pool = self
+                .available_mana(player, mana_lots::Purpose::Other)
+                .map(u128::from);
+            let remaining = request.remaining_mana();
+            if let Some(selected) = &waterbend.selected {
+                if remaining.generic == 0 || selected.len() as u64 == payment.cap() {
+                    return false;
+                }
+                let mut excluded = selected.clone();
+                for id in 0..self.state.objects.len() {
+                    let object = self.object_ref(id as CardId);
+                    if selected.contains(&object) || !payment.eligible(self, player, object) {
+                        continue;
+                    }
+                    excluded.push(object);
+                    let mut masks = [0; 32];
+                    payment.add_exclusive_masks(
+                        self,
+                        player,
+                        &mut masks,
+                        (false, false),
+                        &excluded,
+                        excluded.len(),
+                    );
+                    if convoke::payable(pool, remaining.colored, remaining.generic - 1, &masks)
+                        && emit(Action::ChooseWaterbender { object })
+                    {
+                        return true;
+                    }
+                    excluded.pop();
+                }
+                return false;
+            }
+            let mut masks = [0; 32];
+            payment.add_exclusive_masks(self, player, &mut masks, (false, false), &[], 0);
+            if masks[0] != 0
+                && convoke::payable(pool, remaining.colored, remaining.generic, &masks)
+                && emit(Action::BeginWaterbend)
+            {
+                return true;
+            }
+        }
         // An offered mana cost opens the same window before the final payment,
         // including while its nonmana selections are still incomplete.
         let goal = if let Some(choices) = &request.choices {
@@ -7373,6 +7501,12 @@ impl Game {
         // An explicit resolution request opens its own window independently of
         // any suspended announcement's cost-payment phase.
         state.set_cost_context(None);
+        state.set_tap_payment(
+            request
+                .waterbend
+                .as_ref()
+                .map(|payment| waterbend::TapPayment::waterbend(u64::from(payment.amount))),
+        );
         state.visit_distinct_actions(&goal, |_| true, emit)
     }
 }
@@ -7455,7 +7589,7 @@ impl Game {
             self.state.mana_lots.as_mut().unwrap().prepared = Some(viable);
             return;
         }
-        let (goal, convoke, evidence) = match self.state.pending {
+        let (goal, convoke, evidence, tap_payment) = match self.state.pending {
             Pending::PayCosts { .. }
             | Pending::Convoke { .. }
             | Pending::Improvise { .. }
@@ -7474,6 +7608,7 @@ impl Game {
                                 .card,
                         ),
                     a.evidence.as_ref().map(|e| e.threshold),
+                    a.tap_payment(),
                 )
             }
             Pending::AttackPayment { .. } | Pending::BlockPayment { .. } => {
@@ -7488,15 +7623,17 @@ impl Game {
                     },
                     false,
                     None,
+                    None,
                 )
             }
-            Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None),
+            Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None, None),
             Pending::RoomUnlockPayment { .. } => (
                 self.state
                     .room_unlock_payment()
                     .expect("Room unlock payment")
                     .goal(),
                 false,
+                None,
                 None,
             ),
             Pending::FaceUpPayment { .. } => {
@@ -7511,11 +7648,13 @@ impl Game {
                     },
                     false,
                     None,
+                    None,
                 )
             }
             _ => return,
         };
-        let world = FundingState::from_game_with_convoke(self, &goal, convoke);
+        let mut world = FundingState::from_game_with_convoke(self, &goal, convoke);
+        world.set_tap_payment(tap_payment);
         let mut viable = Vec::new();
         for step in world.action_moves(&goal) {
             if world.action(&step) != *action {

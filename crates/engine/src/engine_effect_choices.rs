@@ -442,6 +442,12 @@ impl Game {
                 && o.is_card()
                 && self.object_ref(object.card) == object
                 && !choice.selected[player.index()].contains(&object)
+                && match choice.kind {
+                    EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { owner } => {
+                        o.owner == owner && self.current_kinds(object.card) & 3 == 0
+                    }
+                    _ => true,
+                }
                 && (choice.kind != EffectChoiceKind::ExileCardFromAnyGraveyardRemember
                     || !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
                         self,
@@ -2776,6 +2782,17 @@ impl Game {
                     for event in &events {
                         if event.moved && event.destination == Zone::Exile {
                             self.grant_taxed_exile_play(event.before.owner, event.after, surcharge);
+                        }
+                    }
+                }
+                if matches!(
+                    choice.kind,
+                    EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { .. }
+                ) {
+                    let item = self.state.resolving.as_ref().unwrap().item.clone();
+                    for event in &events {
+                        if event.moved && event.destination == Zone::Exile {
+                            self.grant_linked_waterbend_cast(&item, event.after);
                         }
                     }
                 }

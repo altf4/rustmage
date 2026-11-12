@@ -679,6 +679,12 @@ impl Game {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
     pub(crate) fn x_symbols(&self) -> u32 {
+        if matches!(
+            self.program.first(),
+            Some(Instruction::WaterbendXCost { .. })
+        ) {
+            return 1;
+        }
         if let Some(Instruction::ActivationXWithMinimum { symbols, .. }) = self.program.first() {
             return u32::from(*symbols);
         }
@@ -693,6 +699,7 @@ impl ActivatedAbility {
     pub(super) fn minimum_x(&self) -> u32 {
         match self.program.first() {
             Some(Instruction::ActivationXWithMinimum { minimum, .. }) => *minimum,
+            Some(Instruction::WaterbendXCost { minimum }) => *minimum,
             _ => 0,
         }
     }

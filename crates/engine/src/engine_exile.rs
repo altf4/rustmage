@@ -26,6 +26,9 @@ pub struct ExilePlayPermission {
     /// A distinct permission to cast for {2} instead of its mana cost.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub airbend: bool,
+    /// The linked provider grants its controller a waterbend alternative this turn.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub waterbend: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub requires_subtype: Option<&'static str>,
     /// A distinct play permission: charge this generic fee for spells, or
@@ -118,6 +121,7 @@ impl Game {
                 && !p.life_instead_of_mana
                 && !p.without_paying_mana_cost
                 && !p.airbend
+                && !p.waterbend
                 && p.player == player
                 && p.object == object
                 && p.expiry.active(self.state.turn)
@@ -134,6 +138,7 @@ impl Game {
             || self.state.exile_permissions.iter().any(|p| {
                 p.play_surcharge.is_none()
                     && !p.airbend
+                    && !p.waterbend
                     && p.player == player
                     && p.object == self.object_ref(card)
                     && p.expiry.active(self.state.turn)
@@ -485,6 +490,7 @@ impl Game {
                 life_instead_of_mana: false,
                 without_paying_mana_cost: false,
                 airbend: false,
+                waterbend: false,
                 requires_subtype: None,
                 play_surcharge: None,
             },
@@ -1259,6 +1265,7 @@ impl Game {
                 life_instead_of_mana: false,
                 without_paying_mana_cost: true,
                 airbend: false,
+                waterbend: false,
                 requires_subtype: None,
                 play_surcharge: None,
             },
@@ -1407,6 +1414,7 @@ impl Game {
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
                     airbend: false,
+                    waterbend: false,
                     requires_subtype: Some(subtype),
                     play_surcharge: None,
                 },
@@ -1472,6 +1480,142 @@ impl Game {
                     && self.exile_permission_guard(row)
             })
     }
+    pub(super) fn grant_linked_waterbend_cast(&mut self, item: &SpellView, object: ObjectRef) {
+        let Some(source) = item.source else {
+            return;
+        };
+        self.link_exile_with_cohort(
+            source.object,
+            item.source_ability_origin,
+            item.linked_activation_cohort(),
+            object,
+        );
+        if !self.on_battlefield(source.id)
+            || self.object_ref(source.id) != source.object
+            || self.state.objects[source.id as usize].controller != item.controller
+        {
+            return;
+        }
+        if let Some(permission) = self.grant_exile_play_permission_with_expiry(
+            item.controller,
+            object,
+            Some(source.object),
+            ExilePlayExpiry::WhileExiled,
+        ) {
+            permission.cast_only = true;
+            permission.waterbend = true;
+        }
+    }
+    fn linked_waterbend_cost(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+    ) -> Option<ManaCost> {
+        let card = self.state.objects.get(object.card as usize)?;
+        if self.state.active != player
+            || card.zone != Zone::Exile
+            || self.object_ref(object.card) != object
+            || !card.is_card()
+            || self.exiled_face_down(object)
+            || !self.state.exile_permissions.iter().any(|permission| {
+                permission.waterbend
+                    && permission.player == player
+                    && permission.object == object
+                    && permission.source == Some(source)
+                    && self.exile_permission_guard(permission)
+            })
+        {
+            return None;
+        }
+        u32::try_from(self.object_mana_value(object.card))
+            .ok()
+            .map(waterbend::generic_cost)
+    }
+    pub(super) fn configure_linked_waterbend_cast(item: &mut SpellView, flash_surcharge: bool) {
+        let cast = item.cast.as_mut().expect("cast information");
+        cast.method = CastMethod::LinkedExileWaterbend;
+        cast.flash_surcharge = flash_surcharge;
+        Self::configure_linked_paid_cast(item);
+        if item.source.expect("cast source").card.x_symbols() > 0 {
+            item.x = Some(0);
+        }
+    }
+    pub(super) fn visit_linked_waterbend_casts(
+        &self,
+        player: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if self.state.active != player {
+            return false;
+        }
+        let object = self.object_ref(card);
+        let physical = self.state.objects[card as usize].card;
+        self.state
+            .exile_permissions
+            .iter()
+            .filter_map(|permission| {
+                (permission.waterbend && permission.object == object && permission.player == player)
+                    .then_some(permission.source)
+                    .flatten()
+            })
+            .any(|source| {
+                let Some(base) = self.linked_waterbend_cost(player, object, source) else {
+                    return false;
+                };
+                CastFace::choices(physical).any(|face| {
+                    if !face.definition(physical).is_some_and(|definition| {
+                        !definition.is_land() && !matches!(definition.effect(), Effect::Unsupported)
+                    }) {
+                        return false;
+                    }
+                    [false, true].into_iter().any(|flash_surcharge| {
+                        self.permitted_cast_with_alternative(
+                            player,
+                            card,
+                            CastMethod::LinkedExileWaterbend,
+                            face,
+                            sorcery,
+                            flash_surcharge,
+                            None,
+                            None,
+                            None,
+                            false,
+                            cast_permissions::OriginAlternative {
+                                mana_base: Some(base),
+                                ..Default::default()
+                            },
+                        ) && emit(Action::AnnounceLinkedWaterbend {
+                            object,
+                            source,
+                            face,
+                            flash_surcharge,
+                        })
+                    })
+                })
+            })
+    }
+    pub(super) fn start_linked_waterbend_cast(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+        face: CastFace,
+        flash_surcharge: bool,
+    ) {
+        let base = self
+            .linked_waterbend_cost(player, object, source)
+            .expect("approved linked waterbend permission");
+        let mut item = self.cast_item(player, object.card, [0; 6]);
+        self.set_cast_face(&mut item, face);
+        self.select_linked_paid_cast(&mut item);
+        Self::configure_linked_waterbend_cast(&mut item, flash_surcharge);
+        self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
+            a.origin_alternative_cost = Some(base);
+        });
+    }
     pub(super) fn grant_airbend_permission(&mut self, player: Player, object: ObjectRef) {
         if self.object_ref(object.card) != object
             || self.state.objects[object.card as usize].zone != Zone::Exile
@@ -1500,6 +1644,7 @@ impl Game {
                 life_instead_of_mana: false,
                 without_paying_mana_cost: false,
                 airbend: true,
+                waterbend: false,
                 requires_subtype: None,
                 play_surcharge: None,
             },

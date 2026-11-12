@@ -1588,6 +1588,9 @@ pub enum EffectChoiceKind {
     ExileCardFromAnyGraveyard,
     /// Choose without targeting, and retain only cards actually moved to exile.
     ExileCardFromAnyGraveyardRemember,
+    ExileNoncreatureNonlandFromGraveyard {
+        owner: Player,
+    },
     /// Targeted player chooses a creature to exile with their graveyard.
     ExileCreatureAndGraveyard,
     CoverUpGraveyardCard,
@@ -1879,7 +1882,8 @@ impl EffectChoiceKind {
             Self::DiscardOneMatchingOr { .. } => Self::Discard,
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
-            Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
+            Self::ExileCardFromAnyGraveyardRemember
+            | Self::ExileNoncreatureNonlandFromGraveyard { .. } => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeAsCost
             | Self::SacrificeSelection
             | Self::SacrificeSelectionForPower
@@ -2268,6 +2272,14 @@ pub enum CounterSubject {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum WaterbendAdditional {
+    Required(u32),
+    RequiredX,
+    Optional(u32),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CreaturePowerDamageRecipients {
     OtherCreatures,
     TargetGroup(u16),
@@ -2489,6 +2501,20 @@ pub enum Instruction {
     },
     /// Marks the printed waterbend component of an activation cost.
     WaterbendCost(u16),
+    /// A variable generic activation cost paid by waterbending.
+    WaterbendXCost {
+        minimum: u32,
+    },
+    IfWaterbendPaid {
+        skip: usize,
+    },
+    MayPayWaterbend {
+        amount: u32,
+        unpaid_skip: usize,
+    },
+    CounterRelatedUnlessWaterbend(u32),
+    /// Exile one noncreature, nonland card from the selected player's graveyard.
+    ExileTargetGraveyardForWaterbend,
     /// Each generic mana of this ability’s adjusted activation cost can be paid
     /// by tapping an untapped creature the activating player controls.
     TapCreaturesForActivationMana,
@@ -10069,6 +10095,9 @@ impl Card {
     }
     pub fn kicker_cost(self) -> Option<ManaCost> {
         generated::kicker_cost(self)
+    }
+    pub(crate) fn waterbend_additional(self) -> Option<WaterbendAdditional> {
+        authored::rules(self)?.extras.waterbend_additional
     }
     pub(crate) fn gift(self) -> Option<GiftSpec> {
         generated::gift(self)

@@ -88,7 +88,10 @@ impl Game {
     pub fn delve_choice(&self) -> Option<DelveChoiceView> {
         if !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. }
+            Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Delve { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }

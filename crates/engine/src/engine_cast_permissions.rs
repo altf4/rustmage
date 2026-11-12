@@ -787,6 +787,9 @@ impl Game {
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
         }
+        if method == CastMethod::LinkedExileWaterbend {
+            Self::configure_linked_waterbend_cast(&mut item, flash_surcharge);
+        }
         if method.pays_life_for_mana_value() {
             Self::configure_mana_value_life_cast(&mut item, method, flash_surcharge);
         }
@@ -797,6 +800,7 @@ impl Game {
             || matches!(
                 method,
                 CastMethod::Airbend
+                    | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
                     | CastMethod::Flashback
@@ -842,6 +846,7 @@ impl Game {
                             | CastMethod::ExileLife
                             | CastMethod::LibraryLife
                             | CastMethod::Airbend
+                            | CastMethod::LinkedExileWaterbend
                             | CastMethod::Free
                             | CastMethod::Plot
                             | CastMethod::Flashback
@@ -857,7 +862,9 @@ impl Game {
             },
             |spec| spec.x_symbols > 0,
         );
-        let scalar_x = !source_alternative && scalar_x;
+        let waterbend_x =
+            definition.waterbend_additional() == Some(crate::cards::WaterbendAdditional::RequiredX);
+        let scalar_x = waterbend_x || !source_alternative && scalar_x;
         if object.zone == Zone::Library
             && library_top.is_none()
             && method != CastMethod::LibraryLife
@@ -873,6 +880,7 @@ impl Game {
             return false;
         }
         if scalar_x
+            && !waterbend_x
             && definition.explicit_additional_mana().is_none()
             && !self.cast_requires_target_payment(actor, definition)
             && origin_life_cost.is_none()
@@ -935,6 +943,7 @@ impl Game {
         if let Some(permission) = paid_graveyard {
             a.set_paid_graveyard_cast_permission(permission);
         }
+        a.plan = self.target_spec(&a.item);
         if resolution_discard {
             a.add_origin_discard_cost();
         }

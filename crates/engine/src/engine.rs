@@ -1018,6 +1018,9 @@ define_actions! {
     ChooseKicker {
         pay: bool,
     },
+    ChooseWaterbendCost {
+        pay: bool,
+    },
     ChooseGift {
         beneficiary: Option<Player>,
     },
@@ -1077,6 +1080,7 @@ define_actions! {
     FinishResolutionCasts,
     AnnounceLinkedFree { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     AnnounceLinkedPaid { object: ObjectRef, source: ObjectRef, face: CastFace, flash_surcharge: bool },
+    AnnounceLinkedWaterbend { object: ObjectRef, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     AnnounceLinkedExileCounterCost { card: CardId, source: ObjectRef, face: CastFace, flash_surcharge: bool },
     FinishGraveyardSymbolCost,
     Mulligan,
@@ -1627,6 +1631,7 @@ pub enum CastMethod {
     Free,
     ExileLife,
     Airbend,
+    LinkedExileWaterbend,
     GrantedFlashback,
     GrantedZeroFlashback,
     Flashback,
@@ -1787,6 +1792,9 @@ pub struct CastInfo {
     pub offspring: Option<bool>,
     /// One fixed optional surcharge, independent of casting method and offspring.
     pub kicker: Option<bool>,
+    /// The optional printed waterbend cost, retained by copies.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub waterbend: Option<bool>,
     /// Whether this cast declared the optional teamwork cost. Copied with the spell.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub teamwork: Option<bool>,
@@ -3084,6 +3092,9 @@ enum Pending {
         player: Player,
     },
     Kicker {
+        player: Player,
+    },
+    WaterbendCost {
         player: Player,
     },
     LibraryCastPermission {
@@ -4998,6 +5009,7 @@ impl Game {
             | Pending::CastCosts { player }
             | Pending::CasualtyPayment { player, .. }
             | Pending::Kicker { player }
+            | Pending::WaterbendCost { player }
             | Pending::LibraryCastPermission { player }
             | Pending::Gift { player }
             | Pending::Offspring { player }
@@ -6414,9 +6426,11 @@ impl Game {
                                 providers,
                                 &cast_alternatives,
                                 &mut emit,
-                            ) || self.visit_ordinary_exile_zero_casts(
-                                actor, card, sorcery, providers, &mut emit,
-                            )))
+                            ) || self
+                                .visit_linked_waterbend_casts(actor, card, sorcery, &mut emit)
+                                || self.visit_ordinary_exile_zero_casts(
+                                    actor, card, sorcery, providers, &mut emit,
+                                )))
                             || self.visit_taxed_exile_plays(
                                 actor,
                                 card,
@@ -6919,6 +6933,7 @@ impl Game {
                         return true;
                     }
                     if obj.card.behold_cast().is_some()
+                        || obj.card.waterbend_additional().is_some()
                         || obj.card.explicit_additional_mana().is_some()
                         || obj.card.kicked_targets().is_some()
                         || obj.card.bargain_targets().is_some()
@@ -7550,6 +7565,16 @@ impl Game {
                 let a = s.announcing.as_ref().unwrap();
                 for pay in [false, true] {
                     if self.kicker_choice_fundable(a, pay) && emit(Action::ChooseKicker { pay }) {
+                        return true;
+                    }
+                }
+            }
+            Pending::WaterbendCost { .. } => {
+                let a = s.announcing.as_ref().unwrap();
+                for pay in [false, true] {
+                    if self.waterbend_cost_fundable(a, pay)
+                        && emit(Action::ChooseWaterbendCost { pay })
+                    {
                         return true;
                     }
                 }
@@ -8225,6 +8250,12 @@ impl Game {
                 face,
                 flash_surcharge,
             } => self.start_linked_paid_cast(actor, object, source, face, flash_surcharge),
+            Action::AnnounceLinkedWaterbend {
+                object,
+                source,
+                face,
+                flash_surcharge,
+            } => self.start_linked_waterbend_cast(actor, object, source, face, flash_surcharge),
             Action::AnnounceLinkedExileCounterCost {
                 card,
                 source,
@@ -9042,13 +9073,13 @@ impl Game {
             Action::BeginImprovise => self.begin_improvise(),
             Action::BeginDelve => self.begin_delve(),
             Action::BeginWaterbend | Action::BeginCreatureTapPayment => {
-                self.begin_activation_tap_payment();
+                self.begin_tap_payment();
             }
             Action::BeginOrderedCosts => self.begin_ordered_costs(),
             Action::ChooseImproviser { object } => self.choose_improviser(object),
             Action::ChooseDelver { object } => self.choose_delver(object),
             Action::ChooseWaterbender { object } | Action::ChooseCreatureTapPayment { object } => {
-                self.choose_improviser(object);
+                self.choose_tap_payment_contributor(object);
             }
             Action::ChooseConvoker {
                 object,
@@ -9422,6 +9453,18 @@ impl Game {
                 {
                     self.state.announcing.as_mut().unwrap().plan = plan;
                 }
+                self.continue_announcement_choices(false);
+            }
+            Action::ChooseWaterbendCost { pay } => {
+                self.state
+                    .announcing
+                    .as_mut()
+                    .unwrap()
+                    .item
+                    .cast
+                    .as_mut()
+                    .unwrap()
+                    .waterbend = Some(pay);
                 self.continue_announcement_choices(false);
             }
             Action::ChooseCastBehold { pay } => self.choose_cast_behold(pay),
@@ -13126,6 +13169,7 @@ impl Game {
                 Pending::CastBehold { .. } => "cast_behold",
                 Pending::BeholdCost { .. } => "behold_cost",
                 Pending::Kicker { .. } => "kicker",
+                Pending::WaterbendCost { .. } => "waterbend_cost",
                 Pending::LibraryCastPermission { .. } => "library_cast_permission",
                 Pending::Gift { .. } => "gift",
                 Pending::Endure { .. } => "endure",

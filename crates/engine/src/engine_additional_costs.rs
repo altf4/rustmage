@@ -1485,6 +1485,7 @@ impl Game {
             | EffectChoiceKind::BottomHand
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+            | EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { .. }
             | EffectChoiceKind::ExileCreatureAndGraveyard
             | EffectChoiceKind::ExileControlledForLinkedReturn
             | EffectChoiceKind::ExileControlledLinked

@@ -179,6 +179,7 @@ impl Announcement {
             }
             CastMethod::Miracle => self.origin_alternative_cost,
             CastMethod::WebSlinging => self.origin_alternative_cost,
+            CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
             CastMethod::Airbend => Some(ManaCost {
                 colored: [0; 6],
@@ -297,6 +298,7 @@ impl Announcement {
                     CastMethod::ExileLife
                     | CastMethod::LibraryLife
                     | CastMethod::Airbend
+                    | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
                     | CastMethod::GrantedZeroFlashback
@@ -438,7 +440,8 @@ impl Announcement {
         cost.generic = cost
             .generic
             .checked_add(self.behold_decline_generic())?
-            .checked_add(self.exile_play_surcharge())?;
+            .checked_add(self.exile_play_surcharge())?
+            .checked_add(self.fixed_waterbend_addition())?;
         Some(cost)
     }
     fn warp_additional_mana_chosen(&self, cost: ManaCost) -> bool {
@@ -497,6 +500,9 @@ impl Announcement {
         let options = match self.item.kind {
             StackKind::Spell if source_mana_alternative.is_some() => {
                 std::iter::once(source_mana_alternative.unwrap()).chain([].iter().copied())
+            }
+            StackKind::Spell if self.waterbend_alternative().is_some() => {
+                std::iter::once(self.waterbend_alternative().unwrap()).chain([].iter().copied())
             }
             StackKind::Spell
                 if self
@@ -2013,6 +2019,8 @@ impl Game {
             self.state.pending = Pending::LibraryCastPermission { player };
         } else if a.needs_kicker() {
             self.state.pending = Pending::Kicker { player };
+        } else if a.needs_waterbend_cost() {
+            self.state.pending = Pending::WaterbendCost { player };
         } else if a.needs_gift() {
             self.state.pending = Pending::Gift { player };
         } else if a.needs_mana_cost() {
@@ -3102,6 +3110,7 @@ impl Game {
                 flash_surcharge: false,
                 offspring: None,
                 kicker: None,
+                waterbend: None,
                 teamwork: None,
                 blight: None,
                 bargain: None,

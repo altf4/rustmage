@@ -91,7 +91,7 @@ impl Announcement {
             for row in &convoke.selected {
                 add(row.object);
             }
-            for &object in &convoke.improvised {
+            for &object in convoke.improvised.iter().chain(&convoke.substituted) {
                 add(object);
             }
             for &object in &convoke.delved {

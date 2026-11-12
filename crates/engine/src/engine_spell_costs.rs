@@ -233,6 +233,9 @@ impl Game {
             if let Some(cost) = a.source_mana_alternative() {
                 return cost;
             }
+            if let Some(cost) = a.waterbend_alternative() {
+                return cost;
+            }
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
@@ -342,6 +345,7 @@ impl Game {
                 .generic
                 .checked_add(a.behold_decline_generic())
                 .and_then(|generic| generic.checked_add(a.exile_play_surcharge()))
+                .and_then(|generic| generic.checked_add(a.fixed_waterbend_addition()))
                 .capacity("spell generic cost exhausted");
         }
         if a.forage
@@ -391,6 +395,7 @@ impl Game {
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
         if definition.explicit_additional_mana().is_some()
+            || definition.waterbend_additional().is_some()
             || self.cast_requires_target_payment(actor, definition)
             || (self.state.objects[card as usize].zone == Zone::Library
                 && definition.x_symbols() > 0)

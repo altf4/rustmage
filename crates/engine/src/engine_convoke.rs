@@ -60,28 +60,43 @@ pub struct ConvokePaymentView {
 pub(super) struct ConvokeSelection {
     pub selected: Vec<ConvokePaymentView>,
     pub improvised: Vec<ObjectRef>,
+    /// Waterbend and other capped tap substitutions use their own receipt.
+    pub substituted: Vec<ObjectRef>,
     /// Exact graveyard cards reserved for the same locked mana payment.
     pub delved: Vec<ObjectRef>,
     pub remaining: ManaCost,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ConvokeSelection {
+    pub(super) fn new(remaining: ManaCost) -> Self {
+        Self {
+            selected: Vec::new(),
+            improvised: Vec::new(),
+            substituted: Vec::new(),
+            delved: Vec::new(),
+            remaining,
+        }
+    }
+
     pub(super) fn objects(&self) -> Vec<ObjectRef> {
         self.selected
             .iter()
             .map(|s| s.object)
             .chain(self.improvised.iter().copied())
+            .chain(self.substituted.iter().copied())
             .collect()
     }
     pub(super) fn contains(&self, r: ObjectRef) -> bool {
         self.selected.iter().any(|s| s.object == r)
             || self.improvised.contains(&r)
+            || self.substituted.contains(&r)
             || self.delved.contains(&r)
     }
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.selected.len() * std::mem::size_of::<ConvokePaymentView>()
             + self.improvised.len() * std::mem::size_of::<ObjectRef>()
+            + self.substituted.len() * std::mem::size_of::<ObjectRef>()
             + self.delved.len() * std::mem::size_of::<ObjectRef>()
     }
 }
@@ -265,7 +280,10 @@ impl Game {
     pub fn convoke_choice(&self) -> Option<ConvokeChoiceView> {
         if !matches!(
             self.state.pending,
-            Pending::Convoke { .. } | Pending::Improvise { .. } | Pending::Delve { .. }
+            Pending::Convoke { .. }
+                | Pending::Improvise { .. }
+                | Pending::Delve { .. }
+                | Pending::Waterbend { .. }
         ) {
             return None;
         }
@@ -312,12 +330,9 @@ impl Game {
         let a = self.state.announcing.as_mut().unwrap();
         assert!(a.item.kind == StackKind::Spell && a.convoke.is_none());
         a.initialize_cast_costs(artifact);
-        a.convoke = Some(Box::new(ConvokeSelection {
-            remaining: a.total_cost.expect("locked total"),
-            selected: Vec::new(),
-            improvised: Vec::new(),
-            delved: Vec::new(),
-        }));
+        a.convoke = Some(Box::new(ConvokeSelection::new(
+            a.total_cost.expect("locked total"),
+        )));
         self.state.pending = if let Some(c) = &mut a.cast_costs {
             c.mana_closed = true;
             Pending::CastCosts {
@@ -368,7 +383,7 @@ impl Game {
         if done {
             return true;
         }
-        let activation_tap = self.item_activation_tap_payment(&a.item);
+        let tap_payment = a.tap_payment();
         for id in 0..self.state.objects.len() {
             let object = self.object_ref(id as CardId);
             if f.contains(object) {
@@ -386,8 +401,8 @@ impl Game {
             {
                 return true;
             }
-            if let Some(payment) = activation_tap
-                && (f.improvised.len() as u64) < payment.cap()
+            if let Some(payment) = tap_payment
+                && (f.substituted.len() as u64) < payment.cap()
                 && payment.eligible(self, a.item.controller, object)
                 && self.activation_tap_fundable(a, f, payment, object)
                 && emit(match payment.kind {
@@ -431,11 +446,14 @@ impl Game {
         payment: waterbend::TapPayment,
         object: ObjectRef,
     ) -> bool {
+        if a.cast_costs.is_some() {
+            let mut choice = self.cast_cost_world(a);
+            return choice.project_substituter(object) && choice.cost_completion();
+        }
         let Some(generic) = f.remaining.generic.checked_sub(1) else {
             return false;
         };
-        let mut excluded = f.objects();
-        excluded.push(object);
+        let masks = self.remaining_contribution_masks(a, f, object, Some(payment));
         convoke::payable_in(
             self,
             a.item.controller,
@@ -444,7 +462,7 @@ impl Game {
                 .map(u128::from),
             f.remaining.colored,
             generic,
-            &payment.masks(self, a.item.controller, &excluded),
+            &masks,
         )
     }
     fn contributor_fundable(
@@ -470,21 +488,7 @@ impl Game {
         {
             return false;
         }
-        let mut selected = f.objects();
-        selected.push(object);
-        let masks = improvise::masks(
-            self,
-            a.item.controller,
-            convoke::potential(
-                self,
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .card,
-            ),
-            self.item_improvise(&a.item),
-            &selected,
-        );
+        let masks = self.remaining_contribution_masks(a, f, object, None);
         convoke::payable_in(
             self,
             a.item.controller,
@@ -495,5 +499,38 @@ impl Game {
             cost.generic,
             &masks,
         )
+    }
+
+    fn remaining_contribution_masks(
+        &self,
+        a: &Announcement,
+        f: &ConvokeSelection,
+        object: ObjectRef,
+        selected_substitution: Option<waterbend::TapPayment>,
+    ) -> [u64; 32] {
+        let mut excluded = f.objects();
+        excluded.push(object);
+        let ordinary = (self.item_convoke(&a.item), self.item_improvise(&a.item));
+        let mut masks =
+            improvise::masks(self, a.item.controller, ordinary.0, ordinary.1, &excluded);
+        if let Some(payment) = selected_substitution.or_else(|| a.tap_payment()) {
+            payment.add_exclusive_masks(
+                self,
+                a.item.controller,
+                &mut masks,
+                ordinary,
+                &excluded,
+                f.substituted.len() + usize::from(selected_substitution.is_some()),
+            );
+        }
+        if self.item_delve(&a.item) {
+            masks[0] += delve::count(
+                self,
+                a.item.controller,
+                a.item.source.map(|s| s.object),
+                &f.delved,
+            );
+        }
+        masks
     }
 }

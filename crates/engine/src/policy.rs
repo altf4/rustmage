@@ -276,7 +276,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::ChooseConspire { pay }
             | Action::ChooseOffspring { pay }
             | Action::ChooseLibraryCastPermission { with_counter: pay }
-            | Action::ChooseKicker { pay } => {
+            | Action::ChooseKicker { pay }
+            | Action::ChooseWaterbendCost { pay } => {
                 if *pay {
                     100
                 } else {
@@ -420,6 +421,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceExileFree { .. }
             | Action::AnnounceLinkedFree { .. }
             | Action::AnnounceLinkedPaid { .. }
+            | Action::AnnounceLinkedWaterbend { .. }
             | Action::AnnounceLinkedExileCounterCost { .. }
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }

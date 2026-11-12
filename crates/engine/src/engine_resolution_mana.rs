@@ -15,6 +15,15 @@ pub(super) struct ResolutionPayment {
     pub exile: bool,
     pub unpaid_pc: usize,
     pub choices: Option<ResolutionCostChoices>,
+    pub waterbend: Option<ResolutionWaterbend>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ResolutionWaterbend {
+    pub amount: u32,
+    /// Some only after the mana-ability window has closed.
+    pub selected: Option<Vec<ObjectRef>>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -35,6 +44,22 @@ pub struct ResolutionCostView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ResolutionPayment {
+    pub(super) fn remaining_mana(&self) -> ManaCost {
+        let selected = self
+            .waterbend
+            .as_ref()
+            .and_then(|cost| cost.selected.as_ref())
+            .map_or(0, Vec::len);
+        ManaCost {
+            generic: self
+                .cost
+                .generic
+                .checked_sub(selected.try_into().expect("waterbend count"))
+                .expect("selected payment fits"),
+            ..self.cost
+        }
+    }
+
     fn object_cost(&self) -> Option<ResolutionObjectCost> {
         let choices = self.choices.as_ref()?;
         choices.options[usize::from(choices.selected?)].objects
@@ -70,6 +95,11 @@ impl ResolutionPayment {
 
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
+            + self
+                .waterbend
+                .as_ref()
+                .and_then(|cost| cost.selected.as_ref())
+                .map_or(0, |selection| std::mem::size_of_val(selection.as_slice()))
             + self.choices.as_ref().map_or(0, |choices| {
                 std::mem::size_of_val(choices.options.as_slice())
                     + std::mem::size_of_val(choices.objects.as_slice())
@@ -508,6 +538,7 @@ impl Game {
             exile,
             unpaid_pc,
             choices: None,
+            waterbend: None,
         }));
         self.state.pending = Pending::ResolutionMana {
             player: victim.controller,
@@ -534,8 +565,23 @@ impl Game {
             exile: false,
             unpaid_pc,
             choices: None,
+            waterbend: None,
         }));
         self.state.pending = Pending::ResolutionMana { player: payer };
+    }
+    pub(super) fn enable_resolution_waterbend(&mut self, amount: u32) {
+        let request = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .mana_payment
+            .as_mut()
+            .unwrap();
+        request.waterbend = Some(ResolutionWaterbend {
+            amount,
+            selected: None,
+        });
     }
     pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: i128) -> bool {
         if !self.start_resolution_payment(item, ManaCost::ZERO, CounterSubject::Related, false, 0) {
@@ -889,6 +935,12 @@ impl Game {
         }
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
+            if let Some(waterbend) = &request.waterbend
+                && let Some(selected) = &waterbend.selected
+            {
+                let ids: Vec<_> = selected.iter().map(|object| object.card).collect();
+                self.tap_objects_as(request.payer, &ids);
+            }
             if let Some(life) = request.life {
                 self.pay_life(request.payer, life);
             }

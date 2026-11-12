@@ -114,6 +114,7 @@ impl Game {
                 && !matches!(
                     cast.method,
                     CastMethod::Airbend
+                        | CastMethod::LinkedExileWaterbend
                         | CastMethod::ExileLife
                         | CastMethod::Plot
                         | CastMethod::Warp

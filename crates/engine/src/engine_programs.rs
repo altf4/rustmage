@@ -6027,6 +6027,50 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfWaterbendPaid { skip } => {
+                    if !item.cast.is_some_and(|cast| cast.waterbend == Some(true)) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::MayPayWaterbend {
+                    amount,
+                    unpaid_skip,
+                } => {
+                    self.start_optional_resolution_payment(
+                        item.controller,
+                        waterbend::generic_cost(amount),
+                        unpaid_skip,
+                    );
+                    self.enable_resolution_waterbend(amount);
+                    return;
+                }
+                Instruction::CounterRelatedUnlessWaterbend(amount) => {
+                    if self.start_resolution_payment(
+                        &item,
+                        waterbend::generic_cost(amount),
+                        CounterSubject::Related,
+                        false,
+                        0,
+                    ) {
+                        self.enable_resolution_waterbend(amount);
+                        return;
+                    }
+                }
+                Instruction::ExileTargetGraveyardForWaterbend => {
+                    let owner = self.program_players(PlayerSet::Targeted, &item).next();
+                    if let Some(owner) = owner
+                        && self.start_effect_choice(
+                            &item,
+                            EffectChoiceKind::ExileNoncreatureNonlandFromGraveyard { owner },
+                            PlayerSet::Controller,
+                            evidence::cost(0).filter,
+                            1,
+                            Some(0),
+                        )
+                    {
+                        return;
+                    }
+                }
 
                 Instruction::RememberTargetTapped => {
                     let tapped = item.targets.iter().any(|bound| {
@@ -8986,6 +9030,7 @@ impl Game {
                 | Instruction::TargetsExactlyX
                 | Instruction::SourceCounterCost { .. }
                 | Instruction::WaterbendCost(_)
+                | Instruction::WaterbendXCost { .. }
                 | Instruction::TapCreaturesForActivationMana
                 | Instruction::ExertCost => (),
                 Instruction::RemoveCreatureCounterThenDraw => {

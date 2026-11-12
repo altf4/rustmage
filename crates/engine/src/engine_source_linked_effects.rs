@@ -255,6 +255,7 @@ impl Game {
                     life_instead_of_mana: false,
                     without_paying_mana_cost: false,
                     airbend: false,
+                    waterbend: false,
                     requires_subtype: None,
                     play_surcharge: None,
                 },
