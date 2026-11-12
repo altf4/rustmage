@@ -7249,8 +7249,7 @@ impl Game {
                     .manifest
                     .as_ref()
                     .unwrap()
-                    .choice
-                    .as_ref()
+                    .pending_choice()
                     .unwrap();
                 for &object in &choice.candidates {
                     if emit(Action::ChooseManifest { object }) {

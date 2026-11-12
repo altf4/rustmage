@@ -5523,6 +5523,9 @@ impl Game {
                         self.begin_manifest_dread(player, 1);
                     }
                 }
+                Instruction::ManifestDreadForLinkedExileOwners => {
+                    self.manifest_dread_for_linked_exile_owners(&item);
+                }
                 Instruction::CounterAndManifestForController => {
                     if let Some((id, player)) = item.targets.iter().find_map(|bound| {
                         self.bound_stack_item(bound)

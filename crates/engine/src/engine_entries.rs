@@ -1273,8 +1273,10 @@ impl Game {
                     known: movement.manifest_known,
                     known_to,
                 });
-                if let Some(choice) = &mut state.choice
-                    && choice.selected == Some(event.before.reference)
+                if let Some(choice) = state
+                    .choices
+                    .iter_mut()
+                    .find(|choice| choice.selected == Some(event.before.reference))
                 {
                     choice.result = Some(event.after);
                 }
@@ -1952,14 +1954,14 @@ impl Game {
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
             let resume_entry = batch.resume_entry.take();
-            let selected = self
-                .state
-                .manifest
-                .as_ref()
-                .and_then(|state| state.choice.as_ref())
-                .and_then(|choice| choice.selected);
-            let completes_manifest = batch.moves.iter().any(|movement| {
-                movement.manifest_original.is_some() && Some(movement.before.reference) == selected
+            let completes_manifest = self.state.manifest.as_ref().is_some_and(|state| {
+                batch.moves.iter().any(|movement| {
+                    movement.manifest_original.is_some()
+                        && state
+                            .choices
+                            .iter()
+                            .any(|choice| choice.selected == Some(movement.before.reference))
+                })
             });
             self.commit_entries(batch);
             if completes_manifest {

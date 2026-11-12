@@ -108,7 +108,9 @@ pub(super) struct ManifestState {
     pub permanents: Vec<FaceDownPermanent>,
     /// Exact physical identities for spells cast face down; never exposed to opponents.
     pub spells: Vec<FaceDownPermanent>,
-    pub choice: Option<ManifestChoice>,
+    /// One choice per participant, in APNAP order. Selected cards remain in
+    /// their libraries until the entire round is ready to commit.
+    pub choices: Vec<ManifestChoice>,
     pub payment: Option<FaceUpPaymentView>,
     pub deaths: Vec<ManifestDeath>,
     pub last_event: Option<ManifestDreadEvent>,
@@ -118,6 +120,10 @@ pub(super) struct ManifestState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManifestState {
+    pub(super) fn pending_choice(&self) -> Option<&ManifestChoice> {
+        self.choices.iter().find(|choice| choice.needs_selection())
+    }
+
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + (self.permanents.len() + self.spells.len()) * std::mem::size_of::<FaceDownPermanent>()
@@ -130,10 +136,21 @@ impl ManifestState {
                 .iter()
                 .map(|death| std::mem::size_of::<ManifestDeath>() + death.source.owned_bytes())
                 .sum::<usize>()
-            + self.choice.as_ref().map_or(0, |c| {
-                std::mem::size_of::<ManifestChoice>()
-                    + c.candidates.len() * std::mem::size_of::<ObjectRef>()
-            })
+            + self
+                .choices
+                .iter()
+                .map(|choice| {
+                    std::mem::size_of::<ManifestChoice>()
+                        + std::mem::size_of_val(choice.candidates.as_slice())
+                })
+                .sum::<usize>()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManifestChoice {
+    fn needs_selection(&self) -> bool {
+        self.selected.is_none() && self.candidates.len() > 1
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -714,12 +731,32 @@ impl Game {
         });
     }
 
+    pub(super) fn manifest_dread_for_linked_exile_owners(&mut self, item: &SpellView) {
+        let Some(source) = item.source else {
+            return;
+        };
+        let owners = self
+            .linked_exile_for_origin(source.object, item.source_ability_origin)
+            .iter()
+            .map(|object| &self.state.objects[object.card as usize])
+            .filter(|object| object.is_card())
+            .fold(0, |mask, object| mask | (1 << object.owner.index()));
+        if owners != 0 {
+            self.state.resolving.as_mut().unwrap().manifest_sequence = None;
+            self.start_manifest_round(
+                [self.state.active, self.state.active.other()]
+                    .into_iter()
+                    .filter(|player| owners & (1 << player.index()) != 0),
+            );
+        }
+    }
+
     pub(super) fn advance_manifest_dread(&mut self) -> bool {
         if self
             .state
             .manifest
             .as_ref()
-            .is_some_and(|state| state.choice.is_some())
+            .is_some_and(|state| !state.choices.is_empty())
         {
             return true;
         }
@@ -734,49 +771,41 @@ impl Game {
             }
             sequence.remaining -= 1;
             let player = sequence.player;
-            if self.start_manifest_dread(player) {
+            if self.start_manifest_round([player]) {
                 return true;
             }
         }
         false
     }
 
-    /// Start CR701.62a. Looking is private, and selecting the sole card is
-    /// mandatory. Entry replacements may suspend before the rest is milled.
-    fn start_manifest_dread(&mut self, player: Player) -> bool {
-        let candidates: Vec<_> = self.state.players[player.index()]
-            .library
-            .iter()
-            .rev()
-            .filter(|&&id| self.state.objects[id as usize].is_card())
-            .take(2)
-            .map(|&id| self.object_ref(id))
+    /// CR 101.4 and 701.62. Each player looks privately and chooses in APNAP
+    /// order. The selected cards enter together before the remaining moves.
+    fn start_manifest_round(&mut self, players: impl IntoIterator<Item = Player>) -> bool {
+        let choices = players
+            .into_iter()
+            .map(|player| {
+                let candidates: Vec<_> = self.state.players[player.index()]
+                    .library
+                    .iter()
+                    .rev()
+                    .filter(|&&id| self.state.objects[id as usize].is_card())
+                    .take(2)
+                    .map(|&id| self.object_ref(id))
+                    .collect();
+                let selected = (candidates.len() == 1).then(|| candidates[0]);
+                ManifestChoice {
+                    player,
+                    candidates,
+                    selected,
+                    result: None,
+                }
+            })
             .collect();
-        if candidates.is_empty() {
-            // CR701.62b: completing the action triggers observers even when
-            // all of its component actions are impossible.
-            self.queue_manifest_dread_triggers(ManifestDreadEvent {
-                player,
-                manifested: None,
-                graveyard_cards: Vec::new(),
-            });
-            return false;
-        }
         self.state
             .manifest
             .get_or_insert_with(Default::default)
-            .choice = Some(ManifestChoice {
-            player,
-            candidates: candidates.clone(),
-            selected: None,
-            result: None,
-        });
-        if candidates.len() == 1 {
-            self.choose_manifest(candidates[0]);
-        } else {
-            self.state.pending = Pending::Manifest { player };
-        }
-        true
+            .choices = choices;
+        self.stage_manifest_round()
     }
 
     pub(super) fn choose_manifest(&mut self, selected: ObjectRef) {
@@ -785,38 +814,54 @@ impl Game {
             .manifest
             .as_mut()
             .unwrap()
-            .choice
-            .as_mut()
+            .choices
+            .iter_mut()
+            .find(|choice| choice.needs_selection())
             .unwrap();
         assert!(choice.candidates.contains(&selected));
         choice.selected = Some(selected);
-        let player = choice.player;
+        self.stage_manifest_round();
+    }
+
+    fn stage_manifest_round(&mut self) -> bool {
+        let state = self.state.manifest.as_ref().unwrap();
+        if let Some(choice) = state.pending_choice() {
+            self.state.pending = Pending::Manifest {
+                player: choice.player,
+            };
+            return true;
+        }
         // The consumed choice must not be restored as an entry continuation.
         if matches!(self.state.pending, Pending::Manifest { .. }) {
             self.state.pending = Pending::Priority;
         }
-        let movement = self
-            .manifest_entry(selected, player)
-            .expect("selected manifest card remains in library");
-        self.stage_entries(vec![movement], None);
+        let moves: Vec<_> = state
+            .choices
+            .iter()
+            .filter_map(|choice| {
+                let selected = choice.selected?;
+                Some(
+                    self.manifest_entry(selected, choice.player)
+                        .expect("selected manifest card remains in library"),
+                )
+            })
+            .collect();
+        if moves.is_empty() {
+            self.finish_manifest_entry();
+            false
+        } else {
+            self.stage_entries(moves, None);
+            true
+        }
     }
 
     /// Called after the staged entry commits. Cards that weren't manifested,
     /// including a card whose entry was prevented, are moved simultaneously.
     pub(super) fn finish_manifest_entry(&mut self) {
-        let ready = self
-            .state
-            .manifest
-            .as_ref()
-            .and_then(|s| s.choice.as_ref())
-            .is_some_and(|choice| choice.selected.is_some());
-        if !ready {
-            return;
-        }
-        let choice = self.state.manifest.as_mut().unwrap().choice.take().unwrap();
-        let remaining: Vec<_> = choice
-            .candidates
-            .into_iter()
+        let choices = std::mem::take(&mut self.state.manifest.as_mut().unwrap().choices);
+        let remaining: Vec<_> = choices
+            .iter()
+            .flat_map(|choice| choice.candidates.iter().copied())
             .filter(|&object| {
                 self.state
                     .objects
@@ -827,28 +872,40 @@ impl Game {
             })
             .map(|object| object.card)
             .collect();
-        let manifested = choice.result;
-        if let Some(object) = manifested
-            && let Some(sequence) = self
-                .state
-                .resolving
-                .as_mut()
-                .and_then(|resolution| resolution.manifest_sequence.as_mut())
+        if let Some(sequence) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.manifest_sequence.as_mut())
         {
-            sequence.results.push(object);
+            sequence
+                .results
+                .extend(choices.iter().filter_map(|choice| choice.result));
         }
-        let events = self.move_objects_raw(&remaining, Zone::Graveyard);
-        let graveyard_cards = events
-            .iter()
-            .filter(|event| event.moved && event.destination == Zone::Graveyard)
-            .map(|event| event.after)
-            .collect();
-        self.finish_zone_events(&events, &[]);
-        self.queue_manifest_dread_triggers(ManifestDreadEvent {
-            player: choice.player,
-            manifested,
-            graveyard_cards,
-        });
+        let events = if remaining.is_empty() {
+            Vec::new()
+        } else {
+            let events = self.move_objects_raw(&remaining, Zone::Graveyard);
+            self.finish_zone_events(&events, &[]);
+            events
+        };
+        for choice in choices {
+            let graveyard_cards = events
+                .iter()
+                .filter(|event| {
+                    event.moved
+                        && event.destination == Zone::Graveyard
+                        && choice.candidates.contains(&event.before.reference)
+                })
+                .map(|event| event.after)
+                .collect();
+            // CR 701.62b: completion is an event even with no cards to move.
+            self.queue_manifest_dread_triggers(ManifestDreadEvent {
+                player: choice.player,
+                manifested: choice.result,
+                graveyard_cards,
+            });
+        }
     }
     pub(super) fn take_face_down_physical(&mut self, reference: ObjectRef) -> Option<Card> {
         if let Some(rollback) = &mut self.state.cast_rollback
@@ -956,10 +1013,12 @@ impl Game {
             })
     }
     pub(super) fn manifest_choice_view(&self, viewer: Player) -> Option<ManifestChoiceView> {
-        let choice = self.state.manifest.as_ref()?.choice.as_ref()?;
-        if !self.shares_information(viewer, choice.player) {
-            return None;
-        }
+        let state = self.state.manifest.as_ref()?;
+        let visible = |choice: &&ManifestChoice| self.shares_information(viewer, choice.player);
+        let choice = state
+            .pending_choice()
+            .filter(visible)
+            .or_else(|| state.choices.iter().find(visible))?;
         let candidates = choice
             .candidates
             .iter()

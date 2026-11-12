@@ -3528,6 +3528,8 @@ pub enum Instruction {
     ManifestDread,
     /// Manifest for the selected target group's controller, using resolution LKI after a move.
     ManifestDreadForTargetController,
+    /// Each distinct owner of a card still in this ability's linked exile manifests dread.
+    ManifestDreadForLinkedExileOwners,
     /// Attempt to counter the target spell, then have that spell's controller manifest dread.
     CounterAndManifestForController,
     /// Complete each manifest separately before proceeding to the next instruction.

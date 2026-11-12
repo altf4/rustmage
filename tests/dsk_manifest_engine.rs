@@ -226,6 +226,110 @@ fn pass_pair(game: &mut Game) {
 }
 
 #[test]
+fn linked_exile_owners_choose_once_each_before_either_manifest_commits() {
+    const DEPARTURE: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfLeaves,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ManifestDreadForLinkedExileOwners],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Short Bow").unwrap(), &DEPARTURE),
+        (Card::from_name("Bear Cub").unwrap(), &OBSERVER),
+    ]);
+    let active = Player::P1;
+    let other = active.other();
+    let (mut game, cards) = with_library(active, &["Shock", "Grizzly Bears"]);
+    for id in game.state.players[other.index()].library.clone() {
+        game.move_object(id, Zone::Exile);
+    }
+    let other_manifest = put(&mut game, other, "Llanowar Elves", Zone::Library);
+    let other_mill = put(&mut game, other, "Plains", Zone::Library);
+    let source = put(&mut game, other, "Short Bow", Zone::Battlefield);
+    let source_ref = game.object_ref(source);
+    let watchers =
+        [other, active].map(|owner| put(&mut game, owner, "Bear Cub", Zone::Battlefield));
+    let mut exiled = Vec::new();
+    for owner in [other, active, active] {
+        let id = put(&mut game, owner, "Grizzly Bears", Zone::Exile);
+        game.link_exile_to_ability(source_ref, None, game.object_ref(id));
+        exiled.push(id);
+    }
+    let disenchant = put(&mut game, active, "Disenchant", Zone::Hand);
+    let mut stale = game.clone();
+    stale.move_object(exiled[0], Zone::Graveyard);
+    stale.move_object(exiled[0], Zone::Exile);
+    for branch in [&mut game, &mut stale] {
+        cast(branch, disenchant, Some(Target::Card(source)));
+        pass_pair(branch);
+        assert_eq!(branch.object_view(source).zone, Zone::Graveyard);
+        pass_pair(branch);
+        assert_eq!(branch.actor(), Some(active));
+        let mine = branch.observe(active).manifest_choice.unwrap();
+        assert_eq!(mine.player, active);
+        assert_eq!(
+            mine.candidates
+                .iter()
+                .map(|&(_, card)| card)
+                .collect::<Vec<_>>(),
+            [Card::GrizzlyBears, Card::from_name("Shock").unwrap()]
+        );
+    }
+    assert!(stale.observe(other).manifest_choice.is_none());
+    let first = selection(&game, cards[1]);
+    let second = selection(&game, other_manifest);
+    reject(&mut game, second.clone());
+    act(&mut stale, first.clone());
+    settle(&mut stale);
+    assert_eq!(stale.object_view(other_manifest).zone, Zone::Library);
+    assert_eq!(stale.counter_count(watchers[0], CounterKind::PlusOne), 0);
+    assert_eq!(stale.counter_count(watchers[1], CounterKind::PlusOne), 1);
+
+    act(&mut game, first.clone());
+    assert_eq!(game.actor(), Some(other));
+    assert_eq!(game.object_view(cards[1]).zone, Zone::Library);
+    assert_eq!(game.object_view(other_manifest).zone, Zone::Library);
+    assert!(game.observe(active).face_down_permanents.is_empty());
+    assert_eq!(game.observe(other).manifest_choice.unwrap().player, other);
+    assert!(game.observe(active).actions.is_empty());
+    reject(&mut game, first);
+
+    let checkpoint = game.snapshot();
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == second)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(other, revision, index).unwrap();
+    act(&mut game, second);
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.actor(), Some(other));
+    assert!(indexed.observe(other).face_down_permanents.is_empty());
+    assert_eq!(game.object_view(cards[0]).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(other_mill).zone, Zone::Graveyard);
+    for (owner, id) in [(active, cards[1]), (other, other_manifest)] {
+        assert_eq!(game.object_view(id).controller, owner);
+        let object = game.object_ref(id);
+        assert!(game.is_face_down(object));
+        let view = game.observe(owner.other()).face_down_permanents;
+        assert!(
+            view.iter()
+                .any(|row| row.object == object && row.underlying.is_none())
+        );
+    }
+    settle(&mut game);
+    for watcher in watchers {
+        assert_eq!(game.counter_count(watcher, CounterKind::PlusOne), 1);
+    }
+}
+
+#[test]
 fn destruction_sends_the_private_choice_to_the_targets_controller_even_if_it_survives() {
     const REMAKE: CardRules = CardRules {
         effect: Effect::Spell(
