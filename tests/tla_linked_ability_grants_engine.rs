@@ -103,6 +103,24 @@ const SECOND: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const LINKED_DONOR: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::End,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ChooseLinkedCreatureReturn],
+    }],
+    activated: &[ActivatedAbility {
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        program: &[Instruction::ExileTargetsLinkedToSource],
+        ..GAIN_ONE
+    }],
+    ..CardRules::EMPTY
+};
 
 fn wait_until(game: &mut Game, ready: impl Fn(&Game) -> bool) {
     for _ in 0..48 {
@@ -320,4 +338,102 @@ fn acquired_ward_and_death_templates_use_the_live_or_last_known_recipient() {
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
     game.move_object(host, Zone::Battlefield);
     assert!(game.object_view(host).acquired_triggers.is_none());
+}
+
+#[test]
+fn acquired_activated_and_triggered_templates_share_their_own_links() {
+    let _rules = fixture_rules::activate(&[
+        (Card::HillGiant, &CHOOSER),
+        (Card::GoblinPiker, &LINKED_DONOR),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let host = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let donor = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+    let victim = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    enter_and_exile(&mut game, host, donor);
+    begin_choose(&mut game, host);
+    select(&mut game, donor);
+    let before = game.object_view(host).acquired_triggers.unwrap();
+
+    let write = borrowed_action(&game, host, donor);
+    act(&mut game, write);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Exile);
+
+    begin_choose(&mut game, host);
+    let foreign_link = Action::ChooseLinkedExile {
+        object: game.object_ref(victim),
+    };
+    reject(&mut game, foreign_link);
+    select(&mut game, donor);
+    assert_eq!(game.object_view(host).acquired_triggers.unwrap(), before);
+
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    wait_until(&mut game, |g| {
+        matches!(g.state.pending, Pending::LinkedExile { .. })
+    });
+    let native_link = Action::ChooseLinkedExile {
+        object: game.object_ref(donor),
+    };
+    reject(&mut game, native_link);
+    select(&mut game, victim);
+    assert_eq!(game.object_view(victim).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(victim).controller, player);
+}
+
+#[test]
+fn decayed_supplies_only_its_attack_trigger_and_excludes_graveyard_activations() {
+    let _rules = fixture_rules::activate(&[(Card::HillGiant, &CHOOSER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let host = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let donor = put(&mut game, player, "Rot-Curse Rakshasa", Zone::Battlefield);
+    let attacker = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+    enter_and_exile(&mut game, host, donor);
+    begin_choose(&mut game, host);
+    select(&mut game, donor);
+    assert!(
+        !game
+            .keywords(host)
+            .intersects(Keywords::DECAYED.union(Keywords::TRAMPLE))
+    );
+    assert!(
+        !game
+            .legal_actions()
+            .contains(&borrowed_action(&game, host, donor))
+    );
+
+    let mut blocking = game.clone();
+    blocking.state.active = player.other();
+    blocking.state.step = Step::Attackers;
+    blocking.state.pending = Pending::Attackers;
+    act(&mut blocking, Action::Attack { card: attacker });
+    act(&mut blocking, Action::FinishAttackers);
+    act(&mut blocking, Action::Pass);
+    act(&mut blocking, Action::Pass);
+    assert!(blocking.legal_actions().contains(&Action::Block {
+        blocker: host,
+        attacker
+    }));
+
+    game.state.objects[host as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: host });
+    act(&mut game, Action::FinishAttackers);
+    assert_eq!(
+        game.state.stack.last().unwrap().kind,
+        StackKind::DecayedAttack
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(host).zone, Zone::Battlefield);
 }

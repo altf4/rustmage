@@ -131,7 +131,7 @@ impl Game {
             return;
         };
         if exiled.is_empty()
-            || !source.trigger_templates().any(|(_, trigger)| {
+            || !source.card.triggers().iter().any(|trigger| {
                 trigger.program.iter().any(|instruction| {
                     matches!(instruction, Instruction::CastLinkedEvidenceInstantOrSorcery { activation } if *activation == ability)
                 })
