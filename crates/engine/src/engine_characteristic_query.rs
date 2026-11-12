@@ -1340,7 +1340,11 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let kinds = self.current_kinds(id);
         let entry_controller_this_turn = self.entry_controller_this_turn(self.object_ref(id));
         ObjectView {
-            additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            additional_triggers: trigger_multiplicity::additional_triggers_with_power(
+                self,
+                id,
+                stats.power,
+            ),
             additional_creature_death_triggers:
                 trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),

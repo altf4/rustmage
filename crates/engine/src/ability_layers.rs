@@ -50,6 +50,8 @@ pub enum AdditionalTriggerScope {
     ControlledPermanent,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
+    /// Controlled creature sources whose effective power meets the bound.
+    ControlledCreaturePowerAtMost(i128),
     ControlledLegendaryCreature,
     OtherControlledSubtype(&'static str),
     /// Abilities of another creature with this provider's active entry choice.
@@ -700,6 +702,12 @@ pub enum StaticAbilityFragment {
     CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.
     ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
+    /// A controlled attacker and its proposed blocker must both meet these
+    /// effective power bounds for the restriction to apply.
+    ControlledCreaturesCannotBeBlockedByPower {
+        attacker_maximum: i128,
+        blocker_minimum: i128,
+    },
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,
