@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7104f24175d84091f2438cd2bf21657b290d92969d281707cb8beb31db7dade5"
   },
-  "physical_metadata_sha256": "91b72ced192b6ed46391f2e3acb7f62b86021ce67f4df21ef9aec6223f69a533"
+  "physical_metadata_sha256": "91b72ced192b6ed46391f2e3acb7f62b86021ce67f4df21ef9aec6223f69a533",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CommercialDistrict.java",
+  "java_sha256": "6e497fbf9a15efe612367c6f17295d0c2aac21d551372a3705b158dfb086a7fd",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

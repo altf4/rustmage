@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ebd9103e5280e5c7cf6a040a955b3fad5a1f931137c8627ef81510724544fb6a"
   },
-  "physical_metadata_sha256": "0c2696fbce8d06c7f7e034102719ce374803837adc85fbcc1c5ba37586c3e954"
+  "physical_metadata_sha256": "0c2696fbce8d06c7f7e034102719ce374803837adc85fbcc1c5ba37586c3e954",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShadowyBackstreet.java",
+  "java_sha256": "090d4a778c1645819a944890c2abc32f9042350ac90c20b40d2a25ecbfc7d6cc",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

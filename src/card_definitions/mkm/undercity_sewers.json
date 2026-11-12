@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7488f27dfdd5529cbfc8d87021260999e15359dc2024c4fddf7360202e1d87a3"
   },
-  "physical_metadata_sha256": "3d2cf636494ea6f671c8629a6fc14924eb60b6844b7bf4e0ef61f7060cd2f562"
+  "physical_metadata_sha256": "3d2cf636494ea6f671c8629a6fc14924eb60b6844b7bf4e0ef61f7060cd2f562",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UndercitySewers.java",
+  "java_sha256": "e95290b7693e91c1bd57371d79ea174bf94bdd5e7bd34947b9eb65c58b1837ec",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

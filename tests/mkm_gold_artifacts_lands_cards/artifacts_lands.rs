@@ -182,7 +182,10 @@ fn magnetic_snuffler_brings_its_equipment_attached_and_sees_artifact_sacrifice()
     );
     target(&mut game, bow);
     settle(&mut game);
-    assert_eq!(game.object_view(bow).attached_to, Some(snuffler));
+    assert_eq!(
+        game.object_view(bow).attached_to,
+        Some(game.object_ref(snuffler))
+    );
     assert_eq!(game.stats(snuffler).power, 5);
     game.create_tokens(player, CLUE, 1, false);
     assert!(!game.advance_entries());
@@ -221,7 +224,10 @@ fn thinking_cap_has_a_detective_only_discount_and_general_equip() {
     target(&mut game, bear);
     pay(&mut game);
     settle(&mut game);
-    assert_eq!(game.object_view(cap).attached_to, Some(bear));
+    assert_eq!(
+        game.object_view(cap).attached_to,
+        Some(game.object_ref(bear))
+    );
     assert_eq!((game.stats(bear).power, game.stats(bear).toughness), (3, 4));
     assert_eq!(game.stats(detective).power, 1);
 }
@@ -341,4 +347,182 @@ fn scene_of_the_crime_is_a_clue_land_with_both_mana_abilities_and_a_draw() {
     settle(&mut game);
     assert_eq!(game.object_view(scene).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn every_mkm_surveillance_land_has_both_printed_types_and_surveils_on_tapped_entry() {
+    let player = Player::P0;
+    for (name, first, second) in [
+        ("Commercial District", (3, "Mountain"), (4, "Forest")),
+        ("Elegant Parlor", (3, "Mountain"), (0, "Plains")),
+        ("Hedge Maze", (4, "Forest"), (1, "Island")),
+        ("Lush Portico", (4, "Forest"), (0, "Plains")),
+        ("Meticulous Archive", (0, "Plains"), (1, "Island")),
+        ("Raucous Theater", (2, "Swamp"), (3, "Mountain")),
+        ("Shadowy Backstreet", (2, "Swamp"), (0, "Plains")),
+        ("Thundering Falls", (1, "Island"), (3, "Mountain")),
+        ("Undercity Sewers", (1, "Island"), (2, "Swamp")),
+        ("Underground Mortuary", (2, "Swamp"), (4, "Forest")),
+    ] {
+        let mut game = scenario(player);
+        let land = put(&mut game, player, name, Zone::Hand);
+        let milled = put(&mut game, player, "Shock", Zone::Library);
+        act(&mut game, Action::PlayLand { card: land });
+        let view = game.object_view(land);
+        assert!(view.tapped, "{name}");
+        let colors = [first.0, second.0];
+        for (index, subtype) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+            .into_iter()
+            .enumerate()
+        {
+            assert_eq!(
+                view.has_subtype(subtype),
+                colors.contains(&index),
+                "{name} {subtype}"
+            );
+        }
+        pass_pair(&mut game);
+        arrange(&mut game, milled, LibraryDestination::Graveyard);
+        assert_eq!(game.object_view(milled).zone, Zone::Graveyard, "{name}");
+        for (index, _) in [first, second] {
+            let mut branch = game.clone();
+            branch.state.objects[land as usize].tapped = false;
+            branch.state.players[player.index()].mana = [0; 6];
+            let mut production = [0; 6];
+            production[index] = 1;
+            choose(&mut branch, |action| {
+                matches!(
+                    action, Action::ActivateMana { card, production: offered, .. }
+                        if *card == land && *offered == production
+                )
+            });
+            assert_eq!(
+                branch.state.players[player.index()].mana,
+                production,
+                "{name}"
+            );
+        }
+    }
+}
+
+#[test]
+fn mkm_basic_lands_enter_untapped_and_produce_their_own_colors() {
+    let player = Player::P0;
+    for (index, name) in ["Plains", "Island", "Swamp", "Mountain", "Forest"]
+        .into_iter()
+        .enumerate()
+    {
+        let mut game = scenario(player);
+        let land = put(&mut game, player, name, Zone::Hand);
+        act(&mut game, Action::PlayLand { card: land });
+        assert!(!game.object_view(land).tapped);
+        game.state.players[player.index()].mana = [0; 6];
+        let mut production = [0; 6];
+        production[index] = 1;
+        choose(&mut game, |action| {
+            matches!(
+                action, Action::ActivateMana { card, production: offered, .. }
+                    if *card == land && *offered == production
+            )
+        });
+        assert_eq!(game.state.players[player.index()].mana, production);
+    }
+}
+
+#[test]
+fn escape_tunnel_searches_for_a_tapped_basic_or_makes_a_small_creature_unblockable() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let tunnel = put(&mut game, player, "Escape Tunnel", Zone::Battlefield);
+    let small = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let large = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let basic = put(&mut game, player, "Island", Zone::Library);
+
+    let mut fetch = game.clone();
+    activate(&mut fetch, tunnel, 0);
+    pass_pair(&mut fetch);
+    act(&mut fetch, Action::ChooseSearch { card: basic });
+    if fetch.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut fetch, Action::FinishSearch);
+    }
+    assert!(fetch.on_battlefield(basic));
+    assert!(fetch.object_view(basic).tapped);
+    assert_eq!(fetch.object_view(tunnel).zone, Zone::Graveyard);
+
+    announce_ability(&mut game, tunnel, 1);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(large),
+        },
+    );
+    target(&mut game, small);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(tunnel).zone, Zone::Graveyard);
+    assert!(game.keywords(small).contains(Keywords::CANT_BE_BLOCKED));
+}
+
+#[test]
+fn magnifying_glass_taps_for_colorless_or_investigates_for_four() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let glass = put(&mut game, player, "Magnifying Glass", Zone::Battlefield);
+    let mut produce = game.clone();
+    produce.state.players[player.index()].mana = [0; 6];
+    mana(&mut produce, glass, 0, COLORLESS);
+    assert_eq!(produce.state.players[player.index()].mana, COLORLESS);
+    assert!(produce.object_view(glass).tapped);
+
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 4];
+    activate(&mut game, glass, 1);
+    assert!(game.object_view(glass).tapped);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    settle(&mut game);
+    let token = game.controlled_token_ids(player).next().unwrap();
+    assert_eq!(game.object_view(token).card, CLUE);
+}
+
+#[test]
+fn sanitation_automaton_looks_at_one_card_and_can_send_it_to_the_graveyard() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let automaton = put(&mut game, player, "Sanitation Automaton", Zone::Hand);
+    let top = put(&mut game, player, "Shock", Zone::Library);
+    cast(&mut game, automaton, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    let mut keep = game.clone();
+    arrange(&mut keep, top, LibraryDestination::Top);
+    assert_eq!(keep.top_library_card(player), Some(top));
+    arrange(&mut game, top, LibraryDestination::Graveyard);
+    assert_eq!(game.object_view(top).zone, Zone::Graveyard);
+}
+
+#[test]
+fn gravestone_strider_filters_once_and_exiles_a_card_from_either_graveyard() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let strider = put(&mut game, player, "Gravestone Strider", Zone::Battlefield);
+    game.state.players[player.index()].mana = COLORLESS;
+    let filter = Action::ActivateMana {
+        card: strider,
+        ability: 0,
+        payment: COLORLESS,
+        counter_payment: Counters::default(),
+        production: BLUE,
+    };
+    act(&mut game, filter.clone());
+    assert_eq!(game.state.players[player.index()].mana, BLUE);
+    game.state.players[player.index()].mana = COLORLESS;
+    reject(&mut game, filter);
+    game.move_object(strider, Zone::Graveyard);
+    let spell = put(&mut game, player.other(), "Shock", Zone::Graveyard);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    announce_ability(&mut game, strider, 1);
+    target(&mut game, spell);
+    pay(&mut game);
+    assert_eq!(game.object_view(strider).zone, Zone::Exile);
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
 }

@@ -664,6 +664,7 @@ fn tomik_uses_planeswalker_affinity_and_counts_both_defended_destinations() {
     assert!(one.state.stack.is_empty());
 
     act(&mut game, Action::Attack { card: first });
+    let walker = game.object_ref(walker);
     act(
         &mut game,
         Action::AttackPlaneswalker {

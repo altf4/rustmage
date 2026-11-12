@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "756f144f1d5fefedaca1e8538a2aace255513b9f40e139fb3be095e0b8361584"
   },
-  "physical_metadata_sha256": "ce71bd1a24d332eeff78ab8781fbee97ba0bd8f5fb23ac1cdb93aa2a3c5eed29"
+  "physical_metadata_sha256": "ce71bd1a24d332eeff78ab8781fbee97ba0bd8f5fb23ac1cdb93aa2a3c5eed29",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeticulousArchive.java",
+  "java_sha256": "de69f049c4c5c4f27ccf68da0f18aa11612acd179f982dc34cf7196107ecf46c",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

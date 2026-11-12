@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "49e2596c2615cbd5f75a06a115dea7ab15a935053ccb3c0ab3f9d3109a311d8c"
   },
-  "physical_metadata_sha256": "c7a03a9d01cb75f2919943c7fb129f57e6e06273a5c5f923215d244744a83212"
+  "physical_metadata_sha256": "c7a03a9d01cb75f2919943c7fb129f57e6e06273a5c5f923215d244744a83212",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SanitationAutomaton.java",
+  "java_sha256": "398e86963bb6f24fae47c84964b6acfd1a08d735c4fd1de495b3effb471d4485",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }
