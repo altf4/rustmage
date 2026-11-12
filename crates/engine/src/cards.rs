@@ -2593,6 +2593,8 @@ pub enum Instruction {
         transformed: bool,
         under_owner: bool,
     },
+    /// Exile the exact battlefield source and return it under the ability controller's opponent.
+    ExileBattlefieldSourceReturnToOpponent,
     /// Return the exact physical source from its owner's graveyard back face up.
     ReturnGraveyardSourceTransformed,
     /// Return the exact card that left the battlefield for a graveyard,
@@ -5631,6 +5633,11 @@ pub enum Instruction {
     May {
         skip: usize,
     },
+    /// Offer this block only when each specified group retained a legal target.
+    MayIfTargetGroupsPresent {
+        groups: &'static [u16],
+        skip: usize,
+    },
     /// Offer this block only while the ability's exact source is on the battlefield.
     MayIfSourceOnBattlefield {
         skip: usize,
@@ -6039,6 +6046,8 @@ pub enum StatValue {
     SourceAuraOrEquipmentCount,
     LegendaryCreaturesYouControl,
     MulticoloredPermanentsYouControl,
+    /// Live battlefield permanents owned by this player and controlled by the opponent.
+    OwnedPermanentsOpponentsControl,
     /// Exclude the exact source incarnation from the current controlled creatures.
     OtherLegendaryCreaturesYouControl,
     HasEnduringStory,

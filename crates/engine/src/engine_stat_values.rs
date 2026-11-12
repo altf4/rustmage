@@ -299,6 +299,13 @@ impl Game {
                         && legendary(*id)
                 })
                 .count() as i128,
+            StatValue::OwnedPermanentsOpponentsControl => objects()
+                .filter(|(_, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.owner == owner
+                        && object.controller != owner
+                })
+                .count() as i128,
             StatValue::TappedCount(filter) | StatValue::UntappedCount(filter) => {
                 let tapped = matches!(value, StatValue::TappedCount(_));
                 objects()

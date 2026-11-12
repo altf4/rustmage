@@ -10026,6 +10026,9 @@ impl Game {
                     transformed,
                     under_owner,
                 } => self.exile_battlefield_source_return(&item, transformed, under_owner),
+                Instruction::ExileBattlefieldSourceReturnToOpponent => {
+                    self.blink_source_under_opponent(&item);
+                }
                 Instruction::ReturnGraveyardSourceTransformed => {
                     self.return_graveyard_source_transformed(&item)
                 }
@@ -11017,6 +11020,7 @@ impl Game {
                     self.state.resolving.as_mut().unwrap().pc = skip_to;
                 }
                 Instruction::May { skip }
+                | Instruction::MayIfTargetGroupsPresent { skip, .. }
                 | Instruction::MayIfSourceOnBattlefield { skip }
                 | Instruction::MayTransformSource { skip }
                 | Instruction::MayIfSourceInZone { skip, .. }
@@ -11029,6 +11033,9 @@ impl Game {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     let available = match instruction {
+                        Instruction::MayIfTargetGroupsPresent { groups, .. } => groups
+                            .iter()
+                            .all(|&group| item.targets.iter().any(|bound| bound.group == group)),
                         Instruction::MayIfSourceOnBattlefield { .. } => self
                             .exact_source_in_zone(&item, TargetZone::Battlefield)
                             .is_some(),

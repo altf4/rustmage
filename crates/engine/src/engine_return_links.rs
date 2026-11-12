@@ -468,6 +468,21 @@ impl Game {
         self.blink_battlefield_objects(&ids, counter, tapped, control, follow_public_move);
     }
 
+    pub(super) fn blink_source_under_opponent(&mut self, item: &SpellView) {
+        let Some(source) = item.source.filter(|source| {
+            self.on_battlefield(source.id) && self.object_ref(source.id) == source.object
+        }) else {
+            return;
+        };
+        self.blink_battlefield_objects(
+            &[source.id],
+            None,
+            false,
+            BlinkControl::Controller(item.controller.other()),
+            false,
+        );
+    }
+
     pub(super) fn blink_battlefield_objects_immediately(&mut self, ids: &[CardId]) {
         self.blink_battlefield_objects(ids, None, false, BlinkControl::Owner, false);
     }
