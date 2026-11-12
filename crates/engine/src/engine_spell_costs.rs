@@ -283,7 +283,12 @@ impl Game {
                 return a.warp_spec().mana;
             }
             if a.item.cast.is_some_and(|cast| {
-                matches!(cast.method, CastMethod::Airbend | CastMethod::Foretell)
+                matches!(
+                    cast.method,
+                    CastMethod::Airbend
+                        | CastMethod::Foretell
+                        | CastMethod::GrantedFixedFlashback(_)
+                )
             }) {
                 return a.fixed_alternative_cost().expect("exile cast cost");
             }

@@ -311,16 +311,68 @@ impl Game {
         if face != CastFace::Normal && face.split_half().is_none() {
             return false;
         }
-        for (kind, method) in [
-            (GraveyardCastKind::Flashback, CastMethod::GrantedFlashback),
-            (
-                GraveyardCastKind::FlashbackZero,
-                CastMethod::GrantedZeroFlashback,
-            ),
-        ] {
-            if !self.has_graveyard_cast(player, card, kind) {
-                continue;
+        let object = &self.state.objects[card as usize];
+        let Some(definition) = face.definition(object.card) else {
+            return false;
+        };
+        if object.zone != Zone::Graveyard
+            || object.owner != player
+            || !object.is_card()
+            || definition.kind_mask() & (4 | 8) == 0
+        {
+            return false;
+        }
+        let mut printed = self.has_graveyard_cast(player, card, GraveyardCastKind::Flashback);
+        let zero = self.has_graveyard_cast(player, card, GraveyardCastKind::FlashbackZero);
+        let mut fixed = Vec::new();
+        if self.state.active == player {
+            let physical = object.card;
+            for &source in &self.state.static_sources {
+                let provider = &self.state.objects[source as usize];
+                if provider.zone != Zone::Battlefield || provider.controller != player {
+                    continue;
+                }
+                for fragment in provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .flat_map(|group| group.fragments)
+                {
+                    let available = || {
+                        self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(fragment, candidate)
+                        })
+                    };
+                    match *fragment {
+                        StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(subtype)
+                            if !printed
+                                && physical.kind_mask() & (4 | 8) != 0
+                                && !physical.has_subtype(subtype)
+                                && available() =>
+                        {
+                            printed = true;
+                        }
+                        StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback {
+                            subtype,
+                            cost,
+                        } if physical.has_subtype(subtype)
+                            && !fixed.contains(&cost)
+                            && !(zero && cost == ManaCost::ZERO)
+                            && available() =>
+                        {
+                            fixed.push(cost);
+                        }
+                        _ => {}
+                    }
+                }
             }
+        }
+        let methods = printed
+            .then_some(CastMethod::GrantedFlashback)
+            .into_iter()
+            .chain(zero.then_some(CastMethod::GrantedZeroFlashback))
+            .chain(fixed.into_iter().map(CastMethod::GrantedFixedFlashback));
+        for method in methods {
             for flash_surcharge in [false, true] {
                 if (allow_surcharge || !flash_surcharge)
                     && self.permitted_cast_available(
@@ -338,15 +390,25 @@ impl Game {
                             method,
                             flash_surcharge,
                         }
-                    } else if kind == GraveyardCastKind::FlashbackZero {
-                        Action::AnnounceGrantedZeroFlashback {
-                            card,
-                            flash_surcharge,
-                        }
                     } else {
-                        Action::AnnounceGrantedFlashback {
-                            card,
-                            flash_surcharge,
+                        match method {
+                            CastMethod::GrantedZeroFlashback => {
+                                Action::AnnounceGrantedZeroFlashback {
+                                    card,
+                                    flash_surcharge,
+                                }
+                            }
+                            CastMethod::GrantedFixedFlashback(cost) => {
+                                Action::AnnounceGrantedFixedFlashback {
+                                    card,
+                                    cost,
+                                    flash_surcharge,
+                                }
+                            }
+                            _ => Action::AnnounceGrantedFlashback {
+                                card,
+                                flash_surcharge,
+                            },
                         }
                     })
                 {
@@ -814,6 +876,7 @@ impl Game {
                     | CastMethod::Foretell
                     | CastMethod::Flashback
                     | CastMethod::GrantedZeroFlashback
+                    | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Harmonize
                     | CastMethod::Mayhem
                     | CastMethod::WebSlinging
@@ -861,6 +924,7 @@ impl Game {
                             | CastMethod::Foretell
                             | CastMethod::Flashback
                             | CastMethod::GrantedZeroFlashback
+                            | CastMethod::GrantedFixedFlashback(_)
                             | CastMethod::Harmonize
                             | CastMethod::GrantedHarmonize
                             | CastMethod::GrantedMayhem

@@ -89,6 +89,12 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Play cards exiled by this source during your turn, using life to cast spells.
     PlayLinkedExileOnOwnTurnForLife,
+    /// Instants and sorceries without this subtype gain printed-cost flashback.
+    OwnTurnGraveyardFlashbackExceptSubtype(&'static str),
+    OwnTurnGraveyardSubtypeFlashback {
+        subtype: &'static str,
+        cost: ManaCost,
+    },
     /// An optional {0} alternative for a spell independently authorized from exile.
     ExileCastForZeroOncePerTurn,
     /// Optional fixed mana base for spells the controller can already cast.

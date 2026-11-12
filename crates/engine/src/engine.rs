@@ -1114,6 +1114,7 @@ define_actions! {
     AnnounceFreeFromPermission { card: CardId, face: CastFace, flash_surcharge: bool, permission: ObjectRef },
     AnnounceGrantedFlashback { card: CardId, flash_surcharge: bool },
     AnnounceGrantedZeroFlashback { card: CardId, flash_surcharge: bool },
+    AnnounceGrantedFixedFlashback { card: CardId, cost: ManaCost, flash_surcharge: bool },
     PayResolutionLife,
     DeclineResolutionLife,
     ChooseResolutionCost { index: u16 },
@@ -1637,6 +1638,7 @@ pub enum CastMethod {
     LinkedExileWaterbend,
     GrantedFlashback,
     GrantedZeroFlashback,
+    GrantedFixedFlashback(ManaCost),
     Flashback,
     Harmonize,
     GrantedHarmonize,
@@ -1655,7 +1657,17 @@ impl CastMethod {
     fn is_flashback(self) -> bool {
         matches!(
             self,
-            Self::Flashback | Self::GrantedFlashback | Self::GrantedZeroFlashback
+            Self::Flashback
+                | Self::GrantedFlashback
+                | Self::GrantedZeroFlashback
+                | Self::GrantedFixedFlashback(_)
+        )
+    }
+
+    fn fixed_granted_flashback(self) -> bool {
+        matches!(
+            self,
+            Self::GrantedZeroFlashback | Self::GrantedFixedFlashback(_)
         )
     }
 
@@ -8553,11 +8565,18 @@ impl Game {
             | Action::AnnounceGrantedZeroFlashback {
                 card,
                 flash_surcharge,
+            }
+            | Action::AnnounceGrantedFixedFlashback {
+                card,
+                flash_surcharge,
+                ..
             } => {
-                let method = if matches!(action, Action::AnnounceGrantedZeroFlashback { .. }) {
-                    CastMethod::GrantedZeroFlashback
-                } else {
-                    CastMethod::GrantedFlashback
+                let method = match action {
+                    Action::AnnounceGrantedZeroFlashback { .. } => CastMethod::GrantedZeroFlashback,
+                    Action::AnnounceGrantedFixedFlashback { cost, .. } => {
+                        CastMethod::GrantedFixedFlashback(cost)
+                    }
+                    _ => CastMethod::GrantedFlashback,
                 };
                 if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
                     self.cast_during_resolution_with_cost(
@@ -8571,7 +8590,7 @@ impl Game {
                     let cast = item.cast.as_mut().unwrap();
                     cast.method = method;
                     cast.flash_surcharge = flash_surcharge;
-                    if method == CastMethod::GrantedZeroFlashback
+                    if method.fixed_granted_flashback()
                         && item
                             .source
                             .expect("flashback spell has a source")
@@ -8689,7 +8708,7 @@ impl Game {
                     let cast = item.cast.as_mut().unwrap();
                     cast.method = method;
                     cast.flash_surcharge = flash_surcharge;
-                    if method == CastMethod::GrantedZeroFlashback
+                    if method.fixed_granted_flashback()
                         && item.source.expect("split spell source").card.x_symbols() > 0
                     {
                         item.x = Some(0);

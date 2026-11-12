@@ -6059,9 +6059,13 @@ impl Game {
             return self.behold_announcement_fundable(&proposal, cost);
         }
         if a.has_ordered_life_cost()
-            || a.item
-                .cast
-                .is_some_and(|cast| cast.method.is_mayhem() || cast.method == CastMethod::Foretell)
+            || a.item.cast.is_some_and(|cast| {
+                cast.method.is_mayhem()
+                    || matches!(
+                        cast.method,
+                        CastMethod::Foretell | CastMethod::GrantedFixedFlashback(_)
+                    )
+            })
         {
             // These routes must preflight the actual alternative and its
             // additional costs instead of inferring them from the printed cost.

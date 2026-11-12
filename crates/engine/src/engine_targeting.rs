@@ -179,6 +179,7 @@ impl Announcement {
             }
             CastMethod::Miracle => self.origin_alternative_cost,
             CastMethod::Foretell => self.item.source?.card.foretell_cost(),
+            CastMethod::GrantedFixedFlashback(cost) => Some(cost),
             CastMethod::WebSlinging => self.origin_alternative_cost,
             CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
@@ -304,6 +305,7 @@ impl Announcement {
                     | CastMethod::Plot
                     | CastMethod::Foretell
                     | CastMethod::GrantedZeroFlashback
+                    | CastMethod::GrantedFixedFlashback(_)
                     | CastMethod::Miracle
                     | CastMethod::WebSlinging => {
                         self.fixed_alternative_cost().is_some_and(|base| {
@@ -578,7 +580,12 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|cast| {
-                    matches!(cast.method, CastMethod::Airbend | CastMethod::Foretell)
+                    matches!(
+                        cast.method,
+                        CastMethod::Airbend
+                            | CastMethod::Foretell
+                            | CastMethod::GrantedFixedFlashback(_)
+                    )
                 }) =>
             {
                 std::iter::once(self.fixed_alternative_cost().expect("exile cast cost"))

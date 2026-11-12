@@ -36,6 +36,8 @@ impl Card {
                         | StaticAbilityFragment::PlayLandFromLibraryTop
                         | StaticAbilityFragment::PlayLandFromGraveyard
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
+                        | StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(_)
+                        | StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback { .. }
                         | StaticAbilityFragment::GrantManaCostMayhem
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn { .. }
@@ -1528,6 +1530,7 @@ impl Game {
                 | CastMethod::Miracle
                 | CastMethod::Flashback
                 | CastMethod::GrantedZeroFlashback
+                | CastMethod::GrantedFixedFlashback(_)
                 | CastMethod::Mayhem
         ) && item.source.expect("cast spell has source").card.x_symbols() > 0
         {

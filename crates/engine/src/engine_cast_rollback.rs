@@ -292,6 +292,7 @@ impl Game {
             | Action::AnnounceFlashback { card }
             | Action::AnnounceGrantedFlashback { card, .. }
             | Action::AnnounceGrantedZeroFlashback { card, .. }
+            | Action::AnnounceGrantedFixedFlashback { card, .. }
             | Action::AnnounceFree { card, .. }
             | Action::AnnounceFreeCounterGraveyard { card, .. }
             | Action::AnnounceFreeGraveyardPermanent { card, .. }
