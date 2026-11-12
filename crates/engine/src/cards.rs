@@ -1734,6 +1734,11 @@ pub enum EffectChoiceKind {
         amount: i32,
     },
     Discard,
+    /// Resolution only: decline the filtered single discard to discard any cards.
+    DiscardOneMatchingOr {
+        filter: SearchFilter,
+        otherwise: u16,
+    },
     /// Discard the payer's entire current hand as one ordinary activation cost.
     /// Empty hands are payable; no object selection is made.
     DiscardHand,
@@ -1850,6 +1855,7 @@ impl EffectChoiceKind {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
+            Self::DiscardOneMatchingOr { .. } => Self::Discard,
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
@@ -5359,6 +5365,11 @@ pub enum Instruction {
         discard: u16,
     },
     Discard(PlayerSet, u16),
+    /// The controller may discard one matching card. Otherwise they discard the stated number.
+    DiscardOneMatchingOr {
+        filter: SearchFilter,
+        otherwise: u16,
+    },
     /// Mandatory private discard, saving the total actual moves as MovedCount.
     DiscardRememberCount {
         players: PlayerSet,

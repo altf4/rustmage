@@ -639,15 +639,20 @@ impl Game {
                 && match choice.kind.payment_kind() {
                     // Hand costs use the same typed characteristics and filters as
                     // announced discard costs, including artifact lands in hand.
-                    EffectChoiceKind::Discard => self.additional_candidate(
-                        AdditionalCost {
-                            kind: choice.kind,
-                            filter: choice.filter,
-                        },
-                        player,
-                        choice.source,
-                        object,
-                    ),
+                    EffectChoiceKind::Discard => match choice.kind {
+                        EffectChoiceKind::DiscardOneMatchingOr { filter, .. } => {
+                            self.card_search_filter_matches(filter, player, object.card)
+                        }
+                        _ => self.additional_candidate(
+                            AdditionalCost {
+                                kind: choice.kind,
+                                filter: choice.filter,
+                            },
+                            player,
+                            choice.source,
+                            object,
+                        ),
+                    },
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
                     EffectChoiceKind::HandCreatureAttacking { maximum } => {
                         o.card.is_creature() && o.card.fixed_mana_value() <= u64::from(maximum)
@@ -1880,6 +1885,7 @@ impl Game {
                 || matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::DiscardOneMatchingOr { .. }
                         | EffectChoiceKind::BottomHand
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
@@ -3092,6 +3098,12 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if let EffectChoiceKind::DiscardOneMatchingOr { otherwise, .. } = choice.kind {
+            self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                usize::from(otherwise);
+            self.run_program();
+            return;
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::HandPermanent { .. }

@@ -222,7 +222,9 @@ impl Game {
         object: ObjectRef,
         projected: bool,
     ) -> bool {
-        if object.card as usize >= self.state.objects.len() {
+        if object.card as usize >= self.state.objects.len()
+            || matches!(spec.kind, EffectChoiceKind::DiscardOneMatchingOr { .. })
+        {
             return false;
         }
         if spec.kind.chooses_cost_creature() {
@@ -1467,6 +1469,7 @@ impl Game {
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }
             | EffectChoiceKind::DiscardHand
+            | EffectChoiceKind::DiscardOneMatchingOr { .. }
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)

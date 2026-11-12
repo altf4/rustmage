@@ -10936,6 +10936,18 @@ impl Game {
                             _ => discard_events::DiscardAfter::DrawCardTypes(item.controller),
                         });
                 }
+                Instruction::DiscardOneMatchingOr { filter, otherwise } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::DiscardOneMatchingOr { filter, otherwise },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::Discard(set, _)
                 | Instruction::DiscardScaled(set, _)
                 | Instruction::DiscardRememberCount { players: set, .. } => {
