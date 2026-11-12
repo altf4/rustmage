@@ -461,6 +461,9 @@ impl Game {
             StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
                 return self.any_player_combat_damage_at_least(minimum);
             }
+            StepGuard::SourceDeclaredAttackThisCombat => {
+                return self.declared_attack_this_combat(source);
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 return self.declared_attack_subtypes_all(player, subtypes);
             }

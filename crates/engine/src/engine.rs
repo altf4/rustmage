@@ -11867,6 +11867,9 @@ impl Game {
                 self.finish_declared_attack_combat();
                 if let Some(rules) = &mut self.state.combat_rules {
                     rules.must_attack_this_combat.clear();
+                    rules.creature_requirements.retain(|row| {
+                        row.duration == crate::cards::CombatRequirementDuration::ThisTurn
+                    });
                 }
                 self.state.attackers.clear();
                 self.state.blocking.clear();
@@ -11920,6 +11923,7 @@ impl Game {
             .collect();
         if let Some(rules) = &mut self.state.combat_rules {
             rules.must_be_blocked.clear();
+            rules.creature_requirements.clear();
             rules.blocker_power_limits.clear();
             rules.must_attack_this_combat.clear();
             rules.after_combat.clear();

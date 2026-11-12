@@ -8622,6 +8622,13 @@ impl Game {
                 } => self.add_extra_turn(item.controller, power_up_prohibited),
                 Instruction::TransformSource => self.transform_source(&item),
                 Instruction::RequireBlocks(filter) => self.require_blocks(&item, filter),
+                Instruction::RequireSubjectCombat {
+                    subject,
+                    requirement,
+                    duration,
+                } => {
+                    self.require_subject_combat(&item, subject, requirement, duration);
+                }
                 Instruction::RequireAllAttacksUntilNextTurn => {
                     self.require_all_attacks_until_next_turn(item.controller);
                 }

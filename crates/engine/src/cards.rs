@@ -2378,6 +2378,21 @@ pub enum ColorValue {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CombatRequirement {
+    Block,
+    AttackOrBlock,
+    BlockEventAttacker,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CombatRequirementDuration {
+    ThisTurn,
+    ThisCombat,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Instruction {
     CounterOpponentsCounted,
     CounterAndDrawForController {
@@ -3487,6 +3502,12 @@ pub enum Instruction {
     },
     TransformSource,
     RequireBlocks(CreatureFilter),
+    /// Install one independent rules requirement per exact subject.
+    RequireSubjectCombat {
+        subject: Subject,
+        requirement: CombatRequirement,
+        duration: CombatRequirementDuration,
+    },
     /// The exact targets cannot be blocked by creatures with this power or greater this turn.
     RestrictBlockerPower {
         group: u16,
@@ -7086,6 +7107,8 @@ pub enum StepGuard {
     Attacked,
     /// Historical declaration facts; one attacker may satisfy several subtypes.
     DeclaredAttackSubtypesAll(&'static [&'static str]),
+    /// The exact source was declared an attacker during the current combat.
+    SourceDeclaredAttackThisCombat,
     CreatureDied,
     OpponentControlledCreatureDied,
     OpponentLostLife,

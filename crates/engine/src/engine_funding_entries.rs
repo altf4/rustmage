@@ -509,6 +509,9 @@ impl FundingState<'_> {
             StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
                 self.game.any_player_combat_damage_at_least(minimum)
             }
+            StepGuard::SourceDeclaredAttackThisCombat => {
+                self.game.declared_attack_this_combat(source)
+            }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
             }
