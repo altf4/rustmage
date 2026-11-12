@@ -88,6 +88,8 @@ pub(super) struct FaceDownEntry {
     pub physical: Card,
     pub cause: FaceDownCause,
     pub known: bool,
+    /// Original slot plus one, retained only until the hidden cloak move commits.
+    pub obscured_origin: Option<std::num::NonZeroU32>,
 }
 
 /// The public exact incarnation and any underlying card the viewer may know.
@@ -1148,6 +1150,7 @@ impl Game {
             physical: current.card,
             cause,
             known,
+            obscured_origin: None,
         });
         Some(movement)
     }

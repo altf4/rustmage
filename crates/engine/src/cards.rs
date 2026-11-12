@@ -1591,6 +1591,8 @@ pub enum EffectChoiceKind {
     CopyExiledTriggerCreature,
     /// Optionally suspect a creature named by the entry batch and clear this source's designation.
     TransferSuspectToEventCreature,
+    /// Select any number of face-up controlled creatures with disguise to exile face down.
+    ExileFaceUpDisguiseCreatures,
     SacrificeDifferentNames(u16),
     SacrificePermanents(u32),
     /// Declare how many permanents to sacrifice. Each reduces the generic spell cost by one.
@@ -1824,6 +1826,7 @@ impl EffectChoiceKind {
                 | Self::ExileGraveyardCreaturesReflexive { .. }
                 | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
                 | Self::BlinkControlledCreatures
+                | Self::ExileFaceUpDisguiseCreatures
         )
     }
     pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {
@@ -3712,6 +3715,8 @@ pub enum Instruction {
     ManifestDreadWhenTargetDies,
     /// Cloak the top card of the selected player's library under your control.
     CloakLibraryTop(PlayerSet),
+    /// Shuffle the exact face-down exile receipts from the preceding choice, then cloak them.
+    CloakShuffledRememberedExile,
     /// The resolving player chooses a card from their own hand to cloak.
     CloakFromHand,
     /// Attach this Equipment to the exact captured entry, if it succeeded.

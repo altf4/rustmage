@@ -392,6 +392,8 @@ pub mod cast_mana_recording;
 #[path = "engine_cast_rollback_mana.rs"]
 pub mod cast_rollback_mana;
 pub use cast_rollback_mana::ManaRollbackView;
+#[path = "engine_cloak_shuffle.rs"]
+mod cloak_shuffle;
 #[doc(hidden)]
 #[path = "engine_manifest.rs"]
 pub mod manifest;
@@ -6010,6 +6012,7 @@ impl Game {
                             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
                             | EffectChoiceKind::RememberPermanents { .. }
                             | EffectChoiceKind::TransferSuspectToEventCreature
+                            | EffectChoiceKind::ExileFaceUpDisguiseCreatures
                             | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::ReturnAttachmentRecipient { .. }
                             | EffectChoiceKind::BlinkControlledCreatures
@@ -9658,6 +9661,9 @@ impl Game {
                     EffectChoiceKind::SacrificeSelection => self.finish_sacrifice_selection(),
                     EffectChoiceKind::TapAnyUntappedPermanents => self.finish_tap_selection(),
                     EffectChoiceKind::BlinkControlledCreatures => self.finish_repeat_blink_choice(),
+                    EffectChoiceKind::ExileFaceUpDisguiseCreatures => {
+                        self.finish_exiling_face_up_disguise_creatures();
+                    }
                     EffectChoiceKind::HandCreatures { .. } => self.finish_hand_creatures(),
                     EffectChoiceKind::SaddleRider(effect) => {
                         self.finish_saddle_rider_choice(effect)

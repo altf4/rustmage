@@ -5663,6 +5663,9 @@ impl Game {
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ManifestDreadWhenTargetDies => self.register_manifest_death(&item),
+                Instruction::CloakShuffledRememberedExile => {
+                    self.cloak_shuffled_remembered_exile(item.controller);
+                }
                 Instruction::CloakLibraryTop(players) => {
                     if let Some(owner) = self.program_players(players, &item).next() {
                         self.cloak_library_top(item.controller, owner);

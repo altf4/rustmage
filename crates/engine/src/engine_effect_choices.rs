@@ -316,6 +316,10 @@ impl Game {
             return choice.selected[player.index()].is_empty()
                 && self.crafted_exiled_creature(choice.source, object);
         }
+        if choice.kind == EffectChoiceKind::ExileFaceUpDisguiseCreatures {
+            return !choice.selected[player.index()].contains(&object)
+                && self.face_up_disguise_creature(player, object);
+        }
         if choice.kind == EffectChoiceKind::TransferSuspectToEventCreature {
             let item = &self.state.resolving.as_ref().unwrap().item;
             return player == item.controller
@@ -1657,7 +1661,11 @@ impl Game {
                 return false;
             }
         }
-        if kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+        if matches!(
+            kind,
+            EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+                | EffectChoiceKind::ExileFaceUpDisguiseCreatures
+        ) {
             self.state.resolving.as_mut().unwrap().remembered_objects = None;
         }
         if kind == EffectChoiceKind::ReturnRememberedCreature {

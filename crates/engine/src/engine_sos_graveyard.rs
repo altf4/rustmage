@@ -52,6 +52,7 @@ impl Game {
                     self.object_ref(object.card) == object
                         && self.state.objects[object.card as usize].zone == Zone::Exile
                         && self.state.objects[object.card as usize].is_card()
+                        && !self.exiled_face_down(object)
                         && self.current_kinds(object.card) & 1 != 0
                 })
                 .collect();

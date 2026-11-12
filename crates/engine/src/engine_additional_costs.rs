@@ -1486,6 +1486,7 @@ impl Game {
             | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
             | EffectChoiceKind::TransferSuspectToEventCreature
+            | EffectChoiceKind::ExileFaceUpDisguiseCreatures
             | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }

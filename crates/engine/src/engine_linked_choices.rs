@@ -454,6 +454,13 @@ impl Game {
         };
         true
     }
+    pub(super) fn copy_face_down_exile_knowledge(&mut self, from: ObjectRef, to: ObjectRef) {
+        if let Some(data) = &mut self.state.linked_choices
+            && let Some(hidden) = data.hidden.get(&from).copied()
+        {
+            data.hidden.insert(to, hidden);
+        }
+    }
     pub(super) fn reveal_hideaway_object(&mut self, object: ObjectRef) {
         if let Some(data) = self.state.linked_choices.as_mut() {
             data.hidden.remove(&object);

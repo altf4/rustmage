@@ -1039,6 +1039,16 @@ impl Game {
     pub(super) fn commit_entries(&mut self, mut batch: EntryBatch) {
         for movement in &batch.moves {
             if movement.skipped
+                && let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin)
+            {
+                self.finish_hidden_cloak_identity(
+                    origin,
+                    movement.before.reference,
+                    movement.before.zone,
+                    false,
+                );
+            }
+            if movement.skipped
                 && movement.before.zone == Zone::Outside
                 && movement.before.is_token()
             {
@@ -1204,6 +1214,14 @@ impl Game {
                     battlefield_departure: battlefield_departure.clone(),
                 },
             );
+            if let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin) {
+                self.finish_hidden_cloak_identity(
+                    origin,
+                    event.before.reference,
+                    event.before.zone,
+                    event.moved,
+                );
+            }
             if event.moved && event.destination == Zone::Battlefield {
                 let object = &mut self.state.objects[event.after.card as usize];
                 object.cast_for_impending = movement.cast_for_impending;
