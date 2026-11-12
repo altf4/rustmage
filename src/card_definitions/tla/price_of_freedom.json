@@ -3,10 +3,46 @@
   "catalogue_id": 3226,
   "oracle_id": "5e6faa98-cf55-430d-87ce-8085f68aa20a",
   "facts_sha256": "8cb8624698e7c7cb03f10f1b432692560e7dd10fbb572c0a6569ed8ca4f7c478",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ec91ffe3b9ab23800d8b3e4f94715d92dbc8265a8518a1a66f3d45594cba89a6"
   },
-  "physical_metadata_sha256": "1879caeb1b19908fc0a0dffedd7fe81f4ecc373c9f3b73b470afb476059a878c"
+  "physical_metadata_sha256": "1879caeb1b19908fc0a0dffedd7fe81f4ecc373c9f3b73b470afb476059a878c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PriceOfFreedom.java",
+  "java_sha256": "d66bc5574db33f69ed7ca5869d0c72ae47d9a2d5a0fda5f70716491f4e1ac788",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetControllerEffect.java",
+      "sha256": "9926405e859380634a57206fa5c0fa5a182f5cb83fa5023a2126b1b134fd7ce2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red.rs"
 }

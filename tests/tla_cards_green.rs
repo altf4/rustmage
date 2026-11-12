@@ -7,6 +7,8 @@ mod earthbend;
 
 #[path = "tla_cards_green/creatures.rs"]
 mod creatures;
+#[path = "tla_cards_green/inherited.rs"]
+mod inherited;
 #[path = "tla_cards_green/sagas.rs"]
 mod sagas;
 #[path = "tla_cards_green/spells.rs"]

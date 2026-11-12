@@ -129,6 +129,49 @@ fn kyoshi_draws_by_power_then_bends_by_hand_size_and_grants_land_abilities() {
 }
 
 #[test]
+fn the_earth_king_makes_a_bear_and_remembers_the_qualifying_declared_attackers() {
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let king = put(&mut game, player, "The Earth King", Zone::Hand);
+    let dragon = put(&mut game, player, "Shivan Dragon", Zone::Battlefield);
+    let small = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let [first, second, third] =
+        ["Island", "Mountain", "Swamp"].map(|name| put(&mut game, player, name, Zone::Library));
+    cast(&mut game, king, None);
+    settle(&mut game);
+    let bear = (0..game.state.objects.len())
+        .map(|id| game.object_view(id as CardId))
+        .find(|object| {
+            object.zone == Zone::Battlefield && object.is_token() && object.has_subtype("Bear")
+        })
+        .unwrap()
+        .id;
+    assert_eq!(stats(&game, bear), (4, 4));
+    assert_eq!(game.object_view(bear).colors, 16);
+    game.state.objects[bear as usize].summoning_sick = false;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    for card in [bear, dragon, small] {
+        act(&mut game, Action::Attack { card });
+    }
+    act(&mut game, Action::FinishAttackers);
+    game.move_object(dragon, Zone::Exile);
+    reach(&mut game, |g| {
+        g.legal_actions()
+            .contains(&Action::ChooseSearch { card: first })
+    });
+    act(&mut game, Action::ChooseSearch { card: first });
+    act(&mut game, Action::ChooseSearch { card: second });
+    reject(&mut game, Action::ChooseSearch { card: third });
+    finish_search(&mut game, &[]);
+    settle(&mut game);
+    for card in [first, second] {
+        assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        assert!(game.object_view(card).tapped);
+    }
+}
+
+#[test]
 fn the_shrines_count_their_current_cohort_and_observe_each_others_entry() {
     let player = Player::P0;
     let mut game = scenario(player);

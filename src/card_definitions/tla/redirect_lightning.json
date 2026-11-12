@@ -3,10 +3,51 @@
   "catalogue_id": 3434,
   "oracle_id": "c62b5c22-e058-436f-9575-a01cb2112829",
   "facts_sha256": "f8f60fd2626652c0bb70b9c8537f35fcdec9fb63ff6f3396180f96dafa3b5dfd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9df2415e60ba66424def52d8c30e4d0b58a9b09628b084cf2d112f558b25d200"
   },
-  "physical_metadata_sha256": "5e8efee61d116eb44f3132dd93853071cc87b45513216e7a0d7c57f34688f1cb"
+  "physical_metadata_sha256": "5e8efee61d116eb44f3132dd93853071cc87b45513216e7a0d7c57f34688f1cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RedirectLightning.java",
+  "java_sha256": "0194f2ead424ee8b5933cf692074bf124276666682bd6ca4dfd560918472a438",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/OrCost.java",
+      "sha256": "a36fc6c29c41ef6d0673a6e40c9992c8f5b6c9bb64f9559d4011d0b9593fcf10"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseNewTargetsTargetEffect.java",
+      "sha256": "8762550b9eca7d3e2b0c25d47479691b4520397965c98b7f3d8428d3a4438153"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterStackObject.java",
+      "sha256": "a47a787b87661adc505b2476795e54a795bf631b998d1eab1c971edfdc685155"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/NumberOfTargetsPredicate.java",
+      "sha256": "2337a03e586eeadad6aa5b0deaecb46ad1e6175b86d758054835a51b872226e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetStackObject.java",
+      "sha256": "99560fbe32eaeab547ae49a4777fd670f509879b2401942bfa1be73388292e0a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red.rs"
 }
