@@ -386,10 +386,15 @@ impl Game {
         {
             return false;
         }
-        if !spec
-            .kind
-            .cost_matches_any(o.card, kinds, subtypes, o.is_token(), legendary, suspected)
-        {
+        if !spec.kind.cost_matches_any(
+            o.card,
+            kinds,
+            subtypes,
+            o.is_token(),
+            o.dealt_damage_this_turn,
+            legendary,
+            suspected,
+        ) {
             return false;
         }
         if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {

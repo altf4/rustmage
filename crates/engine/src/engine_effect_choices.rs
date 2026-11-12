@@ -718,6 +718,7 @@ impl Game {
             kinds,
             self.granted_subtypes(object.card),
             o.is_token(),
+            o.dealt_damage_this_turn,
             || ability_world::CharacteristicWorld::legendary(self, object.card),
             || self.is_suspected(object.card),
         ) {

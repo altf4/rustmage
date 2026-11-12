@@ -28,6 +28,10 @@ pub enum HandChoiceKind {
     /// Mandatory permanent unlinked exile of a card with no land type.
     ExileRevealedNonland,
     ExileRevealedNonlandCast,
+    ExileRevealedNonlandReward {
+        maximum: u64,
+        token: Card,
+    },
     ExileRevealedOrCreature,
     ExileRevealedLinked,
     ExileRevealedLinkedOptional,
@@ -506,7 +510,7 @@ impl Game {
     pub(super) fn start_revealed_hand_exile_nonland(
         &mut self,
         item: &SpellView,
-        cast_while_exiled: bool,
+        kind: HandChoiceKind,
     ) -> bool {
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
@@ -522,11 +526,7 @@ impl Game {
             return false;
         }
         self.set_hand_interaction(HandInteraction {
-            kind: if cast_while_exiled {
-                HandChoiceKind::ExileRevealedNonlandCast
-            } else {
-                HandChoiceKind::ExileRevealedNonland
-            },
+            kind,
             actor: item.controller,
             controller: item.controller,
             victim: Some(victim),
@@ -578,7 +578,9 @@ impl Game {
                     && o.is_card()
                     && self.current_kinds(reference.card) & kinds != 0
             }
-            HandChoiceKind::ExileRevealedNonland | HandChoiceKind::ExileRevealedNonlandCast => {
+            HandChoiceKind::ExileRevealedNonland
+            | HandChoiceKind::ExileRevealedNonlandCast
+            | HandChoiceKind::ExileRevealedNonlandReward { .. } => {
                 o.zone == Zone::Hand
                     && Some(o.owner) == interaction.victim
                     && o.is_card()
@@ -750,6 +752,13 @@ impl Game {
                 | HandChoiceKind::ExileOwn
                 | HandChoiceKind::ExileRevealedNonland => {
                     self.move_object(object.card, Zone::Exile);
+                }
+                HandChoiceKind::ExileRevealedNonlandReward { maximum, token } => {
+                    let mana_value = self.object_mana_value(object.card);
+                    self.move_object(object.card, Zone::Exile);
+                    if mana_value <= maximum {
+                        self.create_tokens(interaction.controller, token, 1, false);
+                    }
                 }
                 HandChoiceKind::ExileRevealedNonlandCast => {
                     let event = self.move_object(object.card, Zone::Exile);

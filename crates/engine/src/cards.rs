@@ -1414,6 +1414,7 @@ pub enum CostMatch {
     Subtype(&'static str),
     Legendary,
     Suspected,
+    DealtDamageThisTurn,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1901,12 +1902,14 @@ impl EffectChoiceKind {
     pub(crate) fn uses_target_mana_value(self) -> bool {
         matches!(self, Self::ExilePermanentsForTargetManaValue { .. })
     }
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn cost_matches_any(
         self,
         card: Card,
         kinds: u16,
         subtypes: GrantedSubtypes,
         token: bool,
+        dealt_damage_this_turn: bool,
         legendary: impl Fn() -> bool,
         suspected: impl Fn() -> bool,
     ) -> bool {
@@ -1920,6 +1923,7 @@ impl EffectChoiceKind {
                 CostMatch::Subtype(name) => subtypes.has(card, name),
                 CostMatch::Legendary => legendary(),
                 CostMatch::Suspected => suspected(),
+                CostMatch::DealtDamageThisTurn => dealt_damage_this_turn,
             }),
             _ => true,
         }
@@ -3315,6 +3319,11 @@ pub enum Instruction {
         costs: &'static [ResolutionCost],
         skip: usize,
     },
+    MayPayCostsFor {
+        players: PlayerSet,
+        costs: &'static [ResolutionCost],
+        skip: usize,
+    },
     MayPayManaAlternatives {
         costs: &'static [ManaCost],
         skip: usize,
@@ -4153,6 +4162,11 @@ pub enum Instruction {
     /// The packet controller chooses; any land type excludes a card from selection.
     RevealTargetHandExileNonland,
     RevealTargetHandExileNonlandCastIfGift,
+    /// Exile the chosen nonland and create a token if its mana value is within the limit.
+    RevealTargetHandExileNonlandReward {
+        maximum: u64,
+        token: Card,
+    },
     RevealHandDiscard {
         excluded_kinds: u16,
     },

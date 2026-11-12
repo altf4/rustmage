@@ -575,6 +575,7 @@ impl Game {
     pub(super) fn start_resolution_costs(
         &mut self,
         item: &SpellView,
+        payer: Player,
         subject: Option<CounterSubject>,
         costs: &'static [ResolutionCost],
         exile: bool,
@@ -586,7 +587,7 @@ impl Game {
                 return false;
             }
         } else {
-            self.start_optional_resolution_payment(item.controller, ManaCost::ZERO, unpaid_skip);
+            self.start_optional_resolution_payment(payer, ManaCost::ZERO, unpaid_skip);
         }
         let options = costs
             .iter()

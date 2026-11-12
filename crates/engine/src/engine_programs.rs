@@ -7075,7 +7075,14 @@ impl Game {
                     costs,
                     exile,
                 } => {
-                    if self.start_resolution_costs(&item, Some(subject), costs, exile, 0) {
+                    if self.start_resolution_costs(
+                        &item,
+                        item.controller,
+                        Some(subject),
+                        costs,
+                        exile,
+                        0,
+                    ) {
                         return;
                     }
                 }
@@ -7522,11 +7529,23 @@ impl Game {
                     }
                 }
                 Instruction::RevealTargetHandExileNonland
-                | Instruction::RevealTargetHandExileNonlandCastIfGift => {
-                    let cast_while_exiled = instruction
-                        == Instruction::RevealTargetHandExileNonlandCastIfGift
-                        && item.gift_context().is_some();
-                    if self.start_revealed_hand_exile_nonland(&item, cast_while_exiled) {
+                | Instruction::RevealTargetHandExileNonlandCastIfGift
+                | Instruction::RevealTargetHandExileNonlandReward { .. } => {
+                    let kind = match instruction {
+                        Instruction::RevealTargetHandExileNonlandReward { maximum, token } => {
+                            hand_choices::HandChoiceKind::ExileRevealedNonlandReward {
+                                maximum,
+                                token,
+                            }
+                        }
+                        Instruction::RevealTargetHandExileNonlandCastIfGift
+                            if item.gift_context().is_some() =>
+                        {
+                            hand_choices::HandChoiceKind::ExileRevealedNonlandCast
+                        }
+                        _ => hand_choices::HandChoiceKind::ExileRevealedNonland,
+                    };
+                    if self.start_revealed_hand_exile_nonland(&item, kind) {
                         return;
                     }
                 }
@@ -10142,8 +10161,19 @@ impl Game {
                     return;
                 }
                 Instruction::MayPayCosts { costs, skip } => {
-                    self.start_resolution_costs(&item, None, costs, false, skip);
+                    self.start_resolution_costs(&item, item.controller, None, costs, false, skip);
                     return;
+                }
+                Instruction::MayPayCostsFor {
+                    players,
+                    costs,
+                    skip,
+                } => {
+                    if let Some(payer) = self.program_players(players, &item).next() {
+                        self.start_resolution_costs(&item, payer, None, costs, false, skip);
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc += skip;
                 }
                 Instruction::MayPayMana { cost, skip } => {
                     self.start_optional_resolution_payment(item.controller, cost, skip);
