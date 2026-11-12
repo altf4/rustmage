@@ -689,3 +689,75 @@ fn reanimation_breaks_an_inherited_link_only_if_the_donor_stops_being_a_creature
         }
     }
 }
+
+#[test]
+fn a_nameless_manifest_with_a_granted_ability_becomes_a_donor_when_turned_face_up() {
+    let mimic = named("Grizzly Bears");
+    let _rules = fixture_rules::activate(&[(mimic, &MIMIC)]);
+    let mut game = scenario(PLAYER);
+    let source = spawn(&mut game, PLAYER, mimic, Zone::Battlefield);
+    let ghired = put(
+        &mut game,
+        PLAYER,
+        "Ghired, Mirror of the Wilds",
+        Zone::Battlefield,
+    );
+    let marked = put(&mut game, PLAYER, "Hill Giant", Zone::Battlefield);
+    let creature = put(&mut game, PLAYER, "Llanowar Elves", Zone::Library);
+    let trick = put(&mut game, PLAYER, "Turn Inside Out", Zone::Hand);
+    let removal = put(&mut game, PLAYER, "Murder", Zone::Hand);
+    cast(&mut game, trick, Some(Target::Card(marked)));
+    settle(&mut game);
+    cast(&mut game, removal, Some(Target::Card(marked)));
+    for _ in 0..4 {
+        act(&mut game, Action::Pass);
+    }
+    assert_eq!(game.state.pending, Pending::Manifest { player: PLAYER });
+    let library_object = game.object_ref(creature);
+    act(
+        &mut game,
+        Action::ChooseManifest {
+            object: library_object,
+        },
+    );
+    settle(&mut game);
+
+    let face_down = game.object_view(creature);
+    let ghired_ref = game.object_ref(ghired);
+    let ghired_card = game.object_view(ghired).card;
+    assert_eq!(face_down.name, "");
+    assert!(
+        face_down
+            .abilities
+            .as_ref()
+            .unwrap()
+            .grants
+            .iter()
+            .any(|grant| { grant.grantor == ghired_ref && grant.ability == Some(0) })
+    );
+    let granted_by_ghired =
+        |row: &InheritedAbilityView| row.definition == ghired_card && row.ability == 0;
+    let borrowed = inherited(&game, source);
+    assert!(
+        borrowed
+            .iter()
+            .any(|row| row.donor == ghired_ref && granted_by_ghired(row))
+    );
+    assert!(borrowed.iter().all(|row| row.donor != face_down.reference));
+
+    choose(
+        &mut game,
+        |action| matches!(action, Action::BeginFaceUp { object, .. } if *object == face_down.reference),
+    );
+    choose(&mut game, |action| {
+        matches!(action, Action::PayFaceUp { .. })
+    });
+    let face_up = game.object_view(creature);
+    assert_eq!(face_up.reference, face_down.reference);
+    assert_eq!(face_up.name, "Llanowar Elves");
+    assert!(
+        inherited(&game, source)
+            .iter()
+            .any(|row| { row.donor == face_up.reference && granted_by_ghired(row) })
+    );
+}

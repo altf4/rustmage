@@ -129,12 +129,17 @@ pub(super) fn donors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
     let name = world.name(id);
     (0..world.game().state.objects.len())
         .map(|id| id as CardId)
-        .filter(|&id| {
-            let donor = world.object(id);
-            donor.zone == Zone::Battlefield
+        .filter(|&candidate| {
+            let donor = world.object(candidate);
+            candidate != id
+                && donor.zone == Zone::Battlefield
                 && donor.controller == recipient.controller
-                && world.kinds(id) & 1 != 0
-                && !crate::card_names::same_name(world.name(id), name)
+                && world.kinds(candidate) & 1 != 0
+        })
+        .filter(|&candidate| {
+            // CR201.2c: the creature being compared must have at least one name.
+            let donor_name = world.name(candidate);
+            !donor_name.is_empty() && !crate::card_names::same_name(donor_name, name)
         })
         .collect()
 }
