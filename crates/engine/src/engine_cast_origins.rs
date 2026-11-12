@@ -710,6 +710,8 @@ pub struct ResolutionPaidCast {
     pub kinds: u8,
     pub exile_instants_sorceries: bool,
     #[serde(skip_serializing_if = "is_false")]
+    pub bottom_on_graveyard: bool,
+    #[serde(skip_serializing_if = "is_false")]
     pub spend_any_mana: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -869,17 +871,33 @@ impl Game {
         remaining: Vec<ObjectRef>,
         casts_remaining: Option<u16>,
     ) {
+        self.offer_exiled_cards_with_paid_rules(
+            player,
+            remaining,
+            casts_remaining,
+            ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+                bottom_on_graveyard: false,
+                spend_any_mana: false,
+            },
+        );
+    }
+
+    pub(super) fn offer_exiled_cards_with_paid_rules(
+        &mut self,
+        player: Player,
+        remaining: Vec<ObjectRef>,
+        casts_remaining: Option<u16>,
+        paid: ResolutionPaidCast,
+    ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
-            paid: Some(ResolutionPaidCast {
-                kinds: u8::MAX,
-                exile_instants_sorceries: false,
-                spend_any_mana: false,
-            }),
+            paid: Some(paid),
             casts_remaining,
             pending_cast: None,
             remaining_mana_value: None,
@@ -1025,6 +1043,7 @@ impl Game {
             paid: Some(ResolutionPaidCast {
                 kinds,
                 exile_instants_sorceries,
+                bottom_on_graveyard: false,
                 spend_any_mana: false,
             }),
             casts_remaining: Some(1),

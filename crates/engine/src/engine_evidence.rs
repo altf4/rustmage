@@ -23,6 +23,37 @@ impl EvidenceSelection {
             + (self.selected.len() + self.source_exiles.len()) * std::mem::size_of::<ObjectRef>()
     }
 }
+/// The activation index separates independent evidence payments on the
+/// same permanent. Definition and acquisition identify copied abilities.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct LinkedEvidenceExile {
+    pub view: LinkedExileView,
+    activation: u16,
+    definition: Card,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl LinkedEvidenceExile {
+    fn matches(&self, item: &SpellView, activation: u16) -> bool {
+        self.activation == activation
+            && item
+                .source
+                .is_some_and(|source| source.object == self.view.source)
+            && self.definition == item.trigger_definition()
+            && item.source_ability_origin == self.view.ability_origin
+            && item.linked_activation_cohort() == self.view.acquired_link_cohort
+    }
+
+    fn referenced_by(&self, item: &SpellView) -> bool {
+        matches!(item.kind, StackKind::TriggeredAbility { .. })
+            && self.matches(item, self.activation)
+            && item.program().is_some_and(|(_, program)| program.iter().any(|instruction| {
+                matches!(instruction, Instruction::CastLinkedEvidenceInstantOrSorcery { activation } if *activation == self.activation)
+            }))
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct EvidenceEventView {
@@ -94,6 +125,104 @@ impl Game {
             .evidence_data
             .get_or_insert_with(|| Box::new(EvidenceState::default()))
     }
+    fn remember_linked_evidence(&mut self, item: &SpellView, exiled: &[ObjectRef]) {
+        let (StackKind::ActivatedAbility { ability }, Some(source)) = (item.kind, item.source)
+        else {
+            return;
+        };
+        if exiled.is_empty()
+            || !source.card.triggers().iter().any(|trigger| {
+                trigger.program.iter().any(|instruction| {
+                    matches!(instruction, Instruction::CastLinkedEvidenceInstantOrSorcery { activation } if *activation == ability)
+                })
+            })
+        {
+            return;
+        }
+        let turn = self.state.turn;
+        let links = &mut self
+            .state
+            .linked_choices
+            .get_or_insert_default()
+            .evidence_links;
+        links.extend(exiled.iter().map(|&exiled| LinkedEvidenceExile {
+            view: LinkedExileView {
+                exiled_turn: turn,
+                source: source.object,
+                exiled,
+                ability_origin: item.source_ability_origin,
+                acquired_link_cohort: item.linked_activation_cohort(),
+            },
+            activation: ability,
+            definition: source.card,
+        }));
+    }
+
+    pub(super) fn prune_linked_evidence(&mut self) {
+        let state = &mut self.state;
+        let Some(links) = state
+            .linked_choices
+            .as_mut()
+            .map(|choices| &mut choices.evidence_links)
+        else {
+            return;
+        };
+        let in_zone = |object: ObjectRef, zone| {
+            let row = &state.objects[object.card as usize];
+            row.generation == object.generation && row.zone == zone
+        };
+        links.retain(|link| {
+            in_zone(link.view.exiled, Zone::Exile)
+                && (in_zone(link.view.source, Zone::Battlefield)
+                    || state
+                        .stack
+                        .iter()
+                        .chain(&state.pending_triggers)
+                        .chain(&state.ordering_triggers)
+                        .chain(state.resolving.iter().map(|r| &r.item))
+                        .chain(state.announcing.iter().map(|a| &a.item))
+                        .any(|item| link.referenced_by(item)))
+        });
+    }
+
+    pub(super) fn offer_linked_evidence_cast(&mut self, item: &SpellView, activation: u16) -> bool {
+        let Some(choices) = &self.state.linked_choices else {
+            return false;
+        };
+        let remaining = choices
+            .evidence_links
+            .iter()
+            .filter_map(|link| {
+                let exiled = link.view.exiled;
+                let object = &self.state.objects[exiled.card as usize];
+                (link.matches(item, activation)
+                    && object.zone == Zone::Exile
+                    && object.generation == exiled.generation
+                    && object.is_card()
+                    && CastFace::choices(object.card).any(|face| {
+                        face.definition(object.card)
+                            .is_some_and(|card| card.kind_mask() & 12 != 0)
+                    }))
+                .then_some(exiled)
+            })
+            .collect::<Vec<_>>();
+        if remaining.is_empty() {
+            return false;
+        }
+        self.offer_exiled_cards_with_paid_rules(
+            item.controller,
+            remaining,
+            Some(1),
+            ResolutionPaidCast {
+                kinds: 12,
+                exile_instants_sorceries: false,
+                bottom_on_graveyard: true,
+                spend_any_mana: false,
+            },
+        );
+        true
+    }
+
     pub(super) fn register_evidence_source(&mut self, id: CardId) {
         let d = self.evidence_data();
         assert!(!d.sources.contains(&id));
@@ -446,7 +575,7 @@ impl Game {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();
             let source = r.item.source.expect("evidence effect has source").object;
-            let exiled_sources = self.commit_evidence(&e, source);
+            let exiled_sources = self.commit_evidence(&e, source, None);
             let entries: Vec<_> = exiled_sources
                 .into_iter()
                 .filter_map(|object| {
@@ -484,7 +613,7 @@ impl Game {
             );
             costs.paid_evidence.extend_from_slice(&selection.selected);
         }
-        self.commit_evidence(selection, a.item.source.unwrap().object);
+        self.commit_evidence(selection, a.item.source.unwrap().object, Some(&a.item));
     }
 
     pub(super) fn evidence_selection_total(
@@ -514,6 +643,7 @@ impl Game {
         &mut self,
         e: &EvidenceSelection,
         source: ObjectRef,
+        paying_ability: Option<&SpellView>,
     ) -> Vec<ObjectRef> {
         assert!(e.complete && e.total >= u128::from(e.threshold));
         assert_eq!(
@@ -535,6 +665,16 @@ impl Game {
         self.finish_zone_events(&events, &[]);
         let (source_events, evidence_events) = events.split_at(e.source_exiles.len());
         let actual_exiles = |event: &ZoneChange| event.moved && event.destination == Zone::Exile;
+        // A legal payment can be modified by a replacement (CR 118.11).
+        // Linked consumers must use only the objects that actually reached exile.
+        let exiled = evidence_events
+            .iter()
+            .filter(|event| actual_exiles(event))
+            .flat_map(ZoneChange::objects_after)
+            .collect::<Vec<_>>();
+        if let Some(item) = paying_ability {
+            self.remember_linked_evidence(item, &exiled);
+        }
         let d = self.evidence_data();
         d.sequence = d
             .sequence
@@ -546,13 +686,7 @@ impl Game {
             source,
             threshold: e.threshold,
             total_mana: e.total,
-            // A legal payment can be modified by a replacement (CR 118.11).
-            // Linked consumers must use only the objects that actually reached exile.
-            exiled: evidence_events
-                .iter()
-                .filter(|event| actual_exiles(event))
-                .flat_map(|event| event.objects_after())
-                .collect(),
+            exiled,
         });
         let sources = d.sources.clone();
         for id in sources {

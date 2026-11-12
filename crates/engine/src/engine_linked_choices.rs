@@ -113,6 +113,8 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    /// Cost exiles use the same public link view and a separate ability identity.
+    pub evidence_links: Vec<evidence::LinkedEvidenceExile>,
     /// Materials of a craft activation tied to its actual returned incarnation.
     pub craft_links: Vec<LinkedExileView>,
     pub free_cast_uses: Vec<LinkedFreeCastUseView>,
@@ -154,6 +156,7 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + (self.links.len() + self.craft_links.len()) * std::mem::size_of::<LinkedExileView>()
+            + self.evidence_links.len() * std::mem::size_of::<evidence::LinkedEvidenceExile>()
             + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
             + self.exile_zero_uses.as_ref().map_or(0, |uses| uses.bytes())
@@ -730,6 +733,7 @@ impl Game {
         self.stage_entries(moves, None);
     }
     pub(super) fn prune_linked_exiles(&mut self) {
+        self.prune_linked_evidence();
         let Some(data) = self.state.linked_choices.as_mut() else {
             return;
         };

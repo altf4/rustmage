@@ -11122,14 +11122,18 @@ impl Game {
             self.forget_graveyard_cast_permission(before.reference);
             self.forget_embalm(before.reference);
         }
+        let library_bottom =
+            plan.completion == Some(zone_replacements::ZoneMoveCompletion::LibraryBottom);
         let enters_library = destination == Zone::Library && was_card;
+        let changes_library_top =
+            enters_library && (!library_bottom || self.top_library_card(before.owner).is_none());
         if (before.zone == Zone::Library && self.top_library_card(before.owner) == Some(id))
-            || enters_library
+            || changes_library_top
         {
             self.library_top_changed(before.owner);
         }
         let revealed_top = self.public_library_top(before.owner) == Some(before.reference);
-        if before.zone == Zone::Library && revealed_top || enters_library {
+        if before.zone == Zone::Library && revealed_top || changes_library_top {
             self.forget_library_top(before.owner);
         }
         if before.zone == Zone::Hand {
@@ -11388,7 +11392,12 @@ impl Game {
         // copies until state-based cleanup. Card-only library operations filter
         // copies; tokens do not enter this ordered index.
         if destination == Zone::Library && !obj.is_token() {
-            self.state.players[obj.owner.index()].library.push(id);
+            let library = &mut self.state.players[obj.owner.index()].library;
+            if library_bottom {
+                library.insert(0, id);
+            } else {
+                library.push(id);
+            }
         }
         let entry_identity = (obj.controller, obj.card);
         if let Some(row) = disguised_spell
@@ -12658,6 +12667,7 @@ impl Game {
                     .iter()
                     .copied()
                     .chain(c.craft_links.iter().copied())
+                    .chain(c.evidence_links.iter().map(|link| link.view))
                     .chain(
                         c.null_cast_links
                             .iter()

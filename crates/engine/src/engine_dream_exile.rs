@@ -129,6 +129,11 @@ impl Game {
                         player,
                     });
             }
+            zone_replacements::ZoneMoveCompletion::LibraryBottom => {
+                if was_card && self.top_library_card(before.owner) == Some(object.card) {
+                    self.remember_library_top(before.owner, object);
+                }
+            }
             zone_replacements::ZoneMoveCompletion::LinkedGraveyardExile(replacement) => {
                 if was_card {
                     self.link_exile_to_ability(

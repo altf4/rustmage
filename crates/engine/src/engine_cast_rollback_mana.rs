@@ -615,7 +615,7 @@ impl Game {
                     return false;
                 }
                 if let Some(selection) = &evidence {
-                    self.commit_evidence(selection, source);
+                    self.commit_evidence(selection, source, None);
                 } else if let Some(selection) = &forage {
                     self.commit_forage(event.actor, selection);
                 } else if sacrifice && let Some((_, selection)) = additional {

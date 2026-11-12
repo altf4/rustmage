@@ -1258,3 +1258,247 @@ fn a_death_trigger_pays_source_exile_with_separate_evidence_and_returns_it_tappe
         }
     }
 }
+
+const VEHICLE_EVIDENCE_ACTIVATION: ActivatedAbility = ActivatedAbility {
+    exhaust: false,
+    guard: ActivationGuard::Always,
+    cycling: false,
+    origin: ActivationOrigin::Battlefield,
+    cost: ActivationCost {
+        additional: Some(AdditionalCost {
+            kind: EffectChoiceKind::CollectEvidence(6),
+            filter: NO_FILTER,
+        }),
+        ..ActivationCost::ZERO
+    },
+    targets: TargetPlan::NONE,
+    program: &[Instruction::AnimateSource(AnimationSpec {
+        artifact: true,
+        creature_types: AnimationCreatureTypes::Unchanged,
+        base: Some((4, 4)),
+        keywords: Keywords::NONE,
+        duration: AnimationDuration::EndOfTurn,
+    })],
+    sorcery: false,
+    once_per_turn: false,
+};
+
+const EVIDENCE_VEHICLE: CardRules = CardRules {
+    effect: Effect::Permanent,
+    activated: &[VEHICLE_EVIDENCE_ACTIVATION, VEHICLE_EVIDENCE_ACTIVATION],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfAttacks,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CastLinkedEvidenceInstantOrSorcery { activation: 0 }],
+    }],
+    ..CardRules::EMPTY
+};
+
+fn pay_vehicle_evidence(game: &mut Game, vehicle: CardId, ability: u16, materials: &[CardId]) {
+    act(
+        game,
+        Action::AnnounceActivate {
+            card: vehicle,
+            ability,
+            counter_payment: Counters::default(),
+        },
+    );
+    select_evidence(game, materials);
+    pay(game);
+}
+
+fn start_linked_spell(game: &Game, card: CardId) -> Action {
+    Action::CastExiledDuringResolution {
+        object: game.object_ref(card),
+        face: CastFace::Normal,
+    }
+}
+
+#[test]
+fn a_paid_cast_uses_exact_linked_evidence_and_replaces_only_its_own_graveyard_move() {
+    struct ResetPrevention;
+    impl Drop for ResetPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+
+    let _rules = fixture_rules::activate(&[(named("Mobile Homestead"), &EVIDENCE_VEHICLE)]);
+    let _prevention = ResetPrevention;
+    let owner = Player::P0;
+    let pilot = owner.other();
+    let mut game = scenario(owner);
+    let vehicle = put(&mut game, owner, "Mobile Homestead", Zone::Battlefield);
+    let original = game.object_ref(vehicle);
+    let shock = put(&mut game, owner, "Shock", Zone::Graveyard);
+    let other_link = put(&mut game, owner, "Opt", Zone::Graveyard);
+    let creature = put(&mut game, owner, "Hill Giant", Zone::Graveyard);
+    let prevented = put(&mut game, owner, "Lightning Bolt", Zone::Graveyard);
+    let wrong_ability = put(&mut game, owner, "Quick Study", Zone::Graveyard);
+    let extra_material = put(&mut game, owner, "Hill Giant", Zone::Graveyard);
+    let unrelated = put(&mut game, pilot, "Opt", Zone::Exile);
+    let sorcery = put(&mut game, pilot, "Divination", Zone::Graveyard);
+    let later_material = put(&mut game, pilot, "Hill Giant", Zone::Graveyard);
+
+    let prevented_ref = game.object_ref(prevented);
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(Some(prevented_ref)));
+    pay_vehicle_evidence(
+        &mut game,
+        vehicle,
+        0,
+        &[shock, other_link, creature, prevented],
+    );
+    zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+    let receipt = game.observe(pilot).last_evidence.unwrap();
+    assert_eq!((receipt.threshold, receipt.total_mana), (6, 7));
+    assert_eq!(
+        receipt.exiled,
+        [
+            game.object_ref(shock),
+            game.object_ref(other_link),
+            game.object_ref(creature)
+        ]
+    );
+    assert_eq!(game.object_view(prevented).zone, Zone::Graveyard);
+    let activation = game.state.stack.last().unwrap().id;
+    assert!(game.counter_stack_item(activation, false));
+    assert!(!game.object_view(vehicle).is_creature());
+    assert_eq!(game.observe(pilot).linked_exile.len(), 3);
+
+    pay_vehicle_evidence(&mut game, vehicle, 1, &[wrong_ability, extra_material]);
+    settle(&mut game);
+    assert!(game.object_view(vehicle).is_creature());
+    assert_eq!(game.observe(pilot).linked_exile.len(), 3);
+
+    // A new controller can use an earlier payer's linked cards.
+    game.record_control(original, pilot, None);
+    game.state.objects[vehicle as usize].summoning_sick = false;
+    game.state.active = pilot;
+    game.state.priority = pilot;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: vehicle });
+    act(&mut game, Action::FinishAttackers);
+    let attack = game.state.stack.last().unwrap().id;
+    assert_eq!(
+        game.state.stack.last().unwrap().source.unwrap().object,
+        original
+    );
+
+    // The same source can add new linked cards while its attack trigger waits.
+    if game.actor() != Some(pilot) {
+        act(&mut game, Action::Pass);
+    }
+    pay_vehicle_evidence(&mut game, vehicle, 0, &[sorcery, later_material]);
+    pass_pair(&mut game);
+    assert_eq!(game.state.stack.last().unwrap().id, attack);
+
+    // The old trigger retains its own links even if its source changes zones.
+    game.move_object(vehicle, Zone::Exile);
+    game.move_object(vehicle, Zone::Battlefield);
+    assert_ne!(game.object_ref(vehicle), original);
+    let old_exile = game.object_ref(other_link);
+    game.move_object(other_link, Zone::Exile);
+    assert_ne!(game.object_ref(other_link), old_exile);
+    pass_pair(&mut game);
+    assert_eq!(
+        game.state.pending,
+        Pending::ResolutionCasts { player: pilot }
+    );
+    game.state.players[pilot.index()].mana = [0, 1, 0, 1, 0, 2];
+    for card in [other_link, creature, prevented, wrong_ability, unrelated] {
+        let action = start_linked_spell(&game, card);
+        reject(&mut game, action);
+    }
+
+    let mut declined = game.clone();
+    act(&mut declined, Action::FinishResolutionCasts);
+    assert_eq!(declined.object_view(shock).zone, Zone::Exile);
+    assert!(declined.observe(pilot).linked_exile.is_empty());
+
+    let mut sorcery_branch = game.clone();
+    let action = start_linked_spell(&sorcery_branch, sorcery);
+    act(&mut sorcery_branch, action);
+    pay(&mut sorcery_branch);
+    let second_cast = start_linked_spell(&sorcery_branch, shock);
+    reject(&mut sorcery_branch, second_cast);
+    act(&mut sorcery_branch, Action::FinishResolutionCasts);
+    settle(&mut sorcery_branch);
+    assert_eq!(
+        sorcery_branch.state.players[pilot.index()].cards_drawn_this_turn,
+        2
+    );
+    assert_eq!(
+        sorcery_branch.state.players[pilot.index()].library[0],
+        sorcery
+    );
+
+    let action = start_linked_spell(&game, shock);
+    let mut unfunded = game.clone();
+    unfunded.state.players[pilot.index()].mana = [0; 6];
+    reject(&mut unfunded, action.clone());
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == action)
+        .unwrap();
+    let revision = game.revision();
+    let snapshot = game.snapshot();
+    let mut indexed = game.clone();
+    indexed.apply_index(pilot, revision, index).unwrap();
+    act(&mut game, action.clone());
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&snapshot).unwrap();
+    act(&mut indexed, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(owner),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(game.state.stack.last().unwrap().cast.unwrap().payment, RED);
+    act(&mut game, Action::FinishResolutionCasts);
+    let spell = game.object_ref(shock);
+    assert!(game.stack_graveyard_bottom(spell));
+    let top = game.object_ref(game.top_library_card(owner).unwrap());
+    game.remember_library_top(owner, top);
+
+    let mut countered = game.clone();
+    let cancel = put(&mut countered, owner, "Cancel", Zone::Hand);
+    countered.state.players[owner.index()].mana = [0, 2, 0, 0, 0, 1];
+    if countered.actor() != Some(owner) {
+        act(&mut countered, Action::Pass);
+    }
+    cast(&mut countered, cancel, Some(Target::Spell(shock)));
+    settle(&mut countered);
+    assert_eq!(countered.state.players[owner.index()].life, 20);
+    assert_eq!(countered.state.players[owner.index()].library[0], shock);
+    assert_eq!(countered.public_library_top(owner), Some(top));
+
+    let mut bounced = game.clone();
+    bounced.move_object(shock, Zone::Hand);
+    assert_eq!(bounced.object_view(shock).zone, Zone::Hand);
+    assert!(!bounced.stack_graveyard_bottom(spell));
+    bounced.move_object(shock, Zone::Graveyard);
+    assert_eq!(bounced.object_view(shock).zone, Zone::Graveyard);
+
+    let mut competing = game.clone();
+    put(&mut competing, owner, "Rest in Peace", Zone::Battlefield);
+    pass_pair(&mut competing);
+    let choice = |effect| Action::ChooseZoneReplacement { effect };
+    let mut exiled = competing.clone();
+    act(&mut exiled, choice(ZoneReplacementKind::Exile));
+    assert_eq!(exiled.object_view(shock).zone, Zone::Exile);
+    act(&mut competing, choice(ZoneReplacementKind::LibraryBottom));
+    assert_eq!(competing.state.players[owner.index()].library[0], shock);
+
+    settle(&mut game);
+    assert_eq!(game.state.players[owner.index()].life, 18);
+    assert_eq!(game.object_view(shock).zone, Zone::Library);
+    assert_eq!(game.state.players[owner.index()].library[0], shock);
+    assert_eq!(game.public_library_top(owner), Some(top));
+    assert!(!game.stack_graveyard_bottom(spell));
+    assert!(game.observe(pilot).linked_exile.is_empty());
+}

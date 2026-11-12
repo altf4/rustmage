@@ -3638,6 +3638,12 @@ pub enum Instruction {
     /// Optionally exile the exact source card after death and collect evidence, then
     /// return its actual exiled cards tapped under their owners' control.
     ExileDepartedSourceCollectEvidenceReturnTapped(u16),
+    /// Offer one immediate paid instant or sorcery cast from the actual
+    /// exiles paid for this linked activation. Its graveyard move goes to the
+    /// bottom of its owner's library instead.
+    CastLinkedEvidenceInstantOrSorcery {
+        activation: u16,
+    },
     EvidenceWard(u16),
     IfEvidence {
         skip: usize,

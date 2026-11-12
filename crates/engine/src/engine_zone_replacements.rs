@@ -42,6 +42,7 @@ pub enum ZoneReplacementKind {
     Plot,
     AdventureExile,
     OmenShuffle,
+    LibraryBottom,
     /// The event is prevented; the object remains in its original zone.
     Prevent,
     Exile,
@@ -159,6 +160,7 @@ pub(super) struct ZoneState {
     replay: Option<Box<Replay>>,
     reveals: SharedVec<ZoneRevealView>,
     graveyard_exile_spells: SharedVec<ObjectRef>,
+    graveyard_bottom_spells: SharedVec<ObjectRef>,
     pub(super) plot_spells: SharedVec<ObjectRef>,
 }
 /// A checkpoint fixture for conservative schema projection tests.
@@ -204,6 +206,7 @@ pub(super) struct FrozenRules {
     pub shuffle_self: bool,
     pub shuffle_spell: bool,
     pub exile_spell: bool,
+    pub bottom_spell: bool,
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
     pub linked_graveyard_exiles: Vec<LinkedGraveyardExile>,
@@ -228,6 +231,7 @@ pub(super) enum ZoneMoveCompletion {
     Rebound(Player),
     Plot,
     Adventure(Player),
+    LibraryBottom,
     LinkedGraveyardExile(LinkedGraveyardExile),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -315,7 +319,8 @@ impl ZoneState {
         };
         std::mem::size_of::<Self>()
             + self.reveals.len() * std::mem::size_of::<ZoneRevealView>()
-            + self.graveyard_exile_spells.len() * std::mem::size_of::<ObjectRef>()
+            + (self.graveyard_exile_spells.len() + self.graveyard_bottom_spells.len())
+                * std::mem::size_of::<ObjectRef>()
             + self.plot_spells.len() * std::mem::size_of::<ObjectRef>()
             + self.dream_exiles.len() * std::mem::size_of::<DreamExileView>()
             + self.choice.as_ref().map_or(0, |c| {
@@ -370,6 +375,21 @@ impl Game {
         if source.card.keywords().contains(Keywords::REBOUND) {
             self.state.zone_rules.get_or_insert_default();
         }
+        if self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .is_some_and(|offer| {
+                offer.pending_cast == Some(item.id)
+                    && offer.paid.is_some_and(|paid| paid.bottom_on_graveyard)
+            })
+        {
+            self.state
+                .zone_rules
+                .get_or_insert_default()
+                .graveyard_bottom_spells
+                .push(source.object);
+        }
         if cast.exile_on_graveyard {
             let rows = &mut self
                 .state
@@ -392,6 +412,11 @@ impl Game {
                     .graveyard_exile_spells
                     .retain(|reference| *reference != object);
             }
+            if rules.graveyard_bottom_spells.contains(&object) {
+                rules
+                    .graveyard_bottom_spells
+                    .retain(|reference| *reference != object);
+            }
             if rules.plot_spells.contains(&object) {
                 rules.plot_spells.retain(|reference| *reference != object);
             }
@@ -402,6 +427,13 @@ impl Game {
             .zone_rules
             .as_ref()
             .is_some_and(|rules| rules.graveyard_exile_spells.contains(&object))
+    }
+
+    pub(super) fn stack_graveyard_bottom(&self, object: ObjectRef) -> bool {
+        self.state
+            .zone_rules
+            .as_ref()
+            .is_some_and(|rules| rules.graveyard_bottom_spells.contains(&object))
     }
 
     pub(super) fn register_zone_rule_card(&mut self, card: Card) {
@@ -644,6 +676,8 @@ impl Game {
             reflexive_exiles,
             linked_graveyard_exiles,
             shuffle_spell: false,
+            bottom_spell: before.zone == Zone::Stack
+                && self.stack_graveyard_bottom(before.reference),
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
             exile_spell: self.turn_exiles_graveyard_card(object)
                 || (before.zone == Zone::Stack && self.stack_graveyard_exile(before.reference))
@@ -670,6 +704,7 @@ impl Game {
                     || rules.prevent
                     || rules.shuffle_self
                     || rules.shuffle_spell
+                    || rules.bottom_spell
                     || rules.discard_to_battlefield
                     || !rules.reflexive_exiles.is_empty()
                     || !rules.linked_graveyard_exiles.is_empty()
@@ -878,6 +913,9 @@ impl Game {
         if requested == Zone::Graveyard && rules.shuffle_spell {
             choices.push(ZoneReplacementKind::Shuffle);
         }
+        if requested == Zone::Graveyard && rules.bottom_spell {
+            choices.push(ZoneReplacementKind::LibraryBottom);
+        }
         if requested == Zone::Graveyard && rules.discard_to_battlefield {
             choices.push(ZoneReplacementKind::Battlefield);
         }
@@ -962,6 +1000,9 @@ impl Game {
                 ZoneReplacementKind::AdventureExile => Some(ZoneMoveCompletion::Adventure(
                     rules.resolution_face.expect("resolving adventure").0,
                 )),
+                ZoneReplacementKind::LibraryBottom if !exile_on_stack_exit => {
+                    Some(ZoneMoveCompletion::LibraryBottom)
+                }
                 ZoneReplacementKind::ExileLinked { source } => {
                     Some(ZoneMoveCompletion::LinkedGraveyardExile(
                         *rules
@@ -977,7 +1018,8 @@ impl Game {
                 ZoneReplacementKind::Prevent => Zone::Graveyard,
                 ZoneReplacementKind::Shuffle
                 | ZoneReplacementKind::RevealShuffle
-                | ZoneReplacementKind::OmenShuffle => {
+                | ZoneReplacementKind::OmenShuffle
+                | ZoneReplacementKind::LibraryBottom => {
                     // An exile-on-stack-exit replacement still applies to the
                     // move within the shuffle. CR 701.24c retains the shuffle.
                     if exile_on_stack_exit {

@@ -5831,6 +5831,11 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::CastLinkedEvidenceInstantOrSorcery { activation } => {
+                    if self.offer_linked_evidence_cast(&item, activation) {
+                        return;
+                    }
+                }
                 Instruction::EvidenceWard(threshold) => {
                     if self.start_resolution_evidence(threshold.into(), 0, true) {
                         return;
@@ -7000,6 +7005,7 @@ impl Game {
                     let paid = ResolutionPaidCast {
                         kinds: u8::MAX,
                         exile_instants_sorceries: false,
+                        bottom_on_graveyard: false,
                         spend_any_mana,
                     };
                     if self.offer_targeted_graveyard_cast(&item, Some(paid), exile_on_graveyard) {
