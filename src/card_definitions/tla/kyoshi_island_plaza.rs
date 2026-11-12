@@ -1,16 +1,37 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the paired Oracle and pinned XMage sources.
+const BASIC: SearchSpec = SearchSpec {
+    filter: SearchFilter::BasicLand,
+    maximum: 1,
+    destination: SearchDestination::Battlefield,
+    tapped: true,
+    reveal: false,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::SearchScaled {
+                spec: BASIC,
+                maximum: AmountValue::Stat(StatValue::Count(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 0,
+                    exclude: 0,
+                    subtype: Some("Shrine"),
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                })),
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::OtherSubtypeEntersYou("Shrine"),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Search(BASIC)],
+        },
+    ],
     ..CardRules::EMPTY
 };

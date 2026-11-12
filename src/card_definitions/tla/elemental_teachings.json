@@ -3,10 +3,26 @@
   "catalogue_id": 1283,
   "oracle_id": "7255705c-b788-4bb1-824a-9262f4a0864e",
   "facts_sha256": "65ab8070a2bd60145225f28e376764fe48a0c060b9c422ec9a84279d1c33cb5e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "97ccb1fd1deed1242c2cf399de6892d65bd99663c154dcc1b89e01127ea7f097"
   },
-  "physical_metadata_sha256": "0a4e2934de082decc945effc0f2b65a7c1e6969fda43d7880a9fde0b1803f739"
+  "physical_metadata_sha256": "0a4e2934de082decc945effc0f2b65a7c1e6969fda43d7880a9fde0b1803f739",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElementalTeachings.java",
+  "java_sha256": "6417fe83807e2376a5a8a5544083f5197373f1649b484d3ab612a6abcafa3d79",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryForFourDifferentCardsEffect.java",
+      "sha256": "710022f4fa2597f3e135ca26f1365c6202f9e3c291b335c600633db531e9cfbd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green.rs"
 }
