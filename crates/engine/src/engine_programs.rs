@@ -2563,8 +2563,6 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::ChangeCastSpellTargets
-                                        | Instruction::GrantCastSpellHaste
-                                        | Instruction::GrantCastSpellKeywords(_)
                                         | Instruction::MarkCastDreamExile
                                         | Instruction::FlipCoinForCapturedSpell { .. }
                                         | Instruction::GainLifeScaled(_, AmountValue::SpellColors)

@@ -44,6 +44,8 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         }
         Instruction::AddCastEntryCountersForControlledSubtypes { .. }
         | Instruction::GrantCastRebound
+        | Instruction::GrantCastSpellHaste
+        | Instruction::GrantCastSpellKeywords(_)
         | Instruction::GrantCastPlotOnResolution => !cave_only,
         Instruction::UpToTargets(value)
         | Instruction::DiscoverScaled(value)

@@ -15,9 +15,20 @@ const CAST_KEYWORDS: CardRules = CardRules {
             ordinal: None,
         },
         targets: TargetPlan::NONE,
-        program: &[Instruction::GrantCastSpellKeywords(
-            Keywords::DEATHTOUCH.union(Keywords::LIFELINK),
-        )],
+        program: &[Instruction::Modal(&[
+            SpellMode {
+                text: "Give that spell deathtouch and lifelink.",
+                targets: TargetPlan::NONE,
+                program: &[Instruction::GrantCastSpellKeywords(
+                    Keywords::DEATHTOUCH.union(Keywords::LIFELINK),
+                )],
+            },
+            SpellMode {
+                text: "Gain 1 life.",
+                targets: TargetPlan::NONE,
+                program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+            },
+        ])],
     }],
     ..CardRules::EMPTY
 };
@@ -31,6 +42,11 @@ fn granting_lifelink_to_the_cast_spell_uses_its_actual_damage_dealer() {
     spawn(&mut game, player, creature, Zone::Battlefield);
     let spell = put(&mut game, player, "Shock", Zone::Hand);
     cast(&mut game, spell, Some(Target::Player(player.other())));
+    let mut alternate = game.clone();
+    act(&mut alternate, Action::ChooseMode { mode: 1 });
+    settle(&mut alternate);
+    assert_eq!(alternate.state.players[player.index()].life, 21);
+    act(&mut game, Action::ChooseMode { mode: 0 });
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, 22);
     assert_eq!(game.state.players[player.other().index()].life, 18);
@@ -38,6 +54,7 @@ fn granting_lifelink_to_the_cast_spell_uses_its_actual_damage_dealer() {
     let large = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
     let spell = put(&mut game, player, "Shock", Zone::Hand);
     cast(&mut game, spell, Some(Target::Card(large)));
+    act(&mut game, Action::ChooseMode { mode: 0 });
     settle(&mut game);
     assert_eq!(game.object_view(large).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].life, 24);
