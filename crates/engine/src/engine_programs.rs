@@ -9567,6 +9567,11 @@ impl Game {
                             ..search::SearchResult::default()
                         }));
                 }
+                Instruction::AddEntryResultCharacteristics(addition) => {
+                    if let Some(recipient) = self.captured_entry_result() {
+                        self.add_characteristics_to(&[recipient], addition);
+                    }
+                }
                 Instruction::IfEntryResultSubtype { subtypes, skip } => {
                     if !self.captured_entry_result_has_subtype(subtypes) {
                         self.state.resolving.as_mut().unwrap().pc += skip;

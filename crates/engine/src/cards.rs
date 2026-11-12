@@ -4522,6 +4522,8 @@ pub enum Instruction {
     },
     /// Capture the first attempted entry of the next entry operation, including failure/decline.
     CaptureEntryResult,
+    /// Apply additions to the exact successful entrant captured by this resolution.
+    AddEntryResultCharacteristics(CharacteristicAddition),
     /// Continue only if an exact successful entrant has any listed subtype.
     IfEntryResultSubtype {
         subtypes: &'static [&'static str],

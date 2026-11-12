@@ -878,18 +878,25 @@ impl Game {
         subject: Subject,
         addition: CharacteristicAddition,
     ) {
-        assert!(
-            addition
-                .creature_types
-                .iter()
-                .all(|name| crate::cards::is_creature_type(name))
-        );
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
             .into_iter()
             .filter(|&id| self.on_battlefield(id))
             .map(|id| self.object_ref(id))
             .collect();
+        self.add_characteristics_to(&recipients, addition);
+    }
+    pub(super) fn add_characteristics_to(
+        &mut self,
+        recipients: &[ObjectRef],
+        addition: CharacteristicAddition,
+    ) {
+        assert!(
+            addition
+                .creature_types
+                .iter()
+                .all(|name| crate::cards::is_creature_type(name))
+        );
         if recipients.is_empty() {
             return;
         }
@@ -911,7 +918,7 @@ impl Game {
             .as_mut()
             .unwrap()
             .animations
-            .extend(recipients.into_iter().map(|object| AnimationView {
+            .extend(recipients.iter().copied().map(|object| AnimationView {
                 additional_card_types: addition.card_types,
                 additional_colors: addition.colors & 31,
                 ..animation_view(
