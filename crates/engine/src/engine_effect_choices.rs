@@ -1735,6 +1735,7 @@ impl Game {
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                 | EffectChoiceKind::TapAnyUntappedPermanents
+                | EffectChoiceKind::SacrificeRememberCount
         ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
@@ -2840,6 +2841,16 @@ impl Game {
                         .map(move |object| (p, object.card))
                 })
                 .collect();
+            if choice.kind == EffectChoiceKind::SacrificeRememberCount {
+                let count = self
+                    .sacrifice_effect_batch_outcome(&sacrifices)
+                    .iter()
+                    .filter(|event| event.sacrificed_by.is_some())
+                    .count();
+                self.state.resolving.as_mut().unwrap().moved_count =
+                    Some(u64::try_from(count).capacity("sacrifice result count exhausted"));
+                return false;
+            }
             let remembers_controller_sacrifice = self
                 .state
                 .resolving

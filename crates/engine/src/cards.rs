@@ -1709,6 +1709,8 @@ pub enum EffectChoiceKind {
     SacrificeExceptAttackingAttachment,
     /// Exclude the source's live attachment or its attachment as it left.
     SacrificeExceptSourceAttachment,
+    /// A fixed resolution sacrifice that saves the number of actual sacrifices as MovedCount.
+    SacrificeRememberCount,
     /// An unbounded resolution selection followed by one sacrifice batch.
     SacrificeSelection,
     /// An unbounded selection whose actual sacrifices supply their total power.
@@ -1877,7 +1879,8 @@ impl EffectChoiceKind {
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
-            Self::SacrificeSelection
+            Self::SacrificeRememberCount
+            | Self::SacrificeSelection
             | Self::SacrificeSelectionForPower
             | Self::SacrificeExceptAttackingAttachment
             | Self::SacrificeExceptSourceAttachment => Self::Sacrifice,
