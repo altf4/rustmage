@@ -16,6 +16,8 @@ pub struct MainPhaseCombatView {
 pub struct AfterCombatPhaseView {
     pub first_step: Step,
     pub remaining: u128,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub land_creature_attackers_only: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -194,25 +196,30 @@ impl Game {
             false
         }
     }
-    pub(super) fn add_combat(&mut self) {
-        self.insert_after_combat(Step::BeginCombat, 1);
+    pub(super) fn add_combat(&mut self, land_creature_attackers_only: bool) {
+        self.insert_after_combat(Step::BeginCombat, 1, land_creature_attackers_only);
     }
 
     pub(super) fn add_upkeeps_after_combat(&mut self, controller: Player, amount: u128) {
         // CR 500.10a: "you get" cannot add phases to another player's turn.
         if amount != 0 && self.attacking_return_combat(controller) {
-            self.insert_after_combat(Step::Upkeep, amount);
+            self.insert_after_combat(Step::Upkeep, amount, false);
         }
     }
 
-    fn insert_after_combat(&mut self, first_step: Step, count: u128) {
+    fn insert_after_combat(
+        &mut self,
+        first_step: Step,
+        count: u128,
+        land_creature_attackers_only: bool,
+    ) {
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
         let phases = &mut rules.after_combat;
         // CR 500.8: the latest added phase occurs first at the same boundary.
-        if let Some(last) = phases
-            .last_mut()
-            .filter(|last| last.first_step == first_step)
-        {
+        if let Some(last) = phases.last_mut().filter(|last| {
+            last.first_step == first_step
+                && last.land_creature_attackers_only == land_creature_attackers_only
+        }) {
             last.remaining = last
                 .remaining
                 .checked_add(count)
@@ -224,14 +231,17 @@ impl Game {
             phases.push(AfterCombatPhaseView {
                 first_step,
                 remaining: count,
+                land_creature_attackers_only,
             });
         }
     }
 
     fn take_after_combat_phase(&mut self) -> Option<Step> {
         let rules = self.state.combat_rules.as_mut()?;
+        rules.land_creature_attackers_only = false;
         let phase = rules.after_combat.last_mut()?;
         let step = phase.first_step;
+        rules.land_creature_attackers_only = phase.land_creature_attackers_only;
         phase.remaining -= 1;
         if phase.remaining == 0 {
             rules.after_combat.pop();

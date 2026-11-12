@@ -3563,6 +3563,8 @@ pub enum Instruction {
     },
 
     AdditionalCombat,
+    /// Insert a combat after this phase with a live land-creature attack restriction.
+    AdditionalLandCreatureCombat,
     /// Insert upkeep-only beginning phases after this controller's combat.
     AdditionalUpkeepsAfterCombat(AmountValue),
     /// If this is the turn's first end step, insert one more before cleanup.
@@ -4157,6 +4159,7 @@ pub enum Instruction {
     },
     BottomLookedLibraryRandom,
     ControlTargetPlayerNextTurn,
+    ControlTargetPlayerNextCombat,
     ExileAllCreaturesRemember,
     /// Exile creatures simultaneously and count only those actually exiled, including tokens.
     ExileAllCreaturesCount,

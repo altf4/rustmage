@@ -32,6 +32,7 @@ pub struct PlayerCombatDamageView {
 pub(super) struct CombatRulesState {
     pub after_combat: Vec<AfterCombatPhaseView>,
     pub in_inserted_upkeep: bool,
+    pub land_creature_attackers_only: bool,
     pub after_main: Option<MainPhaseCombatView>,
     pub inserted_phases: Vec<Step>,
     pub end_steps: AdditionalEndStepsView,

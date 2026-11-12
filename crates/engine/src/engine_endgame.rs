@@ -124,6 +124,10 @@ impl Game {
         self.state.damage_choices.clear();
         self.state.attack_declared = false;
         self.state.ending_turn = false;
+        self.end_player_control_combat();
+        if let Some(rules) = &mut self.state.combat_rules {
+            rules.land_creature_attackers_only = false;
+        }
         self.clear_step_mana(false, true);
         self.state.step = Step::Cleanup;
         if self.above_hand_limit(self.state.active, 0) {

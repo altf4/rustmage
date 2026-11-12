@@ -130,6 +130,7 @@ fn combat_damage_schedules_exact_upkeeps_after_the_newer_combat_without_draws() 
         g.observe(p).after_combat_phases.unwrap(),
         [AfterCombatPhaseView {
             first_step: Step::Upkeep,
+            land_creature_attackers_only: false,
             remaining: 4
         }]
     );
@@ -143,10 +144,12 @@ fn combat_damage_schedules_exact_upkeeps_after_the_newer_combat_without_draws() 
         [
             AfterCombatPhaseView {
                 first_step: Step::BeginCombat,
+                land_creature_attackers_only: false,
                 remaining: 1
             },
             AfterCombatPhaseView {
                 first_step: Step::Upkeep,
+                land_creature_attackers_only: false,
                 remaining: 4
             },
         ]
@@ -223,6 +226,7 @@ fn a_nonactive_ability_copy_cannot_add_upkeeps_to_the_active_turn() {
         g.observe(p).after_combat_phases.unwrap(),
         [AfterCombatPhaseView {
             first_step: Step::Upkeep,
+            land_creature_attackers_only: false,
             remaining: 2
         }]
     );

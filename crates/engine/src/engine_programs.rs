@@ -7550,12 +7550,14 @@ impl Game {
                     return;
                 }
                 Instruction::BottomLookedLibraryRandom => self.finish_library_cast_look(),
-                Instruction::ControlTargetPlayerNextTurn => {
+                Instruction::ControlTargetPlayerNextTurn
+                | Instruction::ControlTargetPlayerNextCombat => {
+                    let combat_only = instruction == Instruction::ControlTargetPlayerNextCombat;
                     for player in self
                         .program_players(PlayerSet::Targeted, &item)
                         .collect::<Vec<_>>()
                     {
-                        self.schedule_player_control(player, item.controller);
+                        self.schedule_player_control(player, item.controller, combat_only);
                     }
                 }
                 Instruction::ExileAllCreaturesRemember => self.exile_all_creatures_remember(),
@@ -8873,7 +8875,9 @@ impl Game {
                 Instruction::DamageCannotBePreventedThisTurn => {
                     self.state.damage_prevention_prohibited = true;
                 }
-                Instruction::AdditionalCombat => self.add_combat(),
+                Instruction::AdditionalCombat | Instruction::AdditionalLandCreatureCombat => {
+                    self.add_combat(instruction == Instruction::AdditionalLandCreatureCombat);
+                }
                 Instruction::AdditionalUpkeepsAfterCombat(amount) => {
                     self.add_upkeeps_after_combat(item.controller, self.item_amount(amount, &item));
                 }

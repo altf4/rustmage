@@ -4176,9 +4176,11 @@ pub struct Observation {
     pub after_main_combats: Option<MainPhaseCombatView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inserted_phases: Option<Vec<Step>>,
-    /// Pending inserted phases in execution order, when an upkeep is scheduled.
+    /// Pending inserted phases in execution order, with any phase-specific restriction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub after_combat_phases: Option<Vec<AfterCombatPhaseView>>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub land_creature_attackers_only: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub additional_end_steps: Option<AdditionalEndStepsView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11931,6 +11933,7 @@ impl Game {
             }
             Step::EndCombat => {
                 self.finish_declared_attack_combat();
+                self.end_player_control_combat();
                 if let Some(rules) = &mut self.state.combat_rules {
                     rules.must_attack_this_combat.clear();
                     rules.creature_requirements.retain(|row| {
@@ -12957,9 +12960,15 @@ impl Game {
                 rules
                     .after_combat
                     .iter()
-                    .any(|phase| phase.first_step == Step::Upkeep)
+                    .any(|phase| {
+                        phase.first_step == Step::Upkeep || phase.land_creature_attackers_only
+                    })
                     .then(|| rules.after_combat.iter().rev().copied().collect())
             }),
+            land_creature_attackers_only: s
+                .combat_rules
+                .as_ref()
+                .is_some_and(|rules| rules.land_creature_attackers_only),
             inserted_phases: s.combat_rules.as_ref().and_then(|r| {
                 (!r.inserted_phases.is_empty())
                     .then(|| r.inserted_phases.iter().rev().copied().collect())
