@@ -3585,6 +3585,10 @@ pub enum Instruction {
         power_up_prohibited: bool,
     },
     TransformSource,
+    /// Skip the optional program when this exact source cannot transform.
+    MayTransformSource {
+        skip: usize,
+    },
     RequireBlocks(CreatureFilter),
     /// Install one independent rules requirement per exact subject.
     RequireSubjectCombat {
@@ -7874,6 +7878,8 @@ pub enum TriggerCondition {
     /// One event for a simultaneous batch with any nontoken creature that
     /// enters directly from exile or resolves after being cast from exile.
     NontokenCreaturesEnterFromExile,
+    /// Each permanent that moves directly from the given zone under your control.
+    ControlledPermanentEntersFrom(Zone),
     /// The exact source and/or other controlled nontoken creatures enter together.
     /// None of the qualifying entrants were cast using mana.
     CreaturesEnterYouWithoutManaSpent,
@@ -7957,6 +7963,7 @@ pub enum TriggerCondition {
     OpponentAttacked,
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,
+    SelfAttacksWithOthers,
     /// A completed declaration with exactly one controlled creature, whether this source attacked or not.
     ControlledCreatureAttacksAlone,
     DelayedCreatureAttacksAlone,
@@ -7968,6 +7975,8 @@ pub enum TriggerCondition {
     ControlledSuspectedCreaturesAttack,
     /// One event for each declared attacker with the live keyword.
     ControlledCreatureAttacksWithKeyword(Keywords),
+    /// Once per declaration with a qualifying attacker, retaining the cohort.
+    ControlledCreatureWithKeywordAttackDeclaration(Keywords),
     /// One event for each declared attacker carrying at least one counter of this kind.
     ControlledCreatureAttacksWithCounter(CounterKind),
     /// One attack by a Vehicle whose Crew cost this exact source paid this turn.
@@ -7997,6 +8006,7 @@ pub enum TriggerCondition {
     AttackPlayer(CreatureFilter),
     /// One trigger for each player attacked by one or more creatures without this subtype.
     AttackPlayerExcludingSubtype(&'static str),
+    AttackPlayerWithPowerAtLeast(i32),
     GrantedAttacks,
     AttachedAttacks,
     AttachedAttacksOrBlocks,

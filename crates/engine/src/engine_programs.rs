@@ -990,10 +990,12 @@ impl Game {
                                 }
                                 CastRelation::Any => true,
                             };
-                            event.before.kinds & kinds != 0
-                                && related
-                                && (source.reference != event.before.reference
-                                    || event.before.kinds & exclude_source_kinds == 0)
+                            let allowed_kinds = if source.reference == event.before.reference {
+                                kinds & !exclude_source_kinds
+                            } else {
+                                kinds
+                            };
+                            related && event.before.kinds & allowed_kinds != 0
                         }
                         _ => false,
                     };
@@ -1082,6 +1084,9 @@ impl Game {
                                 .cast_event
                                 .as_ref()
                                 .is_some_and(|cast| cast.controller == source.controller)
+                    }
+                    TriggerCondition::ControlledPermanentEntersFrom(zone) => {
+                        yours && event.before.zone == zone
                     }
                     TriggerCondition::SelfEntersFromGraveyard => {
                         same && event.before.zone == Zone::Graveyard
@@ -1259,6 +1264,7 @@ impl Game {
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
                     | TriggerCondition::AttackPlayerExcludingSubtype(_)
+                    | TriggerCondition::AttackPlayerWithPowerAtLeast(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksDefendingPlayer
                     | TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(_)
@@ -1266,6 +1272,7 @@ impl Game {
                     | TriggerCondition::SelfAttacksIfEquipped
                     | TriggerCondition::SelfFirstAttack
                     | TriggerCondition::SelfAttacksAlone
+                    | TriggerCondition::SelfAttacksWithOthers
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::DelayedCreatureAttacksAlone
@@ -1284,6 +1291,7 @@ impl Game {
                     | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
+                    | TriggerCondition::ControlledCreatureWithKeywordAttackDeclaration(_)
                     | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
@@ -3137,6 +3145,7 @@ impl Game {
                     condition,
                     TriggerCondition::AttackPlayer(_)
                         | TriggerCondition::AttackPlayerExcludingSubtype(_)
+                        | TriggerCondition::AttackPlayerWithPowerAtLeast(_)
                 ) {
                     // Qualification belongs to this declaration, not all live attackers.
                     // A creature put onto the battlefield attacking did not attack.
@@ -3156,6 +3165,9 @@ impl Game {
                                         TriggerCondition::AttackPlayerExcludingSubtype(subtype) => {
                                             !self.has_subtype(attack.card, subtype)
                                         }
+                                        TriggerCondition::AttackPlayerWithPowerAtLeast(power) => {
+                                            self.object_view(attack.card).power >= i128::from(power)
+                                        }
                                         _ => unreachable!(),
                                     }
                             })
@@ -3168,6 +3180,22 @@ impl Game {
                                 .unwrap()
                                 .refer_objects(matching);
                         }
+                    }
+                }
+                if let TriggerCondition::ControlledCreatureWithKeywordAttackDeclaration(keyword) =
+                    condition
+                {
+                    let matching: Vec<_> = declared
+                        .iter()
+                        .filter(|attack| self.keywords(attack.card).contains(keyword))
+                        .map(|attack| self.object_ref(attack.card))
+                        .collect();
+                    if !matching.is_empty() && self.queue_attack_trigger(&source, index) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects(matching);
                     }
                 }
                 let subtype_attack = match ability.condition.event() {
@@ -3729,6 +3757,7 @@ impl Game {
                             >= self.state.players[player.other().index()].life)
                 }
                 TriggerCondition::SelfAttacksAlone => declared_count == 1,
+                TriggerCondition::SelfAttacksWithOthers => declared_count > 1,
                 TriggerCondition::SelfAttacksWhileSaddled
                 | TriggerCondition::SelfEntersOrAttacksWhileSaddled => source.saddled,
                 _ => false,
@@ -10929,6 +10958,7 @@ impl Game {
                 }
                 Instruction::May { skip }
                 | Instruction::MayIfSourceOnBattlefield { skip }
+                | Instruction::MayTransformSource { skip }
                 | Instruction::MayIfSourceInZone { skip, .. }
                 | Instruction::MayIfEventPermanentOnBattlefield { skip }
                 | Instruction::MayIfCombatDamageDealerOnBattlefield { skip }
@@ -10941,6 +10971,9 @@ impl Game {
                         Instruction::MayIfSourceOnBattlefield { .. } => self
                             .exact_source_in_zone(&item, TargetZone::Battlefield)
                             .is_some(),
+                        Instruction::MayTransformSource { .. } => {
+                            self.transformable_source(&item).is_some()
+                        }
                         Instruction::MayIfSourceInZone { zone, .. } => {
                             self.exact_source_in_zone(&item, zone).is_some()
                         }

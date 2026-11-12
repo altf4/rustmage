@@ -286,17 +286,16 @@ impl Game {
         Some(entry)
     }
 
+    pub(super) fn transformable_source(&self, item: &SpellView) -> Option<ObjectRef> {
+        let object = item.source?.object;
+        (item.source_transform == Some(self.transform_serial(object))
+            && self.can_transform_permanent(object))
+        .then_some(object)
+    }
     pub(super) fn transform_source(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
-            return;
-        };
-        if !self.on_battlefield(source.id)
-            || self.object_ref(source.id) != source.object
-            || item.source_transform != Some(self.transform_serial(source.object))
-        {
-            return;
+        if let Some(object) = self.transformable_source(item) {
+            self.transform_permanent(object);
         }
-        self.transform_permanent(source.object);
     }
     pub(super) fn can_transform_permanent(&self, object: ObjectRef) -> bool {
         self.on_battlefield(object.card)
