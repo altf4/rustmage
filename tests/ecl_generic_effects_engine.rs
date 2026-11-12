@@ -591,3 +591,89 @@ fn delayed_death_power_trigger_remains_active_through_cleanup_state_based_action
     drain(&mut g);
     assert_eq!(g.state.exile_permissions.len(), 1);
 }
+
+#[test]
+fn delayed_death_targets_once_when_placed_on_the_stack() {
+    const TARGETED: CardRules = CardRules {
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::DelayedTargetEvent,
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                zone: TargetZone::Battlefield,
+                kinds: 2,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            })),
+            program: &[Instruction::PutCounters {
+                subject: Subject::Targets,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        }],
+        ..DELAY
+    };
+    let _scope = fixture_rules::activate(&[(card("Opt"), &TARGETED)]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = put(&mut game, player, "Opt", Zone::Hand);
+        let victim = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+        let land = put(&mut game, player, "Forest", Zone::Battlefield);
+        let enemy_land = put(&mut game, player.other(), "Forest", Zone::Battlefield);
+        let watched = game.object_ref(victim);
+        let target = |card| Action::ChooseTarget {
+            target: Target::Card(card),
+        };
+        cast(&mut game, spell, Some(Target::Card(victim)));
+        drain(&mut game);
+        assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+
+        let mut blinked = game.clone();
+        blinked.move_object(victim, Zone::Exile);
+        blinked.move_object(victim, Zone::Battlefield);
+        blinked.move_object(victim, Zone::Graveyard);
+        drain(&mut blinked);
+        assert_eq!(blinked.counter_count(land, CounterKind::PlusOne), 0);
+
+        let mut no_target = game.clone();
+        no_target.move_object(land, Zone::Exile);
+        no_target.move_object(victim, Zone::Graveyard);
+        drain(&mut no_target);
+        assert!(no_target.state.stack.is_empty());
+        assert_eq!(no_target.state.pending, Pending::Priority);
+
+        game.move_object(victim, Zone::Graveyard);
+        game.prepare_triggers();
+        assert!(matches!(game.state.pending, Pending::Targets { .. }));
+        assert!(game.state.stack.is_empty());
+        reject(&mut game, target(enemy_land));
+        let checkpoint = game.snapshot();
+        let game_actions_at_death = game.legal_actions();
+        let mut indexed = game.clone();
+        let index = game_actions_at_death
+            .iter()
+            .position(|a| *a == target(land))
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, target(land));
+        assert_eq!(game.snapshot(), indexed.snapshot());
+        assert_eq!(game.state.stack.len(), 1);
+        assert_eq!(
+            game.state.stack[0].event_object.as_ref().unwrap().object,
+            watched
+        );
+
+        indexed.change_controller(indexed.object_ref(land), player.other());
+        drain(&mut indexed);
+        assert_eq!(indexed.counter_count(land, CounterKind::PlusOne), 0);
+        drain(&mut game);
+        assert_eq!(game.counter_count(land, CounterKind::PlusOne), 1);
+
+        indexed.restore(&checkpoint).unwrap();
+        assert_eq!(indexed.legal_actions(), game_actions_at_death);
+    }
+}
