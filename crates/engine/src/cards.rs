@@ -2615,6 +2615,13 @@ pub enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Add counters to the matching live permanents with exactly this color mask.
+    PutPermanentCountersWithColors {
+        filters: &'static [BattlefieldFilter],
+        colors: u8,
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     /// Restrict a simultaneous scaled counter placement to current legendary recipients.
     PutLegendaryPermanentCountersScaled {
         filters: &'static [BattlefieldFilter],

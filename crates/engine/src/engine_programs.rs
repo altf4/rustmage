@@ -8577,6 +8577,12 @@ impl Game {
                     kind,
                     amount,
                 }
+                | Instruction::PutPermanentCountersWithColors {
+                    filters,
+                    kind,
+                    amount,
+                    ..
+                }
                 | Instruction::PutLegendaryPermanentCountersScaled {
                     filters,
                     kind,
@@ -8590,6 +8596,9 @@ impl Game {
                 } => {
                     self.put_permanent_counters_scaled(&item, filters, kind, amount, |game, id| {
                         match instruction {
+                            Instruction::PutPermanentCountersWithColors { colors, .. } => {
+                                ability_world::CharacteristicWorld::colors(game, id) == colors
+                            }
                             Instruction::PutLegendaryPermanentCountersScaled { .. } => {
                                 ability_world::CharacteristicWorld::legendary(game, id)
                             }
