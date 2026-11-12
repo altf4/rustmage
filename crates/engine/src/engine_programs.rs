@@ -5783,6 +5783,11 @@ impl Game {
                     };
                     return;
                 }
+                Instruction::ExileDepartedSourceCollectEvidenceReturnTapped(threshold) => {
+                    if self.start_source_evidence_return(threshold.into()) {
+                        return;
+                    }
+                }
                 Instruction::EvidenceWard(threshold) => {
                     if self.start_resolution_evidence(threshold.into(), 0, true) {
                         return;

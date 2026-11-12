@@ -500,6 +500,7 @@ impl Game {
                         player: event.actor,
                         threshold,
                         excluded: Some(source),
+                        source_exiles: Box::default(),
                         selected: objects.to_vec(),
                         total,
                         complete: true,

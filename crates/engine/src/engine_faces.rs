@@ -257,7 +257,7 @@ impl Game {
 
     /// The zone change has restored printed identity. Project the entering face
     /// for replacements and choices while retaining the actual pre-entry view.
-    fn source_return_entry(
+    pub(super) fn source_return_entry(
         &self,
         object: ObjectRef,
         origin: Zone,

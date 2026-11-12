@@ -1113,3 +1113,148 @@ fn announced_evidence_x_is_optional_and_carries_the_declared_amount_to_a_new_dam
         assert_eq!(game.state.players[player.index()].life, 32);
     }
 }
+
+const EVIDENCE_RETURN: CardRules = CardRules {
+    effect: Effect::Creature(3, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDies,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ExileDepartedSourceCollectEvidenceReturnTapped(
+            4,
+        )],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn a_death_trigger_pays_source_exile_with_separate_evidence_and_returns_it_tapped_to_its_owner() {
+    struct ResetPrevention;
+    impl Drop for ResetPrevention {
+        fn drop(&mut self) {
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+        }
+    }
+
+    let _rules = fixture_rules::activate(&[
+        (named("Hill Giant"), &EVIDENCE_RETURN),
+        (named("Candy Trail"), &NO_EXILE),
+    ]);
+    let _prevention = ResetPrevention;
+    for controller in [Player::P0, Player::P1] {
+        for owner in [controller, controller.other()] {
+            let mut game = scenario(controller);
+            let source = put(&mut game, owner, "Hill Giant", Zone::Battlefield);
+            let original = game.object_ref(source);
+            if owner != controller {
+                game.record_control(original, controller, None);
+            }
+            let first = put(&mut game, controller, "Grizzly Bears", Zone::Graveyard);
+            let second = put(&mut game, controller, "Bear Cub", Zone::Graveyard);
+            let foreign = put(&mut game, controller.other(), "Hill Giant", Zone::Graveyard);
+            let removal = put(&mut game, controller, "Murder", Zone::Hand);
+            cast(&mut game, removal, Some(Target::Card(source)));
+            pass_pair(&mut game);
+            let dead = game.object_ref(source);
+            assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+            let trigger = game.state.stack.last().unwrap();
+            assert_eq!(trigger.controller, controller);
+            assert!(trigger.targets.is_empty());
+
+            let mut insufficient = game.clone();
+            insufficient.move_object(second, Zone::Hand);
+            // Murder itself also entered the payer's graveyard. Remove it so
+            // that the dying card's four mana value would be the only shortcut.
+            insufficient.move_object(removal, Zone::Exile);
+            settle(&mut insufficient);
+            assert_eq!(insufficient.object_ref(source), dead);
+            assert!(insufficient.observe(controller).last_evidence.is_none());
+            assert_eq!(insufficient.object_view(first).zone, Zone::Graveyard);
+
+            let mut stale = game.clone();
+            stale.move_object(source, Zone::Exile);
+            stale.move_object(source, Zone::Graveyard);
+            let later = stale.object_ref(source);
+            assert_ne!(dead, later);
+            settle(&mut stale);
+            assert_eq!(stale.object_ref(source), later);
+            assert!(stale.observe(controller).last_evidence.is_none());
+            assert_eq!(stale.object_view(first).zone, Zone::Graveyard);
+
+            let mut prohibited = game.clone();
+            put(
+                &mut prohibited,
+                controller.other(),
+                "Candy Trail",
+                Zone::Battlefield,
+            );
+            settle(&mut prohibited);
+            assert_eq!(prohibited.object_ref(source), dead);
+            assert!(prohibited.observe(controller).last_evidence.is_none());
+
+            pass_pair(&mut game);
+            assert_eq!(game.state.pending, Pending::Evidence { player: controller });
+            let evidence = game.observe(controller).evidence.unwrap();
+            assert_eq!(evidence.threshold, 4);
+            assert!(evidence.optional);
+            assert!(!evidence.candidates.contains(&dead));
+            assert!(game.observe(controller.other()).evidence.is_none());
+            let source_choice = choose_evidence(&game, source);
+            let foreign_choice = choose_evidence(&game, foreign);
+            reject(&mut game, source_choice);
+            reject(&mut game, foreign_choice);
+            let first_choice = choose_evidence(&game, first);
+            act(&mut game, first_choice);
+            reject(&mut game, Action::FinishEvidence);
+            let mut declined = game.clone();
+            act(&mut declined, Action::DeclineEvidence);
+            assert_eq!(declined.object_ref(source), dead);
+            assert_eq!(declined.object_view(first).zone, Zone::Graveyard);
+            assert!(declined.observe(controller).last_evidence.is_none());
+
+            let second_choice = choose_evidence(&game, second);
+            act(&mut game, second_choice);
+            let snapshot = game.snapshot();
+            let mut indexed = game.clone();
+            let mut restored = game.clone();
+            let mut prevented = game.clone();
+            let finish = game
+                .legal_actions()
+                .iter()
+                .position(|action| *action == Action::FinishEvidence)
+                .unwrap();
+            act(&mut restored, Action::DeclineEvidence);
+            restored.restore(&snapshot).unwrap();
+            indexed
+                .apply_index(controller, game.revision(), finish)
+                .unwrap();
+            act(&mut game, Action::FinishEvidence);
+            act(&mut restored, Action::FinishEvidence);
+            assert_eq!(game.snapshot(), indexed.snapshot());
+            assert_eq!(game.snapshot(), restored.snapshot());
+
+            let returned = game.object_view(source);
+            assert_eq!(returned.reference.generation, dead.generation + 2);
+            assert_eq!(returned.zone, Zone::Battlefield);
+            assert_eq!(returned.controller, owner);
+            assert!(returned.tapped);
+            let receipt = game.observe(controller.other()).last_evidence.unwrap();
+            assert_eq!((receipt.threshold, receipt.total_mana), (4, 4));
+            assert_eq!(receipt.source, original);
+            assert_eq!(receipt.player, controller);
+            assert_eq!(
+                receipt.exiled,
+                [game.object_ref(first), game.object_ref(second)]
+            );
+            assert_eq!(game.object_view(foreign).zone, Zone::Graveyard);
+
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(Some(dead)));
+            act(&mut prevented, Action::FinishEvidence);
+            zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(None));
+            assert_eq!(prevented.object_ref(source), dead);
+            assert_eq!(prevented.object_view(source).zone, Zone::Graveyard);
+            assert_eq!(prevented.object_view(first).zone, Zone::Exile);
+            assert_eq!(prevented.object_view(second).zone, Zone::Exile);
+            assert_eq!(prevented.observe(controller).last_evidence, Some(receipt));
+        }
+    }
+}

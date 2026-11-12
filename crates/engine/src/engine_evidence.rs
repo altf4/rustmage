@@ -6,6 +6,8 @@ pub(super) struct EvidenceSelection {
     pub player: Player,
     pub threshold: u64,
     pub excluded: Option<ObjectRef>,
+    /// A separate cost in the same payment, with its own return continuation.
+    pub source_exiles: Box<[ObjectRef]>,
     pub selected: Vec<ObjectRef>,
     pub total: u128,
     pub complete: bool,
@@ -17,7 +19,8 @@ pub(super) struct EvidenceSelection {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EvidenceSelection {
     pub fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.selected.len() * std::mem::size_of::<ObjectRef>()
+        std::mem::size_of::<Self>()
+            + (self.selected.len() + self.source_exiles.len()) * std::mem::size_of::<ObjectRef>()
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -100,28 +103,23 @@ impl Game {
         (object.card as usize) < self.state.objects.len()
             && additional_costs::graveyard_exile_card_matches(self, player, object, None)
     }
-    fn evidence_values(
-        &self,
+    fn evidence_values<'a>(
+        &'a self,
         player: Player,
-        excluded: Option<ObjectRef>,
-    ) -> impl Iterator<Item = u64> + '_ {
+        excluded: &'a [ObjectRef],
+    ) -> impl Iterator<Item = u64> + 'a {
         self.state
             .objects
             .iter()
             .enumerate()
             .filter_map(move |(index, card)| {
                 let object = self.object_ref(index as CardId);
-                (Some(object) != excluded && self.evidence_card(player, object))
+                (!excluded.contains(&object) && self.evidence_card(player, object))
                     .then(|| card.card.fixed_mana_value())
             })
     }
 
-    pub(super) fn can_collect_evidence(
-        &self,
-        player: Player,
-        threshold: u64,
-        excluded: Option<ObjectRef>,
-    ) -> bool {
+    fn can_collect_evidence(&self, player: Player, threshold: u64, excluded: &[ObjectRef]) -> bool {
         if threshold == 0 {
             return true;
         }
@@ -142,7 +140,7 @@ impl Game {
     pub(super) fn maximum_evidence_x(&self, player: Player) -> u32 {
         // X uses the shared scalar declaration domain. Summing all eligible
         // values gives its upper bound because the eventual payment can overpay.
-        self.evidence_values(player, None)
+        self.evidence_values(player, &[])
             .map(u128::from)
             .sum::<u128>()
             .min(u128::from(u32::MAX)) as u32
@@ -258,6 +256,7 @@ impl Game {
             player: p,
             threshold: n,
             excluded,
+            source_exiles: Box::default(),
             selected: Vec::new(),
             total: 0,
             complete: false,
@@ -269,6 +268,42 @@ impl Game {
         self.state.pending = Pending::Evidence { player: p };
     }
     pub(super) fn start_resolution_evidence(&mut self, n: u64, skip: usize, ward: bool) -> bool {
+        self.start_resolution_evidence_payment(n, skip, ward, Box::default())
+    }
+
+    pub(super) fn start_source_evidence_return(&mut self, threshold: u64) -> bool {
+        let item = &self.state.resolving.as_ref().unwrap().item;
+        let (Some(source), Some(movement)) = (item.source, item.source_move.as_deref()) else {
+            return false;
+        };
+        if movement.before != source.object
+            || movement.origin != Zone::Battlefield
+            || movement.destination != Zone::Graveyard
+        {
+            return false;
+        }
+        let source_exiles: Box<[_]> = movement.objects_after().collect();
+        if !source_exiles
+            .iter()
+            .all(|&object| self.source_exilable(object))
+        {
+            return false;
+        }
+        self.start_resolution_evidence_payment(threshold, 0, false, source_exiles)
+    }
+
+    fn source_exilable(&self, object: ObjectRef) -> bool {
+        let owner = self.state.objects[object.card as usize].owner;
+        self.evidence_card(owner, object)
+    }
+
+    fn start_resolution_evidence_payment(
+        &mut self,
+        n: u64,
+        skip: usize,
+        ward: bool,
+        source_exiles: Box<[ObjectRef]>,
+    ) -> bool {
         let r = self.state.resolving.as_ref().unwrap();
         let p = if ward {
             r.item.related_stack.unwrap().controller
@@ -279,7 +314,7 @@ impl Game {
             r.pc.checked_add(skip)
                 .expect("evidence continuation offset");
         assert!(skip_to <= r.program.len());
-        if !self.can_collect_evidence(p, n, None) {
+        if !self.can_collect_evidence(p, n, &source_exiles) {
             if ward {
                 let link = r.item.related_stack.unwrap();
                 self.counter_stack_item(link.id, false);
@@ -292,6 +327,7 @@ impl Game {
             player: p,
             threshold: n,
             excluded: None,
+            source_exiles,
             selected: Vec::new(),
             total: 0,
             complete: false,
@@ -305,7 +341,14 @@ impl Game {
     }
     fn evidence_selection_fundable(&self, extra: Option<ObjectRef>, exact: bool) -> bool {
         let Some(a) = &self.state.announcing else {
-            return true;
+            let e = self.evidence_selection();
+            return e
+                .source_exiles
+                .iter()
+                .all(|&object| self.source_exilable(object))
+                && (!exact
+                    || self.evidence_selection_total(e.player, e.excluded, &e.selected)
+                        == Some(e.total));
         };
         if a.production.is_some() {
             let mut proposal = a.clone();
@@ -332,6 +375,7 @@ impl Game {
     fn evidence_candidate(&self, r: ObjectRef) -> bool {
         let e = self.evidence_selection();
         Some(r) != e.excluded
+            && !e.source_exiles.contains(&r)
             && self.evidence_card(e.player, r)
             && !e.selected.contains(&r)
             && self.state.announcing.as_ref().is_none_or(|a| {
@@ -402,7 +446,18 @@ impl Game {
             let r = self.state.resolving.as_mut().unwrap();
             let e = r.evidence.take().unwrap();
             let source = r.item.source.expect("evidence effect has source").object;
-            self.commit_evidence(&e, source);
+            let exiled_sources = self.commit_evidence(&e, source);
+            let entries: Vec<_> = exiled_sources
+                .into_iter()
+                .filter_map(|object| {
+                    let mut entry = self.source_return_entry(object, Zone::Exile, false, None)?;
+                    entry.tapped = true;
+                    Some(entry)
+                })
+                .collect();
+            if !entries.is_empty() {
+                self.stage_entries(entries, None);
+            }
             self.run_program();
         }
     }
@@ -455,15 +510,31 @@ impl Game {
         Some(total)
     }
 
-    pub(super) fn commit_evidence(&mut self, e: &EvidenceSelection, source: ObjectRef) {
+    pub(super) fn commit_evidence(
+        &mut self,
+        e: &EvidenceSelection,
+        source: ObjectRef,
+    ) -> Vec<ObjectRef> {
         assert!(e.complete && e.total >= u128::from(e.threshold));
         assert_eq!(
             self.evidence_selection_total(e.player, e.excluded, &e.selected),
             Some(e.total)
         );
-        let ids = e.selected.iter().map(|r| r.card).collect::<Vec<_>>();
+        assert!(
+            e.source_exiles
+                .iter()
+                .all(|&object| { !e.selected.contains(&object) && self.source_exilable(object) })
+        );
+        let ids = e
+            .source_exiles
+            .iter()
+            .chain(&e.selected)
+            .map(|r| r.card)
+            .collect::<Vec<_>>();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         self.finish_zone_events(&events, &[]);
+        let (source_events, evidence_events) = events.split_at(e.source_exiles.len());
+        let actual_exiles = |event: &ZoneChange| event.moved && event.destination == Zone::Exile;
         let d = self.evidence_data();
         d.sequence = d
             .sequence
@@ -477,9 +548,9 @@ impl Game {
             total_mana: e.total,
             // A legal payment can be modified by a replacement (CR 118.11).
             // Linked consumers must use only the objects that actually reached exile.
-            exiled: events
+            exiled: evidence_events
                 .iter()
-                .filter(|event| event.moved && event.destination == Zone::Exile)
+                .filter(|event| actual_exiles(event))
                 .flat_map(|event| event.objects_after())
                 .collect(),
         });
@@ -494,6 +565,11 @@ impl Game {
                 }
             }
         }
+        source_events
+            .iter()
+            .filter(|event| actual_exiles(event))
+            .flat_map(ZoneChange::objects_after)
+            .collect()
     }
     pub(super) fn evidence_view(&self, viewer: Player) -> Option<EvidenceView> {
         let viewer = self.choice_information_player(viewer);

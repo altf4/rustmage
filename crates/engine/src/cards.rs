@@ -3607,6 +3607,9 @@ pub enum Instruction {
     /// Declare X, then pay that evidence cost before continuing the program.
     /// Use a separate optional choice when the payment is optional.
     CollectEvidenceX,
+    /// Optionally exile the exact source card after death and collect evidence, then
+    /// return its actual exiled cards tapped under their owners' control.
+    ExileDepartedSourceCollectEvidenceReturnTapped(u16),
     EvidenceWard(u16),
     IfEvidence {
         skip: usize,
