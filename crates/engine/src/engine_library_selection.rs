@@ -872,13 +872,14 @@ impl Game {
         if f.destination.offers_optional_entry() {
             if let Some(&selected) = f.selected.first() {
                 let owner = f.owner;
+                let destination = f.destination;
                 let pc = resolution.pc;
                 let card = self.state.objects[selected.card as usize].card;
                 self.record_zone_reveal(card, owner, Zone::Library);
                 if self.top_library_card(owner) == Some(selected.card) {
                     self.remember_library_top(owner, selected);
                 }
-                let may_enter = match f.destination {
+                let may_enter = match destination {
                     LibraryPickDestination::MayEnterBattlefieldOnOwnTurn => {
                         self.state.active == chooser
                     }

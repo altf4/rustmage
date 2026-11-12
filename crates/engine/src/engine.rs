@@ -2091,7 +2091,7 @@ impl SpellView {
         }
     }
 
-    /// Keep uncommitted targets and hand reveals private in viewer projections.
+    /// Keep uncommitted targets and cost reveals private in viewer projections.
     pub(super) fn redact_uncommitted_targets(&mut self) {
         self.targets.clear();
         self.target_type_slots = None;
@@ -2099,7 +2099,11 @@ impl SpellView {
         self.target_controller_lki = None;
         self.target_types_lki = None;
         if self.event_object.as_ref().is_some_and(|event| {
-            matches!(event.facts, EventObjectFacts::RevealedCostCreature { .. })
+            matches!(
+                event.facts,
+                EventObjectFacts::RevealedCostCreature { .. }
+                    | EventObjectFacts::RevealedCreatureType(_)
+            )
         }) {
             self.event_object = None;
         }
