@@ -250,3 +250,32 @@ fn life_and_mana_are_exclusive_additional_costs_for_retargeting() {
         assert_eq!(game.state.players[player.other().index()].life, 17);
     }
 }
+
+#[test]
+fn an_attached_creature_death_can_mill_its_exact_predeparture_power() {
+    const AURA: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::AttachedCreatureDies,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Mill(
+                PlayerSet::Controller,
+                MillAmount::Amount(AmountValue::DeathEventPower),
+            )],
+        }],
+        ..CardRules::EMPTY
+    };
+    let aura = Card::from_name("Witness Protection").unwrap();
+    let _rules = fixture_rules::activate(&[(aura, &AURA)]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Witness Protection", Zone::Battlefield);
+    let creature = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    game.state.objects[source as usize].attached_to = Some(game.object_ref(creature));
+    game.add_counter(creature, CounterKind::PlusOne, 3);
+    let before = game.state.players[player.index()].library.len();
+    game.move_object(creature, Zone::Graveyard);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].library.len(), before - 5);
+}

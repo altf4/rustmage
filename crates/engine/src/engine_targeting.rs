@@ -3415,6 +3415,12 @@ impl Game {
         let mut announcement =
             self.payment_announcement(item, counters, production, origin_counter_cost);
         configure(&mut announcement);
+        if matches!(
+            announcement.limited_cast_permission.as_deref(),
+            Some(LimitedCastPermission::LinkedExilePaid(grant)) if grant.grants_flash
+        ) {
+            announcement.behold_required = false;
+        }
         // Fixed direct mana keeps its hot path. An announced fixed ability in
         // a guided/optional payment window must own that window through costs.
         if announcement.mana_output.is_none()

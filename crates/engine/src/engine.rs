@@ -1166,6 +1166,7 @@ define_actions! {
         cost: ManaCost,
     },
     AnnounceDisguise { card: CardId },
+    AnnounceLinkedAlternative { object: ObjectRef, source: ObjectRef, method: CastMethod },
     AnnounceDisguiseGraveyard { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceSneak { card: CardId,
         #[serde(skip_serializing_if = "Option::is_none")]
@@ -8907,6 +8908,13 @@ impl Game {
                     self.isolate_linked_paid_resolution_cast(&mut item);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceLinkedAlternative {
+                object,
+                source,
+                method,
+            } => {
+                self.start_linked_alternative(actor, object, source, method);
             }
             Action::AnnounceWarp { card } => {
                 self.start_warp_cast(actor, card, CastFace::Normal, false, None);

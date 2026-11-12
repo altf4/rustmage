@@ -154,3 +154,61 @@ fn linked_casts_follow_current_control_and_can_use_any_type_of_mana_with_flash()
     assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
 }
+
+#[test]
+fn linked_flash_preserves_disguise_and_keeps_behold_optional() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &USURPER)]);
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let provider = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let disguise = put(&mut game, opponent, "Bubble Smuggler", Zone::Exile);
+    let spell = put(&mut game, opponent, "Molten Exhale", Zone::Exile);
+    let victim = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let source = game.object_ref(provider);
+    for card in [disguise, spell] {
+        game.link_exile_to_ability(source, None, game.object_ref(card));
+    }
+    game.state.step = Step::BeginCombat;
+    let action = Action::AnnounceLinkedAlternative {
+        object: game.object_ref(disguise),
+        source,
+        method: CastMethod::Disguise,
+    };
+    let mut face_down = game.clone();
+    face_down.state.players[player.index()].mana = [0, 0, 0, 0, 3, 0];
+    act(&mut face_down, action);
+    pay(&mut face_down);
+    let disguised = face_down.state.stack.last().unwrap();
+    let cast = disguised.cast.unwrap();
+    assert_eq!(cast.method, CastMethod::Disguise);
+    assert!(cast.spend_any_mana);
+    assert_eq!(cast.payment, [0, 0, 0, 0, 3, 0]);
+    assert_eq!(
+        disguised.source.unwrap().card,
+        Card::from_name("@face-down/disguise").unwrap()
+    );
+
+    game.state.players[player.index()].mana = [8, 0, 0, 0, 0, 0];
+    let action = announce(&game, provider, spell);
+    act(&mut game, action);
+    if game
+        .legal_actions()
+        .contains(&Action::ChooseCastBehold { pay: false })
+    {
+        act(&mut game, Action::ChooseCastBehold { pay: false });
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    pay(&mut game);
+    assert_eq!(
+        game.state.stack.last().unwrap().cast.unwrap().beheld,
+        Some(false)
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(victim).zone, Zone::Graveyard);
+}

@@ -253,6 +253,12 @@ impl Game {
                 let object = self.object_ref(card);
                 if let Some(permission) = self.linked_paid_permission(player, source, object, face)
                 {
+                    if face == CastFace::Normal
+                        && permission.grants_flash
+                        && self.visit_linked_alternatives(player, object, permission, emit)
+                    {
+                        return true;
+                    }
                     if self.visit_exile_zero_face(
                         player,
                         object,
@@ -343,6 +349,76 @@ impl Game {
         }
         false
     }
+    fn visit_linked_alternatives(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        permission: LinkedExilePaidCast,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let card = object.card;
+        let disguise = self
+            .disguise_cast_definition(card)
+            .is_some()
+            .then_some(CastMethod::Disguise);
+        let sneak = (self.state.active == player
+            && self.state.step == Step::Blockers
+            && self.has_sneak_cost(player, card))
+        .then_some(CastMethod::Sneak);
+        disguise.into_iter().chain(sneak).any(|method| {
+            self.permitted_cast_with_alternative(
+                player,
+                card,
+                method,
+                CastFace::Normal,
+                false,
+                false,
+                None,
+                None,
+                None,
+                false,
+                cast_permissions::OriginAlternative {
+                    linked_exile_paid: Some(permission),
+                    ..Default::default()
+                },
+            ) && emit(Action::AnnounceLinkedAlternative {
+                object,
+                source: permission.source,
+                method,
+            })
+        })
+    }
+
+    pub(super) fn start_linked_alternative(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        source: ObjectRef,
+        method: CastMethod,
+    ) {
+        let permission = self
+            .linked_paid_permission(player, source, object, CastFace::Normal)
+            .expect("approved linked casting permission");
+        let mut item = match method {
+            CastMethod::Disguise => {
+                let mut item = self.cast_disguised_item(player, object.card);
+                item.cast.as_mut().unwrap().method = CastMethod::Disguise;
+                item
+            }
+            CastMethod::Sneak => {
+                let mut item = self.cast_item(player, object.card, [0; 6]);
+                Self::configure_sneak(&mut item);
+                item
+            }
+            _ => unreachable!("approved linked alternative"),
+        };
+        self.select_linked_paid_cast(&mut item, Some(permission));
+        self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
+            a.limited_cast_permission =
+                Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
+        });
+    }
+
     pub(super) fn configure_linked_paid_cast(
         item: &mut SpellView,
         permission: Option<LinkedExilePaidCast>,

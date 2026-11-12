@@ -405,6 +405,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceWarp { .. }
             | Action::AnnounceGrantedWarp { .. }
             | Action::AnnounceDisguise { .. }
+            | Action::AnnounceLinkedAlternative { .. }
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnounceWebSlinging { .. }

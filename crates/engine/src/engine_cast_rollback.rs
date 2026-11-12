@@ -316,6 +316,7 @@ impl Game {
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
             Action::AnnounceForetold { object, .. }
+            | Action::AnnounceLinkedAlternative { object, .. }
             | Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
