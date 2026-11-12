@@ -1198,6 +1198,8 @@ pub enum LibrarySelectionCount {
     ControlledColors,
     /// At most one distinct card per enabled type. One card can fill only one slot.
     DistinctCardTypes(u16),
+    /// Choose up to one card of each effective power in the looked group.
+    DistinctPower,
     /// Choose at most this many cards within their combined mana-value budget.
     ManaValueBudget {
         maximum_cards: u16,

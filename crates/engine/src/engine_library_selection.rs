@@ -116,8 +116,8 @@ impl Game {
             }
             LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
-            LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
-            LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
+            LibrarySelectionFilter::Kinds(mask) => self.current_kinds(id) & mask != 0,
+            LibrarySelectionFilter::ExcludingKinds(mask) => self.current_kinds(id) & mask == 0,
             LibrarySelectionFilter::Subtype(subtype) => self.has_subtype(id, subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
@@ -459,6 +459,15 @@ impl Game {
                 assert!(spec.optional, "type slots are an up-to selection");
                 kinds.count_ones() as usize
             }
+            LibrarySelectionCount::DistinctPower => {
+                assert!(spec.optional, "distinct powers are an up-to selection");
+                let query = self.characteristic_query();
+                eligible
+                    .iter()
+                    .map(|object| query.stats(object.card).power)
+                    .collect::<std::collections::BTreeSet<_>>()
+                    .len()
+            }
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::ChosenX => {
                 usize::try_from(item.x.unwrap_or(0)).unwrap_or(usize::MAX)
@@ -720,6 +729,14 @@ impl Game {
                     })
                     .collect();
                 card_type_assignment::distinct_type_assignment(&masks)
+            }
+            LibrarySelectionCount::DistinctPower => {
+                let query = self.characteristic_query();
+                let power = query.stats(object.card).power;
+                frame
+                    .selected
+                    .iter()
+                    .all(|selected| query.stats(selected.card).power != power)
             }
             LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
                 frame
@@ -1345,7 +1362,13 @@ impl Game {
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
         let resolution = self.state.resolving.as_ref()?;
         let f = resolution.selection.as_ref()?;
-        let can_look = self.shares_information(viewer, resolution.item.controller) || f.public;
+        let chooser = self.shares_information(viewer, resolution.item.controller);
+        let can_look = chooser || f.public;
+        let private_picks = !chooser
+            && f.public
+            && f.spec.count == LibrarySelectionCount::DistinctPower
+            && !f.ordering
+            && matches!(self.state.pending, Pending::EffectLibrarySelection { .. });
         let revealed_pick = f.completion == LibrarySelectionCompletion::BattlefieldFallbackToHand
             || (f.destination == LibraryPickDestination::MayEnterBattlefieldOnOwnTurn
                 && matches!(self.state.pending, Pending::EffectOptional { .. }));
@@ -1357,23 +1380,39 @@ impl Game {
                 && (f.alternating.is_none()
                     || exact_library_card(&self.state.objects, f.owner, **object))
         };
-        Some(LibrarySelectionView {
-            remaining: f
-                .remaining
+        let remaining = if private_picks {
+            // The cards have been revealed, but the player has not committed a pick.
+            // Keep the entire exact cohort in library order for the other viewer.
+            let revealed: std::collections::HashSet<_> =
+                f.remaining.iter().chain(&f.selected).copied().collect();
+            self.state.players[f.owner.index()]
+                .library
+                .iter()
+                .rev()
+                .filter(|&&id| revealed.contains(&self.object_ref(id)))
+                .take(revealed.len())
+                .map(|&id| self.object_view(id))
+                .collect()
+        } else {
+            f.remaining
                 .iter()
                 .filter(visible)
                 .map(|r| self.object_view(r.card))
-                .collect(),
+                .collect()
+        };
+        Some(LibrarySelectionView {
+            remaining,
             candidates: f
                 .remaining
                 .iter()
-                .filter(visible)
+                .filter(|r| !private_picks && visible(r))
                 .copied()
                 .filter(|&r| self.library_selection_candidate(f, r))
                 .collect(),
             selected: f
                 .selected
                 .iter()
+                .filter(|_| !private_picks)
                 .map(|r| self.object_view(r.card))
                 .collect(),
             bottom: f
@@ -1383,7 +1422,11 @@ impl Game {
                 .map(|r| self.object_view(r.card))
                 .collect(),
             minimum: f.minimum,
-            maximum: f.maximum,
+            maximum: if private_picks {
+                f.remaining.len() + f.selected.len()
+            } else {
+                f.maximum
+            },
             ordering: f.ordering,
             random: f.random,
             available_colors: f.available_colors,

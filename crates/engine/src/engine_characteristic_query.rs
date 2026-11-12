@@ -147,7 +147,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn base_stats(&self, id: CardId) -> Stats {
         let object = self.object(id);
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
-            if !self.is_creature(id) {
+            // CR 208.3: a Vehicle card keeps its power and toughness outside the battlefield.
+            if object.zone == Zone::Battlefield && !self.is_creature(id) {
                 return Stats::default();
             }
             Stats { power, toughness }
@@ -201,9 +202,12 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn layered_stats(&self, id: CardId) -> (Stats, Stats) {
         let object = self.object(id);
         let base = self.base_stats(id);
-        // A Vehicle has no effective creature stats while it is not a creature.
+        // A noncreature Vehicle permanent has no effective power and toughness.
         // Counters remain on it, ready for a later successful crew.
-        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
+        if object.zone == Zone::Battlefield
+            && object.card.vehicle_stats().is_some()
+            && !self.is_creature(id)
+        {
             return (base, base);
         }
         let mut stats = base;
