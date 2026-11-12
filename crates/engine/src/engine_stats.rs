@@ -398,6 +398,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                            | crate::cards::StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | crate::cards::StaticAbilityFragment::ControlledNonlandAllColors
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)
                             | crate::cards::StaticAbilityFragment::SourceEntryModeActivation { .. }
