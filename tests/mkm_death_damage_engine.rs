@@ -244,7 +244,7 @@ fn a_death_receipt_excludes_and_exiles_both_meld_fronts() {
     let _rules = fixture_rules::activate(&[(named("Soul-Guide Lantern"), &DEATH_OBSERVER)]);
     let player = Player::P0;
     let mut game = scenario(player);
-    put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
+    let lantern = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
     let front = put(
         &mut game,
         player,
@@ -269,13 +269,27 @@ fn a_death_receipt_excludes_and_exiles_both_meld_fronts() {
     choose(&mut game, |action| {
         matches!(action, Action::ChooseMeldOrder { .. })
     });
-    for _ in 0..2 {
-        if !matches!(game.state.pending, Pending::OrderTriggers { .. }) {
-            break;
-        }
-        choose(&mut game, |action| {
-            matches!(action, Action::PutTrigger { .. })
-        });
+    // Place Ragnarok's own death trigger underneath the graveyard observer.
+    let ragnarok_trigger = game
+        .state
+        .ordering_triggers
+        .iter()
+        .find(|item| item.source.is_some_and(|source| source.object == melded))
+        .unwrap()
+        .id;
+    act(
+        &mut game,
+        Action::PutTrigger {
+            id: ragnarok_trigger,
+        },
+    );
+    for id in [lantern, spare] {
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(id),
+            },
+        );
     }
     for id in [front, companion] {
         assert_eq!(game.object_view(id).zone, Zone::Graveyard);
