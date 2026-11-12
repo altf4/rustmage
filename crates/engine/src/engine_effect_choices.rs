@@ -1661,6 +1661,10 @@ impl Game {
         greatest: bool,
         discard_mana_value_life: Option<Player>,
     ) -> bool {
+        if kind == EffectChoiceKind::SacrificeAsCost {
+            assert_ne!(amount, 0, "nonempty sacrifice payment");
+            assert!(optional_skip.is_none(), "mandatory sacrifice payment");
+        }
         if matches!(kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
             assert_eq!(amount, 1, "one alternative resolution cost");
             assert!(matches!(
@@ -1735,7 +1739,7 @@ impl Game {
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                 | EffectChoiceKind::TapAnyUntappedPermanents
-                | EffectChoiceKind::SacrificeRememberCount
+                | EffectChoiceKind::SacrificeAsCost
         ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
@@ -1887,6 +1891,9 @@ impl Game {
                     total_mana_value,
                 };
                 continue;
+            }
+            if kind == EffectChoiceKind::SacrificeAsCost && available < amount as usize {
+                return false;
             }
             if available == 0 && (any_number || kind == EffectChoiceKind::PowerDifferenceBoost) {
                 return false;
@@ -2841,14 +2848,18 @@ impl Game {
                         .map(move |object| (p, object.card))
                 })
                 .collect();
-            if choice.kind == EffectChoiceKind::SacrificeRememberCount {
-                let count = self
-                    .sacrifice_effect_batch_outcome(&sacrifices)
+            if choice.kind == EffectChoiceKind::SacrificeAsCost {
+                let exact = choice
+                    .selected
                     .iter()
-                    .filter(|event| event.sacrificed_by.is_some())
-                    .count();
-                self.state.resolving.as_mut().unwrap().moved_count =
-                    Some(u64::try_from(count).capacity("sacrifice result count exhausted"));
+                    .flatten()
+                    .all(|&object| self.object_ref(object.card) == object);
+                if exact && !sacrifices.is_empty() && self.sacrifice_cost_batch_atomic(&sacrifices)
+                {
+                    let paid = u64::try_from(sacrifices.len())
+                        .capacity("sacrifice payment count exhausted");
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(paid);
+                }
                 return false;
             }
             let remembers_controller_sacrifice = self

@@ -1466,7 +1466,7 @@ impl Game {
             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
             | EffectChoiceKind::LinkedCreature { .. }
-            | EffectChoiceKind::SacrificeRememberCount
+            | EffectChoiceKind::SacrificeAsCost
             | EffectChoiceKind::SacrificeSelection
             | EffectChoiceKind::SacrificeSelectionForPower
             | EffectChoiceKind::SacrificeExceptAttackingAttachment
