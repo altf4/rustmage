@@ -3,10 +3,36 @@
   "catalogue_id": 3588,
   "oracle_id": "e42a6880-7ca6-498d-abc9-fb7ccd08b111",
   "facts_sha256": "51f5ced68966ba2b9f70f06067edf964d2d88cbbde9cb6bba7efa3e50edc261b",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "7a422dfa79a61c7918b1b2e06561055589035f9faa8a570f22091c83e2b41154"
-  },
-  "physical_metadata_sha256": "2ba3d8881837e1d300927e29641c521b6c52bbc2b3b1e62a80c586af35457181"
+  "complete": true,
+  "physical_metadata_sha256": "2ba3d8881837e1d300927e29641c521b6c52bbc2b3b1e62a80c586af35457181",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RootwiseSurvivor.java",
+  "java_sha256": "cd694355364249895d1108b6a808003c927414a404153e512c8f30a8a2cfc10b",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureTargetEffect.java",
+      "sha256": "434e8c33e1b80342d01dc8475ebc78920a314f3265bae6e16da7902d4e40c4f8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The land remains a creature indefinitely, while the separate haste grant lasts until the controller’s next turn."
+  }
 }

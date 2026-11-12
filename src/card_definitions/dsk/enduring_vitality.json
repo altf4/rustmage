@@ -3,10 +3,27 @@
   "catalogue_id": 1337,
   "oracle_id": "3577c47e-76d3-4659-b922-31c4b74be3a0",
   "facts_sha256": "14a7a9700294d4bfe3b719b0870f573565073ccfa832c4eebae1286efcf44e22",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "ca16977a256c041a5f63110c776e489a8c6a2f65c985be482ce2772188ae8915"
-  },
-  "physical_metadata_sha256": "ccc56afb8f526367694a23a3782f9be42a524458e4c0c7c645b4b3318cc695a8"
+  "complete": true,
+  "physical_metadata_sha256": "ccc56afb8f526367694a23a3782f9be42a524458e4c0c7c645b4b3318cc695a8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnduringVitality.java",
+  "java_sha256": "b18a98f101eaaf04fd963aa95fca45580276136db585e80c8a87ff48e09eef3a",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EnduringGlimmerTriggeredAbility.java",
+      "sha256": "55acb994d0447472327ae37b9b37bcd2411c36ab3a507f133a848fa6ace6d83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ]
 }

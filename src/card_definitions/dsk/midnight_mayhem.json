@@ -3,10 +3,27 @@
   "catalogue_id": 2746,
   "oracle_id": "5236a6b5-0a96-4470-ba03-37b6d7a889bb",
   "facts_sha256": "0ee056e69e6147325e9fafe5eabb0d52b11a8208f281a89cae1a50f3981a82fd",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "beec81b899917271eb64c20c0a96d07f8225778ec5988d6dfee1687ae76ff490"
-  },
-  "physical_metadata_sha256": "ee159baab3786197ed275450b92e333f4402177e47e7e02bf48164501221d347"
+  "complete": true,
+  "physical_metadata_sha256": "ee159baab3786197ed275450b92e333f4402177e47e7e02bf48164501221d347",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MidnightMayhem.java",
+  "java_sha256": "10c44b109662d0de04ce7a57e2a68462878751311ab021de3e2e85edfef6680e",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Gremlin11Token.java",
+      "sha256": "08530631c03cdf1254fce51d7cf882a3c05e167c3b6e809eb9ceebffc0a79ff3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    }
+  ]
 }
