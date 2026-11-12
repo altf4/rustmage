@@ -441,6 +441,7 @@ impl Game {
             _ => mana_lots::Purpose::Other,
         };
         let mut forage = None;
+        let mut evidence = None;
         match &event.kind {
             ManaEventKind::Basic { .. } | ManaEventKind::Granted { .. } => {
                 if self.object_ref(source.card) != source
@@ -485,7 +486,29 @@ impl Game {
                 {
                     return false;
                 }
-                if let Some((spec, selection)) = additional {
+                if let Some((spec, selection)) = additional
+                    && let Some(threshold) = evidence::threshold(*spec)
+                {
+                    let objects = selection.objects();
+                    let Some(total) = self
+                        .evidence_selection_total(event.actor, Some(source), objects)
+                        .filter(|&total| total >= u128::from(threshold))
+                    else {
+                        return false;
+                    };
+                    evidence = Some(evidence::EvidenceSelection {
+                        player: event.actor,
+                        threshold,
+                        excluded: Some(source),
+                        selected: objects.to_vec(),
+                        total,
+                        complete: true,
+                        paid: false,
+                        optional: false,
+                        skip_to: 0,
+                        ward: false,
+                    });
+                } else if let Some((spec, selection)) = additional {
                     let objects = selection.objects();
                     let (spec, forage_route) = if spec.kind == EffectChoiceKind::Forage {
                         let route = match objects.len() {
@@ -568,6 +591,7 @@ impl Game {
                     spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
                 });
                 if forage.is_none()
+                    && evidence.is_none()
                     && !sacrifice
                     && let Some((spec, selection)) = additional
                 {
@@ -589,7 +613,9 @@ impl Game {
                 {
                     return false;
                 }
-                if let Some(selection) = &forage {
+                if let Some(selection) = &evidence {
+                    self.commit_evidence(selection, source);
+                } else if let Some(selection) = &forage {
                     self.commit_forage(event.actor, selection);
                 } else if sacrifice && let Some((_, selection)) = additional {
                     self.sacrifice_batch(&[(event.actor, selection.objects()[0].card)]);

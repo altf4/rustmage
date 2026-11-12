@@ -737,3 +737,219 @@ fn a_paid_cast_during_resolution_accepts_the_alternative() {
     assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
 }
+
+const BLUE: Mana = [0, 1, 0, 0, 0, 0];
+const GREEN: Mana = [0, 0, 0, 0, 1, 0];
+const CRYPTEX_MANA: CardRules = CardRules {
+    effect: Effect::Permanent,
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            tap: true,
+            additional: Some(AdditionalCost {
+                kind: EffectChoiceKind::CollectEvidence(3),
+                filter: NO_FILTER,
+            }),
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::AddMana(ManaProduction::Choice {
+                mask: 31,
+                amount: 1,
+            }),
+            Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::Unlock,
+                amount: 1,
+            },
+        ],
+        sorcery: false,
+        once_per_turn: false,
+    }],
+    ..CardRules::EMPTY
+};
+const PARENT_EVIDENCE: CardRules = CardRules {
+    extras: &CardExtras {
+        collect_evidence: Some((3, 0)),
+        ..CardExtras::EMPTY
+    },
+    ..OPTIONAL_EVIDENCE
+};
+
+fn announce_evidence_mana(source: CardId) -> Action {
+    Action::AnnounceMana {
+        card: source,
+        ability: 0,
+        counter_payment: Counters::default(),
+        production: [0; 6],
+    }
+}
+
+#[test]
+fn evidence_mana_commits_exiles_before_color_and_unlock_replacement_choices() {
+    let _rules = fixture_rules::activate(&[
+        (named("Soul-Guide Lantern"), &CRYPTEX_MANA),
+        (named("Short Bow"), &NO_EXILE),
+        (named("Candy Trail"), &EVIDENCE_WATCHER),
+    ]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    game.state.players[player.index()].mana = [0; 6];
+    let source = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
+    let choice = announce_evidence_mana(source);
+    reject(&mut game, choice.clone());
+
+    let fuel = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let mut prohibited = game.clone();
+    put(
+        &mut prohibited,
+        player.other(),
+        "Short Bow",
+        Zone::Battlefield,
+    );
+    reject(&mut prohibited, choice.clone());
+
+    put(&mut game, player, "Candy Trail", Zone::Battlefield);
+    put(&mut game, player, "Doubling Season", Zone::Battlefield);
+    put(&mut game, player, "Doubling Season", Zone::Battlefield);
+    act(&mut game, choice);
+    assert!(!game.object_view(source).tapped);
+    reject(&mut game, Action::DeclineEvidence);
+    reject(&mut game, Action::FinishEvidence);
+    select_evidence(&mut game, &[fuel]);
+    assert!(game.observe(player).last_evidence.is_none());
+    pay(&mut game);
+    assert!(matches!(game.state.pending, Pending::EffectMana { .. }));
+    assert!(game.object_view(source).tapped);
+    assert_eq!(game.object_view(fuel).zone, Zone::Exile);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    assert_eq!(game.counter_count(source, CounterKind::Unlock), 0);
+    assert!(game.state.stack.is_empty());
+    let event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!(event.sequence, 1);
+    assert_eq!(event.source, game.object_ref(source));
+    assert_eq!(event.exiled, [game.object_ref(fuel)]);
+
+    act(&mut game, Action::ChooseMana { production: GREEN });
+    assert_eq!(game.state.players[player.index()].mana, GREEN);
+    assert_eq!(game.state.pending, Pending::Replacement { player });
+    assert_eq!(game.counter_count(source, CounterKind::Unlock), 0);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseReplacement { .. })
+    });
+    assert_eq!(game.counter_count(source, CounterKind::Unlock), 4);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+    assert_eq!(game.observe(player.other()).last_evidence.unwrap(), event);
+}
+
+#[test]
+fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_replays() {
+    let _rules = fixture_rules::activate(&[
+        (named("Soul-Guide Lantern"), &CRYPTEX_MANA),
+        (named("Quick Study"), &PARENT_EVIDENCE),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
+    let spell = put(&mut game, player, "Quick Study", Zone::Hand);
+    let reserved = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let other = put(&mut game, player.other(), "Hill Giant", Zone::Graveyard);
+    let initial_payment = [0, 0, 0, 0, 0, 2];
+    game.state.players[player.index()].mana = initial_payment;
+    let mut short = game.clone();
+    act(&mut short, Action::AnnounceCast { card: spell });
+    reject(&mut short, Action::ChooseCollectEvidence { collect: true });
+
+    let second = put(&mut game, player, "Lightning Bolt", Zone::Graveyard);
+    game.begin_combat_rollback(player);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::ChooseCollectEvidence { collect: true });
+    select_evidence(&mut game, &[reserved]);
+    let parent_source = game.object_ref(spell);
+    act(&mut game, announce_evidence_mana(source));
+    assert!(game.observe(player.other()).evidence.is_none());
+    for unavailable in [reserved, other] {
+        let choice = choose_evidence(&game, unavailable);
+        reject(&mut game, choice);
+    }
+
+    let choice = choose_evidence(&game, first);
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == choice)
+        .unwrap();
+    let revision = game.revision();
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    act(&mut game, choice.clone());
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+    act(&mut indexed, choice.clone());
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    reject(&mut game, choice);
+    reject(&mut game, Action::FinishEvidence);
+
+    select_evidence(&mut game, &[second]);
+    pay(&mut game);
+    assert_eq!(game.object_view(reserved).zone, Zone::Graveyard);
+    reject(&mut game, Action::ChooseMana { production: GREEN });
+    act(&mut game, Action::ChooseMana { production: BLUE });
+    assert_eq!(game.state.pending, Pending::PayCosts { player });
+    assert_eq!(game.counter_count(source, CounterKind::Unlock), 1);
+    assert_eq!(game.state.players[player.index()].mana, [0, 1, 0, 0, 0, 2]);
+    let first_event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!(first_event.sequence, 1);
+    assert_eq!(
+        first_event.exiled,
+        [game.object_ref(first), game.object_ref(second)]
+    );
+
+    let mut failed = game.clone();
+    failed.finish_cast_rollback(false);
+    assert_eq!(failed.state.pending, Pending::ManaRollback { player });
+    let mut stale = failed.clone();
+    stale.state.objects[first as usize].generation += 1;
+    reject(&mut stale, Action::ChooseManaRollback { keep: true });
+    for keep in [false, true] {
+        let mut replay = failed.clone();
+        act(&mut replay, Action::ChooseManaRollback { keep });
+        assert_eq!(replay.object_view(spell).zone, Zone::Hand);
+        assert_eq!(replay.object_view(reserved).zone, Zone::Graveyard);
+        let zone = if keep { Zone::Exile } else { Zone::Graveyard };
+        assert_eq!(replay.object_view(first).zone, zone);
+        assert_eq!(replay.object_view(second).zone, zone);
+        assert_eq!(replay.object_view(source).tapped, keep);
+        assert_eq!(
+            replay.counter_count(source, CounterKind::Unlock),
+            u64::from(keep)
+        );
+        assert_eq!(
+            replay.state.players[player.index()].mana,
+            [0, u32::from(keep), 0, 0, 0, 2]
+        );
+        assert_eq!(
+            replay.observe(player.other()).last_evidence,
+            keep.then(|| first_event.clone())
+        );
+    }
+
+    pay(&mut game);
+    let second_event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!(second_event.sequence, 2);
+    assert_eq!(second_event.source, parent_source);
+    assert_eq!(second_event.exiled, [game.object_ref(reserved)]);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}

@@ -643,6 +643,10 @@ impl FundingState<'_> {
         if spec.kind.chooses_cost_creature() {
             return additional_costs::chosen_cost_creature_matches(self, self.actor, r, spec.kind);
         }
+        if evidence::threshold(spec).is_some() {
+            return r != source
+                && additional_costs::graveyard_exile_card_matches(self, self.actor, r, None);
+        }
         if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
             return additional_costs::named_graveyard_exile_candidate(
                 self, self.actor, source, r, name,

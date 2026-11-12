@@ -273,6 +273,32 @@ impl Game {
         self.state.pending = Pending::Evidence { player: p };
         true
     }
+    fn evidence_selection_fundable(&self, extra: Option<ObjectRef>, exact: bool) -> bool {
+        let Some(a) = &self.state.announcing else {
+            return true;
+        };
+        if a.production.is_some() {
+            let mut proposal = a.clone();
+            let selection = proposal.evidence.as_mut().unwrap();
+            if let Some(object) = extra {
+                selection.selected.push(object);
+                selection.total += u128::from(
+                    self.state.objects[object.card as usize]
+                        .card
+                        .fixed_mana_value(),
+                );
+            }
+            selection.complete = exact;
+            return self.activation_total_fundable(&proposal);
+        }
+        if !self.cast_costs_mana_paid() {
+            return true;
+        }
+        let mut selected = self.evidence_selection().selected.clone();
+        selected.extend(extra);
+        self.cast_cost_group_fundable(&selected, exact)
+    }
+
     fn evidence_candidate(&self, r: ObjectRef) -> bool {
         let e = self.evidence_selection();
         Some(r) != e.excluded
@@ -283,11 +309,7 @@ impl Game {
                     .as_ref()
                     .is_none_or(|costs| !costs.paid_evidence.contains(&r))
             })
-            && (!self.cast_costs_mana_paid() || {
-                let mut selected = e.selected.clone();
-                selected.push(r);
-                self.cast_cost_group_fundable(&selected, false)
-            })
+            && self.evidence_selection_fundable(Some(r), false)
     }
     pub(super) fn visit_evidence_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
         let e = self.evidence_selection();
@@ -295,7 +317,7 @@ impl Game {
             return true;
         }
         if e.total >= u128::from(e.threshold)
-            && (!self.cast_costs_mana_paid() || self.cast_cost_group_fundable(&e.selected, true))
+            && self.evidence_selection_fundable(None, true)
             && emit(Action::FinishEvidence)
         {
             return true;
@@ -380,19 +402,35 @@ impl Game {
         self.commit_evidence(selection, a.item.source.unwrap().object);
     }
 
+    pub(super) fn evidence_selection_total(
+        &self,
+        player: Player,
+        excluded: Option<ObjectRef>,
+        selected: &[ObjectRef],
+    ) -> Option<u128> {
+        let mut total = 0;
+        for (index, &object) in selected.iter().enumerate() {
+            if Some(object) == excluded
+                || !self.evidence_card(player, object)
+                || selected[..index].contains(&object)
+            {
+                return None;
+            }
+            total += u128::from(
+                self.state.objects[object.card as usize]
+                    .card
+                    .fixed_mana_value(),
+            );
+        }
+        Some(total)
+    }
+
     pub(super) fn commit_evidence(&mut self, e: &EvidenceSelection, source: ObjectRef) {
         assert!(e.complete && e.total >= u128::from(e.threshold));
-        assert!(
-            e.selected
-                .iter()
-                .all(|&r| { Some(r) != e.excluded && self.evidence_card(e.player, r) })
+        assert_eq!(
+            self.evidence_selection_total(e.player, e.excluded, &e.selected),
+            Some(e.total)
         );
-        let actual = e
-            .selected
-            .iter()
-            .map(|r| u128::from(self.state.objects[r.card as usize].card.fixed_mana_value()))
-            .sum::<u128>();
-        assert_eq!(actual, e.total);
         let ids = e.selected.iter().map(|r| r.card).collect::<Vec<_>>();
         let events = self.move_objects_raw(&ids, Zone::Exile);
         self.finish_zone_events(&events, &[]);

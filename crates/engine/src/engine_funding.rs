@@ -398,14 +398,24 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
 }
 
-/// Exact permanent/card selections for a projected mana activation cost.
+/// Permanent/card witnesses for a projected mana activation cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone)]
 struct ExternalManaCost {
     selection: additional_costs::ManaCostObjects,
     kind: EffectChoiceKind,
+    // Evidence may start with only a prefix. Keep its remaining choices lazy.
+    exact: bool,
 }
 impl ExternalManaCost {
+    fn evidence(threshold: u64, prefix: &[ObjectRef], exact: bool) -> Self {
+        Self {
+            selection: additional_costs::ManaCostObjects::from_slice(prefix),
+            kind: EffectChoiceKind::CollectEvidence(threshold),
+            exact,
+        }
+    }
+
     fn payment_spec(&self, printed: AdditionalCost) -> Option<AdditionalCost> {
         if printed.kind != EffectChoiceKind::Forage {
             return (self.kind == printed.kind).then_some(printed);
@@ -1152,7 +1162,9 @@ impl<'g> FundingState<'g> {
                     graveyard_mana_cost |= ability.cost.additional.is_some_and(|cost| {
                         matches!(
                             cost.kind,
-                            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Forage
+                            EffectChoiceKind::ExileGraveyard
+                                | EffectChoiceKind::Forage
+                                | EffectChoiceKind::CollectEvidence(_)
                         )
                     });
                     if let ManaProduction::CountSubtype { subtype, .. } = production.base()
@@ -2101,11 +2113,89 @@ impl<'g> FundingState<'g> {
                     emit(ExternalManaCost {
                         selection: additional_costs::ManaCostObjects::from_slice(objects),
                         kind: spec.kind,
+                        exact: true,
                     })
                 },
             )
         })
     }
+    fn visit_evidence_mana_cost_groups(
+        &self,
+        spec: AdditionalCost,
+        source: ObjectRef,
+        threshold: u64,
+        prefix: &[ObjectRef],
+        exact: bool,
+        emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+    ) -> bool {
+        let weight =
+            |object: ObjectRef| u128::from(self.object(object.card).card.fixed_mana_value());
+        let mut total = 0;
+        for (index, &object) in prefix.iter().enumerate() {
+            if prefix[..index].contains(&object) || !self.cost_object(spec, object, source) {
+                return false;
+            }
+            total += weight(object);
+        }
+        let required = u128::from(threshold);
+        if total >= required && emit(prefix) {
+            return true;
+        }
+        if exact {
+            return false;
+        }
+        let mut candidates = self
+            .resources
+            .iter()
+            .map(|resource| self.reference(resource.id))
+            .filter(|object| !prefix.contains(object) && self.cost_object(spec, *object, source))
+            .map(|object| (object, weight(object)))
+            .collect::<Vec<_>>();
+        // Try larger witnesses first. Additional exiles may change a later
+        // obligation, so even a sufficient prefix can still be extended.
+        candidates.sort_unstable_by_key(|&(object, value)| (std::cmp::Reverse(value), object));
+        fn extend(
+            group: &mut Vec<ObjectRef>,
+            candidates: &[(ObjectRef, u128)],
+            total: u128,
+            mut available: u128,
+            required: u128,
+            emit: &mut dyn FnMut(&[ObjectRef]) -> bool,
+        ) -> bool {
+            for (index, &(object, value)) in candidates.iter().enumerate() {
+                if total + available < required {
+                    break;
+                }
+                available -= value;
+                group.push(object);
+                let total = total + value;
+                let done = (total >= required && emit(group))
+                    || extend(
+                        group,
+                        &candidates[index + 1..],
+                        total,
+                        available,
+                        required,
+                        emit,
+                    );
+                group.pop();
+                if done {
+                    return true;
+                }
+            }
+            false
+        }
+        let available = candidates.iter().map(|&(_, value)| value).sum();
+        extend(
+            &mut prefix.to_vec(),
+            &candidates,
+            total,
+            available,
+            required,
+            emit,
+        )
+    }
+
     fn visit_exact_mana_cost_groups(
         &self,
         spec: AdditionalCost,
@@ -2512,6 +2602,9 @@ impl<'g> FundingState<'g> {
                     let source = self.reference(entry.id);
                     let departs = ability.cost.sacrifice || ability.cost.exile_self;
                     let eligible = match spec.kind.payment_kind() {
+                        EffectChoiceKind::CollectEvidence(threshold) => {
+                            vec![ExternalManaCost::evidence(threshold, &[], false)]
+                        }
                         EffectChoiceKind::Forage => {
                             let mut eligible = Vec::new();
                             self.visit_forage_mana_cost_groups(
@@ -2540,6 +2633,7 @@ impl<'g> FundingState<'g> {
                                     eligible.push(ExternalManaCost {
                                         selection: ManaCostObjects::from_slice(objects),
                                         kind: spec.kind,
+                                        exact: true,
                                     });
                                     false
                                 },
@@ -2557,6 +2651,7 @@ impl<'g> FundingState<'g> {
                                     .then_some(ExternalManaCost {
                                         selection: ManaCostObjects::One(object),
                                         kind: spec.kind,
+                                        exact: true,
                                     })
                                 })
                                 .collect()
