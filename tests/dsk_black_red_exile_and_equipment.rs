@@ -327,6 +327,10 @@ fn valgavoth_links_only_cards_it_exiles_and_plays_the_land_and_life_routes() {
     assert_eq!(game.object_view(land).owner, opponent);
     assert_eq!(game.object_view(land).controller, player);
     act(&mut game, life_route(spell));
+    assert_eq!(game.state.players[player.index()].life, 20);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseCastCost { .. })
+    });
     if matches!(game.state.pending, Pending::PayCosts { .. }) {
         pay(&mut game);
     }
