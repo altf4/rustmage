@@ -969,7 +969,7 @@ impl FundingState<'_> {
                 kind: entry_tap::EntryTapKind::PayLife(n),
             });
         }
-        if m.manifest_original.is_none()
+        if m.face_down.is_none()
             && let EntryTapped::UnlessBehold(subtype) = m.intrinsic_entry_tapped()
         {
             effects.push(entry_tap::EntryTapEffect {
@@ -1746,7 +1746,7 @@ impl FundingState<'_> {
                 next.game
                     .restore_projected_copy_identity(m.before.reference, o);
             }
-            o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
+            o.card = if m.destination == Zone::Battlefield && m.face_down.is_some() {
                 m.before.card
             } else if let Some(physical) = face_down_physical
                 && m.before.zone == Zone::Battlefield
@@ -1819,9 +1819,9 @@ impl FundingState<'_> {
             let manifested = &mut projection.manifested;
             manifested.retain(|(object, _)| *object != m.before.reference);
             if m.destination == Zone::Battlefield
-                && let Some(physical) = m.manifest_original
+                && let Some(face_down) = m.face_down
             {
-                manifested.push((source, physical));
+                manifested.push((source, face_down.physical));
             }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {

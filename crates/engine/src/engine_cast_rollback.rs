@@ -245,7 +245,7 @@ impl Game {
             }
             return;
         }
-        if let Action::BeginFaceUp { object, .. } = *action {
+        if let Action::BeginFaceUp { object, .. } | Action::BeginFaceUpX { object, .. } = *action {
             let mut rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             rollback.public_face_down.push(object);
             self.state.cast_rollback = Some(Box::new(rollback));

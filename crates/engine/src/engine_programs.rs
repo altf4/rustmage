@@ -5645,6 +5645,18 @@ impl Game {
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ManifestDreadWhenTargetDies => self.register_manifest_death(&item),
+                Instruction::CloakLibraryTop(players) => {
+                    if let Some(owner) = self.program_players(players, &item).next() {
+                        self.cloak_library_top(item.controller, owner);
+                    }
+                }
+                Instruction::AttachSourceToEntryResult => {
+                    if let (Some(source), Some(recipient)) =
+                        (item.source, self.captured_entry_result())
+                    {
+                        self.attach_equipment(source.object, recipient);
+                    }
+                }
                 Instruction::RevealFaceDownTargetAndMayTurnUp => {
                     let skip_to = resolution.pc + 1;
                     let can_turn =

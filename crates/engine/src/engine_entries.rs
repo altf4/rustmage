@@ -26,8 +26,7 @@ pub(super) struct EntryMove {
     )]
     pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Physical card hidden behind face-down entry characteristics.
-    pub manifest_original: Option<Card>,
-    pub manifest_known: bool,
+    pub face_down: Option<manifest::FaceDownEntry>,
     pub controller: Player,
     /// Protector selected as this Battle enters, before replacement effects.
     pub battle_protector: Option<Player>,
@@ -317,8 +316,7 @@ impl EntryMove {
             delayed_return_exile: None,
             choice: None,
             gift: None,
-            manifest_original: None,
-            manifest_known: false,
+            face_down: None,
             controller: before.controller,
             battle_protector: None,
             before,
@@ -725,7 +723,7 @@ impl Game {
             if movement.destination != Zone::Battlefield {
                 continue;
             }
-            let intrinsic_tapped = if movement.manifest_original.is_some() {
+            let intrinsic_tapped = if movement.face_down.is_some() {
                 false
             } else {
                 match movement.intrinsic_entry_tapped() {
@@ -739,7 +737,7 @@ impl Game {
                 }
             };
             let mut effects = self.entry_tap_effects(movement);
-            if movement.manifest_original.is_none()
+            if movement.face_down.is_none()
                 && let EntryTapped::UnlessBehold(subtype) = movement.intrinsic_entry_tapped()
             {
                 effects.push(EntryTapEffect {
@@ -860,7 +858,7 @@ impl Game {
             && !batch
                 .moves
                 .iter()
-                .any(|movement| movement.manifest_original.is_some())
+                .any(|movement| movement.face_down.is_some())
             && batch.tap_events.is_empty()
             && !counter_replacements
             && !self.entry_needs_timestamp_choice(&batch)
@@ -1178,7 +1176,7 @@ impl Game {
                     let rules = self.freeze_zone_rules(&before, movement.destination, None);
                     self.plan_zone_move(&before, movement.destination, rules)
                 });
-            if movement.manifest_original.is_some() {
+            if movement.face_down.is_some() {
                 if plan.destination == Zone::Battlefield {
                     self.state.objects[before.id as usize].card = manifest_face;
                 } else {
@@ -1264,14 +1262,15 @@ impl Game {
             }
             if event.moved
                 && event.destination == Zone::Battlefield
-                && let Some(original) = movement.manifest_original
+                && let Some(face_down) = movement.face_down
             {
                 let known_to = self.face_down_knowledge_mask(movement.controller);
                 let state = self.state.manifest.get_or_insert_with(Default::default);
                 state.permanents.push(manifest::FaceDownPermanent {
                     object: event.after,
-                    underlying: original,
-                    known: movement.manifest_known,
+                    underlying: face_down.physical,
+                    cause: face_down.cause,
+                    known: face_down.known,
                     known_to,
                 });
                 if let Some(choice) = state
@@ -1955,7 +1954,7 @@ impl Game {
             let resume_entry = batch.resume_entry.take();
             let completes_manifest = self.state.manifest.as_ref().is_some_and(|state| {
                 batch.moves.iter().any(|movement| {
-                    movement.manifest_original.is_some()
+                    movement.face_down.is_some()
                         && state
                             .choices
                             .iter()

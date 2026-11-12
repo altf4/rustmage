@@ -350,7 +350,28 @@ impl Game {
             maximum: low as u32,
         }]
     }
+    pub(super) fn visit_x_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        self.x_choice().is_some_and(|domain| {
+            domain.intervals.into_iter().any(|range| {
+                if range.maximum - range.minimum <= 64 {
+                    (range.minimum..=range.maximum).any(|value| emit(Action::ChooseX { value }))
+                } else {
+                    [
+                        range.minimum,
+                        range.minimum + (range.maximum - range.minimum) / 2,
+                        range.maximum,
+                    ]
+                    .into_iter()
+                    .any(|value| emit(Action::ChooseX { value }))
+                }
+            })
+        })
+    }
+
     pub fn x_choice(&self) -> Option<XChoiceView> {
+        if matches!(self.state.pending, Pending::FaceUpPayment { .. }) {
+            return self.face_up_x_choice();
+        }
         if matches!(self.state.pending, Pending::PlotX { .. }) {
             return self.plot_x_choice();
         }

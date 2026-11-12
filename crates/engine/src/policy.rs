@@ -433,6 +433,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::AnnouncePlot { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }
+            | Action::BeginFaceUpX { .. }
             | Action::BeginRoomUnlock { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }

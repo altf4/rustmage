@@ -733,7 +733,7 @@ impl Game {
         }
         let disguised =
             || Card::from_name("@face-down/disguise").expect("pinned catalogue identity");
-        physical.disguise_cost().is_some()
+        physical.disguise_spec().is_some()
             && (sorcery || self.cast_timing_granted(actor, disguised()))
             && self.disguise_mana_fundable_with_surcharge(actor, object.card, surcharge.get())
             && emit(Action::AnnounceTaxedExile {

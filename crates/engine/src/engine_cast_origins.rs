@@ -394,7 +394,7 @@ impl Game {
         CastFace::choices(physical)
             .filter(|&face| face != CastFace::Back || !physical.transforming_double_face())
             .filter_map(|face| face.definition(physical))
-            .chain(physical.disguise_cost().map(|_| {
+            .chain(physical.disguise_spec().map(|_| {
                 Card::from_name("@face-down/disguise").expect("pinned catalogue identity")
             }))
             .any(|definition| library_spell_face_permission(self, player, definition))

@@ -2055,6 +2055,34 @@ pub struct ManaCost {
     pub generic: u32,
 }
 
+/// Mana paid for the disguise special action, independently of casting face down.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct DisguiseSpec {
+    pub mana: ManaCost,
+    pub alternatives: &'static [ManaCost],
+    pub modifier: DisguiseCostModifier,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl DisguiseSpec {
+    pub const fn fixed(mana: ManaCost) -> Self {
+        Self {
+            mana,
+            alternatives: &[],
+            modifier: DisguiseCostModifier::None,
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum DisguiseCostModifier {
+    None,
+    X(std::num::NonZeroU8),
+    GenericReduction(StatValue),
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaCost {
     pub const ZERO: Self = Self {
@@ -3621,6 +3649,10 @@ pub enum Instruction {
     SkipIfFaceDownEntryOrTurnUp(usize),
     /// When this exact target dies this turn, its controller's spell manifests dread.
     ManifestDreadWhenTargetDies,
+    /// Cloak the top card of the selected player's library under your control.
+    CloakLibraryTop(PlayerSet),
+    /// Attach this Equipment to the exact captured entry, if it succeeded.
+    AttachSourceToEntryResult,
     DestroyAndCreateForController {
         token: Card,
         amount: u16,
@@ -8718,8 +8750,11 @@ impl Card {
     pub(crate) fn web_slinging_cost(self) -> Option<ManaCost> {
         authored::rules(self).and_then(|rules| rules.extras.web_slinging_cost)
     }
-    pub(crate) fn disguise_cost(self) -> Option<ManaCost> {
-        authored::rules(self).and_then(|r| r.extras.disguise_cost)
+    pub(crate) fn disguise_spec(self) -> Option<DisguiseSpec> {
+        let extras = authored::rules(self)?.extras;
+        extras
+            .disguise
+            .or_else(|| extras.disguise_cost.map(DisguiseSpec::fixed))
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         self.warp_spec().map(|spec| spec.mana)

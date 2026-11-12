@@ -396,7 +396,7 @@ pub use cast_rollback_mana::ManaRollbackView;
 #[path = "engine_manifest.rs"]
 pub mod manifest;
 pub use manifest::{
-    FaceDownPermanentView, FaceUpPaymentView, ManifestChoiceView, ManifestDreadEvent,
+    FaceDownCause, FaceDownPermanentView, FaceUpPaymentView, ManifestChoiceView, ManifestDreadEvent,
 };
 #[doc(hidden)]
 #[path = "engine_evidence.rs"]
@@ -1171,6 +1171,7 @@ define_actions! {
     },
     PayPlot { payment: Mana },
     BeginFaceUp { object: ObjectRef, cost: ManaCost },
+    BeginFaceUpX { object: ObjectRef, cost: ManaCost, x_symbols: std::num::NonZeroU8 },
     PayFaceUp { payment: Mana },
     AbortFaceUpPayment,
     AnnouncePlotted { card: CardId },
@@ -6114,7 +6115,15 @@ impl Game {
                 }
             }
             Pending::FaceUpPayment { .. } => {
-                if emit(Action::AbortFaceUpPayment) || self.visit_face_up_payment(&mut emit) {
+                if emit(Action::AbortFaceUpPayment) {
+                    return true;
+                }
+                let variable = self
+                    .face_up_payment()
+                    .is_some_and(|request| request.x_symbols.is_some());
+                if (variable && self.visit_x_actions(&mut emit))
+                    || (!variable && self.visit_face_up_payment(&mut emit))
+                {
                     return true;
                 }
             }
@@ -6450,39 +6459,8 @@ impl Game {
                         if sorcery && self.visit_room_unlocks(actor, object, &mut emit) {
                             return true;
                         }
-                        if self.face_up_payment_available(actor, object) {
-                            let row = self
-                                .state
-                                .manifest
-                                .as_ref()
-                                .unwrap()
-                                .permanents
-                                .iter()
-                                .find(|row| row.object == object)
-                                .unwrap();
-                            for cost in row
-                                .underlying
-                                .cost_options()
-                                .filter(|_| {
-                                    row.underlying.is_creature()
-                                        && !row.underlying.info().mana_cost.is_empty()
-                                })
-                                .chain(row.underlying.disguise_cost())
-                            {
-                                if self.can_fund_face_up(
-                                    FundingGoal {
-                                        actor,
-                                        required: cost.colored,
-                                        generic: cost.generic,
-                                        reserve: None,
-                                        source: None,
-                                    },
-                                    object,
-                                ) && emit(Action::BeginFaceUp { object, cost })
-                                {
-                                    return true;
-                                }
-                            }
+                        if self.visit_face_up_actions(actor, object, &mut emit) {
+                            return true;
                         }
                     }
                     if obj.zone == Zone::Hand && self.hand_play_prohibited() {
@@ -6518,7 +6496,7 @@ impl Game {
                         return true;
                     }
                     if !casting_prohibited
-                        && obj.card.disguise_cost().is_some()
+                        && obj.card.disguise_spec().is_some()
                         && (sorcery
                             || self.cast_timing_granted(
                                 actor,
@@ -7461,26 +7439,8 @@ impl Game {
                 }
             }
             Pending::X { .. } | Pending::ResolutionX { .. } | Pending::PlotX { .. } => {
-                if let Some(domain) = self.x_choice() {
-                    for range in domain.intervals {
-                        if range.maximum - range.minimum <= 64 {
-                            for value in range.minimum..=range.maximum {
-                                if emit(Action::ChooseX { value }) {
-                                    return true;
-                                }
-                            }
-                        } else {
-                            for value in [
-                                range.minimum,
-                                range.minimum + (range.maximum - range.minimum) / 2,
-                                range.maximum,
-                            ] {
-                                if emit(Action::ChooseX { value }) {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
+                if self.visit_x_actions(&mut emit) {
+                    return true;
                 }
             }
             Pending::LibraryCastPermission { .. } => {
@@ -8720,7 +8680,12 @@ impl Game {
                 self.begin_library_top_plot(actor, object, cost, x_symbols);
             }
             Action::PayPlot { payment } => self.finish_plot(payment),
-            Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost),
+            Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost, None),
+            Action::BeginFaceUpX {
+                object,
+                cost,
+                x_symbols,
+            } => self.begin_face_up(actor, object, cost, Some(x_symbols)),
             Action::PayFaceUp { payment } => self.finish_face_up(payment),
             Action::AbortFaceUpPayment => self.finish_cast_rollback(false),
             Action::BeginRoomUnlock { object, door, cost } => {
@@ -9199,6 +9164,11 @@ impl Game {
             Action::FinishCrew => self.finish_crew_payment(),
             Action::ChooseSourceCounterAmount { amount } => {
                 self.choose_source_counter_amount(amount)
+            }
+            Action::ChooseX { value }
+                if matches!(self.state.pending, Pending::FaceUpPayment { .. }) =>
+            {
+                self.choose_face_up_x(value);
             }
             Action::ChooseX { value } if matches!(self.state.pending, Pending::PlotX { .. }) => {
                 self.choose_plot_x(value);
@@ -11294,6 +11264,7 @@ impl Game {
                         generation,
                     },
                     underlying: row.underlying,
+                    cause: row.cause,
                     known: row.known,
                     known_to: row.known_to,
                 });

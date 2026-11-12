@@ -43,7 +43,7 @@ pub(super) fn needs_copy(movement: &entries::EntryMove) -> bool {
     movement.destination == Zone::Battlefield
         && movement.before.zone != Zone::Battlefield
         && !movement.skipped
-        && movement.manifest_original.is_none()
+        && movement.face_down.is_none()
         && definition.entry_copy().is_some()
         && movement
             .copy_preparation

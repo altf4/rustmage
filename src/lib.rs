@@ -16,6 +16,7 @@ pub use rustmage_core::engine::ActivationTapPaymentView;
 pub use rustmage_core::engine::AdditionalCostRoute;
 pub use rustmage_core::engine::AuraPlayerAttachmentView;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
+pub use rustmage_core::engine::FaceDownCause;
 pub use rustmage_core::engine::IncarnationTriggerUse;
 pub use rustmage_core::engine::InheritedAbilityView;
 pub use rustmage_core::engine::combat_allocations::{
