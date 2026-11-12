@@ -91,3 +91,6 @@ mod utility;
 
 #[path = "tla_cards_multicolor/ally.rs"]
 mod ally;
+
+#[path = "tla_cards_multicolor/inherited.rs"]
+mod inherited;
