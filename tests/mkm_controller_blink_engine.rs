@@ -12,7 +12,7 @@ const GATE: CardRules = CardRules {
         TargetPlan::Single(TargetSpec::one(TargetRule::Object {
             zone: TargetZone::Battlefield,
             kinds: 0,
-            relation: 0,
+            relation: -1,
             other: true,
             nonland: true,
             tapped: false,
