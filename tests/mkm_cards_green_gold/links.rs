@@ -184,7 +184,7 @@ fn kaya_resolves_all_three_loyalty_choices_and_copies_one_eligible_exiled_creatu
     assert_eq!(game.state.stack.len(), 1);
     pass_pair(&mut game);
     let mut declined = game.clone();
-    act(&mut declined, Action::ChooseOptional { accept: false });
+    act(&mut declined, Action::DeclineEffectPayment);
     assert_eq!(tokens(&declined, player, CLUE), [token]);
     let object = game.object_ref(enemy);
     reject(&mut game, Action::SelectResolutionExile { object });
