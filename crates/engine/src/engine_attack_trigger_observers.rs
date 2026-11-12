@@ -19,6 +19,28 @@ impl SpellView {
             .map(|trigger| trigger.condition.event())
     }
 
+    pub(super) fn declared_attacker_count(&self) -> u128 {
+        if matches!(
+            self.trigger_event(),
+            Some(TriggerCondition::CreaturesAttackDeclared { .. })
+        ) {
+            // The general declaration path records its exact qualifying
+            // objects as an event cohort, including those that later leave.
+            return self.event_object.as_deref().map_or(0, |event| {
+                1 + event
+                    .semantic_objects
+                    .iter()
+                    .flat_map(|objects| objects.iter())
+                    .filter(|object| matches!(object, DamageSourceRef::Object(_)))
+                    .count() as u128
+            });
+        }
+        self.reflexive_subject
+            .as_deref()
+            .filter(|subjects| !subjects.action)
+            .map_or(0, |subjects| 1 + subjects.additional_objects.len() as u128)
+    }
+
     fn names_declared_attacker(&self, attacker: ObjectRef) -> bool {
         self.entering_object == Some(attacker)
             || self.reflexive_subject.as_ref().is_some_and(|subject| {
