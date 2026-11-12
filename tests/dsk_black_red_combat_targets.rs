@@ -90,8 +90,16 @@ fn norin_cannot_block_and_gives_each_blocked_creature_one_exact_play_offer() {
     pass_pair(&mut game);
     act(&mut game, Action::ChooseOptional { accept: false });
     assert_eq!(game.observe(player).exile_permissions.len(), 1);
-    game.begin_step(Step::Main2);
-    game.prepare_triggers();
+    for _ in 0..16 {
+        if game.state.step == Step::Main2 {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(action, Action::Pass | Action::AssignDamage { .. })
+        });
+    }
+    assert_eq!(game.state.step, Step::Main2);
+    game.state.players[player.index()].mana = [0, 0, 0, 1, 3, 0];
     act(&mut game, recast);
     pay(&mut game);
     settle(&mut game);

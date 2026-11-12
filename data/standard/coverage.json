@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "90c1ff6cfb0a12a6e88f1d3325cbeae2dee6d1ecbe2ca2c4b1f24777e8163113",
+  "catalogue_version": "2a3e385de15a29a27656e69cdef76967c3a555a824aea51dea95098d3c3b01e2",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4699,
-  "implemented_total": 4715,
+  "implemented_standard_cards": 4708,
+  "implemented_total": 4724,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 169,
-      "gated": 95
+      "complete": 177,
+      "gated": 87
     },
     "ecc": {
       "total": 7,
@@ -70,8 +70,7 @@
     },
     "frc": {
       "total": 6,
-      "complete": 5,
-      "gated": 1
+      "complete": 6
     },
     "hob": {
       "total": 188,
@@ -589,8 +588,8 @@
     {
       "name": "Acrobatic Cheerleader",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/acrobatic_cheerleader.rs",
       "set": "dsk"
     },
@@ -10869,8 +10868,8 @@
     {
       "name": "Enduring Innocence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/enduring_innocence.rs",
       "set": "dsk"
     },
@@ -14421,8 +14420,8 @@
     {
       "name": "Glimmer Seeker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/glimmer_seeker.rs",
       "set": "dsk"
     },
@@ -24533,8 +24532,8 @@
     {
       "name": "Orphans of the Wheat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/orphans_of_the_wheat.rs",
       "set": "dsk"
     },
@@ -24765,8 +24764,8 @@
     {
       "name": "Overlord of the Floodpits",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/overlord_of_the_floodpits.rs",
       "set": "dsk"
     },
@@ -24781,8 +24780,8 @@
     {
       "name": "Overlord of the Mistmoors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/frc/overlord_of_the_mistmoors.rs",
       "set": "frc"
     },
@@ -25045,8 +25044,8 @@
     {
       "name": "Patched Plaything",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/patched_plaything.rs",
       "set": "dsk"
     },
@@ -29781,8 +29780,8 @@
     {
       "name": "Savior of the Small",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/savior_of_the_small.rs",
       "set": "dsk"
     },
@@ -39221,8 +39220,8 @@
     {
       "name": "Veteran Survivor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/veteran_survivor.rs",
       "set": "dsk"
     },
