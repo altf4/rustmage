@@ -5,13 +5,17 @@ pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld
     world: &W,
     actor: Player,
     reference: ObjectRef,
+    choice: EffectChoiceKind,
 ) -> bool {
     let object = world.object(reference.card);
     world.reference(reference.card) == reference
         && world.kinds(reference.card) & 1 != 0
         && match object.zone {
             Zone::Battlefield => object.controller == actor,
-            Zone::Exile => {
+            Zone::Hand if choice == EffectChoiceKind::ChooseControlledOrRevealCreature => {
+                object.owner == actor && object.is_card()
+            }
+            Zone::Exile if choice == EffectChoiceKind::ChooseControlledOrWarpedCreature => {
                 object.owner == actor
                     && world
                         .game()
@@ -194,8 +198,8 @@ impl Game {
         if object.card as usize >= self.state.objects.len() {
             return false;
         }
-        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
-            return chosen_cost_creature_matches(world, actor, object);
+        if spec.kind.chooses_cost_creature() {
+            return chosen_cost_creature_matches(world, actor, object, spec.kind);
         }
         let o = world.object(object.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
@@ -1378,11 +1382,20 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind.payment_kind() {
-            EffectChoiceKind::ChooseControlledOrWarpedCreature => {
+            EffectChoiceKind::ChooseControlledOrWarpedCreature
+            | EffectChoiceKind::ChooseControlledOrRevealCreature => {
                 let view = self.object_view(object.card);
+                let facts = if view.zone == Zone::Hand {
+                    EventObjectFacts::RevealedCostCreature {
+                        card: view.card,
+                        power: view.power,
+                    }
+                } else {
+                    EventObjectFacts::ChosenCostCreaturePower(view.power)
+                };
                 a.item.set_event_object(EventObjectView {
                     object,
-                    facts: EventObjectFacts::ChosenCostCreaturePower(view.power),
+                    facts,
                     semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,

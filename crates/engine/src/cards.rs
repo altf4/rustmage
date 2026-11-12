@@ -1509,6 +1509,8 @@ pub enum EffectChoiceKind {
     BeholdAndExile,
     /// Choose a controlled creature or an owned creature card with an exact Warp exile record.
     ChooseControlledOrWarpedCreature,
+    /// Choose a controlled creature or reveal a creature card from your hand.
+    ChooseControlledOrRevealCreature,
     /// Non-targeted Army selection during amass.
     AmassGoblins(u64),
     EmpowerJace(u64),
@@ -1742,6 +1744,12 @@ impl CraftMaterials {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EffectChoiceKind {
+    pub(crate) fn chooses_cost_creature(self) -> bool {
+        matches!(
+            self,
+            Self::ChooseControlledOrWarpedCreature | Self::ChooseControlledOrRevealCreature
+        )
+    }
     pub(crate) fn craft_materials(self) -> Option<CraftMaterials> {
         match self {
             Self::ExileControlledOrGraveyard => Some(CraftMaterials::Count {

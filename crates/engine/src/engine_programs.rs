@@ -1860,6 +1860,13 @@ impl Game {
             .flatten();
         if let Some((_, _, object)) = cast {
             self.complete_prepared_cast(object);
+            if let Some(event) = &item.event_object
+                && matches!(event.facts, EventObjectFacts::RevealedCostCreature { .. })
+                && self.object_ref(event.object.card) == event.object
+                && self.state.objects[event.object.card as usize].zone == Zone::Hand
+            {
+                self.remember_public_hand(event.object);
+            }
         }
         self.register_stack_zone_replacements(&item);
         self.record_committed_crime(&item);

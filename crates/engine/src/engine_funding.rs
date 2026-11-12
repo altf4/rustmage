@@ -648,9 +648,11 @@ fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
     keywords: impl FnOnce(CardId) -> Keywords,
 ) -> bool {
     goal.reserve.is_none_or(|(reference, spec)| {
-        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
+        if spec.kind.chooses_cost_creature() {
             return object.is_some()
-                && additional_costs::chosen_cost_creature_matches(world, goal.actor, reference);
+                && additional_costs::chosen_cost_creature_matches(
+                    world, goal.actor, reference, spec.kind,
+                );
         }
         object.is_some_and(|o| {
             if spec.kind == EffectChoiceKind::ExileGrantingAttachment {

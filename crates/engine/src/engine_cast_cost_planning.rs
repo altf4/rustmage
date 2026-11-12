@@ -637,8 +637,8 @@ impl FundingState<'_> {
         r: ObjectRef,
         source: ObjectRef,
     ) -> bool {
-        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
-            return additional_costs::chosen_cost_creature_matches(self, self.actor, r);
+        if spec.kind.chooses_cost_creature() {
+            return additional_costs::chosen_cost_creature_matches(self, self.actor, r, spec.kind);
         }
         let o = self.object(r.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
@@ -1876,6 +1876,7 @@ impl FundingState<'_> {
             }
             EffectChoiceKind::Behold
             | EffectChoiceKind::ChooseControlledOrWarpedCreature
+            | EffectChoiceKind::ChooseControlledOrRevealCreature
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent
@@ -2012,6 +2013,7 @@ impl FundingState<'_> {
                 EffectChoiceKind::Behold
                     | EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                    | EffectChoiceKind::ChooseControlledOrRevealCreature
             ) {
                 self.complete_cost_rows(later, remaining)
             } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
@@ -2666,6 +2668,7 @@ impl Game {
                 EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::BeholdAndExile
                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                    | EffectChoiceKind::ChooseControlledOrRevealCreature
             )
         }) || delve::potential(self)
             || additional.is_some_and(|a| {
@@ -2783,6 +2786,7 @@ impl Game {
                         EffectChoiceKind::BeholdMany(_)
                             | EffectChoiceKind::BeholdAndExile
                             | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                            | EffectChoiceKind::ChooseControlledOrRevealCreature
                     )
                 }) || convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
@@ -2818,6 +2822,7 @@ impl Game {
                                 EffectChoiceKind::BeholdMany(_)
                                     | EffectChoiceKind::BeholdAndExile
                                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                                    | EffectChoiceKind::ChooseControlledOrRevealCreature
                             )
                         })
                         || current.is_some_and(|a| {
