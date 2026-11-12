@@ -42,7 +42,8 @@ pub(super) struct Resolution {
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
     pub exile_continuation: Option<Box<return_links::ExileContinuation>>,
-    pub repeat_blink_remaining: Option<u32>,
+    /// A count owned by the current repeating instruction until it advances.
+    pub repeated_instruction_remaining: Option<u32>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<explore::ExploreSequence>>,
@@ -2562,6 +2563,8 @@ impl Game {
                                 matches!(
                                     instruction,
                                     Instruction::ChangeCastSpellTargets
+                                        | Instruction::GrantCastSpellHaste
+                                        | Instruction::GrantCastSpellKeywords(_)
                                         | Instruction::MarkCastDreamExile
                                         | Instruction::FlipCoinForCapturedSpell { .. }
                                         | Instruction::GainLifeScaled(_, AmountValue::SpellColors)
@@ -4168,7 +4171,7 @@ impl Game {
             sacrificed_power: None,
             sacrificed_mana_value: None,
             exile_continuation: None,
-            repeat_blink_remaining: None,
+            repeated_instruction_remaining: None,
             explore: None,
             manifest_sequence: None,
             evidence: None,
@@ -6336,12 +6339,12 @@ impl Game {
                         .resolving
                         .as_mut()
                         .unwrap()
-                        .repeat_blink_remaining;
+                        .repeated_instruction_remaining;
                     self.state
                         .resolving
                         .as_mut()
                         .unwrap()
-                        .repeat_blink_remaining =
+                        .repeated_instruction_remaining =
                         Some(remaining.unwrap_or_else(|| item.x.unwrap_or(0)));
                     if self.start_effect_choice(
                         &item,
@@ -6357,7 +6360,7 @@ impl Game {
                         .resolving
                         .as_mut()
                         .unwrap()
-                        .repeat_blink_remaining = None;
+                        .repeated_instruction_remaining = None;
                 }
                 Instruction::IfMayhemPaid { paid, skip } => {
                     if item.cast.is_some_and(|cast| cast.method.is_mayhem()) != paid {
@@ -10640,6 +10643,27 @@ impl Game {
                 } => {
                     let amount = self.item_amount(amount, &item);
                     self.create_tokens(item.controller, token, amount, tapped);
+                }
+                Instruction::CreateTokensRepeated { token, amount } => {
+                    let remaining = self
+                        .state
+                        .resolving
+                        .as_mut()
+                        .unwrap()
+                        .repeated_instruction_remaining
+                        .take()
+                        .unwrap_or_else(|| {
+                            u32::try_from(self.item_amount(amount, &item))
+                                .capacity("token event count exhausted")
+                        });
+                    if remaining > 0 {
+                        if remaining > 1 {
+                            let resolution = self.state.resolving.as_mut().unwrap();
+                            resolution.repeated_instruction_remaining = Some(remaining - 1);
+                            resolution.pc -= 1;
+                        }
+                        self.create_tokens(item.controller, token, 1, false);
+                    }
                 }
                 Instruction::PutLandCards { maximum, tapped } => {
                     let maximum = u32::try_from(self.item_amount(maximum, &item))

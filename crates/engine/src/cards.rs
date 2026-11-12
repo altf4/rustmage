@@ -5389,6 +5389,11 @@ pub enum Instruction {
         amount: AmountValue,
         tapped: bool,
     },
+    /// Create one token in each of a frozen number of consecutive events.
+    CreateTokensRepeated {
+        token: Card,
+        amount: AmountValue,
+    },
     /// Create a fixed token batch, then put scaled counters on those exact tokens.
     /// Copy every supported counter kind from this exact source/LKI to new tokens.
     CreateTokensWithSourceCounters {

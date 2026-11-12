@@ -1110,11 +1110,11 @@ impl Game {
             .map(|reference| reference.card)
             .collect::<Vec<_>>();
         let remaining = resolution
-            .repeat_blink_remaining
+            .repeated_instruction_remaining
             .take()
             .expect("repeat blink count");
         if remaining > 0 {
-            resolution.repeat_blink_remaining = Some(remaining - 1);
+            resolution.repeated_instruction_remaining = Some(remaining - 1);
             resolution.pc -= 1;
         }
         if !ids.is_empty() {

@@ -34,6 +34,13 @@ fn granting_lifelink_to_the_cast_spell_uses_its_actual_damage_dealer() {
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, 22);
     assert_eq!(game.state.players[player.other().index()].life, 18);
+
+    let large = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let spell = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(large)));
+    settle(&mut game);
+    assert_eq!(game.object_view(large).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].life, 24);
 }
 
 const SACRIFICE_OBSERVER: CardRules = CardRules {

@@ -296,14 +296,14 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     let mut plays = game.clone();
     act(&mut plays, Action::PlayLand { card: land });
     assert_eq!(plays.object_view(land).zone, Zone::Battlefield);
-    plays.state.players[beneficiary.index()].mana = [0, 3, 0, 0, 0, 0];
+    plays.state.players[beneficiary.index()].mana = [0, 2, 0, 0, 0, 0];
     act(&mut plays, Action::AnnounceExile { card: spell });
     pay(&mut plays);
     let cast = plays.state.stack.last().unwrap().cast.unwrap();
     assert_eq!(cast.origin, Zone::Exile);
     assert_eq!(cast.caster, beneficiary);
     assert_eq!(cast.method, CastMethod::Normal);
-    assert_eq!(cast.payment, [0, 3, 0, 0, 0, 0]);
+    assert_eq!(cast.payment, [0, 2, 0, 0, 0, 0]);
     settle(&mut plays);
     assert_eq!(plays.object_view(spell).zone, Zone::Graveyard);
     assert_eq!(plays.state.players[beneficiary.index()].mana[1], 0);

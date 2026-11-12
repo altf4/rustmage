@@ -31,6 +31,35 @@ const SURCHARGE: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
+const CLUE: Card = Card::from_catalogue_id(5296);
+const INVESTIGATE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec {
+            rule: TargetRule::Player {
+                opponent_only: false,
+            },
+            min: 0,
+            max: 2,
+        }),
+        &[Instruction::CreateTokensRepeated {
+            token: CLUE,
+            amount: AmountValue::TargetPlayersCreatureCount,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+const CLUE_BATCH_OBSERVER: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::FilteredEntersBatchYou {
+            predicate: EntryPredicate::SubtypeAny(&["Clue"]),
+            other: true,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
+    ..CardRules::EMPTY
+};
 const HEXPROOF: &[StaticAbilityGroup] = &[StaticAbilityGroup {
     line: 0,
     first_layer: AbilityLayer::Ability,
@@ -164,4 +193,44 @@ fn multicolored_hexproof_and_pair_counts_use_actual_source_and_permanent_colors(
         game.stat_value(StatValue::ControlledTwoColorPairs, source, player),
         2
     );
+}
+
+#[test]
+fn repeated_investigations_each_create_a_replacement_aware_batch() {
+    let spell = Card::from_name("No More Lies").unwrap();
+    let observer = Card::from_name("Soul-Guide Lantern").unwrap();
+    let _scope =
+        fixture_rules::activate(&[(spell, &INVESTIGATE), (observer, &CLUE_BATCH_OBSERVER)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    spawn(&mut game, player, observer, Zone::Battlefield);
+    put(&mut game, player, "Doubling Season", Zone::Battlefield);
+    put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+
+    let source = spawn(&mut game, player, spell, Zone::Hand);
+    announce(
+        &mut game,
+        source,
+        &[Target::Player(player), Target::Player(opponent)],
+    );
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert!(matches!(game.state.pending, Pending::OrderTriggers { .. }));
+    assert_eq!(
+        game.controlled_token_ids(player)
+            .filter(|&id| game.object_view(id).card == CLUE)
+            .count(),
+        6
+    );
+    while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+    }
+    assert_eq!(game.state.stack.len(), 3);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
 }
