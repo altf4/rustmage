@@ -14,7 +14,12 @@ const GOSSIP: CardRules = CardRules {
             tap: true,
             ..ActivationCost::ZERO
         },
-        timing: ActivationTiming::Any,
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        sorcery: false,
+        once_per_turn: false,
         targets: TargetPlan::NONE,
         program: &[Instruction::AddMana(ManaProduction::Tagged {
             production: &ManaProduction::Fixed(GOSSIP_MANA),
