@@ -3,10 +3,34 @@
   "catalogue_id": 4507,
   "oracle_id": "98a13f7b-ebe7-4a90-a0b9-95dccfff7fa6",
   "facts_sha256": "c6980ebcc2996777d4aec1bfc0cc87b40fe7386b63b098a8141697a8bca2924b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3988a2ff22e997939a96497fb44bf8f1c14857247976d55b605c5f10ca7ebb36"
   },
-  "physical_metadata_sha256": "13ab5ea3d36f6d0f644437800c5c74bed2e7b502bbbd0bffe7fa015305ceb24a"
+  "physical_metadata_sha256": "13ab5ea3d36f6d0f644437800c5c74bed2e7b502bbbd0bffe7fa015305ceb24a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheTaleOfTamiyo.java",
+  "java_sha256": "eafbce756103ef94eefa9e336c4a323d5b481814f97b05f823770d5e44cd45ed",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Chapters I–III use actual public mill receipts and repeat after drawing only when a pair shares a card type. IV exiles any number of legal own graveyard targets and offers optional exact card copies to cast during resolution at their actual costs, including a chosen X."
+  }
 }

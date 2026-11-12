@@ -3,10 +3,59 @@
   "catalogue_id": 2665,
   "oracle_id": "096eac52-00c2-4439-b2f3-ff555d15ec88",
   "facts_sha256": "33723f9c4e03e28e7f2409cb72c36151dfadd4d42301c6ed64c036c024428cb3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cc81283da4ebe4358530408c63579bb20eb7a2121e5ff52f90e2af6ee8f2f4a"
   },
-  "physical_metadata_sha256": "0d29ce5db2450795bcd4f40b2f6e88dafbbf192f6ca773d137e7a4463011774a"
+  "physical_metadata_sha256": "0d29ce5db2450795bcd4f40b2f6e88dafbbf192f6ca773d137e7a4463011774a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarinaVendrellsGrimoire.java",
+  "java_sha256": "c477778544d98e45695d4c064d12aea6a5e834dd4ad338248a99cc74274f8c94",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LoseLifeTriggeredAbility.java",
+      "sha256": "6d6a10a3d81d3cc3949dd1f70d678487bf79f8ff7564b9c009eecb28f9577d62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/HellbentCondition.java",
+      "sha256": "3d45855754d8e51b32915d3cde6c4fb050b40b0b76cbd13a1abf5cb76a86b713"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/DontLoseByZeroOrLessLifeEffect.java",
+      "sha256": "0df91fab9f463e4c053e78dda777f311dd2d4259d4a444647828dcb176958348"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardControllerEffect.java",
+      "sha256": "48291599ed7d9537f89672284579f8c07f14b4ac974a3f482efa6ef593837717"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The controller draws five when they cast the entering incarnation. The live static ability grants unlimited hand size and exempts its controller from the nonpositive-life state-based loss. Actual life events freeze the draw or discard amount. Losing with an empty hand is checked after the discard and applies at any life total."
+  }
 }
