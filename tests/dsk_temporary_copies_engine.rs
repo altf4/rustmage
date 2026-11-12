@@ -221,8 +221,15 @@ fn an_inserted_end_step_expires_copies_and_only_follows_the_original_exile_recei
     for target_is_token in [false, true] {
         let mut game = scenario(PLAYER);
         game.state.step = Step::Main2;
+        let lands = [
+            put(&mut game, PLAYER, "Forest", Zone::Battlefield),
+            put(&mut game, PLAYER, "Forest", Zone::Battlefield),
+        ];
         pass_pair(&mut game);
         game.add_end_step_if_first();
+        for card in lands {
+            act(&mut game, Action::TapMana { card });
+        }
         let turn = game.observe(PLAYER).turn;
         let source = put(&mut game, PLAYER, "Bear Cub", Zone::Battlefield);
         let recipient = token(&mut game, PLAYER, FOOD, false);
