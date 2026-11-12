@@ -1,7 +1,33 @@
 //! Owned face-down bookkeeping for the manifest-dread foundation.
 //!
 //! Tracks face-down identity, private knowledge, and manifest-dread choices.
+use super::ability_world::CharacteristicWorld;
 use super::*;
+use crate::cards::StaticAbilityFragment;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    object: ObjectRef,
+) -> bool {
+    let mut query = None;
+    let prohibits = |fragment: &StaticAbilityFragment| {
+        matches!(fragment, StaticAbilityFragment::AttachedFaceUpProhibited)
+    };
+    world.attachment_sources().iter().copied().any(|id| {
+        let source = world.object(id);
+        source.zone == Zone::Battlefield
+            && source.attached_to == Some(object)
+            && world
+                .definition(id)
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(prohibits))
+            && query
+                .get_or_insert_with(|| characteristic_query::CharacteristicQuery::in_world(world))
+                .continuous_fragment_available(id, prohibits)
+    })
+}
 
 /// The public exact incarnation and any underlying card the viewer may know.
 /// The current controller can look; a card revealed during a face-up special
@@ -88,7 +114,7 @@ pub(super) struct ManifestState {
     pub last_event: Option<ManifestDreadEvent>,
     pub last_face_up: Option<ObjectRef>,
     /// A face-up event whose counter replacements have not finished yet.
-    pub face_up_completion: Option<ObjectRef>,
+    pub face_up_completion: Option<(ObjectRef, Player)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManifestState {
@@ -376,22 +402,8 @@ impl Game {
         self.state.manifest.as_ref()?.payment.as_ref()
     }
     pub(super) fn begin_face_up(&mut self, player: Player, object: ObjectRef, cost: ManaCost) {
-        let row = self
-            .state
-            .manifest
-            .as_mut()
-            .unwrap()
-            .permanents
-            .iter_mut()
-            .find(|row| row.object == object)
-            .unwrap();
-        row.known = true;
-        let physical = row.underlying;
-        self.record_zone_reveal(
-            physical,
-            self.state.objects[object.card as usize].owner,
-            Zone::Battlefield,
-        );
+        self.reveal_face_down_permanent(object)
+            .expect("face-up payment reveals the exact permanent");
         self.state.manifest.as_mut().unwrap().payment = Some(FaceUpPaymentView {
             object,
             controller: player,
@@ -415,7 +427,7 @@ impl Game {
         self.state.pending = Pending::Priority;
         self.state.priority = request.controller;
         self.state.passes = 0;
-        assert!(self.turn_manifest_face_up(request.object));
+        assert!(self.turn_manifest_face_up(request.object, request.controller));
     }
     pub(super) fn face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.state
@@ -434,39 +446,52 @@ impl Game {
             .is_some_and(|state| state.permanents.iter().any(|row| row.object == object))
     }
 
-    /// Complete the status change after a caller has paid and verified the
-    /// special action. This is not a zone change or an enters-the-battlefield event.
-    pub(super) fn turn_manifest_face_up(&mut self, object: ObjectRef) -> bool {
-        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
-            return false;
-        }
-        // CR701.40g: an effect cannot turn an instant or sorcery card face up;
-        // reveal it and leave the same permanent face down instead.
-        let Some(row) = self
+    pub(super) fn first_bound_face_down_permanent(&self, item: &SpellView) -> Option<ObjectRef> {
+        item.targets
+            .iter()
+            .filter_map(|bound| bound.object)
+            .find(|&object| {
+                self.on_battlefield(object.card)
+                    && self.object_ref(object.card) == object
+                    && self.is_face_down(object)
+            })
+    }
+
+    pub(super) fn reveal_face_down_permanent(&mut self, object: ObjectRef) -> Option<Card> {
+        let row = self
             .state
             .manifest
-            .as_mut()
-            .and_then(|state| state.permanents.iter_mut().find(|row| row.object == object))
-        else {
-            return false;
-        };
-        if row.underlying.kind_mask() & (4 | 8) != 0 {
-            row.known = true;
-            let physical = row.underlying;
-            self.record_zone_reveal(
-                physical,
-                self.state.objects[object.card as usize].owner,
-                Zone::Battlefield,
-            );
-            return false;
-        }
-        let physical = row.underlying;
+            .as_mut()?
+            .permanents
+            .iter_mut()
+            .find(|row| row.object == object)?;
         row.known = true;
+        let physical = row.underlying;
         self.record_zone_reveal(
             physical,
             self.state.objects[object.card as usize].owner,
             Zone::Battlefield,
         );
+        Some(physical)
+    }
+
+    /// Complete a status change caused by a special action or by a resolving effect.
+    /// The object keeps its battlefield incarnation.
+    pub(super) fn turn_manifest_face_up(&mut self, object: ObjectRef, player: Player) -> bool {
+        if !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || face_up_prohibited(self, object)
+        {
+            return false;
+        }
+        // CR701.40g: an effect cannot turn an instant or sorcery card face up;
+        // reveal it and leave the same permanent face down instead.
+        let Some(physical) = self.reveal_face_down_permanent(object) else {
+            return false;
+        };
+        if physical.kind_mask() & (4 | 8) != 0 {
+            return false;
+        }
         // Evaluate the resulting copy and layer state without exposing a half
         // completed face-up transition to an affected player's choice.
         let mut prospective = self.clone();
@@ -494,7 +519,7 @@ impl Game {
                 entry_index: None,
                 private: false,
             };
-            self.state.manifest.as_mut().unwrap().face_up_completion = Some(object);
+            self.state.manifest.as_mut().unwrap().face_up_completion = Some((object, player));
             let mode = if self.state.resolving.is_some() {
                 replacements::ResumeMode::Program
             } else {
@@ -503,7 +528,7 @@ impl Game {
             self.stage_counter_placements(vec![placement], mode);
         } else {
             self.materialize_face_up(object);
-            self.queue_face_up_triggers(object);
+            self.queue_face_up_triggers(object, player);
         }
         true
     }
@@ -527,7 +552,7 @@ impl Game {
     }
 
     pub(super) fn finish_face_up_counter_replacement(&mut self) {
-        let Some(object) = self
+        let Some((object, player)) = self
             .state
             .manifest
             .as_mut()
@@ -535,9 +560,9 @@ impl Game {
         else {
             return;
         };
-        self.queue_face_up_triggers(object);
+        self.queue_face_up_triggers(object, player);
     }
-    pub(super) fn queue_face_up_triggers(&mut self, object: ObjectRef) {
+    pub(super) fn queue_face_up_triggers(&mut self, object: ObjectRef, player: Player) {
         let Some(turned) = self.state.objects.get(object.card as usize) else {
             return;
         };
@@ -567,20 +592,19 @@ impl Game {
                     TriggerCondition::PermanentYouControlTurnedFaceUp => {
                         source.controller == controller
                     }
+                    TriggerCondition::YouTurnPermanentFaceUp => source.controller == player,
                     _ => false,
                 };
                 if matched && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .set_event_object(EventObjectView {
-                            object,
-                            facts: EventObjectFacts::Controller(controller),
-                            semantic_objects: None,
-                            conniver_creature: None,
-                            subtype_lki: None,
-                        });
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.event_player = Some(player);
+                    packet.set_event_object(EventObjectView {
+                        object,
+                        facts: EventObjectFacts::Controller(controller),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
                 }
             }
         }
@@ -839,6 +863,7 @@ impl Game {
         if permanent.zone != Zone::Battlefield
             || self.object_ref(object.card) != object
             || permanent.controller != player
+            || face_up_prohibited(self, object)
             || !(row.underlying.is_supported()
                 || cfg!(feature = "test-support")
                     && (row.underlying

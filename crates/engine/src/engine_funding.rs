@@ -4885,6 +4885,9 @@ impl<'g> FundingState<'g> {
             })
             && self.cost_group_ready()
             && self.contributors.as_ref().is_none_or(|c| c.payable(self))
+            && self
+                .required_face_up
+                .is_none_or(|object| !manifest::face_up_prohibited(self, object))
             && completion(self)
         {
             return true;
@@ -7013,16 +7016,18 @@ impl Game {
         };
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(mana_lots::Purpose::FaceUp);
-        if visit_funding_payments(
-            mana_lots::available(state.mana, &state.lots, state.purpose),
-            goal.required,
-            goal.generic,
-            |payment| {
-                emit(Action::PayFaceUp {
-                    payment: concrete_payment(payment),
-                })
-            },
-        ) {
+        if !manifest::face_up_prohibited(self, request.object)
+            && visit_funding_payments(
+                mana_lots::available(state.mana, &state.lots, state.purpose),
+                goal.required,
+                goal.generic,
+                |payment| {
+                    emit(Action::PayFaceUp {
+                        payment: concrete_payment(payment),
+                    })
+                },
+            )
+        {
             return true;
         }
         state.visit_distinct_actions(

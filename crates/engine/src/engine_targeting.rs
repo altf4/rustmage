@@ -2514,6 +2514,9 @@ impl Game {
                             || self.state.blocking.contains(&id)
                     }
                     TargetPredicate::Untapped => object.zone == Zone::Battlefield && !object.tapped,
+                    TargetPredicate::FaceDown => {
+                        object.zone == Zone::Battlefield && self.is_face_down(world.reference(id))
+                    }
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
                     TargetPredicate::HasCounter(kind) => world.counter_count(id, kind) > 0,

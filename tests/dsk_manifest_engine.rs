@@ -479,3 +479,146 @@ fn restricted_mana_funds_the_face_up_special_action() {
         }
     }
 }
+
+#[test]
+fn an_attached_face_up_prohibition_follows_the_exact_aura() {
+    const ENCHANT_CREATURE: AuraSpec = AuraSpec {
+        kinds: 1,
+        relation: -1,
+        bonus: EquipmentSpec {
+            stats: Stats {
+                power: 0,
+                toughness: 0,
+            },
+            keywords: Keywords::NONE,
+        },
+    };
+    const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::AttachedFaceUpProhibited],
+    }];
+    const AURA: CardRules = CardRules {
+        effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Creature))),
+        aura: Some(ENCHANT_CREATURE),
+        static_groups: GROUPS,
+        extras: &CardExtras {
+            aura: Some(ENCHANT_CREATURE),
+            static_ability_groups: GROUPS,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Syncopate").unwrap(), &REPEATED),
+        (Card::from_name("Pacifism").unwrap(), &AURA),
+    ]);
+    let player = Player::P1;
+    let (mut game, cards) = with_library(player, &["Grizzly Bears"]);
+    start_repeated_manifest(&mut game, player, 1);
+    settle(&mut game);
+    let bear = game.object_ref(cards[0]);
+    let aura = put(&mut game, player, "Pacifism", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Card(bear.card)));
+    settle(&mut game);
+    assert_eq!(game.object_view(aura).attached_to, Some(bear));
+    let begin = Action::BeginFaceUp {
+        object: bear,
+        cost: ManaCost {
+            colored: [0, 0, 0, 0, 1, 0],
+            generic: 1,
+        },
+    };
+    reject(&mut game, begin.clone());
+    assert!(game.is_face_down(bear));
+
+    let disenchant = put(&mut game, player, "Disenchant", Zone::Hand);
+    cast(&mut game, disenchant, Some(Target::Card(aura)));
+    settle(&mut game);
+    assert_eq!(game.object_view(aura).zone, Zone::Graveyard);
+    act(&mut game, begin);
+    choose(&mut game, |action| {
+        matches!(action, Action::PayFaceUp { .. })
+    });
+    assert_eq!(game.object_ref(bear.card), bear);
+    assert_eq!(game.object_view(bear.card).card, Card::GrizzlyBears);
+    assert_eq!(game.counter_count(bear.card, CounterKind::PlusOne), 1);
+}
+
+#[test]
+fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
+    use rustmage_core::cards::authored::object;
+
+    const REVEAL: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+                base: &object(0),
+                predicate: TargetPredicate::FaceDown,
+            })),
+            &[
+                Instruction::RevealFaceDownTargetAndMayTurnUp,
+                Instruction::TurnTargetFaceUp,
+            ],
+        ),
+        ..CardRules::EMPTY
+    };
+    const ACTOR: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::YouTurnPermanentFaceUp,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Syncopate").unwrap(), &REPEATED),
+        (Card::from_name("Opt").unwrap(), &REVEAL),
+        (Card::from_name("Bear Cub").unwrap(), &ACTOR),
+    ]);
+    let controller = Player::P1;
+    let player = controller.other();
+    let (mut game, cards) = with_library(controller, &["Grizzly Bears"]);
+    let actor_observer = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let controller_observer = put(&mut game, controller, "Bear Cub", Zone::Battlefield);
+    start_repeated_manifest(&mut game, controller, 1);
+    settle(&mut game);
+    let facedown = game.object_ref(cards[0]);
+    act(&mut game, Action::Pass);
+    let spell = put(&mut game, player, "Opt", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(facedown.card)));
+    assert_eq!(
+        game.observe(player).face_down_permanents[0].underlying,
+        None
+    );
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(player));
+    for viewer in [player, controller] {
+        assert_eq!(
+            game.observe(viewer).face_down_permanents[0].underlying,
+            Some(Card::GrizzlyBears)
+        );
+    }
+
+    let mut decline = game.clone();
+    act(&mut decline, Action::ChooseOptional { accept: false });
+    assert!(decline.is_face_down(facedown));
+    assert_eq!(
+        decline.counter_count(actor_observer, CounterKind::PlusOne),
+        0
+    );
+    act(&mut game, Action::ChooseOptional { accept: true });
+    settle(&mut game);
+    assert_eq!(game.object_ref(facedown.card), facedown);
+    assert_eq!(game.object_view(facedown.card).controller, controller);
+    assert_eq!(game.object_view(facedown.card).card, Card::GrizzlyBears);
+    assert_eq!(game.counter_count(actor_observer, CounterKind::PlusOne), 1);
+    assert_eq!(
+        game.counter_count(controller_observer, CounterKind::PlusOne),
+        0
+    );
+}

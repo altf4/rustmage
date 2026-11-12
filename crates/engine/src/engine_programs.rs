@@ -1145,6 +1145,7 @@ impl Game {
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::PermanentYouControlTurnedFaceUp
+                    | TriggerCondition::YouTurnPermanentFaceUp
                     | TriggerCondition::YouManifestDread
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
@@ -5545,6 +5546,29 @@ impl Game {
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ManifestDreadWhenTargetDies => self.register_manifest_death(&item),
+                Instruction::RevealFaceDownTargetAndMayTurnUp => {
+                    let skip_to = resolution.pc + 1;
+                    let can_turn =
+                        self.first_bound_face_down_permanent(&item)
+                            .is_some_and(|object| {
+                                self.reveal_face_down_permanent(object)
+                                    .is_some_and(Card::is_creature)
+                                    && !manifest::face_up_prohibited(self, object)
+                            });
+                    if can_turn {
+                        self.state.pending = Pending::EffectOptional {
+                            player: item.controller,
+                            skip_to,
+                        };
+                        return;
+                    }
+                    self.state.resolving.as_mut().unwrap().pc = skip_to;
+                }
+                Instruction::TurnTargetFaceUp => {
+                    if let Some(object) = self.first_bound_face_down_permanent(&item) {
+                        self.turn_manifest_face_up(object, item.controller);
+                    }
+                }
                 Instruction::DestroyAndCreateForController { token, amount } => {
                     let targets = item
                         .targets

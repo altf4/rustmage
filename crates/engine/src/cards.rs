@@ -519,6 +519,7 @@ pub enum TargetPredicate {
     AttackingAlone,
     AttackingOrBlocking,
     Untapped,
+    FaceDown,
     Damaged,
     DealtDamage,
     HasCounter(CounterKind),
@@ -3530,6 +3531,10 @@ pub enum Instruction {
         kind: CounterKind,
         amount: AmountValue,
     },
+    /// Reveal the exact target. If it's a creature card that can turn face up, offer the next instruction.
+    RevealFaceDownTargetAndMayTurnUp,
+    /// Turn the exact face-down target up as an effect, without a special-action payment.
+    TurnTargetFaceUp,
     /// When this exact target dies this turn, its controller's spell manifests dread.
     ManifestDreadWhenTargetDies,
     DestroyAndCreateForController {
@@ -7306,6 +7311,7 @@ pub enum TriggerCondition {
     SelfTurnedFaceUp,
     #[cfg_attr(not(test), allow(dead_code))]
     PermanentYouControlTurnedFaceUp,
+    YouTurnPermanentFaceUp,
     YouManifestDread,
     CreatureExploresCardYou {
         land: bool,

@@ -55,6 +55,7 @@ impl Game {
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
+                            | TriggerCondition::YouTurnPermanentFaceUp
                             | TriggerCondition::YouManifestDread
                     )
             }) {

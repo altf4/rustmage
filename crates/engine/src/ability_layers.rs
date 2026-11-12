@@ -131,6 +131,8 @@ pub enum StaticAbilityFragment {
     ActivatedPermanentKindsProhibited(u16),
     /// The exact attached permanent's activated abilities cannot be activated.
     AttachedActivationsProhibited,
+    /// The exact attached permanent cannot be turned face up.
+    AttachedFaceUpProhibited,
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
