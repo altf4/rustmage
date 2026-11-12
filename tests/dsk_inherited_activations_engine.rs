@@ -472,7 +472,7 @@ fn inherited_link_action(game: &Game, source: CardId, donor: CardId, ability: u1
     )
 }
 
-fn exile_with_inherited_link(game: &mut Game, source: CardId, donor: CardId, victim: CardId) {
+fn queue_inherited_exile(game: &mut Game, source: CardId, donor: CardId, victim: CardId) {
     game.state.objects[source as usize].tapped = false;
     let action = inherited_link_action(game, source, donor, 0);
     act(game, action);
@@ -483,6 +483,10 @@ fn exile_with_inherited_link(game: &mut Game, source: CardId, donor: CardId, vic
         },
     );
     pay(game);
+}
+
+fn exile_with_inherited_link(game: &mut Game, source: CardId, donor: CardId, victim: CardId) {
+    queue_inherited_exile(game, source, donor, victim);
     settle(game);
     assert_eq!(game.object_view(victim).zone, Zone::Exile);
 }
@@ -598,4 +602,90 @@ fn a_pair_inherited_through_another_creature_uses_its_own_linked_cohort() {
     assert_eq!(game.object_view(newer).zone, Zone::Graveyard);
     assert_eq!(game.object_view(direct).zone, Zone::Exile);
     assert_eq!(game.object_view(indirect).zone, Zone::Battlefield);
+}
+
+#[test]
+fn reanimation_breaks_an_inherited_link_only_if_the_donor_stops_being_a_creature() {
+    let mimic = named("Grizzly Bears");
+    let _rules = fixture_rules::activate(&[(mimic, &MIMIC)]);
+    for interrupted in [true, false] {
+        let mut game = scenario(PLAYER);
+        let source = spawn(&mut game, PLAYER, mimic, Zone::Battlefield);
+        let vacuum = put(&mut game, PLAYER, "Ghost Vacuum", Zone::Battlefield);
+        let donor = game.object_ref(vacuum);
+        put(&mut game, PLAYER, "High Fae Trickster", Zone::Battlefield);
+        let first_animation = put(&mut game, PLAYER, "Puppet Crafting", Zone::Hand);
+        let second_animation = put(&mut game, PLAYER, "Puppet Crafting", Zone::Hand);
+        let removal = put(&mut game, PLAYER, "Disenchant", Zone::Hand);
+        let [old_victim, queued_victim, new_victim] = ["Hill Giant", "Healer's Hawk", "Bear Cub"]
+            .map(|name| put(&mut game, PLAYER.other(), name, Zone::Graveyard));
+        let cohort = |game: &Game, card| {
+            game.observe(PLAYER)
+                .linked_exile
+                .into_iter()
+                .find(|row| row.exiled == game.object_ref(card))
+                .unwrap()
+                .acquired_link_cohort
+                .unwrap()
+        };
+
+        cast(&mut game, first_animation, Some(Target::Card(vacuum)));
+        settle(&mut game);
+        let actions = [0, 1].map(|ability| inherited_link_action(&game, source, vacuum, ability));
+        exile_with_inherited_link(&mut game, source, vacuum, old_victim);
+        let old_cohort = cohort(&game, old_victim);
+        queue_inherited_exile(&mut game, source, vacuum, queued_victim);
+        let queued = game.state.stack.last().unwrap().id;
+        let resolve_above_queued = |game: &mut Game| {
+            act(game, Action::Pass);
+            act(game, Action::Pass);
+            assert_eq!(game.state.stack.len(), 1);
+            let pending = &game.state.stack[0];
+            assert_eq!(pending.id, queued);
+            assert_eq!(pending.acquired_link_cohort, Some(old_cohort));
+        };
+        let reanimate = |game: &mut Game| {
+            cast(game, second_animation, Some(Target::Card(vacuum)));
+            resolve_above_queued(game);
+        };
+
+        if !interrupted {
+            reanimate(&mut game);
+        }
+        cast(&mut game, removal, Some(Target::Card(first_animation)));
+        resolve_above_queued(&mut game);
+        assert_eq!(game.is_creature(vacuum), !interrupted);
+        assert_eq!(game.object_ref(vacuum), donor);
+        if interrupted {
+            assert!(
+                inherited(&game, source)
+                    .iter()
+                    .all(|row| row.donor != donor)
+            );
+            reanimate(&mut game);
+        }
+        assert_eq!(
+            [0, 1].map(|ability| inherited_link_action(&game, source, vacuum, ability)),
+            actions
+        );
+        settle(&mut game);
+        assert_eq!(cohort(&game, queued_victim), old_cohort);
+
+        exile_with_inherited_link(&mut game, source, vacuum, new_victim);
+        assert_eq!(cohort(&game, new_victim) != old_cohort, interrupted);
+        game.state.objects[source as usize].tapped = false;
+        act(&mut game, actions[1].clone());
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(new_victim).zone, Zone::Battlefield);
+        for old in [old_victim, queued_victim] {
+            let destination = if interrupted {
+                Zone::Exile
+            } else {
+                Zone::Battlefield
+            };
+            assert_eq!(game.object_view(old).zone, destination);
+        }
+    }
 }

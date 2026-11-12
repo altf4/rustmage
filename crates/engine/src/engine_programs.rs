@@ -4326,6 +4326,7 @@ impl Game {
             {
                 return;
             }
+            self.refresh_inherited_link_continuity();
             if self.advance_manifest_dread() {
                 return;
             }

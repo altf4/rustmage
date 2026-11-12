@@ -10,8 +10,17 @@ fn is_false(value: &bool) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
 // The layer evaluator and exile/graveyard inventory provision slots independently.
-// Reserve separate ranges below the exact JSON integer limit.
+// Reserve separate ranges below the exact JSON integer limit. Fresh inherited
+// link cohorts share the inherited range with slots so the two cannot alias.
 const INHERITED_SLOT_BASE: u64 = 1 << 52;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(super) struct LinkCohort {
+    id: u64,
+    paired: bool,
+    live: bool,
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -24,6 +33,7 @@ pub(super) struct SlotRow {
     ability: u16,
     slot: u64,
     inherited: Option<inherited_activations::Acquisition>,
+    link: Option<LinkCohort>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type SlotRows = Option<SharedVec<SlotRow>>;
@@ -87,7 +97,7 @@ pub(super) struct Descriptor {
     pub definition: Card,
     pub ability: u16,
     pub slot: u64,
-    pub(super) link_cohort: u64,
+    pub(super) link: Option<LinkCohort>,
     pub used: bool,
     pub once_per_turn: bool,
     pub(super) acquisition: u64,
@@ -97,6 +107,10 @@ pub(super) struct Descriptor {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Descriptor {
+    pub(super) fn link_cohort(self) -> u64 {
+        self.link.map_or(self.slot, |link| link.id)
+    }
+
     pub(super) fn rules(self) -> &'static ActivatedAbility {
         self.definition.activation(self.ability)
     }
@@ -172,6 +186,7 @@ impl Descriptor {
             ability: self.ability,
             slot: self.slot,
             inherited: self.inherited,
+            link: self.inherited.and(self.link),
         }
     }
 }
@@ -319,7 +334,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: index as u16,
                 slot,
-                link_cohort: 0,
+                link: None,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -346,7 +361,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     definition: card.card,
                     ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
-                    link_cohort: 0,
+                    link: None,
                     used: false,
                     once_per_turn: link.once_per_turn,
                     acquisition: link.first_slot,
@@ -366,7 +381,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: u16::MAX,
                 slot,
-                link_cohort: 0,
+                link: None,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -389,7 +404,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
     result
 }
 
-// Existing rows are immutable. New candidate rows receive provisional compact
+// Existing slot identities stay stable. New candidates receive provisional
 // slots in inventory order, the same order used when persisting the registry.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Descriptor]) {
@@ -407,50 +422,91 @@ pub(super) fn assign_slot<W: CharacteristicWorld + ?Sized>(
 ) {
     let mut desired = ability.slot_row();
     let inherited = desired.inherited.is_some();
-    let slot = rows.iter().find(|row| row.matches(desired)).map_or_else(
-        || {
-            let slot = rows
-                .iter()
-                .filter(|row| row.source == desired.source && row.inherited.is_some() == inherited)
-                .map(|row| row.slot)
-                .max()
-                .map_or_else(
-                    || if inherited { INHERITED_SLOT_BASE } else { 0 },
-                    |slot| {
-                        slot.checked_add(1)
-                            .capacity("borrowed ability slots exhausted")
-                    },
-                );
-            (slot
-                < if inherited {
-                    2 * INHERITED_SLOT_BASE
-                } else {
-                    INHERITED_SLOT_BASE
-                })
-            .then_some(slot)
-            .capacity("borrowed ability slots exhausted")
-        },
-        |row| row.slot,
-    );
-    ability.slot = slot;
-    ability.used = world.borrowed_activation_used(ability.source, slot);
-    desired.slot = slot;
-    if !rows.contains(&desired) {
+    ability.slot = if let Some(old) = rows.iter().find(|row| row.matches(desired)) {
+        old.slot
+    } else {
+        desired.slot = next_identity(rows, desired.source, inherited);
         rows.push(desired);
+        desired.slot
+    };
+    ability.used = world.borrowed_activation_used(ability.source, ability.slot);
+    if !inherited && paired_ghost_activation(ability.definition, ability.ability) {
+        ability.link = rows
+            .iter()
+            .filter(|row| {
+                row.shares_link_cohort(desired)
+                    && paired_ghost_activation(ability.definition, row.ability)
+            })
+            .map(|row| row.slot)
+            .min()
+            .map(|id| LinkCohort {
+                id,
+                paired: true,
+                live: true,
+            });
     }
-    ability.link_cohort = desired
-        .definition
-        .filter(|&definition| paired_ghost_activation(definition, desired.ability))
-        .and_then(|definition| {
-            rows.iter()
-                .filter(|row| {
-                    row.shares_link_cohort(desired)
-                        && paired_ghost_activation(definition, row.ability)
-                })
-                .map(|row| row.slot)
-                .min()
-        })
-        .unwrap_or(slot);
+}
+
+fn next_identity(rows: &[SlotRow], source: ObjectRef, inherited: bool) -> u64 {
+    let start = if inherited { INHERITED_SLOT_BASE } else { 0 };
+    let identity = rows
+        .iter()
+        .filter(|row| row.source == source && row.inherited.is_some() == inherited)
+        .map(|row| row.link.map_or(row.slot, |link| row.slot.max(link.id)))
+        .max()
+        .map_or(start, |previous| previous + 1);
+    (identity < start + INHERITED_SLOT_BASE)
+        .then_some(identity)
+        .capacity("borrowed ability slots exhausted")
+}
+
+/// CR607.5: an uninterrupted set of granted abilities shares one link. A new
+/// grant after losing it uses a different cohort even if its action slots match.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn assign_inherited_links(rows: &mut Vec<SlotRow>, abilities: &mut [Descriptor]) {
+    for index in 0..abilities.len() {
+        let ability = abilities[index];
+        if ability.link.is_some() || !paired_ghost_activation(ability.definition, ability.ability) {
+            continue;
+        }
+        let desired = ability.slot_row();
+        let counterpart = ((index + 1)..abilities.len()).find(|&other| {
+            let other = abilities[other];
+            other.link.is_none()
+                && other.ability != ability.ability
+                && desired.shares_link_cohort(other.slot_row())
+                && paired_ghost_activation(other.definition, other.ability)
+        });
+        let paired = counterpart.is_some();
+        let id = rows
+            .iter()
+            .filter(|row| row.shares_link_cohort(desired) && (paired || row.matches(desired)))
+            .find_map(|row| {
+                row.link
+                    .filter(|link| link.live && link.paired == paired)
+                    .map(|link| link.id)
+            })
+            .unwrap_or_else(|| next_identity(rows, ability.source, true));
+        let link = Some(LinkCohort {
+            id,
+            paired,
+            live: true,
+        });
+        abilities[index].link = link;
+        remember_slot(rows, abilities[index].slot_row());
+        if let Some(counterpart) = counterpart {
+            abilities[counterpart].link = link;
+            remember_slot(rows, abilities[counterpart].slot_row());
+        }
+    }
+}
+
+fn remember_slot(rows: &mut Vec<SlotRow>, row: SlotRow) {
+    if let Some(old) = rows.iter_mut().find(|old| old.matches(row)) {
+        *old = row;
+    } else {
+        rows.push(row);
+    }
 }
 
 // ReturnLinkedGhosts is the paired reader for one exact graveyard-exile
@@ -474,11 +530,18 @@ fn paired_ghost_activation(definition: Card, index: u16) -> bool {
 
 impl SlotRow {
     fn matches(&self, other: Self) -> bool {
-        *self
-            == Self {
-                slot: self.slot,
-                ..other
-            }
+        self.slot_identity() == other.slot_identity()
+    }
+
+    fn slot_identity(self) -> Self {
+        Self {
+            slot: 0,
+            link: None,
+            inherited: self
+                .inherited
+                .map(inherited_activations::Acquisition::slot_identity),
+            ..self
+        }
     }
 
     fn shares_link_cohort(&self, other: Self) -> bool {
@@ -513,22 +576,22 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
             world.object(row.source.card).zone == Zone::Battlefield
                 && world.reference(row.source.card) == row.source
         })
+        .map(|mut row| {
+            if let Some(link) = &mut row.link {
+                link.live = false;
+            }
+            row
+        })
         .collect();
     for id in source_ids(world, true) {
         for ability in inventory(world, id, InventoryStage::Registry) {
-            let row = ability.slot_row();
-            if !rows.iter().any(|old| old.matches(row)) {
-                rows.push(row);
-            }
+            remember_slot(&mut rows, ability.slot_row());
         }
     }
     if has_inheritance {
         for object in ability_evaluation::evaluate_inherited(world).result.objects {
             for ability in object.inherited {
-                let row = ability.slot_row();
-                if !rows.iter().any(|old| old.matches(row)) {
-                    rows.push(row);
-                }
+                remember_slot(&mut rows, ability.slot_row());
             }
         }
     }
@@ -539,6 +602,16 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn refresh_inherited_link_continuity(&mut self) {
+        if self
+            .borrowed_slots()
+            .iter()
+            .any(|row| row.link.is_some_and(|link| link.live))
+        {
+            self.state.borrowed_slots = refreshed_slots(self);
+        }
+    }
+
     pub(super) fn exile_and_borrow_activated_abilities(&mut self, item: &SpellView) {
         let ids: Vec<_> = item
             .targets
@@ -650,8 +723,8 @@ impl Game {
             self.copiable_recipe(item.source.expect("activated ability has source").object),
         ));
         item.borrowed_slot = Some(descriptor.slot);
-        item.acquired_link_cohort =
-            (descriptor.link_cohort != descriptor.slot).then_some(descriptor.link_cohort);
+        let cohort = descriptor.link_cohort();
+        item.acquired_link_cohort = (cohort != descriptor.slot).then_some(cohort);
         item
     }
     pub(super) fn activate_borrowed_mana(

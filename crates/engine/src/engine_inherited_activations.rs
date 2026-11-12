@@ -43,6 +43,21 @@ pub(super) struct Acquisition {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Acquisition {
+    pub(super) fn slot_identity(self) -> Self {
+        let ability = match self.ability {
+            DonorAbility::Borrowed { slot, .. } => DonorAbility::Borrowed {
+                slot,
+                link_cohort: 0,
+            },
+            DonorAbility::Inherited { slot, .. } => DonorAbility::Inherited {
+                slot,
+                link_cohort: 0,
+            },
+            unchanged => unchanged,
+        };
+        Self { ability, ..self }
+    }
+
     pub(super) fn shares_link_cohort(self, other: Self) -> bool {
         self.borrower_origin == other.borrower_origin
             && self.line == other.line
@@ -354,7 +369,7 @@ impl DonorInventory {
                             ability.ability,
                             DonorAbility::Borrowed {
                                 slot: ability.slot,
-                                link_cohort: ability.link_cohort,
+                                link_cohort: ability.link_cohort(),
                             },
                         )
                     })
@@ -392,7 +407,7 @@ impl DonorInventory {
                         ability.ability,
                         DonorAbility::Inherited {
                             slot: ability.slot,
-                            link_cohort: ability.link_cohort,
+                            link_cohort: ability.link_cohort(),
                         },
                     )
                 })
@@ -514,7 +529,7 @@ impl DonorInventories {
                     definition: template.definition,
                     ability: template.ability,
                     slot: 0,
-                    link_cohort: 0,
+                    link: None,
                     used: false,
                     once_per_turn: false,
                     acquisition: 0,
@@ -535,6 +550,7 @@ impl DonorInventories {
                 false
             });
         }
+        borrowed_activations::assign_inherited_links(slots, &mut inherited);
         objects[recipient as usize].inherited.extend(inherited);
     }
 }
