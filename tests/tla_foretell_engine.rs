@@ -75,6 +75,8 @@ fn foretell_is_a_private_priority_special_action_with_owned_payment() {
     let spell = put(&mut game, player, INSTANT, Zone::Hand);
     let object = game.object_ref(card);
     game.remember_public_hand(object);
+    let known_land = put(&mut game, player, "Forest", Zone::Hand);
+    game.remember_public_hand(game.object_ref(known_land));
     cast(&mut game, spell, None);
     assert_eq!(game.state.stack.len(), 1);
 
@@ -117,6 +119,7 @@ fn foretell_is_a_private_priority_special_action_with_owned_payment() {
     assert_ne!(game.object_ref(card), object);
     assert!(visible(&game, player, card));
     assert!(!visible(&game, player.other(), card));
+    assert!(visible(&game, player.other(), known_land));
 
     let private = game.observe(player).foretold_cards[0];
     let public = game.observe(player.other()).foretold_cards[0];
@@ -211,4 +214,111 @@ fn foretell_cast_uses_later_timing_and_the_exact_alternative() {
         game.observe(player.other()).foretold_cards[0].object,
         Some(exiled_instant)
     );
+}
+
+const MANA_SACRIFICE: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    activated: &[ActivatedAbility {
+        guard: ActivationGuard::Always,
+        cycling: false,
+        exhaust: false,
+        once_per_turn: false,
+        origin: ActivationOrigin::Battlefield,
+        sorcery: false,
+        cost: ActivationCost {
+            tap: true,
+            sacrifice: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 1, 0, 0,
+        ]))],
+    }],
+    ..CardRules::EMPTY
+};
+const OPTIONAL_COPY: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    extras: &CardExtras {
+        entry_copy: Some(EntryCopySpec {
+            filters: &[BattlefieldFilter {
+                kinds: 17,
+                relation: 0,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
+                subtype: None,
+                max_mana: u32::MAX,
+            }],
+            optional: true,
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn foretell_rewinds_an_unpayable_foreign_mana_choice_to_the_exact_hand_card() {
+    use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
+
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name(SORCERY).unwrap(), &FORETELL),
+        (Card::from_name("Bear Cub").unwrap(), &MANA_SACRIFICE),
+        (Card::GrizzlyBears, &OPTIONAL_COPY),
+    ]);
+    let player = Player::P0;
+    let other = player.other();
+    let mut game = scenario(player);
+    let card = put(&mut game, player, SORCERY, Zone::Hand);
+    let sacrifice = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let green = put(&mut game, player, "Druid of the Cowl", Zone::Battlefield);
+    let enchanted = put(&mut game, other, "Hill Giant", Zone::Battlefield);
+    let aura = put(&mut game, other, "Witness Protection", Zone::Battlefield);
+    let blueprint = game.object_ref(aura);
+    game.state.objects[aura as usize].attached_to = Some(game.object_ref(enchanted));
+    game.change_object_form(
+        blueprint,
+        AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        AnimationTypeMode::PreserveCardTypes,
+    );
+    let returning = put(&mut game, other, "Grizzly Bears", Zone::Exile);
+    game.state.exile_links.push(ExileLink {
+        ability_origin: None,
+        source: game.object_ref(sacrifice),
+        exiled: game.object_ref(returning),
+        return_zone: Zone::Battlefield,
+    });
+    game.state.players[player.index()].mana = [0; 6];
+    let object = game.object_ref(card);
+    let foretell = Action::AnnounceForetell { object };
+    act(&mut game, foretell.clone());
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, ability: 0, .. } if *card == sacrifice),
+    );
+    assert_eq!(game.actor(), Some(other));
+    act(
+        &mut game,
+        Action::ChooseEntryCopy {
+            object: Some(blueprint),
+        },
+    );
+    let green = game.object_ref(green);
+    act(&mut game, Action::ChooseAuraAttachment { object: green });
+    assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
+    for keep in [false, true] {
+        let mut branch = game.clone();
+        act(&mut branch, Action::ChooseManaRollback { keep });
+        assert_eq!(branch.actor(), Some(player));
+        assert_eq!(branch.object_ref(card), object);
+        assert_eq!(branch.object_view(card).zone, Zone::Hand);
+        assert!(branch.observe(other).foretold_cards.is_empty());
+        assert_eq!(branch.legal_actions().contains(&foretell), !keep);
+    }
 }

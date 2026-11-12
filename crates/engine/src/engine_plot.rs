@@ -398,7 +398,9 @@ impl Game {
     }
 
     fn foretell(&mut self, request: PlotPaymentView) {
-        self.obscure_private_hand_selection(request.controller);
+        self.obscure_private_hand_selection_matching(request.controller, |card| {
+            card.foretell_cost().is_some()
+        });
         let event = self.move_object_raw(request.object.card, Zone::Exile);
         if event.moved && event.destination == Zone::Exile && event.was_card {
             self.remember_face_down_exile(event.after, 1 << request.controller.index(), None);

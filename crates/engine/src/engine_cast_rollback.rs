@@ -164,6 +164,14 @@ impl Game {
     // A private choice may move any of the choosing player's hand cards.
     // Keeping a public reference for an unchosen card would disclose that choice.
     pub(super) fn obscure_private_hand_selection(&mut self, player: Player) {
+        self.obscure_private_hand_selection_matching(player, |_| true);
+    }
+
+    pub(super) fn obscure_private_hand_selection_matching(
+        &mut self,
+        player: Player,
+        matches: impl Fn(Card) -> bool,
+    ) {
         if self.state.cast_rollback.is_some() {
             let candidates: Vec<_> = self
                 .state
@@ -171,8 +179,11 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, object)| {
-                    (object.zone == Zone::Hand && object.owner == player && object.is_card())
-                        .then_some(id as CardId)
+                    (object.zone == Zone::Hand
+                        && object.owner == player
+                        && object.is_card()
+                        && matches(object.card))
+                    .then_some(id as CardId)
                 })
                 .collect();
             for id in candidates {
@@ -182,7 +193,8 @@ impl Game {
         let objects = &self.state.objects;
         self.state.known_hand.retain(|reference| {
             objects.get(reference.card as usize).is_some_and(|object| {
-                object.owner != player && object.generation == reference.generation
+                object.generation == reference.generation
+                    && (object.owner != player || !matches(object.card))
             })
         });
     }
