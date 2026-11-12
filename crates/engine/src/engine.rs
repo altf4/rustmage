@@ -8520,8 +8520,13 @@ impl Game {
                 flash_surcharge,
                 permission,
             } => {
-                let mut item = self.cast_item(actor, object.card, [0; 6]);
-                self.set_cast_face(&mut item, face);
+                let mut item = if method == CastMethod::Disguise {
+                    self.cast_disguised_item(actor, object.card)
+                } else {
+                    let mut item = self.cast_item(actor, object.card, [0; 6]);
+                    self.set_cast_face(&mut item, face);
+                    item
+                };
                 let cast = item.cast.as_mut().unwrap();
                 cast.method = method;
                 cast.flash_surcharge = flash_surcharge;

@@ -1813,6 +1813,13 @@ impl Game {
     }
 }
 
+impl CastDepartureWorld<'_> {
+    pub(super) fn with_definition(mut self, definition: Card) -> Self {
+        self.spell.card = definition;
+        self
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CharacteristicWorld for CastDepartureWorld<'_> {
     fn game(&self) -> &Game {
