@@ -84,7 +84,9 @@ fn the_selected_card_is_private_until_payment_and_its_frozen_type_survives_resto
         exiled: game.object_ref(foreign),
         return_zone: Zone::Battlefield,
     });
-    let before = game.snapshot();
+    // An aborted cast restores the hand while retaining the spell's public identity.
+    let mut expected_abort = game.clone();
+    expected_abort.state.known_hand.push(game.object_ref(spell));
     act(&mut game, Action::AnnounceCast { card: spell });
     let invalid = discard(&game, enemy);
     reject(&mut game, invalid);
@@ -103,7 +105,7 @@ fn the_selected_card_is_private_until_payment_and_its_frozen_type_survives_resto
     let mut aborted = raw.clone();
     assert!(aborted.state.cast_rollback.is_some());
     aborted.finish_cast_rollback(false);
-    assert_eq!(aborted.snapshot(), before);
+    assert_eq!(aborted.snapshot(), expected_abort.snapshot());
 
     game.apply_index(player, revision, index).unwrap();
     assert_eq!(game.snapshot(), raw.snapshot());
