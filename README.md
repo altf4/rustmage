@@ -66,13 +66,13 @@ python scripts/validate.py --release --python smoke
 
 ## Standard set tracker
 
-**16 / 20 sets complete · 80%**
+**18 / 20 sets complete · 90%**
 
-`████████████████░░░░`
+`██████████████████░░`
 
-**4,469 / 5,163 unique Standard cards supported in this checkout · 87%**
+**4,795 / 5,163 unique Standard cards supported in this checkout · 93%**
 
-`█████████████████░░░`
+`███████████████████░`
 
 Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 ([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
@@ -90,7 +90,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
 | Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
 | Bloomburrow | BLB | 279/279 (100%) | ✅ Complete |
-| Duskmourn: House of Horror | DSK | 91/276 (33%) | ⏳ Partial |
+| Duskmourn: House of Horror | DSK | 276/276 (100%) | ✅ Complete |
 | Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |
 | Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |
 | Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
