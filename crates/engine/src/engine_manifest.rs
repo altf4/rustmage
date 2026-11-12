@@ -64,6 +64,7 @@ pub enum FaceDownCause {
     Disguise,
     Manifest,
     Cloak,
+    OtherEffect,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -71,7 +72,7 @@ impl FaceDownCause {
     pub(super) fn definition(self) -> Card {
         let identity = match self {
             Self::Disguise | Self::Cloak => "@face-down/disguise",
-            Self::Manifest => "@face-down/manifest",
+            Self::Manifest | Self::OtherEffect => "@face-down/manifest",
         };
         Card::from_name(identity).expect("pinned face-down definition")
     }
@@ -818,7 +819,8 @@ impl Game {
                 .map_or(source.card, |grant| grant.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::SelfTurnedFaceUp => source.reference == object,
+                    TriggerCondition::SelfTurnedFaceUp
+                    | TriggerCondition::SelfEntersOrTurnsFaceUp => source.reference == object,
                     TriggerCondition::SelfOrControlledCreatureTurnedFaceUp => {
                         source.reference == object || (creature && source.controller == controller)
                     }
@@ -1148,6 +1150,25 @@ impl Game {
             known,
         });
         Some(movement)
+    }
+
+    pub(super) fn return_departed_permanent_face_down(&mut self, item: &SpellView) {
+        let Some(EventObjectFacts::DepartureArrival(object)) =
+            item.event_object.as_ref().map(|event| &event.facts)
+        else {
+            return;
+        };
+        let current = &self.state.objects[object.card as usize];
+        if current.zone != Zone::Graveyard
+            || current.card.kind_mask() & crate::cards::PERMANENT_KINDS == 0
+        {
+            return;
+        }
+        if let Some(movement) =
+            self.face_down_entry(*object, current.owner, FaceDownCause::OtherEffect, true)
+        {
+            self.stage_entries(vec![movement], None);
+        }
     }
 
     pub(super) fn cloak_library_top(&mut self, player: Player, owner: Player) {

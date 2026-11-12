@@ -45,6 +45,9 @@ impl DepartureRule {
         if !self.destinations.is_empty() && !self.destinations.contains(&event.destination) {
             return false;
         }
+        if self.face_down && !event.was_face_down {
+            return false;
+        }
         let before = &event.before;
         let counters_match = match self.counters {
             DepartureCounters::Unrestricted => true,
@@ -331,7 +334,12 @@ impl Game {
         event: &ZoneChange,
         program: &[Instruction],
     ) {
-        let facts = if program.iter().any(|instruction| {
+        let facts = if event.destination == Zone::Graveyard
+            && event.was_card
+            && program.contains(&Instruction::ReturnDepartedPermanentFaceDown)
+        {
+            EventObjectFacts::DepartureArrival(event.after)
+        } else if program.iter().any(|instruction| {
             matches!(
                 instruction,
                 Instruction::ExileDeathCounterTotalUntilNextEnd

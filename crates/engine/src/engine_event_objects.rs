@@ -49,6 +49,7 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    DepartureArrival(ObjectRef),
     /// The live entrant's value, refreshed immediately before it departs.
     BattlefieldManaValue(u64),
     DiscardedManaValue(u64),
@@ -438,6 +439,7 @@ impl Game {
                     | EventObjectFacts::UntapStepCount(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::DepartureArrival(_)
                     | EventObjectFacts::DiscardedManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. }

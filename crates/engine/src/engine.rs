@@ -3662,6 +3662,7 @@ struct ZoneObservers {
 pub struct ZoneChange {
     /// Whether the departing object was represented by a physical card.
     pub(super) was_card: bool,
+    pub(super) was_face_down: bool,
     pub(super) granted_departure_mana_value: u64,
     /// Additional life gain from the exact chosen death replacement.
     pub(super) linked_exile_life: Option<(Player, u8)>,
@@ -10841,6 +10842,7 @@ impl Game {
         if plan.prevented {
             return ZoneChange {
                 was_card,
+                was_face_down: false,
                 granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
@@ -10899,6 +10901,7 @@ impl Game {
         {
             return ZoneChange {
                 was_card,
+                was_face_down: false,
                 granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
@@ -10932,6 +10935,7 @@ impl Game {
             self.shuffle_zone_card(&before, shuffle);
             return ZoneChange {
                 was_card,
+                was_face_down: false,
                 granted_departure_mana_value: 0,
                 linked_exile_life: None,
                 melded_after: None,
@@ -11519,6 +11523,7 @@ impl Game {
         }
         ZoneChange {
             was_card,
+            was_face_down: manifested_physical.is_some(),
             granted_departure_mana_value,
             linked_exile_life,
             melded_after,

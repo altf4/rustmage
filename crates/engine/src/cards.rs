@@ -3694,6 +3694,9 @@ pub enum Instruction {
     TurnTargetFaceUp,
     /// Attempt to turn the exact source face up. Exile it on failure and remember the actual result.
     TurnSourceFaceUpOrExile,
+    /// Return the actual permanent card that entered a graveyard in this event.
+    ReturnDepartedPermanentFaceDown,
+    TurnEntryResultFaceUp,
     LookAtOpposingFaceDownCreaturesUntilEndOfTurn,
     /// Place counters on the exact permanent from this trigger's event.
     PutCountersOnEventPermanent {
@@ -7172,6 +7175,7 @@ pub enum DamageSubject {
     /// Controlled battlefield sources with any of these effective subtypes at the event.
     ControlledSubtypes(&'static [&'static str]),
     ControlledLegendaryCreatures,
+    ControlledFaceDownCreatures,
     Source,
     Attached,
     Creatures {
@@ -7279,6 +7283,8 @@ pub struct DepartureRule {
     pub nontoken: bool,
     /// Only a creature that was modified before the departure event.
     pub modified: bool,
+    /// The object had face-down status immediately before it left.
+    pub face_down: bool,
     pub counters: DepartureCounters,
     pub minimum_power: Option<i32>,
 }
@@ -7293,6 +7299,7 @@ impl DepartureRule {
         destinations: &[],
         nontoken: false,
         modified: false,
+        face_down: false,
         counters: DepartureCounters::Unrestricted,
         minimum_power: None,
     };
@@ -7673,6 +7680,7 @@ pub enum TriggerCondition {
     // Only the gated observer fixture currently constructs these triggers.
     #[cfg_attr(not(test), allow(dead_code))]
     SelfTurnedFaceUp,
+    SelfEntersOrTurnsFaceUp,
     #[cfg_attr(not(test), allow(dead_code))]
     PermanentYouControlTurnedFaceUp,
     SelfOrControlledCreatureTurnedFaceUp,

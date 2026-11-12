@@ -86,6 +86,12 @@ impl Game {
                         .iter()
                         .any(|subtype| dealer.facts.has_subtype(subtype))
             }
+            DamageSubject::ControlledFaceDownCreatures => {
+                dealer.facts.battlefield
+                    && dealer.controller == source.controller
+                    && dealer.facts.is_creature()
+                    && self.is_face_down(dealer.reference)
+            }
             DamageSubject::ControlledLegendaryCreatures => {
                 dealer.controller == source.controller && dealer.facts.legendary_creature
             }

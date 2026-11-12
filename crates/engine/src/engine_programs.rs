@@ -1116,6 +1116,7 @@ impl Game {
                     TriggerCondition::SelfEnters
                     | TriggerCondition::SelfEntersOrBecomesTapped
                     | TriggerCondition::SelfEntersOrTransforms
+                    | TriggerCondition::SelfEntersOrTurnsFaceUp
                     | TriggerCondition::SelfEntersOrAttacks
                     | TriggerCondition::SelfEntersOrAttacksWhileSaddled
                     | TriggerCondition::SelfEntersOrDies => same,
@@ -5706,6 +5707,14 @@ impl Game {
                 }
                 Instruction::TurnTargetFaceUp => {
                     if let Some(object) = self.first_bound_face_down_permanent(&item) {
+                        self.turn_manifest_face_up(object, item.controller);
+                    }
+                }
+                Instruction::ReturnDepartedPermanentFaceDown => {
+                    self.return_departed_permanent_face_down(&item);
+                }
+                Instruction::TurnEntryResultFaceUp => {
+                    if let Some(object) = self.captured_entry_result() {
                         self.turn_manifest_face_up(object, item.controller);
                     }
                 }
