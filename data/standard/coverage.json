@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8828d9efc063448e5a89b8a45027828e3f1ce3133e28b7d1cdde86fec15ead74",
+  "catalogue_version": "a96c12929e4e626562b1b9807240faf48170e8a85e3df631624ac0eb2aee59f1",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4773,
-  "implemented_total": 4790,
+  "implemented_standard_cards": 4784,
+  "implemented_total": 4801,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 242,
-      "gated": 22
+      "complete": 253,
+      "gated": 11
     },
     "ecc": {
       "total": 7,
@@ -3092,8 +3092,8 @@
     {
       "name": "Beastie Beatdown",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/beastie_beatdown.rs",
       "set": "dsk"
     },
@@ -4484,8 +4484,8 @@
     {
       "name": "Break Down the Door",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/break_down_the_door.rs",
       "set": "dsk"
     },
@@ -6940,8 +6940,8 @@
     {
       "name": "Coordinated Clobbering",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/coordinated_clobbering.rs",
       "set": "dsk"
     },
@@ -11892,8 +11892,8 @@
     {
       "name": "Fear of Exposure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_exposure.rs",
       "set": "dsk"
     },
@@ -16844,8 +16844,8 @@
     {
       "name": "House Cartographer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/house_cartographer.rs",
       "set": "dsk"
     },
@@ -20052,8 +20052,8 @@
     {
       "name": "Leyline of Mutation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/leyline_of_mutation.rs",
       "set": "dsk"
     },
@@ -22876,8 +22876,8 @@
     {
       "name": "Monstrous Emergence",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/monstrous_emergence.rs",
       "set": "dsk"
     },
@@ -24732,8 +24732,8 @@
     {
       "name": "Overgrown Zealot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/overgrown_zealot.rs",
       "set": "dsk"
     },
@@ -28452,8 +28452,8 @@
     {
       "name": "Rip, Spawn Hunter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/rip_spawn_hunter.rs",
       "set": "dsk"
     },
@@ -29804,8 +29804,8 @@
     {
       "name": "Sawblade Skinripper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/sawblade_skinripper.rs",
       "set": "dsk"
     },
@@ -38068,8 +38068,8 @@
     {
       "name": "Tyvar, the Pummeler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/tyvar_the_pummeler.rs",
       "set": "dsk"
     },
