@@ -741,6 +741,9 @@ pub mod big_core;
 #[path = "engine_borrowed_activations.rs"]
 pub mod borrowed_activations;
 #[doc(hidden)]
+#[path = "engine_inherited_activations.rs"]
+pub mod inherited_activations;
+#[doc(hidden)]
 #[path = "engine_legendary_split_search.rs"]
 pub mod legendary_split_search;
 #[doc(hidden)]
@@ -756,6 +759,7 @@ pub use outside_choices::{
 pub mod outside_names;
 use borrowed_activations::Descriptor as BorrowedDescriptor;
 pub use borrowed_activations::{BorrowedAbilityView, GraveyardBorrowedAbilityView};
+pub use inherited_activations::InheritedAbilityView;
 #[doc(hidden)]
 #[path = "engine_graveyard_borrowing.rs"]
 pub mod graveyard_borrowing;
@@ -1180,6 +1184,9 @@ define_actions! {
     AnnounceBorrowedAbility { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters },
     AnnounceBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, production: Mana },
     ActivateBorrowedMana { card: CardId, exiled: ObjectRef, ability: u16, counter_payment: Counters, payment: Mana, production: Mana },
+    AnnounceInheritedAbility { source: ObjectRef, slot: u64, counter_payment: Counters },
+    AnnounceInheritedMana { source: ObjectRef, slot: u64, counter_payment: Counters, production: Mana },
+    ActivateInheritedMana { source: ObjectRef, slot: u64, counter_payment: Counters, payment: Mana, production: Mana },
     AnnounceActivate {
         card: CardId,
         ability: u16,
@@ -4233,6 +4240,8 @@ pub struct Observation {
     pub borrowed_abilities: Vec<BorrowedAbilityView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub graveyard_borrowed_abilities: Option<Vec<GraveyardBorrowedAbilityView>>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub inherited_abilities: Vec<InheritedAbilityView>,
     pub graveyard_cast_permissions: Vec<GraveyardCastPermissionView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub paid_graveyard_cast_permissions: Vec<PaidGraveyardCastPermission>,
@@ -8826,49 +8835,35 @@ impl Game {
                 payment,
                 production,
             } => {
-                let mut item = self.borrowed_activation_item(actor, card, exiled, ability);
-                if self.start_direct_mana_output(
-                    item.clone(),
-                    counter_payment.clone(),
-                    payment,
-                    production,
-                ) {
-                    return;
-                }
-                let quality = self
-                    .mana_quality(
-                        item.source
-                            .expect("cast or activated ability has a source")
-                            .card
-                            .activation(ability)
-                            .mana_production()
-                            .unwrap(),
-                        card,
-                    )
-                    .map(|quality| {
-                        quality.with_definition(
-                            item.source
-                                .expect("cast or activated ability has a source")
-                                .card,
-                        )
-                    });
-                if let Some(phase) = self.pay_activation(&mut item, payment, counter_payment) {
-                    self.suspend_activation_payment(
-                        item,
-                        phase,
-                        ActivationCostRoute::Printed,
-                        activations::ActivationPaymentCompletion::DirectMana {
-                            actor,
-                            card,
-                            production,
-                            quality,
-                        },
-                    );
-                } else {
-                    self.add_mana_tap_event(actor, item.tap_mana_bonus(self), production, quality);
-                    self.committed_mana_followups(&item);
-                    self.reopen_evidence_after_mana_sacrifice(card);
-                }
+                let item = self.borrowed_activation_item(actor, card, exiled, ability);
+                self.activate_borrowed_mana(item, counter_payment, payment, production);
+            }
+            Action::AnnounceInheritedAbility {
+                source,
+                slot,
+                counter_payment,
+            } => {
+                let item = self.inherited_activation_item(actor, source, slot);
+                self.open_payment_announcement(item, counter_payment, None);
+            }
+            Action::AnnounceInheritedMana {
+                source,
+                slot,
+                counter_payment,
+                production,
+            } => {
+                let item = self.inherited_activation_item(actor, source, slot);
+                self.open_payment_announcement(item, counter_payment, Some(production));
+            }
+            Action::ActivateInheritedMana {
+                source,
+                slot,
+                counter_payment,
+                payment,
+                production,
+            } => {
+                let item = self.inherited_activation_item(actor, source, slot);
+                self.activate_borrowed_mana(item, counter_payment, payment, production);
             }
             Action::AnnounceActivate {
                 card,
@@ -13086,6 +13081,7 @@ impl Game {
                 .collect(),
             borrowed_abilities: self.borrowed_ability_views(),
             graveyard_borrowed_abilities: self.graveyard_borrowed_ability_views(),
+            inherited_abilities: self.inherited_ability_views(),
             cascade: s
                 .resolving
                 .as_ref()

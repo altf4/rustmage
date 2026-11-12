@@ -442,12 +442,14 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceEmbalm { .. }
             | Action::AnnounceBorrowedAbility { .. }
+            | Action::AnnounceInheritedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
             | Action::AnnounceGrantedMana { .. }
             | Action::AnnounceGrantedManaTemplate { .. }
             | Action::AnnounceSelfGrantedMana { .. }
             | Action::AnnounceBorrowedMana { .. }
+            | Action::AnnounceInheritedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
@@ -657,6 +659,11 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 ..
             }
             | Action::ActivateBorrowedMana {
+                production,
+                payment,
+                ..
+            }
+            | Action::ActivateInheritedMana {
                 production,
                 payment,
                 ..

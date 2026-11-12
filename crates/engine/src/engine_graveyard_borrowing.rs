@@ -98,6 +98,15 @@ fn current_rows<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<R
     let Some(subtype) = source_subtype(world, id) else {
         return Vec::new();
     };
+    rows_for_subtype(world, id, subtype)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn rows_for_subtype<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+    subtype: &str,
+) -> Vec<Row> {
     let source = world.reference(id);
     let provider = world.object(id).card;
     let controller = world.object(id).controller;
@@ -207,8 +216,20 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<BorrowedDescriptor> {
+    let Some(subtype) = source_subtype(world, id) else {
+        return Vec::new();
+    };
+    inventory_for_subtype(world, id, subtype)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn inventory_for_subtype<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+    subtype: &str,
+) -> Vec<BorrowedDescriptor> {
     let mut result = Vec::new();
-    for row in current_rows(world, id) {
+    for row in rows_for_subtype(world, id, subtype) {
         for (index, _) in row.definition.activations().iter().enumerate() {
             let ability = index as u16;
             if row.definition.legacy_subtype_mana_activation(ability) {
@@ -232,6 +253,9 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 used: false,
                 once_per_turn: false,
                 acquisition: row.first_slot,
+                inherited: None,
+                mana: None,
+                attachment: None,
             });
         }
         for acquired in embalm::abilities(world, row.donor.card) {
@@ -246,6 +270,9 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 used: false,
                 once_per_turn: false,
                 acquisition: acquired.acquisition,
+                inherited: None,
+                mana: None,
+                attachment: None,
             });
         }
         if world.kinds(row.donor.card) & 2 != 0 {
@@ -269,6 +296,9 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     used: false,
                     once_per_turn: false,
                     acquisition: row.first_slot,
+                    inherited: None,
+                    mana: None,
+                    attachment: None,
                 });
             }
         }
@@ -285,6 +315,9 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 used: false,
                 once_per_turn: false,
                 acquisition: row.first_slot,
+                inherited: None,
+                mana: None,
+                attachment: None,
             });
         }
     }

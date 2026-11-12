@@ -80,11 +80,11 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
     let layered_grant = object.zone == Zone::Battlefield
         && ability_evaluation::evaluate_if_needed(world).is_some_and(|evaluation| {
             let current = &evaluation.result.objects[id as usize];
-            current.grants.iter().any(|grant| match grant.kind {
-                ability_order::GrantedAbilityKind::Template(index) => {
-                    grant.granting_card.grants_activation(index)
-                }
-                _ => false,
+            current.grants.iter().any(|grant| {
+                matches!(
+                    grant.kind,
+                    ability_order::GrantedAbilityKind::ActivatedTemplate(_)
+                )
             }) || world
                 .game()
                 .state

@@ -8984,6 +8984,16 @@ impl Card {
     pub(crate) fn borrows_activations(self) -> bool {
         self.borrows_exiled_activations() || self.graveyard_activation_subtype().is_some()
     }
+    pub(crate) fn inherits_creature_activations(self) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::InheritControlledCreatureActivations
+                )
+            })
+        })
+    }
     pub(crate) fn borrows_exiled_activations(self) -> bool {
         authored::rules(self)
             .unwrap()

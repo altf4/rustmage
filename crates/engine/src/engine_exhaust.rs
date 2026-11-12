@@ -131,6 +131,9 @@ impl Game {
         Some(readiness)
     }
     pub(super) fn record_external_exhaust_use(&mut self, item: &SpellView, ability: u16) -> bool {
+        if item.borrowed_slot.is_some() {
+            return false;
+        }
         if let (Some(source), Some(grant)) = (item.source, item.self_granted_activation.as_ref()) {
             let rules = source.card.activation(ability);
             if rules.has_use_limit()

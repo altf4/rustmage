@@ -128,6 +128,9 @@ impl Game {
                     production,
                 );
             }
+            Action::ActivateInheritedMana {
+                source, production, ..
+            } => self.start_cast_mana_capture(actor, ManaEventKind::Basic { source }, production),
             _ => {}
         }
     }

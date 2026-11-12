@@ -115,6 +115,7 @@ pub(super) struct FundingState<'g> {
     life: i128,
     other_life: i128,
     life_replacement_possible: bool,
+    inheritance_possible: bool,
     resources: Vec<Resource>,
     named_counters: live_counters::Rows,
     copy_recipes: copies::Rows,
@@ -1063,6 +1064,7 @@ impl<'g> FundingState<'g> {
                     matches!(cost.kind, EffectChoiceKind::RemovePermanentCounters { .. })
                 })
             });
+        let inheritance_possible = inherited_activations::has_provider(game);
         let mut subtypes = Vec::new();
         let mut graveyard_mana_cost = false;
         let mut sacrifice_mana_cost = false;
@@ -1085,12 +1087,11 @@ impl<'g> FundingState<'g> {
                 || (matches!(object.zone, Zone::Hand | Zone::Graveyard)
                     && object.owner == goal.actor)
             {
-                let inherited = borrowed_activations::abilities(game, id as CardId);
-                for ability in object
+                let borrowed = borrowed_activations::abilities(game, id as CardId);
+                let printed_or_self_granted = object
                     .card
                     .activations()
                     .iter()
-                    .chain(inherited.into_iter().map(|a| a.rules()))
                     .chain(
                         game.state
                             .self_granted_abilities
@@ -1104,51 +1105,53 @@ impl<'g> FundingState<'g> {
                                     .map(|ability| row.granting_card.activation(ability))
                             }),
                     )
-                {
-                    if let Some(production) = ability.mana_production() {
-                        color_count_sensitive |=
-                            matches!(
-                                production.base(),
-                                ManaProduction::ColorsAmongControlledPermanents
-                                    | ManaProduction::MonocoloredPermanentColors
-                                    | ManaProduction::ChoiceStat { .. }
-                                    | ManaProduction::AnyColorChangingSource(_)
-                            ) || matches!(ability.guard, ActivationGuard::ControlColorsAtLeast(_));
-                        loyalty_threshold_sensitive |= matches!(
-                            ability.guard,
-                            ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
-                        );
-                        power_sensitive |= matches!(
+                    .filter_map(|ability| Some((ability, ability.mana_production()?)));
+                let acquired = borrowed
+                    .into_iter()
+                    .filter_map(|ability| Some((ability.rules(), ability.mana_production()?)));
+                for (ability, production) in printed_or_self_granted.chain(acquired) {
+                    color_count_sensitive |=
+                        matches!(
                             production.base(),
-                            ManaProduction::SourcePower { .. }
-                                | ManaProduction::SourcePowerSplit { .. }
-                                | ManaProduction::TapSourcePowerChoice { .. }
-                                | ManaProduction::DistinctCreaturePowers
-                        );
-                        sacrifice_mana_cost |= ability.cost.additional.is_some_and(|cost| {
-                            matches!(
-                                cost.kind.payment_kind(),
-                                EffectChoiceKind::Sacrifice | EffectChoiceKind::Forage
-                            )
-                        });
-                        tap_mana_cost |= ability.cost.additional.is_some_and(|cost| {
-                            matches!(cost.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
-                        });
-                        graveyard_mana_cost |= ability.cost.additional.is_some_and(|cost| {
-                            matches!(
-                                cost.kind,
-                                EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Forage
-                            )
-                        });
-                        if let ManaProduction::CountSubtype { subtype, .. } = production.base()
-                            && !subtypes.contains(&subtype)
-                        {
-                            subtypes.push(subtype);
-                        }
-                        for subtype in ability.guard.subtypes() {
-                            if !subtypes.contains(subtype) {
-                                subtypes.push(*subtype);
-                            }
+                            ManaProduction::ColorsAmongControlledPermanents
+                                | ManaProduction::MonocoloredPermanentColors
+                                | ManaProduction::ChoiceStat { .. }
+                                | ManaProduction::AnyColorChangingSource(_)
+                        ) || matches!(ability.guard, ActivationGuard::ControlColorsAtLeast(_));
+                    loyalty_threshold_sensitive |= matches!(
+                        ability.guard,
+                        ActivationGuard::ControlledPlaneswalkerSubtypeLoyaltyAtLeast { .. }
+                    );
+                    power_sensitive |= matches!(
+                        production.base(),
+                        ManaProduction::SourcePower { .. }
+                            | ManaProduction::SourcePowerSplit { .. }
+                            | ManaProduction::TapSourcePowerChoice { .. }
+                            | ManaProduction::DistinctCreaturePowers
+                    );
+                    sacrifice_mana_cost |= ability.cost.additional.is_some_and(|cost| {
+                        matches!(
+                            cost.kind.payment_kind(),
+                            EffectChoiceKind::Sacrifice | EffectChoiceKind::Forage
+                        )
+                    });
+                    tap_mana_cost |= ability.cost.additional.is_some_and(|cost| {
+                        matches!(cost.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
+                    });
+                    graveyard_mana_cost |= ability.cost.additional.is_some_and(|cost| {
+                        matches!(
+                            cost.kind,
+                            EffectChoiceKind::ExileGraveyard | EffectChoiceKind::Forage
+                        )
+                    });
+                    if let ManaProduction::CountSubtype { subtype, .. } = production.base()
+                        && !subtypes.contains(&subtype)
+                    {
+                        subtypes.push(subtype);
+                    }
+                    for subtype in ability.guard.subtypes() {
+                        if !subtypes.contains(subtype) {
+                            subtypes.push(*subtype);
                         }
                     }
                 }
@@ -1216,7 +1219,7 @@ impl<'g> FundingState<'g> {
                         && game.state.borrowed_links.as_ref().unwrap().iter().any(|link| {
                             link.shared && link.exiled.card == *id as CardId
                         })
-                    || (graveyard_mana_cost && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
+                    || ((graveyard_mana_cost || inheritance_possible) && object.zone == Zone::Graveyard && object.owner == goal.actor && object.is_card())
                     || game.plot_payment().is_some_and(|request| request.object.card == *id as CardId)
                     || (object.zone == Zone::Command && object.card.is_emblem()) || goal.reserve
                     .is_some_and(|(reference, _)| reference.card == *id as CardId)
@@ -1233,7 +1236,7 @@ impl<'g> FundingState<'g> {
                         && game.state.linked_choices.as_ref().is_some_and(|data|
                             data.null_cast_links.iter().any(|link| link.source.card == *id as CardId))
                     || object.zone == Zone::Battlefield
-                        && (shared_linked_activations || retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
+                        && (inheritance_possible || shared_linked_activations || retain_permanent_counter_bearers || color_count_sensitive || life_replacement_possible || loyalty_threshold_sensitive || sacrifice_mana_cost || tap_mana_cost || game.sacrifice_prohibition_source(*id as CardId) || zone_replacements::card_provides_prevention(object.card) || {
                                 #[cfg(feature = "test-support")] { zone_replacements::TEST_PREVENT_PROVIDER.with(|p| p.get() == Some(game.object_ref(*id as CardId))) }
                                 #[cfg(not(feature = "test-support"))] { false }
                             } || game.state.controls.is_some() || object.card.has_cast_origin_abilities() || object.card.borrows_activations() || object.card.has_activation_mana_flexibility()
@@ -1346,6 +1349,7 @@ impl<'g> FundingState<'g> {
                         .collect()
                 }),
             game,
+            inheritance_possible,
             convoke,
             activation_tap_payment,
             power_sensitive: power_sensitive || color_count_sensitive,
@@ -1962,7 +1966,7 @@ impl<'g> FundingState<'g> {
             .chain(
                 borrowed_activations::abilities(self, id)
                     .into_iter()
-                    .filter(|ability| ability.rules().mana_production().is_some())
+                    .filter(|ability| ability.mana_production().is_some())
                     .map(|ability| (ability.ability, ability.rules(), Some(ability), None, None)),
             )
             .chain(
@@ -2371,7 +2375,10 @@ impl<'g> FundingState<'g> {
             }
             for (index, ability, borrowed, self_grant, template) in self.mana_activations(entry.id)
             {
-                let Some(production) = ability.mana_production() else {
+                let Some(recipe) = borrowed
+                    .and_then(BorrowedDescriptor::mana_production)
+                    .or_else(|| ability.mana_production())
+                else {
                     continue;
                 };
                 let definition = template.map_or_else(
@@ -2385,7 +2392,13 @@ impl<'g> FundingState<'g> {
                 );
                 let origin = self.ability_origin(entry.id);
                 let source = self.reference(entry.id);
-                let grant = if let Some(template) = template {
+                let grant = if let Some(attachment) = borrowed.and_then(|row| row.attachment) {
+                    Some((
+                        attachment.grantor,
+                        attachment.granting_card,
+                        attachment.origin,
+                    ))
+                } else if let Some(template) = template {
                     Some((
                         template.source,
                         definition,
@@ -2558,7 +2571,7 @@ impl<'g> FundingState<'g> {
                             subtypes: ability_world::CharacteristicWorld::subtypes(self, entry.id),
                         });
                         let pool = mana_lots::available(self.mana, &self.lots, purpose);
-                        let quality = mana_lots::quality_from_world(self, production, entry.id)
+                        let quality = mana_lots::quality_from_world(self, recipe, entry.id)
                             .map(|quality| quality.with_definition(definition));
                         funding_cost_payments(
                             pool,
@@ -2586,12 +2599,12 @@ impl<'g> FundingState<'g> {
                                     payment,
                                     deferred,
                                     |allocation| {
-                                        production.visit_at_start_with_fixed_choice(
+                                        recipe.visit_at_start_with_fixed_choice(
                                             self,
                                             entry.id,
                                             late_fixed
                                                 && matches!(
-                                                    production.base(),
+                                                    recipe.base(),
                                                     ManaProduction::Choice { .. }
                                                         | ManaProduction::Combination { .. }
                                                         | ManaProduction::LinkedExileCardColor
@@ -2617,24 +2630,15 @@ impl<'g> FundingState<'g> {
                                                     output: {
                                                         (deferred.is_some()
                                                             || !matches!(
-                                                                ability
-                                                                    .mana_production()
-                                                                    .unwrap()
-                                                                    .base(),
+                                                                recipe.base(),
                                                                 ManaProduction::Fixed(_)
                                                             ))
                                                         .then(|| {
                                                             Box::new({
                                                                 let mut o =
                                                                     mana_output::ManaOutput::new(
-                                                                        self,
-                                                                        ability
-                                                                            .mana_production()
-                                                                            .unwrap(),
-                                                                        production,
-                                                                        key,
-                                                                        goal.actor,
-                                                                        quality,
+                                                                        self, recipe, production,
+                                                                        key, goal.actor, quality,
                                                                     );
                                                                 o.deferred_cost = deferred;
                                                                 o
@@ -3319,7 +3323,7 @@ impl<'g> FundingState<'g> {
                 // Unattached, unmodified basic lands remain interchangeable even
                 // when an unrelated Aura is present. Keep exact identities for
                 // attachment participants, nonbasics and named-counter worlds.
-                identity: (self.continuation_memo.as_ref().is_some_and(|memo| {
+                identity: (self.inheritance_possible || self.continuation_memo.as_ref().is_some_and(|memo| {
                     memo.contributors
                         || memo.exact.contains(&r.id)
                         || !r.object.card.is_basic_land()
@@ -4517,6 +4521,11 @@ impl<'g> FundingState<'g> {
     }
 
     fn optimistic(&self, goal: &FundingGoal) -> bool {
+        // A payment can change which activated abilities a creature inherits,
+        // so a bound built from the current inventory can miss a continuation.
+        if self.inheritance_possible {
+            return true;
+        }
         // Removing Time counters can enable guarded mana abilities that are
         // absent from the current readiness bounds. Use exact search in that case.
         if self.named_counters.as_ref().is_some_and(|rows| {
@@ -5185,23 +5194,7 @@ impl<'g> FundingState<'g> {
         }
         if step.external.is_some() || step.output.as_ref().and_then(|o| o.deferred_cost).is_some() {
             if let Some(borrowed) = step.borrowed {
-                return if borrowed.zone == Zone::Graveyard {
-                    Action::AnnounceGraveyardBorrowedMana {
-                        card,
-                        graveyard: borrowed.donor,
-                        ability: borrowed.ability,
-                        counter_payment: step.counters.clone(),
-                        production: step.production,
-                    }
-                } else {
-                    Action::AnnounceBorrowedMana {
-                        card,
-                        exiled: borrowed.donor,
-                        ability: borrowed.ability,
-                        counter_payment: step.counters.clone(),
-                        production: step.production,
-                    }
-                };
+                return borrowed.mana_action(step.counters.clone(), None, step.production);
             }
             return Action::AnnounceMana {
                 card,
@@ -5211,25 +5204,11 @@ impl<'g> FundingState<'g> {
             };
         }
         if let Some(borrowed) = step.borrowed {
-            return if borrowed.zone == Zone::Graveyard {
-                Action::ActivateGraveyardBorrowedMana {
-                    card,
-                    graveyard: borrowed.donor,
-                    ability: borrowed.ability,
-                    payment: concrete_payment(step.payment),
-                    counter_payment: step.counters.clone(),
-                    production: step.production,
-                }
-            } else {
-                Action::ActivateBorrowedMana {
-                    card,
-                    exiled: borrowed.donor,
-                    ability: borrowed.ability,
-                    payment: concrete_payment(step.payment),
-                    counter_payment: step.counters.clone(),
-                    production: step.production,
-                }
-            };
+            return borrowed.mana_action(
+                step.counters.clone(),
+                Some(concrete_payment(step.payment)),
+                step.production,
+            );
         }
         match step.ability {
             Some(ability) => Action::ActivateMana {
@@ -6825,6 +6804,7 @@ impl Game {
                     action,
                     Action::AnnounceBorrowedMana { .. }
                         | Action::AnnounceGraveyardBorrowedMana { .. }
+                        | Action::AnnounceInheritedMana { .. }
                 ) && emit(action)
             }) || self.visit_self_granted_activations(id, actor, false, &mut |action| {
                 matches!(action, Action::AnnounceSelfGrantedMana { .. }) && emit(action)
@@ -7041,6 +7021,7 @@ impl Game {
                     | Action::AnnounceGrantedManaTemplate { .. }
                     | Action::AnnounceBorrowedMana { .. }
                     | Action::AnnounceGraveyardBorrowedMana { .. }
+                    | Action::AnnounceInheritedMana { .. }
                     | Action::AnnounceSelfGrantedMana { .. }
             ) {
                 if announced.contains(&action) {
@@ -7307,6 +7288,7 @@ impl Game {
             Action::ActivateMana { payment, .. }
             | Action::ActivateBorrowedMana { payment, .. }
             | Action::ActivateGraveyardBorrowedMana { payment, .. }
+            | Action::ActivateInheritedMana { payment, .. }
             | Action::PayCosts { payment } => payment,
             _ => return,
         };
@@ -7612,6 +7594,7 @@ impl FundingState<'_> {
             || state.borrowed_links.is_some()
             || state.borrowed_slots.is_some()
             || state.graveyard_borrowing.is_some()
+            || self.inheritance_possible
             || state.activation_observers.is_some()
             || state.temporary_abilities.is_some()
             || state.self_granted_abilities.is_some()

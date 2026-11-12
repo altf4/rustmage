@@ -4,6 +4,9 @@ use crate::cards::RetainedCopyActivation;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
     pub(super) fn is_retained_copy_activation(&self) -> bool {
+        if self.borrowed_slot.is_some() {
+            return false;
+        }
         let StackKind::ActivatedAbility { ability } = self.kind else {
             return false;
         };

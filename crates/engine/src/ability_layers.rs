@@ -168,6 +168,8 @@ pub enum StaticAbilityFragment {
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// Gain the activated abilities of controlled creatures with no name in common.
+    InheritControlledCreatureActivations,
     /// Controlled creatures with this counter gain activated abilities from linked exiled creatures.
     GrantLinkedExileCreatureActivationsWithCounter(CounterKind),
     /// This creature can attack despite defender after its controller scries or surveils.

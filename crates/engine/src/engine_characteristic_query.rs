@@ -1297,7 +1297,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     grantor: grant.source,
                     granting_card: grant.granting_card,
                     ability: match grant.kind {
-                        ability_order::GrantedAbilityKind::Template(index) => Some(index),
+                        ability_order::GrantedAbilityKind::ActivatedTemplate(index)
+                        | ability_order::GrantedAbilityKind::TriggeredTemplate(index) => {
+                            Some(index)
+                        }
                         _ => None,
                     },
                     static_rule: match grant.kind {

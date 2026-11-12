@@ -1,4 +1,4 @@
-//! Activated abilities inherited from exact linked exile incarnations.
+//! Activated abilities acquired from exact donor incarnations.
 use super::ability_world::CharacteristicWorld;
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -9,6 +9,9 @@ fn is_false(value: &bool) -> bool {
 /// allocated monotonically within an exact source incarnation.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) const DONOR_SLOT_WIDTH: u64 = 1;
+// The layer evaluator and exile/graveyard inventory provision slots independently.
+// Reserve separate ranges below the exact JSON integer limit.
+const INHERITED_SLOT_BASE: u64 = 1 << 52;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -20,6 +23,7 @@ pub(super) struct SlotRow {
     pub(super) definition: Option<Card>,
     ability: u16,
     slot: u64,
+    inherited: Option<inherited_activations::Acquisition>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type SlotRows = Option<SharedVec<SlotRow>>;
@@ -86,16 +90,95 @@ pub(super) struct Descriptor {
     pub used: bool,
     pub once_per_turn: bool,
     pub(super) acquisition: u64,
+    pub(super) inherited: Option<inherited_activations::Acquisition>,
+    pub(super) mana: Option<ManaProduction>,
+    pub(super) attachment: Option<AttachmentTriggerView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Descriptor {
     pub(super) fn rules(self) -> &'static ActivatedAbility {
         self.definition.activation(self.ability)
     }
+
+    pub(super) fn mana_production(self) -> Option<ManaProduction> {
+        self.mana.or_else(|| self.rules().mana_production())
+    }
+
+    pub(super) fn mana_action(
+        self,
+        counters: Counters,
+        payment: Option<Mana>,
+        production: Mana,
+    ) -> Action {
+        let card = self.source.card;
+        let ability = self.ability;
+        match (self.zone, payment) {
+            (Zone::Battlefield, None) => Action::AnnounceInheritedMana {
+                source: self.source,
+                slot: self.slot,
+                counter_payment: counters,
+                production,
+            },
+            (Zone::Battlefield, Some(payment)) => Action::ActivateInheritedMana {
+                source: self.source,
+                slot: self.slot,
+                counter_payment: counters,
+                payment,
+                production,
+            },
+            (Zone::Graveyard, None) => Action::AnnounceGraveyardBorrowedMana {
+                card,
+                graveyard: self.donor,
+                ability,
+                counter_payment: counters,
+                production,
+            },
+            (Zone::Graveyard, Some(payment)) => Action::ActivateGraveyardBorrowedMana {
+                card,
+                graveyard: self.donor,
+                ability,
+                counter_payment: counters,
+                payment,
+                production,
+            },
+            (_, None) => Action::AnnounceBorrowedMana {
+                card,
+                exiled: self.donor,
+                ability,
+                counter_payment: counters,
+                production,
+            },
+            (_, Some(payment)) => Action::ActivateBorrowedMana {
+                card,
+                exiled: self.donor,
+                ability,
+                counter_payment: counters,
+                payment,
+                production,
+            },
+        }
+    }
+
+    fn slot_row(self) -> SlotRow {
+        let intrinsic = self.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
+            && self.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
+        SlotRow {
+            source: self.source,
+            grantor: self.grantor,
+            acquisition: self.acquisition,
+            graveyard: self.zone == Zone::Graveyard,
+            definition: (!intrinsic).then_some(self.definition),
+            ability: self.ability,
+            slot: self.slot,
+            inherited: self.inherited,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn abilities<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Vec<Descriptor> {
-    inventory(world, id, true)
+    let mut result = inventory(world, id, InventoryStage::Live);
+    result.extend(inherited_activations::abilities(world, id));
+    result
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn has_shared_links(game: &Game) -> bool {
@@ -141,10 +224,18 @@ fn source_ids<W: CharacteristicWorld + ?Sized>(world: &W, include_graveyard: boo
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn inventory<W: CharacteristicWorld + ?Sized>(
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub(super) enum InventoryStage {
+    Live,
+    Registry,
+    BeforeLayerSix,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
-    check_available: bool,
+    stage: InventoryStage,
 ) -> Vec<Descriptor> {
     let source = world.object(id);
     if source.zone != Zone::Battlefield
@@ -153,6 +244,7 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
         return Vec::new();
     }
     let recipient = world.reference(id);
+    let check_available = stage == InventoryStage::Live;
     let mut result = Vec::new();
     let mut query = None;
     for link in world
@@ -229,6 +321,9 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
+                inherited: None,
+                mana: None,
+                attachment: None,
             });
         }
         if world.kinds(link.exiled.card) & 2 != 0 {
@@ -252,6 +347,9 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                     used: false,
                     once_per_turn: link.once_per_turn,
                     acquisition: link.first_slot,
+                    inherited: None,
+                    mana: None,
+                    attachment: None,
                 });
             }
         }
@@ -268,11 +366,20 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
+                inherited: None,
+                mana: None,
+                attachment: None,
             });
         }
     }
-    if source.card.graveyard_activation_subtype().is_some() {
-        result.extend(graveyard_borrowing::inventory(world, id));
+    if let Some(subtype) = source.card.graveyard_activation_subtype() {
+        if stage == InventoryStage::BeforeLayerSix {
+            result.extend(graveyard_borrowing::inventory_for_subtype(
+                world, id, subtype,
+            ));
+        } else {
+            result.extend(graveyard_borrowing::inventory(world, id));
+        }
     }
     assign_slots(world, &mut result);
     result
@@ -284,51 +391,68 @@ fn inventory<W: CharacteristicWorld + ?Sized>(
 fn assign_slots<W: CharacteristicWorld + ?Sized>(world: &W, abilities: &mut [Descriptor]) {
     let mut rows = world.borrowed_slots().to_vec();
     for ability in abilities {
-        let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
-            && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
-        let definition = (!intrinsic).then_some(ability.definition);
-        let graveyard = ability.zone == Zone::Graveyard;
-        let matching = |row: &&SlotRow| {
-            row.source == ability.source
-                && row.grantor == ability.grantor
-                && row.acquisition == ability.acquisition
-                && row.graveyard == graveyard
-                && row.definition == definition
-                && row.ability == ability.ability
-        };
-        let slot = if let Some(row) = rows.iter().find(matching) {
-            row.slot
-        } else {
+        assign_slot(world, &mut rows, ability);
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn assign_slot<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    rows: &mut Vec<SlotRow>,
+    ability: &mut Descriptor,
+) {
+    let mut desired = ability.slot_row();
+    let inherited = desired.inherited.is_some();
+    let slot = rows.iter().find(|row| row.matches(desired)).map_or_else(
+        || {
             let slot = rows
                 .iter()
-                .filter(|row| row.source == ability.source)
+                .filter(|row| row.source == desired.source && row.inherited.is_some() == inherited)
                 .map(|row| row.slot)
                 .max()
-                .map_or(0, |slot| {
-                    slot.checked_add(1)
-                        .capacity("borrowed ability slots exhausted")
-                });
-            rows.push(SlotRow {
-                source: ability.source,
-                grantor: ability.grantor,
-                acquisition: ability.acquisition,
-                graveyard,
-                definition,
-                ability: ability.ability,
-                slot,
-            });
-            slot
-        };
-        ability.slot = slot;
-        ability.used = world.borrowed_activation_used(ability.source, slot);
+                .map_or_else(
+                    || if inherited { INHERITED_SLOT_BASE } else { 0 },
+                    |slot| {
+                        slot.checked_add(1)
+                            .capacity("borrowed ability slots exhausted")
+                    },
+                );
+            (slot
+                < if inherited {
+                    2 * INHERITED_SLOT_BASE
+                } else {
+                    INHERITED_SLOT_BASE
+                })
+            .then_some(slot)
+            .capacity("borrowed ability slots exhausted")
+        },
+        |row| row.slot,
+    );
+    ability.slot = slot;
+    ability.used = world.borrowed_activation_used(ability.source, slot);
+    desired.slot = slot;
+    if !rows.contains(&desired) {
+        rows.push(desired);
+    }
+}
+
+impl SlotRow {
+    fn matches(&self, other: Self) -> bool {
+        *self
+            == Self {
+                slot: self.slot,
+                ..other
+            }
     }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> SlotRows {
+    let has_inheritance = inherited_activations::has_provider(world);
     if world.borrowed_slots().is_empty()
         && world.graveyard_borrowing().is_empty()
         && world.game().state.borrowed_links.is_none()
+        && !has_inheritance
     {
         return None;
     }
@@ -342,27 +466,20 @@ pub(super) fn refreshed_slots<W: CharacteristicWorld + ?Sized>(world: &W) -> Slo
         })
         .collect();
     for id in source_ids(world, true) {
-        for ability in inventory(world, id, false) {
-            let intrinsic = ability.ability >= crate::cards::activation_slots::INTRINSIC_COLORLESS
-                && ability.ability < crate::cards::activation_slots::INTRINSIC_FALLBACK;
-            let row = SlotRow {
-                source: ability.source,
-                grantor: ability.grantor,
-                acquisition: ability.acquisition,
-                graveyard: ability.zone == Zone::Graveyard,
-                definition: (!intrinsic).then_some(ability.definition),
-                ability: ability.ability,
-                slot: ability.slot,
-            };
-            if !rows.iter().any(|old| {
-                old.source == row.source
-                    && old.grantor == row.grantor
-                    && old.acquisition == row.acquisition
-                    && old.graveyard == row.graveyard
-                    && old.definition == row.definition
-                    && old.ability == row.ability
-            }) {
+        for ability in inventory(world, id, InventoryStage::Registry) {
+            let row = ability.slot_row();
+            if !rows.iter().any(|old| old.matches(row)) {
                 rows.push(row);
+            }
+        }
+    }
+    if has_inheritance {
+        for object in ability_evaluation::evaluate_inherited(world).result.objects {
+            for ability in object.inherited {
+                let row = ability.slot_row();
+                if !rows.iter().any(|old| old.matches(row)) {
+                    rows.push(row);
+                }
             }
         }
     }
@@ -432,7 +549,7 @@ impl Game {
     ) -> Descriptor {
         abilities(self, card)
             .into_iter()
-            .find(|a| a.donor == exiled && a.ability == index)
+            .find(|a| a.inherited.is_none() && a.donor == exiled && a.ability == index)
             .expect("legal borrowed activation")
     }
     pub(super) fn borrowed_activation_item(
@@ -444,6 +561,20 @@ impl Game {
     ) -> SpellView {
         self.refresh_graveyard_borrowing();
         let descriptor = self.borrowed_descriptor(card, exiled, index);
+        self.begin_borrowed_activation(actor, descriptor)
+    }
+    pub(super) fn inherited_activation_item(
+        &mut self,
+        actor: Player,
+        source: ObjectRef,
+        slot: u64,
+    ) -> SpellView {
+        self.state.borrowed_slots = refreshed_slots(self);
+        let descriptor = inherited_activations::descriptor(self, source, slot)
+            .expect("legal inherited activation");
+        self.begin_borrowed_activation(actor, descriptor)
+    }
+    fn begin_borrowed_activation(&mut self, actor: Player, descriptor: Descriptor) -> SpellView {
         let mut item = self.borrowed_activation_packet(actor, descriptor);
         item.id = self.next_stack_id();
         self.state.passes = 0;
@@ -455,14 +586,55 @@ impl Game {
         descriptor: Descriptor,
     ) -> SpellView {
         let mut item = self.activation_packet(actor, descriptor.source.card, descriptor.ability);
-        item.attachment_trigger = None;
+        item.attachment_trigger = descriptor.attachment.map(Box::new);
         item.set_source_definition(descriptor.definition);
+        if descriptor.inherited.is_some() {
+            item.source_quantity_lki = None;
+            item.source_transform = descriptor
+                .rules()
+                .program
+                .contains(&Instruction::TransformSource)
+                .then(|| self.transform_serial(descriptor.source));
+        }
         self.bind_activation_source_quantities(&mut item, descriptor.rules().program);
         item.source_copy_recipe = Some(Box::new(
             self.copiable_recipe(item.source.expect("activated ability has source").object),
         ));
         item.borrowed_slot = Some(descriptor.slot);
         item
+    }
+    pub(super) fn activate_borrowed_mana(
+        &mut self,
+        mut item: SpellView,
+        counters: Counters,
+        payment: Mana,
+        production: Mana,
+    ) {
+        if self.start_direct_mana_output(item.clone(), counters.clone(), payment, production) {
+            return;
+        }
+        let source = item.source.expect("activated ability has source");
+        let actor = item.controller;
+        let quality = self
+            .announced_mana_quality(&item, Some(production))
+            .map(|(_, quality)| quality);
+        if let Some(phase) = self.pay_activation(&mut item, payment, counters) {
+            self.suspend_activation_payment(
+                item,
+                phase,
+                ActivationCostRoute::Printed,
+                activations::ActivationPaymentCompletion::DirectMana {
+                    actor,
+                    card: source.id,
+                    production,
+                    quality,
+                },
+            );
+        } else {
+            self.add_mana_tap_event(actor, item.tap_mana_bonus(self), production, quality);
+            self.committed_mana_followups(&item);
+            self.reopen_evidence_after_mana_sacrifice(source.id);
+        }
     }
     pub(super) fn record_borrowed_use(&mut self, source: ObjectRef, slot: u64, lifetime: bool) {
         if !self.state.borrowed_uses.as_ref().is_some_and(|rows| {
@@ -553,6 +725,9 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if (!self.state.objects[card as usize].card.borrows_activations()
+            && !self.state.objects[card as usize]
+                .card
+                .inherits_creature_activations()
             && !has_shared_links(self))
             || CharacteristicWorld::activation_prohibited(self, actor, card)
         {
@@ -585,7 +760,7 @@ impl Game {
             }
             if (ability.cost.sacrifice && CharacteristicWorld::sacrifice_prohibited(self, card))
                 || !self.activation_guard_available(ability.guard, card, actor)
-                || (ability.mana_production().is_none()
+                || (descriptor.mana_production().is_none()
                     && (self.nonmana_actions_prohibited()
                         || self.named_activation_prohibited(card)))
                 || !Self::object_activation_available_with_kinds(
@@ -607,7 +782,7 @@ impl Game {
                 ability,
                 self.counter_amounts(card),
                 |counter_payment| {
-                    if let Some(production) = ability.mana_production() {
+                    if let Some(production) = descriptor.mana_production() {
                         let packet = self.borrowed_activation_packet(actor, *descriptor);
                         return self.visit_activation_mana_outputs(
                             production,
@@ -619,25 +794,37 @@ impl Game {
                                     &packet,
                                     counter_payment.clone(),
                                     production,
-                                ) && emit(if descriptor.zone == Zone::Graveyard {
-                                    Action::AnnounceGraveyardBorrowedMana {
-                                        card,
-                                        graveyard: descriptor.donor,
-                                        ability: descriptor.ability,
-                                        counter_payment: counter_payment.clone(),
-                                        production,
-                                    }
-                                } else {
-                                    Action::AnnounceBorrowedMana {
-                                        card,
-                                        exiled: descriptor.donor,
-                                        ability: descriptor.ability,
-                                        counter_payment: counter_payment.clone(),
-                                        production,
-                                    }
-                                })
+                                ) && emit(descriptor.mana_action(
+                                    counter_payment.clone(),
+                                    None,
+                                    production,
+                                ))
                             },
                         );
+                    }
+                    if descriptor.inherited.is_some() {
+                        let packet = self.borrowed_activation_packet(actor, *descriptor);
+                        let targets_available = ability.declares_target_value_x()
+                            || ability.modes().map_or_else(
+                                || self.item_targets_available(&packet, self.target_spec(&packet)),
+                                |modes| {
+                                    modes.iter().enumerate().any(|(index, mode)| {
+                                        self.item_mode_eligible(&packet, index)
+                                            && self.modal_choice_unused(&packet, index)
+                                            && self.item_targets_available(&packet, mode.targets)
+                                    })
+                                },
+                            );
+                        return targets_available
+                            && self.initial_activation_packet_target_fundable(
+                                &packet,
+                                &counter_payment,
+                            )
+                            && emit(Action::AnnounceInheritedAbility {
+                                source: descriptor.source,
+                                slot: descriptor.slot,
+                                counter_payment,
+                            });
                     }
                     let fundable = self
                         .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)

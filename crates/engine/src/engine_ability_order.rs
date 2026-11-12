@@ -5,7 +5,8 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum GrantedAbilityKind {
-    Template(u16),
+    ActivatedTemplate(u16),
+    TriggeredTemplate(u16),
     LinkedExileActivations,
     PlaneswalkerAttackLimit,
     EquippedCreatureDeathMultiplier,
@@ -20,6 +21,7 @@ pub(super) struct GrantedAbilityKey {
     pub granting_card: Card,
     pub grantor_controller: Player,
     pub timestamp: u64,
+    pub fragment: Option<(u16, u16)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -29,6 +31,19 @@ pub(super) struct GrantedManaAbility {
     pub sacrifice: bool,
     /// Intrinsic to a basic land subtype, removable by a later type replacement.
     pub subtype_derived: bool,
+    pub origin: Option<ManaGrantOrigin>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(super) enum ManaGrantOrigin {
+    BasicLandType(u8),
+    Static {
+        line: u16,
+        fragment: u16,
+        timestamp: u64,
+    },
+    Resolved(u64),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -48,6 +63,7 @@ pub(super) struct LayerSixObject {
     /// Independently acquired self-owned static/activated ability instances.
     pub self_grants: Vec<u64>,
     pub mana: Vec<GrantedManaAbility>,
+    pub inherited: Vec<super::BorrowedDescriptor>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl LayerSixObject {
@@ -95,6 +111,10 @@ pub(super) struct LayerSixGrant {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug)]
 pub(super) enum LayerSixAction {
+    InheritCreatureActivations {
+        line: u16,
+        donors: Vec<CardId>,
+    },
     Remove,
     RemoveKeywordsAndGrant {
         keywords: Keywords,
@@ -212,10 +232,17 @@ fn next_effect(pending: &[bool], dependencies: &[Vec<usize>], times: &[u64]) -> 
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn apply_layer_six(
+pub(super) fn apply_layer_six<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
     mut objects: Vec<LayerSixObject>,
     effects: &[LayerSixEffect],
 ) -> LayerSixResult {
+    let donors = inherited_activations::DonorInventories::new(world, effects);
+    let mut inherited_slots = if donors.is_empty() {
+        Vec::new()
+    } else {
+        world.borrowed_slots().to_vec()
+    };
     let mut pending = vec![true; effects.len()];
     let mut started = vec![false; effects.len()];
     let times: Vec<_> = effects.iter().map(|e| e.timestamp).collect();
@@ -232,7 +259,13 @@ pub(super) fn apply_layer_six(
         }
         let mut dependencies = vec![Vec::new(); effects.len()];
         for (i, effect) in effects.iter().enumerate() {
-            if !pending[i] || effect.started_earlier {
+            if !pending[i]
+                || (effect.started_earlier
+                    && !matches!(
+                        effect.action,
+                        LayerSixAction::InheritCreatureActivations { .. }
+                    ))
+            {
                 continue;
             }
             let acquired = match effect.action {
@@ -248,8 +281,10 @@ pub(super) fn apply_layer_six(
                 continue;
             };
             for (j, other) in effects.iter().enumerate() {
-                if i != j
-                    && pending[j]
+                if i == j || !pending[j] {
+                    continue;
+                }
+                let source_dependency = !effect.started_earlier
                     && other.recipients.contains(&source)
                     && match other.action {
                         LayerSixAction::Remove | LayerSixAction::RemoveAndGrant(_) => true,
@@ -258,8 +293,16 @@ pub(super) fn apply_layer_six(
                             acquired.is_some_and(|(_, acquisition)| timestamp == acquisition)
                         }
                         _ => false,
-                    }
-                {
+                    };
+                let donor_dependency = match &effect.action {
+                    LayerSixAction::InheritCreatureActivations {
+                        donors: observed, ..
+                    } => observed.iter().any(|&donor| {
+                        donors.effect_changes_abilities(world, other, donor, &objects)
+                    }),
+                    _ => false,
+                };
+                if source_dependency || donor_dependency {
                     dependencies[i].push(j);
                 }
             }
@@ -268,6 +311,21 @@ pub(super) fn apply_layer_six(
         let effect = &effects[next];
         pending[next] = false;
         started[next] = true;
+        if let LayerSixAction::InheritCreatureActivations {
+            line,
+            donors: sources,
+        } = &effect.action
+        {
+            donors.inherit(
+                world,
+                effect.provider.expect("inheriting source"),
+                *line,
+                sources,
+                &mut objects,
+                &mut inherited_slots,
+            );
+            continue;
+        }
         if let LayerSixAction::RemovePrintedAndGrant(_) = &effect.action {
             for &recipient in &effect.recipients {
                 let object = &mut objects[recipient as usize];
@@ -286,6 +344,7 @@ pub(super) fn apply_layer_six(
                 object.grants.clear();
                 object.self_grants.clear();
                 object.mana.clear();
+                object.inherited.clear();
             }
         }
         if let LayerSixAction::RemoveKeywordsAndGrant { keywords, .. } = &effect.action {
@@ -334,6 +393,7 @@ pub(super) fn apply_layer_six(
                 | LayerSixAction::RemoveAndGrant(_)
                 | LayerSixAction::RemovePrintedAndGrant(_)
                 | LayerSixAction::RemoveKeywordsAndGrant { .. }
+                | LayerSixAction::InheritCreatureActivations { .. }
                 | LayerSixAction::SelfGrantedMana { .. } => unreachable!(),
                 LayerSixAction::RemoveSubtypeMana => {
                     object.mana.retain(|ability| !ability.subtype_derived);
@@ -344,6 +404,7 @@ pub(super) fn apply_layer_six(
                     object.grants.clear();
                     object.self_grants.clear();
                     object.mana.clear();
+                    object.inherited.clear();
                 }
                 LayerSixAction::GrantSelf(timestamp) => object.self_grants.push(*timestamp),
                 LayerSixAction::SelfGrantedKeywords {

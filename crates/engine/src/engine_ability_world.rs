@@ -1458,7 +1458,7 @@ pub(super) trait CharacteristicWorld {
             .grants
             .iter()
             .filter_map(|&grant| {
-                let ability_order::GrantedAbilityKind::Template(index) = grant.kind else {
+                let ability_order::GrantedAbilityKind::ActivatedTemplate(index) = grant.kind else {
                     return None;
                 };
                 grant
@@ -1522,7 +1522,7 @@ pub(super) trait CharacteristicWorld {
                     .any(|grant| {
                         grant.source == self.reference(id)
                             && grant.granting_card == object.card
-                            && grant.kind == ability_order::GrantedAbilityKind::Template(index)
+                            && grant.kind == ability_order::GrantedAbilityKind::ActivatedTemplate(index)
                     })
             }
             Zone::Hand | Zone::Graveyard => {
@@ -1598,6 +1598,7 @@ pub(super) trait CharacteristicWorld {
                             source: reference,
                             production,
                             subtype_derived: false,
+                            origin: None,
                             sacrifice: matches!(
                                 *fragment,
                                 crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -1618,6 +1619,7 @@ pub(super) trait CharacteristicWorld {
                             production,
                             sacrifice: false,
                             subtype_derived: false,
+                            origin: None,
                         });
                     }
                 }
@@ -1651,6 +1653,7 @@ pub(super) trait CharacteristicWorld {
                     production: ManaProduction::Fixed(production),
                     sacrifice: false,
                     subtype_derived: true,
+                    origin: None,
                 });
             }
         }

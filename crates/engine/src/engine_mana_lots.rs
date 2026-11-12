@@ -985,6 +985,10 @@ impl Game {
             ability,
             Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
         ) {
+            if let Some(slot) = item.borrowed_slot {
+                return inherited_activations::descriptor(self, source.object, slot)
+                    .and_then(|ability| ability.mana);
+            }
             let origin = item.attachment_trigger.as_ref()?;
             ability_world::CharacteristicWorld::granted_mana(self, source.id)
                 .into_iter()
@@ -1712,6 +1716,22 @@ impl Game {
             | Action::ActivateGraveyardBorrowedMana { card, payment, .. } => {
                 (*payment, Purpose::Activation(Source::in_world(self, *card)))
             }
+            Action::ActivateInheritedMana {
+                source,
+                slot,
+                payment,
+                ..
+            } => {
+                let Some(ability) = inherited_activations::descriptor(self, *source, *slot) else {
+                    return false;
+                };
+                (
+                    *payment,
+                    Purpose::Activation(
+                        Source::in_world(self, source.card).with_activation(ability.rules()),
+                    ),
+                )
+            }
             Action::PayCosts { payment } => {
                 let Some(a) = &self.state.announcing else {
                     return false;
@@ -2009,16 +2029,25 @@ impl Game {
                         | Action::ActivateGraveyardBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::ActivateInheritedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedMana {
                             counter_payment, ..
                         }
                         | Action::AnnounceGraveyardBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::AnnounceInheritedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedAbility {
                             counter_payment, ..
                         }
                         | Action::AnnounceGraveyardBorrowedAbility {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceInheritedAbility {
                             counter_payment, ..
                         }
                         | Action::BeginActivate {

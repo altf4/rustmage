@@ -278,16 +278,25 @@ impl ZoneState {
                     | Action::ActivateGraveyardBorrowedMana {
                         counter_payment, ..
                     }
+                    | Action::ActivateInheritedMana {
+                        counter_payment, ..
+                    }
                     | Action::AnnounceBorrowedMana {
                         counter_payment, ..
                     }
                     | Action::AnnounceGraveyardBorrowedMana {
                         counter_payment, ..
                     }
+                    | Action::AnnounceInheritedMana {
+                        counter_payment, ..
+                    }
                     | Action::AnnounceBorrowedAbility {
                         counter_payment, ..
                     }
                     | Action::AnnounceGraveyardBorrowedAbility {
+                        counter_payment, ..
+                    }
+                    | Action::AnnounceInheritedAbility {
                         counter_payment, ..
                     }
                     | Action::BeginActivate {

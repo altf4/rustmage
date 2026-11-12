@@ -3,7 +3,7 @@
 //! restores them without a zone change or mutable derived cache.
 use super::ability_order::{
     GrantedAbilityKey, GrantedAbilityKind, GrantedManaAbility, LayerSixAction, LayerSixEffect,
-    LayerSixGrant, LayerSixObject, LayerSixResult, apply_layer_six,
+    LayerSixGrant, LayerSixObject, LayerSixResult, ManaGrantOrigin, apply_layer_six,
 };
 use super::ability_world::CharacteristicWorld;
 use super::*;
@@ -57,6 +57,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
     fragment: &StaticAbilityFragment,
     id: CardId,
     time: u64,
+    mana_origin: ManaGrantOrigin,
 ) -> Option<LayerSixGrant> {
     let provider = world.object(source.card);
     let target = world.object(id);
@@ -64,13 +65,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         return None;
     }
     let own = provider.controller == target.controller;
-    let key = |ability| GrantedAbilityKey {
+    let key = |kind| GrantedAbilityKey {
         source,
-        kind: GrantedAbilityKind::Template(ability),
+        kind,
         granting_card: provider.card,
         grantor_controller: provider.controller,
         timestamp: time,
+        fragment: match mana_origin {
+            ManaGrantOrigin::Static { line, fragment, .. } => Some((line, fragment)),
+            _ => None,
+        },
     };
+    let activated = |index| key(GrantedAbilityKind::ActivatedTemplate(index));
+    let triggered = |index| key(GrantedAbilityKind::TriggeredTemplate(index));
     let keywords = match *fragment {
         StaticAbilityFragment::AttachmentKeywords(value)
         | StaticAbilityFragment::AttachmentRule(value) => {
@@ -125,6 +132,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     source,
                     production,
                     subtype_derived: false,
+                    origin: Some(mana_origin),
                     sacrifice: matches!(
                         fragment,
                         StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -146,6 +154,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     production,
                     sacrifice: false,
                     subtype_derived: false,
+                    origin: Some(mana_origin),
                 }],
             });
         }
@@ -160,7 +169,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![triggered(ability)],
                 mana: Vec::new(),
             });
         }
@@ -170,7 +179,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![triggered(ability)],
                 mana: Vec::new(),
             });
         }
@@ -185,7 +194,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords,
-                abilities: vec![key(ward)],
+                abilities: vec![triggered(ward)],
                 mana: Vec::new(),
             });
         }
@@ -200,7 +209,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords,
-                abilities: vec![key(activation)],
+                abilities: vec![activated(activation)],
                 mana: Vec::new(),
             });
         }
@@ -211,10 +220,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![GrantedAbilityKey {
-                    kind: GrantedAbilityKind::LinkedExileActivations,
-                    ..key(0)
-                }],
+                abilities: vec![key(GrantedAbilityKind::LinkedExileActivations)],
                 mana: Vec::new(),
             });
         }
@@ -228,7 +234,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![activated(ability)],
                 mana: Vec::new(),
             });
         }
@@ -242,7 +248,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![activated(ability)],
                 mana: Vec::new(),
             });
         }
@@ -253,7 +259,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![triggered(ability)],
                 mana: Vec::new(),
             });
         }
@@ -264,10 +270,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![GrantedAbilityKey {
-                    kind: GrantedAbilityKind::LookAtLibraryTop,
-                    ..key(0)
-                }],
+                abilities: vec![key(GrantedAbilityKind::LookAtLibraryTop)],
                 mana: Vec::new(),
             });
         }
@@ -279,7 +282,10 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![match *fragment {
+                    StaticAbilityFragment::AttachmentTrigger(_) => triggered(ability),
+                    _ => activated(ability),
+                }],
                 mana: Vec::new(),
             });
         }
@@ -299,6 +305,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     granting_card: provider.card,
                     grantor_controller: provider.controller,
                     timestamp: time,
+                    fragment: None,
                 }],
                 mana: Vec::new(),
             });
@@ -316,6 +323,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                     granting_card: provider.card,
                     grantor_controller: provider.controller,
                     timestamp: time,
+                    fragment: None,
                 }],
                 mana: Vec::new(),
             });
@@ -327,7 +335,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![activated(ability)],
                 mana: Vec::new(),
             });
         }
@@ -338,7 +346,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![activated(ability)],
                 mana: Vec::new(),
             });
         }
@@ -362,7 +370,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
-                abilities: vec![key(ability)],
+                abilities: vec![activated(ability)],
                 mana: Vec::new(),
             });
         }
@@ -696,6 +704,20 @@ std::thread_local! {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
+    evaluate(world, false)
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn evaluate_inherited<W: CharacteristicWorld + ?Sized>(world: &W) -> AbilityEvaluation {
+    // Inheritance grants only activated abilities. It cannot change an ordinary
+    // keyword, printed-ability, or static-effect availability query.
+    evaluate(world, true)
+}
+
+fn evaluate<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    include_inheritance: bool,
+) -> AbilityEvaluation {
     #[cfg(feature = "test-support")]
     EVALUATION_COUNT.with(|count| count.set(count.get() + 1));
     let game = world.game();
@@ -730,6 +752,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 granted_riot_instances: 0,
                 grants: Vec::new(),
                 self_grants: Vec::new(),
+                inherited: Vec::new(),
                 // Native land subtypes exist before any later layer-six removal.
                 // Type-setting effects add their own timestamped grants below.
                 mana: if object.zone == Zone::Battlefield {
@@ -755,6 +778,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                                 production: ManaProduction::Fixed(production),
                                 sacrifice: false,
                                 subtype_derived: true,
+                                origin: Some(ManaGrantOrigin::BasicLandType(color as u8)),
                             })
                         })
                         .collect()
@@ -790,6 +814,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                                 production: ManaProduction::Fixed(production),
                                 sacrifice: false,
                                 subtype_derived: true,
+                                origin: Some(ManaGrantOrigin::BasicLandType(kind.index() as u8)),
                             }],
                         }];
                         if matches!(change, subtypes::BasicLandAbilityChange::Set(_)) {
@@ -886,6 +911,29 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 )
             });
             let removes_keywords = removed_keywords != Keywords::NONE;
+            let inherits = include_inheritance
+                && origin.fragments.iter().any(|fragment| {
+                    matches!(
+                        fragment,
+                        StaticAbilityFragment::InheritControlledCreatureActivations
+                    )
+                });
+            let inherited = if enabled && inherits {
+                let index = effects.len();
+                effects.push(LayerSixEffect {
+                    provider: Some(id),
+                    started_earlier: origin.first_layer < AbilityLayer::Ability,
+                    timestamp: timestamp(world, source),
+                    recipients: vec![id],
+                    action: LayerSixAction::InheritCreatureActivations {
+                        line: origin.line,
+                        donors: inherited_activations::donors(world, id),
+                    },
+                });
+                Some(index)
+            } else {
+                None
+            };
             let effect = if enabled && (removes || removes_keywords || provides) {
                 let time = timestamp(world, source);
                 let recipients: Vec<_> = if removes || removes_keywords {
@@ -900,10 +948,20 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 let mut rows = Vec::new();
                 if provides {
                     for (target, _) in game.state.objects.iter().enumerate() {
-                        for fragment in origin.fragments {
-                            if let Some(row) =
-                                grant_fragment(world, source, fragment, target as CardId, time)
-                            {
+                        for (index, fragment) in origin.fragments.iter().enumerate() {
+                            if let Some(row) = grant_fragment(
+                                world,
+                                source,
+                                fragment,
+                                target as CardId,
+                                time,
+                                ManaGrantOrigin::Static {
+                                    line: origin.line,
+                                    fragment: u16::try_from(index)
+                                        .expect("immutable ability fragment"),
+                                    timestamp: time,
+                                },
+                            ) {
                                 rows.push(row);
                             }
                         }
@@ -939,7 +997,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 source,
                 group,
                 first_layer: origin.first_layer,
-                effect,
+                effect: effect.or(inherited),
                 enabled,
             });
         }
@@ -980,6 +1038,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             production: ManaProduction::any_color(1),
                             sacrifice: true,
                             subtype_derived: false,
+                            origin: Some(ManaGrantOrigin::Resolved(row.timestamp)),
                         }],
                     }];
                     if returned {
@@ -998,6 +1057,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             production: ManaProduction::Fixed([0, 0, 0, 0, 0, 1]),
                             sacrifice: false,
                             subtype_derived: false,
+                            origin: Some(ManaGrantOrigin::Resolved(row.timestamp)),
                         }],
                     }])
                 }
@@ -1018,6 +1078,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             ),
                             sacrifice: false,
                             subtype_derived: false,
+                            origin: Some(ManaGrantOrigin::Resolved(row.timestamp)),
                         }],
                     }])
                 }
@@ -1104,8 +1165,9 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                             source: grant.grantor,
                             granting_card: grant.granting_card,
                             grantor_controller: grant.grantor_controller,
-                            kind: GrantedAbilityKind::Template(grant.ability),
+                            kind: GrantedAbilityKind::TriggeredTemplate(grant.ability),
                             timestamp: grant.timestamp,
+                            fragment: None,
                         }],
                     },
                 });
@@ -1145,6 +1207,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                                 production,
                                 sacrifice: false,
                                 subtype_derived: false,
+                                origin: Some(ManaGrantOrigin::Resolved(grant.timestamp)),
                             },
                         },
                     });
@@ -1167,7 +1230,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
         }
     }
     let mut evaluation = AbilityEvaluation {
-        result: apply_layer_six(objects, &effects),
+        result: apply_layer_six(world, objects, &effects),
         groups,
     };
     apply_rule_effects(world, &mut evaluation);
