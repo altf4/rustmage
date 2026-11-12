@@ -3,7 +3,7 @@
   "catalogue_id": 5649,
   "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
   "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
     "index": 0,
@@ -12,5 +12,18 @@
   "physical_metadata_sha256": "31650c46ab34982632a58a39bd73565377a6667f5a5ddd11bf8c4c1d8bee80ef",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/m/MolderingGymWeightRoom.java",
-  "java_sha256": "5f2a8998f1012d5dc846a8e6b685a767c38c33547223bc6d6b379ff8f97a3dd8"
+  "java_sha256": "5f2a8998f1012d5dc846a8e6b685a767c38c33547223bc6d6b379ff8f97a3dd8",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    }
+  ]
 }

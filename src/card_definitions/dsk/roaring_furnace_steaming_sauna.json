@@ -3,10 +3,32 @@
   "catalogue_id": 3563,
   "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
   "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a4eafdbb2a4c3c4878ecd1a4613bc79cc7db9994645abfaa6501e38a891b7519"
-  },
-  "physical_metadata_sha256": "449f0e0bce8aef5a09b84c8a8dadd5daff46f3b4a7f6a21843ff27937c08e546"
+  "complete": true,
+  "physical_metadata_sha256": "449f0e0bce8aef5a09b84c8a8dadd5daff46f3b4a7f6a21843ff27937c08e546",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoaringFurnaceSteamingSauna.java",
+  "java_sha256": "6745422aeb8c6841ebacfe3bd5078894d052cd28c0f89ff6384beb7b210ca7c5",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardsInControllerHandCount.java",
+      "sha256": "765c3acced450b7a4f5b4f9659d478415f7b18f09e385a4dc10a78437d71b811"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }

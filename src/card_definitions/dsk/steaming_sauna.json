@@ -3,7 +3,7 @@
   "catalogue_id": 5656,
   "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
   "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
     "index": 1,
@@ -12,5 +12,18 @@
   "physical_metadata_sha256": "3cee121d45caaa3ea6c216d16dc8b5938191f525c6771de8a7759bf0d43607f7",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/r/RoaringFurnaceSteamingSauna.java",
-  "java_sha256": "6745422aeb8c6841ebacfe3bd5078894d052cd28c0f89ff6384beb7b210ca7c5"
+  "java_sha256": "6745422aeb8c6841ebacfe3bd5078894d052cd28c0f89ff6384beb7b210ca7c5",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/MaximumHandSizeControllerEffect.java",
+      "sha256": "2ff5efca68eea0f1ed6e2f4d8365a2f7356727abd8f3485aaf07a91e6c4ed2c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    }
+  ]
 }
