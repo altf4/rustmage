@@ -38,9 +38,10 @@ pub(super) enum DiscardAfter {
         affected: [bool; 2],
         minimum: u64,
     },
-    NonlandReflexive {
+    ReflexiveCount {
         controller: Player,
         ability: u16,
+        nonland_only: bool,
     },
     ConniveCounters(ObjectRef, u64, Player),
     ChooseLand {
@@ -409,39 +410,33 @@ impl Game {
                     }
                 }
             }
-            Some(DiscardAfter::NonlandReflexive {
+            Some(DiscardAfter::ReflexiveCount {
                 controller,
                 ability,
+                nonland_only,
             }) => {
-                let count = events
-                    .iter()
-                    .filter(|event| {
-                        event.moved
-                            && event.before.owner == controller
-                            && event.before.kinds & 2 == 0
-                    })
-                    .count();
+                let relevant = |event: &&ZoneChange| {
+                    event.moved
+                        && event.before.owner == controller
+                        && (!nonland_only || event.before.kinds & 2 == 0)
+                };
+                let count = events.iter().filter(relevant).count();
                 if count > 0 {
                     let item = self.state.resolving.as_ref().unwrap().item.clone();
                     let before = self.state.pending_triggers.len();
-                    let objects = events
-                        .iter()
-                        .filter(|e| {
-                            e.moved && e.before.owner == controller && e.before.kinds & 2 == 0
-                        })
-                        .flat_map(|e| {
-                            std::iter::once(e.before.reference).chain(
-                                matches!(
-                                    e.destination,
-                                    Zone::Battlefield
-                                        | Zone::Stack
-                                        | Zone::Graveyard
-                                        | Zone::Exile
-                                        | Zone::Command
-                                )
-                                .then_some(e.after),
+                    let objects = events.iter().filter(relevant).flat_map(|e| {
+                        std::iter::once(e.before.reference).chain(
+                            matches!(
+                                e.destination,
+                                Zone::Battlefield
+                                    | Zone::Stack
+                                    | Zone::Graveyard
+                                    | Zone::Exile
+                                    | Zone::Command
                             )
-                        });
+                            .then_some(e.after),
+                        )
+                    });
                     self.queue_reflexive_objects(&item, ability, objects);
                     if self.state.pending_triggers.len() > before {
                         let trigger = self.state.pending_triggers.last_mut().unwrap();

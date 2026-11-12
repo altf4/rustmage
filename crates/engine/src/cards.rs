@@ -3955,6 +3955,8 @@ pub enum Instruction {
     MayCounterSourceOtherwiseCast,
     /// Private look, optional exact card choice, then discard and a draw for that player.
     LookTargetHandMayDiscardThenDraw,
+    /// Privately inspect the targeted player's hand and optionally discard one nonland.
+    LookTargetHandMayDiscardNonland,
     /// Reveal the target's hand. Choose a nonland to discard, or optionally
     /// put a face-up exiled card they own into their graveyard.
     RevealTargetHandDiscardOrMoveExileToGraveyard,
@@ -3982,6 +3984,9 @@ pub enum Instruction {
     },
     /// Optional one-card discard; actual nonland discard queues this template.
     MayDiscardNonlandReflexive(u16),
+    /// Select any number of cards privately and discard them as one batch.
+    /// A successful discard queues this template with its actual discard count.
+    MayDiscardAnyReflexive(u16),
     /// Remember the exact public object produced by discarding one card.
     DiscardOneRememberCard,
     /// Immediately offer a free cast of the exact remembered discard result.
@@ -5206,6 +5211,11 @@ pub enum Instruction {
         life: u16,
     },
     MayDiscardOrLoseLife {
+        players: PlayerSet,
+        amount: u16,
+    },
+    /// A private simultaneous discard. The controller draws for their own actual discards.
+    DiscardThenDrawForOwnCount {
         players: PlayerSet,
         amount: u16,
     },

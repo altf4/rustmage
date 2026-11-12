@@ -7298,8 +7298,11 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::LookTargetHandMayDiscardThenDraw => {
-                    if self.start_private_hand_discard_draw(&item) {
+                Instruction::LookTargetHandMayDiscardThenDraw
+                | Instruction::LookTargetHandMayDiscardNonland => {
+                    let nonland_only =
+                        matches!(instruction, Instruction::LookTargetHandMayDiscardNonland);
+                    if self.start_private_hand_discard(&item, nonland_only) {
                         return;
                     }
                 }
@@ -7332,8 +7335,10 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::MayDiscardNonlandReflexive(ability) => {
-                    self.start_optional_nonland_reflexive_discard(&item, ability);
+                Instruction::MayDiscardNonlandReflexive(ability)
+                | Instruction::MayDiscardAnyReflexive(ability) => {
+                    let any_number = matches!(instruction, Instruction::MayDiscardAnyReflexive(_));
+                    self.start_optional_reflexive_discard(&item, ability, any_number);
                     return;
                 }
                 Instruction::RevealTargetHandMayExileLinked => {
@@ -10693,9 +10698,10 @@ impl Game {
                 Instruction::DiscardTwoNonlandReflexive(ability) => {
                     self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 2;
                     self.state.resolving.as_mut().unwrap().discard_after =
-                        Some(discard_events::DiscardAfter::NonlandReflexive {
+                        Some(discard_events::DiscardAfter::ReflexiveCount {
                             controller: item.controller,
                             ability,
+                            nonland_only: true,
                         });
                 }
                 Instruction::SearchLibraryOrOutsideLegendarySplit {
@@ -10742,13 +10748,24 @@ impl Game {
                             minimum,
                         });
                 }
-                Instruction::DiscardThenDrawForTypes { players, amount } => {
+                Instruction::DiscardThenDrawForTypes { players, amount }
+                | Instruction::DiscardThenDrawForOwnCount { players, amount } => {
                     for player in self.program_players(players, &item) {
                         self.state.resolving.as_mut().unwrap().discards[player.index()] =
                             usize::from(amount);
                     }
                     self.state.resolving.as_mut().unwrap().discard_after =
-                        Some(discard_events::DiscardAfter::DrawCardTypes(item.controller));
+                        Some(match instruction {
+                            Instruction::DiscardThenDrawForOwnCount { .. } => {
+                                discard_events::DiscardAfter::DrawActual {
+                                    players: std::array::from_fn(|index| {
+                                        index == item.controller.index()
+                                    }),
+                                    bonus: 0,
+                                }
+                            }
+                            _ => discard_events::DiscardAfter::DrawCardTypes(item.controller),
+                        });
                 }
                 Instruction::Discard(set, _)
                 | Instruction::DiscardScaled(set, _)
