@@ -2398,8 +2398,10 @@ impl Game {
                 ) {
                     return false;
                 }
-                if *predicate == TargetPredicate::OtherThanAuraAttachment
-                    && matches!(target, Target::Player(_))
+                if matches!(
+                    predicate,
+                    TargetPredicate::OtherThanAuraAttachment | TargetPredicate::OtherThanSource
+                ) && matches!(target, Target::Player(_))
                 {
                     return true;
                 }

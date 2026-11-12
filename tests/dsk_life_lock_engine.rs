@@ -41,11 +41,15 @@ fn target(target: Target) -> Action {
 
 fn reflect_lethal_damage(game: &mut Game, controller: Player) {
     let source = put(game, controller, "Grizzly Bears", Zone::Battlefield);
+    shock_and_choose_reflection(game, controller, source);
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+}
+
+fn shock_and_choose_reflection(game: &mut Game, controller: Player, source: CardId) {
     let shock = put(game, controller, "Shock", Zone::Hand);
     cast(game, shock, Some(Target::Card(source)));
     act(game, Action::Pass);
     act(game, Action::Pass);
-    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
     if !matches!(game.state.pending, Pending::Targets { .. }) {
         choose(game, |action| matches!(action, Action::PutTrigger { .. }));
     }
@@ -149,6 +153,22 @@ fn exact_damage_recipient_and_persistent_prohibition_are_owned_by_branches() {
 }
 
 #[test]
+fn reflection_allows_both_players_and_excludes_its_surviving_source() {
+    let _rules = fixture_rules::activate(&[(Card::GrizzlyBears, &REFLECT_DAMAGE)]);
+    let controller = Player::P0;
+    let mut game = scenario(controller);
+    let source = put(&mut game, controller, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[source as usize].growth.toughness = 1;
+    shock_and_choose_reflection(&mut game, controller, source);
+    assert_eq!(game.object_view(source).zone, Zone::Battlefield);
+    reject(&mut game, target(Target::Card(source)));
+    let legal = game.legal_actions();
+    for player in [Player::P0, Player::P1] {
+        assert!(legal.contains(&target(Target::Player(player))));
+    }
+}
+
+#[test]
 fn prevention_and_redirection_do_not_lock_the_original_player_target() {
     const PREVENTION: CardRules = CardRules {
         effect: Effect::Spell(
@@ -225,14 +245,14 @@ fn projected_cost_departures_respect_the_same_life_gain_prohibition() {
     let controller = Player::P1;
     let opponent = controller.other();
     let mut game = scenario(controller);
+    let victim = put(&mut game, controller, "Hill Giant", Zone::Battlefield);
+    reflect_lethal_damage(&mut game, controller);
     put(
         &mut game,
         opponent,
         "The Darkness Crystal",
         Zone::Battlefield,
     );
-    let victim = put(&mut game, controller, "Hill Giant", Zone::Battlefield);
-    reflect_lethal_damage(&mut game, controller);
     let before_damage = game.snapshot();
     for lock in [true, false] {
         game.restore(&before_damage).unwrap();
