@@ -8882,6 +8882,22 @@ impl Game {
                 | Instruction::DistributeCountersX { kind } => {
                     self.distribute_counters(&item, kind)
                 }
+                Instruction::DistributeCountersAmongPermanents {
+                    total,
+                    kind,
+                    filter,
+                } => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CounterDistribution { kind, filter },
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        total,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::DamageByGroup { first, other } => {
                     self.damage_by_group(&item, first, other)
                 }

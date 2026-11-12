@@ -6086,6 +6086,7 @@ impl Game {
                             }
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
+                            | EffectChoiceKind::CounterDistribution { .. }
                             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
                             | EffectChoiceKind::KeepCreaturesWithinTotalPower(_)
                             | EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)

@@ -312,6 +312,10 @@ impl Game {
         if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
             return self.color_counter_candidate(player, color, subtype, object);
         }
+        if let EffectChoiceKind::CounterDistribution { filter, .. } = choice.kind {
+            return self.object_ref(object.card) == object
+                && self.battlefield_filter_matches(filter, player, object.card);
+        }
         if let EffectChoiceKind::CountersOnTarget { group, .. }
         | EffectChoiceKind::DamageAmongTargetGroup { group, .. } = choice.kind
         {
@@ -1886,6 +1890,10 @@ impl Game {
                     self.effect_choice_candidate(&choice, player, self.object_ref(*id as CardId))
                 })
                 .count();
+            if matches!(kind, EffectChoiceKind::CounterDistribution { .. }) {
+                choice.required[player.index()] = if available == 0 { 0 } else { amount };
+                continue;
+            }
             if let EffectChoiceKind::GraveyardCreatures {
                 maximum,
                 total_mana_value,
@@ -2741,6 +2749,16 @@ impl Game {
                 .iter()
                 .flatten()
                 .map(|&object| (object, Counters::of(kind, u64::from(amount))))
+                .collect();
+            self.effect_counters(changes, replacements::ResumeMode::Program);
+            return false;
+        }
+        if let EffectChoiceKind::CounterDistribution { kind, .. } = choice.kind {
+            let mut selected: Vec<_> = choice.selected.into_iter().flatten().collect();
+            selected.sort_unstable();
+            let changes = selected
+                .chunk_by(|left, right| left == right)
+                .map(|group| (group[0], Counters::of(kind, group.len() as u64)))
                 .collect();
             self.effect_counters(changes, replacements::ResumeMode::Program);
             return false;

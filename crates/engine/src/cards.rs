@@ -1480,6 +1480,11 @@ pub enum SaddleRiderEffect {
 pub enum EffectChoiceKind {
     /// Choose two controlled creatures, or as many as possible.
     PowerDifferenceBoost,
+    /// Assign one counter per choice to an eligible permanent, allowing repeat assignments.
+    CounterDistribution {
+        kind: CounterKind,
+        filter: BattlefieldFilter,
+    },
     SaddleRider(SaddleRiderEffect),
     BlinkControlledCreatures,
     CloakFromHand,
@@ -2307,7 +2312,7 @@ pub enum CreaturePowerDamageRecipients {
 
 /// Immutable rule bytecode. Only the program counter and choices live in state.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct BattlefieldFilter {
     pub kinds: u16,
     pub relation: i8,
@@ -3516,6 +3521,12 @@ pub enum Instruction {
     },
     DistributeCountersX {
         kind: CounterKind,
+    },
+    /// Distribute at resolution without targeting the recipients.
+    DistributeCountersAmongPermanents {
+        total: u16,
+        kind: CounterKind,
+        filter: BattlefieldFilter,
     },
     DamageByGroup {
         first: i32,

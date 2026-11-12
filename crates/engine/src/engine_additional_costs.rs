@@ -1462,6 +1462,7 @@ impl Game {
             | EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)
             | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
             | EffectChoiceKind::ColorCounter { .. }
+            | EffectChoiceKind::CounterDistribution { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
             | EffectChoiceKind::EquipmentRecipient
