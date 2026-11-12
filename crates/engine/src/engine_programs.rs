@@ -6882,7 +6882,12 @@ impl Game {
                 }
                 Instruction::ExileTargetCopyCastPaid => {
                     self.state.resolving.as_mut().unwrap().moved_count = Some(0);
-                    if self.exile_target_copy_offer_paid_cast(&item) {
+                    if self.exile_targets_copy_offer_paid_cast(&item, Some(1)) {
+                        return;
+                    }
+                }
+                Instruction::ExileTargetsCopyCastPaid => {
+                    if self.exile_targets_copy_offer_paid_cast(&item, None) {
                         return;
                     }
                 }
@@ -7127,6 +7132,18 @@ impl Game {
                 Instruction::Mill(players, amount) => {
                     let players: Vec<_> = self.program_players(players, &item).collect();
                     self.mill_batch(&players, amount, item.controller);
+                }
+                Instruction::DrawAndRepeatMillingIfSharedType => {
+                    if self.milled_cards_share_type() {
+                        let resolution = self.state.resolving.as_mut().unwrap();
+                        let mill = resolution.pc.checked_sub(2).expect("preceding mill");
+                        assert!(matches!(resolution.program[mill], Instruction::Mill(..)));
+                        // Keep the next mill scheduled through any private draw
+                        // or replacement choice. A successful test consumes at
+                        // least two exact library cards into public zones.
+                        resolution.pc = mill;
+                        self.draw_many(item.controller, 1);
+                    }
                 }
                 Instruction::MillThenReflexive { amount, ability } => {
                     let milled = self.mill_batch(

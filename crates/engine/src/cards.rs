@@ -2892,6 +2892,8 @@ pub enum Instruction {
     ExileTopMayCastPaidFrom(PlayerSet),
     /// Exile the exact targeted graveyard card and optionally cast its copy by paying.
     ExileTargetCopyCastPaid,
+    /// Exile the exact targeted graveyard cards and optionally cast each copy by paying.
+    ExileTargetsCopyCastPaid,
     /// Skip the following instructions if that offered cast did not commit.
     IfOfferedCastDeclined {
         skip: usize,
@@ -3877,6 +3879,8 @@ pub enum Instruction {
     DiscardHandRememberCount(PlayerSet),
     TapCreatures(CreatureFilter),
     Mill(PlayerSet, MillAmount),
+    /// Draw once and repeat the preceding mill when two cards it milled share a card type.
+    DrawAndRepeatMillingIfSharedType,
     /// Inherent rad-counter trigger: mill, lose life, then remove rad counters.
     ResolveRadiation,
     IncreaseSpeed,

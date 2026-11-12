@@ -845,7 +845,7 @@ impl Game {
         if !event.moved || event.destination != Zone::Exile {
             return false;
         }
-        self.offer_exiled_cards_paid_cast(player, vec![event.after]);
+        self.offer_exiled_cards_paid_cast(player, vec![event.after], Some(1));
         true
     }
 
@@ -853,6 +853,7 @@ impl Game {
         &mut self,
         player: Player,
         remaining: Vec<ObjectRef>,
+        casts_remaining: Option<u16>,
     ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
@@ -865,7 +866,7 @@ impl Game {
                 exile_instants_sorceries: false,
                 spend_any_mana: false,
             }),
-            casts_remaining: Some(1),
+            casts_remaining,
             pending_cast: None,
             remaining_mana_value: None,
             alternative_cost: None,

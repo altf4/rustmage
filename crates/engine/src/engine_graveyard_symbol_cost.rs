@@ -16,8 +16,7 @@ impl Game {
                 };
                 (self.same_target_object(*bound)
                     && self.state.objects[id as usize].zone == Zone::Graveyard
-                    && !self.state.objects[id as usize].is_token()
-                    && !self.state.objects[id as usize].is_spell_copy())
+                    && self.state.objects[id as usize].is_card())
                 .then_some(id)
             })
             .collect();
@@ -30,8 +29,8 @@ impl Game {
                     && event.destination == Zone::Exile
                     && self.object_ref(event.after.card) == event.after
                     && self.state.objects[event.after.card as usize].zone == Zone::Exile
-                    && !self.state.objects[event.after.card as usize].is_token()
-                    && !self.state.objects[event.after.card as usize].is_spell_copy()
+                    && self.state.objects[event.after.card as usize].is_card()
+                    && !self.exiled_face_down(event.after)
             })
             .map(|event| self.copiable_recipe(event.after))
             .collect();
@@ -77,12 +76,16 @@ impl Game {
         };
         true
     }
-    pub(super) fn exile_target_copy_offer_paid_cast(&mut self, item: &SpellView) -> bool {
+    pub(super) fn exile_targets_copy_offer_paid_cast(
+        &mut self,
+        item: &SpellView,
+        casts_remaining: Option<u16>,
+    ) -> bool {
         let remaining = self.exile_graveyard_targets_and_copy(item);
         if remaining.is_empty() {
             return false;
         }
-        self.offer_exiled_cards_paid_cast(item.controller, remaining);
+        self.offer_exiled_cards_paid_cast(item.controller, remaining, casts_remaining);
         true
     }
 

@@ -76,6 +76,24 @@ impl Game {
             .count()
     }
 
+    pub(super) fn milled_cards_share_type(&self) -> bool {
+        let mut types = 0;
+        self.state
+            .resolving
+            .as_ref()
+            .expect("milling program")
+            .milled
+            .iter()
+            .copied()
+            .filter(|&object| self.public_milled_object(object) && !self.exiled_face_down(object))
+            .any(|object| {
+                let kinds = self.current_kinds(object.card);
+                let shared = types & kinds != 0;
+                types |= kinds;
+                shared
+            })
+    }
+
     /// The rad-trigger continuation uses the exact committed destinations and
     /// public characteristics of this one mill event, including replacements.
     pub(super) fn mill_radiation(&mut self, player: Player, count: u64) -> u64 {
