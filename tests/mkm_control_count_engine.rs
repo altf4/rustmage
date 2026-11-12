@@ -16,7 +16,7 @@ const CONTROL_BATCH: CardRules = CardRules {
                 rule: TargetRule::Object {
                     zone: TargetZone::Battlefield,
                     kinds: 0,
-                    relation: 1,
+                    relation: 0,
                     other: false,
                     nonland: false,
                     tapped: false,
