@@ -34,20 +34,24 @@ const SURCHARGE: CardRules = CardRules {
 const CLUE: Card = Card::from_catalogue_id(5296);
 const INVESTIGATE: CardRules = CardRules {
     effect: Effect::Spell(
-        TargetPlan::Single(TargetSpec {
-            rule: TargetRule::Player {
-                opponent_only: false,
-            },
-            min: 0,
-            max: 2,
-        }),
+        TargetPlan::NONE,
         &[Instruction::CreateTokensRepeated {
             token: CLUE,
-            amount: AmountValue::TargetPlayersCreatureCount,
+            amount: AmountValue::Stat(StatValue::Count(CountFilter {
+                zone: CountZone::Battlefield,
+                relation: 0,
+                kind: 16,
+                exclude: 0,
+                subtype: None,
+                basic: false,
+                other: false,
+                cards_only: false,
+            })),
         }],
     ),
     ..CardRules::EMPTY
 };
+const EXTRA_CLUE: ReplacementSpec = ReplacementSpec::AddToken(CLUE);
 const CLUE_BATCH_OBSERVER: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
@@ -58,6 +62,15 @@ const CLUE_BATCH_OBSERVER: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::Draw(PlayerSet::Controller, 1)],
     }],
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::Replacement(0, EXTRA_CLUE)],
+    }],
+    extras: &CardExtras {
+        replacement_effects: &[EXTRA_CLUE],
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };
 const HEXPROOF: &[StaticAbilityGroup] = &[StaticAbilityGroup {
@@ -196,41 +209,60 @@ fn multicolored_hexproof_and_pair_counts_use_actual_source_and_permanent_colors(
 }
 
 #[test]
-fn repeated_investigations_each_create_a_replacement_aware_batch() {
+fn repeated_investigations_keep_the_count_frozen_through_owned_replacements() {
     let spell = Card::from_name("No More Lies").unwrap();
     let observer = Card::from_name("Soul-Guide Lantern").unwrap();
     let _scope =
         fixture_rules::activate(&[(spell, &INVESTIGATE), (observer, &CLUE_BATCH_OBSERVER)]);
     let player = Player::P0;
-    let opponent = player.other();
     let mut game = scenario(player);
-    spawn(&mut game, player, observer, Zone::Battlefield);
-    put(&mut game, player, "Doubling Season", Zone::Battlefield);
-    put(&mut game, player, "Bear Cub", Zone::Battlefield);
-    put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
-    put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let extra = spawn(&mut game, player, observer, Zone::Battlefield);
+    let double = put(&mut game, player, "Doubling Season", Zone::Battlefield);
+    put(&mut game, player, "Short Bow", Zone::Battlefield);
 
     let source = spawn(&mut game, player, spell, Zone::Hand);
-    announce(
-        &mut game,
-        source,
-        &[Target::Player(player), Target::Player(opponent)],
-    );
+    cast(&mut game, source, None);
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
-    assert!(matches!(game.state.pending, Pending::OrderTriggers { .. }));
-    assert_eq!(
-        game.controlled_token_ids(player)
-            .filter(|&id| game.object_view(id).card == CLUE)
-            .count(),
-        6
-    );
-    while matches!(game.state.pending, Pending::OrderTriggers { .. }) {
-        choose(&mut game, |action| {
-            matches!(action, Action::PutTrigger { .. })
-        });
+    assert_eq!(game.state.pending, Pending::Replacement { player });
+
+    let checkpoint = game.snapshot();
+    let actions = game.legal_actions();
+    let index = actions
+        .iter()
+        .position(|action| matches!(action, Action::ChooseReplacement { source, .. } if source.card == double))
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(player, game.revision(), index).unwrap();
+    act(&mut game, actions[index].clone());
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    indexed.restore(&checkpoint).unwrap();
+
+    // Two initial artifacts, even though the first event adds several new ones.
+    for (branch, choice, initial, expected) in
+        [(&mut game, double, 3, 6), (&mut indexed, extra, 0, 8)]
+    {
+        let tokens = |g: &Game| {
+            g.controlled_token_ids(player)
+                .filter(|&id| g.object_view(id).card == CLUE)
+                .count()
+        };
+        assert_eq!(tokens(branch), initial);
+        while branch.state.pending == (Pending::Replacement { player }) {
+            choose(
+                branch,
+                |action| matches!(action, Action::ChooseReplacement { source, .. } if source.card == choice),
+            );
+        }
+        assert_eq!(tokens(branch), expected);
+        while matches!(branch.state.pending, Pending::OrderTriggers { .. }) {
+            choose(branch, |action| matches!(action, Action::PutTrigger { .. }));
+        }
+        assert_eq!(branch.state.stack.len(), 2);
+        settle(branch);
+        assert_eq!(
+            branch.state.players[player.index()].cards_drawn_this_turn,
+            2
+        );
     }
-    assert_eq!(game.state.stack.len(), 3);
-    settle(&mut game);
-    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
 }
