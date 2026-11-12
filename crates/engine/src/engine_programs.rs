@@ -1335,6 +1335,15 @@ impl Game {
                                 ))
                             && self.entry_predicate_matches(predicate, source, &entered)
                     }
+                    TriggerCondition::FilteredEntersOrTurnsFaceUpYou {
+                        entry,
+                        other_on_entry,
+                        ..
+                    } => {
+                        yours
+                            && (!other_on_entry || !same)
+                            && self.entry_predicate_matches(entry, source, &entered)
+                    }
                     TriggerCondition::OtherCreatureEntersYouIfGreaterStats => {
                         yours
                             && !same
@@ -1422,16 +1431,22 @@ impl Game {
                     if same && source.card.x_symbols() > 0 {
                         self.state.pending_triggers.last_mut().unwrap().x = Some(event.x);
                     }
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .entering_object = Some(event.after);
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .evidence_collected = event.evidence_collected;
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.entering_object = Some(event.after);
+                    packet.evidence_collected = event.evidence_collected;
+                    if matches!(
+                        ability.condition.event(),
+                        TriggerCondition::FilteredEntersOrTurnsFaceUpYou { .. }
+                    ) && packet.event_object.is_none()
+                    {
+                        packet.set_event_object(EventObjectView {
+                            object: event.after,
+                            facts: EventObjectFacts::Controller(entered.controller),
+                            semantic_objects: None,
+                            conniver_creature: None,
+                            subtype_lki: None,
+                        });
+                    }
                 }
             }
         }

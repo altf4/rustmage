@@ -7830,6 +7830,13 @@ pub enum TriggerCondition {
     #[cfg_attr(not(test), allow(dead_code))]
     SelfTurnedFaceUp,
     SelfEntersOrTurnsFaceUp,
+    /// Each controlled entrant matching the entry predicate, or each controlled
+    /// permanent of the specified subtype immediately after it turns face up.
+    FilteredEntersOrTurnsFaceUpYou {
+        entry: EntryPredicate,
+        other_on_entry: bool,
+        face_up_subtype: &'static str,
+    },
     #[cfg_attr(not(test), allow(dead_code))]
     PermanentYouControlTurnedFaceUp,
     SelfOrControlledCreatureTurnedFaceUp,

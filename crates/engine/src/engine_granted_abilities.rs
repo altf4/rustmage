@@ -59,6 +59,7 @@ impl Game {
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp
                             | TriggerCondition::SelfEntersOrTurnsFaceUp
+                            | TriggerCondition::FilteredEntersOrTurnsFaceUpYou { .. }
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
                             | TriggerCondition::SelfOrControlledCreatureTurnedFaceUp
                             | TriggerCondition::YouTurnPermanentFaceUp

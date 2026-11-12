@@ -822,6 +822,12 @@ impl Game {
                 let matched = match ability.condition.event() {
                     TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::SelfEntersOrTurnsFaceUp => source.reference == object,
+                    TriggerCondition::FilteredEntersOrTurnsFaceUpYou {
+                        face_up_subtype, ..
+                    } => {
+                        source.controller == controller
+                            && self.has_subtype(object.card, face_up_subtype)
+                    }
                     TriggerCondition::SelfOrControlledCreatureTurnedFaceUp => {
                         source.reference == object || (creature && source.controller == controller)
                     }
