@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "5d4a143f8f2d45ae85ada63681f4c2a693a604d1b910b7589b338b5bcc9bbfce",
+  "catalogue_version": "20c10bb0f3db4311a24a08811a4e07ece4d1a7c6948c23f0316875bf1a46065e",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4977,
-  "implemented_total": 4995,
+  "implemented_standard_cards": 4987,
+  "implemented_total": 5005,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -99,8 +99,7 @@
     },
     "mkm": {
       "total": 264,
-      "complete": 255,
-      "gated": 9
+      "complete": 264
     },
     "mom": {
       "total": 1,
@@ -132,8 +131,7 @@
     },
     "soc": {
       "total": 24,
-      "complete": 23,
-      "gated": 1
+      "complete": 24
     },
     "sos": {
       "total": 264,
@@ -1857,8 +1855,8 @@
     {
       "name": "Archdruid's Charm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/archdruid_s_charm.rs",
       "set": "mkm"
     },
@@ -2153,8 +2151,8 @@
     {
       "name": "Assassin's Trophy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/assassin_s_trophy.rs",
       "set": "soc"
     },
@@ -4489,8 +4487,8 @@
     {
       "name": "Break Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/break_out.rs",
       "set": "mkm"
     },
@@ -4897,8 +4895,8 @@
     {
       "name": "Buried in the Garden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/buried_in_the_garden.rs",
       "set": "mkm"
     },
@@ -9265,8 +9263,8 @@
     {
       "name": "Doppelgang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/doppelgang.rs",
       "set": "mkm"
     },
@@ -13945,8 +13943,8 @@
     {
       "name": "Get a Leg Up",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/get_a_leg_up.rs",
       "set": "mkm"
     },
@@ -14449,8 +14447,8 @@
     {
       "name": "Glint Weaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/glint_weaver.rs",
       "set": "mkm"
     },
@@ -17257,8 +17255,8 @@
     {
       "name": "Ill-Timed Explosion",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/ill_timed_explosion.rs",
       "set": "mkm"
     },
@@ -19609,8 +19607,8 @@
     {
       "name": "Kylox, Visionary Inventor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/kylox_visionary_inventor.rs",
       "set": "mkm"
     },
@@ -19865,8 +19863,8 @@
     {
       "name": "Lazav, Wearer of Faces",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/lazav_wearer_of_faces.rs",
       "set": "mkm"
     },
