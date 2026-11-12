@@ -5,3 +5,6 @@ use rustmage as _;
 
 #[path = "mkm_white_blue_cards/cases.rs"]
 mod cases;
+
+#[path = "mkm_white_blue_cards/disguise.rs"]
+mod disguise;

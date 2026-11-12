@@ -3,7 +3,7 @@
   "catalogue_id": 574,
   "oracle_id": "ca22fa33-5460-4d31-a9c8-4115d35b994c",
   "facts_sha256": "d1e654769294c0d75fc153d34139ddf41dff0c505e73261019bfd55475137bd8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c08fea71878813aabae91f7430abefaa3209fe87976a4409d94e6206bceebcc5"
@@ -29,5 +29,5 @@
       "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
     }
   ],
-  "rules_tests": "src/engine_manifest.rs"
+  "rules_tests": "mkm_white_blue_cards"
 }

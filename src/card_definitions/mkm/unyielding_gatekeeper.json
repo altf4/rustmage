@@ -3,10 +3,21 @@
   "catalogue_id": 4811,
   "oracle_id": "3c8fa799-7f30-4532-8317-f37a7ab787de",
   "facts_sha256": "f7f7f5f92a19a881cff85604b023ad11ae7249eb4a7e5b295d615d870701dc38",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "203e095dc28f0a6cb3fabe553e39b2590723217cc50b6b668f191335184ea4d0"
   },
-  "physical_metadata_sha256": "8c81a756dc239f2cead829f1afb4365de535b7859cda74d49af59da3b021be6f"
+  "physical_metadata_sha256": "8c81a756dc239f2cead829f1afb4365de535b7859cda74d49af59da3b021be6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnyieldingGatekeeper.java",
+  "java_sha256": "258eea661fd7d55e504d711cc90247a3b176dc0c4d6b611d903c2843584a1fd6",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

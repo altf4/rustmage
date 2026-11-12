@@ -3,10 +3,21 @@
   "catalogue_id": 3131,
   "oracle_id": "be8d3788-709b-4d10-861c-a6f27d4b63a6",
   "facts_sha256": "7c16ebfff412db3ba2bd33dd43b0a4c76e5bbaf3db14c19158c21e0dba0e089c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1b6b5dc9df37c69e7f59a92b7abe6403c55323fab5f4a92fd2bfaf26d961a40a"
   },
-  "physical_metadata_sha256": "f3cef54b00d34a8f2623efa53bb47cf6159986aa359ea1409a49a97261fff62e"
+  "physical_metadata_sha256": "f3cef54b00d34a8f2623efa53bb47cf6159986aa359ea1409a49a97261fff62e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PerimeterEnforcer.java",
+  "java_sha256": "36111da187936a155c61e9c8bb061c78c0e3235a72b789a2e663438a1f988ab5",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpAllTriggeredAbility.java",
+      "sha256": "758d39cefb1211145c871f01fc7d315c7f56d9e8cd8a9590ec207ade873a8f69"
+    }
+  ]
 }
