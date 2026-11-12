@@ -3729,6 +3729,9 @@ pub enum Instruction {
     CreateEmblemForChosenCreatureType(Card),
     /// The controller’s next committed spell cast this turn cannot be countered.
     GrantNextSpellUncounterable,
+    /// This turn, the controller may cast from their graveyard and their
+    /// cards that would enter it from anywhere are exiled instead.
+    GrantGraveyardSpellsAndExileCardsThisTurn,
     /// The next noncreature spell this turn has affinity for artifacts.
     GrantNextNoncreatureArtifactAffinity,
     LoseGainedLife(PlayerSet),

@@ -578,8 +578,8 @@ impl Game {
             linked_death_exiles,
             shuffle_spell: false,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
-            exile_spell: (before.zone == Zone::Stack
-                && self.stack_graveyard_exile(before.reference))
+            exile_spell: self.turn_exiles_graveyard_card(&self.state.objects[before.id as usize])
+                || (before.zone == Zone::Stack && self.stack_graveyard_exile(before.reference))
                 || self.state.static_sources.iter().any(|&id| {
                     self.on_battlefield(id)
                         && self.printed_abilities_available(id)

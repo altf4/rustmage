@@ -3,6 +3,8 @@ mod support;
 
 use rustmage::{PermanentType, RoomDoor};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
+use rustmage_core::engine::ability_world::CharacteristicWorld;
+use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
@@ -270,6 +272,40 @@ const GRAVEYARD_LAND_ROOM: CardRules = CardRules {
             halves: [LEFT, RIGHT],
             triggers: &[],
             static_groups: &[(0, RoomDoor::Left)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const CELLAR_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfDoorUnlocked(RoomDoor::Right),
+        targets: TargetPlan::NONE,
+        program: &[Instruction::GrantGraveyardSpellsAndExileCardsThisTurn],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[(0, RoomDoor::Right)],
+            static_groups: &[],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const IMPENDING_ROOM_FIXTURE: CardRules = CardRules {
+    effect: Effect::Creature(3, 2),
+    triggers: &[ImpendingSpec::END_STEP],
+    extras: &CardExtras {
+        impending: Some(ImpendingSpec {
+            cost: ManaCost {
+                colored: [0, 0, 1, 0, 0, 0],
+                generic: 0,
+            },
+            time_counters: 2,
         }),
         ..CardExtras::EMPTY
     },
@@ -946,6 +982,168 @@ fn a_copied_room_grants_graveyard_land_plays_after_unlocking_its_own_door() {
     act(&mut game, play);
     assert_eq!(game.object_view(land).zone, Zone::Battlefield);
     reject(&mut game, Action::PlayLand { card: another });
+}
+
+#[test]
+fn cellar_casts_spells_after_the_source_leaves_and_keeps_per_type_grants_independent() {
+    let impending = card("Appendage Amalgam");
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &CELLAR_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (impending, &IMPENDING_ROOM_FIXTURE),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    let spell = put(&mut game, player, "Shock", Zone::Graveyard);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    reject(&mut game, Action::AnnounceCast { card: spell });
+    settle_rooms(&mut game);
+    let departed = game.move_objects_raw(&[room], Zone::Exile);
+    game.finish_zone_events(&departed, &[]);
+    reject(&mut game, Action::PlayLand { card: land });
+    cast(&mut game, spell, Some(Target::Player(player.other())));
+    settle_rooms(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Exile);
+
+    let muldrotha = put(
+        &mut game,
+        player,
+        "Muldrotha, the Gravetide",
+        Zone::Battlefield,
+    );
+    let ordinary = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let per_type = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let alternative = spawn(&mut game, player, impending, Zone::Graveyard);
+    let permission = game.object_ref(muldrotha);
+    act(&mut game, Action::AnnounceCast { card: ordinary });
+    pay(&mut game);
+    settle_rooms(&mut game);
+    assert!(game.observe(player).graveyard_type_uses.is_empty());
+
+    act(
+        &mut game,
+        Action::PlayGraveyardPermanent {
+            card: per_type,
+            permission,
+            permanent_type: PermanentType::Creature,
+        },
+    );
+    pay(&mut game);
+    settle_rooms(&mut game);
+    assert_eq!(game.observe(player).graveyard_type_uses.len(), 1);
+    reject(
+        &mut game,
+        Action::PlayGraveyardPermanent {
+            card: alternative,
+            permission,
+            permanent_type: PermanentType::Creature,
+        },
+    );
+
+    game.state.players[player.index()].mana = [0, 0, 1, 0, 0, 0];
+    act(&mut game, Action::AnnounceCast { card: alternative });
+    if let Some(route) = game
+        .observe(player)
+        .cost_choices
+        .iter()
+        .find(|route| route.impending)
+    {
+        act(&mut game, Action::ChooseSpellCost { cost: route.index });
+    }
+    pay(&mut game);
+    assert!(game.state.stack.last().unwrap().cast.unwrap().impending);
+    settle_rooms(&mut game);
+    assert_eq!(game.object_view(alternative).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(alternative, CounterKind::Time), 2);
+    assert_eq!(game.observe(player).graveyard_type_uses.len(), 1);
+}
+
+#[test]
+fn cellar_replaces_each_affected_owners_cards_through_the_cleanup_discard() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &CELLAR_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+    ]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    settle_rooms(&mut game);
+    let physical = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let foreign = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    game.state.objects[physical as usize].controller = opponent;
+    game.state.objects[foreign as usize].controller = player;
+    let library = game.top_library_card(player).unwrap();
+    game.stage_copy_creation(player, CopyRecipe::new(Card::GrizzlyBears), 1);
+    game.advance_entries();
+    let token = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| object.zone == Zone::Battlefield && object.is_token())
+        .unwrap()
+        .id;
+    let objects = [physical, foreign, token].map(|id| game.object_ref(id));
+    let goal = FundingGoal {
+        actor: player,
+        required: [0; 6],
+        generic: 0,
+        reserve: None,
+        source: None,
+    };
+    let projected = FundingState::from_game(&game, &goal);
+    assert!(
+        projected.cost_departures(&objects, Zone::Graveyard, &mut |world| {
+            assert_eq!(world.object(physical).zone, Zone::Exile);
+            assert_eq!(world.object(foreign).zone, Zone::Graveyard);
+            assert_eq!(world.object(token).zone, Zone::Graveyard);
+            true
+        })
+    );
+
+    let events = game.move_objects_raw(&[physical, foreign, token, library], Zone::Graveyard);
+    assert_eq!(
+        events
+            .iter()
+            .map(|event| event.destination)
+            .collect::<Vec<_>>(),
+        [Zone::Exile, Zone::Graveyard, Zone::Graveyard, Zone::Exile]
+    );
+    game.finish_zone_events(&events, &[]);
+    game.grant_graveyard_spells_and_exile_cards(opponent);
+    let foreign_spell = put(&mut game, opponent, "Shock", Zone::Graveyard);
+    act(&mut game, Action::Pass);
+    assert!(game.legal_actions().contains(&Action::AnnounceCast {
+        card: foreign_spell
+    }));
+    act(&mut game, Action::Pass);
+    let both_libraries = [player, opponent].map(|owner| game.top_library_card(owner).unwrap());
+    let events = game.move_objects_raw(&both_libraries, Zone::Graveyard);
+    assert!(events.iter().all(|event| event.destination == Zone::Exile));
+    game.finish_zone_events(&events, &[]);
+
+    let hand = [Card::Forest; 8].map(|land| spawn(&mut game, player, land, Zone::Hand));
+    game.state.step = Step::End;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::Discard);
+    act(&mut game, Action::Discard { card: hand[0] });
+    assert_eq!(game.object_view(hand[0]).zone, Zone::Exile);
+    assert_eq!(game.state.active, opponent);
+    let observation = game.observe(opponent);
+    assert!(
+        observation
+            .players
+            .iter()
+            .all(|player| player.turn_cast_grants.is_none())
+    );
+    let after = game.move_objects_raw(&hand[1..2], Zone::Graveyard);
+    assert_eq!(after[0].destination, Zone::Graveyard);
 }
 
 #[test]

@@ -800,7 +800,7 @@ impl FundingState<'_> {
                 if shuffle {
                     choices.push((Some(Zone::Library), None));
                 }
-                if exile {
+                if exile || self.game.turn_exiles_graveyard_card(o) {
                     choices.push((Some(Zone::Exile), None));
                 }
                 if o.zone == Zone::Battlefield && kinds & 1 != 0 && !o.is_token() {

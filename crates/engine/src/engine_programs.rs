@@ -10626,6 +10626,9 @@ impl Game {
                 Instruction::GrantNextSpellUncounterable => {
                     self.grant_next_spell_uncounterable(item.controller)
                 }
+                Instruction::GrantGraveyardSpellsAndExileCardsThisTurn => {
+                    self.grant_graveyard_spells_and_exile_cards(item.controller)
+                }
                 Instruction::EndTurn => {
                     self.end_turn_effect();
                     return;

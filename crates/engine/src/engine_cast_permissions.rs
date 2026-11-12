@@ -191,6 +191,8 @@ impl Game {
                 && object.card.has_mayhem_land()
                 && self.discarded_to_graveyard_this_turn(card))
                 || (kind == GraveyardCastKind::Cast
+                    && self.turn_graveyard_spells_and_exile_cards(player))
+                || (kind == GraveyardCastKind::Cast
                     && object.card.static_ability_groups().iter().any(|group| {
                         group.fragments.iter().any(|fragment| {
                         matches!(*fragment, StaticAbilityFragment::SelfGraveyardCastIf(condition)
