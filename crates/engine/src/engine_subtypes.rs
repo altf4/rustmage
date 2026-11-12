@@ -1355,7 +1355,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     let removes_printed = has_land_setters && !object.card.is_basic_land();
     // A dependent effect must wait for land status. Effects waiting on the
     // same transition still order among themselves by their own timestamps.
-    let land_effect_order = |time| (time.max(land_since.unwrap_or(0)), time);
+    let land_effect_order = |time: u64| (time.max(land_since.unwrap_or(0)), time);
     let mut events: Vec<((u64, u64), Event)> = kind_events
         .iter()
         .map(|&(time, land)| ((time, 0), Event::Land(land)))
