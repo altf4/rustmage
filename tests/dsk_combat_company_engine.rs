@@ -151,7 +151,7 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
     reject(&mut game, inferior);
     let mut limited = game.clone();
     for creature in [restricted, companion] {
-        limited.state.objects[creature as usize].gained_keywords = Keywords::FLYING;
+        limited.add_counter(creature, CounterKind::Flying, 1);
     }
     put(
         &mut limited,
@@ -165,6 +165,10 @@ fn attack_requirements_count_company_and_the_defender_capacity() {
         "Tomik, Orzhov Lawmage",
         Zone::Battlefield,
     );
+    assert!(limited.keywords(restricted).contains(Keywords::FLYING));
+    assert!(limited.keywords(companion).contains(Keywords::FLYING));
+    reject(&mut limited, attack(restricted));
+    reject(&mut limited, attack(companion));
     let unsupported = attack_walker(&limited, restricted, walker);
     reject(&mut limited, unsupported);
     reject(&mut limited, Action::FinishAttackers);
