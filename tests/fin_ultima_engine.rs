@@ -272,6 +272,7 @@ fn the_exact_land_loses_earlier_land_types_and_abilities_until_its_last_counter(
         kind: BasicLandType::Forest,
         timestamp: game.next_role_timestamp(),
         while_counter: None,
+        until_cleanup: false,
     };
     game.state
         .roles

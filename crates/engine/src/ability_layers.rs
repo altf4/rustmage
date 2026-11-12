@@ -333,6 +333,14 @@ pub enum StaticAbilityFragment {
     ChosenBasicLandType,
     /// Add all five basic land subtypes to each controlled land in layer four.
     ControlledLandsAllBasicTypes,
+    /// This controller’s nontoken artifacts are also lands.
+    ControlledNontokenArtifactsAreLands,
+    NonbasicLandsEnterTapped,
+    /// Set all nonbasic land subtypes while the source has the specified counter.
+    NonbasicLandTypeWhileCounter {
+        kind: BasicLandType,
+        counter: CounterKind,
+    },
     /// Set every controlled nonland permanent's color to all five colors.
     ControlledNonlandAllColors,
     OtherSubtypeEntryCounters(&'static str),

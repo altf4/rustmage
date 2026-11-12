@@ -12133,6 +12133,9 @@ impl Game {
                 Instruction::GrantAllCreatureTypes(subject) => {
                     self.grant_all_creature_types(&item, subject)
                 }
+                Instruction::GrantAllBasicLandTypesUntilCleanup => {
+                    self.grant_all_basic_land_types_until_cleanup(&item);
+                }
                 Instruction::AddBasicLandType { subject, kind } => {
                     self.add_basic_land_type(&item, subject, kind, None);
                 }

@@ -43,6 +43,8 @@ pub(super) struct EntryMove {
     /// Physical card hidden behind face-down entry characteristics.
     pub face_down: Option<manifest::FaceDownEntry>,
     pub controller: Player,
+    /// Setting a basic land subtype removes the entrant's printed abilities.
+    pub loses_printed_land_abilities: bool,
     /// Protector selected as this Battle enters, before replacement effects.
     pub battle_protector: Option<Player>,
     pub destination: Zone,
@@ -204,10 +206,26 @@ impl EntryMove {
         })
     }
     pub(super) fn intrinsic_entry_card(&self) -> Option<Card> {
-        self.as_entry_skeleton_source()
-            .is_none()
+        (!self.loses_printed_land_abilities && self.as_entry_skeleton_source().is_none())
             .then_some(self.before.card)
     }
+    pub(super) fn refresh_printed_land_abilities<W: ability_world::CharacteristicWorld + ?Sized>(
+        &mut self,
+        world: &W,
+        preview: impl FnOnce(&Self) -> Option<ObjectView>,
+    ) {
+        self.loses_printed_land_abilities = self.destination == Zone::Battlefield
+            && self.face_down.is_none()
+            && !self.before.card.is_basic_land()
+            && subtypes::nonbasic_land_type_setters(world).next().is_some()
+            && (if self.requires_characteristic_preview(world) {
+                preview(self).map_or_else(|| self.entry_kinds(), |view| view.kinds)
+            } else {
+                self.entry_kinds()
+            }) & 2
+                != 0;
+    }
+
     pub(super) fn apply_impending_cost(&mut self, cast: Option<CastInfo>) {
         if cast.is_some_and(|cast| cast.impending) {
             let spec = self
@@ -260,6 +278,9 @@ impl EntryMove {
             || self.as_entry_skeleton_source().is_some()
             || self.as_entry_treasure_source().is_some()
             || self.before.copy_recipe.is_some()
+            || (self.entry_kinds() & 16 != 0
+                && !self.before.is_token()
+                && characteristic_layers::controlled_artifacts_are_lands(world, self.controller))
             || (self.entry_kinds() & 1 != 0
                 && characteristic_layers::other_creatures_food_timestamp(world, self.before.id)
                     .is_some())
@@ -339,6 +360,7 @@ impl EntryMove {
             gift: None,
             face_down: None,
             controller: before.controller,
+            loses_printed_land_abilities: false,
             battle_protector: None,
             before,
             source_before: None,
@@ -678,7 +700,7 @@ impl Game {
     }
     fn stage_entries_inner(
         &mut self,
-        moves: Vec<EntryMove>,
+        mut moves: Vec<EntryMove>,
         shuffle_after: Option<Player>,
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
@@ -692,6 +714,11 @@ impl Game {
             self.state.entry_batch.is_none(),
             "one entry transaction at a time"
         );
+        for movement in &mut moves {
+            movement.refresh_printed_land_abilities(self, |m| {
+                self.ghost_entry_preview(&m.replacement_preview())
+            });
+        }
         let mut captures_result = false;
         if let Some(frame) = self
             .state
@@ -747,6 +774,9 @@ impl Game {
         let mut moves = std::mem::take(&mut batch.moves);
         // Freeze counter quantities before any entry payment or tap decision.
         for movement in &mut moves {
+            movement.refresh_printed_land_abilities(self, |m| {
+                self.ghost_entry_preview(&m.replacement_preview())
+            });
             movement.choose_battle_protector();
             self.initialize_entry_counters(movement);
         }
@@ -786,7 +816,7 @@ impl Game {
             }
             if effects.is_empty() {
                 movement.tapped |= intrinsic_tapped
-                    || self.opponent_entry_kinds_require_tapped(
+                    || self.external_entry_kinds_require_tapped(
                         if movement.requires_characteristic_preview(self) {
                             self.ghost_entry_preview(&movement.replacement_preview())
                                 .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
@@ -794,6 +824,7 @@ impl Game {
                             movement.entry_kinds()
                         },
                         movement.controller,
+                        movement.before.card.is_basic_land(),
                     );
             } else {
                 // The incoming event retains instruction-level tapped entry;

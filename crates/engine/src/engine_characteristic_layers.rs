@@ -271,40 +271,17 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Vec<(u64, bool)> {
-    let mut events: Vec<_> = aura_effects(world, id)
+    let object = world.object(id);
+    let (mut kinds, changes) = kind_timeline(world, id, original_kinds(world, id, object));
+    changes
         .into_iter()
-        .filter_map(|(time, spec)| match spec.form {
-            PermanentForm::AddCreature
-            | PermanentForm::AddCreatureSubtypes
-            | PermanentForm::Preserve
-            | PermanentForm::PreserveWithColors => None,
-            PermanentForm::AddCardTypes(types) => (types & 2 != 0).then_some((time, true)),
-            form => Some((time, matches!(form, PermanentForm::Land))),
+        .filter_map(|(timestamp, change)| {
+            let was_land = kinds & 2 != 0;
+            kinds = change.apply(kinds);
+            let is_land = kinds & 2 != 0;
+            (was_land != is_land).then_some((timestamp, is_land))
         })
-        .collect();
-    if let Some(change) = source_conditional_creature(world, id)
-        && !change.additive
-    {
-        events.push((change.timestamp, false));
-    }
-    events.extend(animations(world, id).filter_map(|row| {
-        if row.food_only
-            || row.artifact_noncreature
-            || row.enchantment_noncreature
-            || row.creature_only
-        {
-            Some((row.timestamp, false))
-        } else if row.additional_card_types & 2 != 0
-            || row.land && (!row.preserve_card_types || row.artifact)
-        {
-            Some((row.timestamp, true))
-        } else {
-            None
-        }
-    }));
-    events.extend(source_type_forms(world, id).map(|(row, kinds, _)| (row.timestamp, kinds == 2)));
-    events.sort_by_key(|event| event.0);
-    events
+        .collect()
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -464,11 +441,28 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
     }
     changes.sort_by_key(|c| c.0);
     if let Some(timestamp) = other_creatures_food_timestamp(world, id)
-        && let Some(creature_since) = creature_scope_timestamp(result, &changes)
+        && let Some(creature_since) = kind_scope_timestamp(result, &changes, 1)
     {
         let timestamp = timestamp.max(creature_since);
         let after = changes.partition_point(|change| change.0 <= timestamp);
         changes.insert(after, (timestamp, CardTypeChange::Add(16)));
+    }
+    if !world.is_token(id)
+        && let Some(artifact_since) = kind_scope_timestamp(result, &changes, 16)
+    {
+        let prior_count = changes.len();
+        changes.extend(
+            controlled_characteristic_timestamps(world, id, |fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                )
+            })
+            .map(|time| (time.max(artifact_since), CardTypeChange::Add(2))),
+        );
+        if changes.len() != prior_count {
+            changes.sort_by_key(|change| change.0);
+        }
     }
     (result, changes)
 }
@@ -512,6 +506,28 @@ pub(super) fn other_creatures_food_timestamp<W: CharacteristicWorld + ?Sized>(
         .max()
 }
 
+pub(super) fn controlled_artifacts_are_lands<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    controller: Player,
+) -> bool {
+    world.roles().is_some_and(|roles| {
+        roles.characteristic_sources.iter().any(|&source| {
+            let provider = world.object(source.card);
+            provider.zone == Zone::Battlefield
+                && provider.controller == controller
+                && world.reference(source.card) == source
+                && provider.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                        )
+                    }) && entry_modes::group_enabled(world, source, group)
+                })
+        })
+    })
+}
+
 /// Fast entry paths have no entrant-specific layer-four changes. The existing
 /// creature-to-Food effects still apply when determining entry replacements.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -527,20 +543,22 @@ pub(super) fn fast_entry_kinds<W: CharacteristicWorld + ?Sized>(
     }
 }
 
-/// A creature-only type or subtype grant depends on the effect that made its
-/// recipient a creature. If the recipient is still a creature, return the
-/// start of that uninterrupted creature scope (zero for intrinsic creatures).
+/// Return the start of the uninterrupted interval containing this card type.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn creature_scope_timestamp(mut kinds: u16, changes: &[(u64, CardTypeChange)]) -> Option<u64> {
+fn kind_scope_timestamp(
+    mut kinds: u16,
+    changes: &[(u64, CardTypeChange)],
+    mask: u16,
+) -> Option<u64> {
     let mut latest = 0;
     for &(timestamp, change) in changes {
-        let was_creature = kinds & 1 != 0;
+        let had_type = kinds & mask != 0;
         kinds = change.apply(kinds);
-        if !was_creature && kinds & 1 != 0 {
+        if !had_type && kinds & mask != 0 {
             latest = timestamp;
         }
     }
-    (kinds & 1 != 0).then_some(latest)
+    (kinds & mask != 0).then_some(latest)
 }
 
 /// A creature-only subtype grant depends on an effect which first animates its
@@ -552,7 +570,7 @@ pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
 ) -> Option<u64> {
     let object = world.object(id);
     let (result, changes) = kind_timeline(world, id, original_kinds(world, id, object));
-    creature_scope_timestamp(result, &changes).filter(|&timestamp| timestamp != 0)
+    kind_scope_timestamp(result, &changes, 1).filter(|&timestamp| timestamp != 0)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -881,7 +899,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     if let Some(timestamp) = other_creatures_food_timestamp(world, id) {
         let (initial, timeline) =
             kind_timeline(world, id, original_kinds(world, id, world.object(id)));
-        if let Some(creature_since) = creature_scope_timestamp(initial, &timeline) {
+        if let Some(creature_since) = kind_scope_timestamp(initial, &timeline, 1) {
             changes.push((timestamp.max(creature_since), SubtypeChange::AddFood));
         }
     }

@@ -1287,6 +1287,8 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                                        | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                                        | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                                         | StaticAbilityFragment::ControlledNonlandAllColors
                                         | StaticAbilityFragment::ControlledTokenTapMana { .. }
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
@@ -4510,6 +4512,8 @@ impl<'g> FundingState<'g> {
                                     fragment,
                                     StaticAbilityFragment::ChosenBasicLandType
                                         | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                                        | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                                        | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                                         | StaticAbilityFragment::AttachmentMana(_)
                                         | StaticAbilityFragment::AttachmentSacrificeMana(_)
                                         | StaticAbilityFragment::LandMana { .. }

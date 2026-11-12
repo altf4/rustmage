@@ -38,6 +38,33 @@ pub struct EntryTapView {
     pub tapped: bool,
     pub effects: Vec<EntryTapEffect>,
 }
+pub(super) fn external_tap_provider<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+    controller: Player,
+    kinds: u16,
+    basic: bool,
+) -> bool {
+    use crate::cards::StaticAbilityFragment;
+    let source = world.object(id);
+    source.zone == Zone::Battlefield
+        && ((source.controller != controller
+            && source.card.opponent_entry_tapped() & kinds != 0
+            && world.fragment_available(id, |fragment| {
+                matches!(fragment, StaticAbilityFragment::OpponentEntryTapped(..))
+            }))
+            || (kinds & 2 != 0
+                && !basic
+                && source.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::NonbasicLandsEnterTapped)
+                    })
+                })
+                && world.fragment_available(id, |fragment| {
+                    matches!(fragment, StaticAbilityFragment::NonbasicLandsEnterTapped)
+                })))
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
@@ -77,17 +104,13 @@ impl Game {
             return effects;
         }
         for &id in &self.state.static_sources {
-            let source = &self.state.objects[id as usize];
-            if source.zone == Zone::Battlefield
-                && source.controller != movement.controller
-                && source.card.opponent_entry_tapped() & kinds != 0
-                && self.continuous_fragment_available(id, |fragment| {
-                    matches!(
-                        fragment,
-                        crate::cards::StaticAbilityFragment::OpponentEntryTapped(..)
-                    )
-                })
-            {
+            if external_tap_provider(
+                self,
+                id,
+                movement.controller,
+                kinds,
+                movement.before.card.is_basic_land(),
+            ) {
                 effects.push(EntryTapEffect {
                     source: self.object_ref(id),
                     intrinsic: false,

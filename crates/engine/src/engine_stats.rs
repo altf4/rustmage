@@ -405,6 +405,9 @@ impl Game {
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | crate::cards::StaticAbilityFragment::ChosenBasicLandType
                             | crate::cards::StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | crate::cards::StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | crate::cards::StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
+                            | crate::cards::StaticAbilityFragment::NonbasicLandsEnterTapped
                             | crate::cards::StaticAbilityFragment::ControlledNonlandAllColors
                             | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                             | crate::cards::StaticAbilityFragment::EntryMode(_)

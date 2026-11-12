@@ -103,6 +103,8 @@ impl Card {
                             | StaticAbilityFragment::ChosenTypeKeywords(..)
                             | StaticAbilityFragment::ChosenBasicLandType
                             | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                             | StaticAbilityFragment::ControlledNonlandAllColors
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary
@@ -205,6 +207,8 @@ impl Game {
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
+                            | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                             | StaticAbilityFragment::ControlledNonlandAllColors
                     )
                 })

@@ -749,6 +749,8 @@ pub struct BasicLandTypesEffectView {
     pub timestamp: u64,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub while_counter: Option<CounterKind>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub until_cleanup: bool,
 }
 
 impl BasicLandTypesEffectView {
@@ -1281,6 +1283,43 @@ pub(super) struct BasicLandTimeline {
     pub ability_changes: Vec<(u64, BasicLandAbilityChange)>,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn nonbasic_land_type_setters<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+) -> impl Iterator<Item = (u64, crate::cards::BasicLandType)> {
+    world.roles().into_iter().flat_map(move |roles| {
+        roles
+            .characteristic_sources
+            .iter()
+            .filter_map(move |&source| {
+                let object = world.object(source.card);
+                if object.zone != Zone::Battlefield || world.reference(source.card) != source {
+                    return None;
+                }
+                let kind = object
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .filter(|group| entry_modes::group_enabled(world, source, group))
+                    .flat_map(|group| group.fragments)
+                    .find_map(|fragment| match *fragment {
+                        StaticAbilityFragment::NonbasicLandTypeWhileCounter { kind, counter }
+                            if world.counter_count(source.card, counter) != 0 =>
+                        {
+                            Some(kind)
+                        }
+                        _ => None,
+                    })?;
+                let timestamp = roles
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == source)?
+                    .timestamp;
+                Some((timestamp, kind))
+            })
+    })
+}
+
 /// Run all supported layer-four card-type and basic-land-type changes in
 /// timestamp order, recording precisely when intrinsic mana is lost or gained.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1370,6 +1409,12 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                 )
                 .map(|time| (time.max(added_at), Event::AddAll)),
             );
+            if !object.card.is_basic_land() {
+                events.extend(
+                    nonbasic_land_type_setters(world)
+                        .map(|(time, kind)| (time.max(added_at), Event::Set(kind))),
+                );
+            }
         }
     }
     if events.is_empty() {
@@ -1502,24 +1547,70 @@ impl Game {
             })
             .map(|id| self.object_ref(id))
             .collect();
+        self.record_basic_land_types(source.object, &recipients, &[kind], while_counter, false);
+    }
+
+    pub(super) fn grant_all_basic_land_types_until_cleanup(&mut self, item: &SpellView) {
+        let Some(source) = item.source else { return };
+        let recipients: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && self.current_kinds(id) & 2 != 0)
+                    .then(|| self.object_ref(id))
+            })
+            .collect();
+        self.record_basic_land_types(
+            source.object,
+            &recipients,
+            &crate::cards::BasicLandType::ALL,
+            None,
+            true,
+        );
+    }
+
+    fn record_basic_land_types(
+        &mut self,
+        source: ObjectRef,
+        recipients: &[ObjectRef],
+        kinds: &[crate::cards::BasicLandType],
+        while_counter: Option<CounterKind>,
+        until_cleanup: bool,
+    ) {
         if recipients.is_empty() {
             return;
         }
         let timestamp = self.next_role_timestamp();
-        for recipient in recipients {
-            self.state
-                .roles
-                .get_or_insert_with(Default::default)
-                .basic_land_types
-                .push(BasicLandTypesEffectView {
-                    recipient,
-                    source: source.object,
-                    kind,
-                    timestamp,
-                    while_counter,
-                });
+        let effects = &mut self
+            .state
+            .roles
+            .get_or_insert_with(Default::default)
+            .basic_land_types;
+        for &recipient in recipients {
+            effects.extend(kinds.iter().map(|&kind| BasicLandTypesEffectView {
+                recipient,
+                source,
+                kind,
+                timestamp,
+                while_counter,
+                until_cleanup,
+            }));
         }
     }
+
+    pub(super) fn expire_basic_land_types(&mut self) -> bool {
+        self.state.roles.as_mut().is_some_and(|roles| {
+            let count = roles.basic_land_types.len();
+            roles.basic_land_types.retain(|row| !row.until_cleanup);
+            count != roles.basic_land_types.len()
+        })
+    }
+
     pub(super) fn set_creature_types(
         &mut self,
         item: &SpellView,

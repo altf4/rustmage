@@ -279,6 +279,8 @@ impl EntryProjection {
                             | F::ControlledArtifactFood(_)
                             | F::OtherCreaturesFood(_)
                             | F::ControlledLandsAllBasicTypes
+                            | F::ControlledNontokenArtifactsAreLands
+                            | F::NonbasicLandTypeWhileCounter { .. }
                             | F::ControlledNonlandAllColors
                     )
                 })
@@ -945,24 +947,26 @@ impl FundingState<'_> {
                 });
             }
         }
-        let opponent = self
+        let tapped = self
             .static_sources()
             .iter()
             .copied()
             .filter(|&id| {
-                let o = self.object(id);
-                o.zone == Zone::Battlefield
-                    && o.controller != m.controller
-                    && o.card.opponent_entry_tapped() & kinds != 0
-                    && self.printed_abilities_available(id)
+                entry_tap::external_tap_provider(
+                    self,
+                    id,
+                    m.controller,
+                    kinds,
+                    m.before.card.is_basic_land(),
+                )
             })
             .collect::<Vec<_>>();
         if effects.is_empty() && !matches!(m.intrinsic_entry_tapped(), EntryTapped::UnlessBehold(_))
         {
-            m.tapped |= self.entry_tapped(m) || !opponent.is_empty();
+            m.tapped |= self.entry_tapped(m) || !tapped.is_empty();
             return effects;
         }
-        for id in opponent {
+        for id in tapped {
             effects.push(entry_tap::EntryTapEffect {
                 source: self.reference(id),
                 intrinsic: false,
@@ -1003,6 +1007,11 @@ impl FundingState<'_> {
     ) -> bool {
         let initial = initial || actual.is_some_and(|batch| batch.copying);
         let actual = actual.filter(|batch| !batch.copying);
+        for movement in &mut moves {
+            movement.refresh_printed_land_abilities(self, |m| {
+                self.preview_entry_view(&m.replacement_preview())
+            });
+        }
         if moves.iter().any(entry_copies::needs_copy) {
             let mut choices = Vec::new();
             return self.visit_entry_copy_choices(moves, &mut choices, &mut |moves| {

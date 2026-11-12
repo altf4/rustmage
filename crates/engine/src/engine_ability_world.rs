@@ -1168,38 +1168,40 @@ pub(super) trait CharacteristicWorld {
                 || (self.reference(id) != source && (self.subtypes(id).has(target.card, "Zombie"))))
     }
     fn has_ability_removal(&self) -> bool {
-        self.static_sources().iter().any(|&id| {
-            self.object(id).zone == Zone::Battlefield
-                && self
-                    .object(id)
-                    .card
-                    .static_ability_groups()
-                    .iter()
-                    .any(|group| {
-                        group.fragments.iter().any(|fragment| {
-                            matches!(
-                                fragment,
-                                crate::cards::StaticAbilityFragment::ChosenBasicLandType
-                            )
+        subtypes::nonbasic_land_type_setters(self).next().is_some()
+            || self.static_sources().iter().any(|&id| {
+                self.object(id).zone == Zone::Battlefield
+                    && self
+                        .object(id)
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| {
+                            group.fragments.iter().any(|fragment| {
+                                matches!(
+                                    fragment,
+                                    crate::cards::StaticAbilityFragment::ChosenBasicLandType
+                                )
+                            })
                         })
+                    && matches!(
+                        self.entry_value(self.reference(id)),
+                        Some(EntryChoiceValue::BasicLandType(_))
+                    )
+            })
+            || self.roles().is_some_and(|state| {
+                state
+                    .resolved_ability_modifications
+                    .iter()
+                    .any(|row| return_ability_modification::active(self, row))
+                    || state.source_linked_effects.iter().any(|row| {
+                        row.kind.removes_abilities() && source_linked_effects::active(self, row)
                     })
-                && matches!(
-                    self.entry_value(self.reference(id)),
-                    Some(EntryChoiceValue::BasicLandType(_))
-                )
-        }) || self.roles().is_some_and(|state| {
-            state
-                .resolved_ability_modifications
-                .iter()
-                .any(|row| return_ability_modification::active(self, row))
-                || state.source_linked_effects.iter().any(|row| {
-                    row.kind.removes_abilities() && source_linked_effects::active(self, row)
-                })
-                || state.ability_removal_sources.iter().any(|&source| {
-                    self.object(source.card).zone == Zone::Battlefield
-                        && self.reference(source.card) == source
-                })
-        })
+                    || state.ability_removal_sources.iter().any(|&source| {
+                        self.object(source.card).zone == Zone::Battlefield
+                            && self.reference(source.card) == source
+                    })
+            })
     }
     fn protected_from_subtype(
         &self,
@@ -1249,6 +1251,13 @@ pub(super) trait CharacteristicWorld {
             })
     }
     fn printed_abilities_available(&self, id: CardId) -> bool {
+        if self.object(id).zone == Zone::Battlefield
+            && !self.object(id).card.is_basic_land()
+            && subtypes::nonbasic_land_type_setters(self).next().is_some()
+            && self.kinds(id) & 2 != 0
+        {
+            return false;
+        }
         if self.object(id).zone == Zone::Battlefield
             && self
                 .object(id)

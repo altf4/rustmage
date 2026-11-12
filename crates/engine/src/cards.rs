@@ -4973,6 +4973,8 @@ pub enum Instruction {
         dead_code,
         reason = "Shared rule remains gated until a complete card consumes it"
     )]
+    /// Give the currently controlled lands all five basic land types until cleanup.
+    GrantAllBasicLandTypesUntilCleanup,
     AddBasicLandType {
         subject: Subject,
         kind: BasicLandType,

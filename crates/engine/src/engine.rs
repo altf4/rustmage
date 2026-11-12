@@ -10579,22 +10579,21 @@ impl Game {
         events
     }
 
-    pub(super) fn opponent_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
+    pub(super) fn external_entry_requires_tapped(&self, card: Card, controller: Player) -> bool {
         let kinds = characteristic_layers::fast_entry_kinds(self, CardId::MAX, card.kind_mask());
-        self.opponent_entry_kinds_require_tapped(kinds, controller)
+        self.external_entry_kinds_require_tapped(kinds, controller, card.is_basic_land())
     }
-    pub(super) fn opponent_entry_kinds_require_tapped(
+
+    pub(super) fn external_entry_kinds_require_tapped(
         &self,
         kinds: u16,
         controller: Player,
+        basic: bool,
     ) -> bool {
-        self.state.static_sources.iter().any(|&id| {
-            let source = &self.state.objects[id as usize];
-            source.zone == Zone::Battlefield
-                && source.controller != controller
-                && self.printed_abilities_available(id)
-                && source.card.opponent_entry_tapped() & kinds != 0
-        })
+        self.state
+            .static_sources
+            .iter()
+            .any(|&id| entry_tap::external_tap_provider(self, id, controller, kinds, basic))
     }
 
     fn enters_tapped(&self, id: CardId) -> bool {
@@ -10603,9 +10602,20 @@ impl Game {
     }
 
     fn enters_tapped_for(&self, id: CardId, controller: Player) -> bool {
-        let kinds = characteristic_layers::fast_entry_kinds(self, id, self.current_kinds(id));
-        self.opponent_entry_kinds_require_tapped(kinds, controller)
-            || self.self_entry_requires_tapped(id, controller)
+        let mut kinds = characteristic_layers::fast_entry_kinds(self, id, self.current_kinds(id));
+        let object = &self.state.objects[id as usize];
+        if kinds & 16 != 0
+            && !object.is_token()
+            && characteristic_layers::controlled_artifacts_are_lands(self, controller)
+        {
+            kinds |= 2;
+        }
+        let basic = object.card.is_basic_land();
+        self.external_entry_kinds_require_tapped(kinds, controller, basic)
+            || (!(kinds & 2 != 0
+                && !basic
+                && subtypes::nonbasic_land_type_setters(self).next().is_some())
+                && self.self_entry_requires_tapped(id, controller))
     }
 
     fn self_entry_requires_tapped(&self, id: CardId, controller: Player) -> bool {
@@ -12039,6 +12049,7 @@ impl Game {
         }
         self.expire_base_stats();
         let expired_animations = self.expire_animations();
+        let expired_basic_land_types = self.expire_basic_land_types();
         self.expire_graveyard_cast_permissions();
         self.expire_paid_graveyard_permissions();
         self.expire_embalm();
@@ -12083,6 +12094,7 @@ impl Game {
             || (expired_controls
                 || expired_vehicles
                 || expired_animations
+                || expired_basic_land_types
                 || expired_copies
                 || expired_legend_rule
                 || !retained_damage.is_empty())
