@@ -86,8 +86,7 @@ pub(super) struct EntryMove {
     pub skipped: bool,
     pub reveal_hand: bool,
     pub exile_free_until_end: Option<Player>,
-    /// A played library land is public throughout its pre-entry special action.
-    /// Its actual origin remains Library; unrelated library entries stay private.
+    /// An already revealed card stays public during pre-entry choices.
     pub public_origin: bool,
     pub played_land: bool,
     pub life_paid: Option<bool>,

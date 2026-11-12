@@ -34,8 +34,32 @@ pub(super) enum LibrarySelectionCompletion {
     MayTransform,
     ReflexiveEquipment(u16),
     RememberExile,
-    BattlefieldFallbackToHand,
+    BattlefieldFallbackToHand {
+        keywords: Keywords,
+        follow_public_redirect: bool,
+    },
     TopLandFallbackToHand,
+}
+
+impl LibrarySelectionCompletion {
+    fn follows_public_entry_redirect(self) -> bool {
+        matches!(
+            self,
+            Self::BattlefieldFallbackToHand {
+                follow_public_redirect: true,
+                ..
+            } | Self::TopLandFallbackToHand
+        )
+    }
+}
+
+impl LibraryPickDestination {
+    fn offers_optional_entry(self) -> bool {
+        matches!(
+            self,
+            Self::MayEnterBattlefieldOnOwnTurn | Self::MayEnterBattlefield { .. }
+        )
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -288,7 +312,7 @@ impl Game {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
         match completion {
             LibrarySelectionCompletion::None => {}
-            LibrarySelectionCompletion::BattlefieldFallbackToHand
+            LibrarySelectionCompletion::BattlefieldFallbackToHand { .. }
             | LibrarySelectionCompletion::TopLandFallbackToHand => {
                 unreachable!("assigned after the destination choice")
             }
@@ -425,10 +449,10 @@ impl Game {
                     LibraryPickDestination::Hand
                 }
             }
-            LibraryPickDestination::MayEnterBattlefieldOnOwnTurn => {
+            destination if destination.offers_optional_entry() => {
                 assert_eq!(spec.count, LibrarySelectionCount::Fixed(1));
                 assert!(spec.reveal);
-                effect.destination
+                destination
             }
             destination => destination,
         };
@@ -516,11 +540,11 @@ impl Game {
             exclude_selected_from_remainder: matches!(
                 effect.destination,
                 LibraryPickDestination::BattlefieldIfManaValueAtMostElseHand(_)
-                    | LibraryPickDestination::MayEnterBattlefieldOnOwnTurn
-            ) || matches!(
-                effect.look,
-                LibraryLook::UntilKinds(_) | LibraryLook::UntilKindsCount { .. }
-            ),
+            ) || effect.destination.offers_optional_entry()
+                || matches!(
+                    effect.look,
+                    LibraryLook::UntilKinds(_) | LibraryLook::UntilKindsCount { .. }
+                ),
             public: effect.public,
             entering: false,
             remaining,
@@ -845,7 +869,7 @@ impl Game {
             self.state.pending = Pending::EffectLibrarySelection { player: chooser };
             return true;
         }
-        if f.destination == LibraryPickDestination::MayEnterBattlefieldOnOwnTurn {
+        if f.destination.offers_optional_entry() {
             if let Some(&selected) = f.selected.first() {
                 let owner = f.owner;
                 let pc = resolution.pc;
@@ -854,7 +878,16 @@ impl Game {
                 if self.top_library_card(owner) == Some(selected.card) {
                     self.remember_library_top(owner, selected);
                 }
-                if self.state.active == chooser {
+                let may_enter = match f.destination {
+                    LibraryPickDestination::MayEnterBattlefieldOnOwnTurn => {
+                        self.state.active == chooser
+                    }
+                    LibraryPickDestination::MayEnterBattlefield {
+                        maximum_mana_value, ..
+                    } => card.fixed_mana_value() <= maximum_mana_value,
+                    _ => unreachable!("validated optional library destination"),
+                };
+                if may_enter {
                     self.state.pending = Pending::EffectOptional {
                         player: chooser,
                         skip_to: pc,
@@ -904,15 +937,21 @@ impl Game {
             .resolving
             .as_mut()
             .and_then(|resolution| resolution.selection.as_mut())
-            .filter(|frame| {
-                frame.destination == LibraryPickDestination::MayEnterBattlefieldOnOwnTurn
-            })
+            .filter(|frame| frame.destination.offers_optional_entry())
         else {
             return false;
         };
         if accept {
+            let (keywords, follow_public_redirect) = match frame.destination {
+                LibraryPickDestination::MayEnterBattlefieldOnOwnTurn => (Keywords::NONE, false),
+                LibraryPickDestination::MayEnterBattlefield { keywords, .. } => (keywords, true),
+                _ => unreachable!("validated optional library destination"),
+            };
             frame.destination = LibraryPickDestination::Battlefield;
-            frame.completion = LibrarySelectionCompletion::BattlefieldFallbackToHand;
+            frame.completion = LibrarySelectionCompletion::BattlefieldFallbackToHand {
+                keywords,
+                follow_public_redirect,
+            };
         } else {
             frame.destination = LibraryPickDestination::Hand;
         }
@@ -1106,13 +1145,30 @@ impl Game {
             f.entering = true;
             let tapped = f.destination != LibraryPickDestination::Battlefield;
             let attacking = f.destination == LibraryPickDestination::BattlefieldTappedAttacking;
-            self.state.resolving.as_mut().unwrap().selection = Some(f);
+            let resolution = self.state.resolving.as_mut().unwrap();
+            let public_origin = matches!(
+                f.completion,
+                LibrarySelectionCompletion::BattlefieldFallbackToHand { .. }
+            );
+            let keywords_after = match f.completion {
+                LibrarySelectionCompletion::BattlefieldFallbackToHand { keywords, .. }
+                    if keywords != Keywords::NONE =>
+                {
+                    let source = resolution.item.source.expect("library entry grant source");
+                    Some((source.object, keywords))
+                }
+                _ => None,
+            };
+            resolution.selection = Some(f);
             let moves = ids
                 .into_iter()
                 .map(|id| {
                     let mut movement = self.entry_move(id, Zone::Battlefield, tapped);
                     movement.choose_attacking_defender = attacking;
                     movement.controller = owner;
+                    movement.keywords_after = keywords_after;
+                    movement.public_origin = public_origin;
+                    movement.reveal_hand = public_origin;
                     movement
                 })
                 .collect();
@@ -1130,13 +1186,13 @@ impl Game {
     }
     fn library_selected_to_hand(&mut self, frame: &LibrarySelection) {
         let nonlands_only = frame.destination == LibraryPickDestination::LandsTappedRestHand;
-        let follow_redirect = frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand;
+        let follow_redirect = frame.completion.follows_public_entry_redirect();
         let ids: Vec<_> = frame
             .selected
             .iter()
             .filter(|r| {
                 (exact_library_card(&self.state.objects, frame.owner, **r)
-                    || follow_redirect && self.public_top_land_redirect(**r))
+                    || follow_redirect && self.public_library_entry_redirect(**r))
                     && (!nonlands_only || !self.state.objects[r.card as usize].card.is_land())
             })
             .map(|r| r.card)
@@ -1156,7 +1212,7 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
-    fn public_top_land_redirect(&self, object: ObjectRef) -> bool {
+    fn public_library_entry_redirect(&self, object: ObjectRef) -> bool {
         let card = &self.state.objects[object.card as usize];
         self.object_ref(object.card) == object
             && matches!(card.zone, Zone::Exile | Zone::Graveyard | Zone::Command)
@@ -1233,17 +1289,17 @@ impl Game {
             .and_then(|r| r.selection.as_ref())
             .filter(|frame| {
                 frame.entering
-                    && matches!(
-                        frame.completion,
-                        LibrarySelectionCompletion::MayTransform
-                            | LibrarySelectionCompletion::ReflexiveEquipment(_)
-                            | LibrarySelectionCompletion::TopLandFallbackToHand
-                    )
+                    && (frame.completion.follows_public_entry_redirect()
+                        || matches!(
+                            frame.completion,
+                            LibrarySelectionCompletion::MayTransform
+                                | LibrarySelectionCompletion::ReflexiveEquipment(_)
+                        ))
             })
         else {
             return;
         };
-        if frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand {
+        if frame.completion.follows_public_entry_redirect() {
             let Some(&selected) = frame.selected.first() else {
                 return;
             };
@@ -1251,7 +1307,7 @@ impl Game {
             if let Some(redirected) = events.iter().find_map(|event| {
                 (event.moved
                     && event.before.reference == selected
-                    && self.public_top_land_redirect(event.after))
+                    && self.public_library_entry_redirect(event.after))
                 .then_some(event.after)
             }) {
                 self.state
@@ -1375,7 +1431,7 @@ impl Game {
             let completion = frame.completion;
             if matches!(
                 completion,
-                LibrarySelectionCompletion::BattlefieldFallbackToHand
+                LibrarySelectionCompletion::BattlefieldFallbackToHand { .. }
                     | LibrarySelectionCompletion::TopLandFallbackToHand
             ) {
                 self.library_selected_to_hand(&frame);
@@ -1401,9 +1457,11 @@ impl Game {
             && f.spec.count == LibrarySelectionCount::DistinctPower
             && !f.ordering
             && matches!(self.state.pending, Pending::EffectLibrarySelection { .. });
-        let revealed_pick = f.completion == LibrarySelectionCompletion::BattlefieldFallbackToHand
-            || (f.destination == LibraryPickDestination::MayEnterBattlefieldOnOwnTurn
-                && matches!(self.state.pending, Pending::EffectOptional { .. }));
+        let revealed_pick = matches!(
+            f.completion,
+            LibrarySelectionCompletion::BattlefieldFallbackToHand { .. }
+        ) || (f.destination.offers_optional_entry()
+            && matches!(self.state.pending, Pending::EffectOptional { .. }));
         if !can_look && !revealed_pick {
             return None;
         }
@@ -1478,6 +1536,7 @@ impl Game {
                 LibraryPickDestination::MayEnterBattlefieldOnOwnTurn => {
                     "may_enter_battlefield_on_own_turn"
                 }
+                LibraryPickDestination::MayEnterBattlefield { .. } => "may_enter_battlefield",
                 LibraryPickDestination::Hand => "hand",
                 LibraryPickDestination::Graveyard => "graveyard",
                 LibraryPickDestination::Battlefield => "battlefield",

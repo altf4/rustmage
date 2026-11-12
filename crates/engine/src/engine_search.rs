@@ -294,6 +294,12 @@ impl Game {
             self.run_program();
             return;
         }
+        if choice.spec.reveal {
+            for &id in &choice.selected {
+                let card = self.state.objects[id as usize].card;
+                self.record_zone_reveal(card, player, Zone::Library);
+            }
+        }
         let moves = choice
             .selected
             .iter()
@@ -333,6 +339,13 @@ impl Game {
                     }
                     SearchDestination::Graveyard => Zone::Graveyard,
                     SearchDestination::Battlefield => Zone::Battlefield,
+                    SearchDestination::BattlefieldIfLandElseHand => {
+                        if self.current_kinds(id) & 2 != 0 {
+                            Zone::Battlefield
+                        } else {
+                            Zone::Hand
+                        }
+                    }
                     SearchDestination::BattlefieldIfManaValueAtMostElseHand(maximum) => {
                         if self.state.objects[id as usize].card.fixed_mana_value() <= maximum {
                             Zone::Battlefield
@@ -358,7 +371,8 @@ impl Game {
                     destination == Zone::Battlefield && choice.spec.tapped,
                 );
                 movement.effect_counters = choice.entry_counters;
-                movement.reveal_hand = choice.spec.reveal && destination == Zone::Hand;
+                movement.reveal_hand = choice.spec.reveal;
+                movement.public_origin = choice.spec.reveal;
                 if choice.spec.destination == SearchDestination::ExileFreeThisTurn {
                     movement.exile_free_until_end = Some(player);
                 }

@@ -1265,6 +1265,13 @@ pub enum LibraryPickDestination {
     /// Reveal one selected card, then offer battlefield entry on the chooser's turn.
     /// If the exact card remains in the library, put it in hand.
     MayEnterBattlefieldOnOwnTurn,
+    /// Reveal one selected card and offer entry if its mana value is low enough.
+    /// Grant the successful entrant these keywords until end of turn. Put the
+    /// selected card into hand if it can still be found and did not enter.
+    MayEnterBattlefield {
+        maximum_mana_value: u64,
+        keywords: Keywords,
+    },
     BattlefieldTapped,
     BattlefieldTappedAttacking,
     Cloak,
@@ -1393,6 +1400,7 @@ pub enum SearchDestination {
         battlefield: u16,
     },
     BattlefieldIfManaValueAtMostElseHand(u64),
+    BattlefieldIfLandElseHand,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

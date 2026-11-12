@@ -348,6 +348,7 @@ thread_local! {
     pub(super) static TEST_INVALIDATE_STAGED_COST: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_FAKE_ENTRY_LIFE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_REDIRECT_EXILE_TO_BATTLEFIELD: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
+    pub(super) static TEST_REDIRECT_ENTRY_TO_EXILE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_EXILE_INSTEAD_OF_HAND: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_ZONE_MOVE: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
     pub(super) static TEST_PREVENT_PROVIDER: std::cell::Cell<Option<ObjectRef>> = const { std::cell::Cell::new(None) };
@@ -840,6 +841,12 @@ impl Game {
                     .with(|target| target.get() == Some(before.reference)) =>
             {
                 Some(ZoneReplacementKind::Battlefield)
+            }
+            Zone::Battlefield
+                if TEST_REDIRECT_ENTRY_TO_EXILE
+                    .with(|target| target.get() == Some(before.reference)) =>
+            {
+                Some(ZoneReplacementKind::Exile)
             }
             Zone::Hand
                 if TEST_EXILE_INSTEAD_OF_HAND
