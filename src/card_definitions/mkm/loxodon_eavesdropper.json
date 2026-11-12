@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7b12ccbd02e2c0eb13a714e2daf81a19e4603064dd1f416b375f3ac60f74cda"
   },
-  "physical_metadata_sha256": "141980dd40ef50aab87b9da754c62770f1b4729ff6663f2fdaca2c1baa0f1f9f"
+  "physical_metadata_sha256": "141980dd40ef50aab87b9da754c62770f1b4729ff6663f2fdaca2c1baa0f1f9f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LoxodonEavesdropper.java",
+  "java_sha256": "fbd06e20bf567b78aa1e795c9fb41cf26a7ddc29b9cc07c87174e1b7bb1f998f",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DrawNthCardTriggeredAbility.java",
+      "sha256": "095cd64414b755c8b1ccc32a24549901ecc2600dd2483688c6a44c0dacca1b55"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

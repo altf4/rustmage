@@ -3,10 +3,21 @@
   "catalogue_id": 4770,
   "oracle_id": "3fbe46fa-88da-439a-994e-c8f1791332a8",
   "facts_sha256": "6ac651fbe0828d33f306cd7c78e5cda2897e447e4fdd5ffeba7a012ae27e175b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c96e405588c531a764fe6ff1b3770486b4a8d60a1ff809b6e476e9e83ae456ba"
   },
-  "physical_metadata_sha256": "8d35c091916a1ffffc3937cdd36ac3a467b30972b84fa3b07a7f4b213ca895cd"
+  "physical_metadata_sha256": "8d35c091916a1ffffc3937cdd36ac3a467b30972b84fa3b07a7f4b213ca895cd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UndergrowthRecon.java",
+  "java_sha256": "efdbaa7906f6cde6884832732a2a76805fc0ba8b1723a1787a188622e6797160",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

@@ -1,17 +1,19 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::CreateTokensThenCounters {
+            token: Card(5683),
+            amount: 1,
+            kind: CounterKind::PlusOne,
+            counters: AmountValue::Sum(&[
+                AmountValue::Fixed(2),
+                AmountValue::Stat(StatValue::OwnedGraveyardOrFaceUpExileNameOrSubtype {
+                    name: "Slime Against Humanity",
+                    subtype: "Ooze",
+                }),
+            ]),
+        }],
+    ),
     deck_limit: None,
     ..CardRules::EMPTY
 };

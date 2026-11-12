@@ -3,9 +3,10 @@
   "catalogue_id": 5682,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "dc07ad98c25be0e6062ff137dcb1a97869ccc59fef76a56ff02f5a675badde2d",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/PlantToken.java",
-  "java_sha256": "94b4cb3b1586ad8bb93920054ad3e1e7a1cc9902615605a1b9aeea99f9bb7e1b"
+  "java_sha256": "94b4cb3b1586ad8bb93920054ad3e1e7a1cc9902615605a1b9aeea99f9bb7e1b",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs"
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 929,
   "oracle_id": "cc5370e0-a0e6-4958-a6f2-093a3868b575",
   "facts_sha256": "e6d225bfc1846cfd9aec3e3d044ab103aac6dd75506fff3326e2e00e91d271c4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "71bcd5d2e525c31ff3a8dd9c183eaeb732daea0fdc02fb837f989419f2aaa1f0"
   },
-  "physical_metadata_sha256": "6a55692989f3dac5baed2cb70b3a26da91fea31f089401c5211d3b08aa0a1722"
+  "physical_metadata_sha256": "6a55692989f3dac5baed2cb70b3a26da91fea31f089401c5211d3b08aa0a1722",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CuriousCadaver.java",
+  "java_sha256": "fb496cc273f72d378604b93f8b3ee20378305185f67f527862d8bfec821c6a6c",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToHandEffect.java",
+      "sha256": "36a1255bbe73cc6e97976aa6749cbc9c458b58b2fa3541010a79722ca4e78e70"
+    }
+  ]
 }

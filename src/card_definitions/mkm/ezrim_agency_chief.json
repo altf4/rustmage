@@ -3,10 +3,26 @@
   "catalogue_id": 1420,
   "oracle_id": "ddcd8a0a-7ac3-4400-a16f-8bb5aa50994e",
   "facts_sha256": "f9f69a5dabd1e5d44a8ab7b338fcbe85310eff889b9864f1dcb8c10c58424f7a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "157314e8b51c29952c264b0d19f5a9c98e25bb838b8aef3ba46455918072be15"
   },
-  "physical_metadata_sha256": "00e81e98c09ee0aa1d7ff428350b66d791eea06d75b226073875a79bd366d0b8"
+  "physical_metadata_sha256": "00e81e98c09ee0aa1d7ff428350b66d791eea06d75b226073875a79bd366d0b8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EzrimAgencyChief.java",
+  "java_sha256": "bf0f8710826b8825624935219d0cca29953377d265c90df6161d840ffb302c55",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainsChoiceOfAbilitiesEffect.java",
+      "sha256": "aa49281058acd322aa947ca2930690fe936281953eab784b9585954f44893553"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

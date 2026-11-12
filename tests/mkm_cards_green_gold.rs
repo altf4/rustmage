@@ -45,3 +45,6 @@ fn tokens(game: &Game, player: Player, factory: u16) -> Vec<CardId> {
 
 #[path = "mkm_cards_green_gold/face_down.rs"]
 mod face_down;
+
+#[path = "mkm_cards_green_gold/events.rs"]
+mod events;

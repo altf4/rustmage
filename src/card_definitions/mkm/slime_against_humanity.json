@@ -3,10 +3,21 @@
   "catalogue_id": 3926,
   "oracle_id": "b53597f4-1a0f-4fa8-9c17-29178cdc4d2b",
   "facts_sha256": "fc1c37940e4bf1c264d04113a9924c25550aa61700b665cf6883ea967d72fe7f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a3cae91430afdb75a9ad964e5a8f616e80a4f2629e4143dace073fecefb5287f"
   },
-  "physical_metadata_sha256": "9a877954858d3c8e7a25aab1f0895b6508db7fde20150feb2ee8171bfcb83881"
+  "physical_metadata_sha256": "9a877954858d3c8e7a25aab1f0895b6508db7fde20150feb2ee8171bfcb83881",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SlimeAgainstHumanity.java",
+  "java_sha256": "819a441fd9241d150998f81a4ea2139a20e92720d3f725cbf4128df1b562d9c3",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/OozeTrampleToken.java",
+      "sha256": "fd4dc32a7c723070c6c2c4bdb08f757f20cfa0813b1b59a61c241329fbb0965b"
+    }
+  ]
 }

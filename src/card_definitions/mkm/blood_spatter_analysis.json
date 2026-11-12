@@ -3,10 +3,31 @@
   "catalogue_id": 454,
   "oracle_id": "aa929252-5dcc-4c9b-9e7c-61d0bef98d6d",
   "facts_sha256": "185033ebee32e8b83b76d13148e9268cf8ee9a9a0c15d0cb63413ad2020786b1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "be2d9363a0ad0ecf3f1086c13aa0f59a4f4fb2e83c6284eae892b62bdc4fc215"
   },
-  "physical_metadata_sha256": "1f800bf4ff5e2dabeea8150e1fca51dfd52e058ca36095c1df43d76287eff0e0"
+  "physical_metadata_sha256": "1f800bf4ff5e2dabeea8150e1fca51dfd52e058ca36095c1df43d76287eff0e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BloodSpatterAnalysis.java",
+  "java_sha256": "7083d0ef583df55b938a9772a565bfd20b34ac8dab4009caa57759b7422558dd",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesOneOrMoreTriggeredAbility.java",
+      "sha256": "b49e5371dbfe352ecc94d8a04316431327dc5a33ab4fd0c3dd08685b922bbfb3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    }
+  ]
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 14,
   "oracle_id": "79d577a8-53c0-4220-bc0e-70764d72d5fd",
   "facts_sha256": "d67e1629d5baf31c26fc319863f6df34fd4d8dffe40d52a6ece7e64f01b77db7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7d0706b8f65bd69c224302ce643d7306cab21aeff4d2b2cc0cca2cde3c5321af"
   },
-  "physical_metadata_sha256": "9498afbaad152c48f9e35cdfeaedf53aff1a322849d403de4406d0515f70ce4e"
+  "physical_metadata_sha256": "9498afbaad152c48f9e35cdfeaedf53aff1a322849d403de4406d0515f70ce4e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AKillerAmongUs.java",
+  "java_sha256": "db7c9033a62398ceef2f0174030321d0fb75949bad48ca2285d09c02e3473628",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/HumanToken.java",
+      "sha256": "4ff29e9dd1a6f48978a2106131baac20f4c46790a17d78c77416dd11b379b63d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/MerfolkToken.java",
+      "sha256": "bf4402a2fc55df7f50f08bc0d30255ba8d4ded5b14c4b465375fac73da852f32"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131"
+    }
+  ]
 }
