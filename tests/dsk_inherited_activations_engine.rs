@@ -279,7 +279,16 @@ fn copy_retained_self_granted_and_linked_activations_are_each_inherited() {
     let self_template = named("Fountainport Bell");
     let _rules = fixture_rules::activate(&[
         (mimic, &MIMIC),
-        (printed, &DONOR),
+        (
+            printed,
+            &CardRules {
+                activated: &[ActivatedAbility {
+                    once_per_turn: false,
+                    ..COUNTER
+                }],
+                ..DONOR
+            },
+        ),
         (link_donor, &LINK_DONOR),
         (self_template, &SELF_TEMPLATE),
     ]);
