@@ -254,17 +254,17 @@ impl Coverage {
             let Some((_, card)) = packet.source_identity() else {
                 continue;
             };
-            if let StackKind::TriggeredAbility { ability } = packet.kind {
-                if let Some(trigger) = card.triggers().get(usize::from(ability)) {
-                    if trigger.condition.event() == TriggerCondition::Eerie {
-                        self.note("Eerie triggered");
-                    }
-                    if trigger.condition == TriggerCondition::SURVIVAL {
-                        self.note("Survival triggered");
-                    }
-                    if matches!(card.name(), "Hand That Feeds" | "Osseous Sticktwister") {
-                        self.note("Delirium triggered");
-                    }
+            if let StackKind::TriggeredAbility { ability } = packet.kind
+                && let Some(trigger) = card.triggers().get(usize::from(ability))
+            {
+                if trigger.condition.event() == TriggerCondition::Eerie {
+                    self.note("Eerie triggered");
+                }
+                if trigger.condition == TriggerCondition::SURVIVAL {
+                    self.note("Survival triggered");
+                }
+                if matches!(card.name(), "Hand That Feeds" | "Osseous Sticktwister") {
+                    self.note("Delirium triggered");
                 }
             }
             if packet.kind == StackKind::Spell
