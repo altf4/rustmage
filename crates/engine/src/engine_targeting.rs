@@ -3824,6 +3824,7 @@ impl Game {
             || self.copy_recipe(self.object_ref(id)).is_some_and(|recipe| {
                 recipe.exceptions.retained_activation.is_some()
                     || recipe.exceptions.equip_generic_reduction != 0
+                    || recipe.exceptions.add_keywords != Keywords::NONE
             })
         {
             return true;

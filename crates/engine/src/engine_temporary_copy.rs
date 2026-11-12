@@ -249,6 +249,7 @@ impl Game {
             recipe.exceptions.shapeshifter_rogue = false;
             recipe.exceptions.bird = false;
             recipe.exceptions.reflection = false;
+            recipe.exceptions.balloon = false;
         }
         let types = incoming
             .types

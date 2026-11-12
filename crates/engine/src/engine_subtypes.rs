@@ -321,6 +321,9 @@ impl GrantedSubtypes {
             if recipe.exceptions.reflection {
                 self.insert("Reflection");
             }
+            if recipe.exceptions.balloon && recipe.kinds() & CREATURE_OR_KINDRED != 0 {
+                self.insert("Balloon");
+            }
             if recipe.exceptions.cave && recipe.kinds() & 2 != 0 {
                 self.added_cave = true;
             }

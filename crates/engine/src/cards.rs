@@ -42,7 +42,7 @@ pub struct RetainedCopyActivation {
 
 /// Immutable additions made as part of a copy effect (CR707.9).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CopyExceptions {
     pub sacrifice_abilities: u16,
     /// Copiable beginning-of-end-step sacrifices without a haste grant.
@@ -72,6 +72,14 @@ pub struct CopyExceptions {
     pub reflection: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub cave: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub balloon: bool,
+    #[serde(skip_serializing_if = "copy_exception_zero")]
+    pub add_card_types: u16,
+    #[serde(skip_serializing_if = "copy_color_additions_empty")]
+    pub add_colors: u8,
+    #[serde(skip_serializing_if = "copy_keyword_additions_empty")]
+    pub add_keywords: Keywords,
 }
 /// A layer-one copy between independently selected exact objects. Group absence
 /// at resolution is intentional: losing either required group prevents the copy.
@@ -86,6 +94,12 @@ pub struct InPlaceCopySpec {
     pub base: Option<(i16, i16)>,
     pub next_turn: bool,
 }
+impl Default for CopyExceptions {
+    fn default() -> Self {
+        Self::NONE
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CopyExceptions {
     pub const NONE: Self = Self {
@@ -105,46 +119,22 @@ impl CopyExceptions {
         bird: false,
         reflection: false,
         cave: false,
+        balloon: false,
+        add_card_types: 0,
+        add_colors: 0,
+        add_keywords: Keywords::NONE,
     };
     pub const HASTE_AND_SACRIFICE: Self = Self {
         sacrifice_abilities: 1,
-        sacrifice_only_abilities: 0,
-        conditional_sacrifice_abilities: 0,
-        equip_generic_reduction: 0,
-        nightmare: false,
-        artifact: false,
-        golem: false,
-        fractal: false,
-        base: None,
-        retained_activation: None,
-        embalm: false,
-        spider_human_hero: false,
-        shapeshifter_rogue: false,
-        bird: false,
-        reflection: false,
-        cave: false,
+        ..Self::NONE
     };
     pub const SACRIFICE_ONLY: Self = Self {
         sacrifice_only_abilities: 1,
         ..Self::NONE
     };
     pub const NIGHTMARE: Self = Self {
-        sacrifice_abilities: 0,
-        sacrifice_only_abilities: 0,
-        conditional_sacrifice_abilities: 0,
-        equip_generic_reduction: 0,
         nightmare: true,
-        artifact: false,
-        golem: false,
-        fractal: false,
-        base: None,
-        retained_activation: None,
-        embalm: false,
-        spider_human_hero: false,
-        shapeshifter_rogue: false,
-        bird: false,
-        reflection: false,
-        cave: false,
+        ..Self::NONE
     };
     pub const ARTIFACT: Self = Self {
         artifact: true,
@@ -163,6 +153,14 @@ impl CopyExceptions {
     };
     pub const CAVE: Self = Self {
         cave: true,
+        ..Self::NONE
+    };
+    pub const BALLOON: Self = Self {
+        balloon: true,
+        base: Some((1, 1)),
+        add_card_types: 1,
+        add_colors: 1 << ChoiceColor::Red.index(),
+        add_keywords: Keywords::FLYING.union(Keywords::HASTE),
         ..Self::NONE
     };
     pub const SHAPESHIFTER_ROGUE: Self = Self {
@@ -198,12 +196,24 @@ impl CopyExceptions {
             bird: self.bird || other.bird,
             reflection: self.reflection || other.reflection,
             cave: self.cave || other.cave,
+            balloon: self.balloon || other.balloon,
+            add_card_types: self.add_card_types | other.add_card_types,
+            add_colors: self.add_colors | other.add_colors,
+            add_keywords: self.add_keywords.union(other.add_keywords),
         }
     }
 }
 
 fn copy_exception_zero(value: &u16) -> bool {
     *value == 0
+}
+
+fn copy_color_additions_empty(value: &u8) -> bool {
+    *value == 0
+}
+
+fn copy_keyword_additions_empty(value: &Keywords) -> bool {
+    *value == Keywords::NONE
 }
 
 fn copy_equip_reduction_zero(value: &u32) -> bool {
@@ -2944,6 +2954,8 @@ pub enum Instruction {
     CreateTemporaryArtifactCopy,
     /// A normal token copy with source-independent next-end-step sacrifice.
     CreateCopyWithDelayedSacrifice,
+    /// One token with copiable exceptions and a separate next-end-step sacrifice.
+    CreateCopyWithExceptionsAndDelayedSacrifice(CopyExceptions),
     CreateHastyCopyWithDelayedSacrifice,
     CreateHastyCopiesWithDelayedSacrifice(AmountValue),
     /// Copy the target, grant haste, offer each resulting Saga extra lore,
