@@ -3,10 +3,54 @@
   "catalogue_id": 1123,
   "oracle_id": "e633412b-e36b-4ec5-b0d0-7cb24c7503f4",
   "facts_sha256": "b88e07cab9284a07447a119842800865d058ef8fee604b3068b95c11c4e7bd81",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44d4642c99267ce90f95d87c809fd5070b8b643c54443c0680d4f2489b12f84f"
   },
-  "physical_metadata_sha256": "f2dec1087b7561a1fc046ea4039b44ece755a3434041ee47e827a3ee77254e14"
+  "physical_metadata_sha256": "f2dec1087b7561a1fc046ea4039b44ece755a3434041ee47e827a3ee77254e14",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DollmakersShopPorcelainGallery.java",
+  "java_sha256": "e8cc398699a8a55baf3ad2e779fe9c539d911b81b9f9745c37636b1d60625b81",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksPlayerWithCreaturesTriggeredAbility.java",
+      "sha256": "fa6b8f8e8f89c9f1958a0b57504d2dafb2e7abcb0936ef0fb09d182e49a1de49"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAllEffect.java",
+      "sha256": "4373b95198b2cca2412c8177f9cd5a1d4ee9d4e2d32a7d4d5e45cabe7ba7f685"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ToyToken.java",
+      "sha256": "f00bd23ce26f75ca1787df52eab9f795ec45e39f393c394cab8a8ef6bb20311b"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR508.3 and CR613.4b govern the grouped non-Toy declaration at each attacked player and the live creature-count base power and toughness. The Toy is the exact pinned 1/1 white artifact creature."
+  }
 }

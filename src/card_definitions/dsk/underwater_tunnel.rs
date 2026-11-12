@@ -1,2 +1,9 @@
-// Exact metadata for one face of the physical Room.
-pub(in crate::cards) const RULES: CardRules = CardRules::EMPTY;
+// The physical Room owns this door's battlefield abilities.
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    extras: &CardExtras {
+        room_parent: Some(Card::from_catalogue_id(4771)),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};

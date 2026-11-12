@@ -3,10 +3,49 @@
   "catalogue_id": 2694,
   "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
   "facts_sha256": "4fb3381bd2bd0e2f7dfba9aa8fed610ef1f9e276870402e71ae53585879fd063",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7147fffcd6f307b2e3c4e084474e190ac31d02ca1ebd9cff2dd6b53cfe7af380"
   },
-  "physical_metadata_sha256": "54df9999ffd3303249be27faea32d5d6c99eb843958e62c64d7626e64cda3e2a"
+  "physical_metadata_sha256": "54df9999ffd3303249be27faea32d5d6c99eb843958e62c64d7626e64cda3e2a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeatLockerDrownedDiner.java",
+  "java_sha256": "bfcbd79d8a612cc1da4d182e30b8544bfb1570d3c2a7ffd0e73e2c747c4533c1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "A selected creature gets two stun counters even if already tapped. The other door draws three cards before its controller discards one."
+  }
 }

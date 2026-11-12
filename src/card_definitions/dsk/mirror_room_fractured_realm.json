@@ -3,10 +3,49 @@
   "catalogue_id": 2784,
   "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
   "facts_sha256": "531854415a3ab6e4f1f399f020da228e832f000f93a90b1b3589d6d60b4dcedd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f12b00213419d7226675d3ff16d82184c4c44499bfd1eb7345933dbd697e9315"
   },
-  "physical_metadata_sha256": "9bd8ca6f5d5d89d8ac8451b870ab038d97f66e68ae08e126364bfa49bf48b818"
+  "physical_metadata_sha256": "9bd8ca6f5d5d89d8ac8451b870ab038d97f66e68ae08e126364bfa49bf48b818",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MirrorRoomFracturedRealm.java",
+  "java_sha256": "ed840b253757612646b684e9c76c8e63616482cae1e0df36971d9af3930a8b3d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ReplacementEffectImpl.java",
+      "sha256": "d575331184e31fd4a909956ff2822c038832dc6a6febff6e4502bcac82b836e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR707.9b adds Reflection to the copy's other creature types. CR603 permits a separate instance of each qualifying controlled permanent trigger, with its own choices and no additional delayed or reflexive trigger."
+  }
 }

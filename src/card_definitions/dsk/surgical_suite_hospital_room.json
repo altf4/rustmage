@@ -3,10 +3,59 @@
   "catalogue_id": 4269,
   "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
   "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "214e5b91702619834f2fd8773856482e7cd9a7132d09fab7399c7c22562f5abb"
   },
-  "physical_metadata_sha256": "cf60aa08581e553783d506987888548f29129f1126b17eead85a87edeaaa0ba6"
+  "physical_metadata_sha256": "cf60aa08581e553783d506987888548f29129f1126b17eead85a87edeaaa0ba6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SurgicalSuiteHospitalRoom.java",
+  "java_sha256": "d137bacebf4413f473ce8f62e97d6d0a5ca13ce957990f171fd1b279cb039af3",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAttackingCreature.java",
+      "sha256": "363350ad2acb98ab5c6c846d03056ec043afe46651ae395550f1c25d56314965"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The left door returns one targeted creature card of mana value 3 or less from your graveyard. The right triggers once for your attack declaration and can target an attacking creature."
+  }
 }

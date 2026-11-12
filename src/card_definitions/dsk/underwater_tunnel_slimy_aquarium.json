@@ -3,10 +3,39 @@
   "catalogue_id": 4771,
   "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
   "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "bec91c2a897f524db3896029289a8bddbd794517c3e9ae86eb5bc61e60597c7b"
   },
-  "physical_metadata_sha256": "f7ee80be68fd224113f6d95ccd09940ac8920643da48cc4c85036eb9428f59b5"
+  "physical_metadata_sha256": "f7ee80be68fd224113f6d95ccd09940ac8920643da48cc4c85036eb9428f59b5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnderwaterTunnelSlimyAquarium.java",
+  "java_sha256": "9904cd6ebbab1e4b343961d77649099950dc43fdc0aeb1f289871089f468c1c2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR701.25 and CR701.62 govern private surveil and manifest dread. The +1/+1 counter is a later instruction for the exact successful manifested permanent."
+  }
 }
