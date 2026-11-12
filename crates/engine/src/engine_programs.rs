@@ -1172,6 +1172,7 @@ impl Game {
                     | TriggerCondition::CreatureExploresCardYou { .. }
                     | TriggerCondition::Foraged
                     | TriggerCondition::GiftGiven
+                    | TriggerCondition::BendsYou
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
