@@ -4695,6 +4695,10 @@ pub enum Instruction {
     },
     EnteringPowerDamagePlayers(PlayerSet),
     ChooseCreatureType,
+    ChooseSecretCreatureType(&'static [&'static str]),
+    IfTargetHasRevealedCreatureType {
+        skip: usize,
+    },
     ReturnChosenCreatureTypeFromGraveyard,
     PutHandCreatureHasteSacrifice {
         maximum_total_stats: u64,
@@ -8232,6 +8236,8 @@ pub enum ActivationGuard {
     GraveyardSubtype(&'static str),
     ClassLevelExactly(u8),
     SourceSolved,
+    /// Availability of the linked reveal cost. The choice is exposed only on payment.
+    RevealChosenSecretCreatureType,
     CastInstantSorceryThisTurn,
     ScriedOrSurveilledThisTurn,
     OpponentNoncombatDamageThisTurn,
@@ -8260,6 +8266,16 @@ pub enum ActivationGuard {
         minimum: u16,
     },
     LifeAboveStarting(u16),
+}
+
+impl ActivationGuard {
+    pub(crate) fn reveals_secret_creature_type(self) -> bool {
+        match self {
+            Self::OncePerIncarnation(guard) => guard.reveals_secret_creature_type(),
+            Self::RevealChosenSecretCreatureType => true,
+            _ => false,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivationGuard {

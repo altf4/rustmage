@@ -52,6 +52,7 @@ pub enum EventObjectFacts {
     },
     DepartureManaValue(u64),
     DepartureArrival(ObjectRef),
+    RevealedCreatureType(crate::cards::CreatureType),
     /// The live entrant's value, refreshed immediately before it departs.
     BattlefieldManaValue(u64),
     DiscardedManaValue(u64),
@@ -451,6 +452,7 @@ impl Game {
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
                     | EventObjectFacts::DepartureArrival(_)
+                    | EventObjectFacts::RevealedCreatureType(_)
                     | EventObjectFacts::DiscardedManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. }

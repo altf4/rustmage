@@ -10438,12 +10438,29 @@ impl Game {
                 }
                 Instruction::CreateTokensForChosenCreatureType { .. }
                 | Instruction::ChooseCreatureType
+                | Instruction::ChooseSecretCreatureType(_)
                 | Instruction::CreateEmblemForChosenCreatureType(_)
                 | Instruction::DestroyCreaturesExceptChosenType => {
                     self.state.pending = Pending::CreatureTypeChoice {
                         player: item.controller,
                     };
                     return;
+                }
+                Instruction::IfTargetHasRevealedCreatureType { skip } => {
+                    let matches = item.event_object.as_ref().is_some_and(|event| {
+                        let EventObjectFacts::RevealedCreatureType(kind) = event.facts else {
+                            return false;
+                        };
+                        item.targets.iter().any(|target| {
+                            self.same_target_object(*target)
+                                && target.object.is_some_and(|object| {
+                                    self.has_subtype(object.card, kind.name())
+                                })
+                        })
+                    });
+                    if !matches {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
                 }
                 Instruction::CreateTokensWithSourceDeparture {
                     token,

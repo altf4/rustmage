@@ -129,6 +129,7 @@ pub(super) struct ChoiceState {
     pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay, bool)>,
     pub library_entry_counter: Option<library_entry_counter::LibraryEntryCounter>,
     pub null_cast_links: Vec<NullCastLink>,
+    pub secret_creature_types: Vec<creature_type_tokens::SecretCreatureType>,
     hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -176,6 +177,7 @@ impl ChoiceState {
             + self.play_approvals.len()
                 * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay, bool)>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
+            + std::mem::size_of_val(self.secret_creature_types.as_slice())
             + self.piles.as_ref().map_or(0, |p| {
                 (p.remaining.len() + p.separated[0].len() + p.separated[1].len())
                     * std::mem::size_of::<ObjectRef>()

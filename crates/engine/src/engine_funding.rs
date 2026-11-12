@@ -1885,6 +1885,17 @@ impl<'g> FundingState<'g> {
                 .game
                 .player_was_dealt_legendary_combat_damage(actor.other()),
             ActivationGuard::SourceSolved => case::is_solved(self, self.reference(source)),
+            ActivationGuard::RevealChosenSecretCreatureType => {
+                let object = self.reference(source);
+                self.game
+                    .secret_creature_type(
+                        object,
+                        self.object(source).card,
+                        actor,
+                        self.game.copy_ability_origin(object),
+                    )
+                    .is_some()
+            }
             ActivationGuard::SourceAttackedThisTurn => self
                 .game
                 .state

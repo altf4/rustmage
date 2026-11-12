@@ -4,7 +4,7 @@ pub mod creature_type_tokens;
 #[doc(hidden)]
 #[path = "engine_upkeep_tokens.rs"]
 pub mod upkeep_tokens;
-pub use creature_type_tokens::CreatureTypeChoiceView;
+pub use creature_type_tokens::{CreatureTypeChoiceView, SecretCreatureTypeView};
 #[doc(hidden)]
 #[path = "engine_hand_library_search.rs"]
 pub mod hand_library_search;
@@ -4109,6 +4109,8 @@ pub struct Observation {
     pub manifest_choice: Option<ManifestChoiceView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creature_type_choice: Option<CreatureTypeChoiceView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub secret_creature_types: Vec<SecretCreatureTypeView>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub attack_payment: Option<AttackPaymentView>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -11072,6 +11074,7 @@ impl Game {
             self.forget_prepared(before.reference);
             self.clear_suspected_reference(before.reference);
             self.forget_solved_case(before.reference);
+            self.forget_secret_creature_type(before.reference);
             self.forget_graveyard_type_source(before.reference);
         }
         if before.zone == Zone::Battlefield && destination == Zone::Exile && before.is_creature() {
@@ -12598,6 +12601,7 @@ impl Game {
             face_down_spells: self.face_down_spell_views(viewer),
             manifest_choice: self.manifest_choice_view(viewer),
             creature_type_choice: self.creature_type_tokens_view(),
+            secret_creature_types: self.secret_creature_types_view(viewer),
             attack_payment: s
                 .combat_payment
                 .as_deref()
