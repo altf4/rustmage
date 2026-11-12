@@ -1325,6 +1325,7 @@ define_actions! {
     ChooseGraveyardHandLibrarySearchZones { graveyard: bool, hand: bool, library: bool },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
+    ChooseSearchGraveyard { card: CardId },
     ChooseSearchDestination { destination: crate::SearchDestination },
     SelectLibrary { card: CardId },
     FinishLibrarySelection,
@@ -3967,6 +3968,10 @@ pub struct SearchDistributionView {
     pub battlefield_count: u16,
     pub candidates: Vec<ObjectView>,
     pub battlefield: Vec<CardId>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub graveyard_count: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub graveyard: Option<Vec<CardId>>,
 }
 
 /// All milled identities and legal recovery candidates are public graveyard facts.
@@ -5997,6 +6002,7 @@ impl Game {
                     return true;
                 }
                 if (choice.kind.any_number_selection()
+                    || self.can_finish_ordered_permanent_choice(choice, player)
                     || matches!(choice.kind, EffectChoiceKind::HandCreatures { .. })
                     || choice.kind
                         == EffectChoiceKind::SaddleRider(SaddleRiderEffect::BlinkSourceAndUpToOne))
@@ -6081,6 +6087,8 @@ impl Game {
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+                            | EffectChoiceKind::KeepCreaturesWithinTotalPower(_)
+                            | EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)
                             | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
                             | EffectChoiceKind::DamageAmongTargetGroup { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
@@ -7847,11 +7855,15 @@ impl Game {
                             return true;
                         }
                     }
-                } else if let Some(selected) = &choice.battlefield {
+                } else if let Some(selected) = &choice.distributed {
                     for &card in &choice.selected {
-                        if !selected.contains(&card)
-                            && emit(Action::ChooseSearchBattlefield { card })
-                        {
+                        let action = match choice.spec.destination {
+                            crate::SearchDestination::BattlefieldAndOpponentChosenGraveyard {
+                                ..
+                            } => Action::ChooseSearchGraveyard { card },
+                            _ => Action::ChooseSearchBattlefield { card },
+                        };
+                        if !selected.contains(&card) && emit(action) {
                             return true;
                         }
                     }
@@ -7870,6 +7882,7 @@ impl Game {
                                 && self.card_search_filter_matches(choice.spec.filter, player, card)
                                 && !choice.selected.contains(&card)
                                 && choice.colors_allow(self, card)
+                                && choice.qualifies_for_open_role(self, player, card)
                                 && (!choice.different_names
                                     || !choice.selected.iter().any(|&id| {
                                         crate::card_names::same_name(
@@ -9796,6 +9809,11 @@ impl Game {
                     .as_ref()
                     .unwrap();
                 match choice.kind {
+                    kind if kind.ordered_permanent_choice() => {
+                        if self.finish_ordered_permanent_choice(actor) {
+                            return;
+                        }
+                    }
                     EffectChoiceKind::RemoveLoreForSourceCounters(_) => {
                         self.finish_lore_counter_selection();
                     }
@@ -9960,7 +9978,9 @@ impl Game {
                     self.finish_search(actor)
                 }
             }
-            Action::ChooseSearchBattlefield { card } => self.choose_search_battlefield(actor, card),
+            Action::ChooseSearchBattlefield { card } | Action::ChooseSearchGraveyard { card } => {
+                self.choose_search_distribution(actor, card);
+            }
             Action::ChooseSearchDestination { destination } => {
                 self.choose_search_destination(actor, destination)
             }
@@ -13287,7 +13307,7 @@ impl Game {
                     if s.resolving
                         .as_ref()
                         .and_then(|r| r.search.as_ref())
-                        .is_some_and(|choice| choice.battlefield.is_some())
+                        .is_some_and(|choice| choice.distributed.is_some())
                     {
                         "library_search_destination"
                     } else {
@@ -13813,7 +13833,7 @@ impl Game {
                 s.resolving
                     .as_ref()
                     .and_then(|r| r.search.as_ref())
-                    .filter(|choice| choice.battlefield.is_none() && !choice.destination_pending)
+                    .filter(|choice| choice.distributed.is_none() && !choice.destination_pending)
                     .map(|choice| SearchChoiceView {
                         filter: choice.spec.filter,
                         distinct_colors: choice.distinct_colors,
@@ -13855,22 +13875,35 @@ impl Game {
                 .as_ref()
                 .and_then(|r| r.search.as_ref())
                 .and_then(|choice| {
-                    let battlefield = choice.battlefield.as_ref()?;
-                    let crate::SearchDestination::BattlefieldThenHand {
-                        battlefield: battlefield_count,
-                    } = choice.spec.destination
-                    else {
-                        return None;
+                    let assigned = choice.distributed.as_ref()?;
+                    let (battlefield_count, graveyard_count) = match choice.spec.destination {
+                        crate::SearchDestination::BattlefieldThenHand { battlefield } => {
+                            (battlefield, None)
+                        }
+                        crate::SearchDestination::BattlefieldAndOpponentChosenGraveyard {
+                            graveyard,
+                        } => (
+                            u16::try_from(choice.selected.len() - usize::from(graveyard))
+                                .capacity("search distribution count exhausted"),
+                            Some(graveyard),
+                        ),
+                        _ => return None,
                     };
                     Some(SearchDistributionView {
-                        player: s.resolving.as_ref().unwrap().item.controller,
+                        player: self.semantic_actor().unwrap(),
                         battlefield_count,
                         candidates: choice
                             .selected
                             .iter()
                             .map(|&id| query.object_view(id))
                             .collect(),
-                        battlefield: battlefield.clone(),
+                        battlefield: if graveyard_count.is_none() {
+                            assigned.clone()
+                        } else {
+                            Vec::new()
+                        },
+                        graveyard_count,
+                        graveyard: graveyard_count.map(|_| assigned.clone()),
                     })
                 }),
             connive_choice: s
@@ -14328,7 +14361,7 @@ impl Game {
                             .map(|choice| {
                                 std::mem::size_of::<search::SearchChoice>()
                                     + (choice.selected.len()
-                                        + choice.battlefield.as_ref().map_or(0, Vec::len))
+                                        + choice.distributed.as_ref().map_or(0, Vec::len))
                                         * std::mem::size_of::<CardId>()
                             })
                             .unwrap_or(0)

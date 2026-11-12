@@ -1590,6 +1590,12 @@ impl Game {
                     == card
                     && a.item.cast.is_some_and(|c| c.stash_origin)
             });
+        if let Some(terms) = self.linked_paid_resolution_terms(actor, card) {
+            // Funding for this offer uses its own terms, even when another
+            // effect gives the same exiled card a different play permission.
+            source.spend_any_mana = terms.spend_any_mana;
+            source.foreign_stash = false;
+        }
         Purpose::Spell(source)
     }
     pub(super) fn spend_mana_for(

@@ -756,6 +756,29 @@ pub struct ResolutionFreeCasts {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn resolution_cast_instruction(&self) -> Option<Instruction> {
+        let resolution = self.state.resolving.as_ref()?;
+        resolution
+            .program
+            .get(resolution.pc.checked_sub(1)?)
+            .copied()
+    }
+
+    pub(super) fn offer_library_top_free_once_per_turn(&mut self, item: &SpellView) -> bool {
+        let player = item.controller;
+        let Some(id) = self.top_library_card(player) else {
+            return false;
+        };
+        let object = self.object_ref(id);
+        self.remember_private_library_top(player, player, object);
+        // An already queued trigger can still perform the mandatory look.
+        if self.optional_ability_used(item) {
+            return false;
+        }
+        self.offer_exact_free_cast(player, object, Zone::Library, None);
+        true
+    }
+
     pub(super) fn finish_resolution_free_casts(&mut self) {
         let Some(offer) = self.state.resolution_free_casts.take() else {
             return;
@@ -1183,6 +1206,36 @@ impl Game {
                     && offer.remaining.contains(&self.object_ref(card))
             })
     }
+    pub(super) fn linked_paid_resolution_terms(
+        &self,
+        actor: Player,
+        card: CardId,
+    ) -> Option<ResolutionPaidCast> {
+        let offer = self.state.resolution_free_casts.as_ref()?;
+        if offer.player != actor
+            || !matches!(
+                self.resolution_cast_instruction(),
+                Some(Instruction::CastOneOwnedLinkedPaid(_))
+            )
+        {
+            return None;
+        }
+        let offered = self.state.objects[card as usize].zone == offer.origin
+            && offer.remaining.contains(&self.object_ref(card));
+        let announcing = self.state.announcing.as_ref().is_some_and(|announcement| {
+            offer.pending_cast == Some(announcement.item.id)
+                && announcement
+                    .item
+                    .source
+                    .is_some_and(|source| source.id == card)
+        });
+        if offered || announcing {
+            offer.paid
+        } else {
+            None
+        }
+    }
+
     pub(super) fn visit_resolution_casts(
         &self,
         player: Player,
@@ -1205,6 +1258,22 @@ impl Game {
         {
             return false;
         }
+        let instruction = self.resolution_cast_instruction();
+        let exact_paid_resolution_offer =
+            matches!(instruction, Some(Instruction::CastOneOwnedLinkedPaid(_)));
+        let filter = match instruction {
+            Some(
+                Instruction::CastFilteredHandFree(filter)
+                | Instruction::CastOneOwnedLinkedPaid(filter),
+            ) => filter,
+            _ => CastFilter::Any,
+        };
+        let qualifies = |card: Card| {
+            let types = subtypes::spell_subtypes(self, player, card, GrantedSubtypes::default());
+            filter.matches_mana_value_with(card, card.fixed_mana_value(), |kind| {
+                types.has(card, kind)
+            })
+        };
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
         let cast_alternatives = if !casting_prohibited
             && free.paid.is_some()
@@ -1260,6 +1329,10 @@ impl Game {
                 && (free.spell_kinds == 0 || free.spell_kinds & 1 != 0)
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
+                && (filter == CastFilter::Any
+                    || qualifies(
+                        Card::from_name("@face-down/disguise").expect("pinned catalogue identity"),
+                    ))
                 && self.disguise_mana_fundable(player, object.card)
                 && emit(Action::AnnounceDisguise { card: object.card })
             {
@@ -1275,6 +1348,7 @@ impl Game {
                 let definition = face.definition(physical);
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
+                        && (filter == CastFilter::Any || qualifies(card))
                         && (free.spell_kinds == 0
                             || card.kind_mask() & u16::from(free.spell_kinds) != 0)
                         && (!free.permanent_spell_only || CastFilter::Permanent.matches(card))
@@ -1326,6 +1400,7 @@ impl Game {
                         false,
                         cast_permissions::OriginAlternative {
                             resolution_discard: free.discard_instead_of_mana,
+                            exact_paid_resolution_offer,
                             ..Default::default()
                         },
                     )
@@ -1540,6 +1615,17 @@ impl Game {
         if method.is_flashback() {
             self.state.objects[object.card as usize].flashback = true;
         }
+        if matches!(
+            self.resolution_cast_instruction(),
+            Some(Instruction::CastOneOwnedLinkedPaid(_))
+        ) {
+            self.configure_paid_resolution_offer(&mut item);
+            if let Some(links) = &mut self.state.linked_choices {
+                links
+                    .play_approvals
+                    .retain(|approval| approval.0 != item.id);
+            }
+        }
         self.remember_suspend_cast(object, item.id);
         configure(self, &mut item);
         if let Some(choice) = alternative {
@@ -1606,6 +1692,12 @@ impl Game {
                 *left = left.checked_sub(value).expect("a legal budget cast");
             }
             free.pending_cast = None;
+            if self.resolution_cast_instruction()
+                == Some(Instruction::LookLibraryTopMayCastFreeOncePerTurn)
+            {
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                self.record_optional_ability_use(&item);
+            }
         }
     }
     pub(super) fn exile_damage_event_library_cast_free(&mut self, item: &SpellView) -> bool {

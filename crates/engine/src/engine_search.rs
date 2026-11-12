@@ -32,13 +32,31 @@ pub(super) struct SearchChoice {
     pub minimum: u64,
     pub different_names: bool,
     pub distinct_colors: u8,
+    pub paired_qualities: Option<&'static [crate::SearchFilter; 2]>,
     pub selected: Vec<CardId>,
-    pub battlefield: Option<Vec<CardId>>,
+    /// Revealed cards assigned by the active distribution chooser.
+    pub distributed: Option<Vec<CardId>>,
     pub destination_pending: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SearchChoice {
+    pub(super) fn qualifies_for_open_role(
+        &self,
+        game: &Game,
+        player: Player,
+        candidate: CardId,
+    ) -> bool {
+        let Some(roles) = self.paired_qualities else {
+            return true;
+        };
+        let Some(&first) = self.selected.first() else {
+            return true;
+        };
+        let matches = |role: usize, id| game.card_search_filter_matches(roles[role], player, id);
+        (matches(0, first) && matches(1, candidate)) || (matches(1, first) && matches(0, candidate))
+    }
+
     pub(super) fn colors_allow(&self, game: &Game, candidate: CardId) -> bool {
         if self.distinct_colors == 0 {
             return true;
@@ -125,21 +143,19 @@ impl Game {
         // a maximum-sized selection has an explicit commit boundary for replay.
     }
 
-    pub(super) fn choose_search_battlefield(&mut self, player: Player, card: CardId) {
-        let choice = self
-            .state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .search
-            .as_mut()
-            .unwrap();
-        let SearchDestination::BattlefieldThenHand { battlefield } = choice.spec.destination else {
-            unreachable!("validated split-search action")
+    pub(super) fn choose_search_distribution(&mut self, chooser: Player, card: CardId) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let choice = resolution.search.as_mut().unwrap();
+        let (player, count) = match choice.spec.destination {
+            SearchDestination::BattlefieldThenHand { battlefield } => (chooser, battlefield),
+            SearchDestination::BattlefieldAndOpponentChosenGraveyard { graveyard } => {
+                (chooser.other(), graveyard)
+            }
+            _ => unreachable!("validated split-search action"),
         };
-        let chosen = choice.battlefield.as_mut().unwrap();
+        let chosen = choice.distributed.as_mut().unwrap();
         chosen.push(card);
-        if chosen.len() == usize::from(battlefield) {
+        if chosen.len() == usize::from(count) {
             self.commit_search(player);
         }
     }
@@ -159,15 +175,41 @@ impl Game {
             choice.destination_pending = true;
             return;
         }
-        if let SearchDestination::BattlefieldThenHand { battlefield } = choice.spec.destination {
-            if battlefield == 0 {
-                choice.battlefield = Some(Vec::new());
-            } else if choice.selected.len() > usize::from(battlefield) {
-                // The selected identities have now been revealed; the rest of the
-                // library stays private while the controller assigns destinations.
-                choice.battlefield = Some(Vec::new());
-                return;
+        match choice.spec.destination {
+            SearchDestination::BattlefieldThenHand { battlefield } => {
+                if battlefield == 0 {
+                    choice.distributed = Some(Vec::new());
+                } else if choice.selected.len() > usize::from(battlefield) {
+                    choice.distributed = Some(Vec::new());
+                    return;
+                }
             }
+            SearchDestination::BattlefieldAndOpponentChosenGraveyard { graveyard } => {
+                assert!(
+                    choice.spec.reveal,
+                    "opponent assigns revealed search results"
+                );
+                if graveyard == 0 {
+                    choice.distributed = Some(Vec::new());
+                } else if choice.selected.len() > usize::from(graveyard) {
+                    // The selected identities become public when the opponent
+                    // takes over. No other library cards are disclosed.
+                    choice.distributed = Some(Vec::new());
+                    let revealed: Vec<_> = choice
+                        .selected
+                        .iter()
+                        .map(|&id| self.state.objects[id as usize].card)
+                        .collect();
+                    for card in revealed {
+                        self.record_zone_reveal(card, player, Zone::Library);
+                    }
+                    self.state.pending = Pending::EffectSearch {
+                        player: player.other(),
+                    };
+                    return;
+                }
+            }
+            _ => {}
         }
         self.commit_search(player);
     }
@@ -294,7 +336,12 @@ impl Game {
             self.run_program();
             return;
         }
-        if choice.spec.reveal {
+        let already_revealed = matches!(
+            choice.spec.destination,
+            SearchDestination::BattlefieldAndOpponentChosenGraveyard { graveyard }
+                if graveyard != 0 && choice.selected.len() > usize::from(graveyard)
+        );
+        if choice.spec.reveal && !already_revealed {
             for &id in &choice.selected {
                 let card = self.state.objects[id as usize].card;
                 self.record_zone_reveal(card, player, Zone::Library);
@@ -353,9 +400,20 @@ impl Game {
                             Zone::Hand
                         }
                     }
+                    SearchDestination::BattlefieldAndOpponentChosenGraveyard { .. } => {
+                        if choice
+                            .distributed
+                            .as_ref()
+                            .is_none_or(|assigned| assigned.contains(&id))
+                        {
+                            Zone::Graveyard
+                        } else {
+                            Zone::Battlefield
+                        }
+                    }
                     SearchDestination::BattlefieldThenHand { .. } => {
                         if choice
-                            .battlefield
+                            .distributed
                             .as_ref()
                             .is_none_or(|selected| selected.contains(&id))
                         {
@@ -559,8 +617,9 @@ impl Game {
                 minimum: 0,
                 different_names: false,
                 distinct_colors: 0,
+                paired_qualities: None,
                 selected: Vec::new(),
-                battlefield: None,
+                distributed: None,
                 destination_pending: false,
             }));
             self.state.pending = Pending::EffectSearch { player };

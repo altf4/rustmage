@@ -1401,6 +1401,11 @@ pub enum SearchDestination {
     BattlefieldThenHand {
         battlefield: u16,
     },
+    /// The searcher's opponent chooses this many revealed cards for the graveyard.
+    /// The remaining cards enter together.
+    BattlefieldAndOpponentChosenGraveyard {
+        graveyard: u16,
+    },
     BattlefieldIfManaValueAtMostElseHand(u64),
     BattlefieldIfLandElseHand,
 }
@@ -1497,6 +1502,10 @@ pub enum EffectChoiceKind {
     KeepSharedCreatureTypes,
     /// The ability controller saves one qualifying creature per controlling player.
     KeepCreaturesByPowerForEachPlayer(i128),
+    /// Each player saves any number of their creatures within this signed power budget.
+    KeepCreaturesWithinTotalPower(i128),
+    /// Each player chooses an opposing permanent relative to the resolving controller.
+    ExileOpposingPermanentsByEachPlayer(u64),
     /// Choose up to one nonbasic land per controller for a simultaneous destruction.
     DestroyNonbasicLandsForEachPlayer,
     /// Choose one legal controlled creature for the resolving Equipment source.
@@ -1842,6 +1851,13 @@ impl EffectChoiceKind {
         matches!(
             self,
             Self::SacrificeAttachedEquipment | Self::SacrificeAttachedPermanent
+        )
+    }
+
+    pub(crate) fn ordered_permanent_choice(self) -> bool {
+        matches!(
+            self,
+            Self::KeepCreaturesWithinTotalPower(_) | Self::ExileOpposingPermanentsByEachPlayer(_)
         )
     }
 
@@ -2750,6 +2766,8 @@ pub enum Instruction {
     /// own result and the strictly lower mana-value results through cleanup.
     ExileEachTopPlayOwnAndLesserFree,
     SearchDifferentNames(SearchSpec),
+    /// One search for up to one card in each of two roles; reveal both into hand.
+    SearchTwoQualitiesToHand(&'static [SearchFilter; 2]),
     /// Distinct-name search capped by the triggering entry's chosen X.
     SearchDifferentNamesChosenX(SearchSpec),
     /// One private search whose selected cards must fill distinct color roles.
@@ -2792,6 +2810,8 @@ pub enum Instruction {
     CopyUntilDetachedFromLinkedExile,
     ExileOpponentUntilNonlandLinked,
     CastOneLinkedDuringResolution,
+    /// Offer a normally paid cast of one eligible owned card from the exact linked exile.
+    CastOneOwnedLinkedPaid(CastFilter),
     ReturnGraveyardNameTapped,
     /// Trigger once per declaration attacking the resolving controller's opponent,
     /// through (but not including) the beginning of that controller's next turn.
@@ -3953,6 +3973,12 @@ pub enum Instruction {
     },
     /// Choose one creature of at most this power per player when possible, then destroy the rest.
     DestroyCreaturesExceptChosenByPower(i128),
+    /// Each player chooses creatures within the power budget in APNAP order,
+    /// then all unchosen creatures are sacrificed together.
+    SacrificeCreaturesExceptEachPlayersChoice(i128),
+    /// Starting with the controller, each player may choose a permanent controlled
+    /// by the controller's opponent that meets this minimum mana value.
+    ExileOpposingPermanentsChosenByEachPlayer(u64),
     /// Destroy a simultaneous group using current toughness, optionally saving graveyard receipts.
     DestroyCreaturesByToughness {
         maximum: AmountValue,
@@ -4190,6 +4216,10 @@ pub enum Instruction {
     CastLibraryTopUpToAttackingPower(u16),
     /// Privately offer one immediate free spell from hand with at most this mana value.
     CastHandFreeUpTo(AmountValue),
+    /// Offer one eligible hand spell without paying its mana cost during resolution.
+    CastFilteredHandFree(CastFilter),
+    /// Privately look at the current top and offer its free cast once this turn.
+    LookLibraryTopMayCastFreeOncePerTurn,
     /// Privately offer one immediate free permanent spell from hand up to this mana value.
     CastHandPermanentFreeUpTo(AmountValue),
     /// The cast face must have this permanent type.

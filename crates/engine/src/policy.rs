@@ -483,6 +483,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::CancelOutsideCard | Action::DeclineOutsideCards => -1,
             Action::ChooseSearch { .. }
             | Action::ChooseSearchBattlefield { .. }
+            | Action::ChooseSearchGraveyard { .. }
             | Action::ChooseLegendaryFound { .. } => 60,
             Action::ChooseLegendarySearchZones { library, outside } => {
                 60 + i128::from(*library) + i128::from(*outside)

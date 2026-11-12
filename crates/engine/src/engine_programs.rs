@@ -1698,6 +1698,7 @@ impl Game {
                 Instruction::IfOptionalAbilityUnused { .. }
                     | Instruction::MayOncePerTurn { .. }
                     | Instruction::MayCopyOncePerTurn { .. }
+                    | Instruction::LookLibraryTopMayCastFreeOncePerTurn
             )
         ) && self.state.triggered_this_turn.contains(&TriggerUse {
             source: source.reference,
@@ -4825,8 +4826,10 @@ impl Game {
                 Instruction::ExileOpponentUntilNonlandLinked => {
                     self.exile_opponent_until_nonland_linked(&item)
                 }
-                Instruction::CastOneLinkedDuringResolution => {
-                    if self.start_linked_exile_cast(&item) {
+                Instruction::CastOneLinkedDuringResolution
+                | Instruction::CastOneOwnedLinkedPaid(_) => {
+                    let owned_paid = matches!(instruction, Instruction::CastOneOwnedLinkedPaid(_));
+                    if self.start_linked_exile_cast(&item, owned_paid) {
                         return;
                     }
                 }
@@ -7013,6 +7016,28 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::SacrificeCreaturesExceptEachPlayersChoice(_)
+                | Instruction::ExileOpposingPermanentsChosenByEachPlayer(_) => {
+                    let kind = match instruction {
+                        Instruction::SacrificeCreaturesExceptEachPlayersChoice(maximum) => {
+                            EffectChoiceKind::KeepCreaturesWithinTotalPower(maximum)
+                        }
+                        Instruction::ExileOpposingPermanentsChosenByEachPlayer(minimum) => {
+                            EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(minimum)
+                        }
+                        _ => unreachable!(),
+                    };
+                    if self.start_effect_choice(
+                        &item,
+                        kind,
+                        PlayerSet::Each,
+                        evidence::cost(0).filter,
+                        0,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::DestroyCreaturesByToughness { maximum, remember } => {
                     let maximum =
                         i128::try_from(self.item_amount(maximum, &item)).unwrap_or(i128::MAX);
@@ -7609,6 +7634,15 @@ impl Game {
                 Instruction::CastLibraryTopUpToAttackingPower(amount) => {
                     self.cast_library_by_attacking_power(&item, amount);
                     return;
+                }
+                Instruction::CastFilteredHandFree(_) => {
+                    self.offer_hand_free_cast(item.controller, u128::MAX, None, false);
+                    return;
+                }
+                Instruction::LookLibraryTopMayCastFreeOncePerTurn => {
+                    if self.offer_library_top_free_once_per_turn(&item) {
+                        return;
+                    }
                 }
                 Instruction::CastHandFreeUpTo(maximum)
                 | Instruction::CastHandPermanentFreeUpTo(maximum) => {
@@ -9653,8 +9687,34 @@ impl Game {
                             minimum: 0,
                             different_names: false,
                             distinct_colors: 0,
+                            paired_qualities: None,
                             selected: Vec::new(),
-                            battlefield: None,
+                            distributed: None,
+                            destination_pending: false,
+                        }));
+                    self.state.pending = Pending::EffectSearch {
+                        player: item.controller,
+                    };
+                    return;
+                }
+                Instruction::SearchTwoQualitiesToHand(roles) => {
+                    self.state.resolving.as_mut().unwrap().search =
+                        Some(Box::new(search::SearchChoice {
+                            spec: SearchSpec {
+                                filter: crate::SearchFilter::AnyOf(roles),
+                                maximum: 2,
+                                destination: crate::SearchDestination::Hand,
+                                tapped: false,
+                                reveal: true,
+                            },
+                            defer_shuffle: false,
+                            entry_counters: &[],
+                            minimum: 0,
+                            different_names: false,
+                            distinct_colors: 0,
+                            paired_qualities: Some(roles),
+                            selected: Vec::new(),
+                            distributed: None,
                             destination_pending: false,
                         }));
                     self.state.pending = Pending::EffectSearch {
@@ -9784,8 +9844,9 @@ impl Game {
                                     | Instruction::SearchDifferentNamesChosenX(_)
                             ),
                             distinct_colors,
+                            paired_qualities: None,
                             selected: Vec::new(),
-                            battlefield: None,
+                            distributed: None,
                             destination_pending: false,
                         }));
                     self.state.pending = Pending::EffectSearch { player };
@@ -9829,8 +9890,9 @@ impl Game {
                             minimum: 0,
                             different_names: false,
                             distinct_colors: 0,
+                            paired_qualities: None,
                             selected: Vec::new(),
-                            battlefield: None,
+                            distributed: None,
                             destination_pending: false,
                         }));
                     self.state.pending = Pending::EffectSearch {

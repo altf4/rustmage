@@ -393,8 +393,12 @@ impl Game {
         }
     }
 
-    pub(super) fn start_linked_exile_cast(&mut self, item: &SpellView) -> bool {
-        let remaining = self.linked_exile_for_item(item);
+    pub(super) fn start_linked_exile_cast(&mut self, item: &SpellView, owned_paid: bool) -> bool {
+        let mut remaining = self.linked_exile_for_item(item);
+        if owned_paid {
+            remaining
+                .retain(|object| self.state.objects[object.card as usize].owner == item.controller);
+        }
         if remaining.is_empty() {
             return false;
         }
@@ -405,7 +409,12 @@ impl Game {
             uncast_to_hand: false,
             siege_transformed: false,
             spell_kinds: 0,
-            paid: None,
+            paid: owned_paid.then_some(cast_origins::ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+                bottom_on_graveyard: false,
+                spend_any_mana: false,
+            }),
             casts_remaining: Some(1),
             pending_cast: None,
             remaining_mana_value: None,

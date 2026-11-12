@@ -1458,6 +1458,8 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+            | EffectChoiceKind::KeepCreaturesWithinTotalPower(_)
+            | EffectChoiceKind::ExileOpposingPermanentsByEachPlayer(_)
             | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
