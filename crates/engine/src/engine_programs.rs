@@ -941,10 +941,12 @@ impl Game {
                                 && f.subtype
                                     .is_none_or(|subtype| event.before.has_subtype(subtype))
                         }
-                        TriggerCondition::CreatureDiesWithMaximumStat { relation, maximum } => {
+                        condition @ (TriggerCondition::CreatureDiesWithMaximumStat { relation, maximum }
+                        | TriggerCondition::CreatureDiesWithMaximumToughness { relation, maximum }) => {
                             event.before.is_creature()
-                                && (event.before.power <= i128::from(maximum)
-                                    || event.before.toughness <= i128::from(maximum))
+                                && (event.before.toughness <= i128::from(maximum)
+                                    || (matches!(condition, TriggerCondition::CreatureDiesWithMaximumStat { .. })
+                                        && event.before.power <= i128::from(maximum)))
                                 && match relation {
                                     CastRelation::You => {
                                         source.controller == event.before.controller
@@ -1201,6 +1203,7 @@ impl Game {
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::SelfDamagedAtLeast(_)
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
@@ -1226,6 +1229,7 @@ impl Game {
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
+                    | TriggerCondition::CreatureDiesWithMaximumToughness { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
                     | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }
@@ -1522,10 +1526,30 @@ impl Game {
         // object (CR400.7e); hidden pre-event hand/library identities are not
         // retained merely because they occurred in the implementation event.
         let packet = self.state.pending_triggers.last_mut().unwrap();
-        let departure_observer = packet.trigger_definition().triggers()[index]
-            .condition
-            .event()
-            == TriggerCondition::CreatureCardLeavesYourGraveyard;
+        let ability = &packet.trigger_definition().triggers()[index];
+        let departure_observer =
+            ability.condition.event() == TriggerCondition::CreatureCardLeavesYourGraveyard;
+        if event.before.zone == Zone::Battlefield
+            && event.destination == Zone::Graveyard
+            && ability
+                .program
+                .contains(&Instruction::ExileEventGraveyardCard)
+        {
+            let facts = event
+                .objects_after()
+                .find(|&object| object != event.after)
+                .map_or(
+                    EventObjectFacts::Identity,
+                    EventObjectFacts::GraveyardCompanion,
+                );
+            packet.set_event_object(EventObjectView {
+                object: event.after,
+                facts,
+                semantic_objects: None,
+                conniver_creature: None,
+                subtype_lki: None,
+            });
+        }
         if (event.destination != Zone::Battlefield || departure_observer)
             && matches!(
                 event.before.zone,
@@ -6347,12 +6371,21 @@ impl Game {
                 ),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
                 Instruction::ExileEventGraveyardCard => {
-                    if let Some(subject) = item.event_object.as_ref().map(|event| event.object)
-                        && self.object_ref(subject.card) == subject
-                        && self.state.objects[subject.card as usize].zone == Zone::Graveyard
-                        && self.state.objects[subject.card as usize].is_card()
-                    {
-                        self.move_object(subject.card, Zone::Exile);
+                    let cards: Vec<_> = item
+                        .event_object
+                        .iter()
+                        .flat_map(|event| event.graveyard_objects())
+                        .filter_map(|object| {
+                            let card = &self.state.objects[object.card as usize];
+                            (card.zone == Zone::Graveyard
+                                && card.generation == object.generation
+                                && card.is_card())
+                            .then_some(object.card)
+                        })
+                        .collect();
+                    if !cards.is_empty() {
+                        let events = self.move_objects_raw(&cards, Zone::Exile);
+                        self.finish_zone_events(&events, &[]);
                     }
                 }
                 Instruction::ExileEventPermanentPlayThisTurn => {

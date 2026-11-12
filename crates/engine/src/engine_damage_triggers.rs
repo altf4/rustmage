@@ -548,6 +548,7 @@ impl Game {
                         ability.condition.event(),
                         TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::SelfDamaged
+                            | TriggerCondition::SelfDamagedAtLeast(_)
                             | TriggerCondition::AttachedCreatureDamaged
                     )
                 })
@@ -558,10 +559,12 @@ impl Game {
                 .as_ref()
                 .is_some_and(|grants| {
                     grants.iter().any(|grant| {
-                        grant.granting_card.triggers()[usize::from(grant.ability)]
-                            .condition
-                            .event()
-                            == TriggerCondition::SelfDamaged
+                        matches!(
+                            grant.granting_card.triggers()[usize::from(grant.ability)]
+                                .condition
+                                .event(),
+                            TriggerCondition::SelfDamaged | TriggerCondition::SelfDamagedAtLeast(_)
+                        )
                     })
                 });
         if !has_printed_observers && !has_temporary_observers {
@@ -592,6 +595,7 @@ impl Game {
                     condition,
                     TriggerCondition::CreatureDamaged { .. }
                         | TriggerCondition::SelfDamaged
+                        | TriggerCondition::SelfDamagedAtLeast(_)
                         | TriggerCondition::AttachedCreatureDamaged
                 ) {
                     continue;
@@ -600,6 +604,9 @@ impl Game {
                     let controller = self.state.objects[recipient.card as usize].controller;
                     if !match condition {
                         TriggerCondition::SelfDamaged => recipient == source.reference,
+                        TriggerCondition::SelfDamagedAtLeast(minimum) => {
+                            recipient == source.reference && amount >= u128::from(minimum)
+                        }
                         TriggerCondition::AttachedCreatureDamaged => {
                             source.attached_to == Some(recipient)
                                 && self.is_creature(recipient.card)
@@ -630,9 +637,12 @@ impl Game {
                     continue;
                 };
                 let ability = &grant.granting_card.triggers()[usize::from(grant.ability)];
-                if ability.condition.event() != TriggerCondition::SelfDamaged
-                    || !(grant.permanent || grant.expires_turn == self.state.turn)
-                {
+                let matches = match ability.condition.event() {
+                    TriggerCondition::SelfDamaged => true,
+                    TriggerCondition::SelfDamagedAtLeast(minimum) => amount >= u128::from(minimum),
+                    _ => false,
+                };
+                if !matches || !(grant.permanent || grant.expires_turn == self.state.turn) {
                     continue;
                 }
                 let source = self.object_view(grant.recipient.card);

@@ -2354,8 +2354,20 @@ impl Game {
         let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
             TargetRule::OtherThanEventObject { base, excluded } => {
-                return matches!(target, Target::Card(id) if lookup(id).is_some()
-                    && excluded.is_some_and(|object| world.reference(id) != object))
+                let target_ref = match target {
+                    Target::Card(id) if lookup(id).is_some() => world.reference(id),
+                    _ => return false,
+                };
+                let distinct = excluded.is_some_and(|object| {
+                    target_ref != object
+                        && qualification
+                            .and_then(|q| q.event_object)
+                            .filter(|event| event.object == object)
+                            .is_none_or(|event| {
+                                !event.graveyard_objects().any(|card| card == target_ref)
+                            })
+                });
+                return distinct
                     && self.target_matches_in_world(
                         world,
                         *base,

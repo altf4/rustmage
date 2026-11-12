@@ -7556,6 +7556,8 @@ pub enum TriggerCondition {
     /// One occurrence per damaged creature in a simultaneous actual damage batch.
     /// Once for actual positive damage to this exact source in a completed batch.
     SelfDamaged,
+    /// Sum actual damage dealt to this exact permanent in one damage event.
+    SelfDamagedAtLeast(u16),
     /// The creature this source is attached to was actually dealt damage.
     AttachedCreatureDamaged,
     CreatureDamaged {
@@ -7657,6 +7659,11 @@ pub enum TriggerCondition {
         filter: SacrificeFilter,
     },
     CreatureDiesWithMaximumStat {
+        relation: CastRelation,
+        maximum: i32,
+    },
+    /// Compare only the departing creature's signed last-known toughness.
+    CreatureDiesWithMaximumToughness {
         relation: CastRelation,
         maximum: i32,
     },

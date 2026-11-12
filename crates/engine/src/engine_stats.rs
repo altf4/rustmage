@@ -234,6 +234,7 @@ impl Game {
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                     | TriggerCondition::SelfDamaged
+                    | TriggerCondition::SelfDamagedAtLeast(_)
                     | TriggerCondition::AttachedCreatureDamaged
                     | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                     | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
@@ -290,6 +291,7 @@ impl Game {
                     | TriggerCondition::AttachedCreatureDies
                     | TriggerCondition::PermanentToGraveyard { .. }
                     | TriggerCondition::CreatureDiesWithMaximumStat { .. }
+                    | TriggerCondition::CreatureDiesWithMaximumToughness { .. }
                     | TriggerCondition::CreatureDiesBatch { .. }
                     | TriggerCondition::PermanentDiesBatch { .. }
                     | TriggerCondition::CreatureDiesFiltered { .. }

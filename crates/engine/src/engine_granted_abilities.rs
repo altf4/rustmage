@@ -51,6 +51,7 @@ impl Game {
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                             | TriggerCondition::SelfDamaged
+                            | TriggerCondition::SelfDamagedAtLeast(_)
                             | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                             | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
