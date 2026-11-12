@@ -4,7 +4,7 @@ const BONUS: EquipmentSpec = EquipmentSpec {
         power: 1,
         toughness: 0,
     },
-    keywords: Keywords::CANT_BE_BLOCKED,
+    keywords: Keywords::NONE,
 };
 
 pub(in crate::cards) const RULES: CardRules = CardRules {
@@ -39,7 +39,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         first_layer: AbilityLayer::Ability,
         fragments: &[
             StaticAbilityFragment::AttachmentStats(BONUS.stats),
-            StaticAbilityFragment::AttachmentKeywords(BONUS.keywords),
+            StaticAbilityFragment::AttachmentRule(Keywords::CANT_BE_BLOCKED),
         ],
     }],
     extras: &CardExtras {

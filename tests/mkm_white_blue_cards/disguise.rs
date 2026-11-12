@@ -442,6 +442,42 @@ fn cryptic_coat_cloaks_and_attaches_then_leaves_the_creature_in_place_when_bounc
 }
 
 #[test]
+fn cryptic_coat_prevents_blocking_even_after_the_bearer_loses_its_abilities() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let coat = put(&mut game, player, "Cryptic Coat", Zone::Hand);
+    let attacker = put(&mut game, player, "Healer's Hawk", Zone::Library);
+    let blocker = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    cast(&mut game, coat, None);
+    settle(&mut game);
+    let object = game.object_ref(attacker);
+    turn_up(&mut game, object);
+    assert!(game.keywords(attacker).contains(Keywords::FLYING));
+
+    let aura = put(&mut game, player, "Unable to Scream", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Card(attacker)));
+    settle(&mut game);
+    assert_eq!(game.object_view(coat).attached_to, Some(object));
+    assert_eq!(stats(&game, attacker), (1, 2));
+    assert!(!game.keywords(attacker).contains(Keywords::FLYING));
+    game.state.objects[attacker as usize].summoning_sick = false;
+
+    let mut unequipped = game.clone();
+    unequipped.move_object(coat, Zone::Hand);
+    assert_eq!(stats(&unequipped, attacker), (0, 2));
+    for branch in [&mut game, &mut unequipped] {
+        pass_to(branch, Pending::Attackers);
+        act(branch, Action::Attack { card: attacker });
+        act(branch, Action::FinishAttackers);
+        pass_to(branch, Pending::Blockers);
+    }
+    let block = Action::Block { blocker, attacker };
+    reject(&mut game, block.clone());
+    act(&mut unequipped, block);
+}
+
+#[test]
 fn exit_specialist_bounces_another_creature_and_uses_live_blocker_power() {
     let player = Player::P0;
     let opponent = player.other();
