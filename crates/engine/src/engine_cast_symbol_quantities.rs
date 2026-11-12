@@ -85,6 +85,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::CounterUnlessPayScaled { amount: value, .. }
         | Instruction::PutCountersScaled { amount: value, .. }
         | Instruction::PutPermanentCountersScaled { amount: value, .. }
+        | Instruction::PutPermanentCountersWithColors { amount: value, .. }
         | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
         | Instruction::PutNamedPermanentCountersScaled { amount: value, .. }
         | Instruction::GrowScaled { amount: value, .. }
