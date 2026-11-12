@@ -3,6 +3,29 @@ use super::*;
 use crate::cards::StaticAbilityFragment;
 use ability_world::CharacteristicWorld;
 
+/// The immediate mana pipeline stores these trigger templates as rule fragments.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn acquired_tap_mana_triggers<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: CardId,
+) -> impl Iterator<Item = &'static StaticAbilityFragment> {
+    borrowed_activations::chosen_trigger_donor(world, source)
+        .into_iter()
+        .flat_map(|grant| grant.definition.static_ability_groups())
+        .flat_map(|group| group.fragments)
+        .filter(|fragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                    | StaticAbilityFragment::ControlledCreatureTapManaBonus(_)
+                    | StaticAbilityFragment::ControlledLandColorlessTapManaBonus
+                    | StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
+                    | StaticAbilityFragment::AttachmentManaBonus(_)
+                    | StaticAbilityFragment::BasicLandTapManaBonus(_)
+            )
+        })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub(super) enum LandAtTap {
@@ -101,16 +124,28 @@ impl ManaTapBonus {
             if provider.zone != Zone::Battlefield {
                 continue;
             }
-            for fragment in world
+            let native = world
                 .definition(source)
                 .static_ability_groups()
                 .iter()
                 .flat_map(|group| group.fragments)
-            {
-                let available = || {
+                .map(|fragment| (fragment, false));
+            let acquired = acquired_tap_mana_triggers(world, source)
+                .filter(|_| {
                     query.continuous_fragment_available(source, |candidate| {
-                        std::ptr::eq(candidate, fragment)
+                        matches!(
+                            candidate,
+                            StaticAbilityFragment::GrantChosenLinkedCreatureAbilities
+                        )
                     })
+                })
+                .map(|fragment| (fragment, true));
+            for (fragment, acquired) in native.chain(acquired) {
+                let available = || {
+                    acquired
+                        || query.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
                 };
                 let (production, amount, colorless) = match *fragment {
                     StaticAbilityFragment::ControlledBasicLandManaMultiplier(factor)

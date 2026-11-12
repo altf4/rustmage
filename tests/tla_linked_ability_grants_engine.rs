@@ -400,6 +400,116 @@ fn acquired_activated_and_triggered_templates_share_their_own_links() {
     assert_eq!(game.object_view(victim).controller, player);
 }
 
+const CREATURE_MANA_DONOR: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::ControlledCreatureTapManaBonus([
+            0, 0, 0, 0, 1, 0,
+        ])],
+    }],
+    ..CardRules::EMPTY
+};
+
+const LAND_MANA_DONOR: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::ControlledLandTapManaBonus([
+                0, 0, 0, 1, 0, 0,
+            ])],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::ControlledBasicLandManaMultiplier(3)],
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn acquired_tap_mana_triggers_apply_to_payments_for_only_the_current_donor() {
+    let _rules = fixture_rules::activate(&[
+        (Card::HillGiant, &CHOOSER),
+        (Card::GrizzlyBears, &CREATURE_MANA_DONOR),
+        (Card::GoblinPiker, &LAND_MANA_DONOR),
+    ]);
+    let player = Player::P1;
+    let mut game = scenario(player);
+    let host = put(&mut game, player, "Hill Giant", Zone::Hand);
+    let first = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    let second = put(&mut game, player.other(), "Goblin Piker", Zone::Battlefield);
+    enter_and_exile(&mut game, host, first);
+    let kill = put(&mut game, player, "Murder", Zone::Hand);
+    cast(&mut game, kill, Some(Target::Card(second)));
+    let accept = Action::ChooseOptional { accept: true };
+    wait_until(&mut game, |g| g.legal_actions().contains(&accept));
+    act(&mut game, accept);
+    settle(&mut game);
+    assert_eq!(game.object_view(second).zone, Zone::Exile);
+
+    let elf = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let bear = put(&mut game, player, "Bear Cub", Zone::Hand);
+    let announce = Action::AnnounceCast { card: bear };
+    let tap = Action::TapMana { card: elf };
+    game.state.players[player.index()].mana = [0; 6];
+    reject(&mut game, announce.clone());
+    begin_choose(&mut game, host);
+    select(&mut game, first);
+
+    let mut blanked = game.clone();
+    blanked.state.players[player.index()].mana = [8; 6];
+    let aura = put(&mut blanked, player, "Unable to Scream", Zone::Hand);
+    cast(&mut blanked, aura, Some(Target::Card(host)));
+    settle(&mut blanked);
+    blanked.state.players[player.index()].mana = [0; 6];
+    reject(&mut blanked, announce.clone());
+
+    let mut stale = game.clone();
+    let old = stale.object_ref(first);
+    stale.move_object(first, Zone::Hand);
+    stale.move_object(first, Zone::Exile);
+    assert_ne!(stale.object_ref(first), old);
+    reject(&mut stale, announce.clone());
+
+    let mut paid = game.clone();
+    act(&mut paid, announce.clone());
+    let revision = paid.revision();
+    let index = paid
+        .legal_actions()
+        .iter()
+        .position(|action| *action == tap)
+        .unwrap();
+    let mut indexed = paid.clone();
+    act(&mut paid, tap.clone());
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(paid.snapshot(), indexed.snapshot());
+    assert_eq!(paid.state.players[player.index()].mana, [0, 0, 0, 0, 2, 0]);
+    assert!(paid.state.stack.is_empty());
+    pay(&mut paid);
+    settle(&mut paid);
+    assert_eq!(paid.object_view(bear).zone, Zone::Battlefield);
+
+    begin_choose(&mut game, host);
+    select(&mut game, second);
+    reject(&mut game, announce);
+    act(&mut game, tap);
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 0, 1, 0]);
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    act(&mut game, Action::TapMana { card: forest });
+    assert_eq!(game.state.players[player.index()].mana, [0, 0, 0, 1, 2, 0]);
+    assert!(game.state.stack.is_empty());
+}
+
 #[test]
 fn decayed_supplies_only_its_attack_trigger_and_excludes_graveyard_activations() {
     let _rules = fixture_rules::activate(&[(Card::HillGiant, &CHOOSER)]);

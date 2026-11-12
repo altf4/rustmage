@@ -3766,6 +3766,7 @@ impl<'g> FundingState<'g> {
                 .static_ability_groups()
                 .iter()
                 .flat_map(|g| g.fragments)
+                .chain(mana_tap_bonus::acquired_tap_mana_triggers(self, id))
             {
                 match *fragment {
                     ControlledBasicLandManaMultiplier(factor)
