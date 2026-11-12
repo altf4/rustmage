@@ -3,10 +3,26 @@
   "catalogue_id": 1461,
   "oracle_id": "a23293cf-4352-4ce6-8a68-3b30f908e137",
   "facts_sha256": "020c78be4bc48e2ff8c81af5b5850d45ce3aa37c342cf393de60c70810c312ba",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "77834ef5e7cc097a729a2f64d2a39c23ae473305ef897c24ba8bfda897804c4a"
   },
-  "physical_metadata_sha256": "03de3c29ccf018fb266853f4e698d049bc080d48f682bcdc489fd3d8c0cf2c21"
+  "physical_metadata_sha256": "03de3c29ccf018fb266853f4e698d049bc080d48f682bcdc489fd3d8c0cf2c21",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfBeingHunted.java",
+  "java_sha256": "e446f8ef57216767d68630cafd5e8fac2f728192ecf2cdd13981df6f21eacdb2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneSourceEffect.java",
+      "sha256": "42ab952dae5eebdb7102f4b9fcaecab4c07c03e855267c0e83d8d35a5f478cd5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_delirium_deck.rs"
 }
