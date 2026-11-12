@@ -3,10 +3,54 @@
   "catalogue_id": 4879,
   "oracle_id": "cc5b1276-d13e-4392-988d-1315bc90a9b1",
   "facts_sha256": "4b639e46565ace3b85ec1054671f7a3d5777718ee5fefd2afa62460da86f9e84",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98c9b1db084137b2016dd752388600824f2290f70007e037a62ce723584a3138"
   },
-  "physical_metadata_sha256": "7bd7dfc1d6c85ee6de2009ff854d5e1e593d90922c619f2b6cfca09584d33c82"
+  "physical_metadata_sha256": "7bd7dfc1d6c85ee6de2009ff854d5e1e593d90922c619f2b6cfca09584d33c82",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VeteranSurvivor.java",
+  "java_sha256": "f50f6c29593ea34197805ce6df866661eb40bb84f6c67c2cc7aae1ab9a9003ec",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetForSourceEffect.java",
+      "sha256": "74386ca760e2041bc0045bb0c007d29f306832b7933b2ee191aaaa43d2fa2690"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInGraveyard.java",
+      "sha256": "906e86825eed8b6d1a0e9e72c0761aa181aabdc61abbf99fd526f2d3531020b7"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Survival optionally exiles a card in either graveyard. The exact live linked exile count of at least three grants the source +3/+3 and hexproof, and both cease when the count falls."
+  }
 }

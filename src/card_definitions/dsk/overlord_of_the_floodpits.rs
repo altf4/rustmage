@@ -1,16 +1,26 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(5, 3),
     keywords: Keywords::FLYING,
+    triggers: &[
+        ImpendingSpec::END_STEP,
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEntersOrAttacks,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::Draw(PlayerSet::Controller, 2),
+                Instruction::Discard(PlayerSet::Controller, 1),
+            ],
+        },
+    ],
+    extras: &CardExtras {
+        impending: Some(ImpendingSpec {
+            cost: ManaCost {
+                colored: [0, 2, 0, 0, 0, 0],
+                generic: 1,
+            },
+            time_counters: 4,
+        }),
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

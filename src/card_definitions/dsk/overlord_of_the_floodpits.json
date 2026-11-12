@@ -3,10 +3,39 @@
   "catalogue_id": 3072,
   "oracle_id": "31196f0b-33ee-4981-ac97-24226e8b405f",
   "facts_sha256": "0d12d114105ffa0e206dda0f8ba5650ed4a5c3c831c66c6597761aff831a90c5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "823e6e51105aca2dc7d8845d469b2e7ec4caecdbd411136f0e142d054c2719a3"
   },
-  "physical_metadata_sha256": "3358af3153027767242f6542bbfb1e08c2e9d8fd8fa2c3f9359a56c73cb44640"
+  "physical_metadata_sha256": "3358af3153027767242f6542bbfb1e08c2e9d8fd8fa2c3f9359a56c73cb44640",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OverlordOfTheFloodpits.java",
+  "java_sha256": "8ceb84099c0e750f0b892b3e530eb3d15e03187028f0fe79fc86339f5bc26862",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ImpendingAbility.java",
+      "sha256": "4dba9114d939df02c12a0cf07e17d732369c4a7d978886742fe3fb404606b2b2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Impending is an alternative cost. The paid incarnation gets four time counters, is a noncreature enchantment until the last is removed, and removes one at its controller's end step. Both entry and attack draw two then discard one."
+  }
 }

@@ -3,10 +3,39 @@
   "catalogue_id": 3699,
   "oracle_id": "15f2085f-d5e6-4bc6-870f-00fcaccd981b",
   "facts_sha256": "f060d783abb11247be836cde4aae7e04f63036335a362cb7e45d7903bf166d4b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "805595e077fd7ac4f58164abcbce5c32572be9663c51062068d1eb13ff539fa0"
   },
-  "physical_metadata_sha256": "1986fcd9922a36bbb6a7d889aaa6875bedcf5de3536667bb2a53e93750856541"
+  "physical_metadata_sha256": "1986fcd9922a36bbb6a7d889aaa6875bedcf5de3536667bb2a53e93750856541",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaviorOfTheSmall.java",
+  "java_sha256": "485c4a72d1462f172bdfc38e6106803e8048ba808e315aee8c7b9d7701c833e1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/ManaValuePredicate.java",
+      "sha256": "d3da4263d5b58245e80ab5ed54f19bd8d0ca5ade58cb6360e49a40747c075262"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Its survival trigger targets one of the controller's graveyard creature cards with mana value 3 or less and returns the exact legal target to hand."
+  }
 }
