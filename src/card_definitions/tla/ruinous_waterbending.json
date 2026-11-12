@@ -3,10 +3,56 @@
   "catalogue_id": 3614,
   "oracle_id": "7d3a0216-871b-4c1b-adb1-de99b832f577",
   "facts_sha256": "a24cbf83c4bf1ef58351f4ef38d74af854614b5a22a86481a32c958b7a49494f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb460d90fd680970be34959aea4164cf8c39d1c8acbc6a63aed14e6003635717"
   },
-  "physical_metadata_sha256": "0c4ad7a91658e7cea9f0975bd0bc7bc707efcb6c51071022ce9ef4b730ef91b6"
+  "physical_metadata_sha256": "0c4ad7a91658e7cea9f0975bd0bc7bc707efcb6c51071022ce9ef4b730ef91b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RuinousWaterbending.java",
+  "java_sha256": "34b7d86d5b756c9e85c4c4cc022c0a2b2ea34f4b79db7cf5e8b3bcd15d84ef91",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/DelayedTriggeredAbility.java",
+      "sha256": "6f74a2ccfd069f65ed3ae7e7c99a7d6933043d586b0c43e1c11f0d557f9e41ff"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/TriggeredAbilityImpl.java",
+      "sha256": "ea4e038dc20943c16d4669c91682a439a853356db25e804489f1635bf8afed66"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/WaterbendedCondition.java",
+      "sha256": "bcc36fa5a7855f814a0ff40abff9eed49b6ca1f2ab912755a51ab5d29b0e8b72"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateDelayedTriggeredAbilityEffect.java",
+      "sha256": "537fdb546ad334c8e75d07346e68cf02ee4fa38bf830cbbd041ef491234f0661"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostAllEffect.java",
+      "sha256": "207759bf847022c212e713d520d0899243c37ef89c90c19473082c0ddd03099e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WaterbendAbility.java",
+      "sha256": "ec6f6065a3cbaca92ad939b150069e7b0047b6698a8f0b2cf42a51b3eade9b4a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_black.rs"
 }

@@ -1,0 +1,52 @@
+//! Avatar mono-black definitions exercised through the normal game API.
+mod support;
+
+use rustmage as _;
+use rustmage_core::{cards::*, engine::*};
+use support::*;
+
+#[path = "tla_cards_black/graveyard_and_waterbend.rs"]
+mod graveyard_and_waterbend;
+
+fn target(card: CardId) -> Action {
+    Action::ChooseTarget {
+        target: Target::Card(card),
+    }
+}
+
+fn pass_pair(game: &mut Game) {
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+}
+
+fn finish_ordered_triggers(game: &mut Game) {
+    for _ in 0..32 {
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    panic!("trigger resolution exceeded its action budget");
+}
+
+fn start_end_step(game: &mut Game, player: Player) {
+    game.state.active = player;
+    game.begin_step(Step::End);
+    game.give_priority();
+    game.prepare_triggers();
+}
+
+fn token_count(game: &Game, card: Card) -> usize {
+    game.state
+        .objects
+        .iter()
+        .filter(|object| {
+            object.zone == Zone::Battlefield && object.is_token() && object.card == card
+        })
+        .count()
+}

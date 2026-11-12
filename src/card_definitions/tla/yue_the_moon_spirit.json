@@ -3,10 +3,66 @@
   "catalogue_id": 5145,
   "oracle_id": "961f1883-2f97-4249-90f9-416279d7a9dd",
   "facts_sha256": "58810ca47b42a29ab0f834896741a24f73ae58fb3cc75e0554dee58824c7470a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d606a2301c85f6ee672bbcb57ad232c837061a3c760786cc5fb21c832b984ce7"
   },
-  "physical_metadata_sha256": "61a94f0b1f635c6c45f331dcc3eaab5c9fdfc458593ef7dd78b6861b92a9d6cb"
+  "physical_metadata_sha256": "61a94f0b1f635c6c45f331dcc3eaab5c9fdfc458593ef7dd78b6861b92a9d6cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/y/YueTheMoonSpirit.java",
+  "java_sha256": "c1c4c35f04b8a4c7a5eb629ed5ac2d643403d7ce7bb2dadcd294f9cd08429ca5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendCost.java",
+      "sha256": "216fa6e097077e73b5fcc3a1e71fe59ef6d16d27dd33681202db95643b7c451b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/CastFromHandForFreeEffect.java",
+      "sha256": "e45327251b7a38197426f979a6dbdd8217e14a848659deb0b8260cd4c0b7b9a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterCard.java",
+      "sha256": "84b94ddf1a688a21cc9967d198dcd0745547bc91c072dd75c604d8d744e382d2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/Predicates.java",
+      "sha256": "c5c8eea6d0ee1fb4d563abdf5045dce2dc779f9170cb8a476e07e0abdd9b8f98"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

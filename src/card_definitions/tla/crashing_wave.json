@@ -3,10 +3,76 @@
   "catalogue_id": 880,
   "oracle_id": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
   "facts_sha256": "956ea0b41391575c80c71d8962afe2969e1d8f75dad81006dd2430b2fbb7daf4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3f8d3f5f355256305eb9bc7861594e76011abac9b8ca15718e868c2f0a55a7dc"
   },
-  "physical_metadata_sha256": "ea3d089c45ad1a4c33c5d80db6cc33e27ab76ee0412173c98032fa971d3f8d33"
+  "physical_metadata_sha256": "ea3d089c45ad1a4c33c5d80db6cc33e27ab76ee0412173c98032fa971d3f8d33",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrashingWave.java",
+  "java_sha256": "b2ec9decddc94187cab4b11c96e0c09a0c5a19ee7a11c2dd45802865eedf82e9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/WaterbendXCost.java",
+      "sha256": "5cd38a5fc4cee4fc5c7dd58b7acd6b58908fd8f7a0588fc0d3c202c1c8c191f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/InfoEffect.java",
+      "sha256": "48bac57c3707da691071b0fb266461819de4fbfef0608a0e1767de405a2eca4b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TapTargetEffect.java",
+      "sha256": "b5034a8802be9867ee395d5222aa4d7574fd79e9a2746ae746eb94cbc77139bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/FilterPermanent.java",
+      "sha256": "2f563fb05047e624418a2d5b36005d654a4019e1c38f052eaa818c2bca40f397"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/common/FilterOpponentsCreaturePermanent.java",
+      "sha256": "9e64645fa99f5e9c77a41dd9490e629a050201ee2fb8cb973bebdef3a3914942"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentAmount.java",
+      "sha256": "f70d05ef1e34e607a85ad43dc28b6c081bf696cbbbfeaaa8a26758737775b71b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/XTargetsCountAdjuster.java",
+      "sha256": "0a0c03f91efb08ee51cbac58fc63d9f2c22d022e2fad1fcef7fd072a6143c217"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }
