@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "76e59db1aac06ada5e9ce2f7d1992f85827c3a1719eb906b2ac336d89a6340ec",
+  "catalogue_version": "0cca00548691c2732917635b9dc4818491b40689858918afbc0c9de0e0d6b1d3",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4660,
-  "implemented_total": 4676,
+  "implemented_standard_cards": 4697,
+  "implemented_total": 4713,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 131,
-      "gated": 133
+      "complete": 167,
+      "gated": 97
     },
     "ecc": {
       "total": 7,
@@ -136,8 +136,8 @@
     },
     "soc": {
       "total": 24,
-      "complete": 21,
-      "gated": 3
+      "complete": 22,
+      "gated": 2
     },
     "sos": {
       "total": 264,
@@ -2677,8 +2677,8 @@
     {
       "name": "Balemurk Leech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/balemurk_leech.rs",
       "set": "dsk"
     },
@@ -4749,8 +4749,8 @@
     {
       "name": "Broodspinner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/broodspinner.rs",
       "set": "dsk"
     },
@@ -6013,8 +6013,8 @@
     {
       "name": "Charred Foyer // Warped Space",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/charred_foyer_warped_space.rs",
       "set": "dsk"
     },
@@ -7565,8 +7565,8 @@
     {
       "name": "Cult Healer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cult_healer.rs",
       "set": "dsk"
     },
@@ -7733,8 +7733,8 @@
     {
       "name": "Cynical Loner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cynical_loner.rs",
       "set": "dsk"
     },
@@ -7981,8 +7981,8 @@
     {
       "name": "Dashing Bloodsucker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/dashing_bloodsucker.rs",
       "set": "dsk"
     },
@@ -8429,8 +8429,8 @@
     {
       "name": "Defiled Crypt // Cadaver Lab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/defiled_crypt_cadaver_lab.rs",
       "set": "dsk"
     },
@@ -8501,8 +8501,8 @@
     {
       "name": "Demonic Counsel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/demonic_counsel.rs",
       "set": "dsk"
     },
@@ -8565,8 +8565,8 @@
     {
       "name": "Derelict Attic // Widow's Walk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/derelict_attic_widow_s_walk.rs",
       "set": "dsk"
     },
@@ -10885,8 +10885,8 @@
     {
       "name": "Enduring Vitality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/enduring_vitality.rs",
       "set": "dsk"
     },
@@ -10965,8 +10965,8 @@
     {
       "name": "Entity Tracker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/entity_tracker.rs",
       "set": "dsk"
     },
@@ -11085,8 +11085,8 @@
     {
       "name": "Erratic Apparition",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/erratic_apparition.rs",
       "set": "dsk"
     },
@@ -13381,8 +13381,8 @@
     {
       "name": "Funeral Room // Awakening Hall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/funeral_room_awakening_hall.rs",
       "set": "dsk"
     },
@@ -14069,8 +14069,8 @@
     {
       "name": "Ghostly Keybearer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/ghostly_keybearer.rs",
       "set": "dsk"
     },
@@ -14341,8 +14341,8 @@
     {
       "name": "Glassworks // Shattered Yard",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/glassworks_shattered_yard.rs",
       "set": "dsk"
     },
@@ -15189,8 +15189,8 @@
     {
       "name": "Gremlin Tamer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/gremlin_tamer.rs",
       "set": "dsk"
     },
@@ -17461,8 +17461,8 @@
     {
       "name": "Infernal Phantom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/infernal_phantom.rs",
       "set": "dsk"
     },
@@ -19341,8 +19341,8 @@
     {
       "name": "Kona, Rescue Beastie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/kona_rescue_beastie.rs",
       "set": "dsk"
     },
@@ -22157,8 +22157,8 @@
     {
       "name": "Midnight Mayhem",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/midnight_mayhem.rs",
       "set": "dsk"
     },
@@ -23717,8 +23717,8 @@
     {
       "name": "Niko, Light of Hope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/niko_light_of_hope.rs",
       "set": "dsk"
     },
@@ -24413,8 +24413,8 @@
     {
       "name": "Optimistic Scavenger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/optimistic_scavenger.rs",
       "set": "dsk"
     },
@@ -24749,16 +24749,16 @@
     {
       "name": "Overlord of the Balemurk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/overlord_of_the_balemurk.rs",
       "set": "dsk"
     },
     {
       "name": "Overlord of the Boilerbilges",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/overlord_of_the_boilerbilges.rs",
       "set": "dsk"
     },
@@ -24773,8 +24773,8 @@
     {
       "name": "Overlord of the Hauntwoods",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/overlord_of_the_hauntwoods.rs",
       "set": "dsk"
     },
@@ -24925,8 +24925,8 @@
     {
       "name": "Painter's Studio // Defaced Gallery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/painter_s_studio_defaced_gallery.rs",
       "set": "dsk"
     },
@@ -27101,8 +27101,8 @@
     {
       "name": "Rampaging Soulrager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/rampaging_soulrager.rs",
       "set": "dsk"
     },
@@ -28893,8 +28893,8 @@
     {
       "name": "Rootwise Survivor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/rootwise_survivor.rs",
       "set": "dsk"
     },
@@ -30061,8 +30061,8 @@
     {
       "name": "Scrabbling Skullcrab",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/scrabbling_skullcrab.rs",
       "set": "dsk"
     },
@@ -31693,8 +31693,8 @@
     {
       "name": "Smoky Lounge // Misty Salon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/smoky_lounge_misty_salon.rs",
       "set": "dsk"
     },
@@ -32909,8 +32909,8 @@
     {
       "name": "Stalked Researcher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/stalked_researcher.rs",
       "set": "dsk"
     },
@@ -35837,8 +35837,8 @@
     {
       "name": "The Jolly Balloon Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_jolly_balloon_man.rs",
       "set": "dsk"
     },
@@ -36237,8 +36237,8 @@
     {
       "name": "The Swarmweaver",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_swarmweaver.rs",
       "set": "dsk"
     },
@@ -36917,8 +36917,8 @@
     {
       "name": "Ticket Booth // Tunnel of Hate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/ticket_booth_tunnel_of_hate.rs",
       "set": "dsk"
     },
@@ -38029,8 +38029,8 @@
     {
       "name": "Twitching Doll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/twitching_doll.rs",
       "set": "dsk"
     },
@@ -38453,8 +38453,8 @@
     {
       "name": "Unholy Annex // Ritual Chamber",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unholy_annex_ritual_chamber.rs",
       "set": "dsk"
     },
@@ -38669,8 +38669,8 @@
     {
       "name": "Unwilling Vessel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unwilling_vessel.rs",
       "set": "dsk"
     },
@@ -41501,8 +41501,8 @@
     {
       "name": "Zimone, All-Questioning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/soc/zimone_all_questioning.rs",
       "set": "soc"
     },
