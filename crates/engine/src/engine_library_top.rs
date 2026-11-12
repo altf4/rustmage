@@ -55,7 +55,7 @@ impl Game {
         &self,
         actor: Player,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if self.state.static_sources.is_empty() {
@@ -157,7 +157,7 @@ impl Game {
                         face,
                         sorcery,
                         PaidCastOrigin::LibraryTop { permission },
-                        mana_alternatives,
+                        cast_alternatives,
                         emit,
                     ) {
                         return true;

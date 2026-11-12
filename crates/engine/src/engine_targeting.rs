@@ -210,14 +210,17 @@ impl Announcement {
                 .is_some_and(|source| source.card.additional_cost().is_some())
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
-        if let Some(costs) = &self.cast_costs
-            && let Some(active) = costs.active
-            && let CastCostClause::OriginCounters(amount) =
-                costs.clauses[usize::from(active)].clause
+        match self
+            .cast_costs
+            .as_ref()
+            .and_then(|costs| costs.active_clause())
         {
-            return Some(Game::creature_counter_spec(amount));
+            Some(CastCostClause::OriginCounters(amount)) => {
+                Some(Game::creature_counter_spec(amount))
+            }
+            Some(CastCostClause::OriginEvidence(threshold)) => Some(evidence::cost(threshold)),
+            _ => self.printed_additional_cost(),
         }
-        self.printed_additional_cost()
     }
     pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
         match self.activation_cost_route {

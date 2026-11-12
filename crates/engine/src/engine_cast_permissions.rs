@@ -8,6 +8,7 @@ pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
     pub mana_base: Option<ManaCost>,
+    pub evidence_threshold: Option<u64>,
     pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
     pub library_top: Option<LibraryTopCastPermission>,
@@ -652,6 +653,7 @@ impl Game {
             granted_warp,
             exile_play_surcharge,
             mana_base,
+            evidence_threshold,
             linked_exile_paid,
             paid_graveyard,
             library_top,
@@ -935,6 +937,9 @@ impl Game {
         }
         if resolution_discard {
             a.add_origin_discard_cost();
+        }
+        if let Some(threshold) = evidence_threshold {
+            a.add_origin_evidence_cost(threshold);
         }
         let life = warp
             .map(|spec| spec.life)

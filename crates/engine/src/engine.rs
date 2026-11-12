@@ -1125,6 +1125,14 @@ define_actions! {
         flash_surcharge: bool,
         origin: PaidCastOrigin,
     },
+    AnnounceCastWithEvidenceAlternative {
+        object: ObjectRef,
+        provider: ObjectRef,
+        face: CastFace,
+        threshold: u64,
+        flash_surcharge: bool,
+        origin: PaidCastOrigin,
+    },
     AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceLibraryTop {
         object: ObjectRef,
@@ -6266,10 +6274,10 @@ impl Game {
                 let exile_casting_prohibited =
                     casting_prohibited || self.nonhand_cast_prohibited(actor);
                 let mut exile_zero = None;
-                let mana_alternatives = if casting_prohibited {
+                let cast_alternatives = if casting_prohibited {
                     Vec::new()
                 } else {
-                    self.source_mana_alternatives(actor)
+                    self.source_cast_alternatives(actor)
                 };
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
@@ -6289,7 +6297,7 @@ impl Game {
                     actor,
                     sorcery,
                     casting_prohibited || self.nonhand_cast_prohibited(actor),
-                    &mana_alternatives,
+                    &cast_alternatives,
                     &mut emit,
                 ) {
                     return true;
@@ -6299,7 +6307,7 @@ impl Game {
                     && self.visit_limited_library_top_casts(
                         actor,
                         sorcery,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         &mut emit,
                     )
                 {
@@ -6344,7 +6352,7 @@ impl Game {
                                 card,
                                 sorcery,
                                 providers,
-                                &mana_alternatives,
+                                &cast_alternatives,
                                 &mut emit,
                             ) || self.visit_ordinary_exile_zero_casts(
                                 actor, card, sorcery, providers, &mut emit,
@@ -6355,7 +6363,7 @@ impl Game {
                                 sorcery,
                                 casting_prohibited,
                                 providers,
-                                &mana_alternatives,
+                                &cast_alternatives,
                                 &mut emit,
                             )
                         {
@@ -6370,7 +6378,7 @@ impl Game {
                             actor,
                             card,
                             sorcery,
-                            &mana_alternatives,
+                            &cast_alternatives,
                             &mut emit,
                         )
                     {
@@ -6525,7 +6533,7 @@ impl Game {
                         card,
                         sorcery,
                         &graveyard_life_casts,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         &mut emit,
                     ) {
                         return true;
@@ -6541,7 +6549,7 @@ impl Game {
                         actor,
                         card,
                         sorcery,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         &mut emit,
                     ) {
                         return true;
@@ -6570,7 +6578,7 @@ impl Game {
                         actor,
                         card,
                         sorcery,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         &mut emit,
                     ) {
                         return true;
@@ -6700,7 +6708,7 @@ impl Game {
                                 actor,
                                 card,
                                 sorcery,
-                                &mana_alternatives,
+                                &cast_alternatives,
                                 &mut emit,
                             )
                         {
@@ -8126,6 +8134,24 @@ impl Game {
                 object.card,
                 face,
                 PaidCastAlternative::Source { provider, cost },
+                flash_surcharge,
+                origin,
+            ),
+            Action::AnnounceCastWithEvidenceAlternative {
+                object,
+                provider,
+                face,
+                threshold,
+                flash_surcharge,
+                origin,
+            } => self.start_paid_cast_alternative(
+                actor,
+                object.card,
+                face,
+                PaidCastAlternative::Evidence {
+                    provider,
+                    threshold,
+                },
                 flash_surcharge,
                 origin,
             ),

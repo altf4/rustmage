@@ -26,6 +26,7 @@ pub(super) struct CostContext {
     additional_life: bool,
     forage: Option<ForageRoute>,
     origin_forage: Option<forage::ForageSelection>,
+    paid_evidence: Vec<ObjectRef>,
     selected: Vec<ObjectRef>,
     exact: bool,
     counters: Vec<(ObjectRef, CounterKind)>,
@@ -55,7 +56,7 @@ impl CostContext {
             selected = f.selected.clone();
             exact = f.complete();
         }
-        if let Some(e) = &a.evidence {
+        if let Some(e) = a.evidence.as_ref().filter(|e| !e.paid) {
             selected = e.selected.clone();
             exact = e.complete;
         }
@@ -117,6 +118,7 @@ impl CostContext {
             additional_life: a.additional_life,
             forage: a.forage.as_ref().and_then(|v| v.route),
             origin_forage: c.origin_forage.as_deref().cloned(),
+            paid_evidence: c.paid_evidence.clone(),
             selected,
             exact,
             counters: a
@@ -249,6 +251,7 @@ impl FundingState<'_> {
             match row.clause {
                 CastCostClause::OriginCounters(_)
                 | CastCostClause::OriginForage
+                | CastCostClause::OriginEvidence(_)
                 | CastCostClause::OriginDiscard(_)
                 | CastCostClause::Additional
                 | CastCostClause::CraftSource
@@ -1141,9 +1144,51 @@ impl FundingState<'_> {
         }
         false
     }
+    fn combined_evidence_deficit(&self, c: &CostContext, remaining: &[usize]) -> bool {
+        let Some(printed) = c.additional.and_then(evidence::threshold) else {
+            return false;
+        };
+        if !self.game.state.exile_links.is_empty() {
+            return false;
+        }
+        let mut alternative = None;
+        let mut includes_printed = false;
+        for &i in remaining {
+            match c.clauses[i].clause {
+                CastCostClause::Mana => {}
+                CastCostClause::OriginEvidence(n) => alternative = Some(n),
+                CastCostClause::Additional => includes_printed = true,
+                _ => return false,
+            }
+        }
+        let Some(alternative) = alternative.filter(|_| includes_printed) else {
+            return false;
+        };
+        // In this packet neither evidence nor mana contributors can add a
+        // graveyard card. Ignore prohibitions for a conservative upper bound.
+        let available = self
+            .resources
+            .iter()
+            .filter(|resource| {
+                let object = &resource.object;
+                let reference = self.reference(resource.id);
+                object.zone == Zone::Graveyard
+                    && object.owner == c.actor
+                    && object.is_card()
+                    && reference != c.source
+                    && !c.paid_evidence.contains(&reference)
+            })
+            .map(|resource| u128::from(resource.object.card.fixed_mana_value()))
+            .sum::<u128>();
+        available < u128::from(printed) + u128::from(alternative)
+    }
+
     fn complete_cost_rows(&self, c: &CostContext, remaining: &[usize]) -> bool {
         if remaining.is_empty() {
             return true;
+        }
+        if self.combined_evidence_deficit(c, remaining) {
+            return false;
         }
         // With only Teamwork and Mana left, these inner costs merely tap
         // contributors. They cannot add mana or restore/change a type, color,
@@ -1178,7 +1223,9 @@ impl FundingState<'_> {
             later.active = None;
             if matches!(
                 c.clauses[index].clause,
-                CastCostClause::Additional | CastCostClause::OriginCounters(_)
+                CastCostClause::Additional
+                    | CastCostClause::OriginCounters(_)
+                    | CastCostClause::OriginEvidence(_)
             ) {
                 later.selected.clear();
                 later.exact = false;
@@ -1320,6 +1367,17 @@ impl FundingState<'_> {
                 }
                 CastCostClause::OriginForage => {
                     if self.complete_origin_forage(c, &later, &rest) {
+                        return true;
+                    }
+                }
+                CastCostClause::OriginEvidence(threshold) => {
+                    let mut payment = c.clone();
+                    payment.additional = Some(evidence::cost(threshold));
+                    if c.active.is_none() {
+                        payment.selected.clear();
+                        payment.exact = false;
+                    }
+                    if self.complete_additional(&payment, &later, &rest) {
                         return true;
                     }
                 }
@@ -1838,6 +1896,7 @@ impl FundingState<'_> {
                     })
             });
         }
+        let collecting_evidence = evidence::threshold(spec).is_some();
         let mut amount = 1usize;
         let mut destination = Zone::Graveyard;
         let mut weight_minimum = None;
@@ -1945,6 +2004,7 @@ impl FundingState<'_> {
                 (self.cost_object(spec, r, c.source)
                     && (!any_graveyard
                         || r != c.source && !self.graveyard_exile_prohibited(r.card))
+                    && (!collecting_evidence || !c.paid_evidence.contains(&r))
                     && !(c.source_tap_reserved
                         && r == c.source
                         && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))))
@@ -1987,10 +2047,7 @@ impl FundingState<'_> {
                 && (!c.exact || c.selected.len() == amount)
                 && candidates.len() >= amount;
         }
-        if remaining.is_empty()
-            && c.additional
-                .is_some_and(|cost| evidence::threshold(cost).is_some())
-        {
+        if remaining.is_empty() && collecting_evidence {
             // The eligible mana values already met the threshold above. No other
             // clause can require a particular subset of those objects.
             return true;
@@ -2071,6 +2128,12 @@ impl FundingState<'_> {
                 batch.push(c.source);
                 self.cost_departures(&batch, destination, &mut |w| {
                     w.complete_cost_rows(later, remaining)
+                })
+            } else if c.additional.and_then(evidence::threshold).is_some() {
+                let mut later = later.clone();
+                later.paid_evidence.extend_from_slice(selected);
+                self.cost_departures(selected, destination, &mut |w| {
+                    w.complete_cost_rows(&later, remaining)
                 })
             } else {
                 self.cost_departures(selected, destination, &mut |w| {
@@ -2253,6 +2316,7 @@ impl Game {
             additional_life: false,
             forage: None,
             origin_forage: None,
+            paid_evidence: Vec::new(),
             selected: Vec::new(),
             exact: false,
             counters: Vec::new(),
@@ -2656,6 +2720,7 @@ impl Game {
                 additional_life: false,
                 forage: None,
                 origin_forage: None,
+                paid_evidence: Vec::new(),
                 selected: Vec::new(),
                 exact: false,
                 counters: Vec::new(),
@@ -2900,6 +2965,7 @@ impl Game {
                     additional_life: current.is_some_and(|a| a.additional_life),
                     forage: chosen_route,
                     origin_forage: None,
+                    paid_evidence: Vec::new(),
                     selected: selected.to_vec(),
                     exact,
                     counters: counters.to_vec(),
@@ -2965,6 +3031,7 @@ impl Game {
             additional_life: false,
             forage: None,
             origin_forage: None,
+            paid_evidence: Vec::new(),
             selected: selected.to_vec(),
             exact: false,
             counters: Vec::new(),

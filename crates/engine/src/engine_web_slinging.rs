@@ -1,4 +1,4 @@
-//! Alternate mana bases for independently authorized paid casting routes.
+//! Alternative costs for independently authorized paid casting routes.
 use super::*;
 use crate::cards::StaticAbilityFragment;
 
@@ -61,10 +61,11 @@ pub enum PaidCastOrigin {
 pub type WebSlingingOrigin = PaidCastOrigin;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub(super) enum PaidCastAlternative {
     WebSlinging(ManaCost),
     Source { provider: ObjectRef, cost: ManaCost },
+    Evidence { provider: ObjectRef, threshold: u64 },
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -72,13 +73,28 @@ impl PaidCastAlternative {
     fn mana_base(self) -> ManaCost {
         match self {
             Self::WebSlinging(cost) | Self::Source { cost, .. } => cost,
+            Self::Evidence { .. } => ManaCost::ZERO,
+        }
+    }
+
+    fn evidence_threshold(self) -> Option<u64> {
+        match self {
+            Self::Evidence { threshold, .. } => Some(threshold),
+            _ => None,
+        }
+    }
+
+    pub(super) fn configure_announcement(self, announcement: &mut Announcement) {
+        announcement.origin_alternative_cost = Some(self.mana_base());
+        if let Some(threshold) = self.evidence_threshold() {
+            announcement.add_origin_evidence_cost(threshold);
         }
     }
 
     fn method(self, origin: PaidCastOrigin) -> CastMethod {
         match self {
             Self::WebSlinging(_) => CastMethod::WebSlinging,
-            Self::Source { .. } => match origin {
+            Self::Source { .. } | Self::Evidence { .. } => match origin {
                 PaidCastOrigin::LinkedExileCounters { .. } => CastMethod::LinkedExileCounterCost,
                 PaidCastOrigin::GraveyardAdditional => CastMethod::GraveyardAdditionalCosts,
                 PaidCastOrigin::GraveyardCounters => CastMethod::GraveyardCounterCost,
@@ -100,7 +116,7 @@ pub(super) struct PaidCastTerms {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    pub(super) fn source_mana_alternatives(&self, actor: Player) -> Vec<(ObjectRef, ManaCost)> {
+    pub(super) fn source_cast_alternatives(&self, actor: Player) -> Vec<PaidCastAlternative> {
         let mut alternatives = Vec::new();
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
@@ -113,10 +129,19 @@ impl Game {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                let StaticAbilityFragment::SpellAlternativeManaCost(cost) = *fragment else {
-                    continue;
+                let provider = self.object_ref(id);
+                let row = match *fragment {
+                    StaticAbilityFragment::SpellAlternativeManaCost(cost) => {
+                        PaidCastAlternative::Source { provider, cost }
+                    }
+                    StaticAbilityFragment::SpellAlternativeEvidenceCost(threshold) => {
+                        PaidCastAlternative::Evidence {
+                            provider,
+                            threshold,
+                        }
+                    }
+                    _ => continue,
                 };
-                let row = (self.object_ref(id), cost);
                 if !alternatives.contains(&row)
                     && self.continuous_fragment_available(id, |found| std::ptr::eq(found, fragment))
                 {
@@ -162,7 +187,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -190,7 +215,7 @@ impl Game {
                     face,
                     sorcery,
                     PaidCastOrigin::Ordinary,
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 )
             {
@@ -214,7 +239,7 @@ impl Game {
                             face,
                             sorcery,
                             origin,
-                            mana_alternatives,
+                            cast_alternatives,
                             emit,
                         )
                     {
@@ -286,7 +311,7 @@ impl Game {
 
     #[allow(
         clippy::too_many_arguments,
-        reason = "Origin permission and mana alternatives are independent"
+        reason = "Origin permission and alternative cost are independent"
     )]
     pub(super) fn visit_paid_cast_alternative_face(
         &self,
@@ -295,7 +320,7 @@ impl Game {
         face: CastFace,
         sorcery: bool,
         origin: PaidCastOrigin,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[card as usize].card;
@@ -306,17 +331,16 @@ impl Game {
             return false;
         };
         let web = self.web_slinging_bases(actor, definition);
-        if web.is_empty() && mana_alternatives.is_empty() {
+        if web.is_empty() && cast_alternatives.is_empty() {
             return false;
         }
         let Some(terms) = self.paid_cast_terms(actor, card, face, origin) else {
             return false;
         };
-        let choices = web.into_iter().map(PaidCastAlternative::WebSlinging).chain(
-            mana_alternatives
-                .iter()
-                .map(|&(provider, cost)| PaidCastAlternative::Source { provider, cost }),
-        );
+        let choices = web
+            .into_iter()
+            .map(PaidCastAlternative::WebSlinging)
+            .chain(cast_alternatives.iter().copied());
         for choice in choices {
             let method = choice.method(origin);
             let cost = choice.mana_base();
@@ -340,6 +364,7 @@ impl Game {
                     false,
                     cast_permissions::OriginAlternative {
                         mana_base: Some(cost),
+                        evidence_threshold: choice.evidence_threshold(),
                         exact_paid_resolution_offer: terms.alternative.exact_paid_resolution_offer
                             && method != CastMethod::WebSlinging,
                         ..terms.alternative
@@ -362,6 +387,17 @@ impl Game {
                             origin,
                         }
                     }
+                    PaidCastAlternative::Evidence {
+                        provider,
+                        threshold,
+                    } => Action::AnnounceCastWithEvidenceAlternative {
+                        object: self.object_ref(card),
+                        provider,
+                        face,
+                        threshold,
+                        flash_surcharge,
+                        origin,
+                    },
                 }) {
                     return true;
                 }
@@ -380,14 +416,13 @@ impl Game {
         origin: PaidCastOrigin,
     ) {
         let method = choice.method(origin);
-        let cost = choice.mana_base();
         if origin == PaidCastOrigin::PaidResolution {
             self.cast_during_resolution_configured(
                 actor,
                 self.object_ref(card),
                 face,
                 Some(method),
-                Some(cost),
+                Some(choice),
                 |game, item| {
                     if method != CastMethod::WebSlinging {
                         game.configure_paid_resolution_offer(item);
@@ -430,7 +465,7 @@ impl Game {
             data.play_approvals.retain(|row| row.0 != item.id);
         }
         if origin == PaidCastOrigin::Ordinary
-            && matches!(choice, PaidCastAlternative::Source { .. })
+            && !matches!(choice, PaidCastAlternative::WebSlinging(_))
             && item.cast.unwrap().origin == Zone::Exile
         {
             self.select_ordinary_paid_exile_cast(item.id);
@@ -444,7 +479,7 @@ impl Game {
             None,
             terms.counters,
             |announcement| {
-                announcement.origin_alternative_cost = Some(cost);
+                choice.configure_announcement(announcement);
                 if let Some(permission) = terms.alternative.library_top {
                     announcement.limited_cast_permission =
                         Some(Box::new(LimitedCastPermission::LibraryTop(permission)));

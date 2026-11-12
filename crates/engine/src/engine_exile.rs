@@ -590,7 +590,7 @@ impl Game {
         sorcery: bool,
         casting_prohibited: bool,
         exile_zero: &[ObjectRef],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let current = &self.state.objects[card as usize];
@@ -636,7 +636,7 @@ impl Game {
                     sorcery,
                     surcharge,
                     exile_zero,
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 )
             {
@@ -657,7 +657,7 @@ impl Game {
         sorcery: bool,
         surcharge: std::num::NonZeroU32,
         exile_zero: &[ObjectRef],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
@@ -687,7 +687,7 @@ impl Game {
                 face,
                 sorcery,
                 PaidCastOrigin::TaxedExile { surcharge },
-                mana_alternatives,
+                cast_alternatives,
                 emit,
             ) {
                 return true;

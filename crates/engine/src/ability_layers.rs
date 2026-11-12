@@ -93,6 +93,8 @@ pub enum StaticAbilityFragment {
     ExileCastForZeroOncePerTurn,
     /// Optional fixed mana base for spells the controller can already cast.
     SpellAlternativeManaCost(ManaCost),
+    /// You may collect evidence for the specified amount instead of paying a spell's mana cost.
+    SpellAlternativeEvidenceCost(u64),
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.

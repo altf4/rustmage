@@ -373,6 +373,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
                             | crate::cards::StaticAbilityFragment::ExileCastForZeroOncePerTurn
                             | crate::cards::StaticAbilityFragment::SpellAlternativeManaCost(_)
+                            | crate::cards::StaticAbilityFragment::SpellAlternativeEvidenceCost(_)
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
                             | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)

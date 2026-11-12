@@ -304,6 +304,7 @@ impl Game {
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceExileForZero { object, .. }
             | Action::AnnounceCastWithManaAlternative { object, .. }
+            | Action::AnnounceCastWithEvidenceAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }

@@ -1359,13 +1359,7 @@ impl Game {
             return;
         }
         if evidence::threshold(spec).is_some() {
-            self.commit_evidence(
-                a.evidence.as_ref().expect("selected evidence"),
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-            );
+            self.pay_cast_evidence(a);
             a.additional_paid = true;
             return;
         }

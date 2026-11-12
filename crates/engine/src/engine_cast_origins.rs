@@ -448,7 +448,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
         casting_prohibited: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if actor != self.state.active {
@@ -549,7 +549,7 @@ impl Game {
                                 permission,
                                 permanent_type,
                             },
-                            mana_alternatives,
+                            cast_alternatives,
                             emit,
                         )
                     {
@@ -605,7 +605,7 @@ impl Game {
                                 permission,
                                 permanent_type,
                             },
-                            mana_alternatives,
+                            cast_alternatives,
                             emit,
                         ) || cast_options
                             .into_iter()
@@ -1148,12 +1148,12 @@ impl Game {
             return false;
         }
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
-        let mana_alternatives = if !casting_prohibited
+        let cast_alternatives = if !casting_prohibited
             && free.paid.is_some()
             && free.alternative_cost.is_none()
             && !free.discard_instead_of_mana
         {
-            self.source_mana_alternatives(player)
+            self.source_cast_alternatives(player)
         } else {
             Vec::new()
         };
@@ -1283,7 +1283,7 @@ impl Game {
                         face,
                         true,
                         PaidCastOrigin::PaidResolution,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         emit,
                     )
                 {
@@ -1412,7 +1412,7 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
         method_override: Option<CastMethod>,
-        alternative_mana: Option<ManaCost>,
+        alternative: Option<PaidCastAlternative>,
         configure: impl FnOnce(&mut Self, &mut SpellView),
     ) {
         let offer = self.state.resolution_free_casts.as_ref().unwrap();
@@ -1480,7 +1480,7 @@ impl Game {
         }
         self.remember_suspend_cast(object, item.id);
         configure(self, &mut item);
-        if let Some(cost) = alternative_mana {
+        if let Some(choice) = alternative {
             if method == CastMethod::WebSlinging {
                 Self::configure_web_slinging(&mut item);
             }
@@ -1489,7 +1489,7 @@ impl Game {
                 Counters::default(),
                 None,
                 None,
-                |announcement| announcement.origin_alternative_cost = Some(cost),
+                |announcement| choice.configure_announcement(announcement),
             );
         } else {
             self.open_payment_announcement_configured(

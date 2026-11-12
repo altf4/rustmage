@@ -1,7 +1,7 @@
 //! Casting, resolving, and branching evidence costs with exact graveyard objects.
 mod support;
 
-use rustmage as _;
+use rustmage::PaidCastOrigin;
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
@@ -356,4 +356,384 @@ fn evidence_branch_owns_overpayment_and_receipts_only_include_actual_exiles() {
             .is_empty()
     );
     assert!(restored.observe(player).last_evidence.is_none());
+}
+
+const EVIDENCE_ALTERNATIVE: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::SpellAlternativeEvidenceCost(10)],
+    }],
+    ..CardRules::EMPTY
+};
+
+const OPTIONAL_EVIDENCE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::IfEvidence { skip: 1 },
+            Instruction::Draw(PlayerSet::Controller, 1),
+        ],
+    ),
+    extras: &CardExtras {
+        collect_evidence: Some((6, 0)),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const EVIDENCE_WATCHER: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::EvidenceCollected,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+    }],
+    ..CardRules::EMPTY
+};
+
+const DISCARD_SPELL: CardRules = CardRules {
+    effect: Effect::Spell(TargetPlan::NONE, &[]),
+    extras: &CardExtras {
+        additional_cost: Some(AdditionalCost {
+            kind: EffectChoiceKind::Discard,
+            filter: NO_FILTER,
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const GRAVEYARD_TAX: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(2)],
+    }],
+    ..CardRules::EMPTY
+};
+
+fn alternative(game: &Game, spell: CardId, provider: ObjectRef, origin: PaidCastOrigin) -> Action {
+    Action::AnnounceCastWithEvidenceAlternative {
+        object: game.object_ref(spell),
+        provider,
+        face: CastFace::Normal,
+        threshold: 10,
+        flash_surcharge: false,
+        origin,
+    }
+}
+
+fn select_evidence(game: &mut Game, cards: &[CardId]) {
+    for &card in cards {
+        let choice = choose_evidence(game, card);
+        act(game, choice);
+    }
+    act(game, Action::FinishEvidence);
+}
+
+fn ten_mana_witness(game: &mut Game, player: Player) -> CardId {
+    spawn(
+        game,
+        player,
+        named("Kozilek, the Great Distortion"),
+        Zone::Graveyard,
+    )
+}
+
+#[test]
+fn the_hand_alternative_pays_zero_mana_and_fixes_printed_x_at_zero() {
+    let _rules = fixture_rules::activate(&[(named("Anthem of Champions"), &EVIDENCE_ALTERNATIVE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let spell = put(&mut game, player, "Wildwood Scourge", Zone::Hand);
+    let source = put(&mut game, player, "Anthem of Champions", Zone::Battlefield);
+    let provider = game.object_ref(source);
+    let choice = alternative(&game, spell, provider, PaidCastOrigin::Ordinary);
+    game.state.players[player.index()].mana = [0; 6];
+    reject(&mut game, choice.clone());
+    let fuel = ten_mana_witness(&mut game, player);
+
+    act(&mut game, choice);
+    reject(&mut game, Action::ChooseX { value: 1 });
+    act(&mut game, Action::BeginOrderedCosts);
+    choose_cost(&mut game, CastCostClause::OriginEvidence(10));
+    assert!(game.observe(player.other()).evidence.is_none());
+    select_evidence(&mut game, &[fuel]);
+    choose_cost(&mut game, CastCostClause::Mana);
+    pay(&mut game);
+
+    let item = game.state.stack.last().unwrap();
+    assert_eq!(item.x, Some(0));
+    assert_eq!(item.mana_value(), 1);
+    assert_eq!(item.cast.unwrap().payment, [0; 6]);
+    let event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!(event.source, game.object_ref(spell));
+    assert_eq!(event.threshold, 10);
+    assert_eq!(event.exiled, vec![game.object_ref(fuel)]);
+}
+
+#[test]
+fn the_alternative_requires_independent_graveyard_and_exile_permissions_and_pays_taxes() {
+    let _rules = fixture_rules::activate(&[
+        (named("Anthem of Champions"), &EVIDENCE_ALTERNATIVE),
+        (named("Short Bow"), &GRAVEYARD_TAX),
+    ]);
+    let player = Player::P1;
+    for origin in [Zone::Graveyard, Zone::Exile] {
+        let mut game = scenario(player);
+        let provider = put(&mut game, player, "Anthem of Champions", Zone::Battlefield);
+        put(&mut game, player.other(), "Short Bow", Zone::Battlefield);
+        let owner = if origin == Zone::Exile {
+            player.other()
+        } else {
+            player
+        };
+        let spell = put(&mut game, owner, "Bear Cub", origin);
+        let reference = game.object_ref(spell);
+        let choice = alternative(
+            &game,
+            spell,
+            game.object_ref(provider),
+            PaidCastOrigin::Ordinary,
+        );
+        let fuel = [
+            put(&mut game, player, "Hill Giant", Zone::Graveyard),
+            put(&mut game, player, "Hill Giant", Zone::Graveyard),
+            put(&mut game, player, "Hill Giant", Zone::Graveyard),
+        ];
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+        reject(&mut game, choice.clone());
+        if origin == Zone::Graveyard {
+            game.grant_graveyard_permission(player, reference, GraveyardCastKind::Cast);
+        } else {
+            game.grant_exile_play_permission(player, reference, false);
+        }
+        reject(&mut game, choice.clone());
+
+        let last_fuel = put(&mut game, player, "Lightning Bolt", Zone::Graveyard);
+        game.state.players[player.index()].mana = [0; 6];
+        reject(&mut game, choice.clone());
+        game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+        act(&mut game, choice);
+        act(&mut game, Action::BeginOrderedCosts);
+        choose_cost(&mut game, CastCostClause::OriginEvidence(10));
+        reject(&mut game, Action::ChooseEvidence { object: reference });
+        select_evidence(&mut game, &[fuel[0], fuel[1], fuel[2], last_fuel]);
+        choose_cost(&mut game, CastCostClause::Mana);
+        pay(&mut game);
+
+        let cast = game.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.origin, origin);
+        assert_eq!(cast.caster, player);
+        assert_eq!(cast.payment, [0, 0, 0, 0, 0, 2]);
+        assert_eq!(game.object_view(spell).owner, owner);
+    }
+}
+
+#[test]
+fn the_printed_discard_can_fund_the_later_alternative_evidence_clause() {
+    let _rules = fixture_rules::activate(&[
+        (named("Anthem of Champions"), &EVIDENCE_ALTERNATIVE),
+        (named("Quick Study"), &DISCARD_SPELL),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let provider = put(&mut game, player, "Anthem of Champions", Zone::Battlefield);
+    let spell = put(&mut game, player, "Quick Study", Zone::Hand);
+    let choice = alternative(
+        &game,
+        spell,
+        game.object_ref(provider),
+        PaidCastOrigin::Ordinary,
+    );
+    let low = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    reject(&mut game, choice.clone());
+    let discarded = spawn(
+        &mut game,
+        player,
+        named("Kozilek, the Great Distortion"),
+        Zone::Hand,
+    );
+
+    act(&mut game, choice);
+    act(&mut game, Action::BeginOrderedCosts);
+    assert!(!game.legal_actions().iter().any(|action| {
+        let Action::ChooseCastCost { clause } = action else {
+            return false;
+        };
+        game.state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .cast_costs
+            .as_ref()
+            .unwrap()
+            .clauses[usize::from(*clause)]
+        .clause
+            == CastCostClause::OriginEvidence(10)
+    }));
+    choose_cost(&mut game, CastCostClause::Additional);
+    let object = game.object_ref(low);
+    reject(&mut game, Action::ChooseAdditionalCost { object });
+    let object = game.object_ref(discarded);
+    act(&mut game, Action::ChooseAdditionalCost { object });
+    assert_eq!(game.object_view(discarded).zone, Zone::Graveyard);
+    choose_cost(&mut game, CastCostClause::OriginEvidence(10));
+    select_evidence(&mut game, &[discarded]);
+    choose_cost(&mut game, CastCostClause::Mana);
+    pay(&mut game);
+    assert_eq!(game.object_view(discarded).zone, Zone::Exile);
+    assert_eq!(game.object_view(low).zone, Zone::Hand);
+}
+
+#[test]
+fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_events() {
+    let _rules = fixture_rules::activate(&[
+        (named("Anthem of Champions"), &EVIDENCE_ALTERNATIVE),
+        (named("Quick Study"), &OPTIONAL_EVIDENCE),
+        (named("Short Bow"), &EVIDENCE_WATCHER),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let provider = put(&mut game, player, "Anthem of Champions", Zone::Battlefield);
+    put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let spell = put(&mut game, player, "Quick Study", Zone::Hand);
+    let choice = alternative(
+        &game,
+        spell,
+        game.object_ref(provider),
+        PaidCastOrigin::Ordinary,
+    );
+    let large = ten_mana_witness(&mut game, player);
+    let first = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let mut insufficient = game.clone();
+    act(&mut insufficient, choice.clone());
+    reject(
+        &mut insufficient,
+        Action::ChooseCollectEvidence { collect: true },
+    );
+    let second = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    act(&mut game, choice);
+    let mut one_event = game.clone();
+    act(
+        &mut one_event,
+        Action::ChooseCollectEvidence { collect: false },
+    );
+    act(&mut one_event, Action::BeginOrderedCosts);
+    choose_cost(&mut one_event, CastCostClause::OriginEvidence(10));
+    select_evidence(&mut one_event, &[large]);
+    choose_cost(&mut one_event, CastCostClause::Mana);
+    pay(&mut one_event);
+    settle(&mut one_event);
+    assert_eq!(
+        one_event.state.players[player.index()].cards_drawn_this_turn,
+        1
+    );
+
+    act(&mut game, Action::ChooseCollectEvidence { collect: true });
+    act(&mut game, Action::BeginOrderedCosts);
+    let mut reverse = game.clone();
+    let reference = game.object_ref(large);
+
+    choose_cost(&mut game, CastCostClause::OriginEvidence(10));
+    let first_choice = choose_evidence(&game, first);
+    reject(&mut game, first_choice);
+    let large_choice = Action::ChooseEvidence { object: reference };
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|a| *a == large_choice)
+        .unwrap();
+    let revision = game.revision();
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    act(&mut game, large_choice.clone());
+    indexed.apply_index(player, revision, index).unwrap();
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(player, revision, index),
+        Err(Error::StaleRevision)
+    );
+    act(&mut indexed, large_choice);
+    assert_eq!(indexed.snapshot(), game.snapshot());
+
+    act(&mut game, Action::FinishEvidence);
+    let event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!((event.sequence, event.threshold), (1, 10));
+    assert_eq!(event.exiled, vec![game.object_ref(large)]);
+    choose_cost(&mut game, CastCostClause::Additional);
+    assert!(!game.observe(player).evidence.unwrap().paid);
+    reject(&mut game, Action::ChooseEvidence { object: reference });
+    select_evidence(&mut game, &[first, second]);
+    let event = game.observe(player.other()).last_evidence.unwrap();
+    assert_eq!((event.sequence, event.threshold), (2, 6));
+    assert_eq!(
+        event.exiled,
+        vec![game.object_ref(first), game.object_ref(second)]
+    );
+
+    choose_cost(&mut reverse, CastCostClause::Additional);
+    reject(&mut reverse, Action::ChooseEvidence { object: reference });
+    select_evidence(&mut reverse, &[first, second]);
+    let event = reverse.observe(player.other()).last_evidence.unwrap();
+    assert_eq!((event.sequence, event.threshold), (1, 6));
+    choose_cost(&mut reverse, CastCostClause::OriginEvidence(10));
+    assert!(!reverse.observe(player).evidence.unwrap().paid);
+    select_evidence(&mut reverse, &[large]);
+    let event = reverse.observe(player.other()).last_evidence.unwrap();
+    assert_eq!((event.sequence, event.threshold), (2, 10));
+
+    for branch in [&mut game, &mut reverse] {
+        choose_cost(branch, CastCostClause::Mana);
+        pay(branch);
+        settle(branch);
+        assert_eq!(
+            branch.state.players[player.index()].cards_drawn_this_turn,
+            3
+        );
+    }
+}
+
+#[test]
+fn a_paid_cast_during_resolution_accepts_the_alternative() {
+    const PAID_OFFER: CardRules = CardRules {
+        effect: Effect::Spell(TargetPlan::NONE, &[Instruction::ExileTopMayCastPaid]),
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (named("Anthem of Champions"), &EVIDENCE_ALTERNATIVE),
+        (named("Opt"), &PAID_OFFER),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let provider = put(&mut game, player, "Anthem of Champions", Zone::Battlefield);
+    let spell = put(&mut game, player, "Quick Study", Zone::Library);
+    let fuel = ten_mana_witness(&mut game, player);
+    let offer = put(&mut game, player, "Opt", Zone::Hand);
+    cast(&mut game, offer, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::ResolutionCasts { player });
+    game.state.players[player.index()].mana = [0; 6];
+
+    let provider = game.object_ref(provider);
+    let ordinary = alternative(&game, spell, provider, PaidCastOrigin::Ordinary);
+    reject(&mut game, ordinary);
+    let choice = alternative(&game, spell, provider, PaidCastOrigin::PaidResolution);
+    act(&mut game, choice);
+    act(&mut game, Action::BeginOrderedCosts);
+    choose_cost(&mut game, CastCostClause::OriginEvidence(10));
+    select_evidence(&mut game, &[fuel]);
+    choose_cost(&mut game, CastCostClause::Mana);
+    pay(&mut game);
+    if matches!(game.state.pending, Pending::ResolutionCasts { .. }) {
+        act(&mut game, Action::FinishResolutionCasts);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
 }

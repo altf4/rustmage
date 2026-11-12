@@ -9,6 +9,7 @@ pub(super) struct EvidenceSelection {
     pub selected: Vec<ObjectRef>,
     pub total: u128,
     pub complete: bool,
+    pub paid: bool,
     pub optional: bool,
     pub skip_to: usize,
     pub ward: bool,
@@ -229,6 +230,7 @@ impl Game {
             selected: Vec::new(),
             total: 0,
             complete: false,
+            paid: false,
             optional: false,
             skip_to: 0,
             ward: false,
@@ -263,6 +265,7 @@ impl Game {
             selected: Vec::new(),
             total: 0,
             complete: false,
+            paid: false,
             optional: true,
             skip_to,
             ward,
@@ -275,6 +278,11 @@ impl Game {
         Some(r) != e.excluded
             && self.evidence_card(e.player, r)
             && !e.selected.contains(&r)
+            && self.state.announcing.as_ref().is_none_or(|a| {
+                a.cast_costs
+                    .as_ref()
+                    .is_none_or(|costs| !costs.paid_evidence.contains(&r))
+            })
             && (!self.cast_costs_mana_paid() || {
                 let mut selected = e.selected.clone();
                 selected.push(r);
@@ -310,7 +318,9 @@ impl Game {
         }
         if let Some(a) = &mut self.state.announcing
             && a.item.controller == o.owner
+            && !a.cast_costs.as_ref().is_some_and(|costs| costs.mana_closed)
             && let Some(e) = &mut a.evidence
+            && !e.paid
         {
             e.complete = false;
             self.state.pending = Pending::Evidence {
@@ -355,6 +365,21 @@ impl Game {
         }
         self.run_program();
     }
+    pub(super) fn pay_cast_evidence(&mut self, a: &mut Announcement) {
+        let selection = a.evidence.as_mut().expect("selected evidence");
+        selection.paid = true;
+        if let Some(costs) = &mut a.cast_costs {
+            assert!(
+                selection
+                    .selected
+                    .iter()
+                    .all(|r| !costs.paid_evidence.contains(r))
+            );
+            costs.paid_evidence.extend_from_slice(&selection.selected);
+        }
+        self.commit_evidence(selection, a.item.source.unwrap().object);
+    }
+
     pub(super) fn commit_evidence(&mut self, e: &EvidenceSelection, source: ObjectRef) {
         assert!(e.complete && e.total >= u128::from(e.threshold));
         assert!(
@@ -434,11 +459,7 @@ impl Game {
             },
             optional: e.optional,
             complete: e.complete,
-            paid: self
-                .state
-                .announcing
-                .as_ref()
-                .is_some_and(|a| a.additional_paid),
+            paid: e.paid,
         })
     }
 }

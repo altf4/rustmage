@@ -419,6 +419,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceExileLife { .. }
             | Action::AnnounceExileForZero { .. }
             | Action::AnnounceCastWithManaAlternative { .. }
+            | Action::AnnounceCastWithEvidenceAlternative { .. }
             | Action::AnnounceLibraryLife { .. }
             | Action::AnnounceLibraryTop { .. }
             | Action::AnnounceExileFree { .. }

@@ -85,6 +85,13 @@ impl Game {
                 self.behold_announcement_fundable(&proposal, cost)
             });
         }
+        if a.has_ordered_origin_payment() && a.needs_evidence() {
+            return [false, true].into_iter().any(|pay| {
+                let mut proposal = a.clone();
+                proposal.item.cast.as_mut().unwrap().evidence = Some(pay);
+                self.behold_announcement_fundable(&proposal, cost)
+            });
+        }
         let mut proposal = a.clone();
         proposal.cost = Some(cost);
         if (a.has_ordered_origin_payment() || a.has_ordered_life_cost())
