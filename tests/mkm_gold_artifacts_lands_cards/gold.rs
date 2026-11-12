@@ -13,6 +13,27 @@ fn target(game: &mut Game, target: Target) {
     act(game, Action::ChooseTarget { target });
 }
 
+fn choose_cast_cost(game: &mut Game, clause: CastCostClause) {
+    let choice = game
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == clause)
+        .unwrap();
+    act(
+        game,
+        Action::ChooseCastCost {
+            clause: choice.try_into().unwrap(),
+        },
+    );
+}
+
 fn exact_cost_object(game: &Game, card: CardId) -> Action {
     Action::ChooseAdditionalCost {
         object: game.object_ref(card),
@@ -518,24 +539,7 @@ fn urgent_necropsy_collects_the_sum_of_the_selected_roles_and_destroys_once() {
         act(&mut game, Action::FinishTargets);
     }
     act(&mut game, Action::BeginOrderedCosts);
-    let choice = game
-        .state
-        .announcing
-        .as_ref()
-        .unwrap()
-        .cast_costs
-        .as_ref()
-        .unwrap()
-        .clauses
-        .iter()
-        .position(|row| row.clause == CastCostClause::Additional)
-        .unwrap();
-    act(
-        &mut game,
-        Action::ChooseCastCost {
-            clause: choice.try_into().unwrap(),
-        },
-    );
+    choose_cast_cost(&mut game, CastCostClause::Additional);
     let evidence = |g: &Game, id| Action::ChooseEvidence {
         object: g.object_ref(id),
     };
@@ -546,6 +550,7 @@ fn urgent_necropsy_collects_the_sum_of_the_selected_roles_and_destroys_once() {
     let full = evidence(&game, four);
     act(&mut game, full);
     act(&mut game, Action::FinishEvidence);
+    choose_cast_cost(&mut game, CastCostClause::Mana);
     pay(&mut game);
     settle(&mut game);
     assert_eq!(game.object_view(four).zone, Zone::Exile);
@@ -721,4 +726,164 @@ fn voja_counts_the_live_elves_and_wolves_and_has_ward_three() {
         assert_eq!(game.counter_count(id, CounterKind::PlusOne), 2);
     }
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+}
+
+#[test]
+fn no_more_lies_exiles_the_exact_spell_unless_its_controller_pays_three() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    game.state.priority = opponent;
+    game.state.players[opponent.index()].mana = [0, 0, 0, 1, 0, 3];
+    let shock = put(&mut game, opponent, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(player)));
+    act(&mut game, Action::Pass);
+    let counter = put(&mut game, player, "No More Lies", Zone::Hand);
+    cast(&mut game, counter, Some(Target::Spell(shock)));
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(opponent));
+
+    let mut paid = game.clone();
+    act(
+        &mut paid,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 3],
+        },
+    );
+    settle(&mut paid);
+    assert_eq!(paid.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(paid.state.players[player.index()].life, 18);
+
+    act(&mut game, Action::DeclineResolutionMana);
+    assert!(game.state.stack.is_empty());
+    assert_eq!(game.object_view(shock).zone, Zone::Exile);
+    assert_eq!(game.state.players[player.index()].life, 20);
+}
+
+#[test]
+fn trostani_uses_both_hybrid_payments_and_grants_all_three_keywords_until_cleanup() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let trostani = put(&mut game, player, "Trostani, Three Whispers", Zone::Hand);
+    for (cost, mana) in [[1, 0, 0, 0, 2, 0], [2, 0, 0, 0, 1, 0]]
+        .into_iter()
+        .enumerate()
+    {
+        let mut branch = game.clone();
+        branch.state.players[player.index()].mana = mana;
+        act(&mut branch, Action::AnnounceCast { card: trostani });
+        if matches!(branch.state.pending, Pending::SpellCost { .. }) {
+            act(
+                &mut branch,
+                Action::ChooseSpellCost {
+                    cost: cost.try_into().unwrap(),
+                },
+            );
+        }
+        pay(&mut branch);
+        settle(&mut branch);
+        assert_eq!(branch.stats(trostani), (4, 4));
+    }
+    cast(&mut game, trostani, None);
+    settle(&mut game);
+    let recipient = put(
+        &mut game,
+        player.other(),
+        "Grizzly Bears",
+        Zone::Battlefield,
+    );
+    for (ability, keyword) in [
+        (0, Keywords::DEATHTOUCH),
+        (1, Keywords::VIGILANCE),
+        (2, Keywords::DOUBLE_STRIKE),
+    ] {
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: trostani,
+                ability,
+                counter_payment: Counters::default(),
+            },
+        );
+        if matches!(game.state.pending, Pending::ActivationCost { .. }) {
+            let mut green = game.clone();
+            for (branch, cost) in [(&mut green, 0), (&mut game, 1)] {
+                act(branch, Action::ChooseActivationCost { cost });
+                target(branch, Target::Card(recipient));
+                pay(branch);
+                settle(branch);
+                assert!(branch.keywords(recipient).contains(keyword));
+            }
+        } else {
+            target(&mut game, Target::Card(recipient));
+            pay(&mut game);
+            settle(&mut game);
+        }
+        assert!(game.keywords(recipient).contains(keyword));
+        assert!(!game.keywords(trostani).contains(keyword));
+    }
+    game.finish_cleanup();
+    assert!(!game.keywords(recipient).contains(Keywords::DEATHTOUCH));
+    assert!(!game.keywords(recipient).contains(Keywords::VIGILANCE));
+    assert!(!game.keywords(recipient).contains(Keywords::DOUBLE_STRIKE));
+}
+
+#[test]
+fn warleaders_call_pumps_only_its_creatures_and_damages_for_each_controlled_entry() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let call = put(&mut game, player, "Warleader's Call", Zone::Hand);
+    let own = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let opposing = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    cast(&mut game, call, None);
+    settle(&mut game);
+    assert_eq!(game.stats(own), (3, 3));
+    assert_eq!(game.stats(opposing), (2, 2));
+    assert_eq!(game.state.players[opponent.index()].life, 20);
+    for (name, life) in [("Grizzly Bears", 19), ("Bear Cub", 18)] {
+        let creature = put(&mut game, player, name, Zone::Hand);
+        cast(&mut game, creature, None);
+        settle(&mut game);
+        assert_eq!(game.stats(creature), (3, 3));
+        assert_eq!(game.state.players[opponent.index()].life, life);
+    }
+    assert_eq!(game.state.players[player.index()].life, 20);
+}
+
+#[test]
+fn worldsouls_rage_deals_x_then_puts_up_to_x_lands_from_hand_and_graveyard_tapped() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let rage = put(&mut game, player, "Worldsoul's Rage", Zone::Hand);
+    let hand_land = put(&mut game, player, "Mountain", Zone::Hand);
+    let grave_land = put(&mut game, player, "Forest", Zone::Graveyard);
+    let third_land = put(&mut game, player, "Plains", Zone::Hand);
+    let opposing_land = put(&mut game, opponent, "Island", Zone::Graveyard);
+    act(&mut game, Action::AnnounceCast { card: rage });
+    act(&mut game, Action::ChooseX { value: 2 });
+    target(&mut game, Target::Player(opponent));
+    pay(&mut game);
+    pass_pair(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    let foreign = game.object_ref(opposing_land);
+    reject(&mut game, Action::ChooseEffectObject { object: foreign });
+    let mut none = game.clone();
+    act(&mut none, Action::FinishEffectChoice);
+    assert_eq!(none.object_view(grave_land).zone, Zone::Graveyard);
+
+    for land in [hand_land, grave_land] {
+        let object = game.object_ref(land);
+        act(&mut game, Action::ChooseEffectObject { object });
+    }
+    if game.legal_actions().contains(&Action::FinishEffectChoice) {
+        act(&mut game, Action::FinishEffectChoice);
+    }
+    settle(&mut game);
+    for land in [hand_land, grave_land] {
+        assert!(game.on_battlefield(land));
+        assert!(game.object_view(land).tapped);
+    }
+    assert_eq!(game.object_view(third_land).zone, Zone::Hand);
 }

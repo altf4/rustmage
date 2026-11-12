@@ -242,6 +242,7 @@ fn yarus_grants_other_creatures_haste_draws_once_and_returns_an_exact_death() {
     let first = hidden[0];
     let old = game.object_ref(first);
     game.state.priority = opponent;
+    game.state.players[opponent.index()].mana = [0, 0, 0, 1, 0, 2];
     let shock = put(&mut game, opponent, "Shock", Zone::Hand);
     cast(&mut game, shock, Some(Target::Card(first)));
     pass_pair(&mut game);

@@ -390,12 +390,16 @@ fn every_mkm_surveillance_land_has_both_printed_types_and_surveils_on_tapped_ent
             branch.state.players[player.index()].mana = [0; 6];
             let mut production = [0; 6];
             production[index] = 1;
-            choose(&mut branch, |action| {
-                matches!(
-                    action, Action::ActivateMana { card, production: offered, .. }
-                        if *card == land && *offered == production
-                )
-            });
+            let action = if index == first.0.min(second.0) {
+                Action::TapMana { card: land }
+            } else {
+                Action::TapGrantedMana {
+                    card: land,
+                    grantor: branch.object_ref(land),
+                    production,
+                }
+            };
+            act(&mut branch, action);
             assert_eq!(
                 branch.state.players[player.index()].mana,
                 production,
@@ -419,12 +423,7 @@ fn mkm_basic_lands_enter_untapped_and_produce_their_own_colors() {
         game.state.players[player.index()].mana = [0; 6];
         let mut production = [0; 6];
         production[index] = 1;
-        choose(&mut game, |action| {
-            matches!(
-                action, Action::ActivateMana { card, production: offered, .. }
-                    if *card == land && *offered == production
-            )
-        });
+        act(&mut game, Action::TapMana { card: land });
         assert_eq!(game.state.players[player.index()].mana, production);
     }
 }
@@ -512,10 +511,19 @@ fn gravestone_strider_filters_once_and_exiles_a_card_from_either_graveyard() {
         counter_payment: Counters::default(),
         production: BLUE,
     };
-    act(&mut game, filter.clone());
-    assert_eq!(game.state.players[player.index()].mana, BLUE);
-    game.state.players[player.index()].mana = COLORLESS;
-    reject(&mut game, filter);
+    let mut battlefield = game.clone();
+    act(&mut battlefield, filter);
+    assert_eq!(battlefield.state.players[player.index()].mana, BLUE);
+    reject(
+        &mut battlefield,
+        Action::ActivateMana {
+            card: strider,
+            ability: 0,
+            payment: BLUE,
+            counter_payment: Counters::default(),
+            production: [0, 0, 0, 1, 0, 0],
+        },
+    );
     game.move_object(strider, Zone::Graveyard);
     let spell = put(&mut game, player.other(), "Shock", Zone::Graveyard);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
