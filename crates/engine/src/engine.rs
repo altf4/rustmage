@@ -11434,27 +11434,29 @@ impl Game {
                         history.push((before.reference, before.controller));
                     }
                 }
-                if item
-                    .source
-                    .is_some_and(|source| source.object == before.reference)
-                {
-                    item.source_keywords = before.keywords;
-                    item.source_tapped = before.tapped;
-                    item.source_attachment = before.attached_to;
-                    item.source.as_mut().expect("matched source").facts =
-                        DamageFacts::from_view(&before);
-                    // Opt-in copy continuations read the last battlefield blueprint,
-                    // not the blueprint from when the ability originally triggered.
-                    if item.needs_source_copy_lki() {
-                        let recipe = before
-                            .copy_recipe
-                            .unwrap_or_else(|| CopyRecipe::new(before.card));
-                        item.source_copy_recipe = (recipe.definition
-                            != item.source.expect("matched source").card
-                            || recipe.needs_source_snapshot())
-                        .then(|| Box::new(recipe));
+                item.visit_with_captured_copies_mut(|item| {
+                    if item
+                        .source
+                        .is_some_and(|source| source.object == before.reference)
+                    {
+                        item.source_keywords = before.keywords;
+                        item.source_tapped = before.tapped;
+                        item.source_attachment = before.attached_to;
+                        item.source.as_mut().expect("matched source").facts =
+                            DamageFacts::from_view(&before);
+                        // Opt-in copy continuations read the last battlefield blueprint,
+                        // not the blueprint from when the ability originally triggered.
+                        if item.needs_source_copy_lki() {
+                            let recipe = before
+                                .copy_recipe
+                                .unwrap_or_else(|| CopyRecipe::new(before.card));
+                            item.source_copy_recipe = (recipe.definition
+                                != item.source.expect("matched source").card
+                                || recipe.needs_source_snapshot())
+                            .then(|| Box::new(recipe));
+                        }
                     }
-                }
+                });
             }
             if let Some(data) = &mut self.state.evidence_data {
                 data.sources.retain(|&source| source != id);

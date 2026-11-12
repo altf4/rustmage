@@ -105,6 +105,25 @@ fn delayed_copy_all_spells(item: &SpellView) -> bool {
             )
     )
 }
+impl SpellView {
+    pub(super) fn with_captured_copies(&self) -> impl Iterator<Item = &SpellView> {
+        std::iter::successors(Some(self), |item| {
+            item.copy_event.as_deref().map(|event| &event.spell)
+        })
+    }
+
+    pub(super) fn visit_with_captured_copies_mut(&mut self, mut visit: impl FnMut(&mut SpellView)) {
+        let mut item = self;
+        loop {
+            visit(item);
+            let Some(event) = item.copy_event.as_deref_mut() else {
+                break;
+            };
+            item = &mut event.spell;
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     /// Keep the final modes and targets of an ability referenced by a

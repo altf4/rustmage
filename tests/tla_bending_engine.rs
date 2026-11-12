@@ -394,6 +394,49 @@ fn a_related_attack_ability_can_be_copied_from_its_last_known_stack_packet() {
 }
 
 #[test]
+fn a_countered_firebending_copy_uses_the_source_power_at_its_later_departure() {
+    const VARIABLE_FIRE: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::SelfAttacks,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddCombatRedScaled(AmountValue::SourcePower)],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (named("Impact Tremors"), &ASCENSION),
+        (named("Grizzly Bears"), &VARIABLE_FIRE),
+        (named("Opt"), &COUNTER_ABILITY),
+    ]);
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let ascension = put(&mut game, p, "Impact Tremors", Zone::Battlefield);
+    game.add_counter(ascension, CounterKind::Quest, 3);
+    let attacker = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let exact = game.object_ref(attacker);
+    let counter = put(&mut game, p, "Opt", Zone::Hand);
+    attack(&mut game, &[attacker]);
+    let cause = game.state.stack[0].id;
+    cast(&mut game, counter, Some(Target::Stack(cause)));
+    pass_pair(&mut game);
+    assert!(game.state.stack.iter().all(|item| item.id != cause));
+
+    game.add_counter(attacker, CounterKind::PlusOne, 3);
+    assert_eq!(stats(&game, attacker), (5, 5));
+    game.move_object(attacker, Zone::Graveyard);
+    game.move_object(attacker, Zone::Battlefield);
+    assert_ne!(game.object_ref(attacker), exact);
+    assert_eq!(stats(&game, attacker), (2, 2));
+
+    pass_pair(&mut game);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].combat_red_mana, 5);
+    assert_eq!(game.counter_count(ascension, CounterKind::Quest), 4);
+}
+
+#[test]
 fn copied_firebending_is_a_second_bend_and_does_not_retrigger_the_ascension() {
     let _rules = fixture_rules::activate(&[
         (named("Impact Tremors"), &ASCENSION),
