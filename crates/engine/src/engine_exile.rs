@@ -904,6 +904,7 @@ impl Game {
         }
         self.queue_earthbend_returns(events);
         self.record_entry_turn_facts(events);
+        self.remember_opposing_face_down_creatures();
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
         self.death_batch_triggers(events, death_sources);

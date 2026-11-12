@@ -4218,6 +4218,7 @@ impl Game {
             // immediately, before a later instruction can remove a permanent.
             self.refresh_enduring_stories();
             self.refresh_graveyard_borrowing();
+            self.remember_opposing_face_down_creatures();
             self.queue_state_counter_triggers();
             if self.miracle_choice_pending() {
                 return;

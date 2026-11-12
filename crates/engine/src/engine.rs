@@ -5024,6 +5024,7 @@ impl Game {
             } else {
                 self.apply_transaction(actor, action)?;
             }
+            self.remember_opposing_face_down_creatures();
             // Suspended programs defer SBAs, but every committed observation must
             // still have representable derived values. Ordinary resolutions have
             // already checked battlefield stats in the SBA pass.

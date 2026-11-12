@@ -135,6 +135,8 @@ pub enum StaticAbilityFragment {
     AttachedActivationsProhibited,
     /// The exact attached permanent cannot be turned face up.
     AttachedFaceUpProhibited,
+    /// This source's controller may look at opposing face-down creatures.
+    LookAtOpponentFaceDownCreatures,
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.

@@ -546,6 +546,94 @@ fn an_attached_face_up_prohibition_follows_the_exact_aura() {
 }
 
 #[test]
+fn a_look_permission_learns_face_down_creatures_through_a_live_provider() {
+    use rustmage_core::cards::authored::object;
+
+    const LOOK: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::LookAtOpponentFaceDownCreatures],
+    }];
+    const PROVIDER: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: LOOK,
+        extras: &CardExtras {
+            static_ability_groups: LOOK,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    const REMOVE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(object(0))),
+            &[Instruction::RemoveTargetAbilitiesUntilEndOfTurn],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Short Bow").unwrap(), &PROVIDER),
+        (Card::from_name("Opt").unwrap(), &REMOVE),
+    ]);
+    let owner = Player::P1;
+    let viewer = owner.other();
+    let mut game = scenario(owner);
+    let provider = put(&mut game, viewer, "Short Bow", Zone::Battlefield);
+    let weapon = Card::from_name("Concealed Weapon").unwrap();
+    let disguised = spawn(&mut game, owner, weapon, Zone::Hand);
+    let mut suppressed = game.clone();
+    let remove = put(&mut suppressed, owner, "Opt", Zone::Hand);
+    cast(&mut suppressed, remove, Some(Target::Card(provider)));
+    settle(&mut suppressed);
+
+    for branch in [&mut game, &mut suppressed] {
+        act(branch, Action::AnnounceDisguise { card: disguised });
+        pay(branch);
+        assert_eq!(branch.observe(viewer).face_down_spells[0].underlying, None);
+        assert_eq!(
+            branch.observe(owner).face_down_spells[0].underlying,
+            Some(weapon)
+        );
+        act(branch, Action::Pass);
+    }
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|action| *action == Action::Pass)
+        .unwrap();
+    indexed
+        .apply_index(viewer, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, Action::Pass);
+    act(&mut suppressed, Action::Pass);
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    indexed.restore(&saved).unwrap();
+    assert_eq!(indexed.observe(viewer).face_down_spells[0].underlying, None);
+    assert_eq!(
+        suppressed.observe(viewer).face_down_permanents[0].underlying,
+        None
+    );
+    assert_eq!(
+        game.observe(viewer).face_down_permanents[0].underlying,
+        Some(weapon)
+    );
+
+    let disenchant = put(&mut game, owner, "Disenchant", Zone::Hand);
+    cast(&mut game, disenchant, Some(Target::Card(provider)));
+    settle(&mut game);
+    assert_eq!(game.object_view(provider).zone, Zone::Graveyard);
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let another = spawn(&mut game, owner, smuggler, Zone::Hand);
+    act(&mut game, Action::AnnounceDisguise { card: another });
+    pay(&mut game);
+    settle(&mut game);
+    let view = game.observe(viewer).face_down_permanents;
+    assert_eq!(view[0].underlying, Some(weapon));
+    assert_eq!(view[1].underlying, None);
+}
+
+#[test]
 fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
     use rustmage_core::cards::authored::object;
 

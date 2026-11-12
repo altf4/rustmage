@@ -443,6 +443,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::RetainManaColor(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::EnchantedPlayerCantGainLife
+                            | crate::cards::StaticAbilityFragment::LookAtOpponentFaceDownCreatures
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }

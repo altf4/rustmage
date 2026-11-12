@@ -166,6 +166,66 @@ impl Game {
             }
         }
     }
+
+    /// Looking is always available while the rule applies. Record each view
+    /// at the event boundary so that later loss of the rule cannot erase it.
+    pub(super) fn remember_opposing_face_down_creatures(&mut self) {
+        let Some(state) = &self.state.manifest else {
+            return;
+        };
+        let hidden = |row: &FaceDownPermanent| !row.known && row.known_to != 0b11;
+        if !state.permanents.iter().any(hidden) {
+            return;
+        }
+
+        let look_rule = |fragment: &StaticAbilityFragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::LookAtOpponentFaceDownCreatures
+            )
+        };
+        let mut query = None;
+        let mut viewers = [0; 2];
+        for &id in self.state.static_sources.iter() {
+            let source = &self.state.objects[id as usize];
+            if source.zone == Zone::Battlefield
+                && source
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(look_rule))
+                && query
+                    .get_or_insert_with(|| self.characteristic_query())
+                    .continuous_fragment_available(id, look_rule)
+            {
+                viewers[source.controller.other().index()] |=
+                    self.face_down_knowledge_mask(source.controller);
+            }
+        }
+        if viewers == [0; 2] {
+            return;
+        }
+
+        let learned: Vec<_> = state
+            .permanents
+            .iter()
+            .enumerate()
+            .filter(|(_, row)| hidden(row))
+            .filter_map(|(index, row)| {
+                let id = row.object.card;
+                let object = &self.state.objects[id as usize];
+                let mask = viewers[object.controller.index()];
+                (row.known_to & mask != mask
+                    && object.zone == Zone::Battlefield
+                    && self.object_ref(id) == row.object
+                    && self.current_kinds(id) & 1 != 0)
+                    .then_some((index, mask))
+            })
+            .collect();
+        for (index, mask) in learned {
+            self.state.manifest.as_mut().unwrap().permanents[index].known_to |= mask;
+        }
+    }
     pub(super) fn restore_public_face_down(
         &mut self,
         current: &State,
