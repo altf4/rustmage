@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a96c12929e4e626562b1b9807240faf48170e8a85e3df631624ac0eb2aee59f1",
+  "catalogue_version": "59b5568ce5d41ca73f33ecb69078002c1b8f40e2e65c8031e218c511a0dcae9a",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4784,
-  "implemented_total": 4801,
+  "implemented_standard_cards": 4795,
+  "implemented_total": 4812,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,7 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 253,
-      "gated": 11
+      "complete": 264
     },
     "ecc": {
       "total": 7,
@@ -9836,8 +9835,8 @@
     {
       "name": "Duskmourn's Domination",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/duskmourn_s_domination.rs",
       "set": "dsk"
     },
@@ -11908,8 +11907,8 @@
     {
       "name": "Fear of Falling",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_falling.rs",
       "set": "dsk"
     },
@@ -15172,8 +15171,8 @@
     {
       "name": "Greenhouse // Rickety Gazebo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/greenhouse_rickety_gazebo.rs",
       "set": "dsk"
     },
@@ -18564,8 +18563,8 @@
     {
       "name": "Jump Scare",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/jump_scare.rs",
       "set": "dsk"
     },
@@ -20044,8 +20043,8 @@
     {
       "name": "Leyline of Hope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/leyline_of_hope.rs",
       "set": "dsk"
     },
@@ -20068,8 +20067,8 @@
     {
       "name": "Leyline of Transformation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/leyline_of_transformation.rs",
       "set": "dsk"
     },
@@ -25836,8 +25835,8 @@
     {
       "name": "Possessed Goat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/possessed_goat.rs",
       "set": "dsk"
     },
@@ -28164,8 +28163,8 @@
     {
       "name": "Restricted Office // Lecture Hall",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/restricted_office_lecture_hall.rs",
       "set": "dsk"
     },
@@ -30692,8 +30691,8 @@
     {
       "name": "Shardmage's Rescue",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/shardmage_s_rescue.rs",
       "set": "dsk"
     },
@@ -36316,8 +36315,8 @@
     {
       "name": "The Wandering Rescuer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_wandering_rescuer.rs",
       "set": "dsk"
     },
@@ -37124,8 +37123,8 @@
     {
       "name": "Toby, Beastie Befriender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/toby_beastie_befriender.rs",
       "set": "dsk"
     },
