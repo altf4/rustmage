@@ -540,39 +540,66 @@ impl Game {
                         return true;
                     }
                 }
-                if !casting_prohibited
-                    && let Some(back) = object.card.back_face().filter(|back| !back.is_land())
+                if casting_prohibited {
+                    continue;
+                }
+                for face in CastFace::choices(object.card)
+                    .filter(|&face| face == CastFace::Back || face.room_door().is_some())
                 {
-                    let back_types = back.kind_mask() & !spent_types;
-                    let normal = back_types != 0
-                        && self.permitted_cast_available(
-                            actor,
-                            card,
-                            CastMethod::Normal,
-                            CastFace::Back,
-                            sorcery,
-                            false,
-                        );
+                    let Some(definition) = face.definition(object.card).filter(|d| !d.is_land())
+                    else {
+                        continue;
+                    };
+                    let types = definition.kind_mask() & !spent_types;
+                    if types == 0 {
+                        continue;
+                    }
+                    let door = face.room_door();
+                    let cast_options = [false, true].map(|flash_surcharge| {
+                        let available = (!flash_surcharge || door.is_some())
+                            && self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::Normal,
+                                face,
+                                sorcery,
+                                flash_surcharge,
+                            );
+                        (flash_surcharge, available)
+                    });
                     for permanent_type in PermanentType::ALL
                         .into_iter()
-                        .filter(|ty| back_types & ty.mask() != 0)
+                        .filter(|ty| types & ty.mask() != 0)
                     {
                         if self.visit_web_slinging_face(
                             actor,
                             card,
-                            CastFace::Back,
+                            face,
                             sorcery,
                             WebSlingingOrigin::GraveyardType {
                                 permission,
                                 permanent_type,
                             },
                             emit,
-                        ) || (normal
-                            && emit(Action::AnnounceGraveyardBack {
-                                card,
-                                permission,
-                                permanent_type,
-                            }))
+                        ) || cast_options
+                            .into_iter()
+                            .any(|(flash_surcharge, available)| {
+                                available
+                                    && emit(match door {
+                                        Some(door) => Action::AnnounceGraveyardRoom {
+                                            card,
+                                            door,
+                                            flash_surcharge,
+                                            permission,
+                                            permanent_type,
+                                        },
+                                        None => Action::AnnounceGraveyardBack {
+                                            card,
+                                            permission,
+                                            permanent_type,
+                                        },
+                                    })
+                            })
                         {
                             return true;
                         }

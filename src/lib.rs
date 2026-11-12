@@ -11,7 +11,7 @@ pub use cards::{
 };
 pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
-pub use rustmage_core::cards::RetainedCopyActivation;
+pub use rustmage_core::cards::{RetainedCopyActivation, RoomDoor};
 pub use rustmage_core::engine::ActivationTapPaymentView;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
 pub use rustmage_core::engine::IncarnationTriggerUse;
@@ -72,18 +72,19 @@ pub use rustmage_core::engine::{
     ReplacementEffectView, ResolutionCostView, ResolutionFreeCasts, ResolutionPaidCast,
     ResolutionPaymentView, ResolvedAbilityModificationView, ResolvedSpellNameView,
     ResolvedStatSubjectView, RetargetView, ReturnCardView, ReturnLinkView, RevealedLibraryCard,
-    RoleGroupView, RoleTimestampView, SaddleChoiceView, SearchChoiceView,
-    SearchDestinationChoiceView, SearchDistributionView, SelfGrantedAbilityKind,
-    SelfGrantedAbilityView, SelfGrantedActivationContext, SelfPlayerCounterReplacement, Snapshot,
-    SourceCounterChoiceView, SourceCounterPaymentView, SourceCounterQuantityView, SourceLessRule,
-    SourceLinkedEffectKind, SourceLinkedEffectView, SourceQuantityView, SpellCharacteristicsView,
-    SpellCostChoiceView, SpellView, StackKind, StackLink, StackSourceView, Step, Target,
-    TargetAllocation, TargetAmountChoiceView, TargetCounterRemovalView, TargetLibraryMovement,
-    TargetLibraryView, TeamworkChoiceView, TemporaryAbilityView, TemporaryControlView,
-    TemporaryCopyView, TokenGroupView, TriggerSourceMoveView, TriggerUse, TurnCallbackView,
-    TurnFactsView, TurnScheduleView, UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView,
-    WebSlingingOrigin, XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView,
-    ZoneReplacementKind, ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
+    RoleGroupView, RoleTimestampView, RoomChange, RoomChoiceView, RoomDoors, RoomOperation,
+    RoomUnlockPaymentView, SaddleChoiceView, SearchChoiceView, SearchDestinationChoiceView,
+    SearchDistributionView, SelfGrantedAbilityKind, SelfGrantedAbilityView,
+    SelfGrantedActivationContext, SelfPlayerCounterReplacement, Snapshot, SourceCounterChoiceView,
+    SourceCounterPaymentView, SourceCounterQuantityView, SourceLessRule, SourceLinkedEffectKind,
+    SourceLinkedEffectView, SourceQuantityView, SpellCharacteristicsView, SpellCostChoiceView,
+    SpellView, StackKind, StackLink, StackSourceView, Step, Target, TargetAllocation,
+    TargetAmountChoiceView, TargetCounterRemovalView, TargetLibraryMovement, TargetLibraryView,
+    TeamworkChoiceView, TemporaryAbilityView, TemporaryControlView, TemporaryCopyView,
+    TokenGroupView, TriggerSourceMoveView, TriggerUse, TurnCallbackView, TurnFactsView,
+    TurnScheduleView, UntilNextTurnStatsView, WarpedCard, WaterbendChoiceView, WebSlingingOrigin,
+    XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
+    ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,

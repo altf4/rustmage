@@ -1,7 +1,7 @@
 //! Rules fixtures for permanent split spells and exact Room door state.
 mod support;
 
-use rustmage as _;
+use rustmage::{PermanentType, RoomDoor};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
@@ -246,6 +246,79 @@ fn each_half_casts_with_its_cost_and_only_the_second_door_completes_the_room() {
         assert_eq!(
             game.state.players[player.other().index()].cards_drawn_this_turn,
             0
+        );
+    }
+}
+
+#[test]
+fn graveyard_permanent_type_permission_allows_either_room_half_once() {
+    let _rules =
+        fixture_rules::activate(&[(ROOM, &ROOM_RULES), (LEFT, &ROOM_HALF), (RIGHT, &ROOM_HALF)]);
+    let player = Player::P0;
+    for (chosen, other, face, mana, doors) in [
+        (
+            RoomDoor::Left,
+            RoomDoor::Right,
+            CastFace::RoomLeft,
+            [0, 1, 0, 0, 0, 1],
+            LEFT_ONLY,
+        ),
+        (
+            RoomDoor::Right,
+            RoomDoor::Left,
+            CastFace::RoomRight,
+            [0, 0, 0, 1, 0, 1],
+            RIGHT_ONLY,
+        ),
+    ] {
+        let mut game = scenario(player);
+        let muldrotha = put(
+            &mut game,
+            player,
+            "Muldrotha, the Gravetide",
+            Zone::Battlefield,
+        );
+        let room = spawn(&mut game, player, ROOM, Zone::Graveyard);
+        let second = spawn(&mut game, player, ROOM, Zone::Graveyard);
+        let opposing_room = spawn(&mut game, player.other(), ROOM, Zone::Graveyard);
+        let permission = game.object_ref(muldrotha);
+        let announce = |card, door, permanent_type| Action::AnnounceGraveyardRoom {
+            card,
+            door,
+            flash_surcharge: false,
+            permission,
+            permanent_type,
+        };
+        let enchantment = PermanentType::Enchantment;
+        game.state.players[player.index()].mana = mana;
+        assert!(
+            game.legal_actions()
+                .contains(&announce(room, chosen, enchantment))
+        );
+        reject(&mut game, announce(room, other, enchantment));
+        reject(&mut game, announce(room, chosen, PermanentType::Creature));
+        reject(&mut game, announce(opposing_room, chosen, enchantment));
+        reject(&mut game, room_cast(room, chosen));
+        act(&mut game, announce(room, chosen, enchantment));
+        pay(&mut game);
+        let cast = game.state.stack.last().unwrap().cast.unwrap();
+        assert_eq!(cast.face, face);
+        assert_eq!(cast.origin, Zone::Graveyard);
+        assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        settle_rooms(&mut game);
+        assert_eq!(game.object_view(room).room_doors, Some(doors));
+
+        game.state.players[player.index()].mana = [8; 6];
+        reject(&mut game, announce(second, chosen, enchantment));
+        reject(&mut game, announce(second, other, enchantment));
+        let creature = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+        assert!(
+            game.legal_actions()
+                .contains(&Action::PlayGraveyardPermanent {
+                    card: creature,
+                    permission,
+                    permanent_type: PermanentType::Creature,
+                })
         );
     }
 }

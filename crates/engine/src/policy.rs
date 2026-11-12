@@ -17,6 +17,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
+        || observation.room_unlock_payment.is_some()
         || observation.payment_request.is_some()
         || observation.attack_payment.is_some()
         || observation.block_payment.is_some();
@@ -178,6 +179,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseManifest { .. } => 60,
+            Action::ChooseRoomDoor { .. } => 60,
             Action::AnnounceAdventure { .. }
             | Action::AnnounceOmen { .. }
             | Action::AnnounceBack { .. } => 30,
@@ -405,10 +407,12 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. }
-            | Action::AnnounceGrantedMayhem { .. } => 79,
+            | Action::AnnounceGrantedMayhem { .. }
+            | Action::AnnounceRoom { .. } => 79,
             Action::AnnouncePlot { .. }
             | Action::AnnounceLibraryTopPlot { .. }
-            | Action::BeginFaceUp { .. } => 40,
+            | Action::BeginFaceUp { .. }
+            | Action::BeginRoomUnlock { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
@@ -428,6 +432,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
             | Action::PayFaceUp { .. }
+            | Action::PayRoomUnlock { .. }
             | Action::PayAttackCost { .. }
             | Action::PayBlockCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
@@ -578,7 +583,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 permanent_type: crate::PermanentType::Land,
                 ..
             } => 90,
-            Action::PlayGraveyardPermanent { .. } | Action::AnnounceGraveyardBack { .. } => 79,
+            Action::PlayGraveyardPermanent { .. }
+            | Action::AnnounceGraveyardBack { .. }
+            | Action::AnnounceGraveyardRoom { .. } => 79,
             Action::CastExiledDuringResolution { .. } | Action::CastFreeDuringResolution { .. } => {
                 81
             }
@@ -768,7 +775,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AbortAttackPayment
             | Action::CancelBlockDeclaration
             | Action::AbortBlockPayment
-            | Action::AbortFaceUpPayment => -100,
+            | Action::AbortFaceUpPayment
+            | Action::AbortRoomUnlock => -100,
             Action::Pass
             | Action::FinishAttackers
             | Action::FinishBlockers

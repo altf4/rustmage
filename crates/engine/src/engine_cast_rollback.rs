@@ -275,6 +275,7 @@ impl Game {
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceRoom { card, .. }
+            | Action::AnnounceGraveyardRoom { card, .. }
             | Action::AnnounceBack { card }
             | Action::AnnounceGraveyardBack { card, .. }
             | Action::AnnouncePlotted { card }

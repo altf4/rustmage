@@ -1076,6 +1076,7 @@ define_actions! {
     ChooseBeholdCost { object: ObjectRef },
     PlayGraveyardPermanent { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceGraveyardBack { card: CardId, permission: ObjectRef, permanent_type: PermanentType },
+    AnnounceGraveyardRoom { card: CardId, door: RoomDoor, flash_surcharge: bool, permission: ObjectRef, permanent_type: PermanentType },
     AnnounceFree { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeCounterGraveyard { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceFreeGraveyardAdditionalCosts { card: CardId, face: CastFace, flash_surcharge: bool },
@@ -7718,6 +7719,11 @@ impl Game {
             permanent_type,
             ..
         }
+        | Action::AnnounceGraveyardRoom {
+            permission,
+            permanent_type,
+            ..
+        }
         | Action::AnnounceFreeGraveyardPermanent {
             permission,
             permanent_type,
@@ -8372,6 +8378,12 @@ impl Game {
                 card,
                 door,
                 flash_surcharge,
+            }
+            | Action::AnnounceGraveyardRoom {
+                card,
+                door,
+                flash_surcharge,
+                ..
             } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 let face = match door {
