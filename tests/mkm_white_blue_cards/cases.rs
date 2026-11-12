@@ -167,11 +167,11 @@ fn auditor_keeps_the_look_private_and_observes_only_its_controllers_case_solves(
     assert_eq!(game.snapshot(), indexed.snapshot());
     assert_eq!(game.object_view(looked[3]).zone, Zone::Hand);
     let public = game.observe(opponent);
-    assert_eq!(public.zone_reveals.len(), 1);
-    assert_eq!(
-        public.zone_reveals[0].card,
-        Card::from_name("Pacifism").unwrap()
-    );
+    assert_eq!(public.known_hand, [game.object_ref(looked[3])]);
+    assert!(public.objects.iter().any(|object| {
+        object.reference == game.object_ref(looked[3])
+            && object.card == Card::from_name("Pacifism").unwrap()
+    }));
     let mut bottom = game.state.players[player.index()].library[..5].to_vec();
     bottom.sort_unstable();
     assert_eq!(
