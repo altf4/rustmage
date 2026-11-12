@@ -4678,6 +4678,7 @@ impl Game {
                     | Instruction::ExileAllTargets
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
+                    | Instruction::MayIfTargetGroupsPresent { .. }
                     | Instruction::ExchangeControlTargets
                     | Instruction::ExchangeControlTargetGroup(_)
                     | Instruction::MakeTargetsTreasureWhileSourceRemains
