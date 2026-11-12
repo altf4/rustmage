@@ -6,12 +6,26 @@ use rustmage_core::cards::authored::CardRules;
 use rustmage_core::{cards::*, engine::*};
 use support::*;
 
+const BOTH_KINDS: BattlefieldFilter = BattlefieldFilter {
+    kinds: 16 | 32,
+    relation: -1,
+    nonland: false,
+    tapped: None,
+    without: Keywords::NONE,
+    subtype: None,
+    max_mana: u32::MAX,
+};
+
 const OPPOSING_ARTIFACTS: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
-        &[Instruction::DestroyPlayerPermanents {
-            players: PlayerSet::Opponent,
-            kinds: 16,
+        &[Instruction::MoveBattlefield {
+            filters: &[BattlefieldFilter {
+                kinds: 16,
+                relation: 1,
+                ..BOTH_KINDS
+            }],
+            exile: false,
         }],
     ),
     ..CardRules::EMPTY
@@ -19,9 +33,9 @@ const OPPOSING_ARTIFACTS: CardRules = CardRules {
 const ARTIFACTS_AND_ENCHANTMENTS: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
-        &[Instruction::DestroyPlayerPermanents {
-            players: PlayerSet::Each,
-            kinds: 16 | 32,
+        &[Instruction::MoveBattlefield {
+            filters: &[BOTH_KINDS],
+            exile: false,
         }],
     ),
     ..CardRules::EMPTY
