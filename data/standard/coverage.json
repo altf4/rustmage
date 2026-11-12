@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "d05687ccb60394ea0070c778b6a1941a6d1063e1da6515b56a2324461317df86",
+  "catalogue_version": "8f58429aeee8b2339ae8472f17260e8d5918e17f8b54974fdeb600712d4324ef",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4611,
-  "implemented_total": 4627,
+  "implemented_standard_cards": 4628,
+  "implemented_total": 4644,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 82,
-      "gated": 182
+      "complete": 99,
+      "gated": 165
     },
     "ecc": {
       "total": 7,
@@ -2933,8 +2933,8 @@
     {
       "name": "Bashful Beastie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/bashful_beastie.rs",
       "set": "dsk"
     },
@@ -4285,8 +4285,8 @@
     {
       "name": "Bottomless Pool // Locker Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/bottomless_pool_locker_room.rs",
       "set": "dsk"
     },
@@ -5781,8 +5781,8 @@
     {
       "name": "Central Elevator // Promising Stairs",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/central_elevator_promising_stairs.rs",
       "set": "dsk"
     },
@@ -7525,8 +7525,8 @@
     {
       "name": "Cryptid Inspector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cryptid_inspector.rs",
       "set": "dsk"
     },
@@ -8117,8 +8117,8 @@
     {
       "name": "Dazzling Theater // Prop Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/dazzling_theater_prop_room.rs",
       "set": "dsk"
     },
@@ -8413,8 +8413,8 @@
     {
       "name": "Defiant Survivor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/defiant_survivor.rs",
       "set": "dsk"
     },
@@ -9173,8 +9173,8 @@
     {
       "name": "Dollmaker's Shop // Porcelain Gallery",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/dollmaker_s_shop_porcelain_gallery.rs",
       "set": "dsk"
     },
@@ -14949,8 +14949,8 @@
     {
       "name": "Grand Entryway // Elegant Rotunda",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/grand_entryway_elegant_rotunda.rs",
       "set": "dsk"
     },
@@ -15301,8 +15301,8 @@
     {
       "name": "Growing Dread",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/growing_dread.rs",
       "set": "dsk"
     },
@@ -21389,8 +21389,8 @@
     {
       "name": "Manifest Dread",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/manifest_dread.rs",
       "set": "dsk"
     },
@@ -21741,8 +21741,8 @@
     {
       "name": "Meat Locker // Drowned Diner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/meat_locker_drowned_diner.rs",
       "set": "dsk"
     },
@@ -22461,8 +22461,8 @@
     {
       "name": "Mirror Room // Fractured Realm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/mirror_room_fractured_realm.rs",
       "set": "dsk"
     },
@@ -24077,8 +24077,8 @@
     {
       "name": "Oblivious Bookworm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/oblivious_bookworm.rs",
       "set": "dsk"
     },
@@ -34341,8 +34341,8 @@
     {
       "name": "Surgical Suite // Hospital Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/surgical_suite_hospital_room.rs",
       "set": "dsk"
     },
@@ -38277,8 +38277,8 @@
     {
       "name": "Under the Skin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/under_the_skin.rs",
       "set": "dsk"
     },
@@ -38357,8 +38357,8 @@
     {
       "name": "Underwater Tunnel // Slimy Aquarium",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/underwater_tunnel_slimy_aquarium.rs",
       "set": "dsk"
     },
@@ -38789,8 +38789,8 @@
     {
       "name": "Valgavoth's Onslaught",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/valgavoth_s_onslaught.rs",
       "set": "dsk"
     },
