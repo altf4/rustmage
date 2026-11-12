@@ -654,8 +654,14 @@ impl Announcement {
         };
         let independent_fee = self.independent_additional_mana();
         let fixed_alternative = self.fixed_alternative_cost();
-        let fee = fixed_alternative
-            .filter(|_| independent_fee.is_none())
+        let warp = self
+            .item
+            .cast
+            .is_some_and(|cast| cast.method == CastMethod::Warp);
+        // Keep Warp's bare colored alternatives before their fee variants.
+        let inline_fee = independent_fee.filter(|_| !warp);
+        let fixed_fee = fixed_alternative
+            .filter(|_| warp || independent_fee.is_none())
             .and_then(|_| {
                 self.item
                     .source
@@ -663,11 +669,7 @@ impl Announcement {
                     .card
                     .mana_additional_alternative()
             });
-        let fee_bases = if self
-            .item
-            .cast
-            .is_some_and(|cast| cast.method == CastMethod::Warp)
-        {
+        let fee_bases = if warp {
             self.warp_cost_options()
         } else {
             std::iter::once(fixed_alternative.unwrap_or(ManaCost::ZERO)).chain([].iter().copied())
@@ -808,20 +810,10 @@ impl Announcement {
                                 .1,
                         }
             })
-            .chain(fee_bases.filter_map(move |base| {
-                fee.map(|fee| {
-                    (
-                        Card::add_mana_cost(base, fee),
-                        ActivationCostRoute::Printed,
-                        None,
-                        SpellAlternative::None,
-                    )
-                })
-            }))
             .flat_map(
                 move |(base, activation_route, activation_choice, spell_alternative)| {
                     let nonmana = independent_fee.map(|_| AdditionalCostRoute::Nonmana);
-                    let fee = independent_fee.map(|fee| {
+                    let fee = inline_fee.map(|fee| {
                         (
                             Card::add_mana_cost(base, fee),
                             Some(AdditionalCostRoute::Mana),
@@ -842,6 +834,17 @@ impl Announcement {
                     )
                 },
             )
+            .chain(fee_bases.filter_map(move |base| {
+                let cost = self.apply_cost_declarations(Card::add_mana_cost(base, fixed_fee?))?;
+                Some(AnnouncementCostChoice {
+                    cost,
+                    base,
+                    activation_route: ActivationCostRoute::Printed,
+                    activation_choice: None,
+                    spell_alternative: SpellAlternative::None,
+                    additional_cost_route: independent_fee.map(|_| AdditionalCostRoute::Mana),
+                })
+            }))
     }
     pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
         let reductions = self.activation_reductions.as_deref();
