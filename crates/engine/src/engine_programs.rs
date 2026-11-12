@@ -9333,6 +9333,18 @@ impl Game {
                     spec,
                     characteristic_layers::AnimationTypeMode::AddCreature,
                 ),
+                Instruction::AnimateTargetsWhileSourceTapped {
+                    creature_types,
+                    colors,
+                    base,
+                    keywords,
+                } => self.animate_targets_while_source_tapped(
+                    &item,
+                    creature_types,
+                    colors,
+                    base,
+                    keywords,
+                ),
                 Instruction::ChangeTargetCreatureForm(spec) => self.change_targets_form(
                     &item,
                     spec,

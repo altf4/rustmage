@@ -9,6 +9,21 @@ pub(super) enum UntapCause {
     Effect,
     ControllerStep(Player),
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct UntapStepChoice {
+    pub(super) remaining: Vec<ObjectRef>,
+    declined: Vec<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl UntapStepChoice {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + (self.remaining.len() + self.declined.len()) * std::mem::size_of::<ObjectRef>()
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     fn has_untap_rules(&self) -> bool {
@@ -16,18 +31,16 @@ impl Game {
             return true;
         }
         if self.state.roles.as_ref().is_some_and(|state| {
-            state
-                .source_linked_effects
+            state.source_linked_effects.iter().any(|row| {
+                matches!(
+                    row.kind,
+                    SourceLinkedEffectKind::PreventActivationsUntilUntapped
+                        | SourceLinkedEffectKind::PreventUntap
+                )
+            }) || state
+                .animations
                 .iter()
-                .any(|row| row.kind == SourceLinkedEffectKind::PreventActivationsUntilUntapped)
-        }) {
-            return true;
-        }
-        if self.state.roles.as_ref().is_some_and(|state| {
-            state
-                .source_linked_effects
-                .iter()
-                .any(|row| row.kind == SourceLinkedEffectKind::PreventUntap)
+                .any(|row| row.while_source_tapped.is_some())
         }) {
             return true;
         }
@@ -182,12 +195,70 @@ impl Game {
                 untapped.push(self.object_ref(id));
             }
         }
-        self.forget_untapped_activation_locks(&untapped);
-        self.attached_untap_triggers(&untapped);
+        if !untapped.is_empty() {
+            self.forget_untapped_source_effects(&untapped);
+            self.attached_untap_triggers(&untapped);
+        }
         count
     }
 
-    pub(super) fn untap_active_player(&mut self) {
+    /// Return true when the turn-based action pauses for an optional decision.
+    pub(super) fn untap_active_player(&mut self) -> bool {
+        let active = self.state.active;
+        let may_skip = |fragment: &StaticAbilityFragment| {
+            matches!(fragment, StaticAbilityFragment::MaySkipOwnUntap)
+        };
+        let remaining: Vec<_> = self
+            .state
+            .static_sources
+            .iter()
+            .rev()
+            .copied()
+            .filter_map(|id| {
+                let object = &self.state.objects[id as usize];
+                (object.zone == Zone::Battlefield
+                    && object.controller == active
+                    && object.tapped
+                    && object
+                        .card
+                        .static_ability_groups()
+                        .iter()
+                        .any(|group| group.fragments.iter().any(may_skip))
+                    && self.continuous_fragment_available(id, may_skip)
+                    && self.untap_allowed(id, UntapCause::ControllerStep(active)))
+                .then(|| self.object_ref(id))
+            })
+            .collect();
+        if remaining.is_empty() {
+            self.commit_active_player_untaps(&[]);
+            return false;
+        }
+        self.state.pending = Pending::UntapStepChoice(Box::new(UntapStepChoice {
+            remaining,
+            declined: Vec::new(),
+        }));
+        true
+    }
+
+    pub(super) fn choose_untap_step(&mut self, untap: bool) {
+        let pending = std::mem::replace(&mut self.state.pending, Pending::Priority);
+        let Pending::UntapStepChoice(mut choice) = pending else {
+            unreachable!("untap step choice");
+        };
+        let object = choice.remaining.pop().expect("one optional untap decision");
+        if !untap {
+            choice.declined.push(object);
+        }
+        if choice.remaining.is_empty() {
+            self.commit_active_player_untaps(&choice.declined);
+            self.begin_step(Step::Upkeep);
+            self.give_priority();
+        } else {
+            self.state.pending = Pending::UntapStepChoice(choice);
+        }
+    }
+
+    fn commit_active_player_untaps(&mut self, declined: &[ObjectRef]) {
         let active = self.state.active;
         let also_untap = |fragment: &StaticAbilityFragment| {
             matches!(fragment, StaticAbilityFragment::UntapDuringOtherUntapSteps)
@@ -243,7 +314,7 @@ impl Game {
             other.sort_unstable();
             other.dedup();
         }
-        let count = if other.is_empty() && !self.has_untap_rules() {
+        let count = if declined.is_empty() && other.is_empty() && !self.has_untap_rules() {
             let mut count = 0;
             for object in &mut self.state.objects {
                 if object.zone == Zone::Battlefield && object.controller == active && object.untap()
@@ -259,8 +330,11 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter_map(|(id, object)| {
-                    (object.zone == Zone::Battlefield && object.controller == active)
-                        .then_some(id as CardId)
+                    let id = id as CardId;
+                    (object.zone == Zone::Battlefield
+                        && object.controller == active
+                        && !declined.contains(&self.object_ref(id)))
+                    .then_some(id)
                 })
                 .chain(other)
                 .collect();

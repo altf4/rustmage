@@ -484,6 +484,8 @@ pub enum StaticAbilityFragment {
         relation: crate::cards::CastRelation,
     },
     SelfUntap(UntapRestriction),
+    /// Its current controller may omit this permanent from their untap action.
+    MaySkipOwnUntap,
     /// Include this permanent in the turn-based action on another player's turn.
     UntapDuringOtherUntapSteps,
     /// Include creatures this source's controller controls in other players' untap steps.

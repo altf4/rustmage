@@ -442,6 +442,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::NoncreatureConspire
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
+                            | crate::cards::StaticAbilityFragment::MaySkipOwnUntap
                             | crate::cards::StaticAbilityFragment::UntapDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::UntapControlledCreaturesDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)

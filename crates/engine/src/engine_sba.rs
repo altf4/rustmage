@@ -367,7 +367,7 @@ impl Game {
             || self.collect_sba_batch().changes_state()
     }
     pub(super) fn state_based_actions(&mut self) {
-        if self.state.step == Step::Pregame
+        if matches!(self.state.step, Step::Pregame | Step::Untap)
             || self.state.sba_batch.is_some()
             || self.state.outcome.is_some()
             || self.state.entry_batch.is_some()

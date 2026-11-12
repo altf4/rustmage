@@ -207,6 +207,7 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             base: None,
             keywords: Keywords::NONE,
             expires_turn: None,
+            while_source_tapped: None,
         });
     assert_eq!(g.object_view(card).colors, mask);
 }

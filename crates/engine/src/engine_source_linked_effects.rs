@@ -446,11 +446,15 @@ impl Game {
         }
     }
 
-    pub(super) fn forget_untapped_activation_locks(&mut self, untapped: &[ObjectRef]) {
+    pub(super) fn forget_untapped_source_effects(&mut self, untapped: &[ObjectRef]) {
         if let Some(state) = &mut self.state.roles {
             state.source_linked_effects.retain(|row| {
                 row.kind != SourceLinkedEffectKind::PreventActivationsUntilUntapped
                     || !untapped.contains(&row.recipient)
+            });
+            state.animations.retain(|row| {
+                row.while_source_tapped
+                    .is_none_or(|source| !untapped.contains(&source))
             });
         }
     }

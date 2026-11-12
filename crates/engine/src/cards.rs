@@ -4474,6 +4474,14 @@ pub enum Instruction {
         kind: crate::engine::SelfGrantedAbilityKind,
     },
     AnimateTargets(AnimationSpec),
+    /// Add creature type and subtypes, set color and base stats, and grant keywords
+    /// until this exact source first untaps or leaves the battlefield.
+    AnimateTargetsWhileSourceTapped {
+        creature_types: &'static [&'static str],
+        colors: u8,
+        base: (i128, i128),
+        keywords: Keywords,
+    },
     /// Animate an exact non-targeted entrant, source, attachment or legal target.
     AnimateSubject {
         subject: Subject,

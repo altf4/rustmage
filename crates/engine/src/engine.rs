@@ -796,6 +796,7 @@ pub enum Zone {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum Step {
     Pregame,
+    Untap,
     Upkeep,
     Draw,
     Main1,
@@ -2886,6 +2887,7 @@ pub struct LifeTriggerView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 enum Pending {
+    UntapStepChoice(Box<untap_rules::UntapStepChoice>),
     Proliferate {
         player: Player,
     },
@@ -3278,6 +3280,7 @@ enum Pending {
 impl Pending {
     fn owned_bytes(&self) -> usize {
         match self {
+            Self::UntapStepChoice(choice) => choice.owned_bytes(),
             Self::OpeningHand { eligible, .. } => {
                 std::mem::size_of::<[Vec<ObjectRef>; 2]>()
                     + eligible
@@ -4290,6 +4293,9 @@ pub struct Observation {
     pub turn: u32,
     pub step: Step,
     pub decision: &'static str,
+    /// The exact permanent whose controller can choose whether to untap it.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub untap_choice: Option<ObjectRef>,
     pub players: [PlayerView; 2],
     pub objects: Vec<ObjectView>,
     /// Public modes already chosen for exact source incarnations.
@@ -5038,7 +5044,10 @@ impl Game {
             | Pending::OutsideGameChoice { player }
             | Pending::LegendarySplitSearch { player }
             | Pending::OutsideEntryReplacement { player } => Some(player),
-            Pending::Attackers | Pending::Damage | Pending::Discard => Some(self.state.active),
+            Pending::UntapStepChoice(_)
+            | Pending::Attackers
+            | Pending::Damage
+            | Pending::Discard => Some(self.state.active),
             Pending::Blockers => Some(self.state.active.other()),
             Pending::Terminal => None,
         }
@@ -7850,7 +7859,7 @@ impl Game {
                     }
                 }
             }
-            Pending::EffectOptional { .. } => {
+            Pending::EffectOptional { .. } | Pending::UntapStepChoice(_) => {
                 if emit(Action::ChooseOptional { accept: true })
                     || emit(Action::ChooseOptional { accept: false })
                 {
@@ -9851,6 +9860,11 @@ impl Game {
                     self.begin_turn();
                 }
             }
+            Action::ChooseOptional { accept }
+                if matches!(self.state.pending, Pending::UntapStepChoice(_)) =>
+            {
+                self.choose_untap_step(accept);
+            }
             Action::ChooseOptional { accept: false }
                 if matches!(self.state.pending, Pending::CreatedToken { .. }) =>
             {
@@ -11820,9 +11834,11 @@ impl Game {
                 obj.summoning_sick = false;
             }
         }
-        self.untap_active_player();
-        self.begin_step(Step::Upkeep);
-        self.give_priority();
+        self.state.step = Step::Untap;
+        if !self.untap_active_player() {
+            self.begin_step(Step::Upkeep);
+            self.give_priority();
+        }
     }
 
     fn advance_step(&mut self) {
@@ -11931,7 +11947,7 @@ impl Game {
                     self.finish_cleanup();
                 }
             }
-            Step::Pregame => unreachable!(),
+            Step::Pregame | Step::Untap => unreachable!(),
         }
     }
 
@@ -13005,7 +13021,12 @@ impl Game {
             active: s.active,
             turn: s.turn,
             step: s.step,
+            untap_choice: match &s.pending {
+                Pending::UntapStepChoice(choice) if owns_choice => choice.remaining.last().copied(),
+                _ => None,
+            },
             decision: match s.pending {
+                Pending::UntapStepChoice(_) => "untap_step_choice",
                 Pending::MiracleReveal { .. } if self.draw_replacement_view().is_some() => {
                     "draw_replacement"
                 }

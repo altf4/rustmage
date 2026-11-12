@@ -51,6 +51,9 @@ pub struct AnimationView {
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub expires_turn: Option<u32>,
+    /// The animation ends at this exact permanent's first actual untap or departure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub while_source_tapped: Option<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn is_false(value: &bool) -> bool {
@@ -117,7 +120,15 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .roles()
         .into_iter()
         .flat_map(|r| &r.animations)
-        .filter(move |row| Some(row.object) == recipient)
+        .filter(move |row| {
+            Some(row.object) == recipient
+                && row.while_source_tapped.is_none_or(|source| {
+                    let object = world.object(source.card);
+                    world.reference(source.card) == source
+                        && object.zone == Zone::Battlefield
+                        && object.tapped
+                })
+        })
 }
 
 pub(super) fn has_equipment_form<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
@@ -1052,6 +1063,7 @@ impl Game {
             spec,
             AnimationTypeMode::AddCreature,
             Some(colors),
+            None,
         )
     }
     pub(super) fn change_source_form(
@@ -1177,6 +1189,44 @@ impl Game {
             }
         }
     }
+    pub(super) fn animate_targets_while_source_tapped(
+        &mut self,
+        item: &SpellView,
+        creature_types: &'static [&'static str],
+        colors: u8,
+        base: (i128, i128),
+        keywords: Keywords,
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self.on_battlefield(source.card)
+            || self.object_ref(source.card) != source
+            || !self.state.objects[source.card as usize].tapped
+        {
+            return;
+        }
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Additional(creature_types),
+            base: Some(base),
+            keywords,
+            duration: AnimationDuration::Permanent,
+        };
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form_colored(
+                    object,
+                    spec,
+                    AnimationTypeMode::AddCreature,
+                    Some(colors),
+                    Some(source),
+                );
+            }
+        }
+    }
     pub(super) fn animate_noncreature_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
             if self.same_target_object(*target)
@@ -1193,7 +1243,7 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        let _ = self.change_object_form_colored(object, spec, type_mode, None);
+        let _ = self.change_object_form_colored(object, spec, type_mode, None, None);
     }
     fn change_object_form_colored(
         &mut self,
@@ -1201,12 +1251,16 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
         colors: Option<u8>,
+        while_source_tapped: Option<ObjectRef>,
     ) -> Option<AnimationView> {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return None;
         }
         let timestamp = self.next_role_timestamp();
-        let row = animation_view(object, timestamp, spec, type_mode, colors, self.state.turn);
+        let row = AnimationView {
+            while_source_tapped,
+            ..animation_view(object, timestamp, spec, type_mode, colors, self.state.turn)
+        };
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -1229,6 +1283,7 @@ impl Game {
             },
             AnimationTypeMode::PreserveCardTypes,
             Some(1 << color.index()),
+            None,
         );
     }
     pub(super) fn set_creature_form(
@@ -1253,12 +1308,15 @@ impl Game {
                 spec,
                 AnimationTypeMode::PreserveCardTypes,
                 Some(colors),
+                None,
             );
         }
     }
     pub(super) fn forget_animations(&mut self, object: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
-            state.animations.retain(|r| r.object != object);
+            state
+                .animations
+                .retain(|row| row.object != object && row.while_source_tapped != Some(object));
         }
     }
     pub(super) fn expire_animations(&mut self) -> bool {
@@ -1315,6 +1373,7 @@ pub(super) fn animation_view(
             AnimationDuration::EndOfTurn => Some(turn),
             AnimationDuration::Permanent => None,
         },
+        while_source_tapped: None,
     }
 }
 
@@ -1343,6 +1402,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         base: None,
         keywords: Keywords::NONE,
         expires_turn: None,
+        while_source_tapped: None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1458,6 +1518,7 @@ impl AnimationView {
             base: None,
             keywords: Keywords::NONE,
             expires_turn,
+            while_source_tapped: None,
         }
     }
 }
