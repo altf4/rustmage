@@ -1639,8 +1639,7 @@ impl FundingState<'_> {
                     && m.destination == Zone::Battlefield
                     && (Self::entry_has_timestamp(m)
                         || (moves.iter().any(|m| {
-                            Game::hand_entry(m)
-                                && m.before.card.hand_size_setting().flatten().is_some()
+                            Game::hand_entry(m) && m.before.card.has_finite_hand_size_setting()
                         }) && Game::hand_entry(m)))
             })
             .map(|(i, _)| i)

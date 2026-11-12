@@ -10173,9 +10173,7 @@ impl Game {
             if ids.iter().any(|&id| {
                 self.state.objects[id as usize]
                     .card
-                    .hand_size_setting()
-                    .flatten()
-                    .is_some()
+                    .has_finite_hand_size_setting()
             }) {
                 assert!(
                     ids.iter()

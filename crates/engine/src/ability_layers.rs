@@ -415,6 +415,12 @@ pub enum StaticAbilityFragment {
     RetainManaColor(ChoiceColor),
     NoMaximumHandSize,
     MaximumHandSize(u16),
+    /// While the controller has at least this many card types in their graveyard,
+    /// the opponent's maximum is the base minus the live count, floored at zero.
+    OpponentMaximumHandSizeByGraveyardTypes {
+        base: u16,
+        minimum: u16,
+    },
     AdditionalLandPlays(u16),
     /// A live earlier-layer condition; allowance consumption stays turn-wide.
     ConditionalAdditionalLandPlays {

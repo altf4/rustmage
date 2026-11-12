@@ -2216,7 +2216,7 @@ impl Game {
             .filter_map(|(i, m)| {
                 (Self::entry_has_timestamp(m)
                     || (batch.moves.iter().any(|m| {
-                        Self::hand_entry(m) && m.before.card.hand_size_setting().flatten().is_some()
+                        Self::hand_entry(m) && m.before.card.has_finite_hand_size_setting()
                     }) && Self::hand_entry(m)))
                 .then_some(i)
             })

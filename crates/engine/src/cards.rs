@@ -5622,6 +5622,19 @@ pub enum StatValue {
     },
     Sum(&'static [StatValue]),
 }
+impl StatValue {
+    /// Distinct card types among physical cards in the evaluating controller's graveyard.
+    pub const CONTROLLER_GRAVEYARD_CARD_TYPES: Self = Self::CardTypes(CountFilter {
+        zone: CountZone::Graveyard,
+        relation: 0,
+        kind: 0,
+        exclude: 0,
+        subtype: None,
+        basic: false,
+        other: false,
+        cards_only: true,
+    });
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct StatExpr {
