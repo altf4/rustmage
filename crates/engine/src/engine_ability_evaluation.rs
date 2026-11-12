@@ -144,6 +144,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
         | StaticAbilityFragment::ControlledTokenTapMana { .. }
         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+        | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
             let production = world.static_tap_mana(source, id, *fragment)?;
             return Some(LayerSixGrant {
@@ -916,6 +917,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                         | StaticAbilityFragment::ControlledTokenTapMana { .. }
                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                        | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                         | StaticAbilityFragment::CounterKeyword(..)

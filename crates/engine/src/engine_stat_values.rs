@@ -145,6 +145,7 @@ impl Game {
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 self.declared_subtype_attackers(owner, subtype) as i128
             }
+            StatValue::LandsEnteredThisTurn => i128::from(world.lands_entered_this_turn(owner)),
             StatValue::ArtifactEnteredThisTurn => i128::from(
                 self.state.players[owner.index()]
                     .turn_facts
@@ -202,6 +203,14 @@ impl Game {
                     })
                     .count() as i128
             }
+            StatValue::ControlledLandCounters(kind) => objects()
+                .filter(|&(id, object)| {
+                    object.zone == Zone::Battlefield
+                        && object.controller == owner
+                        && kinds(id, object) & 2 != 0
+                })
+                .map(|(id, _)| i128::from(counter_count(id, kind)))
+                .sum(),
             StatValue::DistinctCreatureCounterKinds => {
                 // No allocation or source-owned counter copy, including sparse kinds.
                 let mut present = [false; CounterKind::ALL.len()];

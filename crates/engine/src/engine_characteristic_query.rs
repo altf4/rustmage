@@ -380,6 +380,29 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                                 .capacity("scaled group toughness exhausted"),
                         };
                     }
+                    if let StaticAbilityFragment::ControlledCreatureBonusPerSubtype {
+                        exclude,
+                        maximum,
+                    } = *fragment
+                        && object.controller == self.object(id).controller
+                        && self.continuous_fragment_available(source, |candidate| {
+                            std::ptr::eq(candidate, fragment)
+                        })
+                    {
+                        let subtypes = self.subtypes(id);
+                        let card = self.definition(id);
+                        if !subtypes.has(card, exclude) {
+                            let amount = subtypes
+                                .creature_type_set(card)
+                                .count()
+                                .min(u32::from(maximum));
+                            let amount = i128::from(amount);
+                            stats += Stats {
+                                power: amount,
+                                toughness: amount,
+                            };
+                        }
+                    }
                     if let StaticAbilityFragment::ControlledLegendaryCreatureBonus(bonus) =
                         *fragment
                         && object.controller == self.object(id).controller

@@ -151,6 +151,7 @@ impl Card {
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                             | StaticAbilityFragment::CounterKeyword(..)

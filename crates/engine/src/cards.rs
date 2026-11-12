@@ -1022,6 +1022,17 @@ pub enum ManaProduction {
     TapSourcePowerChoice {
         mask: u8,
     },
+    /// Choose one color and add mana equal to the greatest controlled creature power after the tap.
+    TapGreatestControlledCreaturePower {
+        colors: u8,
+    },
+    /// Produce the higher fixed amount if a controlled creature has the minimum power after the tap.
+    TapManaAtCreaturePowerThreshold {
+        color: u8,
+        power: i16,
+        below: u16,
+        at_least: u16,
+    },
     MonocoloredPermanentColors,
     /// One mana of each color among the cards still exiled by this Craft.
     CraftMaterialColors,
@@ -1135,6 +1146,8 @@ impl ManaProduction {
             | Self::SourcePower { .. }
             | Self::SourcePowerSplit { .. }
             | Self::TapSourcePowerChoice { .. }
+            | Self::TapGreatestControlledCreaturePower { .. }
+            | Self::TapManaAtCreaturePowerThreshold { .. }
             | Self::MonocoloredPermanentColors
             | Self::CraftMaterialColors
             | Self::LinkedExileCardColor
@@ -6024,6 +6037,8 @@ pub enum StatValue {
     CounterBearingCreatures,
     ControlledCreaturesWithCounter(CounterKind),
     ControlledLandsWithCounter(CounterKind),
+    /// Total counters of this kind on the controller's lands.
+    ControlledLandCounters(CounterKind),
     /// Union of positive counter kinds among current controlled creatures.
     DistinctCreatureCounterKinds,
     ControlledCreatureDiedThisTurn,
@@ -6075,6 +6090,8 @@ pub enum StatValue {
     /// Number of distinct basic land types among lands the controller controls.
     ControllerDomain,
     NonlandEntriesThisTurn,
+    /// Actual and projected land entries under the controller this turn.
+    LandsEnteredThisTurn,
     MountOrVehicleEntriesThisTurn,
     SourceAttacking,
     /// Exact battlefield source is untapped in the actual or projected world.

@@ -1611,6 +1611,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                                | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                                 | crate::cards::StaticAbilityFragment::MaximumHandSize(_)

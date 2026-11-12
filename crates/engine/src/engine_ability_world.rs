@@ -1422,7 +1422,10 @@ pub(super) trait CharacteristicWorld {
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
             | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
             | StaticAbilityFragment::ControlledTokenTapMana { production, .. }
-            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
+            | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. }
+            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { production, .. } => {
+                production
+            }
             _ => return None,
         };
         let provider = self.object(source.card);
@@ -1453,6 +1456,10 @@ pub(super) trait CharacteristicWorld {
             }
             StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
                 own && self.subtypes(id).has(target.card, subtype)
+            }
+            StaticAbilityFragment::ControlledKindOrSubtypeTapMana { kinds, subtype, .. } => {
+                own && (self.kinds(id) & kinds != 0
+                    || self.subtypes(id).has(self.definition(id), subtype))
             }
             _ => unreachable!("static mana grant"),
         };
@@ -2019,6 +2026,33 @@ impl ManaProduction {
                     Self::Choice { mask, amount }
                 }
             }
+            Self::TapGreatestControlledCreaturePower { colors } => {
+                let amount = greatest_creature_power_after_tap(world, source, controller)
+                    .unwrap_or(0)
+                    .max(0);
+                let amount = u32::try_from(amount).capacity("mana representation exhausted");
+                if amount == 0 {
+                    Self::Fixed([0; 6])
+                } else {
+                    Self::Choice {
+                        mask: colors,
+                        amount,
+                    }
+                }
+            }
+            Self::TapManaAtCreaturePowerThreshold {
+                color,
+                power,
+                below,
+                at_least,
+            } => {
+                let meets_threshold = greatest_creature_power_after_tap(world, source, controller)
+                    .is_some_and(|greatest| greatest >= i128::from(power));
+                let mut mana = [0; 6];
+                mana[usize::from(color)] =
+                    u32::from(if meets_threshold { at_least } else { below });
+                Self::Fixed(mana)
+            }
             Self::SourcePower { color } => {
                 let mut mana = [0; 6];
                 mana[usize::from(color)] = u32::try_from(world.power(source).max(0))
@@ -2276,6 +2310,40 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
         self.parent.lands_entered_this_turn(player)
     }
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn greatest_creature_power_after_tap<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    source: CardId,
+    controller: Player,
+) -> Option<i128> {
+    fn greatest<W: CharacteristicWorld + ?Sized>(world: &W, controller: Player) -> Option<i128> {
+        let query = characteristic_query::CharacteristicQuery::in_world(world);
+        (0..world.game().state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = world.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && world.kinds(id) & 1 != 0
+            })
+            .map(|id| query.stats(id).power)
+            .max()
+    }
+    let object = world.object(source);
+    if object.tapped || object.zone != Zone::Battlefield {
+        greatest(world, controller)
+    } else {
+        let mut object = object.clone();
+        object.tapped = true;
+        let tapped = SourceTappedWorld {
+            parent: world,
+            source,
+            object,
+        };
+        greatest(&tapped, controller)
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn power_after_source_tap<W: CharacteristicWorld + ?Sized>(world: &W, source: CardId) -> i128 {
     let mut object = world.object(source).clone();

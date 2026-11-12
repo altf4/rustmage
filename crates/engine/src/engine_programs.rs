@@ -9531,6 +9531,8 @@ impl Game {
                         | ManaProduction::SourcePower { .. }
                         | ManaProduction::SourcePowerSplit { .. }
                         | ManaProduction::TapSourcePowerChoice { .. }
+                        | ManaProduction::TapGreatestControlledCreaturePower { .. }
+                        | ManaProduction::TapManaAtCreaturePowerThreshold { .. }
                         | ManaProduction::Tagged { .. } => unreachable!("resolved production"),
                         ManaProduction::Fixed(mana) => {
                             self.add_quality_mana(item.controller, mana, quality)

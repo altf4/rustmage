@@ -649,6 +649,12 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         production: ManaProduction,
     },
+    /// Grant one tap mana ability to controlled permanents of either qualification.
+    ControlledKindOrSubtypeTapMana {
+        kinds: u16,
+        subtype: &'static str,
+        production: ManaProduction,
+    },
     /// Other controlled permanents of this subtype gain the indexed mana ability.
     OtherControlledSubtypeTapManaActivation {
         subtype: &'static str,
@@ -683,6 +689,12 @@ pub enum StaticAbilityFragment {
         filters: &'static [CreatureFilter],
         value: StatValue,
         stats: Stats,
+    },
+    /// Each controlled creature without the specified subtype gets +1/+1 per
+    /// effective creature subtype, up to the cap.
+    ControlledCreatureBonusPerSubtype {
+        exclude: &'static str,
+        maximum: u8,
     },
     /// A layer-7c bonus to the source controller's current legendary creatures.
     ControlledLegendaryCreatureBonus(Stats),

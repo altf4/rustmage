@@ -111,6 +111,9 @@ impl CreatureTypeSet {
     pub(super) fn is_empty(self) -> bool {
         self.0 == [0; CREATURE_TYPE_WORDS]
     }
+    pub(super) fn count(self) -> u32 {
+        self.0.into_iter().map(u64::count_ones).sum()
+    }
     fn insert(&mut self, typ: crate::cards::CreatureType) {
         self.insert_index(typ.index());
     }
@@ -149,8 +152,7 @@ impl CreatureTypeSet {
 }
 impl Serialize for CreatureTypeSet {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        let count = self.0.iter().map(|word| word.count_ones() as usize).sum();
-        let mut out = serializer.serialize_seq(Some(count))?;
+        let mut out = serializer.serialize_seq(Some(self.count() as usize))?;
         for (index, name) in crate::cards::CREATURE_TYPES.iter().enumerate() {
             if self.0[index / 64] & (1 << (index % 64)) != 0 {
                 out.serialize_element(name)?;

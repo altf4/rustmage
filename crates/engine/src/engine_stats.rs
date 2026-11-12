@@ -413,6 +413,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
                             | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_)
@@ -501,6 +502,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CreatureGroupBonus { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureBonusPerSubtype { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
                             | crate::cards::StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
