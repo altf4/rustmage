@@ -419,14 +419,16 @@ fn persuasive_interrogators_investigates_and_counts_real_clue_sacrifices_to_leth
     let opponent = player.other();
     let mut game = scenario(player);
     let source = put(&mut game, player, "Persuasive Interrogators", Zone::Hand);
-    let nonclue = put(&mut game, player, "Candy Trail", Zone::Battlefield);
+    let nonclue = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
     let equipment = put(&mut game, player, "Lead Pipe", Zone::Battlefield);
     cast(&mut game, source, None);
     settle(&mut game);
     let [clue] = tokens(&game, player, CLUE).try_into().unwrap();
-    act(&mut game, activation(nonclue));
+    assert!(!game.has_subtype(nonclue, "Clue"));
+    act(&mut game, activation_at(nonclue, 1));
     pay(&mut game);
     settle(&mut game);
+    assert_eq!(game.object_view(nonclue).zone, Zone::Graveyard);
     assert_eq!(
         game.observe(opponent).players[opponent.index()].poison_counters,
         0
