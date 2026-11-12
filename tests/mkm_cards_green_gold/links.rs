@@ -159,7 +159,7 @@ fn kaya_resolves_all_three_loyalty_choices_and_copies_one_eligible_exiled_creatu
         },
     );
     let object = surveil.object_ref(card);
-    act(&mut surveil, Action::ChooseEffectObject { object });
+    act(&mut surveil, Action::SelectResolutionExile { object });
     settle(&mut surveil);
     assert_eq!(surveil.counter_count(kaya, CounterKind::Loyalty), 5);
     assert_eq!(surveil.object_view(mill).zone, Zone::Graveyard);
@@ -184,12 +184,12 @@ fn kaya_resolves_all_three_loyalty_choices_and_copies_one_eligible_exiled_creatu
     assert_eq!(game.state.stack.len(), 1);
     pass_pair(&mut game);
     let mut declined = game.clone();
-    act(&mut declined, Action::FinishEffectChoice);
+    act(&mut declined, Action::ChooseOptional { accept: false });
     assert_eq!(tokens(&declined, player, CLUE), [token]);
     let object = game.object_ref(enemy);
-    reject(&mut game, Action::ChooseEffectObject { object });
+    reject(&mut game, Action::SelectResolutionExile { object });
     let object = game.object_ref(ally);
-    act(&mut game, Action::ChooseEffectObject { object });
+    act(&mut game, Action::SelectResolutionExile { object });
     settle(&mut game);
     assert_eq!(stats(&game, token), (3, 3));
     assert!(game.keywords(token).contains(Keywords::FLYING));

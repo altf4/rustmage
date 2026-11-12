@@ -8,7 +8,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 power: 0,
                 toughness: 0,
             },
-            keywords: Keywords::NONE,
+            keywords: Keywords::DEATHTOUCH,
         },
     }),
     static_groups: &[
