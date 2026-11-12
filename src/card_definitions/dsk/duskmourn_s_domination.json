@@ -3,10 +3,39 @@
   "catalogue_id": 1206,
   "oracle_id": "ebdace8f-8e8e-411b-b1d5-5b27cca7d9fb",
   "facts_sha256": "de36ad05bfd28616e1381daff9f6ee0067ea1472d34d330698c9e0e771fb76db",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "54f08c439a56afa365927516c04c0bcc8a571d1dc4f1addf453df106adc0f289"
   },
-  "physical_metadata_sha256": "88f2a432f54ec49783dda25e13c0677a979798a892570a5443826f7bf7d02036"
+  "physical_metadata_sha256": "88f2a432f54ec49783dda25e13c0677a979798a892570a5443826f7bf7d02036",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DuskmournsDomination.java",
+  "java_sha256": "150d7f907aa3fbb4fa48c13952ca141d413ae4341f2c3b5d31a078c4b6cc5e73",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEnchantedEffect.java",
+      "sha256": "c390aae1354b298fc7d8b379f73583e2bbee3bdd13d88a082553dce6c75e1303"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The Aura changes control in layer two. Its other static ability removes earlier abilities in layer six and applies −3/−0 in layer seven. A later ability grant survives."
+  }
 }

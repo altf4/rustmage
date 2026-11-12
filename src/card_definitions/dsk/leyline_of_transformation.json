@@ -3,10 +3,39 @@
   "catalogue_id": 2485,
   "oracle_id": "cfaa13d6-9992-4223-8bd7-c44046505555",
   "facts_sha256": "0599de03a89cb5cb258b3ccc9af665c500f45e52377b9c45f45d6daa53ca5c23",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b62429e8f9a087189c6c74576d115d3c4dc0e4e734f467ea3cebe2b8b855f3e5"
   },
-  "physical_metadata_sha256": "e7600c0aed1e819e92f87fc5ecbc9002ae1a66da43911aa958eef5757f64108a"
+  "physical_metadata_sha256": "e7600c0aed1e819e92f87fc5ecbc9002ae1a66da43911aa958eef5757f64108a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeylineOfTransformation.java",
+  "java_sha256": "bc425221f8873526fc589f47a85eb03a79fe8eb9f5107e7ef2eb5c9e512e8feb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AsEntersBattlefieldAbility.java",
+      "sha256": "3919eac1ae9ebc0edd9decad5d293bdf0cdb4d16c516021ea3e97711f9a72ab5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseCreatureTypeEffect.java",
+      "sha256": "7c002222709f95c0fb03244a866082efaec9f9db530fb6f62f682000a4806b9d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCreatureSubTypeAllMultiZoneEffect.java",
+      "sha256": "2d1ca62388edb325117be6cfa3231a4e81acb0603fdfc356383b885fe53b0d7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Choose one creature type as it enters, including from a kept opening hand. Add it to controlled battlefield creatures and creature spells, and to owned creature cards off the battlefield. Entry effects can see the type."
+  }
 }

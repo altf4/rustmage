@@ -3,10 +3,44 @@
   "catalogue_id": 1465,
   "oracle_id": "00ba96e0-42a7-432a-a500-5e607d75a358",
   "facts_sha256": "8f0505ebdd0198f2d46257c69a9539617dded3ed63f2e422ae7864ea0b9b4158",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9fa53c06e12dcdf5cb49b6d6a243a4d7391c7ed4089be3a7028d976f540a5cb8"
   },
-  "physical_metadata_sha256": "4f8fb26c95983eaf14766a47a79373884988941799f4148fcf3aa77246bfe9ef"
+  "physical_metadata_sha256": "4f8fb26c95983eaf14766a47a79373884988941799f4148fcf3aa77246bfe9ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfFalling.java",
+  "java_sha256": "bdf5db3255bb95b4e62e80a01b6bfc44a0ed0ab30c44d1320c0dc52eb1f22c8f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAbilityTargetEffect.java",
+      "sha256": "febeb2eb3df24e2b382202c6e2b0784556ecf1ad9f9eaf9add189436f3e8ba75"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/DefendingPlayerControlsSourceAttackingPredicate.java",
+      "sha256": "f043e4567f17028e330bb89d2999678709dc498c91a0ad83494bd9f496f059f9"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Its target must be a creature the actual defending player controls. Both the power reduction and loss of flying last until the trigger controller's next turn. A later flying grant can apply sooner."
+  }
 }

@@ -3,10 +3,49 @@
   "catalogue_id": 4617,
   "oracle_id": "b4c27c89-fa50-4cf0-bf37-039732d16fef",
   "facts_sha256": "a6080a791bc10e0ce3f462194db82dbfd8c7d7c57c45b848ddb2b64933a1447b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eac8834666bb655e8b13ac244f9987e0d86726f009694f374198897fae6af580"
   },
-  "physical_metadata_sha256": "755ae5c983f0bba656fdbdbbf000aa3ce0a29fd16542504207d0ea0c64910c24"
+  "physical_metadata_sha256": "755ae5c983f0bba656fdbdbbf000aa3ce0a29fd16542504207d0ea0c64910c24",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TobyBeastieBefriender.java",
+  "java_sha256": "4d4b5962a9cf7f910d01512bd0780c6ce1179569a80fc4a16a4f427e900029a9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantAttackOrBlockAloneAbility.java",
+      "sha256": "9d73113c8c96eca700e357ac6f1ecb99e35ade652dc0ec07f57a8ccf7ffe5e64"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/BeastieToken.java",
+      "sha256": "8ee9ae4d5cfdea9e15dc3ef8158ab554735bcfcc04d4744041d183f75e07d133"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Entry creates the pinned 4/4 white Beast Token. Its restriction applies to the complete attacker or blocker declaration. At four controlled creature tokens, all those tokens gain flying."
+  }
 }

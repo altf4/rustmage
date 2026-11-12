@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::LifeGainAdditional(1)],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Modify,
+            fragments: &[StaticAbilityFragment::ControlledCreatureScaling {
+                subtype: None,
+                value: StatValue::ControllerLifeAboveStarting { minimum: 7 },
+                stats: Stats {
+                    power: 2,
+                    toughness: 2,
+                },
+            }],
+        },
+    ],
+    extras: &CardExtras {
+        opening_hand_battlefield: true,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

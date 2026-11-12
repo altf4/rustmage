@@ -3,10 +3,39 @@
   "catalogue_id": 2297,
   "oracle_id": "783aab37-3ec3-478f-a4fa-cccdfffbae18",
   "facts_sha256": "6d1fc272c91d1a6829360ae64afebaff8e47e369b22aead9f8f1d23ce18e5c82",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82bc4f8128ee5793889a7ad250c853290a940f755721c813b6ac3cbed2a60ca7"
   },
-  "physical_metadata_sha256": "a890872b22a64f4aa33e3e87910c460e2f68a17303132004c85ec30ebb7a5a61"
+  "physical_metadata_sha256": "a890872b22a64f4aa33e3e87910c460e2f68a17303132004c85ec30ebb7a5a61",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JumpScare.java",
+  "java_sha256": "477e8dd3ca29b79f27250b51586d064e555578b140db04de934ab27e7e7a13b9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubTypeTargetEffect.java",
+      "sha256": "4a5b785143060689d498ae3f97610eac0103c628160a52505c1d6fcad298384f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeTargetEffect.java",
+      "sha256": "95ebcf49ca842a8831f4925cfff4199bdd0740c37f0dbe77a7c542a73272cc67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020261106.pdf",
+    "rules": "The exact creature retains its other types while becoming a Horror enchantment creature. Its flying and +2/+2 expire with the type additions at cleanup."
+  }
 }
