@@ -120,7 +120,9 @@ const CREATURE_CARD: TargetRule = TargetRule::Object {
     relation: -1,
     other: false,
     nonland: false,
-    subtype: None,
+    tapped: false,
+    min_mana: 0,
+    max_mana: u32::MAX,
 };
 const RETURN_WITH_DELAY: CardRules = CardRules {
     effect: Effect::Spell(
@@ -193,13 +195,18 @@ const RETURN_EQUIPMENT: CardRules = CardRules {
     effect: Effect::Creature(3, 4),
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::SelfEnters,
-        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Object {
-            zone: TargetZone::Graveyard,
-            kinds: 16,
-            relation: 0,
-            other: false,
-            nonland: false,
-            subtype: Some("Equipment"),
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+            base: &TargetRule::Object {
+                zone: TargetZone::Graveyard,
+                kinds: 16,
+                relation: 0,
+                other: false,
+                nonland: false,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            },
+            predicate: TargetPredicate::Subtype("Equipment"),
         })),
         program: &[Instruction::ReturnGraveyardEquipmentAttachedToSource],
     }],
