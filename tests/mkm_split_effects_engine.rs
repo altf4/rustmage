@@ -206,7 +206,7 @@ const RETURN_EQUIPMENT: CardRules = CardRules {
                 min_mana: 0,
                 max_mana: u32::MAX,
             },
-            predicate: TargetPredicate::Subtype("Equipment"),
+            predicate: &TargetPredicate::Subtype("Equipment"),
         })),
         program: &[Instruction::ReturnGraveyardEquipmentAttachedToSource],
     }],
