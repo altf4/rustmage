@@ -6005,6 +6005,7 @@ impl Game {
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+                            | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
                             | EffectChoiceKind::DamageAmongTargetGroup { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
@@ -9663,6 +9664,9 @@ impl Game {
                     EffectChoiceKind::BlinkControlledCreatures => self.finish_repeat_blink_choice(),
                     EffectChoiceKind::ExileFaceUpDisguiseCreatures => {
                         self.finish_exiling_face_up_disguise_creatures();
+                    }
+                    EffectChoiceKind::DestroyNonbasicLandsForEachPlayer => {
+                        self.finish_destroy_nonbasic_lands_for_each_player();
                     }
                     EffectChoiceKind::HandCreatures { .. } => self.finish_hand_creatures(),
                     EffectChoiceKind::SaddleRider(effect) => {

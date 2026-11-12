@@ -1486,6 +1486,8 @@ pub enum EffectChoiceKind {
     KeepSharedCreatureTypes,
     /// The ability controller saves one qualifying creature per controlling player.
     KeepCreaturesByPowerForEachPlayer(i128),
+    /// Choose up to one nonbasic land per controller for a simultaneous destruction.
+    DestroyNonbasicLandsForEachPlayer,
     /// Choose one legal controlled creature for the resolving Equipment source.
     EquipmentRecipient,
     /// Select an eligible controlled creature for this exact graveyard attachment.
@@ -1833,6 +1835,7 @@ impl EffectChoiceKind {
                 | Self::SaddleRider(SaddleRiderEffect::ReturnAnyToHand)
                 | Self::BlinkControlledCreatures
                 | Self::ExileFaceUpDisguiseCreatures
+                | Self::DestroyNonbasicLandsForEachPlayer
         )
     }
     pub(crate) fn counter_requirement(self) -> Option<CounterCostRequirement> {

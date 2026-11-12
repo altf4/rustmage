@@ -427,6 +427,8 @@ pub struct OptionalSearchSequence {
     pub next: usize,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub land_controller_only: bool,
+    #[serde(skip)]
+    pub tapped: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -448,11 +450,61 @@ impl Game {
                 players: [affected, item.controller],
                 next: 0,
                 land_controller_only,
+                tapped: false,
             }));
         if !self.effect_destruction_prevented(id) {
             self.move_target_batch(&[bound], Zone::Graveyard);
         }
     }
+    pub(super) fn nonbasic_land_choice(&self, object: ObjectRef) -> bool {
+        self.state
+            .objects
+            .get(object.card as usize)
+            .is_some_and(|land| {
+                land.generation == object.generation
+                    && land.zone == Zone::Battlefield
+                    && self.current_kinds(object.card) & 2 != 0
+                    && !land.card.is_basic_land()
+            })
+    }
+
+    pub(super) fn finish_destroy_nonbasic_lands_for_each_player(&mut self) {
+        let choice = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .choice
+            .take()
+            .unwrap();
+        let lands: Vec<_> = choice
+            .selected
+            .into_iter()
+            .flatten()
+            .filter(|&object| self.nonbasic_land_choice(object))
+            .collect();
+        if lands.is_empty() {
+            return;
+        }
+        let events = self.destroy_objects_outcome(lands);
+        let active = self.state.active;
+        let mut affected = [active, active.other()].into_iter().filter(|&player| {
+            events
+                .iter()
+                .any(|event| event.moved && event.before.controller == player)
+        });
+        if let Some(first) = affected.next() {
+            let second = affected.next();
+            self.state.resolving.as_mut().unwrap().optional_searches =
+                Some(Box::new(OptionalSearchSequence {
+                    players: [first, second.unwrap_or(first)],
+                    next: 0,
+                    land_controller_only: second.is_none(),
+                    tapped: true,
+                }));
+        }
+    }
+
     pub(super) fn advance_optional_searches(&mut self) -> bool {
         let resolution = self.state.resolving.as_mut().unwrap();
         let Some(sequence) = resolution.optional_searches.as_ref() else {
@@ -476,7 +528,9 @@ impl Game {
     }
     pub(super) fn choose_optional_search(&mut self, player: Player, accept: bool) {
         let resolution = self.state.resolving.as_mut().unwrap();
-        resolution.optional_searches.as_mut().unwrap().next += 1;
+        let sequence = resolution.optional_searches.as_mut().unwrap();
+        sequence.next += 1;
+        let tapped = sequence.tapped;
         if accept {
             resolution.search = Some(Box::new(SearchChoice {
                 defer_shuffle: false,
@@ -484,7 +538,7 @@ impl Game {
                     filter: crate::SearchFilter::BasicLand,
                     maximum: 1,
                     destination: SearchDestination::Battlefield,
-                    tapped: false,
+                    tapped,
                     reveal: false,
                 },
                 entry_counters: &[],

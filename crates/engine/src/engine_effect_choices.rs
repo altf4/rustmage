@@ -234,6 +234,12 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::DestroyNonbasicLandsForEachPlayer {
+            return self.nonbasic_land_choice(object)
+                && choice.selected[player.index()].iter().all(|selected| {
+                    self.state.objects[selected.card as usize].controller != o.controller
+                });
+        }
         if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
             return self.object_ref(object.card) == object
                 && self.creature_survives_sweep(object.card, maximum)
@@ -1876,7 +1882,19 @@ impl Game {
                 return false;
             }
             if any_number {
-                choice.amount = u32::try_from(available).capacity("choice count exhausted");
+                choice.amount = if kind == EffectChoiceKind::DestroyNonbasicLandsForEachPlayer {
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, _)| self.nonbasic_land_choice(self.object_ref(*id as CardId)))
+                        .fold(0u8, |seats, (_, land)| {
+                            seats | (1 << land.controller.index())
+                        })
+                        .count_ones()
+                } else {
+                    u32::try_from(available).capacity("choice count exhausted")
+                };
                 continue;
             }
             // Optional private choices always present the same actor/phase,
