@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "b8a704ba9e2620de3c217fbb751a11a36cb3ae592ecbb5f6e0d6d0975743defd",
+  "catalogue_version": "5d4a143f8f2d45ae85ada63681f4c2a693a604d1b910b7589b338b5bcc9bbfce",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4939,
-  "implemented_total": 4957,
+  "implemented_standard_cards": 4977,
+  "implemented_total": 4995,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -39,8 +39,7 @@
     },
     "ecc": {
       "total": 7,
-      "complete": 6,
-      "gated": 1
+      "complete": 7
     },
     "ecl": {
       "total": 267,
@@ -100,8 +99,8 @@
     },
     "mkm": {
       "total": 264,
-      "complete": 218,
-      "gated": 46
+      "complete": 255,
+      "gated": 9
     },
     "mom": {
       "total": 1,
@@ -986,8 +985,8 @@
     {
       "name": "Agrus Kos, Spirit of Justice",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/agrus_kos_spirit_of_justice.rs",
       "set": "mkm"
     },
@@ -1066,8 +1065,8 @@
     {
       "name": "Airtight Alibi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/airtight_alibi.rs",
       "set": "mkm"
     },
@@ -1306,8 +1305,8 @@
     {
       "name": "Alquist Proft, Master Sleuth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/alquist_proft_master_sleuth.rs",
       "set": "mkm"
     },
@@ -1642,8 +1641,8 @@
     {
       "name": "Anzrag, the Quake-Mole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/anzrag_the_quake_mole.rs",
       "set": "mkm"
     },
@@ -2314,8 +2313,8 @@
     {
       "name": "Aurelia, the Law Above",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/aurelia_the_law_above.rs",
       "set": "mkm"
     },
@@ -2778,8 +2777,8 @@
     {
       "name": "Barbed Servitor",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/barbed_servitor.rs",
       "set": "mkm"
     },
@@ -5514,8 +5513,8 @@
     {
       "name": "Case of the Locked Hothouse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_locked_hothouse.rs",
       "set": "mkm"
     },
@@ -5554,8 +5553,8 @@
     {
       "name": "Case of the Trampled Garden",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/case_of_the_trampled_garden.rs",
       "set": "mkm"
     },
@@ -5650,8 +5649,8 @@
     {
       "name": "Caught Red-Handed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/caught_red_handed.rs",
       "set": "mkm"
     },
@@ -5794,8 +5793,8 @@
     {
       "name": "Cerebral Confiscation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/cerebral_confiscation.rs",
       "set": "mkm"
     },
@@ -6282,8 +6281,8 @@
     {
       "name": "Clandestine Meddler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/clandestine_meddler.rs",
       "set": "mkm"
     },
@@ -6498,8 +6497,8 @@
     {
       "name": "Coerced to Kill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/coerced_to_kill.rs",
       "set": "mkm"
     },
@@ -6986,8 +6985,8 @@
     {
       "name": "Cornered Crook",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/cornered_crook.rs",
       "set": "mkm"
     },
@@ -8146,8 +8145,8 @@
     {
       "name": "Deadly Complication",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/deadly_complication.rs",
       "set": "mkm"
     },
@@ -12122,8 +12121,8 @@
     {
       "name": "Felonious Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/felonious_rage.rs",
       "set": "mkm"
     },
@@ -13578,8 +13577,8 @@
     {
       "name": "Galvanize",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/galvanize.rs",
       "set": "mkm"
     },
@@ -15706,8 +15705,8 @@
     {
       "name": "Hard-Hitting Question",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/hard_hitting_question.rs",
       "set": "mkm"
     },
@@ -17570,8 +17569,8 @@
     {
       "name": "Innocent Bystander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/innocent_bystander.rs",
       "set": "mkm"
     },
@@ -18538,8 +18537,8 @@
     {
       "name": "Judith, Carnage Connoisseur",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/judith_carnage_connoisseur.rs",
       "set": "mkm"
     },
@@ -18906,8 +18905,8 @@
     {
       "name": "Kellan, Inquisitive Prodigy // Tail the Suspect",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/kellan_inquisitive_prodigy_tail_the_suspect.rs",
       "set": "mkm"
     },
@@ -19242,8 +19241,8 @@
     {
       "name": "Knife",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/knife.rs",
       "set": "mkm"
     },
@@ -19874,8 +19873,8 @@
     {
       "name": "Lead Pipe",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/lead_pipe.rs",
       "set": "mkm"
     },
@@ -20074,8 +20073,8 @@
     {
       "name": "Leyline of the Guildpact",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/leyline_of_the_guildpact.rs",
       "set": "mkm"
     },
@@ -21594,8 +21593,8 @@
     {
       "name": "Massacre Girl, Known Killer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/ecc/massacre_girl_known_killer.rs",
       "set": "ecc"
     },
@@ -25802,8 +25801,8 @@
     {
       "name": "Pompous Gadabout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/pompous_gadabout.rs",
       "set": "mkm"
     },
@@ -27546,8 +27545,8 @@
     {
       "name": "Reckless Detective",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/reckless_detective.rs",
       "set": "mkm"
     },
@@ -27602,8 +27601,8 @@
     {
       "name": "Red Herring",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/red_herring.rs",
       "set": "mkm"
     },
@@ -27874,8 +27873,8 @@
     {
       "name": "Repeat Offender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/repeat_offender.rs",
       "set": "mkm"
     },
@@ -28898,8 +28897,8 @@
     {
       "name": "Rope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/rope.rs",
       "set": "mkm"
     },
@@ -28914,8 +28913,8 @@
     {
       "name": "Rot Farm Mortipede",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/rot_farm_mortipede.rs",
       "set": "mkm"
     },
@@ -29042,8 +29041,8 @@
     {
       "name": "Rubblebelt Braggart",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/rubblebelt_braggart.rs",
       "set": "mkm"
     },
@@ -31602,8 +31601,8 @@
     {
       "name": "Slimy Dualleech",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/slimy_dualleech.rs",
       "set": "mkm"
     },
@@ -31962,8 +31961,8 @@
     {
       "name": "Soul Enervation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/soul_enervation.rs",
       "set": "mkm"
     },
@@ -36066,8 +36065,8 @@
     {
       "name": "The Pride of Hull Clade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/the_pride_of_hull_clade.rs",
       "set": "mkm"
     },
@@ -37298,8 +37297,8 @@
     {
       "name": "Torch the Witness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/torch_the_witness.rs",
       "set": "mkm"
     },
@@ -38290,8 +38289,8 @@
     {
       "name": "Undercity Eliminator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/undercity_eliminator.rs",
       "set": "mkm"
     },
@@ -38546,8 +38545,8 @@
     {
       "name": "Unscrupulous Agent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/unscrupulous_agent.rs",
       "set": "mkm"
     },
@@ -38970,8 +38969,8 @@
     {
       "name": "Vannifar, Evolved Enigma",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/vannifar_evolved_enigma.rs",
       "set": "mkm"
     },
