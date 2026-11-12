@@ -13567,6 +13567,10 @@ impl Game {
                             .as_ref()
                             .map_or(0, |_| std::mem::size_of::<explore::ExploreSequence>())
                         + resolution
+                            .manifest_sequence
+                            .as_ref()
+                            .map_or(0, |sequence| sequence.owned_bytes())
+                        + resolution
                             .immediate_blink_return
                             .as_ref()
                             .map_or(0, |blink| {

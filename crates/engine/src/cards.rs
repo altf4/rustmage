@@ -3448,6 +3448,15 @@ pub enum Instruction {
     DestroyOthersIfSourcePowerTwenty,
     /// Look at the top two cards, manifest one and put the rest into the graveyard.
     ManifestDread,
+    /// Complete each manifest separately before proceeding to the next instruction.
+    ManifestDreadRepeated(AmountValue),
+    /// Attach the resolving Equipment to the last successful manifest in this sequence.
+    AttachSourceToLastManifested,
+    /// Put counters on each exact permanent created by this resolution's manifest sequence.
+    PutCountersOnManifested {
+        kind: CounterKind,
+        amount: AmountValue,
+    },
     /// When this exact target dies this turn, its controller's spell manifests dread.
     ManifestDreadWhenTargetDies,
     DestroyAndCreateForController {

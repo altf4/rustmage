@@ -1214,16 +1214,18 @@ impl Game {
                 && let Some(original) = movement.manifest_original
             {
                 let known_to = self.face_down_knowledge_mask(movement.controller);
-                self.state
-                    .manifest
-                    .get_or_insert_with(Default::default)
-                    .permanents
-                    .push(manifest::FaceDownPermanent {
-                        object: event.after,
-                        underlying: original,
-                        known: movement.manifest_known,
-                        known_to,
-                    });
+                let state = self.state.manifest.get_or_insert_with(Default::default);
+                state.permanents.push(manifest::FaceDownPermanent {
+                    object: event.after,
+                    underlying: original,
+                    known: movement.manifest_known,
+                    known_to,
+                });
+                if let Some(choice) = &mut state.choice
+                    && choice.selected == Some(event.before.reference)
+                {
+                    choice.result = Some(event.after);
+                }
             }
             if event.moved
                 && event.destination == Zone::Battlefield

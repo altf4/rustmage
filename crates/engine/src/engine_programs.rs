@@ -44,6 +44,7 @@ pub(super) struct Resolution {
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
     pub explore: Option<Box<explore::ExploreSequence>>,
+    pub manifest_sequence: Option<Box<manifest::ManifestSequence>>,
     pub evidence: Option<Box<evidence::EvidenceSelection>>,
     pub item: SpellView,
     pub mana_payment: Option<Box<resolution_mana::ResolutionPayment>>,
@@ -3926,6 +3927,7 @@ impl Game {
             immediate_blink_return: None,
             repeat_blink_remaining: None,
             explore: None,
+            manifest_sequence: None,
             evidence: None,
             connive: None,
             proliferate: None,
@@ -4184,6 +4186,9 @@ impl Game {
                     .mana_payment
                     .is_some()
             {
+                return;
+            }
+            if self.advance_manifest_dread() {
                 return;
             }
             if self
@@ -5422,10 +5427,44 @@ impl Game {
                     let amount = self.item_amount(amount, &item);
                     self.return_target_then_explore(&item, amount);
                 }
-                Instruction::ManifestDread => {
-                    if self.start_manifest_dread(item.controller) {
-                        return;
+                Instruction::ManifestDread | Instruction::ManifestDreadRepeated(_) => {
+                    let count = match instruction {
+                        Instruction::ManifestDreadRepeated(amount) => {
+                            self.item_amount(amount, &item)
+                        }
+                        _ => 1,
+                    };
+                    self.begin_manifest_dread(item.controller, count);
+                }
+                Instruction::AttachSourceToLastManifested => {
+                    if let Some(target) = resolution
+                        .manifest_sequence
+                        .as_ref()
+                        .and_then(|sequence| sequence.results.last().copied())
+                    {
+                        self.attach_equipment(
+                            item.source.expect("equipment trigger has a source").object,
+                            target,
+                        );
                     }
+                }
+                Instruction::PutCountersOnManifested { kind, amount } => {
+                    let amount = u64::try_from(self.item_amount(amount, &item))
+                        .capacity("manifest counter amount exhausted");
+                    let changes = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .and_then(|resolution| resolution.manifest_sequence.as_ref())
+                        .into_iter()
+                        .flat_map(|sequence| sequence.results.iter().copied())
+                        .filter(|&object| {
+                            self.on_battlefield(object.card)
+                                && self.object_ref(object.card) == object
+                        })
+                        .map(|object| (object, Counters::of(kind, amount)))
+                        .collect();
+                    self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ManifestDreadWhenTargetDies => self.register_manifest_death(&item),
                 Instruction::DestroyAndCreateForController { token, amount } => {

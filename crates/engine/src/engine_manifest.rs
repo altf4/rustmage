@@ -52,6 +52,22 @@ pub(super) struct ManifestChoice {
     pub player: Player,
     pub candidates: Vec<ObjectRef>,
     pub selected: Option<ObjectRef>,
+    pub result: Option<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ManifestSequence {
+    player: Player,
+    remaining: u128,
+    pub results: Vec<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManifestSequence {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + std::mem::size_of_val(self.results.as_slice())
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -600,9 +616,46 @@ impl Game {
             }
         }
     }
+    pub(super) fn begin_manifest_dread(&mut self, player: Player, count: u128) {
+        self.state.resolving.as_mut().unwrap().manifest_sequence = (count != 0).then(|| {
+            Box::new(ManifestSequence {
+                player,
+                remaining: count,
+                results: Vec::new(),
+            })
+        });
+    }
+
+    pub(super) fn advance_manifest_dread(&mut self) -> bool {
+        if self
+            .state
+            .manifest
+            .as_ref()
+            .is_some_and(|state| state.choice.is_some())
+        {
+            return true;
+        }
+        while let Some(sequence) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.manifest_sequence.as_mut())
+        {
+            if sequence.remaining == 0 {
+                break;
+            }
+            sequence.remaining -= 1;
+            let player = sequence.player;
+            if self.start_manifest_dread(player) {
+                return true;
+            }
+        }
+        false
+    }
+
     /// Start CR701.62a. Looking is private, and selecting the sole card is
     /// mandatory. Entry replacements may suspend before the rest is milled.
-    pub(super) fn start_manifest_dread(&mut self, player: Player) -> bool {
+    fn start_manifest_dread(&mut self, player: Player) -> bool {
         let candidates: Vec<_> = self.state.players[player.index()]
             .library
             .iter()
@@ -628,6 +681,7 @@ impl Game {
             player,
             candidates: candidates.clone(),
             selected: None,
+            result: None,
         });
         if candidates.len() == 1 {
             self.choose_manifest(candidates[0]);
@@ -685,15 +739,16 @@ impl Game {
             })
             .map(|object| object.card)
             .collect();
-        let manifested = choice.selected.and_then(|selected| {
-            self.state
-                .manifest
-                .as_ref()?
-                .permanents
-                .iter()
-                .find(|row| row.object.card == selected.card)
-                .map(|row| row.object)
-        });
+        let manifested = choice.result;
+        if let Some(object) = manifested
+            && let Some(sequence) = self
+                .state
+                .resolving
+                .as_mut()
+                .and_then(|resolution| resolution.manifest_sequence.as_mut())
+        {
+            sequence.results.push(object);
+        }
         let events = self.move_objects_raw(&remaining, Zone::Graveyard);
         let graveyard_cards = events
             .iter()
