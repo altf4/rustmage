@@ -4,7 +4,8 @@ use super::*;
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EvidenceSelection {
     pub player: Player,
-    pub threshold: u16,
+    pub threshold: u64,
+    pub excluded: Option<ObjectRef>,
     pub selected: Vec<ObjectRef>,
     pub total: u128,
     pub complete: bool,
@@ -24,7 +25,7 @@ pub struct EvidenceEventView {
     pub sequence: u64,
     pub player: Player,
     pub source: ObjectRef,
-    pub threshold: u16,
+    pub threshold: u64,
     pub total_mana: u128,
     pub exiled: Vec<ObjectRef>,
 }
@@ -50,7 +51,7 @@ impl EvidenceState {
 #[derive(Clone, Debug, Serialize)]
 pub struct EvidenceView {
     pub player: Player,
-    pub threshold: u16,
+    pub threshold: u64,
     pub selected: Vec<ObjectRef>,
     pub total_mana: u128,
     pub candidates: Vec<ObjectRef>,
@@ -59,7 +60,7 @@ pub struct EvidenceView {
     pub paid: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn threshold(spec: AdditionalCost) -> Option<u16> {
+pub(super) fn threshold(spec: AdditionalCost) -> Option<u64> {
     if let EffectChoiceKind::CollectEvidence(n) = spec.kind {
         Some(n)
     } else {
@@ -67,7 +68,7 @@ pub(super) fn threshold(spec: AdditionalCost) -> Option<u16> {
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn cost(n: u16) -> AdditionalCost {
+pub(super) fn cost(n: u64) -> AdditionalCost {
     AdditionalCost {
         kind: EffectChoiceKind::CollectEvidence(n),
         filter: SacrificeFilter {
@@ -94,26 +95,31 @@ impl Game {
         assert!(!d.sources.contains(&id));
         d.sources.push(id);
     }
-    fn evidence_card(&self, p: Player, r: ObjectRef) -> bool {
-        self.state.objects.get(r.card as usize).is_some_and(|o| {
-            o.owner == p && o.zone == Zone::Graveyard && o.is_card() && self.object_ref(r.card) == r
-        })
+    fn evidence_card(&self, player: Player, object: ObjectRef) -> bool {
+        (object.card as usize) < self.state.objects.len()
+            && additional_costs::graveyard_exile_card_matches(self, player, object, None)
     }
-    pub(super) fn can_collect_evidence(&self, p: Player, n: u16) -> bool {
+    pub(super) fn can_collect_evidence(
+        &self,
+        player: Player,
+        threshold: u64,
+        excluded: Option<ObjectRef>,
+    ) -> bool {
+        if threshold == 0 {
+            return true;
+        }
         // Nonnegative values make existence a linear sum, with no subset search.
         let mut total = 0u128;
-        for o in self
-            .state
-            .objects
-            .iter()
-            .filter(|o| o.owner == p && o.zone == Zone::Graveyard && o.is_card())
-        {
-            total += u128::from(o.card.fixed_mana_value());
-            if total >= u128::from(n) {
-                return true;
+        for (index, card) in self.state.objects.iter().enumerate() {
+            let object = self.object_ref(index as CardId);
+            if Some(object) != excluded && self.evidence_card(player, object) {
+                total += u128::from(card.card.fixed_mana_value());
+                if total >= u128::from(threshold) {
+                    return true;
+                }
             }
         }
-        n == 0
+        false
     }
     pub(super) fn evidence_cast_fundable(
         &self,
@@ -153,7 +159,8 @@ impl Game {
         if collect {
             self.can_fund_evidence_for(
                 goal,
-                card.collect_evidence_cost().unwrap(),
+                self.object_ref(id),
+                card.collect_evidence_cost().unwrap().into(),
                 self.spell_mana_purpose_for_card(p, id, card),
             )
         } else {
@@ -164,7 +171,7 @@ impl Game {
         let a = self.state.announcing.as_ref().unwrap();
         if a.has_ordered_origin_payment()
             || a.has_ordered_life_cost()
-            || self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card)
+            || self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card)
         {
             let mut proposal = a.clone();
             proposal.item.cast.as_mut().unwrap().evidence = Some(collect);
@@ -214,9 +221,11 @@ impl Game {
         let a = self.state.announcing.as_mut().unwrap();
         let n = threshold(a.additional_cost().unwrap()).unwrap();
         let p = a.item.controller;
+        let excluded = a.item.source.map(|source| source.object);
         a.evidence = Some(Box::new(EvidenceSelection {
             player: p,
             threshold: n,
+            excluded,
             selected: Vec::new(),
             total: 0,
             complete: false,
@@ -237,7 +246,8 @@ impl Game {
             r.pc.checked_add(skip)
                 .expect("evidence continuation offset");
         assert!(skip_to <= r.program.len());
-        if !self.can_collect_evidence(p, n) {
+        let n = u64::from(n);
+        if !self.can_collect_evidence(p, n, None) {
             if ward {
                 let link = r.item.related_stack.unwrap();
                 self.counter_stack_item(link.id, false);
@@ -249,6 +259,7 @@ impl Game {
         self.state.resolving.as_mut().unwrap().evidence = Some(Box::new(EvidenceSelection {
             player: p,
             threshold: n,
+            excluded: None,
             selected: Vec::new(),
             total: 0,
             complete: false,
@@ -261,7 +272,8 @@ impl Game {
     }
     fn evidence_candidate(&self, r: ObjectRef) -> bool {
         let e = self.evidence_selection();
-        self.evidence_card(e.player, r)
+        Some(r) != e.excluded
+            && self.evidence_card(e.player, r)
             && !e.selected.contains(&r)
             && (!self.cast_costs_mana_paid() || {
                 let mut selected = e.selected.clone();
@@ -345,7 +357,11 @@ impl Game {
     }
     pub(super) fn commit_evidence(&mut self, e: &EvidenceSelection, source: ObjectRef) {
         assert!(e.complete && e.total >= u128::from(e.threshold));
-        assert!(e.selected.iter().all(|&r| self.evidence_card(e.player, r)));
+        assert!(
+            e.selected
+                .iter()
+                .all(|&r| { Some(r) != e.excluded && self.evidence_card(e.player, r) })
+        );
         let actual = e
             .selected
             .iter()
@@ -366,7 +382,13 @@ impl Game {
             source,
             threshold: e.threshold,
             total_mana: e.total,
-            exiled: events.iter().map(|ev| ev.after).collect(),
+            // A legal payment can be modified by a replacement (CR 118.11).
+            // Linked consumers must use only the objects that actually reached exile.
+            exiled: events
+                .iter()
+                .filter(|event| event.moved && event.destination == Zone::Exile)
+                .flat_map(|event| event.objects_after())
+                .collect(),
         });
         let sources = d.sources.clone();
         for id in sources {

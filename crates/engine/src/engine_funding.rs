@@ -4904,7 +4904,7 @@ impl<'g> FundingState<'g> {
     fn reachable_with_evidence(
         &self,
         goal: &FundingGoal,
-        evidence: Option<u16>,
+        evidence: Option<u64>,
         visited: &mut HashSet<FundingKey>,
     ) -> bool {
         if let Some(query) = self.scoped_continuation_query() {
@@ -4917,7 +4917,7 @@ impl<'g> FundingState<'g> {
     fn reachable_with_completion(
         &self,
         goal: &FundingGoal,
-        evidence: Option<u16>,
+        evidence: Option<u64>,
         visited: &mut HashSet<FundingKey>,
         completion: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
@@ -5584,41 +5584,33 @@ impl Game {
     pub(super) fn can_fund_evidence_for(
         &self,
         goal: FundingGoal,
-        threshold: u16,
+        source: ObjectRef,
+        threshold: u64,
         purpose: mana_lots::Purpose,
     ) -> bool {
-        let current = self.state.announcing.as_ref().filter(|a| {
-            a.item.controller == goal.actor
-                && matches!(purpose, mana_lots::Purpose::Spell(spell) if a.item.source.expect("cost announcement has object source").card == spell.card)
-        });
-        let selection = current.and_then(|a| a.evidence.as_deref());
-        if let Some(result) = self.preview_optional_cast_costs(
-            goal.clone(),
-            purpose,
-            current.map_or(
-                ObjectRef {
-                    card: CardId::MAX,
-                    generation: 0,
-                },
-                |a| {
-                    a.item
+        let selection = self
+            .state
+            .announcing
+            .as_ref()
+            .filter(|a| {
+                a.item.controller == goal.actor
+                    && a.item
                         .source
-                        .expect("cost announcement has object source")
-                        .object
-                },
-            ),
+                        .is_some_and(|identity| identity.object == source)
+            })
+            .and_then(|a| a.evidence.as_deref());
+        self.preview_optional_cast_costs(
+            goal,
+            purpose,
+            source,
             Some(evidence::cost(threshold)),
             None,
             selection.map_or(&[], |e| e.selected.as_slice()),
             selection.is_some_and(|e| e.complete),
             &[],
             &[CastCostClause::Additional],
-        ) {
-            return result;
-        }
-        let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(purpose);
-        state.reachable_with_evidence(&goal, Some(threshold), &mut HashSet::new())
+        )
+        .expect("an evidence clause always has an ordered payment preview")
     }
     pub(super) fn announcement_payment_request(
         &self,
@@ -5820,10 +5812,10 @@ impl Game {
         }
         if a.item.kind == StackKind::Spell
             && a.item.source.is_some_and(|source| {
-                self.cast_uses_target_life_costs(a.item.controller, source.card)
+                self.cast_requires_target_payment(a.item.controller, source.card)
             })
         {
-            return self.target_life_announcement_fundable(a, cost);
+            return self.target_payment_announcement_fundable(a, cost);
         }
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
@@ -6972,6 +6964,7 @@ impl Game {
             || announcement.additional_cost().is_some_and(|cost| {
                 cost.kind == EffectChoiceKind::ReturnTappedCreature
                     || cost.kind.uses_target_mana_value()
+                    || evidence::threshold(cost).is_some()
             })
             || announcement.self_graveyard_cast_cost().is_some()
             || announcement.has_ordered_life_cost()

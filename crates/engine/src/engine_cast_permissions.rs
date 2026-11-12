@@ -796,7 +796,7 @@ impl Game {
         }
         if scalar_x
             && definition.explicit_additional_mana().is_none()
-            && !self.cast_uses_target_life_costs(actor, definition)
+            && !self.cast_requires_target_payment(actor, definition)
             && origin_life_cost.is_none()
             && warp.is_none()
             && exile_play_surcharge == 0

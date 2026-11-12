@@ -260,7 +260,8 @@ impl Announcement {
                         .expect("announcement has object source")
                         .card
                         .collect_evidence_cost()
-                        .unwrap(),
+                        .unwrap()
+                        .into(),
                 ))
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
@@ -352,6 +353,14 @@ impl Announcement {
                         }
                         if cost.kind == EffectChoiceKind::BlightXCost {
                             cost.kind = EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0));
+                        }
+                        if cost.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
+                            && let Some(value) = self
+                                .cast_costs
+                                .as_ref()
+                                .and_then(|costs| costs.target_mana_value)
+                        {
+                            cost.kind = EffectChoiceKind::CollectEvidence(value);
                         }
                         Some(cost)
                     })
@@ -3516,10 +3525,15 @@ impl Game {
                     .expect("validated target spell cost")
                 };
                 let fees = self.locked_target_life_costs(announcement);
-                let can_contribute = !fees.is_empty()
+                let evidence = self.target_evidence_threshold(announcement);
+                let initialize = !fees.is_empty() || evidence.is_some();
+                let can_contribute = initialize
                     && convoke::cost_potential(self, announcement.item.source.unwrap().card);
                 let announcement = self.state.announcing.as_mut().unwrap();
-                if !fees.is_empty() {
+                if let Some(threshold) = evidence {
+                    announcement.lock_target_evidence(threshold);
+                }
+                if initialize {
                     announcement.add_target_life_costs(fees.into_iter());
                     announcement.initialize_cast_costs(can_contribute);
                 }

@@ -837,8 +837,8 @@ impl Game {
         if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
             return self.different_name_sacrifice_fundable(goal, spec, amount, &[]);
         }
-        if let Some(n) = evidence::threshold(spec) {
-            return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
+        if evidence::threshold(spec).is_some() {
+            return self.preview_ordered_activation_cost(goal, spec, false);
         }
         if forage::is_forage_cost(spec) {
             return self.forage_cost_fundable(goal, spec, None);
@@ -1536,6 +1536,7 @@ impl Game {
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
+            | EffectChoiceKind::CollectEvidenceForTargetManaValue
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack
             | EffectChoiceKind::SacrificeOrDiscard { .. }

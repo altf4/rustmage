@@ -318,8 +318,8 @@ impl FundingState<'_> {
             }
             // Any one potential card is treated as sufficient for a positive
             // weight. Its future face, colors and value need not be stable.
-            EffectChoiceKind::CollectEvidence(n)
-            | EffectChoiceKind::ExileGraveyardSymbols { minimum: n, .. } => {
+            EffectChoiceKind::CollectEvidence(n) => n == 0 || potential_graveyard > 0,
+            EffectChoiceKind::ExileGraveyardSymbols { minimum: n, .. } => {
                 n == 0 || potential_graveyard > 0
             }
             EffectChoiceKind::RemoveCreatureCounters(n) => n == 0 || battlefield > 0,
@@ -1986,6 +1986,14 @@ impl FundingState<'_> {
                 && (!c.exact || c.selected.len() == amount)
                 && candidates.len() >= amount;
         }
+        if remaining.is_empty()
+            && c.additional
+                .is_some_and(|cost| evidence::threshold(cost).is_some())
+        {
+            // The eligible mana values already met the threshold above. No other
+            // clause can require a particular subset of those objects.
+            return true;
+        }
         let mut selected = c.selected.clone();
         self.complete_object_choices(
             c,
@@ -2257,7 +2265,7 @@ impl Game {
         world.reachable(&goal, &mut HashSet::new())
     }
     pub(in crate::engine) fn teamwork_proposal_fundable(&self, a: &Announcement) -> bool {
-        if self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card) {
+        if self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card) {
             return a
                 .cost_options()
                 .any(|cost| self.announcement_cost_fundable(a, cost));

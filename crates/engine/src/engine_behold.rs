@@ -65,8 +65,8 @@ impl Game {
         self.continue_announcement_choices(false);
     }
     pub(super) fn behold_announcement_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
-        if self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card) {
-            return self.target_life_announcement_fundable(a, cost);
+        if self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card) {
+            return self.target_payment_announcement_fundable(a, cost);
         }
         if a.item.mode.is_none()
             && let Some(modes) = a.item.modes()

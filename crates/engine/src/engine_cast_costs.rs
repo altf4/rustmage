@@ -137,6 +137,10 @@ impl Announcement {
             self.add_cast_cost_clause(CastCostClause::Life(life));
         }
     }
+    pub(super) fn lock_target_evidence(&mut self, threshold: u64) {
+        self.add_cast_cost_clause(CastCostClause::Mana);
+        self.cast_costs.as_mut().unwrap().target_mana_value = Some(threshold);
+    }
     pub(super) fn add_target_life_costs(&mut self, fees: impl Iterator<Item = u32>) {
         for amount in fees {
             self.add_cast_cost_clause(CastCostClause::Mana);
@@ -193,6 +197,7 @@ impl Announcement {
         if self.additional_cost().is_some_and(|s| {
             s.kind == EffectChoiceKind::ReturnTappedCreature
                 || s.kind.uses_target_mana_value()
+                || s.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
                 || matches!(
                     s.kind.payment_kind(),
                     EffectChoiceKind::BeholdMany(_)

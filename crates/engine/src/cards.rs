@@ -1666,7 +1666,9 @@ pub enum EffectChoiceKind {
         maximum: u32,
         tapped: bool,
     },
-    CollectEvidence(u16),
+    CollectEvidence(u64),
+    /// Collect evidence equal to the total mana value of the announced targets.
+    CollectEvidenceForTargetManaValue,
     Forage,
     ForageOrBlack,
     Sacrifice,

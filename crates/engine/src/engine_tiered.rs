@@ -96,7 +96,7 @@ impl Game {
             .card;
         if a.pay_window
             && a.item.kind == StackKind::Spell
-            && self.cast_uses_target_life_costs(a.item.controller, card)
+            && self.cast_requires_target_payment(a.item.controller, card)
         {
             let mut proposal = a.clone();
             proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
