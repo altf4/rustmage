@@ -146,7 +146,10 @@ const COPY_LINKED: CardRules = CardRules {
         cycling: false,
         cost: ActivationCost::ZERO,
         targets: TargetPlan::NONE,
-        program: &[Instruction::MayCopyLinkedExiledCreatureUntilEndOfTurn],
+        program: &[
+            Instruction::MayCopyLinkedExiledCreatureUntilEndOfTurn,
+            Instruction::GainLife(PlayerSet::Controller, 1),
+        ],
         sorcery: false,
         once_per_turn: false,
     }],
@@ -180,7 +183,25 @@ fn linked_copy_is_exact_optional_and_lasts_through_this_turn() {
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
     reject(&mut game, Action::ChooseLinkedExile { object: wrong });
+    reject(&mut game, Action::ChooseOptional { accept: true });
+    let decline = Action::ChooseOptional { accept: false };
+    let decline_index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == decline)
+        .unwrap();
+    let mut declined = game.clone();
+    let mut indexed = game.clone();
+    act(&mut declined, decline);
+    indexed
+        .apply_index(player, game.revision(), decline_index)
+        .unwrap();
+    assert_eq!(declined.snapshot(), indexed.snapshot());
+    assert_eq!(declined.object_view(source).card, creature);
+    assert_eq!(declined.state.players[player.index()].life, 21);
+    assert_eq!(declined.object_ref(donor.card), donor);
     act(&mut game, Action::ChooseLinkedExile { object: donor });
+    assert_eq!(game.state.players[player.index()].life, 21);
     assert_eq!(game.object_ref(source), exact);
     assert_eq!(
         game.object_view(source).card,

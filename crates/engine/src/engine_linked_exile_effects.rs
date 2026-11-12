@@ -297,6 +297,24 @@ impl Game {
         true
     }
 
+    pub(super) fn may_decline_linked_exile_copy(&self) -> bool {
+        self.state
+            .linked_choices
+            .as_ref()
+            .and_then(|state| state.linked_exile_mode)
+            == Some(LinkedExileMode::CopyCreatureUntilEndOfTurn)
+    }
+
+    pub(super) fn decline_linked_exile_copy(&mut self) {
+        assert!(self.may_decline_linked_exile_copy());
+        self.state
+            .linked_choices
+            .as_mut()
+            .unwrap()
+            .linked_exile_mode = None;
+        self.run_program();
+    }
+
     pub(super) fn finish_linked_exile_effect(&mut self, mode: LinkedExileMode, object: ObjectRef) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;

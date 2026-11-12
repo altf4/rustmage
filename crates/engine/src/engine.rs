@@ -5653,6 +5653,11 @@ impl Game {
                         return true;
                     }
                 }
+                if self.may_decline_linked_exile_copy()
+                    && emit(Action::ChooseOptional { accept: false })
+                {
+                    return true;
+                }
             }
             Pending::ManaValueParity { .. } => {
                 for parity in [ManaValueParity::Odd, ManaValueParity::Even] {
@@ -9881,6 +9886,11 @@ impl Game {
                 if matches!(self.state.pending, Pending::Replacement { .. }) =>
             {
                 self.choose_optional_token_replacement(accept);
+            }
+            Action::ChooseOptional { accept: false }
+                if matches!(self.state.pending, Pending::LinkedExile { .. }) =>
+            {
+                self.decline_linked_exile_copy();
             }
             Action::ChooseOptional { accept: false }
                 if matches!(self.state.pending, Pending::EffectDiscard { .. }) =>
