@@ -468,7 +468,7 @@ fn nashi_mills_actual_combat_damage_and_counts_only_cards_moved_to_hand() {
         let object = game.object_ref(card);
         act(&mut game, Action::SelectMilled { object });
     }
-    act(&mut game, Action::FinishMilledSelection);
+    settle(&mut game);
     assert_eq!(game.object_view(enchantment).zone, Zone::Hand);
     assert_eq!(game.object_view(legendary).zone, Zone::Hand);
     assert_eq!(game.counter_count(nashi, CounterKind::PlusOne), 0);
@@ -482,12 +482,18 @@ fn flytrap_announces_divisions_and_doubles_the_new_totals_at_six_types() {
     let flytrap = put(&mut game, player, "Omnivorous Flytrap", Zone::Hand);
     let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let second = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let ooze = put(
+        &mut game,
+        player.other(),
+        "Scavenging Ooze",
+        Zone::Battlefield,
+    );
     let mut three = game.clone();
     cast(&mut three, flytrap, None);
     settle(&mut three);
     assert_eq!(three.counter_count(first, CounterKind::PlusOne), 0);
 
-    put(&mut game, player, "Bear Cub", Zone::Graveyard);
+    let fourth = put(&mut game, player, "Bear Cub", Zone::Graveyard);
     cast(&mut game, flytrap, None);
     pass_pair(&mut game);
     act(&mut game, target(first));
@@ -496,6 +502,18 @@ fn flytrap_announces_divisions_and_doubles_the_new_totals_at_six_types() {
     reject(&mut game, Action::AllocateTargetAmount { amount: 0 });
     act(&mut game, Action::AllocateTargetAmount { amount: 1 });
     act(&mut game, Action::AllocateTargetAmount { amount: 1 });
+    let mut below_delirium = game.clone();
+    act(&mut below_delirium, Action::Pass);
+    act(&mut below_delirium, activation(ooze));
+    act(&mut below_delirium, target(fourth));
+    finish_targets_and_pay(&mut below_delirium);
+    settle(&mut below_delirium);
+    assert_eq!(below_delirium.object_view(fourth).zone, Zone::Exile);
+    assert_eq!(below_delirium.counter_count(first, CounterKind::PlusOne), 0);
+    assert_eq!(
+        below_delirium.counter_count(second, CounterKind::PlusOne),
+        0
+    );
     settle(&mut game);
     assert_eq!(game.counter_count(first, CounterKind::PlusOne), 1);
     assert_eq!(game.counter_count(second, CounterKind::PlusOne), 1);
@@ -722,6 +740,7 @@ fn wickerfolk_thresher_has_a_private_land_choice_and_rechecks_delirium() {
     act(&mut no_delirium, target(fourth));
     finish_targets_and_pay(&mut no_delirium);
     settle(&mut no_delirium);
+    assert_eq!(no_delirium.object_view(fourth).zone, Zone::Exile);
     assert_eq!(no_delirium.object_view(land).zone, Zone::Library);
 
     progress_until(&mut game, |game| {
