@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0cca00548691c2732917635b9dc4818491b40689858918afbc0c9de0e0d6b1d3",
+  "catalogue_version": "90c1ff6cfb0a12a6e88f1d3325cbeae2dee6d1ecbe2ca2c4b1f24777e8163113",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4697,
-  "implemented_total": 4713,
+  "implemented_standard_cards": 4699,
+  "implemented_total": 4715,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 167,
-      "gated": 97
+      "complete": 169,
+      "gated": 95
     },
     "ecc": {
       "total": 7,
@@ -23877,8 +23877,8 @@
     {
       "name": "Norin, Swift Survivalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/norin_swift_survivalist.rs",
       "set": "dsk"
     },
@@ -23973,8 +23973,8 @@
     {
       "name": "Nowhere to Run",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/nowhere_to_run.rs",
       "set": "dsk"
     },
