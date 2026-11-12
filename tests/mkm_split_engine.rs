@@ -114,7 +114,7 @@ fn selected_half_controls_timing_cost_targets_and_stack_characteristics() {
 
     let spell = &game.spell_characteristics()[0];
     assert_eq!(spell.physical_card, SPLIT);
-    assert_eq!(spell.face, CastFace::Split(SplitHalf::Left));
+    assert_eq!(spell.face, CastFace::SplitLeft);
     assert_eq!(spell.name, LEFT.name());
     assert_eq!(spell.mana_cost, "{U}");
     assert_eq!(spell.mana_value, 1);
@@ -138,7 +138,7 @@ fn selected_half_controls_timing_cost_targets_and_stack_characteristics() {
     );
     pay(&mut indexed);
     let spell = &indexed.spell_characteristics()[0];
-    assert_eq!(spell.face, CastFace::Split(SplitHalf::Right));
+    assert_eq!(spell.face, CastFace::SplitRight);
     assert_eq!(spell.type_line, "Sorcery");
     assert_eq!(spell.mana_value, 2);
     assert_eq!(spell.colors, 8);
@@ -192,11 +192,8 @@ fn free_cast_during_resolution_offers_both_halves_and_halves_cannot_be_deck_card
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
     let object = game.object_ref(split);
-    let options =
-        [SplitHalf::Left, SplitHalf::Right].map(|half| Action::CastFreeDuringResolution {
-            object,
-            face: CastFace::Split(half),
-        });
+    let options = [CastFace::SplitLeft, CastFace::SplitRight]
+        .map(|face| Action::CastFreeDuringResolution { object, face });
     assert!(
         options
             .iter()

@@ -278,16 +278,6 @@ pub enum SplitHalf {
     Right,
 }
 
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-impl SplitHalf {
-    pub(crate) const fn index(self) -> usize {
-        match self {
-            Self::Left => 0,
-            Self::Right => 1,
-        }
-    }
-}
-
 /// The two spell definitions of one permanent split card. The root's printed
 /// trigger slots and static groups remain stable as its doors change.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

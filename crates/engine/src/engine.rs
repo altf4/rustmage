@@ -1664,17 +1664,17 @@ pub enum CastFace {
     Back,
     RoomLeft,
     RoomRight,
-    Split(crate::cards::SplitHalf),
+    SplitLeft,
+    SplitRight,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastFace {
     pub(super) fn choices(card: Card) -> impl Iterator<Item = Self> {
-        use crate::cards::SplitHalf;
         let faces: &[Self] = if card.room().is_some() {
             &[Self::RoomLeft, Self::RoomRight]
         } else if card.split_faces().is_some() {
-            &[Self::Split(SplitHalf::Left), Self::Split(SplitHalf::Right)]
+            &[Self::SplitLeft, Self::SplitRight]
         } else {
             &[Self::Normal, Self::Adventure, Self::Omen, Self::Back]
         };
@@ -1689,7 +1689,23 @@ impl CastFace {
             Self::Back => card.back_face(),
             Self::RoomLeft => Some(card.room()?.halves[RoomDoor::Left.index()]),
             Self::RoomRight => Some(card.room()?.halves[RoomDoor::Right.index()]),
-            Self::Split(half) => Some(card.split_faces()?[half.index()]),
+            Self::SplitLeft => Some(card.split_faces()?[0]),
+            Self::SplitRight => Some(card.split_faces()?[1]),
+        }
+    }
+
+    pub(super) const fn from_split_half(half: crate::cards::SplitHalf) -> Self {
+        match half {
+            crate::cards::SplitHalf::Left => Self::SplitLeft,
+            crate::cards::SplitHalf::Right => Self::SplitRight,
+        }
+    }
+
+    pub(super) const fn split_half(self) -> Option<crate::cards::SplitHalf> {
+        match self {
+            Self::SplitLeft => Some(crate::cards::SplitHalf::Left),
+            Self::SplitRight => Some(crate::cards::SplitHalf::Right),
+            _ => None,
         }
     }
 
@@ -8550,7 +8566,7 @@ impl Game {
                 method,
                 flash_surcharge,
             } => {
-                let face = CastFace::Split(half);
+                let face = CastFace::from_split_half(half);
                 if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
                     self.cast_during_resolution_with_cost(
                         actor,

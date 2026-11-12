@@ -263,7 +263,7 @@ impl Game {
             return false;
         }
         CastFace::choices(object.card).any(|face| {
-            let CastFace::Split(half) = face else {
+            let Some(half) = face.split_half() else {
                 return false;
             };
             let definition = face.definition(object.card).expect("split half");
@@ -308,7 +308,7 @@ impl Game {
         allow_surcharge: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        if !matches!(face, CastFace::Normal | CastFace::Split(_)) {
+        if face != CastFace::Normal && face.split_half().is_none() {
             return false;
         }
         for (kind, method) in [
@@ -331,7 +331,7 @@ impl Game {
                         sorcery,
                         flash_surcharge,
                     )
-                    && emit(if let CastFace::Split(half) = face {
+                    && emit(if let Some(half) = face.split_half() {
                         Action::AnnounceSplit {
                             card,
                             half,
