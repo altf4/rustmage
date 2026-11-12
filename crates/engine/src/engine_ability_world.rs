@@ -1221,13 +1221,7 @@ pub(super) trait CharacteristicWorld {
             return true;
         }
         let evaluation = ability_evaluation::evaluate_if_needed(self);
-        if evaluation.is_none()
-            && self.definition(id).room().is_none()
-            && !matches!(
-                self.object(id).card.entry_choice(),
-                Some(EntryChoiceKind::NamedModes(_))
-            )
-        {
+        if evaluation.is_none() && !self.definition(id).has_conditional_static_groups() {
             return true;
         }
         self.object(id)

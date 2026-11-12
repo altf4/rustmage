@@ -7,6 +7,7 @@ use rustmage_core::{cards::*, engine::*};
 use support::*;
 
 const CASE: Card = Card::from_catalogue_id(667); // Case of the Pilfered Proof
+const HOTHOUSE: Card = Card::from_catalogue_id(666); // Case of the Locked Hothouse
 const AUDITOR: Card = Card::from_catalogue_id(660); // Case File Auditor
 const CLUE: Card = Card::from_catalogue_id(5296);
 const EXTRA_CLUE: ReplacementSpec = ReplacementSpec::AddToken(CLUE);
@@ -79,6 +80,51 @@ const CASE_RULES: CardRules = CardRules {
     extras: &CardExtras {
         solved_static_groups: &[2, 3],
         replacement_effects: &[EXTRA_CLUE],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const HOTHOUSE_RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            guard: StepGuard::SourceUnsolved(&StepGuard::Threshold {
+                value: StepValue::Lands,
+                minimum: Some(7),
+                maximum: None,
+            }),
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::SolveSource],
+    }],
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AdditionalLandPlays(1)],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::LookAtLibraryTop],
+        },
+        StaticAbilityGroup {
+            line: 3,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[
+                StaticAbilityFragment::PlayLandFromLibraryTop,
+                StaticAbilityFragment::CastCreatureFromLibraryTop,
+                StaticAbilityFragment::CastFromLibraryTop(CastFilter::Enchantment),
+            ],
+        },
+    ],
+    extras: &CardExtras {
+        solved_static_groups: &[2, 3],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY
@@ -334,4 +380,77 @@ fn solved_rewards_gate_triggers_replacements_and_activations_without_becoming_co
     settle(&mut game);
     assert_eq!(life(&game, player), 22);
     assert_eq!(clues(&game, player), 5);
+}
+
+#[test]
+fn solved_library_permissions_keep_the_top_private_and_use_normal_play_timing() {
+    let _rules = fixture_rules::activate(&[(HOTHOUSE, &HOTHOUSE_RULES)]);
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let case = spawn(&mut game, player, HOTHOUSE, Zone::Battlefield);
+    let forests = [(); 5].map(|_| put(&mut game, player, "Forest", Zone::Battlefield));
+    let island = put(&mut game, player, "Island", Zone::Hand);
+    let mountain = put(&mut game, player, "Mountain", Zone::Hand);
+    let spell = put(&mut game, player, "Grizzly Bears", Zone::Library);
+    reject(&mut game, Action::AnnounceCast { card: spell });
+    let land = put(&mut game, player, "Forest", Zone::Library);
+    let play_top = Action::PlayLand { card: land };
+    let top_for = |game: &Game, viewer| {
+        game.observe(viewer).known_library_top[player.index()]
+            .as_ref()
+            .map(|top| top.object)
+    };
+
+    assert_eq!(top_for(&game, player), None);
+    assert_eq!(top_for(&game, opponent), None);
+    reject(&mut game, play_top.clone());
+    act(&mut game, Action::PlayLand { card: island });
+    act(&mut game, Action::PlayLand { card: mountain });
+    assert_eq!(game.object_view(mountain).zone, Zone::Battlefield);
+    assert_eq!(top_for(&game, player), None);
+
+    end_step(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+    assert_eq!(top_for(&game, player), None);
+    settle(&mut game);
+    assert_eq!(solved(&game, player), [game.object_ref(case)]);
+    assert_eq!(top_for(&game, player), Some(game.object_ref(land)));
+    assert_eq!(top_for(&game, opponent), None);
+    reject(&mut game, play_top.clone());
+
+    // This draw leaves the land on top for the next main phase.
+    let draw = put(&mut game, player, "Forest", Zone::Library);
+    let turn = game.state.turn;
+    for _ in 0..32 {
+        if game.state.turn > turn && game.state.active == player && game.state.step == Step::Main1 {
+            break;
+        }
+        let action = if game.state.pending == Pending::Attackers {
+            Action::FinishAttackers
+        } else {
+            Action::Pass
+        };
+        act(&mut game, action);
+    }
+    assert_eq!(game.state.step, Step::Main1);
+    assert_eq!(game.actor(), Some(player));
+    assert_eq!(game.object_view(draw).zone, Zone::Hand);
+    assert_eq!(top_for(&game, player), Some(game.object_ref(land)));
+
+    act(&mut game, play_top);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    assert_eq!(top_for(&game, player), Some(game.object_ref(spell)));
+    assert_eq!(top_for(&game, opponent), None);
+    for card in &forests[..2] {
+        act(&mut game, Action::TapMana { card: *card });
+    }
+    cast(&mut game, spell, None);
+    assert_eq!(
+        game.state.stack.last().unwrap().cast.unwrap().origin,
+        Zone::Library
+    );
+    settle(&mut game);
+    assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
+    assert_eq!(top_for(&game, opponent), None);
 }
