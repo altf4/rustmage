@@ -1256,7 +1256,7 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
             if !evaluation.group_available(reference, group) {
                 continue;
             }
-            for fragment in origin.fragments {
+            for (fragment_index, fragment) in origin.fragments.iter().enumerate() {
                 if !matches!(
                     fragment,
                     StaticAbilityFragment::AttachmentRule(..)
@@ -1266,9 +1266,19 @@ pub(super) fn apply_rule_effects<W: CharacteristicWorld + ?Sized>(
                     continue;
                 }
                 for (recipient, _) in game.state.objects.iter().enumerate() {
-                    if let Some(row) =
-                        grant_fragment(world, reference, fragment, recipient as CardId, 0)
-                    {
+                    if let Some(row) = grant_fragment(
+                        world,
+                        reference,
+                        fragment,
+                        recipient as CardId,
+                        0,
+                        ManaGrantOrigin::Static {
+                            line: origin.line,
+                            fragment: u16::try_from(fragment_index)
+                                .expect("immutable ability fragment"),
+                            timestamp: 0,
+                        },
+                    ) {
                         evaluation.result.objects[recipient].keywords = evaluation.result.objects
                             [recipient]
                             .keywords
