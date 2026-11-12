@@ -3,10 +3,21 @@
   "catalogue_id": 873,
   "oracle_id": "4c495e94-3194-47c7-8129-dd0a0f915daa",
   "facts_sha256": "e3a2fb6eb4ff34c813b3e7db22124bcaf61130d48c1ee5e20e195d440f3daa7b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2497302ff41737475e6364707ba6e89412b488d2734edde511c0e066a5f0fcd5"
   },
-  "physical_metadata_sha256": "5466063f8f3174197c7ae7e817d308cd6003564a1aeafcf4897512088ca0c7d7"
+  "physical_metadata_sha256": "5466063f8f3174197c7ae7e817d308cd6003564a1aeafcf4897512088ca0c7d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CovetedFalcon.java",
+  "java_sha256": "3a904d2ed07de32f181815f1c13b67e08b67faff935b76cfed2a206c7e5ef330",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

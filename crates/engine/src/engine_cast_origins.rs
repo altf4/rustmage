@@ -28,6 +28,9 @@ impl Card {
                         | StaticAbilityFragment::CastCreatureFromLibraryTop
                         | StaticAbilityFragment::CastFromLibraryTop(_)
                         | StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
+                        | StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(
+                            _
+                        )
                         | StaticAbilityFragment::PlayFromLibraryTopAfterAttacking
                         | StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(_)
                         | StaticAbilityFragment::PlayLandFromLibraryTop
@@ -37,6 +40,7 @@ impl Card {
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn { .. }
                         | StaticAbilityFragment::SpendAnyManaForCreatures
+                        | StaticAbilityFragment::SpendAnyColorForSpellSubtype(_)
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
                         | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
@@ -287,9 +291,19 @@ pub(super) fn spends_any_color<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    matches!(purpose, mana_lots::Purpose::Activation(source) if source.activation_object.is_some_and(|source| {
-        activation_spends_any_color(world, player, source)
-    }))
+    match purpose {
+        mana_lots::Purpose::Spell(source) => has_fragment(world, player, |fragment| {
+            let StaticAbilityFragment::SpendAnyColorForSpellSubtype(subtype) = *fragment else {
+                return false;
+            };
+            subtypes::spell_subtypes(world, player, source.card, source.subtypes)
+                .has(source.card, subtype)
+        }),
+        mana_lots::Purpose::Activation(source) => source
+            .activation_object
+            .is_some_and(|object| activation_spends_any_color(world, player, object)),
+        _ => false,
+    }
 }
 fn substitute_mana(mut required: Mana, mut generic: u32, symbols: usize) -> (Mana, u32) {
     for amount in &mut required[..symbols] {
@@ -394,7 +408,7 @@ impl Game {
         CastFace::choices(physical)
             .filter(|&face| face != CastFace::Back || !physical.transforming_double_face())
             .filter_map(|face| face.definition(physical))
-            .chain(physical.disguise_cost().map(|_| {
+            .chain(physical.disguise_spec().map(|_| {
                 Card::from_name("@face-down/disguise").expect("pinned catalogue identity")
             }))
             .any(|definition| library_spell_face_permission(self, player, definition))
@@ -437,7 +451,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
         casting_prohibited: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if actor != self.state.active {
@@ -538,7 +552,7 @@ impl Game {
                                 permission,
                                 permanent_type,
                             },
-                            mana_alternatives,
+                            cast_alternatives,
                             emit,
                         )
                     {
@@ -594,7 +608,7 @@ impl Game {
                                 permission,
                                 permanent_type,
                             },
-                            mana_alternatives,
+                            cast_alternatives,
                             emit,
                         ) || cast_options
                             .into_iter()
@@ -696,6 +710,8 @@ pub struct ResolutionPaidCast {
     pub kinds: u8,
     pub exile_instants_sorceries: bool,
     #[serde(skip_serializing_if = "is_false")]
+    pub bottom_on_graveyard: bool,
+    #[serde(skip_serializing_if = "is_false")]
     pub spend_any_mana: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -709,6 +725,9 @@ pub struct ResolutionFreeCasts {
     pub siege_transformed: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paid: Option<ResolutionPaidCast>,
+    /// Nonzero masks constrain the type of each offered spell face.
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub spell_kinds: u8,
     /// Successful spells still permitted by this immediate casting instruction.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub casts_remaining: Option<u16>,
@@ -816,6 +835,7 @@ impl Game {
                 permanent_spell_only: false,
                 uncast_to_hand: true,
                 siege_transformed: false,
+                spell_kinds: 0,
                 paid: None,
                 casts_remaining: Some(1),
                 pending_cast: None,
@@ -855,17 +875,34 @@ impl Game {
         remaining: Vec<ObjectRef>,
         casts_remaining: Option<u16>,
     ) {
+        self.offer_exiled_cards_with_paid_rules(
+            player,
+            remaining,
+            casts_remaining,
+            ResolutionPaidCast {
+                kinds: u8::MAX,
+                exile_instants_sorceries: false,
+                bottom_on_graveyard: false,
+                spend_any_mana: false,
+            },
+        );
+    }
+
+    pub(super) fn offer_exiled_cards_with_paid_rules(
+        &mut self,
+        player: Player,
+        remaining: Vec<ObjectRef>,
+        casts_remaining: Option<u16>,
+        paid: ResolutionPaidCast,
+    ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
-            paid: Some(ResolutionPaidCast {
-                kinds: u8::MAX,
-                exile_instants_sorceries: false,
-                spend_any_mana: false,
-            }),
+            spell_kinds: 0,
+            paid: Some(paid),
             casts_remaining,
             pending_cast: None,
             remaining_mana_value: None,
@@ -933,6 +970,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
@@ -972,6 +1010,7 @@ impl Game {
             permanent_spell_only,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,
@@ -1008,9 +1047,11 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: Some(ResolutionPaidCast {
                 kinds,
                 exile_instants_sorceries,
+                bottom_on_graveyard: false,
                 spend_any_mana: false,
             }),
             casts_remaining: Some(1),
@@ -1028,6 +1069,29 @@ impl Game {
             player: item.controller,
         };
     }
+    pub(super) fn offer_opponent_graveyard_free_cast(&mut self, player: Player) -> bool {
+        let remaining: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.owner == player.other() && object.zone == Zone::Graveyard && object.is_card()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        if remaining.is_empty() {
+            return false;
+        }
+        self.offer_exact_free_casts(player, remaining, Zone::Graveyard, None, false);
+        self.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .exile_on_graveyard = true;
+        true
+    }
+
     pub(super) fn offer_targeted_graveyard_cast(
         &mut self,
         item: &SpellView,
@@ -1054,6 +1118,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid,
             casts_remaining: paid.map(|_| 1),
             pending_cast: None,
@@ -1089,6 +1154,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -1137,12 +1203,12 @@ impl Game {
             return false;
         }
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
-        let mana_alternatives = if !casting_prohibited
+        let cast_alternatives = if !casting_prohibited
             && free.paid.is_some()
             && free.alternative_cost.is_none()
             && !free.discard_instead_of_mana
         {
-            self.source_mana_alternatives(player)
+            self.source_cast_alternatives(player)
         } else {
             Vec::new()
         };
@@ -1188,6 +1254,7 @@ impl Game {
             if free
                 .paid
                 .is_some_and(|paid| paid.kinds == u8::MAX || paid.kinds & 1 != 0)
+                && (free.spell_kinds == 0 || free.spell_kinds & 1 != 0)
                 && !free.siege_transformed
                 && free.maximum_mana_value.is_none_or(|maximum| maximum > 0)
                 && self.disguise_mana_fundable(player, object.card)
@@ -1205,6 +1272,8 @@ impl Game {
                 let definition = face.definition(physical);
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
+                        && (free.spell_kinds == 0
+                            || card.kind_mask() & u16::from(free.spell_kinds) != 0)
                         && (!free.permanent_spell_only || CastFilter::Permanent.matches(card))
                         && free
                             .permanent_type
@@ -1272,7 +1341,7 @@ impl Game {
                         face,
                         true,
                         PaidCastOrigin::PaidResolution,
-                        &mana_alternatives,
+                        &cast_alternatives,
                         emit,
                     )
                 {
@@ -1300,8 +1369,14 @@ impl Game {
                     return true;
                 }
                 if paid_graveyard
-                    && face == CastFace::Normal
-                    && self.visit_granted_flashback_casts(player, object.card, true, false, emit)
+                    && self.visit_granted_flashback_face(
+                        player,
+                        object.card,
+                        face,
+                        true,
+                        false,
+                        emit,
+                    )
                 {
                     return true;
                 }
@@ -1395,7 +1470,7 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
         method_override: Option<CastMethod>,
-        alternative_mana: Option<ManaCost>,
+        alternative: Option<PaidCastAlternative>,
         configure: impl FnOnce(&mut Self, &mut SpellView),
     ) {
         let offer = self.state.resolution_free_casts.as_ref().unwrap();
@@ -1463,7 +1538,7 @@ impl Game {
         }
         self.remember_suspend_cast(object, item.id);
         configure(self, &mut item);
-        if let Some(cost) = alternative_mana {
+        if let Some(choice) = alternative {
             if method == CastMethod::WebSlinging {
                 Self::configure_web_slinging(&mut item);
             }
@@ -1472,7 +1547,7 @@ impl Game {
                 Counters::default(),
                 None,
                 None,
-                |announcement| announcement.origin_alternative_cost = Some(cost),
+                |announcement| choice.configure_announcement(announcement),
             );
         } else {
             self.open_payment_announcement_configured(
@@ -1533,7 +1608,29 @@ impl Game {
         let Some(damage) = item.damage_event else {
             return false;
         };
-        let ids = exile::top_library_cards(self, damage.player, damage.amount);
+        // The maximum is exclusive. At or above u64::MAX every represented
+        // mana value qualifies, so leave the offer uncapped.
+        let maximum_mana_value = u64::try_from(damage.amount)
+            .ok()
+            .and_then(|value| value.checked_add(1));
+        self.exile_top_offer_free_cast(
+            item.controller,
+            damage.player,
+            damage.amount,
+            maximum_mana_value,
+            0,
+        )
+    }
+
+    pub(super) fn exile_top_offer_free_cast(
+        &mut self,
+        player: Player,
+        library: Player,
+        amount: u128,
+        maximum_mana_value: Option<u64>,
+        spell_kinds: u8,
+    ) -> bool {
+        let ids = exile::top_library_cards(self, library, amount);
         let events = self.move_objects_raw(&ids, Zone::Exile);
         let remaining: Vec<_> = events
             .iter()
@@ -1544,17 +1641,13 @@ impl Game {
         if remaining.is_empty() {
             return false;
         }
-        // Existing maximum is exclusive. At/above u64::MAX every represented
-        // card mana value qualifies; do not narrow the frozen damage first.
-        let maximum_mana_value = u64::try_from(damage.amount)
-            .ok()
-            .and_then(|value| value.checked_add(1));
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -1564,12 +1657,10 @@ impl Game {
             origin: Zone::Exile,
             exile_on_graveyard: false,
             allow_lands: false,
-            player: item.controller,
+            player,
             remaining,
         }));
-        self.state.pending = Pending::ResolutionCasts {
-            player: item.controller,
-        };
+        self.state.pending = Pending::ResolutionCasts { player };
         true
     }
     pub(super) fn exile_target_top_cast_free(
@@ -1610,6 +1701,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(maximum_casts),
             pending_cast: None,

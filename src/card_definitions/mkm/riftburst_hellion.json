@@ -3,10 +3,14 @@
   "catalogue_id": 3522,
   "oracle_id": "e121f9cb-ed25-4be1-9822-b68cce2f2623",
   "facts_sha256": "18b72a57ce9a50f2ebc259963d6df7236fc974224fa33ef928ea7775855a48fc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8e570551fd8e87ed1ad674007672d4f4af60c8b0b4286943cf968319f09cb5fe"
   },
-  "physical_metadata_sha256": "a31c6e05123044e2e8cfbacd33a0fe6d36aaa734822bda6c20200b8d2190c30d"
+  "physical_metadata_sha256": "a31c6e05123044e2e8cfbacd33a0fe6d36aaa734822bda6c20200b8d2190c30d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RiftburstHellion.java",
+  "java_sha256": "c2a93f6f9b3da2ffdc3ed11e1fd0000e695b46df9449d2a24cafd806f5a85d41",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

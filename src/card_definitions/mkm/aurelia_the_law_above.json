@@ -3,10 +3,21 @@
   "catalogue_id": 266,
   "oracle_id": "2a800427-ff8c-4b3c-baee-85211b70656d",
   "facts_sha256": "91195d79767561cb8ed1f4e0e4666d61d09f5279905b5cf3727e54253bc9025e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6e1139060e839614be16638f55f6b5a615499c24f2a2bebd99c93ed423fddbec"
   },
-  "physical_metadata_sha256": "ecc948e5bef5e329273bd384311e1c3dd1efc6c617168708471049544004f2fe"
+  "physical_metadata_sha256": "ecc948e5bef5e329273bd384311e1c3dd1efc6c617168708471049544004f2fe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AureliaTheLawAbove.java",
+  "java_sha256": "29c9301c68814f05fbb5622615c0d1c482b3d1324ad72c60bf6dbfd9a7cb4e7b",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    }
+  ]
 }

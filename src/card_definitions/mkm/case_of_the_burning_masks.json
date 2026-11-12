@@ -3,10 +3,31 @@
   "catalogue_id": 661,
   "oracle_id": "7c1eb874-97f3-463f-bf4e-4d82dcc16e69",
   "facts_sha256": "3c42a618082994a20acfb4589ed337ad218702df22165321887d3c4110d92f27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6ec8d4d3c5ac8151c30fdcc32e115b7e851c4978fa6fb3c1507b177891288ab3"
   },
-  "physical_metadata_sha256": "12b7d60733fa6d78e4a8d7ed622427cb489b900690dd8978a42660755dfd58e7"
+  "physical_metadata_sha256": "12b7d60733fa6d78e4a8d7ed622427cb489b900690dd8978a42660755dfd58e7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheBurningMasks.java",
+  "java_sha256": "ff0e973b10c54690326f1bc7d0d6cef0055ecea82b2cabc29196338cf0c75850",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SolvedSourceCondition.java",
+      "sha256": "f1b1db3ea216b2935bdd4f5af87c9ba222257458eb2f5e4ca1d105a4e80251d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    }
+  ]
 }

@@ -44,19 +44,24 @@ impl Game {
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
+                            | TriggerCondition::CaseSolved(_)
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::AttachedPlayerDamaged
                             | TriggerCondition::CombatDamageToController
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
                             | TriggerCondition::SelfDamaged
+                            | TriggerCondition::SelfDamagedAtLeast(_)
                             | TriggerCondition::AttachedCreatureDamaged
                             | TriggerCondition::ControlledSpellDamagesSoleCreatureTarget
                             | TriggerCondition::ControlledNoncombatDamageMatchesCreatureToughness
                             | TriggerCondition::AtStep { .. }
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp
+                            | TriggerCondition::SelfEntersOrTurnsFaceUp
+                            | TriggerCondition::FilteredEntersOrTurnsFaceUpYou { .. }
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
+                            | TriggerCondition::SelfOrControlledCreatureTurnedFaceUp
                             | TriggerCondition::YouTurnPermanentFaceUp
                             | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou
                             | TriggerCondition::YouManifestDread

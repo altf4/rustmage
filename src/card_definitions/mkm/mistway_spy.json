@@ -3,10 +3,21 @@
   "catalogue_id": 2797,
   "oracle_id": "87ccb151-a948-4e5a-878b-0d46c921a2b7",
   "facts_sha256": "658981fb12b85f30aa53dad8a6567b4d67d02607461c9fce93149b381e7c4eed",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3ff79e37273a6b8cfcfcf5d2c3a2527d470c97fda91382149e067f661aa4fa08"
   },
-  "physical_metadata_sha256": "a839f4329e08ab169405fda665b18cba4994768b11e8cbd659bf4b227768c9a9"
+  "physical_metadata_sha256": "a839f4329e08ab169405fda665b18cba4994768b11e8cbd659bf4b227768c9a9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MistwaySpy.java",
+  "java_sha256": "2b01930b826cba25b79adbbb8fb190da07ea35452dee60b2abe74d5ba0db1435",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

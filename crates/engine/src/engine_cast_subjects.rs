@@ -108,6 +108,24 @@ impl Game {
         }
     }
 
+    pub(super) fn attack_threatens_player_or_planeswalker(
+        &self,
+        attack: &AttackDeclaration,
+        player: Player,
+    ) -> bool {
+        self.on_battlefield(attack.card)
+            && self.is_creature(attack.card)
+            && match attack.defender {
+                Some(CombatDefender::Planeswalker(object)) => {
+                    self.player_or_planeswalker_defender(CombatDefender::Planeswalker(object))
+                        == Some(player)
+                        && self.current_kinds(object.card) & 64 != 0
+                }
+                Some(CombatDefender::Player(defender)) => defender == player,
+                _ => false,
+            }
+    }
+
     fn aura_protects_defender(&self, attacker: CardId, player: Player) -> bool {
         let attacker = self.object_ref(attacker);
         self.state.attachment_sources.iter().any(|&id| {

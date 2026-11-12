@@ -210,14 +210,17 @@ impl Announcement {
                 .is_some_and(|source| source.card.additional_cost().is_some())
     }
     pub(super) fn additional_cost(&self) -> Option<AdditionalCost> {
-        if let Some(costs) = &self.cast_costs
-            && let Some(active) = costs.active
-            && let CastCostClause::OriginCounters(amount) =
-                costs.clauses[usize::from(active)].clause
+        match self
+            .cast_costs
+            .as_ref()
+            .and_then(|costs| costs.active_clause())
         {
-            return Some(Game::creature_counter_spec(amount));
+            Some(CastCostClause::OriginCounters(amount)) => {
+                Some(Game::creature_counter_spec(amount))
+            }
+            Some(CastCostClause::OriginEvidence(threshold)) => Some(evidence::cost(threshold)),
+            _ => self.printed_additional_cost(),
         }
-        self.printed_additional_cost()
     }
     pub(super) fn printed_additional_cost(&self) -> Option<AdditionalCost> {
         match self.activation_cost_route {
@@ -260,7 +263,8 @@ impl Announcement {
                         .expect("announcement has object source")
                         .card
                         .collect_evidence_cost()
-                        .unwrap(),
+                        .unwrap()
+                        .into(),
                 ))
             }
             StackKind::Spell if self.item.cast.is_some_and(|c| c.bargain == Some(true)) => {
@@ -352,6 +356,14 @@ impl Announcement {
                         }
                         if cost.kind == EffectChoiceKind::BlightXCost {
                             cost.kind = EffectChoiceKind::BlightCost(self.item.x.unwrap_or(0));
+                        }
+                        if cost.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
+                            && let Some(value) = self
+                                .cast_costs
+                                .as_ref()
+                                .and_then(|costs| costs.target_mana_value)
+                        {
+                            cost.kind = EffectChoiceKind::CollectEvidence(value);
                         }
                         Some(cost)
                     })
@@ -1329,6 +1341,18 @@ impl Game {
             // abilities with targets need a source-optional target query.
             return plan == TargetPlan::NONE;
         }
+        if let Some(required) = self.exact_x_targets(item)
+            && required != 0
+        {
+            let TargetPlan::Single(spec) = plan else {
+                panic!("exact X requires one homogeneous target group");
+            };
+            let mut remaining = required;
+            return self.visit_item_targets(item, spec.rule, |_| {
+                remaining -= 1;
+                remaining == 0
+            });
+        }
         self.targets_available_with(
             plan,
             item.controller,
@@ -2147,6 +2171,7 @@ impl Game {
                     colors & (1u8 << color.index()) != 0
                 }
                 crate::cards::SourceCharacteristicFilter::Instant => Card::kinds_are_instant(kinds),
+                crate::cards::SourceCharacteristicFilter::Multicolored => colors.count_ones() >= 2,
             };
             matches
                 && query.continuous_fragment_available(id, |fragment| {
@@ -2341,8 +2366,20 @@ impl Game {
         let has_subtype = |id, subtype| world.subtypes(id).has(world.definition(id), subtype);
         match rule {
             TargetRule::OtherThanEventObject { base, excluded } => {
-                return matches!(target, Target::Card(id) if lookup(id).is_some()
-                    && excluded.is_some_and(|object| world.reference(id) != object))
+                let target_ref = match target {
+                    Target::Card(id) if lookup(id).is_some() => world.reference(id),
+                    _ => return false,
+                };
+                let distinct = excluded.is_some_and(|object| {
+                    target_ref != object
+                        && qualification
+                            .and_then(|q| q.event_object)
+                            .filter(|event| event.object == object)
+                            .is_none_or(|event| {
+                                !event.graveyard_objects().any(|card| card == target_ref)
+                            })
+                });
+                return distinct
                     && self.target_matches_in_world(
                         world,
                         *base,
@@ -2563,6 +2600,7 @@ impl Game {
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
+                    TargetPredicate::Suspected => world.suspected(id),
                     TargetPredicate::Equipped => world.equipped(id),
                     TargetPredicate::Enchanted => {
                         let recipient = world.reference(id);
@@ -3516,10 +3554,15 @@ impl Game {
                     .expect("validated target spell cost")
                 };
                 let fees = self.locked_target_life_costs(announcement);
-                let can_contribute = !fees.is_empty()
+                let evidence = self.target_evidence_threshold(announcement);
+                let initialize = !fees.is_empty() || evidence.is_some();
+                let can_contribute = initialize
                     && convoke::cost_potential(self, announcement.item.source.unwrap().card);
                 let announcement = self.state.announcing.as_mut().unwrap();
-                if !fees.is_empty() {
+                if let Some(threshold) = evidence {
+                    announcement.lock_target_evidence(threshold);
+                }
+                if initialize {
                     announcement.add_target_life_costs(fees.into_iter());
                     announcement.initialize_cast_costs(can_contribute);
                 }

@@ -1,0 +1,486 @@
+{
+  "decks": [
+    {
+      "id": "wu-detectives",
+      "name": "White-blue Detectives and Clues",
+      "cards": [
+        {
+          "name": "Case of the Pilfered Proof",
+          "oracle_id": "68d3084b-0f4b-44a6-8954-6ebaf1db9269",
+          "count": 4
+        },
+        {
+          "name": "Cold Case Cracker",
+          "oracle_id": "2e18ee5b-cda3-428b-be91-939c410256ac",
+          "count": 4
+        },
+        {
+          "name": "Deduce",
+          "oracle_id": "eeae4161-9f35-45df-8b3c-c55e37f49cd1",
+          "count": 4
+        },
+        {
+          "name": "Inside Source",
+          "oracle_id": "12bced67-69bc-4fc7-a585-577060afdd50",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Meticulous Archive",
+          "oracle_id": "ccfb8b4d-651c-418a-aa19-cb23105b3f2f",
+          "count": 4
+        },
+        {
+          "name": "No More Lies",
+          "oracle_id": "ead1ee6a-e0da-46d5-89e8-31e8c0270bc2",
+          "count": 4
+        },
+        {
+          "name": "Novice Inspector",
+          "oracle_id": "c206bdcb-d2c4-4bda-a979-6c0627ef8f73",
+          "count": 4
+        },
+        {
+          "name": "Officious Interrogation",
+          "oracle_id": "e57e448b-1186-4662-a6b0-01a9ce33b961",
+          "count": 4
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        },
+        {
+          "name": "Private Eye",
+          "oracle_id": "20750317-061b-4b65-9fc8-43477fcd7a21",
+          "count": 4
+        },
+        {
+          "name": "Projektor Inspector",
+          "oracle_id": "58b27a79-ba63-45d4-84ee-423ce0d91f6b",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "ur-artifacts",
+      "name": "Blue-red artifacts and sacrifice",
+      "cards": [
+        {
+          "name": "Case of the Filched Falcon",
+          "oracle_id": "33b31fb0-71ce-408a-a256-2a5a3b085cb6",
+          "count": 4
+        },
+        {
+          "name": "Connecting the Dots",
+          "oracle_id": "a29e2c70-8909-465b-9cec-1a7037250313",
+          "count": 4
+        },
+        {
+          "name": "Demand Answers",
+          "oracle_id": "c11e84a1-dbda-429b-8cd6-fd0deaefc689",
+          "count": 4
+        },
+        {
+          "name": "Detective's Satchel",
+          "oracle_id": "e4ecfccd-b8b4-4b18-b989-30de79b4971e",
+          "count": 4
+        },
+        {
+          "name": "Gadget Technician",
+          "oracle_id": "d7f777ae-6122-4af9-b962-7574bc8e2691",
+          "count": 4
+        },
+        {
+          "name": "Harried Dronesmith",
+          "oracle_id": "a6e2d8bd-8fe7-4de0-af25-7ad3e9dcb81b",
+          "count": 4
+        },
+        {
+          "name": "Hustle // Bustle",
+          "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Krenko, Baron of Tin Street",
+          "oracle_id": "91b2520e-85b6-4e1f-88cf-a585feeb8e65",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 10
+        },
+        {
+          "name": "Reckless Detective",
+          "oracle_id": "4debd0e4-3bb6-4dd1-addc-08e4bda69d11",
+          "count": 4
+        },
+        {
+          "name": "Thundering Falls",
+          "oracle_id": "d2bcff58-7a8a-46ef-b6b3-39501d4c8e6e",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "br-suspects",
+      "name": "Black-red suspects",
+      "cards": [
+        {
+          "name": "Case of the Stashed Skeleton",
+          "oracle_id": "64219e17-1302-4a43-85d2-8a6214448890",
+          "count": 4
+        },
+        {
+          "name": "Clandestine Meddler",
+          "oracle_id": "f11ec1c9-347d-4d79-aaa9-5919db5f9044",
+          "count": 4
+        },
+        {
+          "name": "Deadly Cover-Up",
+          "oracle_id": "04e2afbe-0c08-42bc-93e6-662066a958bf",
+          "count": 4
+        },
+        {
+          "name": "Homicide Investigator",
+          "oracle_id": "dc4d5602-47cb-47c8-8a43-3b840e12b79c",
+          "count": 4
+        },
+        {
+          "name": "Long Goodbye",
+          "oracle_id": "9d63ba8a-a5cd-4fdb-bba3-95612be0077c",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 10
+        },
+        {
+          "name": "Person of Interest",
+          "oracle_id": "3d18cd9b-6013-48d7-9269-4787e7585a51",
+          "count": 4
+        },
+        {
+          "name": "Raucous Theater",
+          "oracle_id": "04e5e84f-8fd4-43ab-8f9d-5b24646f7ae5",
+          "count": 4
+        },
+        {
+          "name": "Repeat Offender",
+          "oracle_id": "4d1885d1-212e-47ae-865f-e6dc4148ddf2",
+          "count": 4
+        },
+        {
+          "name": "Rune-Brand Juggler",
+          "oracle_id": "8c105948-4b8f-4615-b66a-2bbdb3f3d6dd",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 10
+        },
+        {
+          "name": "Toxin Analysis",
+          "oracle_id": "1f3b0b15-2c38-4aaa-b527-afbb540a6715",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "bg-evidence",
+      "name": "Black-green collect evidence",
+      "cards": [
+        {
+          "name": "Aftermath Analyst",
+          "oracle_id": "374e54d8-8e73-4268-9dde-c28c77bbbf32",
+          "count": 4
+        },
+        {
+          "name": "Analyze the Pollen",
+          "oracle_id": "ec7d550b-9e13-4249-89c7-6ad43f71ea11",
+          "count": 4
+        },
+        {
+          "name": "Bite Down on Crime",
+          "oracle_id": "ff387264-31da-4f6b-88c6-2843f56acbda",
+          "count": 4
+        },
+        {
+          "name": "Cease // Desist",
+          "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+          "count": 4
+        },
+        {
+          "name": "Chalk Outline",
+          "oracle_id": "af335eb3-f60a-44b3-a1ed-1e165f3e3605",
+          "count": 4
+        },
+        {
+          "name": "Cryptex",
+          "oracle_id": "8186a992-9065-4a7f-bb00-1c20e01e8fb6",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 10
+        },
+        {
+          "name": "Insidious Roots",
+          "oracle_id": "d75b2b8e-05c9-47da-b359-a867256d78ea",
+          "count": 4
+        },
+        {
+          "name": "Rakish Scoundrel",
+          "oracle_id": "d69cb63f-98cc-4699-a03d-4f1beeeb7065",
+          "count": 4
+        },
+        {
+          "name": "Rubblebelt Maverick",
+          "oracle_id": "1ba59349-a162-4444-b3e0-cddfc01ef03b",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 10
+        },
+        {
+          "name": "Underground Mortuary",
+          "oracle_id": "840119bf-e60f-4ff7-9c9b-d420d09df545",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "gw-disguise",
+      "name": "Green-white disguise and turn-up",
+      "cards": [
+        {
+          "name": "Airtight Alibi",
+          "oracle_id": "cb666ea8-55e3-4e27-ae6d-806677dfc17a",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 10
+        },
+        {
+          "name": "Greenbelt Radical",
+          "oracle_id": "d0a4efc3-fa68-48f2-a6d0-2fff93e05c77",
+          "count": 4
+        },
+        {
+          "name": "Hide in Plain Sight",
+          "oracle_id": "94b15f1d-827b-45e9-a684-5d0c52ea0a09",
+          "count": 4
+        },
+        {
+          "name": "Karlov Watchdog",
+          "oracle_id": "73f44500-fe83-40fa-b6f2-ed5673d0edcc",
+          "count": 4
+        },
+        {
+          "name": "Loxodon Eavesdropper",
+          "oracle_id": "141a2757-8f20-4e10-9866-bb5d612ed62d",
+          "count": 4
+        },
+        {
+          "name": "Lush Portico",
+          "oracle_id": "d51831b1-7394-456e-a1de-6787a59f5932",
+          "count": 4
+        },
+        {
+          "name": "Museum Nightwatch",
+          "oracle_id": "3891a914-e597-4126-846f-39bf8534eb92",
+          "count": 4
+        },
+        {
+          "name": "Nervous Gardener",
+          "oracle_id": "15dca6a7-8367-4b86-a86c-e44f10fb3c53",
+          "count": 4
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 10
+        },
+        {
+          "name": "Sumala Sentry",
+          "oracle_id": "6b869c33-a77c-4eb7-9df9-9815d70f7444",
+          "count": 4
+        },
+        {
+          "name": "Vitu-Ghazi Inspector",
+          "oracle_id": "22a33139-a730-4792-9dd5-2c0f99f96855",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "gu-cloak",
+      "name": "Green-blue cloak and evidence",
+      "cards": [
+        {
+          "name": "Audience with Trostani",
+          "oracle_id": "cbbb5c0c-e953-410d-88c6-8fedb719e94c",
+          "count": 4
+        },
+        {
+          "name": "Bubble Smuggler",
+          "oracle_id": "ca22fa33-5460-4d31-a9c8-4115d35b994c",
+          "count": 4
+        },
+        {
+          "name": "Evidence Examiner",
+          "oracle_id": "a3468804-26ad-4919-b030-a1906a7029e8",
+          "count": 4
+        },
+        {
+          "name": "Fae Flight",
+          "oracle_id": "d3912c82-37f8-456e-ba49-65c7f5b39d13",
+          "count": 4
+        },
+        {
+          "name": "Flotsam // Jetsam",
+          "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 10
+        },
+        {
+          "name": "Hedge Maze",
+          "oracle_id": "ca4b6689-04ee-4227-9bdc-cb5a9590c745",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 10
+        },
+        {
+          "name": "Kellan, Inquisitive Prodigy // Tail the Suspect",
+          "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+          "count": 4
+        },
+        {
+          "name": "Repulsive Mutation",
+          "oracle_id": "611bfaa6-b098-48d9-9e49-1e7dc8687f15",
+          "count": 4
+        },
+        {
+          "name": "Undercover Crocodelf",
+          "oracle_id": "3ba223b7-743f-4f99-836e-869778fb2e99",
+          "count": 4
+        },
+        {
+          "name": "Vannifar, Evolved Enigma",
+          "oracle_id": "e8aa0d7d-e5f6-4d66-bdc1-315483e1b256",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "wu-detectives",
+      "p1": "ur-artifacts",
+      "runs": [
+        {
+          "seed": 20240202,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240203,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "ur-artifacts",
+      "p1": "br-suspects",
+      "runs": [
+        {
+          "seed": 20240204,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240205,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "br-suspects",
+      "p1": "bg-evidence",
+      "runs": [
+        {
+          "seed": 20240206,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240207,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "bg-evidence",
+      "p1": "gw-disguise",
+      "runs": [
+        {
+          "seed": 20240208,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240209,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "gw-disguise",
+      "p1": "gu-cloak",
+      "runs": [
+        {
+          "seed": 20240210,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240211,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "gu-cloak",
+      "p1": "wu-detectives",
+      "runs": [
+        {
+          "seed": 20240212,
+          "starting_player": 0
+        },
+        {
+          "seed": 20240213,
+          "starting_player": 1
+        }
+      ]
+    }
+  ]
+}

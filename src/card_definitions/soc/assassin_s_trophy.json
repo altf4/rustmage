@@ -3,10 +3,21 @@
   "catalogue_id": 246,
   "oracle_id": "ac10d218-f9a6-4058-9cda-a15ca1b0b7b5",
   "facts_sha256": "958726cf2668277c20acd827a2c7b90b0528cade13dc60a1953fd20bc26c1255",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "94cd55b1945838fd6a4488f7a1f86eea142f1919ef7070e083bd5793b41adf9f"
   },
-  "physical_metadata_sha256": "9a87bdcf2fbfb90e547e59e42266af97c4d69907b193322d003613e6fe40d878"
+  "physical_metadata_sha256": "9a87bdcf2fbfb90e547e59e42266af97c4d69907b193322d003613e6fe40d878",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AssassinsTrophy.java",
+  "java_sha256": "e0e027caea5d14dc318d63cdba2bdf7dfe54e8523f949bcb82f6f06683fdab48",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayTargetControllerEffect.java",
+      "sha256": "9926405e859380634a57206fa5c0fa5a182f5cb83fa5023a2126b1b134fd7ce2"
+    }
+  ]
 }

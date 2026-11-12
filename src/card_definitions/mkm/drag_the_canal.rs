@@ -1,16 +1,25 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::CreateTokens {
+                token: Card(5329),
+                amount: 1,
+                tapped: false,
+            },
+            Instruction::IfAmountAtLeast {
+                value: AmountValue::Stat(StatValue::CreaturesDiedThisTurn),
+                minimum: 1,
+                skip: 3,
+            },
+            Instruction::GainLife(PlayerSet::Controller, 2),
+            Instruction::Surveil(2),
+            Instruction::CreateTokens {
+                token: Card(5296),
+                amount: 1,
+                tapped: false,
+            },
+        ],
+    ),
     ..CardRules::EMPTY
 };

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fc82fa1965a35501dd5acf121794939b6c624acfb0b38ccf7e837a4107568883"
   },
-  "physical_metadata_sha256": "457cace02fa633c0f95c082dd8844a52d49183fa116eb4ae663bc61f3ba2f208"
+  "physical_metadata_sha256": "457cace02fa633c0f95c082dd8844a52d49183fa116eb4ae663bc61f3ba2f208",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PersuasiveInterrogators.java",
+  "java_sha256": "99ef8ddc3fa48b133e7001f51498618cdc2cc0b21c04e9a9e436e966add534e2",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    }
+  ]
 }

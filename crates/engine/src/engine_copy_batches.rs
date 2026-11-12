@@ -2,6 +2,22 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn copy_each_target(&mut self, item: &SpellView, amount: u128) {
+        let recipes = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                let object = bound.object?;
+                (self.on_battlefield(id) && self.object_ref(id) == object)
+                    .then(|| self.copiable_recipe(object))
+            })
+            .collect();
+        self.stage_copy_recipes(item.controller, recipes, amount, false);
+    }
+
     pub(super) fn copy_other_controlled_nonlands(&mut self, item: &SpellView) {
         let source = item.source.map(|source| source.object);
         let recipes = self
@@ -19,7 +35,7 @@ impl Game {
                     .then(|| self.copiable_recipe(reference))
             })
             .collect();
-        self.stage_copy_recipes(item.controller, recipes, false);
+        self.stage_copy_recipes(item.controller, recipes, 1, false);
     }
     /// Freeze all originals before one simultaneous token creation event.
     pub(super) fn copy_target_players_creatures_with_conditional_sacrifice(
@@ -53,7 +69,7 @@ impl Game {
                     ))
                 })
                 .collect();
-        self.stage_copy_recipes(item.controller, recipes, false);
+        self.stage_copy_recipes(item.controller, recipes, 1, false);
     }
     pub(super) fn copy_controlled_nontoken_creatures_nonlegendary(&mut self, player: Player) {
         let recipes = self
@@ -78,6 +94,6 @@ impl Game {
                 Some(recipe)
             })
             .collect();
-        self.stage_copy_recipes(player, recipes, false);
+        self.stage_copy_recipes(player, recipes, 1, false);
     }
 }

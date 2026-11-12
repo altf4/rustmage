@@ -41,5 +41,5 @@
     }
   ],
   "has_rules_abilities": true,
-  "rules_tests": "tests/dft_colorless_cards_inherited_lands.rs"
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 850,
   "oracle_id": "4477eeab-a51a-4dc2-9c97-83f2551d8b54",
   "facts_sha256": "10d2b1fb248e85765d9515437bb07d330cfef83aeab2cc52c9c86be95b00f467",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "99931a6f4f8c0997cbf9b50aa0cf0e3b0afb63adc309337ff9d07c369fb666e4"
   },
-  "physical_metadata_sha256": "62de472cf43feecc28858bebb050153e5fbc040b52de027913ee4111d7432656"
+  "physical_metadata_sha256": "62de472cf43feecc28858bebb050153e5fbc040b52de027913ee4111d7432656",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CorneredCrook.java",
+  "java_sha256": "aa0fe0be4143f83b6fc6e01dfdd2f5e389cb2e64117c7fae67054291fe8f8bcb",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }

@@ -141,11 +141,12 @@ impl Game {
         };
         self.apply_damage_batch(&events);
     }
-    pub(super) fn permanents_deal_power_damage(
+    pub(super) fn permanents_deal_damage(
         &mut self,
         item: &SpellView,
         filters: &[BattlefieldFilter],
         exclude_source: bool,
+        fixed: Option<u16>,
     ) {
         let targets: Vec<_> = item
             .targets
@@ -165,12 +166,19 @@ impl Game {
                         .source
                         .is_none_or(|source| source.object != self.object_ref(id))
             })
-            .map(|id| self.damage_source(id))
-            .filter(|source| source.facts.power > 0)
-            .flat_map(|source| {
-                targets
-                    .iter()
-                    .map(move |&target| power_damage_event(source, target))
+            .filter_map(|id| {
+                let source = self.damage_source(id);
+                let amount = fixed.map_or(source.facts.power, i128::from);
+                (amount > 0).then_some((source, amount))
+            })
+            .flat_map(|(source, amount)| {
+                targets.iter().map(move |&target| DamageEvent {
+                    preventable: true,
+                    source,
+                    target,
+                    amount,
+                    combat: false,
+                })
             })
             .collect();
         self.apply_damage_batch(&events);

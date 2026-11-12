@@ -1,0 +1,17 @@
+{
+  "name": "Bustle",
+  "catalogue_id": 5694,
+  "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+  "facts_sha256": "b6167320798313cad2b3360e4f9d92f4744d6173f2ebf28881bb5aeeba86e046",
+  "complete": true,
+  "physical_metadata_sha256": "30d19f3b850d39945ec32e8d2f9c3bc1d6cf49a5fbb9238ce20d0271ea69bcb1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HustleBustle.java",
+  "java_sha256": "9d6d5fa54b6d782cfe897beeb58b05153230297bfc4522cffec95efcdf313745",
+  "oracle_face": {
+    "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+    "index": 1,
+    "sha256": "330cc96b64a5d7c2abe8b8c11bbd37143438ca4bbae788763f40b2203d7fb5ab"
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
+}

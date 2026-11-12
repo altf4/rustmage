@@ -29,7 +29,7 @@ pub(super) fn needs_exile(m: &entries::EntryMove) -> bool {
     m.destination == Zone::Battlefield
         && m.before.zone != Zone::Battlefield
         && !m.skipped
-        && m.manifest_original.is_none()
+        && m.face_down.is_none()
         && m.intrinsic_entry_card()
             .is_some_and(|card| card.entry_exile_counters().is_some())
         && m.exile_preparation.as_ref().is_none_or(|p| !p.done)

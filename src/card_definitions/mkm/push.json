@@ -1,0 +1,17 @@
+{
+  "name": "Push",
+  "catalogue_id": 5695,
+  "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
+  "facts_sha256": "cb61219aad82757f8655447c9072db6da9371dbd2d0be15be8d3a2397485b89c",
+  "complete": true,
+  "physical_metadata_sha256": "b2debf0122bd789bc2314e35eae03196e823312f4ed299e70cde7dbc3f05efdd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PushPull.java",
+  "java_sha256": "f033756f679947ae3c92ba6f332dd7075abf1ad7e41ce1f6d5d680a8180d2876",
+  "oracle_face": {
+    "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
+    "index": 0,
+    "sha256": "2dc13177a60fb3142edb981481818af194eb216ebd057bb9273f0c8433f57981"
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
+}

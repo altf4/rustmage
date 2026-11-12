@@ -3,10 +3,21 @@
   "catalogue_id": 538,
   "oracle_id": "99eaac39-28d4-4af7-984b-f75fd37902ed",
   "facts_sha256": "dfde90a90ee0e3f2e7cbded7095cba99ecc9240ad34940f804b3e39877a13127",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4cbbfc8af601c3931d92acd1dcb3e0e917a625660f2660df00f056a29fd604bd"
   },
-  "physical_metadata_sha256": "b794fc4f3733e8eb955cd99e0b3953044a5b32f6da48ca0bbed881bbc182fb28"
+  "physical_metadata_sha256": "b794fc4f3733e8eb955cd99e0b3953044a5b32f6da48ca0bbed881bbc182fb28",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BreakOut.java",
+  "java_sha256": "ae1e9ba8a722d73175280b1ea9562217b5f352ec459c3fd4b0a0a94c43ed9ac9",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    }
+  ]
 }

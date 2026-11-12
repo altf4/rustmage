@@ -1,16 +1,36 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const CONTROLLED_CREATURE: CreatureFilter = CreatureFilter {
+    relation: 0,
+    other: false,
+    subtype: None,
+    keyword: Keywords::NONE,
+    attacking: false,
+    tokens: None,
+    artifact: false,
+};
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 4),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfTurnedFaceUp,
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::PutCreatureCounters {
+                filter: CONTROLLED_CREATURE,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            },
+            Instruction::GrantCreatures {
+                filter: CONTROLLED_CREATURE,
+                keywords: Keywords::TRAMPLE,
+            },
+        ],
+    }],
+    extras: &CardExtras {
+        disguise: Some(DisguiseSpec::fixed(ManaCost {
+            colored: [0, 0, 0, 0, 2, 0],
+            generic: 5,
+        })),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

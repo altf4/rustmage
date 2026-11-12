@@ -3,10 +3,31 @@
   "catalogue_id": 1061,
   "oracle_id": "e4ecfccd-b8b4-4b18-b989-30de79b4971e",
   "facts_sha256": "8cbde7a806ba78b72f502c951bf597c36d62df468514a01d53e3c0c315f9a5f4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "72a136100daf9eb56f30049677f1448d2da3527d01626972197395f6bbddd73f"
   },
-  "physical_metadata_sha256": "4888e363b3a70fa18bcacbe312097c09ed86ae1b6395de2e68ea2cae129fd23e"
+  "physical_metadata_sha256": "4888e363b3a70fa18bcacbe312097c09ed86ae1b6395de2e68ea2cae129fd23e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DetectivesSatchel.java",
+  "java_sha256": "0a5e50f16a390d01b8a0c690a78bd30f064e5aee46175b30d5098caffd5ec1ec",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SacrificedArtifactThisTurnCondition.java",
+      "sha256": "adbb1905102eb77ab8d950bf6b84c8c199ac67e00dc68ad7795f6a49adfd16f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PermanentsSacrificedWatcher.java",
+      "sha256": "4a8bff26cc0f195725d2af3cf298c39d453401205ab0ad5b37928b82f58294dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    }
+  ]
 }

@@ -54,7 +54,7 @@ impl Game {
             && self.spell_has_rebound(item))
         .then_some(item.controller);
         let dream = self.mark_dream_spell_resolving(item);
-        if rebound.is_none() && !dream && !plot {
+        if rebound.is_none() && !dream && !plot && !self.stack_graveyard_bottom(source.object) {
             return false;
         }
         let before = self.chosen_spell_before(item);
@@ -122,6 +122,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,

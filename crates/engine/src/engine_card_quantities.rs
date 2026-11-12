@@ -128,6 +128,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutPermanentCountersWithColors { amount: value, .. }
             | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::PutNamedPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
@@ -136,7 +137,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::ReduceColoredSpellCostsThisTurn { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensRepeated { amount: value, .. }
             | Instruction::CreateCopyTokensScaled { amount: value, .. }
+            | Instruction::CreateCopiesOfEachTarget(value)
             | Instruction::CreateTokensAttackingScaled { amount: value, .. }
             | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }

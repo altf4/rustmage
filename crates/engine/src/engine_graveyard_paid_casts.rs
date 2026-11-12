@@ -110,7 +110,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let Some(data) = &self.state.linked_choices else {
@@ -154,7 +154,7 @@ impl Game {
                         object,
                         permission: row.id,
                     },
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 ) {
                     return true;

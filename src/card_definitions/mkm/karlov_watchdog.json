@@ -3,10 +3,14 @@
   "catalogue_id": 2318,
   "oracle_id": "73f44500-fe83-40fa-b6f2-ed5673d0edcc",
   "facts_sha256": "6a35f2f098b0cb8bcc2d87ad92f6204d5102339ff9a546030c277c52c86e002c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "53840e875d3bbe46b16431adb3109c2edad76dea4e5b8356a2ca166140454cd3"
   },
-  "physical_metadata_sha256": "6c24b05dd52d8b61a0175dd7125c8fae8de4294d45509106e93320cbd7d9f428"
+  "physical_metadata_sha256": "6c24b05dd52d8b61a0175dd7125c8fae8de4294d45509106e93320cbd7d9f428",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KarlovWatchdog.java",
+  "java_sha256": "49420c64476be29a499d64ce52237627405b0a38a377121820cd2cc321c535c4",
+  "rules_tests": "mkm_white_blue_cards"
 }

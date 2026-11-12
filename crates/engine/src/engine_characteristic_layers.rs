@@ -30,6 +30,9 @@ pub struct AnimationView {
     /// The name and Equipment subtype of a resolved artifact-only form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_name: Option<&'static str>,
+    /// A name set by this exact noncopying continuous effect.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'static str>,
     /// Set enchantment card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub enchantment_noncreature: bool,
@@ -48,6 +51,9 @@ pub struct AnimationView {
     pub base: Option<(i128, i128)>,
     pub keywords: Keywords,
     pub expires_turn: Option<u32>,
+    /// The animation ends at this exact permanent's first actual untap or departure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub while_source_tapped: Option<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn is_false(value: &bool) -> bool {
@@ -114,7 +120,15 @@ fn animations<W: CharacteristicWorld + ?Sized>(
         .roles()
         .into_iter()
         .flat_map(|r| &r.animations)
-        .filter(move |row| Some(row.object) == recipient)
+        .filter(move |row| {
+            Some(row.object) == recipient
+                && row.while_source_tapped.is_none_or(|source| {
+                    let object = world.object(source.card);
+                    world.reference(source.card) == source
+                        && object.zone == Zone::Battlefield
+                        && object.tapped
+                })
+        })
 }
 
 pub(super) fn has_equipment_form<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> bool {
@@ -155,7 +169,7 @@ struct SourceCreatureChange {
     timestamp: u64,
     kinds: u16,
     additive: bool,
-    subtypes: &'static [&'static str],
+    subtypes: Option<SubtypeChange>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -168,45 +182,61 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         return None;
     }
     let roles = world.roles()?;
-    let (kinds, additive, subtypes) = object
-        .card
-        .static_ability_groups()
-        .iter()
-        .flat_map(|g| g.fragments)
-        .find_map(|fragment| match *fragment {
-            StaticAbilityFragment::SourceCounterCreature {
-                own_turn,
-                kind,
-                minimum,
-                form,
-                subtypes,
-                ..
-            } if (!own_turn || object.controller == world.game().state.active)
-                && world.counter_count(id, kind) >= minimum =>
-            {
-                let (kinds, additive) = match form {
-                    SourceCreatureForm::Creature => (1, false),
-                    SourceCreatureForm::ArtifactCreature => (17, true),
-                    SourceCreatureForm::AddCreature => (1, true),
-                };
-                Some((kinds, additive, subtypes))
-            }
-            StaticAbilityFragment::SourceCelebrationCreatureForm { subtypes, .. }
-                if world.celebrating(object.controller) =>
-            {
-                Some((0, true, subtypes))
-            }
-            StaticAbilityFragment::SourceOffTurnCreature
-                if object.controller != world.game().state.active =>
-            {
-                Some((17, true, &[]))
-            }
-            _ => None,
-        })?;
+    let source = world.reference(id);
+    let (kinds, additive, subtypes) =
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .find_map(|group| {
+                group
+                    .fragments
+                    .iter()
+                    .find_map(|fragment| match *fragment {
+                        StaticAbilityFragment::SourceAdditionalCreature { subtypes, .. } => {
+                            let change =
+                                (!subtypes.is_empty()).then_some(SubtypeChange::Add(subtypes));
+                            Some((1, true, change))
+                        }
+                        StaticAbilityFragment::SourceCounterCreature {
+                            own_turn,
+                            kind,
+                            minimum,
+                            form,
+                            subtypes,
+                            ..
+                        } if (!own_turn || object.controller == world.game().state.active)
+                            && world.counter_count(id, kind) >= minimum =>
+                        {
+                            let (kinds, additive) = match form {
+                                SourceCreatureForm::Creature => (1, false),
+                                SourceCreatureForm::ArtifactCreature => (17, true),
+                                SourceCreatureForm::AddCreature => (1, true),
+                            };
+                            let change = (!additive || !subtypes.is_empty())
+                                .then_some(SubtypeChange::Named(subtypes, !additive));
+                            Some((kinds, additive, change))
+                        }
+                        StaticAbilityFragment::SourceCelebrationCreatureForm {
+                            subtypes, ..
+                        } if world.celebrating(object.controller) => {
+                            let change = (!subtypes.is_empty())
+                                .then_some(SubtypeChange::Named(subtypes, false));
+                            Some((0, true, change))
+                        }
+                        StaticAbilityFragment::SourceOffTurnCreature
+                            if object.controller != world.game().state.active =>
+                        {
+                            Some((17, true, None))
+                        }
+                        _ => None,
+                    })
+                    .filter(|_| entry_modes::group_enabled(world, source, group))
+            })?;
     let timestamp = roles
         .ability_timestamps
         .iter()
-        .find(|row| row.source == world.reference(id))?
+        .find(|row| row.source == source)?
         .timestamp;
     Some(SourceCreatureChange {
         timestamp,
@@ -566,20 +596,56 @@ fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
 ) -> Option<&'static str> {
     if world.roles().is_none_or(|r| {
         r.characteristic_sources.is_empty()
-            && r.animations.iter().all(|row| row.equipment_name.is_none())
+            && r.animations
+                .iter()
+                .all(|row| row.name.is_none() && row.equipment_name.is_none())
     }) {
         return None;
     }
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
-        .chain(
-            animations(world, id)
-                .filter_map(|row| row.equipment_name.map(|name| (row.timestamp, name))),
-        )
+        .chain(animations(world, id).filter_map(|row| {
+            row.name
+                .or(row.equipment_name)
+                .map(|name| (row.timestamp, name))
+        }))
         .max_by_key(|e| e.0)
         .map(|(_, name)| name)
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn controlled_characteristic_timestamps<'a, W: CharacteristicWorld + ?Sized>(
+    world: &'a W,
+    id: CardId,
+    matches: impl Fn(&StaticAbilityFragment) -> bool + Copy + 'a,
+) -> impl Iterator<Item = u64> + 'a {
+    let recipient = world.object(id);
+    world.roles().into_iter().flat_map(move |roles| {
+        roles
+            .characteristic_sources
+            .iter()
+            .filter_map(move |&reference| {
+                let source = world.object(reference.card);
+                if recipient.zone != Zone::Battlefield
+                    || source.zone != Zone::Battlefield
+                    || world.reference(reference.card) != reference
+                    || source.controller != recipient.controller
+                    || !source.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(matches)
+                            && entry_modes::group_enabled(world, reference, group)
+                    })
+                {
+                    return None;
+                }
+                roles
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == reference)
+                    .map(|row| row.timestamp)
+            })
+    })
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
@@ -624,6 +690,13 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
             ))
         })
         .chain(chosen_aura_colors(world, id))
+        .chain(
+            controlled_characteristic_timestamps(world, id, |fragment| {
+                matches!(fragment, StaticAbilityFragment::ControlledNonlandAllColors)
+            })
+            .filter(|_| world.kinds(id) & 2 == 0)
+            .map(|timestamp| (timestamp, 31)),
+        )
         .chain(
             animations(world, id)
                 .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),
@@ -764,13 +837,10 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     if let Some(change) = source_conditional_creature(world, id)
-        && (!change.additive || !change.subtypes.is_empty())
+        && let Some(subtypes) = change.subtypes
         && (change.kinds != 0 || can_have_creature_subtypes(change.timestamp))
     {
-        changes.push((
-            change.timestamp,
-            SubtypeChange::Named(change.subtypes, !change.additive),
-        ));
+        changes.push((change.timestamp, subtypes));
     }
     if let Some(timestamp) = impending_type_timestamp(world, id)
         && !can_have_creature_subtypes(timestamp)
@@ -825,18 +895,25 @@ impl Game {
         subject: Subject,
         addition: CharacteristicAddition,
     ) {
-        assert!(
-            addition
-                .creature_types
-                .iter()
-                .all(|name| crate::cards::is_creature_type(name))
-        );
         let recipients: Vec<_> = self
             .keyword_subjects(item, subject)
             .into_iter()
             .filter(|&id| self.on_battlefield(id))
             .map(|id| self.object_ref(id))
             .collect();
+        self.add_characteristics_to(&recipients, addition);
+    }
+    pub(super) fn add_characteristics_to(
+        &mut self,
+        recipients: &[ObjectRef],
+        addition: CharacteristicAddition,
+    ) {
+        assert!(
+            addition
+                .creature_types
+                .iter()
+                .all(|name| crate::cards::is_creature_type(name))
+        );
         if recipients.is_empty() {
             return;
         }
@@ -858,7 +935,7 @@ impl Game {
             .as_mut()
             .unwrap()
             .animations
-            .extend(recipients.into_iter().map(|object| AnimationView {
+            .extend(recipients.iter().copied().map(|object| AnimationView {
                 additional_card_types: addition.card_types,
                 additional_colors: addition.colors & 31,
                 ..animation_view(
@@ -986,6 +1063,7 @@ impl Game {
             spec,
             AnimationTypeMode::AddCreature,
             Some(colors),
+            None,
         )
     }
     pub(super) fn change_source_form(
@@ -998,6 +1076,46 @@ impl Game {
             return;
         };
         self.change_object_form(source.object, spec, type_mode);
+    }
+    pub(super) fn become_named_legendary_creature(
+        &mut self,
+        item: &SpellView,
+        name: &'static str,
+        base: (i128, i128),
+        ability: SelfGrantedAbilityKind,
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some(base),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        };
+        self.state
+            .roles
+            .as_mut()
+            .unwrap()
+            .animations
+            .push(AnimationView {
+                name: Some(name),
+                legendary: true,
+                ..animation_view(
+                    source,
+                    timestamp,
+                    spec,
+                    AnimationTypeMode::ReplaceWithCreature,
+                    None,
+                    self.state.turn,
+                )
+            });
+        self.grant_recipient_ability(source, item.trigger_definition(), ability, timestamp, None);
     }
     pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {
         let spec = AnimationSpec {
@@ -1071,6 +1189,44 @@ impl Game {
             }
         }
     }
+    pub(super) fn animate_targets_while_source_tapped(
+        &mut self,
+        item: &SpellView,
+        creature_types: &'static [&'static str],
+        colors: u8,
+        base: (i128, i128),
+        keywords: Keywords,
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self.on_battlefield(source.card)
+            || self.object_ref(source.card) != source
+            || !self.state.objects[source.card as usize].tapped
+        {
+            return;
+        }
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Additional(creature_types),
+            base: Some(base),
+            keywords,
+            duration: AnimationDuration::Permanent,
+        };
+        for target in &item.targets {
+            if self.same_target_object(*target)
+                && let Some(object) = target.object
+            {
+                self.change_object_form_colored(
+                    object,
+                    spec,
+                    AnimationTypeMode::AddCreature,
+                    Some(colors),
+                    Some(source),
+                );
+            }
+        }
+    }
     pub(super) fn animate_noncreature_targets(&mut self, item: &SpellView, spec: AnimationSpec) {
         for target in &item.targets {
             if self.same_target_object(*target)
@@ -1087,7 +1243,7 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
     ) {
-        let _ = self.change_object_form_colored(object, spec, type_mode, None);
+        let _ = self.change_object_form_colored(object, spec, type_mode, None, None);
     }
     fn change_object_form_colored(
         &mut self,
@@ -1095,12 +1251,16 @@ impl Game {
         spec: AnimationSpec,
         type_mode: AnimationTypeMode,
         colors: Option<u8>,
+        while_source_tapped: Option<ObjectRef>,
     ) -> Option<AnimationView> {
         if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return None;
         }
         let timestamp = self.next_role_timestamp();
-        let row = animation_view(object, timestamp, spec, type_mode, colors, self.state.turn);
+        let row = AnimationView {
+            while_source_tapped,
+            ..animation_view(object, timestamp, spec, type_mode, colors, self.state.turn)
+        };
         self.state
             .roles
             .get_or_insert_with(Default::default)
@@ -1123,6 +1283,7 @@ impl Game {
             },
             AnimationTypeMode::PreserveCardTypes,
             Some(1 << color.index()),
+            None,
         );
     }
     pub(super) fn set_creature_form(
@@ -1147,12 +1308,15 @@ impl Game {
                 spec,
                 AnimationTypeMode::PreserveCardTypes,
                 Some(colors),
+                None,
             );
         }
     }
     pub(super) fn forget_animations(&mut self, object: ObjectRef) {
         if let Some(state) = &mut self.state.roles {
-            state.animations.retain(|r| r.object != object);
+            state
+                .animations
+                .retain(|row| row.object != object && row.while_source_tapped != Some(object));
         }
     }
     pub(super) fn expire_animations(&mut self) -> bool {
@@ -1189,6 +1353,7 @@ pub(super) fn animation_view(
         food_only: false,
         artifact_noncreature: false,
         equipment_name: None,
+        name: None,
         enchantment_noncreature: false,
         additional_card_types: 0,
         colors,
@@ -1208,6 +1373,7 @@ pub(super) fn animation_view(
             AnimationDuration::EndOfTurn => Some(turn),
             AnimationDuration::Permanent => None,
         },
+        while_source_tapped: None,
     }
 }
 
@@ -1225,6 +1391,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         food_only: true,
         artifact_noncreature: false,
         equipment_name: None,
+        name: None,
         enchantment_noncreature: false,
         additional_card_types: 0,
         colors: None,
@@ -1235,6 +1402,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         base: None,
         keywords: Keywords::NONE,
         expires_turn: None,
+        while_source_tapped: None,
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1339,6 +1507,7 @@ impl AnimationView {
             food_only: false,
             artifact_noncreature: false,
             equipment_name: None,
+            name: None,
             enchantment_noncreature: false,
             additional_card_types: 0,
             colors: Some(colors & 31),
@@ -1349,6 +1518,7 @@ impl AnimationView {
             base: None,
             keywords: Keywords::NONE,
             expires_turn,
+            while_source_tapped: None,
         }
     }
 }

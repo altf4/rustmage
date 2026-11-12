@@ -3,10 +3,26 @@
   "catalogue_id": 2486,
   "oracle_id": "6b2e6a51-b9e6-4848-b7d7-98f02f2b897f",
   "facts_sha256": "bd523743370a7a3443e3fa62f092d8eb73297bf53b34f8f2f017f29013ce5fa0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c25366e8c8cbf1aa14ec8a039aa4e6b9b20740eec6be60cc38f82df2e366d6bb"
   },
-  "physical_metadata_sha256": "cbcf2b653aab4b32bc04b6f501c92b0e6a2de45d4b5bc1e8cbbf86f05b10f671"
+  "physical_metadata_sha256": "cbcf2b653aab4b32bc04b6f501c92b0e6a2de45d4b5bc1e8cbbf86f05b10f671",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeylineOfTheGuildpact.java",
+  "java_sha256": "e3ecfe3c2709cccb79a07fe672ba5143bb29b5e65dac91f7f3dd038e50e00060",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesAllBasicsControlledEffect.java",
+      "sha256": "ba5900bc0a9cc63dca9bd20736785c041bb79ff90a7dcd425dc33bca00e116f5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 1382,
   "oracle_id": "87957d09-7e22-40fe-8770-ff66d1934a38",
   "facts_sha256": "71aef48fb0e9a4377ff7d5e4875ba3fc06d62ea741b155ef61f9bfd917ee99aa",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d2725d1afe4acc106d8457b9f6d0bd54e4fd15c99e05345169745d8750b5587b"
   },
-  "physical_metadata_sha256": "2d83c3ec876a870354db8ac9fd1648186da8d13dd8220817f209b13c62d343a2"
+  "physical_metadata_sha256": "2d83c3ec876a870354db8ac9fd1648186da8d13dd8220817f209b13c62d343a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EtrataDeadlyFugitive.java",
+  "java_sha256": "ed9f8c7f78ddd939f5f6941c1c542468cb89e2726b360c440c1b22d8eb65a570",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestEffect.java",
+      "sha256": "3e10e9e875387a4e22f4a16410900548e2925071fb537a86a83ec8aef6a5b80e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToAPlayerAllTriggeredAbility.java",
+      "sha256": "681832895f797fe69d7a2b867b51d49337624b5060efd04ab92e38e8086c2161"
+    }
+  ]
 }

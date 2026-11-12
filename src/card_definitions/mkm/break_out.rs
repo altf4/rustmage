@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::SelectLibraryTo(LibrarySelectionEffect {
+            spec: LibrarySelectionSpec {
+                look: 6,
+                count: LibrarySelectionCount::Fixed(1),
+                filter: LibrarySelectionFilter::Kinds(1),
+                optional: true,
+                reveal: true,
+                remainder: LibraryRemainder::BottomRandom,
+            },
+            look: LibraryLook::Fixed(6),
+            destination: LibraryPickDestination::MayEnterBattlefield {
+                maximum_mana_value: 2,
+                keywords: Keywords::HASTE,
+            },
+            public: false,
+            maximum_mana_value: None,
+        })],
+    ),
     ..CardRules::EMPTY
 };

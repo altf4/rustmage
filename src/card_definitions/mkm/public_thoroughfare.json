@@ -3,10 +3,14 @@
   "catalogue_id": 3272,
   "oracle_id": "de5b995c-9691-4555-9070-66bcbc29f955",
   "facts_sha256": "0394452e4e5c3deb7f06dec9736f334891614952a5e48b16e1aa19203710bdf6",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "62384ff0fbafc54bb52b219027b59b2b7416d92e167875321defb6231e608902"
   },
-  "physical_metadata_sha256": "841f80045690d75eab5c3c02f540f4b4a4dacd461a043471dfee263f2ae273e6"
+  "physical_metadata_sha256": "841f80045690d75eab5c3c02f540f4b4a4dacd461a043471dfee263f2ae273e6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PublicThoroughfare.java",
+  "java_sha256": "8a72e55889e01dc2c752001d3cf25ed95430175221a6a9baaed3983991cbf3d0",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

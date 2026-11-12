@@ -130,6 +130,9 @@ impl Game {
             StatValue::DeclaredAttackersThisTurn => {
                 self.declared_attackers_this_turn(owner) as i128
             }
+            StatValue::DistinctDeclaredAttackersThisTurn => {
+                self.state.attacked_this_turn.len() as i128
+            }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 self.declared_subtype_attackers(owner, subtype) as i128
             }
@@ -206,6 +209,16 @@ impl Game {
                     }
                 }
                 present.into_iter().filter(|present| *present).count() as i128
+            }
+            StatValue::ControlledTwoColorPairs => {
+                let pairs = objects()
+                    .filter(|(_, object)| {
+                        object.zone == Zone::Battlefield && object.controller == owner
+                    })
+                    .map(|(id, _)| colors(id))
+                    .filter(|color| color.count_ones() == 2)
+                    .fold(0u32, |pairs, color| pairs | (1 << color));
+                i128::from(pairs.count_ones())
             }
             StatValue::DistinctControlledPlaneswalkerTypes => {
                 let mut distinct = std::collections::BTreeSet::new();
@@ -391,6 +404,41 @@ impl Game {
                 i128::from(world.graveyard_departure_count(owner))
             }
             StatValue::FoodSacrificedThisTurn => i128::from(world.food_sacrificed(owner)),
+            StatValue::SourceSuspected => {
+                i128::from(world.reference(source.card) == source && world.suspected(source.card))
+            }
+            StatValue::ControlledSuspectedSubtype(subtype) => self
+                .state
+                .suspected
+                .iter()
+                .flat_map(|objects| objects.iter())
+                .filter(|object| {
+                    let id = object.card;
+                    let live = world.object(id);
+                    live.zone == Zone::Battlefield
+                        && live.generation == object.generation
+                        && live.controller == owner
+                        && subtypes(id).has(world.definition(id), subtype)
+                })
+                .count() as i128,
+            StatValue::ArtifactSacrificedThisTurn => {
+                i128::from(world.zone_change_turn_history().artifact_sacrifices[owner.index()])
+            }
+            StatValue::CreatureCardsPutIntoGraveyardsThisTurn => world
+                .zone_change_turn_history()
+                .creature_card_arrivals
+                .into_iter()
+                .map(i128::from)
+                .sum(),
+            StatValue::OwnCreatureCardsPutIntoGraveyardThisTurn => {
+                i128::from(world.zone_change_turn_history().creature_card_arrivals[owner.index()])
+            }
+            StatValue::ArtifactsPutIntoGraveyardsFromBattlefieldThisTurn => {
+                i128::from(world.zone_change_turn_history().artifact_permanent_arrivals)
+            }
+            StatValue::DistinctControlledDamageSourcesThisTurn => {
+                self.distinct_damage_sources_this_turn(owner) as i128
+            }
             StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
                 object.zone == Zone::Exile
                     && object.owner == owner
@@ -414,6 +462,14 @@ impl Game {
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
+            StatValue::CardsDrawnAfterFirstThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .cards_drawn_this_turn
+                    .saturating_sub(1),
+            ),
+            StatValue::ControllerLibraryEmpty => i128::from(!objects().any(|(_, object)| {
+                object.owner == owner && object.zone == Zone::Library && object.is_card()
+            })),
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
                     o.controller == owner
@@ -737,6 +793,32 @@ impl Game {
                 names.dedup();
                 names.len() as i128
             }
+            StatValue::DistinctControlledCreatureTokenNames => {
+                let mut names: Vec<_> = objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && world.is_token(id)
+                            && kinds(id, object) & 1 != 0
+                    })
+                    .map(|(id, _)| crate::card_names::comparison_key(names(id)))
+                    .filter(|name| !name.is_empty())
+                    .collect();
+                names.sort_unstable();
+                names.dedup();
+                names.len() as i128
+            }
+            StatValue::OwnedGraveyardOrFaceUpExileNameOrSubtype { name, subtype } => objects()
+                .filter(|&(id, object)| {
+                    object.owner == owner
+                        && object.is_card()
+                        && (object.zone == Zone::Graveyard
+                            || object.zone == Zone::Exile
+                                && !self.exiled_face_down(world.reference(id)))
+                        && (names(id) == name || subtypes(id).has(object.card, subtype))
+                })
+                .count()
+                as i128,
             StatValue::CountUnion(filters) => objects()
                 .filter(|&(id, o)| {
                     filters.iter().any(|&filter| {
@@ -954,6 +1036,7 @@ impl Game {
             | AmountValue::TargetPlayerHandSize
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
+            | AmountValue::TargetPlayersCreatureCount
             | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount

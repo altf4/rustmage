@@ -1,28 +1,58 @@
 //! Persistent public designations are sparse and bind exact battlefield incarnations.
+use super::ability_world::CharacteristicWorld;
 use super::*;
+use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn is_suspected(&self, id: CardId) -> bool {
-        self.on_battlefield(id)
-            && self.state.suspected.as_ref().is_some_and(|objects| {
-                objects
-                    .binary_search_by_key(&id, |r| r.card)
-                    .is_ok_and(|i| objects[i] == self.object_ref(id))
-            })
+        CharacteristicWorld::suspected(self, id)
     }
-    pub(super) fn set_suspected(&mut self, object: ObjectRef, suspected: bool) {
+    pub(super) fn suspected_reference(&self, object: ObjectRef) -> bool {
+        self.state.suspected.as_ref().is_some_and(|objects| {
+            objects
+                .binary_search_by_key(&object.card, |r| r.card)
+                .is_ok_and(|i| objects[i] == object)
+        })
+    }
+    fn can_become_suspected(&self, object: ObjectRef) -> bool {
+        if !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || self.suspected_reference(object)
+        {
+            return false;
+        }
+        let prohibits = |fragment: &StaticAbilityFragment| {
+            matches!(fragment, StaticAbilityFragment::AttachedSuspectProhibited)
+        };
+        let mut query = None;
+        !self.attachment_sources().iter().copied().any(|source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.attached_to == Some(object)
+                && self
+                    .definition(source)
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(prohibits))
+                && self.attached(self.object_ref(source), object.card)
+                && query
+                    .get_or_insert_with(|| self.characteristic_query())
+                    .continuous_fragment_available(source, prohibits)
+        })
+    }
+    pub(super) fn set_suspected(&mut self, object: ObjectRef, suspected: bool) -> bool {
+        if !suspected {
+            let changed = self.suspected_reference(object);
+            if changed {
+                self.clear_suspected_reference(object);
+            }
+            return changed;
+        }
         // Pronouns in return-and-suspect effects can identify a permanent which
         // is no longer a creature. The designation remains if its types change.
-        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
-            return;
-        }
-        if !suspected {
-            self.clear_suspected_reference(object);
-            return;
-        }
-        if self.is_suspected(object.card) {
-            return;
+        if !self.can_become_suspected(object) {
+            return false;
         }
         self.record_suspect_keywords(object);
         let objects = self
@@ -33,6 +63,7 @@ impl Game {
             Ok(index) => objects[index] = object,
             Err(index) => objects.insert(index, object),
         }
+        true
     }
     pub(super) fn clear_suspected_reference(&mut self, object: ObjectRef) {
         self.forget_suspect_keywords(object);
@@ -47,35 +78,31 @@ impl Game {
             }
         }
     }
-    pub(super) fn suspect_subject(&mut self, item: &SpellView, subject: Subject) {
-        let objects: Vec<_> = match subject {
-            Subject::Source => item
-                .source
-                .map(|source| source.object)
-                .into_iter()
-                .collect(),
-            Subject::Entering => self
-                .entering_subject(item)
-                .map(|id| self.object_ref(id))
-                .into_iter()
-                .collect(),
-            Subject::Attached => self
-                .attached_subject(item)
-                .map(|id| self.object_ref(id))
-                .into_iter()
-                .collect(),
-            Subject::Targets => item
-                .targets
-                .iter()
-                .filter(|b| self.same_target_object(**b))
-                .filter_map(|b| match b.target {
-                    Target::Card(id) => Some(self.object_ref(id)),
-                    _ => None,
-                })
-                .collect(),
-        };
-        for object in objects {
-            self.set_suspected(object, true);
+    pub(super) fn set_suspected_subject(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        suspected: bool,
+    ) {
+        for id in self.keyword_subjects(item, subject) {
+            self.set_suspected(self.object_ref(id), suspected);
+        }
+    }
+    pub(super) fn can_transfer_suspect(&self, item: &SpellView, recipient: ObjectRef) -> bool {
+        // The trigger has already identified these untargeted entrants (CR 608.2k).
+        item.source
+            .is_some_and(|source| self.suspected_reference(source.object))
+            && item.event_object.as_ref().is_some_and(|event| {
+                event.object == recipient
+                    || event.semantic_objects.as_ref().is_some_and(|objects| {
+                        objects.contains(&DamageSourceRef::Object(recipient))
+                    })
+            })
+            && self.can_become_suspected(recipient)
+    }
+    pub(super) fn transfer_suspect(&mut self, source: ObjectRef, recipient: ObjectRef) {
+        if self.suspected_reference(source) && self.set_suspected(recipient, true) {
+            self.set_suspected(source, false);
         }
     }
     pub(super) fn unsuspect_creatures(

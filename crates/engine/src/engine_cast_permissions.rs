@@ -8,6 +8,7 @@ pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
     pub mana_base: Option<ManaCost>,
+    pub evidence_threshold: Option<u64>,
     pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
     pub library_top: Option<LibraryTopCastPermission>,
@@ -233,6 +234,58 @@ impl Game {
             || (face == CastFace::Adventure
                 && self.has_graveyard_cast(player, card, GraveyardCastKind::Adventure))
     }
+    pub(super) fn ordinary_cast_face_origin_allowed(
+        &self,
+        actor: Player,
+        card: CardId,
+        face: CastFace,
+        definition: Card,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
+        match object.zone {
+            Zone::Hand => object.owner == actor,
+            Zone::Exile => self.can_play_exiled(actor, card),
+            Zone::Graveyard => self.has_graveyard_cast_face(actor, card, face),
+            Zone::Library => self.can_cast_library_face(actor, card, definition),
+            _ => false,
+        }
+    }
+
+    pub(super) fn visit_split_casts(
+        &self,
+        actor: Player,
+        card: CardId,
+        sorcery: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let object = &self.state.objects[card as usize];
+        if !object.is_card() || !object.card.is_supported() {
+            return false;
+        }
+        CastFace::choices(object.card).any(|face| {
+            let Some(half) = face.split_half() else {
+                return false;
+            };
+            let definition = face.definition(object.card).expect("split half");
+            self.ordinary_cast_face_origin_allowed(actor, card, face, definition)
+                && [false, true].into_iter().any(|flash_surcharge| {
+                    self.permitted_cast_available(
+                        actor,
+                        card,
+                        CastMethod::Normal,
+                        face,
+                        sorcery,
+                        flash_surcharge,
+                    ) && emit(Action::AnnounceSplit {
+                        card,
+                        half,
+                        method: CastMethod::Normal,
+                        flash_surcharge,
+                    })
+                })
+        })
+    }
+
     pub(super) fn visit_granted_flashback_casts(
         &self,
         player: Player,
@@ -241,6 +294,23 @@ impl Game {
         allow_surcharge: bool,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
+        CastFace::choices(self.state.objects[card as usize].card).any(|face| {
+            self.visit_granted_flashback_face(player, card, face, sorcery, allow_surcharge, emit)
+        })
+    }
+
+    pub(super) fn visit_granted_flashback_face(
+        &self,
+        player: Player,
+        card: CardId,
+        face: CastFace,
+        sorcery: bool,
+        allow_surcharge: bool,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        if face != CastFace::Normal && face.split_half().is_none() {
+            return false;
+        }
         for (kind, method) in [
             (GraveyardCastKind::Flashback, CastMethod::GrantedFlashback),
             (
@@ -257,11 +327,18 @@ impl Game {
                         player,
                         card,
                         method,
-                        CastFace::Normal,
+                        face,
                         sorcery,
                         flash_surcharge,
                     )
-                    && emit(if kind == GraveyardCastKind::FlashbackZero {
+                    && emit(if let Some(half) = face.split_half() {
+                        Action::AnnounceSplit {
+                            card,
+                            half,
+                            method,
+                            flash_surcharge,
+                        }
+                    } else if kind == GraveyardCastKind::FlashbackZero {
                         Action::AnnounceGrantedZeroFlashback {
                             card,
                             flash_surcharge,
@@ -576,6 +653,7 @@ impl Game {
             granted_warp,
             exile_play_surcharge,
             mana_base,
+            evidence_threshold,
             linked_exile_paid,
             paid_graveyard,
             library_top,
@@ -796,7 +874,7 @@ impl Game {
         }
         if scalar_x
             && definition.explicit_additional_mana().is_none()
-            && !self.cast_uses_target_life_costs(actor, definition)
+            && !self.cast_requires_target_payment(actor, definition)
             && origin_life_cost.is_none()
             && warp.is_none()
             && exile_play_surcharge == 0
@@ -859,6 +937,9 @@ impl Game {
         }
         if resolution_discard {
             a.add_origin_discard_cost();
+        }
+        if let Some(threshold) = evidence_threshold {
+            a.add_origin_evidence_cost(threshold);
         }
         let life = warp
             .map(|spec| spec.life)

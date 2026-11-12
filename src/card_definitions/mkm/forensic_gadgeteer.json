@@ -3,10 +3,14 @@
   "catalogue_id": 1592,
   "oracle_id": "9d5917d5-4fb3-4f37-9278-e08c1f73aae5",
   "facts_sha256": "2d7ba6542c28772916dbafe08cb1bb154011e8c714c328fdc41c1fa26a85888e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "27e8f7d2dcfda48377e1d36027b5bf469e222a678142ea4b8fcd726885f1296b"
   },
-  "physical_metadata_sha256": "eb13c7f6c6f0d19aea1c4e44e338de43035ddc98ab50c7ecfa9a980ffb20e50b"
+  "physical_metadata_sha256": "eb13c7f6c6f0d19aea1c4e44e338de43035ddc98ab50c7ecfa9a980ffb20e50b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/ForensicGadgeteer.java",
+  "java_sha256": "43d50ed14eca008a8ecbf94e13e64b7628c50ebc3ccc51c299f9d51cc3f9bc88",
+  "rules_tests": "mkm_white_blue_cards"
 }

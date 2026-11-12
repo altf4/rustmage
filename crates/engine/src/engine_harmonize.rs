@@ -98,7 +98,7 @@ impl Game {
             None => 0,
         };
         let source = a.item.source.expect("harmonize has a source");
-        if self.cast_uses_target_life_costs(a.item.controller, source.card) {
+        if self.cast_requires_target_payment(a.item.controller, source.card) {
             let mut proposal = a.clone();
             proposal.harmonizer = Some(object);
             return self.announcement_target_fundable(&proposal, None, None, None, None, false);

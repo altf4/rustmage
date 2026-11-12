@@ -3,10 +3,21 @@
   "catalogue_id": 3202,
   "oracle_id": "0361b9b7-9097-4aae-aa06-c63a5fb47a76",
   "facts_sha256": "5e82942889c705f362b21367eea30a067aff8013235b0fa3aaeba979254381b0",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d0626a753e1115f4c8c4ba60dc122502098b2938f156fd55a05c61b60c76f5e5"
   },
-  "physical_metadata_sha256": "b5c3b753677aed18ae8704cf912ba4bc061556e46611a94978fd5942edd7bbe6"
+  "physical_metadata_sha256": "b5c3b753677aed18ae8704cf912ba4bc061556e46611a94978fd5942edd7bbe6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PompousGadabout.java",
+  "java_sha256": "0fec824521c26f29748baf828de54be2a2af88a99e7dbe4f67b7830eb84206bd",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    }
+  ]
 }

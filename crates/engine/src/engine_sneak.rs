@@ -136,7 +136,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -164,7 +164,7 @@ impl Game {
             CastFace::Normal,
             sorcery,
             PaidCastOrigin::GraveyardFinality,
-            mana_alternatives,
+            cast_alternatives,
             emit,
         ) || (self.permitted_cast_available(
             actor,

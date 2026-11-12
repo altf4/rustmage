@@ -3,10 +3,31 @@
   "catalogue_id": 4485,
   "oracle_id": "bbd7b756-bbee-451e-9446-06019791cb36",
   "facts_sha256": "c94d2c5de12153c142c4f9f64c643382270859bd51a723b3abf26e2df649ee73",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "966ade4e8cd7d9ca661fd0024012102a1b8bad1c7d7a2e47cf485eb4f139303b"
   },
-  "physical_metadata_sha256": "fc01d53232f0ca934d9f31d2eb47e4ccd9fe9561c2afc2ea3b5b822570195e9d"
+  "physical_metadata_sha256": "fc01d53232f0ca934d9f31d2eb47e4ccd9fe9561c2afc2ea3b5b822570195e9d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThePrideOfHullClade.java",
+  "java_sha256": "069c47500918ddbbceccbd5ccb2cedb6c13af1b0c8abe51b37a7eaaa794f90ee",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SourcePermanentToughnessValue.java",
+      "sha256": "d9eaa03aff62311cf486e0107bcbb25e640b6503fce37c8f3b515674388daebf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderTargetEffect.java",
+      "sha256": "66a652ec207998fd9762167903ec73c29cb7e39602f02f3e0c906ecf457da67e"
+    }
+  ]
 }

@@ -41,5 +41,5 @@
     }
   ],
   "has_rules_abilities": true,
-  "rules_tests": "tests/lci_cards_d_m_inherited_a.rs"
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

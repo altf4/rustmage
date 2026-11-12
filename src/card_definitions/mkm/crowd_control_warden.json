@@ -3,10 +3,21 @@
   "catalogue_id": 898,
   "oracle_id": "439e59ab-0350-4729-9352-60e697eaa78d",
   "facts_sha256": "0219bd56d0154372f5a5f72116cc541b8b629b50d148f1ac3db1eedc3e5c213f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "581bdc6daa22cdafd6c14ece0dfa91e4d6c8d514deb9317447d471d54383bcf7"
   },
-  "physical_metadata_sha256": "a3f0f3092364b52ae3fb53c13f8fa637af6024e0d69a96354521879098ab7a74"
+  "physical_metadata_sha256": "a3f0f3092364b52ae3fb53c13f8fa637af6024e0d69a96354521879098ab7a74",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrowdControlWarden.java",
+  "java_sha256": "f36e49a4d6d5e2e36970bff3daeb40385a204f03493603372cc60c65fcf625d0",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

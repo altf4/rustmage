@@ -3,10 +3,31 @@
   "catalogue_id": 762,
   "oracle_id": "f11ec1c9-347d-4d79-aaa9-5919db5f9044",
   "facts_sha256": "c388bd98962965b54db4fba434414f020b61ca706d33deb8d86d36c9a2effdff",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "acc07d273f3e284a7274341ef44620d2b5de2c0c8124b54b15e462d2562dae86"
   },
-  "physical_metadata_sha256": "95af41fc156f8757207e356ab0a3b9570a129dd2ad82f2cf95c9114969644d40"
+  "physical_metadata_sha256": "95af41fc156f8757207e356ab0a3b9570a129dd2ad82f2cf95c9114969644d40",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ClandestineMeddler.java",
+  "java_sha256": "4097d77f860789d64e862049f73fc7aa8337e98dc5f230be4b9170ab266f9196",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SuspectTargetEffect.java",
+      "sha256": "f54b6dda93bc9ee1e469774404ef095782e6a7e2f55161a6e86e552310b7a8f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+      "sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+    }
+  ]
 }

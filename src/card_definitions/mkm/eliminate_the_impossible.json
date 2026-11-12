@@ -3,10 +3,14 @@
   "catalogue_id": 1287,
   "oracle_id": "c78d4cec-6764-4cce-96d2-a2d85a57b218",
   "facts_sha256": "64f6da0f235e17af6f8b5891f689d826d9c48592481ac81c090da1f4c6d8017b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ed36f517aa0992bc54b415b3c6fec23d03dbea41e5c61e0298fd642439e089fc"
   },
-  "physical_metadata_sha256": "82fc3af1be6bbc45f58c8de6fe3f1a38ff3ef8abc587016dcd01821c5e87174e"
+  "physical_metadata_sha256": "82fc3af1be6bbc45f58c8de6fe3f1a38ff3ef8abc587016dcd01821c5e87174e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EliminateTheImpossible.java",
+  "java_sha256": "27a2e77b58ea9f88f68fb9d1c87fe34cb2a0d006dfcfdb621254a3a9badc0b3f",
+  "rules_tests": "mkm_white_blue_cards"
 }

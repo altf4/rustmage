@@ -30,6 +30,7 @@ pub(super) enum DiscardAfter {
     RememberOne(Player),
     ReflexiveManaValue {
         controller: Player,
+        amount: u16,
         ability: u16,
     },
     DrawUnlessOpponentDiscardedTwoNonland(Player),
@@ -136,6 +137,7 @@ impl Game {
             total_mana_value: None,
             sacrificed_vehicle: false,
             sacrificed_outlaw: false,
+            sacrificed_suspected: false,
             discarded_kinds: self.discarded_card_kinds(&event),
         })
     }
@@ -415,28 +417,45 @@ impl Game {
             }
             Some(DiscardAfter::ReflexiveManaValue {
                 controller,
+                amount,
                 ability,
             }) => {
-                if let Some(event) = events
+                if amount == 0 || counts[controller.index()] != u32::from(amount) {
+                    return;
+                }
+                let item = self.state.resolving.as_ref().unwrap().item.clone();
+                let Some(source) = item.source else {
+                    return;
+                };
+                let known: Vec<_> = events
                     .iter()
-                    .find(|event| event.moved && event.before.owner == controller)
-                {
-                    let item = self.state.resolving.as_ref().unwrap().item.clone();
-                    let before = self.state.pending_triggers.len();
-                    self.queue_reflexive(&item, ability, Some(event.before.reference));
-                    if self.state.pending_triggers.len() > before {
-                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                    .filter(|event| {
+                        event.before.owner == controller
+                            && self.discarded_card_kinds(event).is_some()
+                    })
+                    .collect();
+                let (object, mana_value) = known
+                    .iter()
+                    .map(|event| (event.before.reference, event.before.card.fixed_mana_value()))
+                    .max_by_key(|&(_, mana_value)| mana_value)
+                    .unwrap_or((source.object, 0));
+                let before = self.state.pending_triggers.len();
+                self.queue_reflexive_objects(
+                    &item,
+                    ability,
+                    known.iter().map(|event| event.before.reference),
+                );
+                if let Some(packet) = self.state.pending_triggers.get_mut(before) {
+                    for event in known {
                         packet.refer_zone_event(event);
-                        packet.set_event_object(EventObjectView {
-                            object: event.before.reference,
-                            facts: EventObjectFacts::DiscardedManaValue(
-                                event.before.card.fixed_mana_value(),
-                            ),
-                            semantic_objects: None,
-                            conniver_creature: None,
-                            subtype_lki: None,
-                        });
                     }
+                    packet.set_event_object(EventObjectView {
+                        object,
+                        facts: EventObjectFacts::DiscardedManaValue(mana_value),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
                 }
             }
             Some(DiscardAfter::ReflexiveCount {

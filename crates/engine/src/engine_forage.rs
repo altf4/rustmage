@@ -328,7 +328,7 @@ impl Game {
             }
             if a.item.kind == StackKind::Spell
                 && a.total_cost.is_none()
-                && self.cast_uses_target_life_costs(a.item.controller, a.item.source.unwrap().card)
+                && self.cast_requires_target_payment(a.item.controller, a.item.source.unwrap().card)
             {
                 if route == ForageRoute::Black
                     && a.additional_cost().unwrap().kind != EffectChoiceKind::ForageOrBlack

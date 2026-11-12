@@ -3,10 +3,26 @@
   "catalogue_id": 209,
   "oracle_id": "3c1ef404-e2c6-486d-a5a2-d5779c71d498",
   "facts_sha256": "3b308f62067df80f4096ce7c8e5984ce532dc90f1de9539f641d316ceca78de7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0c55501505296e8b0ff7d959e01ce693745ed0bb678872581e976f1febb94416"
   },
-  "physical_metadata_sha256": "ba04fbbbf30740ef0ea831017c786df07bf132baf515cb5a76f8189532aa4ed4"
+  "physical_metadata_sha256": "ba04fbbbf30740ef0ea831017c786df07bf132baf515cb5a76f8189532aa4ed4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/ArchdruidsCharm.java",
+  "java_sha256": "700a28b1c11cddb2bc6a7901faeaac2565325581a42980d59016946af920e816",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/SearchEffect.java",
+      "sha256": "3bd01fb726f6f76df078d7bf1f7a84fe484cc02fa0b1ca8dff89a3a2f562be96"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageWithPowerFromOneToAnotherTargetEffect.java",
+      "sha256": "cbe6b025fef2b13a46fcdddb02a0342eecd99af9db39d292c22b1f942d2729a3"
+    }
+  ]
 }

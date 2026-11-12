@@ -106,6 +106,16 @@ impl Game {
         can_attach(self, source, target)
     }
     pub(super) fn attach_equipment(&mut self, source: ObjectRef, target: ObjectRef) -> bool {
+        self.attach_equipment_with_event(source, target, true)
+    }
+
+    /// Entry event dispatch reports attachments already present on their entrants.
+    pub(super) fn attach_equipment_with_event(
+        &mut self,
+        source: ObjectRef,
+        target: ObjectRef,
+        emit_event: bool,
+    ) -> bool {
         if !self.equipment_can_attach(source, target) {
             return false;
         }
@@ -119,7 +129,9 @@ impl Game {
             object.attached_to = Some(target);
             object.attached_to_player = None;
             self.prune_source_bound_copies();
-            self.self_attachment_triggers(source, target);
+            if emit_event {
+                self.self_attachment_triggers(source, target);
+            }
         }
         true
     }

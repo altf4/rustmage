@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "48736b17d80d10d2f46e677e6b78358a85ae759601165390daa64ff25ab02e2f"
   },
-  "physical_metadata_sha256": "0f13e730c8b39b34aa8e9fe0d42a7ed3ff1e7533fae69884e96200280a346765"
+  "physical_metadata_sha256": "0f13e730c8b39b34aa8e9fe0d42a7ed3ff1e7533fae69884e96200280a346765",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NotOnMyWatch.java",
+  "java_sha256": "f9750891470a90badef962b50d066ab58d787b45bdaf9eeb168f8ced028f43ee",
+  "rules_tests": "mkm_white_blue_cards"
 }

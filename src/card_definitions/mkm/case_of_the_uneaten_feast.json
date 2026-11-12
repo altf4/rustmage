@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheUneatenFeast.java",
   "java_sha256": "92cc58e683638854b3a97c884e71d8872d1c593a3547fcbdcd93174880a323a8",
-  "rules_tests": "src/assurance/requested_case.rs",
+  "rules_tests": "mkm_white_blue_cards",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

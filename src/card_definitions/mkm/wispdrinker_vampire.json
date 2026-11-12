@@ -3,10 +3,14 @@
   "catalogue_id": 5093,
   "oracle_id": "6317d45a-fe02-4879-b515-bc5327ecb5ae",
   "facts_sha256": "398fc32f227a51e3981423251d968fb1ca183963acc7568a23adf5dfc67cf96c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f9a7ecca0daad14a558d0783e2a385d90ac30760f162008d4ba9d055f52deac"
   },
-  "physical_metadata_sha256": "8efc927cfe952cfef8aa09bcf2cc6732e4a36eb72ea61a0f709da7e1f145a30e"
+  "physical_metadata_sha256": "8efc927cfe952cfef8aa09bcf2cc6732e4a36eb72ea61a0f709da7e1f145a30e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WispdrinkerVampire.java",
+  "java_sha256": "69597811d287f5b3e073c449c163d2437e38f89ad594c5c05507f11ae7b773f7",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

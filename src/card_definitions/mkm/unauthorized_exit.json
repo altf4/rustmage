@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "114b8a6ceecfb0c2043685536539b801f6adf86ab1d4661343b3bb65b53c45dc"
   },
-  "physical_metadata_sha256": "64125ca5fa35a04edcb3b11727183c6e50c23fdbcfb26c217787785af52cd680"
+  "physical_metadata_sha256": "64125ca5fa35a04edcb3b11727183c6e50c23fdbcfb26c217787785af52cd680",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnauthorizedExit.java",
+  "java_sha256": "163f5c3f41262f0e68f16a408094690599aa66b99cce267056c1e615da25e04c",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

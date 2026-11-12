@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "563f5daa032f55ff7e6841c7aa4beb65f94418789960250d48f1a158ca60e0cd"
   },
-  "physical_metadata_sha256": "47184feafdb2108132f025eba8ecbf7e81930bed1655617ced345e9098485284"
+  "physical_metadata_sha256": "47184feafdb2108132f025eba8ecbf7e81930bed1655617ced345e9098485284",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheyWentThisWay.java",
+  "java_sha256": "a497869caf0d58b7fe47198f16b2f3c7b141ac5d34138aa661e60a82bd8387f3",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

@@ -3,10 +3,41 @@
   "catalogue_id": 2244,
   "oracle_id": "8074afbf-190b-4a24-b939-cc559bdffe38",
   "facts_sha256": "a69cd413fe56f5f0f87c72b262044c46a1adc81663b8ac0979a365b5784eca26",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "917496348dfc47208476a74391bcfc9527e20671e7fd950bf38588e2321fa65f"
   },
-  "physical_metadata_sha256": "ad57602bc47615e60ef83ae6a4832fd2615b163e6bb497eb428e4eb4578cf238"
+  "physical_metadata_sha256": "ad57602bc47615e60ef83ae6a4832fd2615b163e6bb497eb428e4eb4578cf238",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IzoniCenterOfTheWeb.java",
+  "java_sha256": "ef6b52d45e1874b54ed9b38eee3559552f2cda35f4d1ff862556bae520b506d9",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/IzoniSpiderToken.java",
+      "sha256": "421235fcf78fd3e7f784fbfefbf7fb8cc1500ff92ea923a26694d7a0e0828079"
+    }
+  ]
 }

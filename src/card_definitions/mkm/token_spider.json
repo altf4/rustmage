@@ -1,0 +1,24 @@
+{
+  "name": "@token/mkm-spider",
+  "catalogue_id": 5685,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c6d3ac46bbefdb110494216d323d0a38368fd32676789e1ebb11730931bb4b6c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/IzoniSpiderToken.java",
+  "java_sha256": "421235fcf78fd3e7f784fbfefbf7fb8cc1500ff92ea923a26694d7a0e0828079",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ]
+}

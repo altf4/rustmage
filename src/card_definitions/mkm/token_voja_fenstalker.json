@@ -1,0 +1,12 @@
+{
+  "name": "@token/mkm-voja-fenstalker",
+  "catalogue_id": 5686,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "9a670a60731434a59a63ee87e2da70cd163a7b698542876d1541f84d0ba6a1d6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/TolsimirMidnightsLightToken.java",
+  "java_sha256": "b684175ff0d5eb4265e7917f9cf810f4343c1566a7d5430f444daefb2ef28980",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
+}

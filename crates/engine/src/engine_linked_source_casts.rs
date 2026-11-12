@@ -204,7 +204,7 @@ impl Game {
         card: CardId,
         sorcery: bool,
         exile_zero: &[ObjectRef],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         for &id in &self.state.static_sources {
@@ -254,7 +254,7 @@ impl Game {
                         face,
                         sorcery,
                         PaidCastOrigin::LinkedExilePaid { object, source },
-                        mana_alternatives,
+                        cast_alternatives,
                         emit,
                     ) {
                         return true;
@@ -303,7 +303,7 @@ impl Game {
                     face,
                     sorcery,
                     PaidCastOrigin::LinkedExileCounters { source },
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 ) {
                     return true;

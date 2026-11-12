@@ -3,10 +3,31 @@
   "catalogue_id": 589,
   "oracle_id": "f1f0eab3-681b-4c2d-b590-555951920880",
   "facts_sha256": "4af100498559648367d96b680d5f4c669a3a8952a501a21bec31d5814d53fa2f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7270ecc070791cebff4e0d90865cb45b43b62436702ffba1d0e0792240803ad5"
   },
-  "physical_metadata_sha256": "a57b753f20aaba18dfcb79e154aa24883352cb8abf6964cee1b38b4aa0f9eb41"
+  "physical_metadata_sha256": "a57b753f20aaba18dfcb79e154aa24883352cb8abf6964cee1b38b4aa0f9eb41",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BuriedInTheGarden.java",
+  "java_sha256": "fbbd43139fcf1ae7d108bb79535aa527c551cb0abead82c7e389fb1257571bd2",
+  "rules_tests": "tests/mkm_cards_green_gold/exile_links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileUntilSourceLeavesEffect.java",
+      "sha256": "b996095b17f25f3acb6d649beaf87d3f4abca10338c9444419cca03029d940bf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/EnchantedTappedTriggeredManaAbility.java",
+      "sha256": "038772c7745af73c00117aba5b76393fbbb358e9218a5666db31244283fe22e8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaAnyColorAttachedControllerEffect.java",
+      "sha256": "b7ec089f2eb8ced8eff3d3b79b7645ef70e8c2d530c97f53a0d7f0651dc83fb2"
+    }
+  ]
 }

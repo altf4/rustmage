@@ -15,6 +15,12 @@ def render(root, metadata, records, version, definition_lines, legacy_catalogue,
         if metadata['constants'].get(name) != int(index):
             raise ValueError('intrinsic Card alias changed; preserve existing catalogue IDs: ' + name)
     grouped = defaultdict(list)
+    split_halves = defaultdict(dict)
+    physical_ids = {card['oracle_id']: card['index'] for card in cards if card['category'] == 'physical'}
+    for card in cards:
+        if card['category'] == 'split_face':
+            face = records[card['index']]['oracle_face']
+            split_halves[face['oracle_id']][face['index']] = card['index']
     for card in cards:
         grouped[card['path'].split('/')[0]].append(card)
     outputs = {}
@@ -68,7 +74,17 @@ rustmage-core = {{ path = "../../engine", version = "=0.1.0" }}
                       'const _: () = assert!(' +
                       ('matches!(RULES.extras.has_rules_abilities, Some(false))' if records[card['index']].get('has_rules_abilities') is False
                        else '!matches!(RULES.extras.has_rules_abilities, Some(false))') +
-                      ', "authored ability-presence fact differs from provenance");', '}']
+                      ', "authored ability-presence fact differs from provenance");']
+            if records[card['index']]['complete']:
+                oracle_id = card['oracle_id']
+                if card['category'] == 'split_face':
+                    parent = physical_ids[oracle_id]
+                    lines.append(f'const _: () = assert!(matches!(RULES.extras.split_parent, Some(parent) if parent.index() == {parent}), "split face parent differs from provenance");')
+                elif card['category'] == 'physical' and oracle_id in split_halves:
+                    left = split_halves[oracle_id][0]
+                    right = split_halves[oracle_id][1]
+                    lines.append(f'const _: () = assert!(matches!(RULES.extras.split_faces, Some([left, right]) if left.index() == {left} && right.index() == {right}), "split faces differ from provenance");')
+            lines.append('}')
         lines += ['}', '#[rustfmt::skip]', f'pub static ENTRIES: [CatalogueEntry; {len(members)}] = [']
         for offset, card in enumerate(members):
             definition = definition_lines[card['index']].strip().removesuffix(',')

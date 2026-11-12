@@ -3,10 +3,21 @@
   "catalogue_id": 3817,
   "oracle_id": "0642fb0d-73cb-4989-852c-3233fe36c3b4",
   "facts_sha256": "0095d0d19eb734208316aa0cff31d5eb2db0bd3f018633b221bca1c139ee2de3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e23d13db193d70e24f191f6d4b96011310bec115896dd6997303caa78874c9b5"
   },
-  "physical_metadata_sha256": "77e46c7b6c7efa77f00ad086248da02e9d4f2f64dcb435f6c72078f6e8655fb7"
+  "physical_metadata_sha256": "77e46c7b6c7efa77f00ad086248da02e9d4f2f64dcb435f6c72078f6e8655fb7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SharpEyedRookie.java",
+  "java_sha256": "2723c0e9b6d566512baf7bda2593082bf5db7c1f4ae1ec6c7b10f371edb74155",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

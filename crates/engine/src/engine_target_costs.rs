@@ -13,7 +13,7 @@ struct Completion<'a> {
     finished: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-struct LifeCostCompletion<'a> {
+struct CostedTargetCompletion<'a> {
     item: &'a SpellView,
     plan: TargetPlan,
     optional_targets_help: bool,
@@ -51,7 +51,14 @@ impl Game {
         false
     }
 
-    pub(super) fn cast_uses_target_life_costs(&self, actor: Player, card: Card) -> bool {
+    pub(super) fn cast_requires_target_payment(&self, actor: Player, card: Card) -> bool {
+        if card.additional_target_mana().is_some()
+            || card.additional_cost().is_some_and(|cost| {
+                cost.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
+            })
+        {
+            return true;
+        }
         let has_target = |plan: TargetPlan| match plan {
             TargetPlan::Single(spec) => spec.rule != TargetRule::None,
             TargetPlan::Groups(groups) => groups.iter().any(|spec| spec.rule != TargetRule::None),
@@ -70,6 +77,24 @@ impl Game {
                 .and_then(|teamwork| teamwork.paid_targets)
                 .is_some_and(has_target);
         can_target && self.visit_opposing_target_life_costs(actor, |_, _| true)
+    }
+
+    pub(super) fn target_evidence_threshold(&self, a: &Announcement) -> Option<u64> {
+        let additional = a.printed_additional_cost()?;
+        if additional.kind != EffectChoiceKind::CollectEvidenceForTargetManaValue {
+            return None;
+        }
+        // Independent target occurrences can bind the same permanent (CR 115.3).
+        // Each chosen occurrence contributes its current value before payment.
+        Some(
+            a.item
+                .targets
+                .iter()
+                .filter_map(|bound| bound.object)
+                .map(|object| self.object_mana_value(object.card))
+                .try_fold(0u64, u64::checked_add)
+                .capacity("target evidence threshold exhausted"),
+        )
     }
 
     fn applies_target_life_cost(targets: &[BoundTarget], provider: ObjectRef) -> bool {
@@ -91,9 +116,9 @@ impl Game {
         fees
     }
 
-    fn target_life_completion(
+    fn costed_target_completion(
         &self,
-        completion: &LifeCostCompletion<'_>,
+        completion: &CostedTargetCompletion<'_>,
         targets: &mut Vec<BoundTarget>,
         group: u16,
         closed: bool,
@@ -111,7 +136,7 @@ impl Game {
             return false;
         }
         if count >= min
-            && self.target_life_completion(completion, targets, group + 1, false, 0, test)
+            && self.costed_target_completion(completion, targets, group + 1, false, 0, test)
         {
             return true;
         }
@@ -134,13 +159,13 @@ impl Game {
             bound.group = group;
             targets.push(bound);
             let reachable =
-                self.target_life_completion(completion, targets, group, false, index, test);
+                self.costed_target_completion(completion, targets, group, false, index, test);
             targets.pop();
             reachable
         })
     }
 
-    pub(super) fn target_life_cost_fundable(
+    pub(super) fn target_payment_fundable(
         &self,
         a: &Announcement,
         plan: TargetPlan,
@@ -172,13 +197,13 @@ impl Game {
             bound.group = a.group;
             targets.push(bound);
         }
-        let completion = LifeCostCompletion {
+        let completion = CostedTargetCompletion {
             item: &a.item,
             plan,
             optional_targets_help: source.card.target_cost_reduction().is_some(),
         };
         proposal.group = u16::MAX;
-        self.target_life_completion(
+        self.costed_target_completion(
             &completion,
             &mut targets,
             a.group,
@@ -194,6 +219,9 @@ impl Game {
                 let mut choice = proposal.clone();
                 // Install ordinary costs first so matching life amounts stay separate.
                 choice.cast_costs.get_or_insert_with(Default::default);
+                if let Some(threshold) = self.target_evidence_threshold(&choice) {
+                    choice.lock_target_evidence(threshold);
+                }
                 choice.initialize_cast_costs(convoke::cost_potential(self, source.card));
                 choice.add_target_life_costs(providers.iter().filter_map(|&(provider, amount)| {
                     Self::applies_target_life_cost(targets, provider).then_some(amount)
@@ -203,7 +231,7 @@ impl Game {
         )
     }
 
-    pub(super) fn target_life_announcement_fundable(
+    pub(super) fn target_payment_announcement_fundable(
         &self,
         a: &Announcement,
         cost: ManaCost,
@@ -236,7 +264,7 @@ impl Game {
                     cast.blight = Some(pay);
                 }
                 proposal.plan = self.target_spec(&proposal.item);
-                self.target_life_announcement_fundable(&proposal, cost)
+                self.target_payment_announcement_fundable(&proposal, cost)
             });
         }
         if a.item.mode.is_none()
@@ -252,8 +280,9 @@ impl Game {
                 let mut proposal = a.clone();
                 proposal.item.mode = Some(u16::try_from(index).expect("mode index"));
                 proposal.plan = self.target_spec(&proposal.item);
-                Self::with_tiered_mana(cost, &proposal.item)
-                    .is_some_and(|total| self.target_life_announcement_fundable(&proposal, total))
+                Self::with_tiered_mana(cost, &proposal.item).is_some_and(|total| {
+                    self.target_payment_announcement_fundable(&proposal, total)
+                })
             });
         }
         if let Some(index) = a.item.mode.map(usize::from)
@@ -381,6 +410,23 @@ impl Game {
         };
         Some((reduced, increased))
     }
+    pub(super) fn with_additional_target_mana(
+        mut base: ManaCost,
+        definition: Card,
+        targets: usize,
+    ) -> Option<ManaCost> {
+        if let Some(mana) = definition.additional_target_mana() {
+            let additional = u32::try_from(targets.saturating_sub(1)).ok()?;
+            for (amount, extra) in base.colored.iter_mut().zip(mana.colored) {
+                *amount = amount.checked_add(extra.checked_mul(additional)?)?;
+            }
+            base.generic = base
+                .generic
+                .checked_add(mana.generic.checked_mul(additional)?)?;
+        }
+        Some(base)
+    }
+
     /// A proposal before targets are complete uses a legal completion; the
     /// final locked total uses the concrete bound target identities instead.
     pub(super) fn target_proposal_total(
@@ -404,6 +450,8 @@ impl Game {
             finished,
         };
         let (reduced, increased) = self.completion_modifiers(&c)?;
+        let target_count = c.chosen.len() + usize::from(c.extra.is_some());
+        let base = Self::with_additional_target_mana(base, source.card, target_count)?;
         let x = u64::from(a.item.x.unwrap_or(0));
         let extra = (u64::from(a.payment_x_symbols()) * x).checked_add(
             source
@@ -506,6 +554,7 @@ impl Game {
             })
         });
         let increased = self.target_spell_increase(actor, id, card, targets);
+        let base = Self::with_additional_target_mana(base, card, targets.len())?;
         self.target_total(actor, id, base, (reduced, increased != 0), extra)
     }
     pub(super) fn target_spell_increase(
@@ -589,8 +638,8 @@ impl Game {
             return true;
         }
         let card = a.item.source.expect("spell cost source").card;
-        let life_cost = self.cast_uses_target_life_costs(a.item.controller, card);
-        if !life_cost && !card.has_target_cost_modifier() {
+        let target_payment = self.cast_requires_target_payment(a.item.controller, card);
+        if !target_payment && !card.has_target_cost_modifier() {
             return true;
         }
         if plan.is_none()
@@ -617,8 +666,8 @@ impl Game {
             }
         });
         let test = |cost| {
-            if life_cost {
-                return self.target_life_cost_fundable(a, plan, cost, offspring, extra, finished);
+            if target_payment {
+                return self.target_payment_fundable(a, plan, cost, offspring, extra, finished);
             }
             let mut base = Self::with_offspring_cost(
                 cost,

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34646eb8c93c8a74c3d7213f2bd222461035420fbd52a4f72092e8f9d227bde8"
   },
-  "physical_metadata_sha256": "e222a41426b1525169d66ee3ea936ef090c5a030fc35fdcecf7480daba1dcb5a"
+  "physical_metadata_sha256": "e222a41426b1525169d66ee3ea936ef090c5a030fc35fdcecf7480daba1dcb5a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GleamingGeardrake.java",
+  "java_sha256": "b3de1f5f8eebbf85a147298d888d9c7d30cd349e281a6e2ceb61cfb0a5a5324c",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

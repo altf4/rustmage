@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "64c371ba1b8ca2a3875b2778a1b61317978ba2860307bc3d00ff257c3c594286"
   },
-  "physical_metadata_sha256": "3eba1557b38ec68949cdcab3f05aeb392e57c2243f63d2114c25f3796aa2defd"
+  "physical_metadata_sha256": "3eba1557b38ec68949cdcab3f05aeb392e57c2243f63d2114c25f3796aa2defd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UndergroundMortuary.java",
+  "java_sha256": "847dee800787018bc953b661c16516b6b4b417d1b16cbb462809871201ca2b1e",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

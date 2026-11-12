@@ -143,6 +143,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::CastHandFreeUpToOfType { maximum: value, .. }
             | Instruction::PutCountersScaled { amount: value, .. }
             | Instruction::PutPermanentCountersScaled { amount: value, .. }
+            | Instruction::PutPermanentCountersWithColors { amount: value, .. }
             | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
             | Instruction::PutNamedPermanentCountersScaled { amount: value, .. }
             | Instruction::GrowScaled { amount: value, .. }
@@ -150,6 +151,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::GrowCreaturesScaled { amount: value, .. }
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateTokensRepeated { amount: value, .. }
             | Instruction::CreateTokensAttackingScaled { amount: value, .. }
             | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }

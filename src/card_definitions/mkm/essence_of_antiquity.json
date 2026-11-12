@@ -3,10 +3,21 @@
   "catalogue_id": 1374,
   "oracle_id": "26a7f92d-6914-466d-b7c7-9ac121dd5118",
   "facts_sha256": "1af071b1ba94d93cf0d26e52579bd6ea18a491f6935d089d76d6891dd1ca1318",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "74120f27b59195ff0d7dbc645384e642453cb41eaee0c12d9e7a37b1899e83e0"
   },
-  "physical_metadata_sha256": "6f8357b8db0b83f278994b05a8a8c2e81a8a8bdd598bfce0f2027e41f7b4e893"
+  "physical_metadata_sha256": "6f8357b8db0b83f278994b05a8a8c2e81a8a8bdd598bfce0f2027e41f7b4e893",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EssenceOfAntiquity.java",
+  "java_sha256": "d6f60d8b3d7959e575781a0af0a7e30d6b326360247ef2c63075c6ee59fc951d",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

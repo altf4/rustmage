@@ -15,5 +15,9 @@
       "engine_condition": "CreaturesAttackDeclared",
       "oracle_and_xmage_read": true
     }
-  ]
+  ],
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SeasonedConsultant.java",
+  "java_sha256": "73cfe756429a305bf02e9347c088c5caba1698bac56028e8ede58e5aefd8892e",
+  "rules_tests": "mkm_white_blue_cards"
 }

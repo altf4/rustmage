@@ -3,10 +3,26 @@
   "catalogue_id": 1492,
   "oracle_id": "e1905321-180b-41d2-b7ef-0974ab90f188",
   "facts_sha256": "ce2eae5741933749072435bb28f5274a2bff404570ea2e71a648a53f556daa27",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1235b0d2e3104d1e37a94e17fd18fbdebc6e9347bc247a9ae6945d7af59e3058"
   },
-  "physical_metadata_sha256": "79b696f567b54f937111266388a825f1f4623707621502a054c3cff2c071bb44"
+  "physical_metadata_sha256": "79b696f567b54f937111266388a825f1f4623707621502a054c3cff2c071bb44",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FeloniousRage.java",
+  "java_sha256": "0ed3c5d8fd4250daa56a97e8159578a4eaa609fc654829de74d835381606e3c0",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/WhenTargetDiesDelayedTriggeredAbility.java",
+      "sha256": "06ed400e2766a16d28d9e0895026249164e27f66fc03481e105d4a574c6fc137"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/DetectiveToken.java",
+      "sha256": "47f8432351e379fe651d32482b9aacb2d81831a6473a6b5a810b934ef9543af4"
+    }
+  ]
 }

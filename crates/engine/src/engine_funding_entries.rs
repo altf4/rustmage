@@ -278,6 +278,8 @@ impl EntryProjection {
                             | F::AttachedChosenColor
                             | F::ControlledArtifactFood(_)
                             | F::OtherCreaturesFood(_)
+                            | F::ControlledLandsAllBasicTypes
+                            | F::ControlledNonlandAllColors
                     )
                 })
             }) {
@@ -500,8 +502,17 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::SourceUnsolved(condition) => {
+                case::is_live(self, source)
+                    && !case::is_solved(self, source)
+                    && self.entry_guard(*condition, movement)
+            }
+            StepGuard::SourceSolved => case::is_solved(self, source),
             StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
                 self.game.any_player_combat_damage_at_least(minimum)
+            }
+            StepGuard::SourceDeclaredAttackThisCombat => {
+                self.game.declared_attack_this_combat(source)
             }
             StepGuard::DeclaredAttackSubtypesAll(subtypes) => {
                 self.game.declared_attack_subtypes_all(player, subtypes)
@@ -556,6 +567,9 @@ impl FundingState<'_> {
                             && (self.game.state.objects[r.id as usize].zone != Zone::Exile
                                 || self.game.object_ref(r.id) != self.reference(r.id))
                     })
+            }
+            StepGuard::FaceDownCreatureEnteredThisTurn => {
+                state.turn_facts.face_down_creature_entered
             }
             StepGuard::OpponentHasMoreCardsInHand => {
                 count(Zone::Hand, player.other()) > count(Zone::Hand, player)
@@ -969,7 +983,7 @@ impl FundingState<'_> {
                 kind: entry_tap::EntryTapKind::PayLife(n),
             });
         }
-        if m.manifest_original.is_none()
+        if m.face_down.is_none()
             && let EntryTapped::UnlessBehold(subtype) = m.intrinsic_entry_tapped()
         {
             effects.push(entry_tap::EntryTapEffect {
@@ -1746,7 +1760,7 @@ impl FundingState<'_> {
                 next.game
                     .restore_projected_copy_identity(m.before.reference, o);
             }
-            o.card = if m.destination == Zone::Battlefield && m.manifest_original.is_some() {
+            o.card = if m.destination == Zone::Battlefield && m.face_down.is_some() {
                 m.before.card
             } else if let Some(physical) = face_down_physical
                 && m.before.zone == Zone::Battlefield
@@ -1819,9 +1833,9 @@ impl FundingState<'_> {
             let manifested = &mut projection.manifested;
             manifested.retain(|(object, _)| *object != m.before.reference);
             if m.destination == Zone::Battlefield
-                && let Some(physical) = m.manifest_original
+                && let Some(face_down) = m.face_down
             {
-                manifested.push((source, physical));
+                manifested.push((source, face_down.physical));
             }
             live_counters::set(&mut next.named_counters, source, m.counters.named.clone());
             if m.destination == Zone::Battlefield {
@@ -2188,9 +2202,10 @@ impl FundingState<'_> {
             if m.skipped || m.destination != Zone::Battlefield {
                 continue;
             }
-            let Some(recipient) = m.attach_equipment_to else {
+            let Some(attachment) = m.attach_equipment_to else {
                 continue;
             };
+            let recipient = attachment.recipient();
             let source = next.reference(m.before.id);
             if !equipment::can_attach(&next, source, recipient) {
                 continue;
@@ -2788,6 +2803,9 @@ impl<'g> FundingState<'g> {
             && self.entry_projection.is_none()
             && self.game.state.exile_links.is_empty()
             && self.game.state.zone_rules.is_none()
+            && self
+                .active_melds()
+                .all(|meld| meld.object.card != self.resources[step.resource].id)
             && {
                 #[cfg(feature = "test-support")]
                 {
@@ -2843,7 +2861,7 @@ impl<'g> FundingState<'g> {
             {
                 return false;
             }
-            Some((external.selection.objects(), spec))
+            Some((external, spec))
         } else {
             None
         };
@@ -2868,8 +2886,8 @@ impl<'g> FundingState<'g> {
         next.refresh_enduring_projection();
         // A returned card or an object spent by another cost cannot substitute
         // for an exact selected incarnation.
-        if external.is_some_and(|(objects, _)| {
-            objects.iter().any(|&object| {
+        if external.is_some_and(|(cost, _)| {
+            cost.selection.objects().iter().any(|&object| {
                 next.reference(object.card) != object
                     || next.object(object.card).zone != self.object(object.card).zone
                     || departed && object == reference
@@ -2901,16 +2919,27 @@ impl<'g> FundingState<'g> {
         &self,
         source: ObjectRef,
         source_departure: Option<Zone>,
-        external: Option<(&[ObjectRef], AdditionalCost)>,
+        external: Option<(&ExternalManaCost, AdditionalCost)>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
         // Match pay_activation followed by pay_additional_cost. These are
         // ordered cost components; a source's departure can remove a replacement
         // or change control before the selected permanent's departure.
         let mut after_source = |world: &Self| {
-            let Some((objects, spec)) = external else {
+            let Some((cost, spec)) = external else {
                 return emit(world);
             };
+            let objects = cost.selection.objects();
+            if let Some(threshold) = evidence::threshold(spec) {
+                return world.visit_evidence_mana_cost_groups(
+                    spec,
+                    source,
+                    threshold,
+                    objects,
+                    cost.exact,
+                    &mut |objects| world.cost_departures(objects, Zone::Exile, emit),
+                );
+            }
             if objects
                 .iter()
                 .any(|&object| !world.cost_object(spec, object, source))
@@ -3266,7 +3295,13 @@ impl<'g> FundingState<'g> {
                     viable && emit(&step.allocation)
                 };
                 let spec = a.additional_cost().filter(|_| !a.additional_paid);
-                if spec.is_some_and(|spec| spec.kind == EffectChoiceKind::Forage) {
+                if let Some(threshold) = spec.and_then(evidence::threshold) {
+                    let (prefix, exact) =
+                        a.evidence.as_ref().map_or((&[][..], false), |selection| {
+                            (selection.selected.as_slice(), selection.complete)
+                        });
+                    found = finish(Some(ExternalManaCost::evidence(threshold, prefix, exact)));
+                } else if spec.is_some_and(|spec| spec.kind == EffectChoiceKind::Forage) {
                     let source = a.item.source.unwrap();
                     let rules = source.card.activation(ability);
                     let (route, prefix) = a.forage.as_ref().map_or((None, &[][..]), |selection| {
@@ -3303,6 +3338,7 @@ impl<'g> FundingState<'g> {
                             finish(Some(ExternalManaCost {
                                 selection: ManaCostObjects::from_slice(objects),
                                 kind: spec.kind,
+                                exact: true,
                             }))
                         },
                     );
@@ -3312,6 +3348,7 @@ impl<'g> FundingState<'g> {
                         .map(|(spec, object)| ExternalManaCost {
                             selection: ManaCostObjects::One(object),
                             kind: spec.kind,
+                            exact: true,
                         });
                     found = finish(external);
                 }

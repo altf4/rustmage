@@ -1,18 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(4, 4),
     keywords: Keywords::FLYING
-        .union(Keywords::HASTE)
-        .union(Keywords::VIGILANCE),
+        .union(Keywords::VIGILANCE)
+        .union(Keywords::HASTE),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::PlayerAttacksWithAtLeast(3),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::PlayerAttacksWithAtLeast(5),
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::DamagePlayers(PlayerSet::Opponent, 3),
+                Instruction::GainLife(PlayerSet::Controller, 3),
+            ],
+        },
+    ],
     ..CardRules::EMPTY
 };

@@ -3,10 +3,41 @@
   "catalogue_id": 670,
   "oracle_id": "64219e17-1302-4a43-85d2-8a6214448890",
   "facts_sha256": "66458040328b8a1178eeacb5e13314ab6b225da8f7ad7a60bce9c41fa5418d4d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "085c6b49a299f1feb478b0aa6f43939638e40757bd4f8b2a36c47b24cb5400af"
   },
-  "physical_metadata_sha256": "4e4223054b9e3aa2ef51680a582c3a64b62aa0392b23c8bc6d4e1e12136ab6c4"
+  "physical_metadata_sha256": "4e4223054b9e3aa2ef51680a582c3a64b62aa0392b23c8bc6d4e1e12136ab6c4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheStashedSkeleton.java",
+  "java_sha256": "e0587d2a10e6da3dbf2bd0c2ba84f3fc0929c6d3dafd214342f2ddf5af723992",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SolvedSourceCondition.java",
+      "sha256": "f1b1db3ea216b2935bdd4f5af87c9ba222257458eb2f5e4ca1d105a4e80251d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/SuspectedPredicate.java",
+      "sha256": "452a0f1fe57a6c0ce600a6a9cc286b7b694ac460d10e2a97af4c5541ec8098bd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Skeleton21Token.java",
+      "sha256": "f6ebe98425b53d9b0a4a669a5d4bf4124ab6060bddc98e5f368e4635a7d5c1fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ]
 }

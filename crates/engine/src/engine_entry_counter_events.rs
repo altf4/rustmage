@@ -40,6 +40,26 @@ impl Game {
         self.stage_entries(moves, None);
     }
 
+    pub(super) fn return_targets_with_haste_and_delayed_sacrifice(&mut self, item: &SpellView) {
+        let mut moves = self.target_entry_moves(item, Zone::Graveyard, false);
+        if let Some(source) = item.source {
+            for movement in &mut moves {
+                movement.keywords_after = Some((source.object, Keywords::HASTE));
+            }
+        }
+        self.stage_entries_with_delayed_sacrifice(moves, item);
+    }
+
+    pub(super) fn return_equipment_targets_attached_to_source(&mut self, item: &SpellView) {
+        let mut moves = self.target_entry_moves(item, Zone::Graveyard, false);
+        for movement in &mut moves {
+            movement.attach_equipment_to = item
+                .source
+                .map(|source| entries::EquipmentAttachment::AsEnters(source.object));
+        }
+        self.stage_entries(moves, None);
+    }
+
     fn target_entry_moves(
         &self,
         item: &SpellView,

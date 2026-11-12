@@ -51,11 +51,30 @@ pub(super) struct LibraryTopState {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn library_top_creature_power(&self, actor: Player, card: CardId, definition: Card) -> i128 {
+        if definition
+            .dynamic_stats()
+            .is_none_or(|stats| stats.power.is_none())
+            && let Effect::Creature(power, _) = definition.effect()
+        {
+            return i128::from(power);
+        }
+        // A characteristic-defining ability is evaluated as the selected spell
+        // on the stack, after the card has left the library.
+        let world = self
+            .cast_departure(self.object_ref(card), actor)
+            .expect("proposed cast has a current library card")
+            .with_definition(definition);
+        characteristic_query::CharacteristicQuery::in_world(&world)
+            .base_stats(card)
+            .power
+    }
+
     pub(super) fn visit_limited_library_top_casts(
         &self,
         actor: Player,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if self.state.static_sources.is_empty() {
@@ -66,25 +85,20 @@ impl Game {
         };
         let top = &self.state.objects[card as usize];
         let physical = top.card;
-        let faces = [
-            (CastFace::Normal, Some(physical)),
-            (CastFace::Adventure, physical.adventure_spell()),
-            (CastFace::Omen, physical.omen_spell()),
-            (CastFace::Back, physical.back_face()),
-        ]
-        .map(|(face, definition)| {
-            (
-                face,
-                definition.filter(|definition| {
-                    CastFilter::InstantSorcery.matches(*definition)
-                        && !matches!(definition.effect(), Effect::Unsupported)
-                }),
-            )
-        });
-        if top.zone != Zone::Library
-            || top.owner != actor
-            || faces.iter().all(|(_, definition)| definition.is_none())
-        {
+        let disguise = self.disguise_cast_definition(card);
+        let faces = || {
+            CastFace::choices(physical)
+                .filter_map(|face| {
+                    let definition = face.definition(physical)?;
+                    (!definition.is_land()
+                        && (definition.is_creature()
+                            || CastFilter::InstantSorcery.matches(definition))
+                        && !matches!(definition.effect(), Effect::Unsupported))
+                    .then_some((face, definition, false))
+                })
+                .chain(disguise.map(|definition| (CastFace::Normal, definition, true)))
+        };
+        if top.zone != Zone::Library || top.owner != actor || faces().next().is_none() {
             return false;
         }
         let mut evaluation = None;
@@ -99,6 +113,7 @@ impl Game {
                     matches!(
                         fragment,
                         StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn
+                            | StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(_)
                     )
                 }) || !entry_modes::group_enabled(self, source, group)
                 {
@@ -122,13 +137,30 @@ impl Game {
                 {
                     continue;
                 }
-                for (face, definition) in faces {
-                    let Some(definition) = definition else {
+                for (face, definition, disguised) in faces() {
+                    if !group.fragments.iter().any(|fragment| match *fragment {
+                        StaticAbilityFragment::CastInstantSorceryFromLibraryTopOnceEachTurn => {
+                            CastFilter::InstantSorcery.matches(definition)
+                        }
+                        StaticAbilityFragment::CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(
+                            maximum,
+                        ) => {
+                            definition.is_creature()
+                                && self.library_top_creature_power(actor, card, definition) <= maximum
+                        }
+                        _ => false,
+                    }) {
                         continue;
+                    }
+                    let methods: &[CastMethod] = if disguised {
+                        &[CastMethod::Disguise]
+                    } else {
+                        &[CastMethod::Normal, CastMethod::Free]
                     };
-                    for method in [CastMethod::Normal, CastMethod::Free] {
+                    for &method in methods {
                         let method_available = match method {
                             CastMethod::Normal => !definition.info().mana_cost.is_empty(),
+                            CastMethod::Disguise => true,
                             CastMethod::Free => {
                                 self.filtered_free_cast_available(actor, definition)
                             }
@@ -164,15 +196,17 @@ impl Game {
                             }
                         }
                     }
-                    if self.visit_paid_cast_alternative_face(
-                        actor,
-                        card,
-                        face,
-                        sorcery,
-                        PaidCastOrigin::LibraryTop { permission },
-                        mana_alternatives,
-                        emit,
-                    ) {
+                    if !disguised
+                        && self.visit_paid_cast_alternative_face(
+                            actor,
+                            card,
+                            face,
+                            sorcery,
+                            PaidCastOrigin::LibraryTop { permission },
+                            cast_alternatives,
+                            emit,
+                        )
+                    {
                         return true;
                     }
                 }

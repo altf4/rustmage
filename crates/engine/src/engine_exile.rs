@@ -590,7 +590,7 @@ impl Game {
         sorcery: bool,
         casting_prohibited: bool,
         exile_zero: &[ObjectRef],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let current = &self.state.objects[card as usize];
@@ -636,7 +636,7 @@ impl Game {
                     sorcery,
                     surcharge,
                     exile_zero,
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 )
             {
@@ -657,7 +657,7 @@ impl Game {
         sorcery: bool,
         surcharge: std::num::NonZeroU32,
         exile_zero: &[ObjectRef],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
@@ -687,7 +687,7 @@ impl Game {
                 face,
                 sorcery,
                 PaidCastOrigin::TaxedExile { surcharge },
-                mana_alternatives,
+                cast_alternatives,
                 emit,
             ) {
                 return true;
@@ -733,7 +733,7 @@ impl Game {
         }
         let disguised =
             || Card::from_name("@face-down/disguise").expect("pinned catalogue identity");
-        physical.disguise_cost().is_some()
+        physical.disguise_spec().is_some()
             && (sorcery || self.cast_timing_granted(actor, disguised()))
             && self.disguise_mana_fundable_with_surcharge(actor, object.card, surcharge.get())
             && emit(Action::AnnounceTaxedExile {
@@ -917,6 +917,9 @@ impl Game {
             if event.moved
                 && let Some(player) = event.sacrificed_by
             {
+                if event.before.kinds & 16 != 0 {
+                    self.record_artifact_sacrifice(player);
+                }
                 let player = &mut self.state.players[player.index()];
                 player.food_sacrificed_this_turn |= event.before.has_subtype("Food");
                 let count = &mut player.permanents_sacrificed_this_turn;

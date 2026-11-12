@@ -197,6 +197,7 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             food_only: false,
             artifact_noncreature: false,
             equipment_name: None,
+            name: None,
             enchantment_noncreature: false,
             additional_card_types: 0,
             colors: Some(mask),
@@ -207,6 +208,7 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             base: None,
             keywords: Keywords::NONE,
             expires_turn: None,
+            while_source_tapped: None,
         });
     assert_eq!(g.object_view(card).colors, mask);
 }

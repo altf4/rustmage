@@ -124,7 +124,8 @@ impl Game {
                             StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
-                            | StaticAbilityFragment::ControlledNontokenCreatureActivation(_) => {
+                            | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
+                            | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_) => {
                                 giver.controller == actor
                             }
                             _ => false,
@@ -197,7 +198,14 @@ impl Game {
                         )
                     }
                     StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
-                        if giver.controller == actor && nontoken_creature =>
+                    | StaticAbilityFragment::ControlledFaceDownCreatureActivation(index)
+                        if giver.controller == actor
+                            && match fragment {
+                                StaticAbilityFragment::ControlledFaceDownCreatureActivation(_) => {
+                                    kinds & 1 != 0 && self.is_face_down(source)
+                                }
+                                _ => nontoken_creature,
+                            } =>
                     {
                         (
                             index,

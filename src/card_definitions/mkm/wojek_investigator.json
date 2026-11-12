@@ -3,10 +3,14 @@
   "catalogue_id": 5104,
   "oracle_id": "ab41243d-b178-4ebe-a7ac-bea37427be99",
   "facts_sha256": "8fd0e065fa3a131e53536fabc955f63583ba022e41ba5f2972b4552013f71013",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fe284092315dc207ad1a7c0c7db6e1e863c5c8495c79438aefe5a9b27a01723"
   },
-  "physical_metadata_sha256": "afb92df1bf6c7557367988e11021b26d50bb4a81ae4f680e7fa2dc76c455bfa9"
+  "physical_metadata_sha256": "afb92df1bf6c7557367988e11021b26d50bb4a81ae4f680e7fa2dc76c455bfa9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WojekInvestigator.java",
+  "java_sha256": "d680992e944196a38e5c4ccb6fa0b6223d5be65a7ea73715f9a8092ba1b351f2",
+  "rules_tests": "mkm_white_blue_cards"
 }

@@ -3,10 +3,31 @@
   "catalogue_id": 1953,
   "oracle_id": "a6e2d8bd-8fe7-4de0-af25-7ad3e9dcb81b",
   "facts_sha256": "a628789fc6a16b74f2499a9f7864422a3ec1db27cd1541adad9aea4eb55d471f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7eadee368ab7e8e2f8f4f12d1be28419d813c0437c7088cf68310369af18c662"
   },
-  "physical_metadata_sha256": "bf8db3f241750e0b8e527d204d8ea1a994ef025f4503e6f3986192a72f288b4e"
+  "physical_metadata_sha256": "bf8db3f241750e0b8e527d204d8ea1a994ef025f4503e6f3986192a72f288b4e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HarriedDronesmith.java",
+  "java_sha256": "cb84f7f740c295c82d3015938d5bea64207a432b4e899c4432b366998f53cf78",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfCombatTriggeredAbility.java",
+      "sha256": "c8f16a3b46db04f428d1bebc9c1ee8171d14dc9879ff0f6f825a2b49909f2f41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ThopterColorlessToken.java",
+      "sha256": "b33786a4fd2e4da0f01b8c8fe86280aeb5e471737a5e092b18b1853a3c5665fb"
+    }
+  ]
 }

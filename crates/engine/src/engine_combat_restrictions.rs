@@ -364,6 +364,14 @@ impl Game {
                 .saturating_add(usize::from(
                     rules.must_attack_this_combat.contains(&recipient),
                 ))
+                .saturating_add(
+                    rules
+                        .creature_requirements
+                        .iter()
+                        .filter(|row| row.require_attack && row.blocker == recipient)
+                        .take(LIMIT)
+                        .count(),
+                )
                 .min(LIMIT)
         });
         if this_combat == LIMIT {
@@ -497,6 +505,30 @@ impl Game {
                     })
                     .map(|row| row.card),
             )
+            .chain(self.state.combat_rules.iter().flat_map(move |rules| {
+                rules
+                    .creature_requirements
+                    .iter()
+                    .enumerate()
+                    .filter(move |(index, row)| {
+                        let id = row.blocker.card;
+                        row.require_attack
+                            && self.on_battlefield(id)
+                            && self.object_ref(id) == row.blocker
+                            && !self.state.static_sources.contains(&id)
+                            && !grants.iter().any(|grant| {
+                                grant.kind == SelfGrantedAbilityKind::AttacksEachCombat
+                                    && grant.recipient.card == id
+                            })
+                            && !rules.must_attack_this_combat.contains(&row.blocker)
+                            && !rules.creature_requirements[..*index]
+                                .iter()
+                                .any(|previous| {
+                                    previous.require_attack && previous.blocker == row.blocker
+                                })
+                    })
+                    .map(|(_, row)| row.blocker.card)
+            }))
     }
     pub(super) fn combat_requires_company(&self, id: CardId) -> bool {
         self.active_rule_fragment(id, |fragment| {

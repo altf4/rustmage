@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dea5083761943c668ae864e5b77b25037e1eb3fd6e03bdd2ab99c965eac968f0"
   },
-  "physical_metadata_sha256": "4e4e2dd304e80b045cefe4f78e0cca0e738648df8bd38e48f856d65ca90f3e59"
+  "physical_metadata_sha256": "4e4e2dd304e80b045cefe4f78e0cca0e738648df8bd38e48f856d65ca90f3e59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FanaticalStrength.java",
+  "java_sha256": "1924366a5d99b9e0ec3524ccf759da07c0c8a65fa4ae7ade06387a8dc0b0dc00",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

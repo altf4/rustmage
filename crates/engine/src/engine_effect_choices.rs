@@ -193,6 +193,23 @@ impl Game {
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
+        if choice.kind == EffectChoiceKind::TurnControlledCreatureFaceUp {
+            let card = &self.state.objects[object.card as usize];
+            return card.zone == Zone::Battlefield
+                && card.controller == player
+                && self.object_ref(object.card) == object
+                && self.is_face_down(object)
+                && self.is_creature(object.card)
+                && !manifest::face_up_prohibited(self, object);
+        }
+        if choice.kind == EffectChoiceKind::CloakFromHand {
+            let card = &self.state.objects[object.card as usize];
+            return card.zone == Zone::Hand
+                && card.owner == player
+                && card.is_card()
+                && self.object_ref(object.card) == object
+                && choice.selected[player.index()].is_empty();
+        }
         if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
             return !choice.selected[player.index()].contains(&object)
                 && self.saddle_rider_candidate(choice.source, player, object, effect);
@@ -226,6 +243,12 @@ impl Game {
             return false;
         }
         let o = &self.state.objects[object.card as usize];
+        if choice.kind == EffectChoiceKind::DestroyNonbasicLandsForEachPlayer {
+            return self.nonbasic_land_choice(object)
+                && choice.selected[player.index()].iter().all(|selected| {
+                    self.state.objects[selected.card as usize].controller != o.controller
+                });
+        }
         if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
             return self.object_ref(object.card) == object
                 && self.creature_survives_sweep(object.card, maximum)
@@ -307,6 +330,16 @@ impl Game {
         if choice.kind == EffectChoiceKind::ReturnCraftedCreatureAttacking {
             return choice.selected[player.index()].is_empty()
                 && self.crafted_exiled_creature(choice.source, object);
+        }
+        if choice.kind == EffectChoiceKind::ExileFaceUpDisguiseCreatures {
+            return !choice.selected[player.index()].contains(&object)
+                && self.face_up_disguise_creature(player, object);
+        }
+        if choice.kind == EffectChoiceKind::TransferSuspectToEventCreature {
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            return player == item.controller
+                && choice.selected[player.index()].is_empty()
+                && self.can_transfer_suspect(item, object);
         }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
@@ -621,15 +654,20 @@ impl Game {
                 && match choice.kind.payment_kind() {
                     // Hand costs use the same typed characteristics and filters as
                     // announced discard costs, including artifact lands in hand.
-                    EffectChoiceKind::Discard => self.additional_candidate(
-                        AdditionalCost {
-                            kind: choice.kind,
-                            filter: choice.filter,
-                        },
-                        player,
-                        choice.source,
-                        object,
-                    ),
+                    EffectChoiceKind::Discard => match choice.kind {
+                        EffectChoiceKind::DiscardOneMatchingOr { filter, .. } => {
+                            self.card_search_filter_matches(filter, player, object.card)
+                        }
+                        _ => self.additional_candidate(
+                            AdditionalCost {
+                                kind: choice.kind,
+                                filter: choice.filter,
+                            },
+                            player,
+                            choice.source,
+                            object,
+                        ),
+                    },
                     EffectChoiceKind::HandCreature => o.card.is_creature(),
                     EffectChoiceKind::HandCreatureAttacking { maximum } => {
                         o.card.is_creature() && o.card.fixed_mana_value() <= u64::from(maximum)
@@ -695,7 +733,9 @@ impl Game {
             kinds,
             self.granted_subtypes(object.card),
             o.is_token(),
+            o.dealt_damage_this_turn,
             || ability_world::CharacteristicWorld::legendary(self, object.card),
+            || self.is_suspected(object.card),
         ) {
             return false;
         }
@@ -1070,11 +1110,11 @@ impl Game {
             .map(|reference| reference.card)
             .collect::<Vec<_>>();
         let remaining = resolution
-            .repeat_blink_remaining
+            .repeated_instruction_remaining
             .take()
             .expect("repeat blink count");
         if remaining > 0 {
-            resolution.repeat_blink_remaining = Some(remaining - 1);
+            resolution.repeated_instruction_remaining = Some(remaining - 1);
             resolution.pc -= 1;
         }
         if !ids.is_empty() {
@@ -1621,6 +1661,10 @@ impl Game {
         greatest: bool,
         discard_mana_value_life: Option<Player>,
     ) -> bool {
+        if kind == EffectChoiceKind::SacrificeAsCost {
+            assert_ne!(amount, 0, "nonempty sacrifice payment");
+            assert!(optional_skip.is_none(), "mandatory sacrifice payment");
+        }
         if matches!(kind, EffectChoiceKind::SacrificeOrDiscard { .. }) {
             assert_eq!(amount, 1, "one alternative resolution cost");
             assert!(matches!(
@@ -1642,7 +1686,11 @@ impl Game {
                 return false;
             }
         }
-        if kind == EffectChoiceKind::ExileCardFromAnyGraveyardRemember {
+        if matches!(
+            kind,
+            EffectChoiceKind::ExileCardFromAnyGraveyardRemember
+                | EffectChoiceKind::ExileFaceUpDisguiseCreatures
+        ) {
             self.state.resolving.as_mut().unwrap().remembered_objects = None;
         }
         if kind == EffectChoiceKind::ReturnRememberedCreature {
@@ -1691,6 +1739,7 @@ impl Game {
             EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                 | EffectChoiceKind::TapAnyUntappedPermanents
+                | EffectChoiceKind::SacrificeAsCost
         ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
@@ -1843,11 +1892,26 @@ impl Game {
                 };
                 continue;
             }
+            if kind == EffectChoiceKind::SacrificeAsCost && available < amount as usize {
+                return false;
+            }
             if available == 0 && (any_number || kind == EffectChoiceKind::PowerDifferenceBoost) {
                 return false;
             }
             if any_number {
-                choice.amount = u32::try_from(available).capacity("choice count exhausted");
+                choice.amount = if kind == EffectChoiceKind::DestroyNonbasicLandsForEachPlayer {
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter(|(id, _)| self.nonbasic_land_choice(self.object_ref(*id as CardId)))
+                        .fold(0u8, |seats, (_, land)| {
+                            seats | (1 << land.controller.index())
+                        })
+                        .count_ones()
+                } else {
+                    u32::try_from(available).capacity("choice count exhausted")
+                };
                 continue;
             }
             // Optional private choices always present the same actor/phase,
@@ -1857,6 +1921,7 @@ impl Game {
                 || matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
+                        | EffectChoiceKind::DiscardOneMatchingOr { .. }
                         | EffectChoiceKind::BottomHand
                         | EffectChoiceKind::HandExileCopy
                         | EffectChoiceKind::HandPlot { .. }
@@ -2019,6 +2084,25 @@ impl Game {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }
+        }
+        if choice.kind == EffectChoiceKind::TurnControlledCreatureFaceUp {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[player.index()].first().copied();
+            self.state.resolving.as_mut().unwrap().choice = None;
+            if let Some(object) = selected {
+                self.turn_manifest_face_up(object, player);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::CloakFromHand {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[player.index()].first().copied();
+            self.state.resolving.as_mut().unwrap().choice = None;
+            if selected.is_some() {
+                self.obscure_private_hand_selection(player);
+            }
+            self.stage_hidden_cloaks(player, selected);
+            return false;
         }
         if let EffectChoiceKind::DeployFromHandOrGraveyard { counter, .. } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
@@ -2211,7 +2295,9 @@ impl Game {
                 forced_tapped || tapped_and_attacking,
             );
             movement.controller = player;
-            movement.attach_equipment_to = choice.equipment_recipient;
+            movement.attach_equipment_to = choice
+                .equipment_recipient
+                .map(entries::EquipmentAttachment::AfterEntry);
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus
@@ -2472,6 +2558,12 @@ impl Game {
         if let EffectChoiceKind::DamageAmongTargetGroup { amount, .. } = choice.kind {
             if let Some(&target) = choice.selected.iter().flatten().next() {
                 self.damage_chosen_target(target, amount);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::TransferSuspectToEventCreature {
+            if let Some(&object) = choice.selected.iter().flatten().next() {
+                self.transfer_suspect(choice.source, object);
             }
             return false;
         }
@@ -2756,6 +2848,20 @@ impl Game {
                         .map(move |object| (p, object.card))
                 })
                 .collect();
+            if choice.kind == EffectChoiceKind::SacrificeAsCost {
+                let exact = choice
+                    .selected
+                    .iter()
+                    .flatten()
+                    .all(|&object| self.object_ref(object.card) == object);
+                if exact && !sacrifices.is_empty() && self.sacrifice_cost_batch_atomic(&sacrifices)
+                {
+                    let paid = u64::try_from(sacrifices.len())
+                        .capacity("sacrifice payment count exhausted");
+                    self.state.resolving.as_mut().unwrap().moved_count = Some(paid);
+                }
+                return false;
+            }
             let remembers_controller_sacrifice = self
                 .state
                 .resolving
@@ -2915,10 +3021,21 @@ impl Game {
             .map(|object| (player, object.card))
             .collect();
         if !sacrifices.is_empty() {
-            let paid = self
-                .sacrifice_cost_batch_outcome(&sacrifices)
+            let events = self
+                .sacrifice_cost_batch_events(&sacrifices)
                 .expect("validated sacrifice selections");
-            self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
+            let actual = events
+                .iter()
+                .filter(|event| event.sacrificed_by == Some(player));
+            let resolution = self.state.resolving.as_mut().unwrap();
+            resolution.moved_count = Some(actual.clone().count() as u64);
+            if choice.kind == EffectChoiceKind::SacrificeSelectionForPower {
+                let power = actual
+                    .map(|event| event.before.power)
+                    .try_fold(0i128, |sum, power| sum.checked_add(power))
+                    .capacity("sacrificed power exhausted");
+                resolution.sacrificed_power = Some(Box::new(power));
+            }
         }
     }
 
@@ -3053,6 +3170,12 @@ impl Game {
             .choice
             .take()
             .unwrap();
+        if let EffectChoiceKind::DiscardOneMatchingOr { otherwise, .. } = choice.kind {
+            self.state.resolving.as_mut().unwrap().discards[player.index()] =
+                usize::from(otherwise);
+            self.run_program();
+            return;
+        }
         if matches!(
             choice.kind,
             EffectChoiceKind::HandPermanent { .. }
@@ -3216,6 +3339,7 @@ impl Game {
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
                 | EffectChoiceKind::HandCreatures { .. }
+                | EffectChoiceKind::CloakFromHand
         ) && !self.shares_information(viewer, actor)
         {
             return None;

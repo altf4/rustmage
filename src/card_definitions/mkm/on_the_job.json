@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "557843767b45ed2f9ed4a99bd988844d99816b8a2dd89bd257e05453e90903a3"
   },
-  "physical_metadata_sha256": "acba9b93d1d8e26e8927d39af08c3e0ff906894536df4cec42b65be7fcdae36c"
+  "physical_metadata_sha256": "acba9b93d1d8e26e8927d39af08c3e0ff906894536df4cec42b65be7fcdae36c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OnTheJob.java",
+  "java_sha256": "dd8c6ba2e9ed2a62e6c2b0f96ec82822c15ac72a1849cfd9b3160a96f641dec0",
+  "rules_tests": "mkm_white_blue_cards"
 }

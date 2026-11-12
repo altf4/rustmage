@@ -3,10 +3,31 @@
   "catalogue_id": 140,
   "oracle_id": "dd79a994-7dad-49d4-8d8f-62dbedde4a38",
   "facts_sha256": "ca73d98da33e4ff7765690dbf7e608fbd8d058c26586d2b5701204293f946390",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "04a4681f06899cc43ca52337aee4415b2089d5cc485d0ff3d94dee2c5eec3352"
   },
-  "physical_metadata_sha256": "3a1e88295b5cfa1ab8cc29a6c0482030689c4590105b07888bd1a48a145825b3"
+  "physical_metadata_sha256": "3a1e88295b5cfa1ab8cc29a6c0482030689c4590105b07888bd1a48a145825b3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlquistProftMasterSleuth.java",
+  "java_sha256": "021b4b94458d6c2885c943d2ff5d7dd3583873d830ca54b25ad267350f447539",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

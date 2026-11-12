@@ -245,7 +245,7 @@ impl Game {
             }
             return;
         }
-        if let Action::BeginFaceUp { object, .. } = *action {
+        if let Action::BeginFaceUp { object, .. } | Action::BeginFaceUpX { object, .. } = *action {
             let mut rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             rollback.public_face_down.push(object);
             self.state.cast_rollback = Some(Box::new(rollback));
@@ -276,6 +276,7 @@ impl Game {
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
             | Action::AnnounceRoom { card, .. }
+            | Action::AnnounceSplit { card, .. }
             | Action::AnnounceGraveyardRoom { card, .. }
             | Action::AnnounceBack { card }
             | Action::AnnounceGraveyardBack { card, .. }
@@ -303,6 +304,7 @@ impl Game {
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceExileForZero { object, .. }
             | Action::AnnounceCastWithManaAlternative { object, .. }
+            | Action::AnnounceCastWithEvidenceAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }

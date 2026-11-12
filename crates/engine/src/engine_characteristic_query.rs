@@ -910,7 +910,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         continue;
                     };
                     if !self.continuous_fragment_available(effect.source.card, |fragment| {
-                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(..))
+                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(_, setter) if *setter == spec)
                     }) {
                         continue;
                     }
@@ -1135,14 +1135,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return true;
         }
         let evaluation = self.evaluation.as_ref();
-        // Existing definitions without entry modes retain the ordinary no-removal fast path.
-        if evaluation.is_none()
-            && self.object(source).card.room().is_none()
-            && !matches!(
-                self.object(source).card.entry_choice(),
-                Some(EntryChoiceKind::NamedModes(_))
-            )
-        {
+        // Ordinary static groups retain the no-removal fast path.
+        if evaluation.is_none() && !self.object(source).card.has_conditional_static_groups() {
             return true;
         }
         let reference = self.object_ref(source);
@@ -1346,7 +1340,11 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let kinds = self.current_kinds(id);
         let entry_controller_this_turn = self.entry_controller_this_turn(self.object_ref(id));
         ObjectView {
-            additional_triggers: trigger_multiplicity::additional_triggers(self, id),
+            additional_triggers: trigger_multiplicity::additional_triggers_with_power(
+                self,
+                id,
+                stats.power,
+            ),
             additional_creature_death_triggers:
                 trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
@@ -1498,6 +1496,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn card_left_graveyard(&self, player: Player) -> bool {
         self.world.card_left_graveyard(player)
+    }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.world.zone_change_turn_history()
     }
     fn static_sources(&self) -> &[CardId] {
         self.world.static_sources()

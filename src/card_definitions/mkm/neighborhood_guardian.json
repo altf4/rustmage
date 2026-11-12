@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d600dffd12f08fde54590020c1b78962b60e611b1b51ceb9986eb1464c1d919d"
   },
-  "physical_metadata_sha256": "4dc657dc457d81ce28fea5c88bb6b1ff47d313fc8921982a3dea0a3c86a84c8e"
+  "physical_metadata_sha256": "4dc657dc457d81ce28fea5c88bb6b1ff47d313fc8921982a3dea0a3c86a84c8e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NeighborhoodGuardian.java",
+  "java_sha256": "98bdd4c6d1cee2d74ca7ee91d041aa0dab153c936be05052b6456387ef659838",
+  "rules_tests": "mkm_white_blue_cards"
 }

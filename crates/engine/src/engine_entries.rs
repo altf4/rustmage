@@ -4,6 +4,21 @@ use super::*;
 use crate::cards::{AnimationSpec, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum EquipmentAttachment {
+    AsEnters(ObjectRef),
+    AfterEntry(ObjectRef),
+}
+
+impl EquipmentAttachment {
+    pub(super) fn recipient(self) -> ObjectRef {
+        match self {
+            Self::AsEnters(recipient) | Self::AfterEntry(recipient) => recipient,
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
     pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
@@ -26,8 +41,7 @@ pub(super) struct EntryMove {
     )]
     pub craft_materials: Option<Box<Vec<ObjectRef>>>,
     /// Physical card hidden behind face-down entry characteristics.
-    pub manifest_original: Option<Card>,
-    pub manifest_known: bool,
+    pub face_down: Option<manifest::FaceDownEntry>,
     pub controller: Player,
     /// Protector selected as this Battle enters, before replacement effects.
     pub battle_protector: Option<Player>,
@@ -54,8 +68,8 @@ pub(super) struct EntryMove {
     pub equipment_after: bool,
     /// Applied after entry observers freeze their facts, only on successful entry.
     pub blank_with_haste_after: Option<ObjectRef>,
-    /// After this successful entry event, attach this Equipment to an exact recipient.
-    pub attach_equipment_to: Option<ObjectRef>,
+    /// Attach only the successful Equipment entrant to the exact recipient.
+    pub attach_equipment_to: Option<EquipmentAttachment>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub ghost_vacuum_after: Option<ObjectRef>,
     /// Source-independent type replacement and Food activation as this card enters.
@@ -72,8 +86,7 @@ pub(super) struct EntryMove {
     pub skipped: bool,
     pub reveal_hand: bool,
     pub exile_free_until_end: Option<Player>,
-    /// A played library land is public throughout its pre-entry special action.
-    /// Its actual origin remains Library; unrelated library entries stay private.
+    /// An already revealed card stays public during pre-entry choices.
     pub public_origin: bool,
     pub played_land: bool,
     pub life_paid: Option<bool>,
@@ -150,10 +163,17 @@ struct EntryCleanupPacket {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
+enum EntryCompletion {
+    Cleanup(Box<EntryCleanupPacket>),
+    RememberMovesTo(Zone),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
-    cleanup: Option<Box<EntryCleanupPacket>>,
+    completion: Option<EntryCompletion>,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -317,8 +337,7 @@ impl EntryMove {
             delayed_return_exile: None,
             choice: None,
             gift: None,
-            manifest_original: None,
-            manifest_known: false,
+            face_down: None,
             controller: before.controller,
             battle_protector: None,
             before,
@@ -386,9 +405,12 @@ impl EntryBatch {
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
-            + self.cleanup.as_ref().map_or(0, |packet| {
-                std::mem::size_of::<EntryCleanupPacket>() + packet.item.owned_bytes()
-            })
+            + match &self.completion {
+                Some(EntryCompletion::Cleanup(packet)) => {
+                    std::mem::size_of::<EntryCleanupPacket>() + packet.item.owned_bytes()
+                }
+                _ => 0,
+            }
             + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
@@ -594,6 +616,20 @@ impl Game {
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
     }
+    pub(super) fn stage_entries_remembering_moves(
+        &mut self,
+        moves: Vec<EntryMove>,
+        destination: Zone,
+    ) {
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(EntryCompletion::RememberMovesTo(destination)),
+        );
+    }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
@@ -634,10 +670,10 @@ impl Game {
             None,
             None,
             None,
-            Some(Box::new(EntryCleanupPacket {
+            Some(EntryCompletion::Cleanup(Box::new(EntryCleanupPacket {
                 item: item.clone(),
                 action,
-            })),
+            }))),
         );
     }
     fn stage_entries_inner(
@@ -647,7 +683,7 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
-        cleanup: Option<Box<EntryCleanupPacket>>,
+        completion: Option<EntryCompletion>,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -677,7 +713,7 @@ impl Game {
         let batch = EntryBatch {
             atomic_cost,
             temporary_copy,
-            cleanup,
+            completion,
             captures_result,
             copying: true,
             discard_context,
@@ -725,7 +761,7 @@ impl Game {
             if movement.destination != Zone::Battlefield {
                 continue;
             }
-            let intrinsic_tapped = if movement.manifest_original.is_some() {
+            let intrinsic_tapped = if movement.face_down.is_some() {
                 false
             } else {
                 match movement.intrinsic_entry_tapped() {
@@ -739,7 +775,7 @@ impl Game {
                 }
             };
             let mut effects = self.entry_tap_effects(movement);
-            if movement.manifest_original.is_none()
+            if movement.face_down.is_none()
                 && let EntryTapped::UnlessBehold(subtype) = movement.intrinsic_entry_tapped()
             {
                 effects.push(EntryTapEffect {
@@ -860,7 +896,7 @@ impl Game {
             && !batch
                 .moves
                 .iter()
-                .any(|movement| movement.manifest_original.is_some())
+                .any(|movement| movement.face_down.is_some())
             && batch.tap_events.is_empty()
             && !counter_replacements
             && !self.entry_needs_timestamp_choice(&batch)
@@ -1041,6 +1077,16 @@ impl Game {
     pub(super) fn commit_entries(&mut self, mut batch: EntryBatch) {
         for movement in &batch.moves {
             if movement.skipped
+                && let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin)
+            {
+                self.finish_hidden_card_identity(
+                    origin,
+                    movement.before.reference,
+                    movement.before.zone,
+                    false,
+                );
+            }
+            if movement.skipped
                 && movement.before.zone == Zone::Outside
                 && movement.before.is_token()
             {
@@ -1145,6 +1191,7 @@ impl Game {
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
+        let mut equipment_on_entry = Vec::new();
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut riot_haste = Vec::new();
@@ -1178,7 +1225,7 @@ impl Game {
                     let rules = self.freeze_zone_rules(&before, movement.destination, None);
                     self.plan_zone_move(&before, movement.destination, rules)
                 });
-            if movement.manifest_original.is_some() {
+            if movement.face_down.is_some() {
                 if plan.destination == Zone::Battlefield {
                     self.state.objects[before.id as usize].card = manifest_face;
                 } else {
@@ -1206,6 +1253,14 @@ impl Game {
                     battlefield_departure: battlefield_departure.clone(),
                 },
             );
+            if let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin) {
+                self.finish_hidden_card_identity(
+                    origin,
+                    event.before.reference,
+                    event.before.zone,
+                    event.moved,
+                );
+            }
             if event.moved && event.destination == Zone::Battlefield {
                 let object = &mut self.state.objects[event.after.card as usize];
                 object.cast_for_impending = movement.cast_for_impending;
@@ -1264,14 +1319,15 @@ impl Game {
             }
             if event.moved
                 && event.destination == Zone::Battlefield
-                && let Some(original) = movement.manifest_original
+                && let Some(face_down) = movement.face_down
             {
                 let known_to = self.face_down_knowledge_mask(movement.controller);
                 let state = self.state.manifest.get_or_insert_with(Default::default);
                 state.permanents.push(manifest::FaceDownPermanent {
                     object: event.after,
-                    underlying: original,
-                    known: movement.manifest_known,
+                    underlying: face_down.physical,
+                    cause: face_down.cause,
+                    known: face_down.known,
                     known_to,
                 });
                 if let Some(choice) = state
@@ -1379,9 +1435,16 @@ impl Game {
                     ability_results.push((event.after, source));
                 }
                 if event.destination == Zone::Battlefield
-                    && let Some(recipient) = movement.attach_equipment_to
+                    && let Some(attachment) = movement.attach_equipment_to
                 {
-                    equipment_results.push((event.after, recipient));
+                    match attachment {
+                        EquipmentAttachment::AsEnters(recipient) => {
+                            equipment_on_entry.push((event.after, recipient));
+                        }
+                        EquipmentAttachment::AfterEntry(recipient) => {
+                            equipment_results.push((event.after, recipient));
+                        }
+                    }
                 }
                 if event.destination == Zone::Battlefield
                     && let Some((controller, subtype, amount)) = movement.life_bonus
@@ -1602,7 +1665,15 @@ impl Game {
             self.capture_search_result_entry(&events);
         }
         self.capture_returned_explorer(&events);
-        if let Some(packet) = &batch.cleanup {
+        if let Some(EntryCompletion::RememberMovesTo(destination)) = batch.completion {
+            let count = events
+                .iter()
+                .filter(|event| event.moved && event.destination == destination)
+                .count();
+            self.state.resolving.as_mut().unwrap().moved_count =
+                Some(u64::try_from(count).capacity("move count exhausted"));
+        }
+        if let Some(EntryCompletion::Cleanup(packet)) = &batch.completion {
             let recipients = events
                 .iter()
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
@@ -1624,6 +1695,9 @@ impl Game {
                     );
                 }
             }
+        }
+        for (equipment, recipient) in equipment_on_entry {
+            self.attach_equipment_with_event(equipment, recipient, false);
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);
@@ -1955,7 +2029,7 @@ impl Game {
             let resume_entry = batch.resume_entry.take();
             let completes_manifest = self.state.manifest.as_ref().is_some_and(|state| {
                 batch.moves.iter().any(|movement| {
-                    movement.manifest_original.is_some()
+                    movement.face_down.is_some()
                         && state
                             .choices
                             .iter()

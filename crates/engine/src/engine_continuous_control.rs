@@ -507,10 +507,21 @@ impl Game {
         if controllers[0] == controllers[1] {
             return;
         }
-        self.ensure_control_base(first);
-        self.ensure_control_base(second);
+        self.record_fixed_control_batch([(first, controllers[1]), (second, controllers[0])]);
+    }
+    pub(super) fn record_fixed_control_batch(
+        &mut self,
+        effects: impl IntoIterator<Item = (ObjectRef, Player)>,
+    ) {
+        let mut effects = effects.into_iter().peekable();
+        if effects.peek().is_none() {
+            return;
+        }
         let timestamp = self.next_role_timestamp();
-        for (object, controller) in [(first, controllers[1]), (second, controllers[0])] {
+        for (object, controller) in effects {
+            self.ensure_control_base(object);
+            // A later indefinite effect supersedes older temporary control.
+            // Future temporary effects then start from this new baseline.
             self.forget_temporary_control(object);
             let state = self.state.controls.as_mut().unwrap();
             state.effects.retain(|row| {

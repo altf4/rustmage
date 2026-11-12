@@ -3,10 +3,31 @@
   "catalogue_id": 1989,
   "oracle_id": "923b2a1b-d7b6-439d-9681-c7ba88165c31",
   "facts_sha256": "f1070f2b906457efab8f7e13b7278820afac3089ca39e94893f4b871daa6d794",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "82a681d62d0a55bc0e3ce517718564fe58dfc4b6acc97d78ea3c425adaa68d15"
   },
-  "physical_metadata_sha256": "8662bca0e162328dd44dfd40b68a5d595fba71a7e4c9e6c8a33a089e2a37d44f"
+  "physical_metadata_sha256": "8662bca0e162328dd44dfd40b68a5d595fba71a7e4c9e6c8a33a089e2a37d44f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HedgeWhisperer.java",
+  "java_sha256": "e753385d18886fe2792439eb6cee36605809900359d017f87eb69848127d5e85",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SkipUntapOptionalAbility.java",
+      "sha256": "10e9548293dc78240cf3c70f477b8396db6e9ae936c7380c1ba7bbcc79a122f6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateAsSorceryActivatedAbility.java",
+      "sha256": "2d0d81d2946e17a8d1feceda98c79cf3fa47d4a7fcb2d71c136034fb2e7ee7dc"
+    }
+  ]
 }

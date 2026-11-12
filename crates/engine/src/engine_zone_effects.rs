@@ -186,30 +186,35 @@ impl Game {
         item: &SpellView,
         subject: Subject,
         controller: PlayerSet,
-    ) {
+    ) -> u64 {
         // Targeted players here are the already revalidated resolution targets.
         // Opponent uses the captured ability controller, not the live source's.
         let Some(controller) = self.program_players(controller, item).next() else {
-            return;
+            return 0;
         };
+        let mut recipients = Vec::new();
         for id in self.keyword_subjects(item, subject) {
-            if !self.on_battlefield(id) {
-                continue;
+            if self.on_battlefield(id) {
+                let entry = (
+                    self.object_ref(id),
+                    self.state.objects[id as usize].controller,
+                );
+                if !recipients.contains(&entry) {
+                    recipients.push(entry);
+                }
             }
-            let object = self.object_ref(id);
-            // This later fixed, indefinite effect supersedes every older control
-            // effect for the recipient. Older EOT undo records must never restore
-            // their controllers, even when the new controller is already current.
-            // Future temporary effects capture this controller as their baseline.
-            self.forget_temporary_control(object);
-            if let Some(state) = &mut self.state.controls {
-                state.effects.retain(|row| {
-                    row.object != object
-                        || (row.expires_turn.is_none() && row.expires_after_next_turn.is_none())
-                });
-            }
-            self.record_control(object, controller, None);
         }
+        self.record_fixed_control_batch(recipients.iter().map(|&(object, _)| (object, controller)));
+        let gained = recipients
+            .into_iter()
+            .filter(|(object, previous)| {
+                *previous != controller
+                    && self.object_ref(object.card) == *object
+                    && self.on_battlefield(object.card)
+                    && self.state.objects[object.card as usize].controller == controller
+            })
+            .count();
+        u64::try_from(gained).capacity("control gain count exhausted")
     }
     pub(super) fn forget_temporary_control(&mut self, object: ObjectRef) {
         if let Some(effects) = &mut self.state.temporary_controls {

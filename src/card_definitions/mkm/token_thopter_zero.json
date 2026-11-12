@@ -1,0 +1,12 @@
+{
+  "name": "@token/mkm-thopter-zero",
+  "catalogue_id": 5680,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "3ac5a784e7eafe258523337cb335100abd074e0df24184313c07eaad9605d695",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Thopter00ColorlessToken.java",
+  "java_sha256": "46cda0ccf64f40d5bcd13b898eaff7918312914d9133bb8477677fbe8b25533b",
+  "rules_tests": "mkm_white_blue_cards"
+}

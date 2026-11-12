@@ -222,7 +222,9 @@ impl Game {
         object: ObjectRef,
         projected: bool,
     ) -> bool {
-        if object.card as usize >= self.state.objects.len() {
+        if object.card as usize >= self.state.objects.len()
+            || matches!(spec.kind, EffectChoiceKind::DiscardOneMatchingOr { .. })
+        {
             return false;
         }
         if spec.kind.chooses_cost_creature() {
@@ -359,6 +361,7 @@ impl Game {
             world.subtypes(object.card),
             world.name(object.card),
             || world.legendary(object.card),
+            || world.suspected(object.card),
         )
     }
     #[allow(
@@ -375,6 +378,7 @@ impl Game {
         subtypes: GrantedSubtypes,
         name: &str,
         legendary: impl Fn() -> bool,
+        suspected: impl Fn() -> bool,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
         if let EffectChoiceKind::SacrificeManaValue { value } = spec.kind
@@ -382,10 +386,15 @@ impl Game {
         {
             return false;
         }
-        if !spec
-            .kind
-            .cost_matches_any(o.card, kinds, subtypes, o.is_token(), legendary)
-        {
+        if !spec.kind.cost_matches_any(
+            o.card,
+            kinds,
+            subtypes,
+            o.is_token(),
+            o.dealt_damage_this_turn,
+            legendary,
+            suspected,
+        ) {
             return false;
         }
         if matches!(o.zone, Zone::Hand | Zone::Graveyard) && !o.is_card() {
@@ -837,8 +846,8 @@ impl Game {
         if let EffectChoiceKind::SacrificeDifferentNames(amount) = spec.kind.payment_kind() {
             return self.different_name_sacrifice_fundable(goal, spec, amount, &[]);
         }
-        if let Some(n) = evidence::threshold(spec) {
-            return self.can_collect_evidence(goal.actor, n) && self.can_fund(goal);
+        if evidence::threshold(spec).is_some() {
+            return self.preview_ordered_activation_cost(goal, spec, false);
         }
         if forage::is_forage_cost(spec) {
             return self.forage_cost_fundable(goal, spec, None);
@@ -1359,13 +1368,7 @@ impl Game {
             return;
         }
         if evidence::threshold(spec).is_some() {
-            self.commit_evidence(
-                a.evidence.as_ref().expect("selected evidence"),
-                a.item
-                    .source
-                    .expect("cost announcement has object source")
-                    .object,
-            );
+            self.pay_cast_evidence(a);
             a.additional_paid = true;
             return;
         }
@@ -1455,6 +1458,7 @@ impl Game {
             | EffectChoiceKind::KeepSharedCreatureTypes
             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+            | EffectChoiceKind::DestroyNonbasicLandsForEachPlayer
             | EffectChoiceKind::ColorCounter { .. }
             | EffectChoiceKind::CountersOnTarget { .. }
             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
@@ -1462,7 +1466,9 @@ impl Game {
             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
             | EffectChoiceKind::LinkedCreature { .. }
+            | EffectChoiceKind::SacrificeAsCost
             | EffectChoiceKind::SacrificeSelection
+            | EffectChoiceKind::SacrificeSelectionForPower
             | EffectChoiceKind::SacrificeExceptAttackingAttachment
             | EffectChoiceKind::SacrificeExceptSourceAttachment
             | EffectChoiceKind::MeldPartner(_)
@@ -1471,6 +1477,7 @@ impl Game {
             | EffectChoiceKind::FilteredCost { .. }
             | EffectChoiceKind::SacrificeManaValue { .. }
             | EffectChoiceKind::DiscardHand
+            | EffectChoiceKind::DiscardOneMatchingOr { .. }
             | EffectChoiceKind::TargetAttackingReturn { .. }
             | EffectChoiceKind::AmassGoblins(_)
             | EffectChoiceKind::EmpowerJace(_)
@@ -1489,6 +1496,8 @@ impl Game {
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
+            | EffectChoiceKind::TransferSuspectToEventCreature
+            | EffectChoiceKind::ExileFaceUpDisguiseCreatures
             | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
@@ -1521,6 +1530,8 @@ impl Game {
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::SaddleRider(_)
             | EffectChoiceKind::BlinkControlledCreatures
+            | EffectChoiceKind::CloakFromHand
+            | EffectChoiceKind::TurnControlledCreatureFaceUp
             | EffectChoiceKind::HandCreatures { .. }
             | EffectChoiceKind::ReturnToHandCounting
             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
@@ -1536,6 +1547,7 @@ impl Game {
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
+            | EffectChoiceKind::CollectEvidenceForTargetManaValue
             | EffectChoiceKind::Forage
             | EffectChoiceKind::ForageOrBlack
             | EffectChoiceKind::SacrificeOrDiscard { .. }
@@ -1639,6 +1651,7 @@ impl Game {
                             i,
                             Instruction::IfSacrificedVehicle { .. }
                                 | Instruction::IfSacrificedOutlaw { .. }
+                                | Instruction::IfSacrificedSuspected { .. }
                         )
                     })
                 }) {

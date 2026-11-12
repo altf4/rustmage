@@ -3,10 +3,14 @@
   "catalogue_id": 2079,
   "oracle_id": "288fcf5c-f5aa-4f62-9dd8-ba295df48f7a",
   "facts_sha256": "5572e44a79a115f52fda4bf3d41e4a606a4c4d15dbf2c5e1f61173c8de24154d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6077f3e31ae3c93ed4bde13d0608c5f0ef14e8c1ea1f67cfc807817ddbe69677"
   },
-  "physical_metadata_sha256": "7c8ca1a21c06a0bb84eb9f9bd915165cc8f21e23d185d69e015b0c94a9f195af"
+  "physical_metadata_sha256": "7c8ca1a21c06a0bb84eb9f9bd915165cc8f21e23d185d69e015b0c94a9f195af",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HotshotInvestigators.java",
+  "java_sha256": "d634c97f7f588edf41228e56407e691872bfe6aff7bfefaa8855660810544aaf",
+  "rules_tests": "mkm_white_blue_cards"
 }

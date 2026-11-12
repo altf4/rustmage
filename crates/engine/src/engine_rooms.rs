@@ -303,14 +303,7 @@ impl Game {
                 return false;
             };
             let definition = face.definition(object.card).expect("Room half");
-            let allowed = match object.zone {
-                Zone::Hand => object.owner == actor,
-                Zone::Exile => self.can_play_exiled(actor, card),
-                Zone::Graveyard => self.has_graveyard_cast_face(actor, card, face),
-                Zone::Library => self.can_cast_library_face(actor, card, definition),
-                _ => false,
-            };
-            allowed
+            self.ordinary_cast_face_origin_allowed(actor, card, face, definition)
                 && [false, true].into_iter().any(|flash_surcharge| {
                     self.permitted_cast_available(
                         actor,

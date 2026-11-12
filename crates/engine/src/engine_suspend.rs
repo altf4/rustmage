@@ -141,6 +141,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,

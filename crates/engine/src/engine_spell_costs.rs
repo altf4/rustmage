@@ -391,7 +391,7 @@ impl Game {
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
         if definition.explicit_additional_mana().is_some()
-            || self.cast_uses_target_life_costs(actor, definition)
+            || self.cast_requires_target_payment(actor, definition)
             || (self.state.objects[card as usize].zone == Zone::Library
                 && definition.x_symbols() > 0)
         {
@@ -515,7 +515,7 @@ impl Game {
             .expect("cost announcement has object source")
             .card;
         if card.has_target_cost_modifier()
-            || self.cast_uses_target_life_costs(a.item.controller, card)
+            || self.cast_requires_target_payment(a.item.controller, card)
         {
             return self.announcement_target_fundable(a, None, None, Some(pay), None, false);
         }
@@ -744,6 +744,22 @@ impl Game {
                     .unwrap_or(0)
                     .max(0);
                 u64::try_from(maximum).unwrap_or(u64::MAX)
+            }
+            SpellReductionAmount::TotalControlledCreatureToughness => {
+                let total = self
+                    .state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, _)| {
+                        let object = world.object(*id as CardId);
+                        object.zone == Zone::Battlefield
+                            && object.controller == actor
+                            && world.kinds(*id as CardId) & 1 != 0
+                    })
+                    .map(|(id, _)| stats(id as CardId).toughness)
+                    .fold(0i128, i128::saturating_add);
+                u64::try_from(total.max(0)).unwrap_or(u64::MAX)
             }
             crate::cards::SpellReductionAmount::SourcePower => {
                 u64::try_from(stats(source).power.max(0)).unwrap_or(u64::MAX)

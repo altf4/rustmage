@@ -1,9 +1,9 @@
-//! Owned face-down bookkeeping for the manifest-dread foundation.
-//!
-//! Tracks face-down identity, private knowledge, and manifest-dread choices.
+//! Owned face-down identity, public causes, and private choices.
 use super::ability_world::CharacteristicWorld;
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{
+    DisguiseCostModifier, DisguiseSpec, StaticAbilityFragment, TurnUpCounterAmount,
+};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
@@ -14,7 +14,7 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
     let prohibits = |fragment: &StaticAbilityFragment| {
         matches!(fragment, StaticAbilityFragment::AttachedFaceUpProhibited)
     };
-    world.attachment_sources().iter().copied().any(|id| {
+    if world.attachment_sources().iter().copied().any(|id| {
         let source = world.object(id);
         source.zone == Zone::Battlefield
             && source.attached_to == Some(object)
@@ -26,7 +26,69 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
             && query
                 .get_or_insert_with(|| characteristic_query::CharacteristicQuery::in_world(world))
                 .continuous_fragment_available(id, prohibits)
-    })
+    }) {
+        return true;
+    }
+
+    let active = world.game().state.active;
+    let prevents_opponent = |fragment: &StaticAbilityFragment| {
+        matches!(
+            fragment,
+            StaticAbilityFragment::OpponentFaceUpProhibitedOnOwnTurn
+        )
+    };
+    world.object(object.card).controller != active
+        && world.static_sources().iter().copied().any(|id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.controller == active
+                && world
+                    .definition(id)
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(prevents_opponent))
+                && query
+                    .get_or_insert_with(|| {
+                        characteristic_query::CharacteristicQuery::in_world(world)
+                    })
+                    .continuous_fragment_available(id, prevents_opponent)
+        })
+}
+
+/// The public rule or effect that made an object face down (CR 708.6).
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum FaceDownCause {
+    Disguise,
+    Manifest,
+    Cloak,
+    OtherEffect,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl FaceDownCause {
+    pub(super) fn definition(self) -> Card {
+        let identity = match self {
+            Self::Disguise | Self::Cloak => "@face-down/disguise",
+            Self::Manifest | Self::OtherEffect => "@face-down/manifest",
+        };
+        Card::from_name(identity).expect("pinned face-down definition")
+    }
+
+    fn allows_creature_mana(self) -> bool {
+        matches!(self, Self::Manifest | Self::Cloak)
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct FaceDownEntry {
+    pub physical: Card,
+    pub cause: FaceDownCause,
+    pub known: bool,
+    /// Original slot plus one, retained only until the hidden cloak move commits.
+    pub obscured_origin: Option<std::num::NonZeroU32>,
 }
 
 /// The public exact incarnation and any underlying card the viewer may know.
@@ -36,6 +98,7 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct FaceDownPermanentView {
     pub object: ObjectRef,
+    pub cause: FaceDownCause,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub underlying: Option<Card>,
 }
@@ -60,6 +123,10 @@ pub struct FaceUpPaymentView {
     pub object: ObjectRef,
     pub controller: Player,
     pub cost: ManaCost,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub x: Option<u32>,
+    #[serde(skip)]
+    pub(super) x_symbols: Option<std::num::NonZeroU8>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -67,6 +134,7 @@ pub struct FaceUpPaymentView {
 pub(super) struct FaceDownPermanent {
     pub object: ObjectRef,
     pub underlying: Card,
+    pub cause: FaceDownCause,
     pub known: bool,
     /// Players who learned this exact face-down incarnation's identity.
     pub known_to: u8,
@@ -115,8 +183,9 @@ pub(super) struct ManifestState {
     pub deaths: Vec<ManifestDeath>,
     pub last_event: Option<ManifestDreadEvent>,
     pub last_face_up: Option<ObjectRef>,
+    pub temporary_opposing_look: [bool; 2],
     /// A face-up event whose counter replacements have not finished yet.
-    pub face_up_completion: Option<(ObjectRef, Player)>,
+    pub face_up_completion: Option<(ObjectRef, Player, u32)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManifestState {
@@ -203,6 +272,11 @@ impl Game {
         };
         let mut query = None;
         let mut viewers = [0; 2];
+        for controller in [Player::P0, Player::P1] {
+            if state.temporary_opposing_look[controller.index()] {
+                viewers[controller.other().index()] |= self.face_down_knowledge_mask(controller);
+            }
+        }
         for &id in self.state.static_sources.iter() {
             let source = &self.state.objects[id as usize];
             if source.zone == Zone::Battlefield
@@ -389,7 +463,7 @@ impl Game {
         let object = &self.state.objects[id as usize];
         let physical = object.card;
         if object.is_token()
-            || physical.disguise_cost().is_none()
+            || physical.disguise_spec().is_none()
             || !(physical.is_supported()
                 || cfg!(feature = "test-support")
                     && (physical
@@ -431,8 +505,8 @@ impl Game {
         let reference = self.object_ref(id);
         let object = &self.state.objects[id as usize];
         let physical = object.card;
-        let known = match object.zone {
-            Zone::Hand => self.state.known_hand.contains(&reference),
+        let origin = object.zone;
+        let known = match origin {
             Zone::Graveyard => true,
             Zone::Exile => self.can_view_hideaway(player.other(), reference),
             Zone::Library => self.public_library_top(object.owner) == Some(reference),
@@ -442,6 +516,23 @@ impl Game {
         // capture these before applying face-down spell characteristics.
         let modifiers = self.exile_cast_modifiers(player, id);
         let stash_origin = self.foreign_stash(player, id);
+        let id = if origin == Zone::Hand {
+            // Remaining known disguise candidates would identify the card by
+            // elimination. The cast checkpoint retains the pre-announcement
+            // hand knowledge if the proposed cast has to be reversed.
+            let objects = &self.state.objects;
+            self.state.known_hand.retain(|known| {
+                let card = &objects[known.card as usize];
+                card.owner != player || card.card.disguise_spec().is_none()
+            });
+            let (fresh, original) = self
+                .fresh_hidden_card_slot(reference)
+                .expect("validated private disguise origin");
+            self.finish_hidden_card_identity(original, fresh, Zone::Hand, true);
+            fresh.card
+        } else {
+            id
+        };
         self.state.objects[id as usize].card =
             Card::from_name("@face-down/disguise").expect("pinned catalogue identity");
         let mut item = self.cast_item(player, id, [0; 6]);
@@ -458,6 +549,7 @@ impl Game {
             .push(FaceDownPermanent {
                 object: item.source.expect("face-down cast has source").object,
                 underlying: physical,
+                cause: FaceDownCause::Disguise,
                 known,
                 known_to,
             });
@@ -478,16 +570,69 @@ impl Game {
     pub(super) fn face_up_payment(&self) -> Option<&FaceUpPaymentView> {
         self.state.manifest.as_ref()?.payment.as_ref()
     }
-    pub(super) fn begin_face_up(&mut self, player: Player, object: ObjectRef, cost: ManaCost) {
+    pub(super) fn begin_face_up(
+        &mut self,
+        player: Player,
+        object: ObjectRef,
+        cost: ManaCost,
+        x_symbols: Option<std::num::NonZeroU8>,
+    ) {
         self.reveal_face_down_permanent(object)
             .expect("face-up payment reveals the exact permanent");
         self.state.manifest.as_mut().unwrap().payment = Some(FaceUpPaymentView {
             object,
             controller: player,
             cost,
+            x: None,
+            x_symbols,
         });
         self.state.pending = Pending::FaceUpPayment { player };
         self.state.passes = 0;
+    }
+
+    pub(super) fn face_up_x_choice(&self) -> Option<XChoiceView> {
+        let request = self.face_up_payment()?;
+        let symbols = u32::from(request.x_symbols?.get());
+        let mut minimum = 0;
+        let mut maximum = (u32::MAX - request.cost.generic) / symbols;
+        while minimum < maximum {
+            let midpoint = minimum + (maximum - minimum).div_ceil(2);
+            if self.can_fund_face_up(
+                FundingGoal {
+                    actor: request.controller,
+                    required: request.cost.colored,
+                    generic: request.cost.generic + symbols * midpoint,
+                    reserve: None,
+                    source: None,
+                },
+                request.object,
+            ) {
+                minimum = midpoint;
+            } else {
+                maximum = midpoint - 1;
+            }
+        }
+        Some(XChoiceView {
+            card: request.object,
+            intervals: vec![XInterval {
+                minimum: 0,
+                maximum,
+            }],
+        })
+    }
+
+    pub(super) fn choose_face_up_x(&mut self, x: u32) {
+        let request = self
+            .state
+            .manifest
+            .as_mut()
+            .unwrap()
+            .payment
+            .as_mut()
+            .unwrap();
+        let symbols = u32::from(request.x_symbols.take().expect("variable disguise").get());
+        request.cost.generic += symbols * x;
+        request.x = Some(x);
     }
     pub(super) fn finish_face_up(&mut self, payment: Mana) {
         let request = self
@@ -498,13 +643,23 @@ impl Game {
             .payment
             .take()
             .unwrap();
-        self.spend_mana_for(request.controller, payment, mana_lots::Purpose::FaceUp);
+        self.spend_mana_for(
+            request.controller,
+            payment,
+            mana_lots::Purpose::face_up(self, request.object),
+        );
         // The replacement engine captures this as its resume state. Set it
         // before beginning the transition so a suspended choice is never lost.
         self.state.pending = Pending::Priority;
         self.state.priority = request.controller;
         self.state.passes = 0;
-        assert!(self.turn_manifest_face_up(request.object, request.controller));
+        // CR 701.58g can reveal a cloaked instant or sorcery and leave
+        // it face down even after paying a copied disguise ability's cost.
+        self.turn_manifest_face_up_with_x(
+            request.object,
+            request.controller,
+            request.x.unwrap_or(0),
+        );
     }
     pub(super) fn face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.state
@@ -555,6 +710,10 @@ impl Game {
     /// Complete a status change caused by a special action or by a resolving effect.
     /// The object keeps its battlefield incarnation.
     pub(super) fn turn_manifest_face_up(&mut self, object: ObjectRef, player: Player) -> bool {
+        self.turn_manifest_face_up_with_x(object, player, 0)
+    }
+
+    fn turn_manifest_face_up_with_x(&mut self, object: ObjectRef, player: Player, x: u32) -> bool {
         if !self.on_battlefield(object.card)
             || self.object_ref(object.card) != object
             || face_up_prohibited(self, object)
@@ -574,13 +733,22 @@ impl Game {
         let mut prospective = self.clone();
         prospective.materialize_face_up(object);
         let card = prospective.state.objects[object.card as usize].card;
+        let o = &prospective.state.objects[object.card as usize];
+        let mut amount = Counters::default();
         let counters = card.as_turned_face_up_counters();
         if !counters.is_empty() && prospective.printed_abilities_available(object.card) {
-            let mut amount = Counters::default();
             for &(kind, value) in counters {
-                amount.add(kind, value);
+                let count = match value {
+                    TurnUpCounterAmount::Fixed(count) => count,
+                    TurnUpCounterAmount::Stat(value) => {
+                        u64::try_from(prospective.stat_value(value, object, o.controller).max(0))
+                            .capacity("face-up counter amount exhausted")
+                    }
+                };
+                amount.add(kind, count);
             }
-            let o = &prospective.state.objects[object.card as usize];
+        }
+        if amount.has_any() {
             let placement = replacements::CounterPlacement {
                 object,
                 placed_by: o.controller,
@@ -596,7 +764,7 @@ impl Game {
                 entry_index: None,
                 private: false,
             };
-            self.state.manifest.as_mut().unwrap().face_up_completion = Some((object, player));
+            self.state.manifest.as_mut().unwrap().face_up_completion = Some((object, player, x));
             let mode = if self.state.resolving.is_some() {
                 replacements::ResumeMode::Program
             } else {
@@ -605,7 +773,7 @@ impl Game {
             self.stage_counter_placements(vec![placement], mode);
         } else {
             self.materialize_face_up(object);
-            self.queue_face_up_triggers(object, player);
+            self.queue_face_up_triggers(object, player, x);
         }
         true
     }
@@ -629,7 +797,7 @@ impl Game {
     }
 
     pub(super) fn finish_face_up_counter_replacement(&mut self) {
-        let Some((object, player)) = self
+        let Some((object, player, x)) = self
             .state
             .manifest
             .as_mut()
@@ -637,9 +805,9 @@ impl Game {
         else {
             return;
         };
-        self.queue_face_up_triggers(object, player);
+        self.queue_face_up_triggers(object, player, x);
     }
-    pub(super) fn queue_face_up_triggers(&mut self, object: ObjectRef, player: Player) {
+    fn queue_face_up_triggers(&mut self, object: ObjectRef, player: Player, x: u32) {
         let Some(turned) = self.state.objects.get(object.card as usize) else {
             return;
         };
@@ -647,6 +815,7 @@ impl Game {
             return;
         }
         let controller = turned.controller;
+        let creature = self.current_kinds(object.card) & 1 != 0;
         self.state.players[player.index()]
             .turn_facts
             .face_down_entry_or_turn_up = true;
@@ -668,7 +837,17 @@ impl Game {
                 .map_or(source.card, |grant| grant.granting_card);
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
-                    TriggerCondition::SelfTurnedFaceUp => source.reference == object,
+                    TriggerCondition::SelfTurnedFaceUp
+                    | TriggerCondition::SelfEntersOrTurnsFaceUp => source.reference == object,
+                    TriggerCondition::FilteredEntersOrTurnsFaceUpYou {
+                        face_up_subtype, ..
+                    } => {
+                        source.controller == controller
+                            && self.has_subtype(object.card, face_up_subtype)
+                    }
+                    TriggerCondition::SelfOrControlledCreatureTurnedFaceUp => {
+                        source.reference == object || (creature && source.controller == controller)
+                    }
                     TriggerCondition::PermanentYouControlTurnedFaceUp
                     | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou => {
                         source.controller == controller
@@ -677,11 +856,21 @@ impl Game {
                     _ => false,
                 };
                 if matched && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    let facts = if ability.program.iter().any(|instruction| {
+                        matches!(instruction, Instruction::EnteringPowerDamagePlayers(_))
+                    }) {
+                        EventObjectFacts::DamageActor(self.damage_source(object.card))
+                    } else {
+                        EventObjectFacts::Controller(controller)
+                    };
                     let packet = self.state.pending_triggers.last_mut().unwrap();
                     packet.event_player = Some(player);
+                    if source.reference == object {
+                        packet.x = Some(x);
+                    }
                     packet.set_event_object(EventObjectView {
                         object,
-                        facts: EventObjectFacts::Controller(controller),
+                        facts,
                         semantic_objects: None,
                         conniver_creature: None,
                         subtype_lki: None,
@@ -931,13 +1120,36 @@ impl Game {
         controller: Player,
     ) -> Option<entries::EntryMove> {
         let current = self.state.objects.get(object.card as usize)?;
-        if current.zone != Zone::Library || self.object_ref(object.card) != object {
+        if current.zone != Zone::Library {
             return None;
         }
-        let original = current.card;
+        self.face_down_entry(
+            object,
+            controller,
+            FaceDownCause::Manifest,
+            self.public_library_top(current.owner) == Some(object),
+        )
+    }
+
+    pub(super) fn face_down_entry(
+        &self,
+        object: ObjectRef,
+        controller: Player,
+        cause: FaceDownCause,
+        known: bool,
+    ) -> Option<entries::EntryMove> {
+        let current = self.state.objects.get(object.card as usize)?;
+        if !matches!(
+            current.zone,
+            Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile
+        ) || self.object_ref(object.card) != object
+            || !current.is_card()
+        {
+            return None;
+        }
         let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
         let view = &mut movement.before;
-        view.card = Card::from_name("@face-down/manifest").expect("pinned catalogue identity");
+        view.card = cause.definition();
         view.name = "";
         view.kinds = 1;
         view.colors = 0;
@@ -948,7 +1160,7 @@ impl Game {
         view.power = 2;
         view.toughness = 2;
         view.power_above_base = false;
-        view.keywords = Keywords::NONE;
+        view.keywords = view.card.keywords();
         view.face = None;
         view.copy_recipe = None;
         view.temporary_copy = None;
@@ -956,14 +1168,84 @@ impl Game {
         view.token = None;
         view.emblem = None;
         movement.controller = controller;
-        movement.manifest_original = Some(original);
-        movement.manifest_known = self.public_library_top(current.owner) == Some(object);
+        movement.face_down = Some(FaceDownEntry {
+            physical: current.card,
+            cause,
+            known,
+            obscured_origin: None,
+        });
         Some(movement)
     }
-    /// Determine whether the controller could pay the underlying creature's
-    /// printed mana cost as a special action. This does not expose that cost to
-    /// an opponent and is not yet wired into legal action enumeration.
-    pub(super) fn face_up_payment_available(&self, player: Player, object: ObjectRef) -> bool {
+
+    pub(super) fn return_departed_permanent_face_down(&mut self, item: &SpellView) {
+        let Some(EventObjectFacts::DepartureArrival(object)) =
+            item.event_object.as_ref().map(|event| &event.facts)
+        else {
+            return;
+        };
+        let current = &self.state.objects[object.card as usize];
+        if current.zone != Zone::Graveyard
+            || current.card.kind_mask() & crate::cards::PERMANENT_KINDS == 0
+        {
+            return;
+        }
+        if let Some(movement) =
+            self.face_down_entry(*object, current.owner, FaceDownCause::OtherEffect, true)
+        {
+            self.stage_entries(vec![movement], None);
+        }
+    }
+
+    pub(super) fn cloak_library_top(&mut self, player: Player, owner: Player) {
+        let object = self.top_library_card(owner).map(|id| self.object_ref(id));
+        let known = object.is_some() && object == self.public_library_top(owner);
+        self.cloak_one(object, player, known);
+    }
+
+    pub(super) fn cloak_one(&mut self, object: Option<ObjectRef>, player: Player, known: bool) {
+        if let Some(movement) = object
+            .and_then(|object| self.face_down_entry(object, player, FaceDownCause::Cloak, known))
+        {
+            self.stage_entries(vec![movement], None);
+        } else if let Some(frame) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|r| r.search_result.as_mut())
+            && frame.capture_next_entry
+        {
+            frame.capture_next_entry = false;
+            frame.closed = true;
+        }
+    }
+
+    /// CR 702.168d checks the disguise ability on the prospective face-up
+    /// permanent. Pay the creature's printed mana cost only under the
+    /// independent cloak or manifest special action.
+    fn face_up_disguise_spec(&self, row: FaceDownPermanent) -> Option<DisguiseSpec> {
+        let has_copy = self.temporary_copy_row(row.object).is_some();
+        if !has_copy {
+            let cost = row.underlying.disguise_spec()?;
+            if !self.has_ability_removal() {
+                return Some(cost);
+            }
+        }
+        let mut prospective = self.clone();
+        prospective.materialize_face_up(row.object);
+        if !prospective.printed_abilities_available(row.object.card) {
+            return None;
+        }
+        prospective.state.objects[row.object.card as usize]
+            .card
+            .disguise_spec()
+    }
+
+    pub(super) fn visit_face_up_actions(
+        &self,
+        player: Player,
+        object: ObjectRef,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
         if self.state.pending != Pending::Priority || self.semantic_actor() != Some(player) {
             return false;
         }
@@ -992,21 +1274,54 @@ impl Game {
         {
             return false;
         }
-        row.underlying
-            .cost_options()
-            .filter(|_| row.underlying.is_creature() && !row.underlying.info().mana_cost.is_empty())
-            .chain(row.underlying.disguise_cost())
-            .any(|cost| {
-                self.can_fund_face_up(
-                    FundingGoal {
-                        actor: player,
-                        required: cost.colored,
-                        generic: cost.generic,
-                        reserve: None,
-                        source: None,
-                    },
-                    object,
-                )
+        let use_creature_mana = row.cause.allows_creature_mana()
+            && row.underlying.is_creature()
+            && !row.underlying.info().mana_cost.is_empty();
+        let printed = || row.underlying.cost_options().filter(|_| use_creature_mana);
+        let fundable = |cost: ManaCost| {
+            self.can_fund_face_up(
+                FundingGoal {
+                    actor: player,
+                    required: cost.colored,
+                    generic: cost.generic,
+                    reserve: None,
+                    source: None,
+                },
+                object,
+            )
+        };
+        if printed().any(|cost| fundable(cost) && emit(Action::BeginFaceUp { object, cost })) {
+            return true;
+        }
+        let Some(spec) = self.face_up_disguise_spec(*row) else {
+            return false;
+        };
+        let reduction = match spec.modifier {
+            DisguiseCostModifier::GenericReduction(stat) => {
+                u32::try_from(self.stat_value(stat, object, player).max(0)).unwrap_or(u32::MAX)
+            }
+            _ => 0,
+        };
+        std::iter::once(spec.mana)
+            .chain(spec.alternatives.iter().copied())
+            .map(|base| ManaCost {
+                generic: base.generic.saturating_sub(reduction),
+                ..base
+            })
+            .any(|cost| match spec.modifier {
+                DisguiseCostModifier::X(x_symbols) => {
+                    fundable(cost)
+                        && emit(Action::BeginFaceUpX {
+                            object,
+                            cost,
+                            x_symbols,
+                        })
+                }
+                _ => {
+                    !printed().any(|printed_cost| cost == printed_cost)
+                        && fundable(cost)
+                        && emit(Action::BeginFaceUp { object, cost })
+                }
             })
     }
     pub(super) fn manifest_choice_view(&self, viewer: Player) -> Option<ManifestChoiceView> {
@@ -1040,6 +1355,7 @@ impl Game {
                     (object.zone == Zone::Stack && self.object_ref(row.object.card) == row.object)
                         .then(|| FaceDownPermanentView {
                             object: row.object,
+                            cause: row.cause,
                             underlying: (self.state.outcome.is_some()
                                 || row.known
                                 || row.known_to & (1 << viewer.index()) != 0
@@ -1064,6 +1380,7 @@ impl Game {
                     }
                     Some(FaceDownPermanentView {
                         object: row.object,
+                        cause: row.cause,
                         underlying: (self.state.outcome.is_some()
                             || row.known
                             || row.known_to & (1 << viewer.index()) != 0

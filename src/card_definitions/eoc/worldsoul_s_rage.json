@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "44790bba1455e6327fd588a2c0e8d1ef25f7641eb4e69c51746763e887dba000"
   },
-  "physical_metadata_sha256": "c3066adc6fa4b87b75335b1a9155da2d7d8d595ef01e26d0654de48fbde09ed2"
+  "physical_metadata_sha256": "c3066adc6fa4b87b75335b1a9155da2d7d8d595ef01e26d0654de48fbde09ed2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WorldsoulsRage.java",
+  "java_sha256": "f14b2f60abfcbbee277ce43121b20f0cc1185658de1de49df0b911ae5d39a25a",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

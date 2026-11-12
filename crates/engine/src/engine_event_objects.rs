@@ -38,6 +38,8 @@ pub enum EventObjectFacts {
     CounterTotal(u128),
     /// Identity only; no private or unused event characteristics are captured.
     Identity,
+    /// The other physical card from one melded permanent's actual death.
+    GraveyardCompanion(ObjectRef),
     DamageActor(DamageSource),
     UntapStepCount(u64),
     /// Frozen amount this exact event object dealt in one simultaneous damage event.
@@ -49,6 +51,8 @@ pub enum EventObjectFacts {
         amount: u64,
     },
     DepartureManaValue(u64),
+    DepartureArrival(ObjectRef),
+    RevealedCreatureType(crate::cards::CreatureType),
     /// The live entrant's value, refreshed immediately before it departs.
     BattlefieldManaValue(u64),
     DiscardedManaValue(u64),
@@ -93,6 +97,14 @@ pub struct EventObjectView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl EventObjectView {
+    pub(super) fn graveyard_objects(&self) -> impl Iterator<Item = ObjectRef> {
+        let companion = match self.facts {
+            EventObjectFacts::GraveyardCompanion(object) => Some(object),
+            _ => None,
+        };
+        std::iter::once(self.object).chain(companion)
+    }
+
     pub(super) fn target_mana_value<W: ability_world::CharacteristicWorld + ?Sized>(
         &self,
         world: &W,
@@ -432,12 +444,15 @@ impl Game {
                     e.subtype_lki = Some(damage.facts);
                 }
                 e.facts = match e.facts {
-                    EventObjectFacts::DeathCounters(_)
+                    EventObjectFacts::GraveyardCompanion(_)
+                    | EventObjectFacts::DeathCounters(_)
                     | EventObjectFacts::DeathBatchPower(_)
                     | EventObjectFacts::CopiableGroup(_)
                     | EventObjectFacts::UntapStepCount(_)
                     | EventObjectFacts::DamageDealt { .. }
                     | EventObjectFacts::DepartureManaValue(_)
+                    | EventObjectFacts::DepartureArrival(_)
+                    | EventObjectFacts::RevealedCreatureType(_)
                     | EventObjectFacts::DiscardedManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. }

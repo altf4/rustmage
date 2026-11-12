@@ -13,6 +13,7 @@ pub enum CastCostClause {
     Additional,
     OriginCounters(u16),
     OriginForage,
+    OriginEvidence(u64),
     OriginDiscard(Option<ObjectRef>),
     SneakReturn(Option<ObjectRef>),
     WebSlingingReturn(Option<ObjectRef>),
@@ -46,23 +47,28 @@ pub struct CastCostTransaction {
     pub(crate) target_mana_value: Option<u64>,
     #[serde(skip)]
     pub(super) origin_forage: Option<Box<forage::ForageSelection>>,
+    #[serde(skip)]
+    pub(super) paid_evidence: Vec<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastCostTransaction {
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.clauses.len() * std::mem::size_of::<CastCostRow>()
-            + self.teammates.len() * std::mem::size_of::<ObjectRef>()
+            + (self.teammates.len() + self.paid_evidence.len()) * std::mem::size_of::<ObjectRef>()
             + self
                 .origin_forage
                 .as_ref()
                 .map_or(0, |selection| selection.bytes())
     }
 
+    pub(super) fn active_clause(&self) -> Option<CastCostClause> {
+        self.active
+            .map(|index| self.clauses[usize::from(index)].clause)
+    }
+
     pub(super) fn paying_origin_forage(&self) -> bool {
-        self.active.is_some_and(|index| {
-            self.clauses[usize::from(index)].clause == CastCostClause::OriginForage
-        })
+        self.active_clause() == Some(CastCostClause::OriginForage)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -72,7 +78,9 @@ impl Announcement {
             costs.clauses.iter().any(|row| {
                 matches!(
                     row.clause,
-                    CastCostClause::OriginForage | CastCostClause::OriginDiscard(_)
+                    CastCostClause::OriginForage
+                        | CastCostClause::OriginEvidence(_)
+                        | CastCostClause::OriginDiscard(_)
                 )
             })
         })
@@ -92,6 +100,11 @@ impl Announcement {
     pub(super) fn add_origin_discard_cost(&mut self) {
         self.add_cast_cost_clause(CastCostClause::Mana);
         self.add_cast_cost_clause(CastCostClause::OriginDiscard(None));
+    }
+
+    pub(super) fn add_origin_evidence_cost(&mut self, threshold: u64) {
+        self.add_cast_cost_clause(CastCostClause::Mana);
+        self.add_cast_cost_clause(CastCostClause::OriginEvidence(threshold));
     }
 
     /// The initial craft consumers have exactly a mana cost, source exile, and
@@ -136,6 +149,10 @@ impl Announcement {
             self.add_cast_cost_clause(CastCostClause::Mana);
             self.add_cast_cost_clause(CastCostClause::Life(life));
         }
+    }
+    pub(super) fn lock_target_evidence(&mut self, threshold: u64) {
+        self.add_cast_cost_clause(CastCostClause::Mana);
+        self.cast_costs.as_mut().unwrap().target_mana_value = Some(threshold);
     }
     pub(super) fn add_target_life_costs(&mut self, fees: impl Iterator<Item = u32>) {
         for amount in fees {
@@ -193,6 +210,7 @@ impl Announcement {
         if self.additional_cost().is_some_and(|s| {
             s.kind == EffectChoiceKind::ReturnTappedCreature
                 || s.kind.uses_target_mana_value()
+                || s.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
                 || matches!(
                     s.kind.payment_kind(),
                     EffectChoiceKind::BeholdMany(_)
@@ -354,6 +372,7 @@ impl Game {
                     | CastCostClause::Mana
                     | CastCostClause::OriginCounters(_)
                     | CastCostClause::OriginForage
+                    | CastCostClause::OriginEvidence(_)
             ));
             costs.clauses[usize::from(index)].paid = true;
             costs.active = None;
@@ -376,6 +395,12 @@ impl Game {
                     .take()
                     .expect("origin forage selected");
                 self.commit_forage(a.item.controller, &selected);
+                if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
+                    return true;
+                }
+            }
+            if matches!(clause, CastCostClause::OriginEvidence(_)) {
+                self.pay_cast_evidence(a);
                 if self.state.entry_batch.is_some() || self.state.replacements.is_some() {
                     return true;
                 }
@@ -562,6 +587,10 @@ impl Game {
                     player: a.item.controller,
                 };
                 self.state.announcing = Some(a);
+            }
+            CastCostClause::OriginEvidence(_) => {
+                self.state.announcing = Some(a);
+                self.start_announcement_evidence();
             }
             CastCostClause::Additional => {
                 let spec = a.additional_cost().unwrap();

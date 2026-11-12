@@ -3,10 +3,36 @@
   "catalogue_id": 2157,
   "oracle_id": "9b7d037f-3269-4e3b-9744-a977acb69c67",
   "facts_sha256": "fa132af4224b8b6054b5868b734001650d08de63a5462c21b8feea0da408945d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "783d1335041f960a742d3a2fc32456969f0537adb6b101b3dec83771cef0e0f3"
   },
-  "physical_metadata_sha256": "dedaeef74c6b2aa345a6521748cf992663c6a918c91270a65c69a1933bb033db"
+  "physical_metadata_sha256": "dedaeef74c6b2aa345a6521748cf992663c6a918c91270a65c69a1933bb033db",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IncineratorOfTheGuilty.java",
+  "java_sha256": "9f875f1443e96d82e087d64faebeabd27dbc999b41b4ae0be72af0e8960dc188",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageAllControlledTargetEffect.java",
+      "sha256": "30af88e8eae5f479b12e505d8abf3739404228f4a8779df43044b08ffaeb6534"
+    }
+  ]
 }

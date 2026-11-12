@@ -1,0 +1,17 @@
+{
+  "name": "Cease",
+  "catalogue_id": 5687,
+  "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+  "facts_sha256": "b16267d1626b3f5bc0a29060bd1a625c8f898c1195dd960de471145408641483",
+  "complete": true,
+  "physical_metadata_sha256": "6cf79ffe74f8e34feb83b4fbdf479f8a469922794e18fe8297e4e0a9f3b34135",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CeaseDesist.java",
+  "java_sha256": "e735f759aa6f0b49b7daf9f317e73385980ccd40341c1ca2c7e86c02892eb236",
+  "oracle_face": {
+    "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+    "index": 0,
+    "sha256": "3db44830cabb6073d36196f57f928e434468784cf888d6c725b26a40ab55248d"
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
+}

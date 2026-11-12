@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4783181853f40eebe72dbf0e2b5a952043dfb94721c5225518f8b0758c5075d7"
   },
-  "physical_metadata_sha256": "80099bd271ef55e3efc53af28dd30b77e496f0b066f471e6b56dc367601891dd"
+  "physical_metadata_sha256": "80099bd271ef55e3efc53af28dd30b77e496f0b066f471e6b56dc367601891dd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheChaseIsOn.java",
+  "java_sha256": "ac0c48b9e494d241256c0ea2e14399fe471bea7c1d3cd51553b190d88978b173",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

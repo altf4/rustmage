@@ -50,6 +50,8 @@ pub enum AdditionalTriggerScope {
     ControlledPermanent,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
+    /// Controlled creature sources whose effective power meets the bound.
+    ControlledCreaturePowerAtMost(i128),
     ControlledLegendaryCreature,
     OtherControlledSubtype(&'static str),
     /// Abilities of another creature with this provider's active entry choice.
@@ -91,10 +93,14 @@ pub enum StaticAbilityFragment {
     ExileCastForZeroOncePerTurn,
     /// Optional fixed mana base for spells the controller can already cast.
     SpellAlternativeManaCost(ManaCost),
+    /// You may collect evidence for the specified amount instead of paying a spell's mana cost.
+    SpellAlternativeEvidenceCost(u64),
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
     CantDrawCards,
+    /// Skip a draw for this source's controller if their library is empty.
+    SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
     /// Cast owned cards linked to this permanent using ordinary mana costs.
@@ -141,6 +147,10 @@ pub enum StaticAbilityFragment {
     AttachedActivationsProhibited,
     /// The exact attached permanent cannot be turned face up.
     AttachedFaceUpProhibited,
+    /// During your turn, opposing permanents cannot be turned face up.
+    OpponentFaceUpProhibitedOnOwnTurn,
+    /// The exact attached permanent cannot become suspected.
+    AttachedSuspectProhibited,
     /// This source's controller may look at opposing face-down creatures.
     LookAtOpponentFaceDownCreatures,
     /// Cards in graveyards cannot be exiled by any player.
@@ -262,6 +272,8 @@ pub enum StaticAbilityFragment {
     CastFromLibraryTop(CastFilter),
     /// Each controller may use this exact ability for one library-top spell per turn.
     CastInstantSorceryFromLibraryTopOnceEachTurn,
+    /// Cast a qualifying creature spell from the top once per turn per source.
+    CastCreaturePowerAtMostFromLibraryTopOnceEachTurn(i128),
     /// Ordinary land plays and spell casts after this exact source attacked.
     PlayFromLibraryTopAfterAttacking,
     CastSubtypesFromLibraryTopWithCounter(&'static [&'static str]),
@@ -283,6 +295,8 @@ pub enum StaticAbilityFragment {
         life: u32,
     },
     SpendAnyManaForCreatures,
+    /// Spend any mana as a color when casting a spell with this effective subtype.
+    SpendAnyColorForSpellSubtype(&'static str),
     /// Actual mana can meet WUBRG requirements of controlled creatures' activations.
     SpendAnyColorForCreatureActivations,
     SpellImprovise(CastFilter),
@@ -317,6 +331,10 @@ pub enum StaticAbilityFragment {
     SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
+    /// Add all five basic land subtypes to each controlled land in layer four.
+    ControlledLandsAllBasicTypes,
+    /// Set every controlled nonland permanent's color to all five colors.
+    ControlledNonlandAllColors,
     OtherSubtypeEntryCounters(&'static str),
     /// A fixed addition from a provider already present before the entry event.
     ControlledSubtypeEntryCounters {
@@ -466,6 +484,8 @@ pub enum StaticAbilityFragment {
         relation: crate::cards::CastRelation,
     },
     SelfUntap(UntapRestriction),
+    /// Its current controller may omit this permanent from their untap action.
+    MaySkipOwnUntap,
     /// Include this permanent in the turn-based action on another player's turn.
     UntapDuringOtherUntapSteps,
     /// Include creatures this source's controller controls in other players' untap steps.
@@ -491,6 +511,12 @@ pub enum StaticAbilityFragment {
         kind: CounterKind,
         minimum: u64,
         subtype: &'static str,
+        keywords: Keywords,
+    },
+    /// Add the creature card type and these creature subtypes to the source,
+    /// retaining its other types. Pair a base setter in the same type-layer group.
+    SourceAdditionalCreature {
+        subtypes: &'static [&'static str],
         keywords: Keywords,
     },
     /// This source becomes a creature with these subtypes and keywords while it
@@ -588,6 +614,11 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to controlled tokens of the indicated live card types.
+    ControlledTokenTapMana {
+        kinds: u16,
+        production: ManaProduction,
+    },
     /// Grant a tap mana ability to controlled permanents with this effective subtype.
     ControlledSubtypeTapMana {
         subtype: &'static str,
@@ -608,6 +639,8 @@ pub enum StaticAbilityFragment {
     ControlledArtifactActivation(u16),
     /// In layer six, grant this indexed nonmana activation to controlled nontoken creatures.
     ControlledNontokenCreatureActivation(u16),
+    /// Grant the provider's activation template to its controller's face-down creatures.
+    ControlledFaceDownCreatureActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {
@@ -691,11 +724,18 @@ pub enum StaticAbilityFragment {
     /// Rules restriction evaluated after all derived power modifications.
     CannotBeBlockedIfSourcePowerAtMost(i128),
     CannotBeBlockedByCreaturesWithLessPower,
+    CannotBeBlockedByNamelessCreatures,
     CannotBeBlockedByCreaturesWithPowerAtLeast(i128),
     /// This permanent can block only attacking creatures with flying.
     CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.
     ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
+    /// A controlled attacker and its proposed blocker must both meet these
+    /// effective power bounds for the restriction to apply.
+    ControlledCreaturesCannotBeBlockedByPower {
+        attacker_maximum: i128,
+        blocker_minimum: i128,
+    },
     EntryTriggerSuppression(u16, u16),
     OpponentEntryTapped(u16, u16),
     ControlledEntryUntapped,

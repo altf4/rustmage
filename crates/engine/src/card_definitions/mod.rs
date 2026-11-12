@@ -226,7 +226,8 @@ impl CardRules {
                             "artifact grant needs a battlefield activation slot"
                         );
                     }
-                    StaticAbilityFragment::ControlledNontokenCreatureActivation(ability) => {
+                    StaticAbilityFragment::ControlledNontokenCreatureActivation(ability)
+                    | StaticAbilityFragment::ControlledFaceDownCreatureActivation(ability) => {
                         assert!(matches!(
                             self.static_groups[group].first_layer,
                             AbilityLayer::Ability
@@ -237,7 +238,7 @@ impl CardRules {
                                     self.activated[ability as usize].origin,
                                     ActivationOrigin::Battlefield
                                 ),
-                            "nontoken creature grant needs a battlefield activation slot"
+                            "creature activation grant needs a battlefield activation slot"
                         );
                     }
                     _ => {}
@@ -434,8 +435,13 @@ pub struct CardExtras {
     pub meld_face: bool,
     pub as_transform: Option<AsTransformEffect>,
     pub room: Option<&'static RoomSpec>,
+    /// Static ability lines that apply only while this exact source is solved.
+    pub solved_static_groups: &'static [u16],
     /// A Room half is a spell definition and has no physical deck identity.
     pub room_parent: Option<Card>,
+    /// Spell halves of a nonpermanent split card, using their actual definitions.
+    pub split_faces: Option<[Card; 2]>,
+    pub split_parent: Option<Card>,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -479,7 +485,7 @@ pub struct CardExtras {
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub battle_defense: u64,
-    pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
+    pub as_turned_face_up_counters: &'static [(CounterKind, TurnUpCounterAmount)],
     pub entry_choice: Option<EntryChoiceKind>,
     /// (trigger slot, named-mode index), checked only at the triggering event.
     pub entry_mode_triggers: &'static [(u16, u16)],
@@ -511,6 +517,7 @@ pub struct CardExtras {
     pub warp: Option<&'static WarpSpec>,
     pub impending: Option<ImpendingSpec>,
     pub disguise_cost: Option<ManaCost>,
+    pub disguise: Option<DisguiseSpec>,
     pub sneak_cost: Option<ManaCost>,
     pub sneak_costs: &'static [ManaCost],
     pub web_slinging_cost: Option<ManaCost>,
@@ -552,6 +559,8 @@ pub struct CardExtras {
     pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub target_cost_increase: Option<&'static TargetSpellIncrease>,
+    /// Added to the spell's total cost for every target beyond the first.
+    pub additional_target_mana: Option<ManaCost>,
     pub behold_cast: Option<BeholdCastSpec>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cast_timing_requires_opponent_spell: bool,
@@ -597,7 +606,10 @@ impl CardExtras {
         meld_face: false,
         as_transform: None,
         room: None,
+        solved_static_groups: &[],
         room_parent: None,
+        split_faces: None,
+        split_parent: None,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
@@ -660,6 +672,7 @@ impl CardExtras {
         warp: None,
         impending: None,
         disguise_cost: None,
+        disguise: None,
         sneak_cost: None,
         sneak_costs: &[],
         web_slinging_cost: None,
@@ -699,6 +712,7 @@ impl CardExtras {
         flashback_additional: None,
         target_cost_reduction: None,
         target_cost_increase: None,
+        additional_target_mana: None,
         behold_cast: None,
         cast_timing_grants: &[],
         cast_timing_requires_opponent_spell: false,

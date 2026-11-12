@@ -8,15 +8,34 @@ use std::collections::BTreeMap;
 pub enum LibraryPile {
     FaceDown,
     FaceUp,
+    First,
+    Second,
+}
+impl LibraryPile {
+    pub(crate) fn index(self) -> usize {
+        match self {
+            Self::FaceDown | Self::First => 0,
+            Self::FaceUp | Self::Second => 1,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Piles {
     controller: Player,
     remaining: Vec<ObjectRef>,
-    down: Vec<ObjectRef>,
-    up: Vec<ObjectRef>,
+    separated: [Vec<ObjectRef>; 2],
+    both_revealed: bool,
     choosing: bool,
+}
+impl Piles {
+    fn labels(&self) -> [LibraryPile; 2] {
+        if self.both_revealed {
+            [LibraryPile::First, LibraryPile::Second]
+        } else {
+            [LibraryPile::FaceDown, LibraryPile::FaceUp]
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -27,6 +46,18 @@ pub struct LibraryPilesView {
     pub face_down: Option<Vec<ObjectView>>,
     pub face_down_count: usize,
     pub face_up: Vec<ObjectView>,
+    /// The first and second piles of an entirely revealed partition.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revealed_piles: Option<[Vec<ObjectView>; 2]>,
+}
+impl LibraryPilesView {
+    pub(crate) fn counts(&self) -> [usize; 2] {
+        self.revealed_piles
+            .as_ref()
+            .map_or([self.face_down_count, self.face_up.len()], |piles| {
+                [piles[0].len(), piles[1].len()]
+            })
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -82,6 +113,8 @@ pub(super) struct ChoiceState {
     // Some(None) means tracking this instruction but no successful own sacrifice.
     sacrifice: Option<Option<ObjectRef>>,
     pub links: Vec<LinkedExileView>,
+    /// Cost exiles use the same public link view and a separate ability identity.
+    pub evidence_links: Vec<evidence::LinkedEvidenceExile>,
     /// Materials of a craft activation tied to its actual returned incarnation.
     pub craft_links: Vec<LinkedExileView>,
     pub free_cast_uses: Vec<LinkedFreeCastUseView>,
@@ -96,6 +129,7 @@ pub(super) struct ChoiceState {
     pub play_approvals: Vec<(u64, limited_exile::LimitedExilePlay, bool)>,
     pub library_entry_counter: Option<library_entry_counter::LibraryEntryCounter>,
     pub null_cast_links: Vec<NullCastLink>,
+    pub secret_creature_types: Vec<creature_type_tokens::SecretCreatureType>,
     hidden: BTreeMap<ObjectRef, HiddenExile>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -123,6 +157,7 @@ impl ChoiceState {
             + self.deployment.as_ref().map_or(0, |h| h.bytes())
             + self.hidden.len() * std::mem::size_of::<(ObjectRef, HiddenExile)>()
             + (self.links.len() + self.craft_links.len()) * std::mem::size_of::<LinkedExileView>()
+            + self.evidence_links.len() * std::mem::size_of::<evidence::LinkedEvidenceExile>()
             + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
             + self.exile_zero_uses.as_ref().map_or(0, |uses| uses.bytes())
@@ -142,8 +177,10 @@ impl ChoiceState {
             + self.play_approvals.len()
                 * std::mem::size_of::<(u64, limited_exile::LimitedExilePlay, bool)>()
             + self.null_cast_links.len() * std::mem::size_of::<NullCastLink>()
+            + std::mem::size_of_val(self.secret_creature_types.as_slice())
             + self.piles.as_ref().map_or(0, |p| {
-                (p.remaining.len() + p.up.len() + p.down.len()) * std::mem::size_of::<ObjectRef>()
+                (p.remaining.len() + p.separated[0].len() + p.separated[1].len())
+                    * std::mem::size_of::<ObjectRef>()
             })
             + self.keep_types.as_ref().map_or(0, |p| {
                 p.selected.len() * std::mem::size_of::<(PermanentType, ObjectRef)>()
@@ -170,7 +207,12 @@ impl Game {
             }
         }
     }
-    pub(super) fn start_library_piles(&mut self, player: Player, maximum: u16) {
+    pub(super) fn start_library_piles(
+        &mut self,
+        player: Player,
+        maximum: u16,
+        both_revealed: bool,
+    ) {
         let remaining = self.state.players[player.index()]
             .library
             .iter()
@@ -182,8 +224,8 @@ impl Game {
         self.state.linked_choices.get_or_insert_default().piles = Some(Piles {
             controller: player,
             remaining,
-            down: Vec::new(),
-            up: Vec::new(),
+            separated: Default::default(),
+            both_revealed,
             choosing: false,
         });
         self.advance_library_piles();
@@ -219,10 +261,7 @@ impl Game {
             .unwrap();
         let at = piles.remaining.iter().position(|&o| o == object).unwrap();
         piles.remaining.remove(at);
-        match pile {
-            LibraryPile::FaceDown => piles.down.push(object),
-            LibraryPile::FaceUp => piles.up.push(object),
-        }
+        piles.separated[pile.index()].push(object);
         self.advance_library_piles();
     }
     pub(super) fn choose_library_pile(&mut self, pile: LibraryPile) {
@@ -236,30 +275,35 @@ impl Game {
             .unwrap();
         // Do not disclose an unchosen hidden pile by preserving the former known top.
         self.forget_library_top(piles.controller);
-        let moves = [
-            (LibraryPile::FaceDown, piles.down),
-            (LibraryPile::FaceUp, piles.up),
-        ]
-        .into_iter()
-        .flat_map(|(side, objects)| objects.into_iter().map(move |object| (side, object)))
-        .map(|(side, object)| {
-            let destination = if side == pile {
-                Zone::Hand
-            } else {
-                Zone::Graveyard
-            };
-            let mut movement = self.entry_move(object.card, destination, false);
-            movement.reveal_hand = side == LibraryPile::FaceUp && destination == Zone::Hand;
-            movement
-        })
-        .collect();
-        self.stage_entries(moves, None);
+        let moves = piles
+            .separated
+            .into_iter()
+            .enumerate()
+            .flat_map(|(side, objects)| objects.into_iter().map(move |object| (side, object)))
+            .map(|(side, object)| {
+                let destination = if side == pile.index() {
+                    Zone::Hand
+                } else {
+                    Zone::Graveyard
+                };
+                let mut movement = self.entry_move(object.card, destination, false);
+                movement.reveal_hand = piles.both_revealed
+                    || (side == LibraryPile::FaceUp.index() && destination == Zone::Hand);
+                movement
+            })
+            .collect();
+        if piles.both_revealed {
+            self.stage_entries_remembering_moves(moves, Zone::Graveyard);
+        } else {
+            self.stage_entries(moves, None);
+        }
         self.run_program();
     }
     pub(super) fn library_piles_view(&self, viewer: Player) -> Option<LibraryPilesView> {
         let p = self.state.linked_choices.as_ref()?.piles.as_ref()?;
-        // The split itself is private until both piles have been made.
-        if !self.shares_information(viewer, p.controller) && !p.choosing {
+        let sees_all = p.both_revealed || self.shares_information(viewer, p.controller);
+        // A split with a hidden pile is private until both piles have been made.
+        if !sees_all && !p.choosing {
             return None;
         }
         let views =
@@ -267,14 +311,25 @@ impl Game {
         Some(LibraryPilesView {
             controller: p.controller,
             choosing: p.choosing,
-            remaining: if self.shares_information(viewer, p.controller) {
+            remaining: if sees_all {
                 views(&p.remaining)
             } else {
                 Vec::new()
             },
-            face_down: (self.shares_information(viewer, p.controller)).then(|| views(&p.down)),
-            face_down_count: p.down.len(),
-            face_up: views(&p.up),
+            face_down: (!p.both_revealed && sees_all).then(|| views(&p.separated[0])),
+            face_down_count: if p.both_revealed {
+                0
+            } else {
+                p.separated[0].len()
+            },
+            face_up: if p.both_revealed {
+                Vec::new()
+            } else {
+                views(&p.separated[1])
+            },
+            revealed_piles: p
+                .both_revealed
+                .then(|| [views(&p.separated[0]), views(&p.separated[1])]),
         })
     }
     pub(super) fn start_keep_types(&mut self, player: Player) -> bool {
@@ -385,12 +440,14 @@ impl Game {
         let data = self.state.linked_choices.as_ref().unwrap();
         if let Some(piles) = &data.piles {
             if piles.choosing {
-                return [LibraryPile::FaceDown, LibraryPile::FaceUp]
+                return piles
+                    .labels()
                     .into_iter()
                     .any(|pile| emit(Action::ChooseLibraryPile { pile }));
             }
             return piles.remaining.iter().any(|&object| {
-                [LibraryPile::FaceDown, LibraryPile::FaceUp]
+                piles
+                    .labels()
                     .into_iter()
                     .any(|pile| emit(Action::AssignLibraryPile { object, pile }))
             });
@@ -453,6 +510,13 @@ impl Game {
             filter: RecoveryFilter::Permanent,
         };
         true
+    }
+    pub(super) fn copy_face_down_exile_knowledge(&mut self, from: ObjectRef, to: ObjectRef) {
+        if let Some(data) = &mut self.state.linked_choices
+            && let Some(hidden) = data.hidden.get(&from).copied()
+        {
+            data.hidden.insert(to, hidden);
+        }
     }
     pub(super) fn reveal_hideaway_object(&mut self, object: ObjectRef) {
         if let Some(data) = self.state.linked_choices.as_mut() {
@@ -555,6 +619,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: None,
             pending_cast: None,
@@ -671,6 +736,7 @@ impl Game {
         self.stage_entries(moves, None);
     }
     pub(super) fn prune_linked_exiles(&mut self) {
+        self.prune_linked_evidence();
         let Some(data) = self.state.linked_choices.as_mut() else {
             return;
         };

@@ -44,6 +44,8 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         }
         Instruction::AddCastEntryCountersForControlledSubtypes { .. }
         | Instruction::GrantCastRebound
+        | Instruction::GrantCastSpellHaste
+        | Instruction::GrantCastSpellKeywords(_)
         | Instruction::GrantCastPlotOnResolution => !cave_only,
         Instruction::UpToTargets(value)
         | Instruction::DiscoverScaled(value)
@@ -83,6 +85,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::CounterUnlessPayScaled { amount: value, .. }
         | Instruction::PutCountersScaled { amount: value, .. }
         | Instruction::PutPermanentCountersScaled { amount: value, .. }
+        | Instruction::PutPermanentCountersWithColors { amount: value, .. }
         | Instruction::PutLegendaryPermanentCountersScaled { amount: value, .. }
         | Instruction::PutNamedPermanentCountersScaled { amount: value, .. }
         | Instruction::GrowScaled { amount: value, .. }
@@ -90,6 +93,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::GrowCreaturesScaled { amount: value, .. }
         | Instruction::GrowPermanentGroupScaled { amount: value, .. }
         | Instruction::CreateTokensScaled { amount: value, .. }
+        | Instruction::CreateTokensRepeated { amount: value, .. }
         | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
         | Instruction::EndureScaled { amount: value, .. }
         | Instruction::CreateSizedToken { size: value, .. }

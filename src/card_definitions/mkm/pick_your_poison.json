@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c60903170125ba3a551bcb3552742507feed7ce9a7ce53d67d5a8d720ee1bfd6"
   },
-  "physical_metadata_sha256": "3dd54758d042783093df2fc05cbfa9240680d0e67282528cd0030492ed354e59"
+  "physical_metadata_sha256": "3dd54758d042783093df2fc05cbfa9240680d0e67282528cd0030492ed354e59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PickYourPoison.java",
+  "java_sha256": "3cdfce72bbc41146ebafe635644890a84c84ef082082e222d346798d010a6708",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeOpponentsEffect.java",
+      "sha256": "87271d2cfbecbfa5595745bae8136f2a9d23002b394f5583e5bec3c24842d759"
+    }
+  ]
 }

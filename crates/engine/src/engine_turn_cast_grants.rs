@@ -6,6 +6,8 @@ use crate::cards::StaticAbilityFragment;
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
 pub struct PlayerCastGrantsView {
     pub artifact_generic_reduction: u64,
+    #[serde(skip_serializing_if = "is_zero_u64")]
+    pub face_down_generic_reduction: u64,
     pub next_red_or_green_creature_free: u64,
     pub next_spell_uncounterable: bool,
     #[serde(skip_serializing_if = "is_zero_u64")]
@@ -136,6 +138,15 @@ impl Game {
             .checked_add(u64::from(amount))
             .capacity("turn spell reduction exhausted");
     }
+    pub(super) fn grant_face_down_spell_reduction(&mut self, player: Player, amount: u32) {
+        if amount > 0 {
+            let reduction = &mut self
+                .player_turn_cast_grants_mut(player)
+                .ordinary
+                .face_down_generic_reduction;
+            *reduction = reduction.saturating_add(u64::from(amount));
+        }
+    }
     pub(super) fn grant_colored_spell_reduction(
         &mut self,
         player: Player,
@@ -179,6 +190,10 @@ impl Game {
         } else {
             0
         };
+        let face_down = row.ordinary.face_down_generic_reduction;
+        if face_down != 0 && card == manifest::FaceDownCause::Disguise.definition() {
+            return face_down;
+        }
         let colors = card.colors();
         row.colored
             .iter()

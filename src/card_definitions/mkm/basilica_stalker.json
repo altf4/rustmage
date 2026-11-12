@@ -3,10 +3,31 @@
   "catalogue_id": 344,
   "oracle_id": "e335485a-80fc-40d4-8be6-7eabf2bab571",
   "facts_sha256": "6d921a3eb0c2c64af0503913b7b03fe09e0e90b4c235c7058e52dfc2a5c5568f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "56c351144db179bcae4df1f47098bbafbcb0ca022a45e557f33167d8fd1e2dac"
   },
-  "physical_metadata_sha256": "a93c5365c58a1420052d9f61c325e037f1fcdcf50548c205c3c148d7a56f0304"
+  "physical_metadata_sha256": "a93c5365c58a1420052d9f61c325e037f1fcdcf50548c205c3c148d7a56f0304",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BasilicaStalker.java",
+  "java_sha256": "47992719dce8e214c633305d93e6c4724d0ba5b30a619c3f35d5ce01a2a510e6",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

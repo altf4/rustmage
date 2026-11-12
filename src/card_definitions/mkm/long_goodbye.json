@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fb020f94e3d175e78d830d9b10164e2292ab06c52191c43218142dfc703f9e6d"
   },
-  "physical_metadata_sha256": "709de79c2f681bffb7cf181d34f9a86780a8d3b2c2ceeeb4844b09a748dd0778"
+  "physical_metadata_sha256": "709de79c2f681bffb7cf181d34f9a86780a8d3b2c2ceeeb4844b09a748dd0778",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LongGoodbye.java",
+  "java_sha256": "9ecbedd68fd300112542a88d6b330ce93a234b7b17a03fe49b00b5500e724068",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    }
+  ]
 }

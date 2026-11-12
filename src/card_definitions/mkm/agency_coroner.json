@@ -3,10 +3,21 @@
   "catalogue_id": 85,
   "oracle_id": "3686fd97-49ff-4a92-9cb2-7d8e9438d945",
   "facts_sha256": "3d22e5be7c675371384cb88e9affd2b068dc0bd88ac1bbdd93243522af8de68f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b1ec425af01fe21727b4c022946a1fbb4ca41e91f3b2b55441bf5e8546484797"
   },
-  "physical_metadata_sha256": "6f2cda1226592533d7151427a8dfa4a53a34820f4543d022014fd723aeb23ac0"
+  "physical_metadata_sha256": "6f2cda1226592533d7151427a8dfa4a53a34820f4543d022014fd723aeb23ac0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AgencyCoroner.java",
+  "java_sha256": "9400075cb1ba34efbf786a85666bdfd2cd0240f612541930582285c17420539c",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }

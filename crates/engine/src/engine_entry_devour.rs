@@ -37,7 +37,7 @@ pub(super) fn needs_devour(movement: &entries::EntryMove) -> bool {
     movement.destination == Zone::Battlefield
         && movement.before.zone != Zone::Battlefield
         && !movement.skipped
-        && movement.manifest_original.is_none()
+        && movement.face_down.is_none()
         && movement
             .intrinsic_entry_card()
             .is_some_and(|card| card.devour().is_some())

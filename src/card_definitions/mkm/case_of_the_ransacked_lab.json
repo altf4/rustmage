@@ -3,10 +3,21 @@
   "catalogue_id": 668,
   "oracle_id": "f85eea8f-5887-4921-a943-d15e0ad1e028",
   "facts_sha256": "b3afe04fd54cc29aa7fa002dc4de70c6a63fca89c8fc60d66a8779ab454c3ce5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a00945bfb9b9a52801e8a5f282f7e9aea3b05b5cf73a6ff8011f73253051225"
   },
-  "physical_metadata_sha256": "a2b62c00ca1fc9c1918aa9649bd1d45385366df04c6eec0e3304f8bd0e22a3ee"
+  "physical_metadata_sha256": "a2b62c00ca1fc9c1918aa9649bd1d45385366df04c6eec0e3304f8bd0e22a3ee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheRansackedLab.java",
+  "java_sha256": "514eaaca6f2b9714c6561e1549b895c5c3228f40f5dcf0f42645d355dbf4d300",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    }
+  ]
 }

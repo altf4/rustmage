@@ -3,10 +3,14 @@
   "catalogue_id": 4604,
   "oracle_id": "19dc29a7-8ccc-4e54-829b-86cc102b082d",
   "facts_sha256": "55ce5493cb740fa18bfde952f1d0d8738cabd0b3b6ba1fc921af2b59cfb30f96",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "88a02776974ac2356e58c23ed243a5b2d34b2dedae9bbb5519727cdade675398"
   },
-  "physical_metadata_sha256": "b0eea7c68c84bd2c8a409d922fffb433d0f2fa34c0ce37a5177e762a2e58896a"
+  "physical_metadata_sha256": "b0eea7c68c84bd2c8a409d922fffb433d0f2fa34c0ce37a5177e762a2e58896a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TinStreetGossip.java",
+  "java_sha256": "ae44c13e409e584af203c391f824f2e005c6273c5c3bbe5712a2151deba8130b",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

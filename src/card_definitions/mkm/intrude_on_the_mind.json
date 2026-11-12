@@ -3,10 +3,21 @@
   "catalogue_id": 2208,
   "oracle_id": "eedb1527-548a-435a-a3e1-8ad7d9d6d8a9",
   "facts_sha256": "96004dbd1cc44baf4445991dfb2bca83f4b41fb7fc3295e60b4e871289a7d54f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b7f80de8485f6caecbef647deb1889401c61cfd683f616a540301172083dadc9"
   },
-  "physical_metadata_sha256": "2a06350f7648f3b91fe0f586ada9bf85474866a254ebccc9e209fa329835016c"
+  "physical_metadata_sha256": "2a06350f7648f3b91fe0f586ada9bf85474866a254ebccc9e209fa329835016c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IntrudeOnTheMind.java",
+  "java_sha256": "f54555233770f907adac0ad9cac40eb0cd0d6f99fd61c6d3dc9961ccffb3ab38",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Thopter00ColorlessToken.java",
+      "sha256": "46cda0ccf64f40d5bcd13b898eaff7918312914d9133bb8477677fbe8b25533b"
+    }
+  ]
 }

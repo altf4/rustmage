@@ -115,6 +115,7 @@ impl Game {
         targets: &[BoundTarget],
         reduction: u64,
     ) -> Option<ManaCost> {
+        let base = Self::with_additional_target_mana(base, card, targets.len())?;
         let extra = (u64::from(payment_symbols) * u64::from(x))
             .checked_add(self.target_spell_increase(actor, id, card, targets))?;
         let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
@@ -350,11 +351,41 @@ impl Game {
             maximum: low as u32,
         }]
     }
+    pub(super) fn visit_x_actions(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        self.x_choice().is_some_and(|domain| {
+            domain.intervals.into_iter().any(|range| {
+                if range.maximum - range.minimum <= 64 {
+                    (range.minimum..=range.maximum).any(|value| emit(Action::ChooseX { value }))
+                } else {
+                    [
+                        range.minimum,
+                        range.minimum + (range.maximum - range.minimum) / 2,
+                        range.maximum,
+                    ]
+                    .into_iter()
+                    .any(|value| emit(Action::ChooseX { value }))
+                }
+            })
+        })
+    }
+
     pub fn x_choice(&self) -> Option<XChoiceView> {
+        if matches!(self.state.pending, Pending::FaceUpPayment { .. }) {
+            return self.face_up_x_choice();
+        }
         if matches!(self.state.pending, Pending::PlotX { .. }) {
             return self.plot_x_choice();
         }
         if let Pending::ResolutionX { player } = self.state.pending {
+            if self.choosing_evidence_x() {
+                return Some(XChoiceView {
+                    card: self.state.resolving.as_ref()?.item.source?.object,
+                    intervals: vec![XInterval {
+                        minimum: 0,
+                        maximum: self.maximum_evidence_x(player),
+                    }],
+                });
+            }
             let mut lo = 0u64;
             let resolving = self.state.resolving.as_ref().unwrap();
             let mut hi = match resolving.program.get(resolving.pc.saturating_sub(1)) {
@@ -471,28 +502,28 @@ impl Game {
                 })
                 .unwrap_or(0),
             AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
-            AmountValue::TargetPlayerCreatureCount => item
-                .targets
-                .iter()
-                .find_map(|bound| {
-                    if let Target::Player(player) = bound.target {
-                        Some(
-                            self.state
-                                .objects
-                                .iter()
-                                .enumerate()
-                                .filter(|(id, object)| {
-                                    object.zone == Zone::Battlefield
-                                        && object.controller == player
-                                        && self.is_creature(*id as CardId)
-                                })
-                                .count() as u128,
-                        )
-                    } else {
-                        None
+            AmountValue::TargetPlayerCreatureCount | AmountValue::TargetPlayersCreatureCount => {
+                let mut chosen = 0u8;
+                for player in item.targets.iter().filter_map(|bound| match bound.target {
+                    Target::Player(player) => Some(player),
+                    _ => None,
+                }) {
+                    chosen |= 1 << player.index();
+                    if value == AmountValue::TargetPlayerCreatureCount {
+                        break;
                     }
-                })
-                .unwrap_or(0),
+                }
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && chosen & (1 << object.controller.index()) != 0
+                            && self.is_creature(*id as CardId)
+                    })
+                    .count() as u128
+            }
             AmountValue::UntapStepCount => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::UntapStepCount(amount) = event.facts {
                     u128::from(amount)

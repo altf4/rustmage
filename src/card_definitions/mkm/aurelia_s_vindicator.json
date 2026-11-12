@@ -3,10 +3,21 @@
   "catalogue_id": 265,
   "oracle_id": "4f452ce7-1166-4810-afed-ea5e156a6f52",
   "facts_sha256": "9ec372812be4bbdd2beb375f41a3ee8a2d0b84b0e8fa5a705f947d1318832c1c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b012891bd49c95bf6fedb391aef16aa1fc5df3cba154513bb19f74aa36d9ecad"
   },
-  "physical_metadata_sha256": "4a1ee5776c5b0341491af48e9d1204fae357ce2af7163efe59436cf05809a96b"
+  "physical_metadata_sha256": "4a1ee5776c5b0341491af48e9d1204fae357ce2af7163efe59436cf05809a96b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AureliasVindicator.java",
+  "java_sha256": "84fdd4c9e30e5cacaf2cead61a9bf0f82820d2030c921d82d4c90d0d729cbed7",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    }
+  ]
 }

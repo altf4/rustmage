@@ -89,7 +89,7 @@ impl Game {
             || a.source_mana_alternative().is_some()
             || a.has_ordered_origin_payment()
             || a.has_ordered_life_cost()
-            || self.cast_uses_target_life_costs(a.item.controller, source.card)
+            || self.cast_requires_target_payment(a.item.controller, source.card)
             || a.item.cast.is_some_and(|cast| cast.method.is_harmonize())
             || source.card.behold_cast().is_some()
         {

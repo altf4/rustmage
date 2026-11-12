@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "dd7f8c6dfa83bd036542d6a3f080c6a38f8c656f4f384272b917905c5635049b"
   },
-  "physical_metadata_sha256": "2f1aeaac61bea082278052da49082843f344591bdc4bdcb628848ae7981a0cac"
+  "physical_metadata_sha256": "2f1aeaac61bea082278052da49082843f344591bdc4bdcb628848ae7981a0cac",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FaeFlight.java",
+  "java_sha256": "8d013f2e047d4e87ca0782b84699482b6ab0928fd82608b681636c55416c32ba",
+  "rules_tests": "mkm_white_blue_cards"
 }

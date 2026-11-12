@@ -3,10 +3,14 @@
   "catalogue_id": 1653,
   "oracle_id": "92d24b75-419b-4068-89c1-db9945f74972",
   "facts_sha256": "9b67cc3f13dadbedb4f1bdc555d426de701762c3b39b550ec3c9b4325e5415ea",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "43dfbe3e69401fffa80d652b390a3c485b77dbb4975858813e782987a6ca7157"
   },
-  "physical_metadata_sha256": "f624e99e3fb03a2bb8957e9c0c8e9aac60017bd0afbedc4992c2346645b65b6f"
+  "physical_metadata_sha256": "f624e99e3fb03a2bb8957e9c0c8e9aac60017bd0afbedc4992c2346645b65b6f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FurtiveCourier.java",
+  "java_sha256": "f80ae65dfb0ddfd77c51af28a03fed6bdd6959bc046982ae0f8279d655fcec8c",
+  "rules_tests": "mkm_white_blue_cards"
 }

@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3fd034737bfc948e235d692cfb343ddbd9beee9c3455a02359c355c07d442ce9"
   },
-  "physical_metadata_sha256": "bf4fc9d569ab83cc2367fb9c0d1e7340638f9804711de393b0451ca7f1bbbe80"
+  "physical_metadata_sha256": "bf4fc9d569ab83cc2367fb9c0d1e7340638f9804711de393b0451ca7f1bbbe80",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BiteDownOnCrime.java",
+  "java_sha256": "ec8695d7763bd6b4ac934ad72ede3eb9e96afac5d661ab8de33e513f451c55e4",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    }
+  ]
 }

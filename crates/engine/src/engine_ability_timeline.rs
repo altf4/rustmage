@@ -87,6 +87,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentManaBonus(..)
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
+                            | StaticAbilityFragment::SourceAdditionalCreature { .. }
                             | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }
@@ -101,6 +102,8 @@ impl Card {
                             | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::ChosenTypeKeywords(..)
                             | StaticAbilityFragment::ChosenBasicLandType
+                            | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNonlandAllColors
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
@@ -117,6 +120,7 @@ impl Card {
                             | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
+                            | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
@@ -142,6 +146,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentSacrificeMana(..)
                             | StaticAbilityFragment::LandMana { .. }
                             | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
@@ -199,6 +204,8 @@ impl Game {
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
+                            | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNonlandAllColors
                     )
                 })
             })

@@ -34,5 +34,6 @@
       "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
     }
   ],
-  "remaining_obligations": []
+  "remaining_obligations": [],
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

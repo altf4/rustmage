@@ -368,6 +368,7 @@ pub(super) enum TokenCompletion {
     CollectSimultaneous,
     AttackThisCombat,
     CounterOtherWizards,
+    Suspect,
     RecordCreatedAura,
     Counters {
         kind: CounterKind,
@@ -1945,7 +1946,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
+            .and_then(|state| state.face_up_completion.map(|(object, _, _)| object))
             == Some(p.object)
             && self.is_face_down(p.object)
         {
@@ -2019,7 +2020,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
+            .and_then(|state| state.face_up_completion.map(|(object, _, _)| object))
             && placements
                 .iter()
                 .any(|placement| placement.object == object && placement.entry_index.is_none())
@@ -2531,6 +2532,17 @@ impl Game {
             })),
             Vec::new(),
         );
+    }
+    pub(super) fn resolution_counter_subject(
+        &self,
+        item: &SpellView,
+        subject: Subject,
+    ) -> Option<ObjectRef> {
+        let ids = self.keyword_subjects(item, subject);
+        let [id] = ids.as_slice() else {
+            return None;
+        };
+        self.on_battlefield(*id).then(|| self.object_ref(*id))
     }
     pub(super) fn pay_resolution_counter_placement(
         &mut self,
@@ -3117,16 +3129,17 @@ impl Game {
         &mut self,
         player: Player,
         recipes: Vec<CopyRecipe>,
+        amount: u128,
         tapped: bool,
     ) {
-        if recipes.is_empty() {
+        if recipes.is_empty() || amount == 0 {
             return;
         }
         let groups = recipes
             .iter()
             .map(|recipe| TokenGroupView {
                 token: recipe.definition,
-                amount: 1,
+                amount,
                 tapped,
             })
             .collect();
@@ -3963,6 +3976,7 @@ impl Game {
                                 let capture = matches!(
                                     batch.completion,
                                     TokenCompletion::CounterOtherWizards
+                                        | TokenCompletion::Suspect
                                         | TokenCompletion::RecordCreatedAura
                                         | TokenCompletion::AttackThisCombat
                                         | TokenCompletion::AnimateNoncreatures(_)
@@ -4061,6 +4075,12 @@ impl Game {
                 self.on_battlefield(object.card) && self.object_ref(object.card) == *object
             })
             .collect();
+        if matches!(completion, TokenCompletion::Suspect) {
+            for object in created {
+                self.set_suspected(object, true);
+            }
+            return;
+        }
         if matches!(completion, TokenCompletion::RecordCreatedAura) {
             let any_aura = created.iter().any(|object| {
                 self.current_kinds(object.card) & 32 != 0 && self.has_subtype(object.card, "Aura")

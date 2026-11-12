@@ -103,7 +103,7 @@ impl Game {
         card: CardId,
         sorcery: bool,
         rules: &[(CastFilter, u32, Option<CounterKind>)],
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -135,7 +135,7 @@ impl Game {
                         life,
                         entry_counter,
                     },
-                    mana_alternatives,
+                    cast_alternatives,
                     emit,
                 ) {
                     return true;
@@ -221,7 +221,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
-        mana_alternatives: &[(ObjectRef, ManaCost)],
+        cast_alternatives: &[PaidCastAlternative],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = self.object_ref(card);
@@ -238,7 +238,7 @@ impl Game {
             face,
             sorcery,
             PaidCastOrigin::SelfGraveyardWithCounter { object },
-            mana_alternatives,
+            cast_alternatives,
             emit,
         ) {
             return true;

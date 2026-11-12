@@ -3,10 +3,14 @@
   "catalogue_id": 3441,
   "oracle_id": "ebb88893-427f-496c-82a8-94d2bafb5e4c",
   "facts_sha256": "1ac7f62532cf056d5a5ecc867c97eeacf0f12fbcacd345e7362a7059ac9d81d1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a93a6429cb5f147501c8d78282774fcea19971b6635abeb6e781320d66ac33c"
   },
-  "physical_metadata_sha256": "4572ba8c43535b627fcfcbc6ad7493b371cf9cf12fc69b984345485e1af2e26e"
+  "physical_metadata_sha256": "4572ba8c43535b627fcfcbc6ad7493b371cf9cf12fc69b984345485e1af2e26e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ReenactTheCrime.java",
+  "java_sha256": "7cd002f302f0d0b16d052eeb7e0fe6c89371c099b089e3de1ad546e54bfbb2e4",
+  "rules_tests": "mkm_white_blue_cards"
 }

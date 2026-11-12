@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fab7c7b43cc4ef24dc52aa6d8a4189ab5990dc4d4a348da2dbdc3a3019f67e8d"
   },
-  "physical_metadata_sha256": "5788113f9bf09511ab4c7f25caf953def25c724b72061317566e5822e495e3df"
+  "physical_metadata_sha256": "5788113f9bf09511ab4c7f25caf953def25c724b72061317566e5822e495e3df",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PresumedDead.java",
+  "java_sha256": "7c7d14183e748f56ceb657c734095ee103ac0f6a5d1b54da18e8d84cd087bc8e",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    }
+  ]
 }

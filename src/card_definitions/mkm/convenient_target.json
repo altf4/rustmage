@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8e56b810363b01e576d90174b9cc88026ffbdcf2d9d988555e2c0023547ba048"
   },
-  "physical_metadata_sha256": "66a77978668ee04547b7ec96957385451ac281248432ec9359ad33713c4f2ab2"
+  "physical_metadata_sha256": "66a77978668ee04547b7ec96957385451ac281248432ec9359ad33713c4f2ab2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ConvenientTarget.java",
+  "java_sha256": "822964642706dac957a739cfb1d42de7ce490080f99b0521a913685502f40b14",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    }
+  ]
 }

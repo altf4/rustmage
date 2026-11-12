@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/d/DeadlyCoverUp.java",
   "java_sha256": "f232aa0bcee3c8b1303311995a4ec7765cbf30f3ff8cd57a317276484e90cd70",
-  "rules_tests": "src/assurance/hartford_grave_exile.rs",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

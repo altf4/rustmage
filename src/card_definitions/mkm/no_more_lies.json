@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5b1967181794185ff3c68c555f19c0418d8c6cece05fb76356bf4da8e75842e6"
   },
-  "physical_metadata_sha256": "4cb2e9ee2f90b669561c64511379ce61f3c1ee131e755687f7c3c424bbbd2b85"
+  "physical_metadata_sha256": "4cb2e9ee2f90b669561c64511379ce61f3c1ee131e755687f7c3c424bbbd2b85",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NoMoreLies.java",
+  "java_sha256": "d0c2f0259fa0cd926403f490226256492c29c7d6c3d17a06d7066f0fba734e03",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

@@ -323,6 +323,16 @@ impl Game {
                 self.player_was_dealt_legendary_combat_damage(actor.other())
             }
             ActivationGuard::SourceSolved => self.case_solved(self.object_ref(source)),
+            ActivationGuard::RevealChosenSecretCreatureType => {
+                let object = self.object_ref(source);
+                self.secret_creature_type(
+                    object,
+                    self.state.objects[source as usize].card,
+                    actor,
+                    self.copy_ability_origin(object),
+                )
+                .is_some()
+            }
             ActivationGuard::Always => true,
             ActivationGuard::SourceAttackedThisTurn => self
                 .state
@@ -1144,6 +1154,9 @@ impl Game {
         definition: &ActivatedAbility,
     ) -> Option<ActivationPaymentPhase> {
         self.bind_activation_source_quantities(item, definition.program);
+        if definition.guard.reveals_secret_creature_type() {
+            self.reveal_chosen_creature_type_for_payment(item);
+        }
         if !self.start_activation_payment(item, payment, counter_payment, definition) {
             self.pay_attachment_departure_cost(item);
             return None;
@@ -1269,6 +1282,7 @@ impl Game {
                         | crate::cards::StaticAbilityFragment::OtherCreaturesFood(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
+                        | crate::cards::StaticAbilityFragment::ControlledFaceDownCreatureActivation(index)
                         | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability: index, .. }
                         if *index == ability)
                     })

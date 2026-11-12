@@ -312,6 +312,7 @@ impl Game {
                 events.push(ZoneChange {
                     granted_departure_mana_value: 0,
                     was_card: false,
+                    was_face_down: false,
                     linked_exile_life: None,
                     melded_after: None,
                     shuffled_in_place: false,

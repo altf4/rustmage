@@ -3,10 +3,31 @@
   "catalogue_id": 2460,
   "oracle_id": "4ec0b64d-c793-47a6-9c26-9ad4d9e9c182",
   "facts_sha256": "abb2fabf94441b2028309e40cab9f60f4fc0093e3f7dd1bcfd69e0a27110ac14",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9fa8fc95fdae91092e24a8641eb3e556da1ac0c9391a02f859f790fd8e2fc514"
   },
-  "physical_metadata_sha256": "8741c349994ba197fd2560e561e3e58ad6c0296c46ded5f2fad6de0e7b8f4570"
+  "physical_metadata_sha256": "8741c349994ba197fd2560e561e3e58ad6c0296c46ded5f2fad6de0e7b8f4570",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LazavWearerOfFaces.java",
+  "java_sha256": "616486cf356074187e25e0b45332a556009a42bca7dfdd56bc7ab4ea2d26e457",
+  "rules_tests": "tests/mkm_cards_green_gold/exile_links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificePermanentTriggeredAbility.java",
+      "sha256": "fa6f6ae71009e45d59ba6080503c75b1c96b730ea7e0b5a075d5dc26a230efe8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyEffect.java",
+      "sha256": "4e27230c09fc613d065b165fb57332f3ac4f8bf1fb2f7b33212f155535d8df0b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/InvestigateEffect.java",
+      "sha256": "db04263634b8969dee966be525deac8165e358e3a0774b3e11de300f024ac3ed"
+    }
+  ]
 }

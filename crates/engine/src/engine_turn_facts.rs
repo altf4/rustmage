@@ -1,6 +1,133 @@
 //! Frozen public event facts, recorded even before an observing permanent exists.
 use super::*;
 use crate::cards::{CastFilter, CreatureCastQualifier, StaticAbilityFragment, TriggeredAbility};
+use std::sync::Arc;
+
+/// Cumulative history. An arriving card need not still be in the graveyard.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Hash)]
+pub(super) struct ZoneChangeTurnHistory {
+    pub(super) creature_card_arrivals: [u64; 2],
+    pub(super) artifact_permanent_arrivals: u64,
+    pub(super) artifact_sacrifices: [bool; 2],
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ZoneChangeTurnHistory {
+    pub(super) fn record_creature_card_arrival(&mut self, owner: Player) {
+        let count = &mut self.creature_card_arrivals[owner.index()];
+        *count = count
+            .checked_add(1)
+            .capacity("creature card arrival history exhausted");
+    }
+
+    pub(super) fn record_artifact_cost_departure(
+        &mut self,
+        controller: Player,
+        requested: Zone,
+        destination: Zone,
+    ) {
+        // Battlefield-to-graveyard cost proposals are sacrifices. A different
+        // destination can replace the move without changing its cause.
+        if requested == Zone::Graveyard && destination != Zone::Battlefield {
+            self.artifact_sacrifices[controller.index()] = true;
+        }
+        if destination == Zone::Graveyard {
+            self.record_artifact_permanent_arrival();
+        }
+    }
+
+    pub(super) fn record_artifact_permanent_arrival(&mut self) {
+        self.artifact_permanent_arrivals = self
+            .artifact_permanent_arrivals
+            .checked_add(1)
+            .capacity("artifact permanent arrival history exhausted");
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct TurnEventHistory {
+    zone_changes: ZoneChangeTurnHistory,
+    damage_sources: [Vec<ObjectRef>; 2],
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl TurnEventHistory {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self
+                .damage_sources
+                .iter()
+                .map(|rows| std::mem::size_of_val(rows.as_slice()))
+                .sum::<usize>()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    fn turn_event_history_mut(&mut self) -> &mut TurnEventHistory {
+        Arc::make_mut(
+            self.state
+                .turn_event_history
+                .get_or_insert_with(Default::default),
+        )
+    }
+
+    pub(super) fn zone_change_turn_history(&self) -> ZoneChangeTurnHistory {
+        self.state
+            .turn_event_history
+            .as_ref()
+            .map_or(ZoneChangeTurnHistory::default(), |history| {
+                history.zone_changes
+            })
+    }
+
+    pub(super) fn record_artifact_sacrifice(&mut self, payer: Player) {
+        if !self.zone_change_turn_history().artifact_sacrifices[payer.index()] {
+            self.turn_event_history_mut()
+                .zone_changes
+                .artifact_sacrifices[payer.index()] = true;
+        }
+    }
+
+    pub(super) fn record_graveyard_arrival(&mut self, id: CardId, before: &ObjectView) {
+        let card = &self.state.objects[id as usize];
+        let owner = card.owner;
+        let creature_card =
+            before.zone != Zone::Graveyard && card.is_card() && self.is_creature(id);
+        let artifact_permanent = before.zone == Zone::Battlefield && before.kinds & 16 != 0;
+        if creature_card || artifact_permanent {
+            let history = &mut self.turn_event_history_mut().zone_changes;
+            if creature_card {
+                history.record_creature_card_arrival(owner);
+            }
+            if artifact_permanent {
+                history.record_artifact_permanent_arrival();
+            }
+        }
+    }
+
+    pub(super) fn record_damage_source_this_turn(&mut self, source: DamageSource) {
+        let player = source.controller.index();
+        let position = self
+            .state
+            .turn_event_history
+            .as_ref()
+            .map_or(Err(0), |history| {
+                history.damage_sources[player].binary_search(&source.reference)
+            });
+        if let Err(position) = position {
+            self.turn_event_history_mut().damage_sources[player].insert(position, source.reference);
+        }
+    }
+
+    pub(super) fn distinct_damage_sources_this_turn(&self, controller: Player) -> usize {
+        self.state.turn_event_history.as_ref().map_or(0, |history| {
+            history.damage_sources[controller.index()].len()
+        })
+    }
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -40,6 +167,9 @@ pub struct TurnFactsView {
     /// A face-down permanent entered under this player's control or they turned one face up.
     #[serde(skip_serializing_if = "is_false")]
     pub face_down_entry_or_turn_up: bool,
+    /// An exact face-down object entered as a creature under this player's control.
+    #[serde(skip_serializing_if = "is_false")]
+    pub face_down_creature_entered: bool,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -223,7 +353,6 @@ impl Game {
             let id = event.after.card;
             let object = &self.state.objects[id as usize];
             let controller = object.controller;
-            facts[controller.index()].face_down_entry_or_turn_up |= self.is_face_down(event.after);
             let subtypes = self.granted_subtypes(id);
             let zombie = subtypes.has(object.card, "Zombie");
             facts[controller.index()].hero_entered |= subtypes.has(object.card, "Hero");
@@ -239,6 +368,9 @@ impl Game {
                 entry.zombie = zombie;
             }
             let kinds = self.current_kinds(id);
+            let face_down = self.is_face_down(event.after);
+            facts[controller.index()].face_down_entry_or_turn_up |= face_down;
+            facts[controller.index()].face_down_creature_entered |= face_down && kinds & 1 != 0;
             if kinds & (1 | 128) != 0 {
                 entered_types[controller.index()].union(subtypes.creature_type_set(object.card));
             }
@@ -264,6 +396,7 @@ impl Game {
             player.turn_facts.artifact_entered |= event.artifact_entered;
             player.turn_facts.hero_entered |= event.hero_entered;
             player.turn_facts.face_down_entry_or_turn_up |= event.face_down_entry_or_turn_up;
+            player.turn_facts.face_down_creature_entered |= event.face_down_creature_entered;
         }
     }
     pub(super) fn subtype_entered_under_control(&self, player: Player, types: &[&str]) -> bool {

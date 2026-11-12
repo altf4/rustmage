@@ -195,6 +195,13 @@ impl Game {
             })
             .count()
     }
+    pub(super) fn declared_attack_this_combat(&self, object: ObjectRef) -> bool {
+        self.state
+            .declared_attack_history
+            .as_ref()
+            .is_some_and(|history| history.combat_rows().iter().any(|row| row.object == object))
+    }
+
     pub(super) fn declared_attack_subtypes_all(&self, player: Player, subtypes: &[&str]) -> bool {
         subtypes.iter().all(|wanted| {
             self.state

@@ -1,0 +1,12 @@
+{
+  "name": "@token/mkm-ooze",
+  "catalogue_id": 5683,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "66c0171a206b41aea8b7a77051939c59950b6c79e21ccbdcbaa83865fdd36a78",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/OozeTrampleToken.java",
+  "java_sha256": "fd4dc32a7c723070c6c2c4bdb08f757f20cfa0813b1b59a61c241329fbb0965b",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs"
+}

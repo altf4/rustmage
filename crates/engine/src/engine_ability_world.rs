@@ -121,6 +121,9 @@ pub(super) trait CharacteristicWorld {
     fn food_sacrificed(&self, player: Player) -> bool {
         self.game().state.players[player.index()].food_sacrificed_this_turn
     }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.game().zone_change_turn_history()
+    }
     fn roles(&self) -> Option<&roles::RoleState> {
         self.game().state.roles.as_deref()
     }
@@ -1055,23 +1058,27 @@ pub(super) trait CharacteristicWorld {
         if object.zone != Zone::Battlefield {
             return Keywords::NONE;
         }
-        object
-            .card
-            .static_ability_groups()
-            .iter()
-            .flat_map(|group| group.fragments)
-            .fold(Keywords::NONE, |result, fragment| {
-                if let crate::cards::StaticAbilityFragment::SourceConditionalKeywords {
-                    condition,
-                    keywords,
-                } = *fragment
-                    && self.value(condition, id) != 0
+        let mut result = Keywords::NONE;
+        for group in object.card.static_ability_groups() {
+            for fragment in group.fragments {
+                let (condition, keywords) = match *fragment {
+                    StaticAbilityFragment::SourceConditionalKeywords {
+                        condition,
+                        keywords,
+                    } => (Some(condition), keywords),
+                    StaticAbilityFragment::SourceAdditionalCreature { keywords, .. } => {
+                        (None, keywords)
+                    }
+                    _ => continue,
+                };
+                if entry_modes::group_enabled(self, self.reference(id), group)
+                    && condition.is_none_or(|value| self.value(value, id) != 0)
                 {
-                    result.union(keywords)
-                } else {
-                    result
+                    result = result.union(keywords);
                 }
-            })
+            }
+        }
+        result
     }
 
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {
@@ -1218,13 +1225,7 @@ pub(super) trait CharacteristicWorld {
             return true;
         }
         let evaluation = ability_evaluation::evaluate_if_needed(self);
-        if evaluation.is_none()
-            && self.definition(id).room().is_none()
-            && !matches!(
-                self.object(id).card.entry_choice(),
-                Some(EntryChoiceKind::NamedModes(_))
-            )
-        {
+        if evaluation.is_none() && !self.definition(id).has_conditional_static_groups() {
             return true;
         }
         self.object(id)
@@ -1293,6 +1294,10 @@ pub(super) trait CharacteristicWorld {
             card: id,
             generation: self.object(id).generation,
         }
+    }
+    fn suspected(&self, id: CardId) -> bool {
+        self.game().suspected_reference(self.reference(id))
+            && self.object(id).zone == Zone::Battlefield
     }
     fn kinds(&self, id: CardId) -> u16 {
         characteristic_layers::kinds(self, id, self.object(id))
@@ -1400,6 +1405,7 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::LandMana { production, .. }
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
             | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
+            | StaticAbilityFragment::ControlledTokenTapMana { production, .. }
             | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
             _ => return None,
         };
@@ -1425,6 +1431,9 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::OtherControlledPermanentTapMana(_) => own && id != source.card,
             StaticAbilityFragment::ControlledPermanentTapMana { kinds, .. } => {
                 own && self.kinds(id) & kinds != 0
+            }
+            StaticAbilityFragment::ControlledTokenTapMana { kinds, .. } => {
+                own && target.is_token() && self.kinds(id) & kinds != 0
             }
             StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
                 own && self.subtypes(id).has(target.card, subtype)
@@ -1805,6 +1814,13 @@ impl Game {
             graveyard_owner: (original.zone == Zone::Graveyard && original.is_card())
                 .then_some(original.owner),
         })
+    }
+}
+
+impl CastDepartureWorld<'_> {
+    pub(super) fn with_definition(mut self, definition: Card) -> Self {
+        self.spell.card = definition;
+        self
     }
 }
 
@@ -2215,6 +2231,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn food_sacrificed(&self, player: Player) -> bool {
         self.parent.food_sacrificed(player)
+    }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.parent.zone_change_turn_history()
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
         self.parent.plus_one_placed_this_turn(object, p)

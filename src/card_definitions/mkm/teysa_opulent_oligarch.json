@@ -3,10 +3,14 @@
   "catalogue_id": 4411,
   "oracle_id": "d4f5748f-bb0e-4c48-8802-45a7ad5a80a4",
   "facts_sha256": "45f18780c03fc717918196f2bf8a239fc9319ca532ee7c71e6b9b93b30aceac3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "29e65d53bbc3bd45e25b3d44bc8620286f5d0bcccafb6ae40a53f374d52d1d24"
   },
-  "physical_metadata_sha256": "ba6c200459e6e71971cf9398de811bf9986e8d608e5915a61950c1523ab9d9ca"
+  "physical_metadata_sha256": "ba6c200459e6e71971cf9398de811bf9986e8d608e5915a61950c1523ab9d9ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TeysaOpulentOligarch.java",
+  "java_sha256": "14ff02b9dc8974c228def116cf34df6f630c03398c39799f6bb736b15c8a0341",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

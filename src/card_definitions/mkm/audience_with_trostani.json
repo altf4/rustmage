@@ -3,10 +3,26 @@
   "catalogue_id": 262,
   "oracle_id": "cbbb5c0c-e953-410d-88c6-8fedb719e94c",
   "facts_sha256": "777a722e8fc5b1c6733ad6657d2b6cbe2be113ebd6b8796ff7892ddce41bab31",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "49c5affed5df03433e28ffd4a33ff49d21aa8e6d23f132a1453a8a9b5e130293"
   },
-  "physical_metadata_sha256": "046ff30ff752a46934820e7669af2b7d17c98f9157db5cf226dcfbd85fdb5bae"
+  "physical_metadata_sha256": "046ff30ff752a46934820e7669af2b7d17c98f9157db5cf226dcfbd85fdb5bae",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AudienceWithTrostani.java",
+  "java_sha256": "46bfc115cefad4dac0b9450c88f44983a3d455e41f5ed0a0ba0eb339141e1891",
+  "rules_tests": "tests/mkm_cards_green_gold/events.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/DifferentlyNamedPermanentCount.java",
+      "sha256": "a4dee5a70348ef50f313f7a31aced692f8337eba898da57894b3b46c5cfdb6f0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/PlantToken.java",
+      "sha256": "94b4cb3b1586ad8bb93920054ad3e1e7a1cc9902615605a1b9aeea99f9bb7e1b"
+    }
+  ]
 }

@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0dff30e104978682a4148cc6bd35ed4adedb0d558e0ea9625d70cbb6cb0706e1"
   },
-  "physical_metadata_sha256": "7aef1b6f9ce4abd02f5ad69e4725aba2273cf32f7dacd7aefb28e53fec6b5614"
+  "physical_metadata_sha256": "7aef1b6f9ce4abd02f5ad69e4725aba2273cf32f7dacd7aefb28e53fec6b5614",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ItDoesntAddUp.java",
+  "java_sha256": "5e7998db25e8f084375d4b88543c5ab5ad43ca50ef4a4feb5bda8e6478bdea47",
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

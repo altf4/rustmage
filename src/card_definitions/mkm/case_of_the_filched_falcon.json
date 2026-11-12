@@ -3,10 +3,21 @@
   "catalogue_id": 663,
   "oracle_id": "33b31fb0-71ce-408a-a256-2a5a3b085cb6",
   "facts_sha256": "defb3e8f08eeb2bdad7fbcdaba1c9ba2b266b31363df30776b45dc3cc53ac2cb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c61b5e865052d80898cc63e7b1040777ce06355992dc492671ab98d34c6c1302"
   },
-  "physical_metadata_sha256": "b0a25c345893623ac435ecffd1c4cb96867d0a015dc55b9ff4c6ff058f2c40c9"
+  "physical_metadata_sha256": "b0a25c345893623ac435ecffd1c4cb96867d0a015dc55b9ff4c6ff058f2c40c9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheFilchedFalcon.java",
+  "java_sha256": "2a70680d342cc8353d061fbce04996010ca94f8012385b53e2e60b8cc36d63b6",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    }
+  ]
 }

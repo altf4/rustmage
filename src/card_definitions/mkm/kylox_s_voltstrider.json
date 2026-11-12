@@ -3,10 +3,31 @@
   "catalogue_id": 2427,
   "oracle_id": "e7b746c8-1b32-42ed-8328-4e16274209d8",
   "facts_sha256": "3a3c61790f81156de02e11294492c75ae3a24be2a203b5fd67b52316e91f1dbd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1b3f928e9444311c99fd2ac1c7274fb42f741f2acac2a0876b62c10e9ecf8c40"
   },
-  "physical_metadata_sha256": "2bf9e55fb96cae1ed6b56c42acb950d9e8b47f29b03c938509c5e04875e7738f"
+  "physical_metadata_sha256": "2bf9e55fb96cae1ed6b56c42acb950d9e8b47f29b03c938509c5e04875e7738f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KyloxsVoltstrider.java",
+  "java_sha256": "f66b0a3249e3ff6c1f9b03938fbd776085be4d75eb62927d75550bced15691f4",
+  "rules_tests": "tests/mkm_cards_green_gold/evidence.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CrewAbility.java",
+      "sha256": "7f139d85967db1b179aba8d009ea03d7bc072d466c35ad2c1dda3edc23017304"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeSourceEffect.java",
+      "sha256": "eebc0ef4cbc6c73c1d811abab3b1909a235d0dedf97ff992d1618e76644a325c"
+    }
+  ]
 }

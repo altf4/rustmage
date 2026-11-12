@@ -68,7 +68,7 @@ impl ManaTapBonus {
     ) -> ManaTapReceipt {
         let mut receipt = ManaTapReceipt {
             base: self,
-            sources: Vec::new(),
+            ..ManaTapReceipt::default()
         };
         let Some(permanent) = source else {
             return receipt;
@@ -155,16 +155,30 @@ impl ManaTapBonus {
                     continue;
                 }
                 let count = trigger_count(&query, source);
+                let quality = mana_lots::Quality::ORDINARY.with_producer(world, source);
                 let mut fixed = None;
                 if let Some(production) = production {
-                    production.in_world(world, source).visit(|mana| {
+                    let production = production.in_world(world, source);
+                    let multiple = production
+                        .visit(|mana| fixed.replace(mana).is_some_and(|previous| previous != mana));
+                    if multiple {
                         assert!(
-                            fixed.is_none(),
-                            "attachment bonus requires fixed or chosen-color mana"
+                            matches!(
+                                production,
+                                ManaProduction::Choice { .. } | ManaProduction::Combination { .. }
+                            ),
+                            "attachment bonus requires fixed or selectable colors"
                         );
-                        fixed = Some(mana);
-                        false
-                    });
+                        // An additional trigger makes its own choice, with the same producer.
+                        receipt.choices.extend(std::iter::repeat_n(
+                            TapBonusOption {
+                                production,
+                                quality: Some(quality),
+                            },
+                            count as usize,
+                        ));
+                        continue;
+                    }
                 }
                 let scaled = |value: u32| {
                     value
@@ -174,7 +188,7 @@ impl ManaTapBonus {
                 let fixed = fixed.unwrap_or_default().map(scaled);
                 if fixed != [0; 6] || amount != 0 || colorless != 0 {
                     receipt.sources.push(TapBonusSource {
-                        quality: mana_lots::Quality::ORDINARY.with_producer(world, source),
+                        quality,
                         fixed,
                         amount: scaled(amount),
                         colorless: scaled(colorless),
@@ -191,6 +205,7 @@ impl ManaTapBonus {
 pub(super) struct ManaTapReceipt {
     base: ManaTapBonus,
     sources: Vec<TapBonusSource>,
+    choices: Vec<TapBonusOption>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -253,7 +268,7 @@ fn visit_bonus_options(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManaTapReceipt {
     pub(super) fn has_trigger_bonuses(&self) -> bool {
-        self.base.has_trigger_bonuses() || !self.sources.is_empty()
+        self.base.has_trigger_bonuses() || !self.sources.is_empty() || !self.choices.is_empty()
     }
     pub(super) fn replace_production(&self, mut production: Mana) -> Option<Mana> {
         if self.base.multiplier != 1 {
@@ -275,11 +290,11 @@ impl ManaTapReceipt {
     }
     fn output(&self, production: Mana) -> (TapBonusOutput, Vec<TapBonusOption>) {
         let mut output = TapBonusOutput::default();
-        let mut options = Vec::new();
         // CR106.12a: tapping for mana must actually produce mana.
         if production == [0; 6] || !self.has_trigger_bonuses() {
-            return (output, options);
+            return (output, Vec::new());
         }
+        let mut options = self.choices.clone();
         let mask = production
             .iter()
             .enumerate()

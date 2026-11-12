@@ -1,5 +1,18 @@
 //! Cold combat history, resolved requirements and exact damage accounting.
 use super::*;
+use crate::cards::{CombatRequirement, CombatRequirementDuration};
+
+#[path = "engine_block_requirements.rs"]
+mod block_requirements;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) struct CombatRequirementRow {
+    pub blocker: ObjectRef,
+    attacker: Option<ObjectRef>,
+    pub require_attack: bool,
+    pub duration: CombatRequirementDuration,
+}
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -30,6 +43,7 @@ pub(super) struct CombatRulesState {
     )]
     pub begin_combat_this_turn: Option<Box<Vec<SpellView>>>,
     pub must_be_blocked: Vec<ObjectRef>,
+    pub creature_requirements: Vec<CombatRequirementRow>,
     pub blocker_power_limits: Vec<BlockerPowerLimitView>,
     pub sneak_entries: Option<SharedVec<ObjectRef>>,
     pub must_attack_this_combat: Vec<ObjectRef>,
@@ -76,6 +90,7 @@ impl CombatRulesState {
             })
             + (self.must_be_blocked.len() + self.must_attack_this_combat.len())
                 * std::mem::size_of::<ObjectRef>()
+            + self.creature_requirements.len() * std::mem::size_of::<CombatRequirementRow>()
             + self.blocker_power_limits.len() * std::mem::size_of::<BlockerPowerLimitView>()
             + self.damaged_players.len() * std::mem::size_of::<CombatDamagePlayerView>()
             + self.sneak_entries.as_ref().map_or(0, |rows| {
@@ -455,6 +470,64 @@ impl Game {
             .collect();
         self.add_block_requirements(recipients);
     }
+    pub(super) fn require_subject_combat(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        requirement: CombatRequirement,
+        duration: CombatRequirementDuration,
+    ) {
+        if duration == CombatRequirementDuration::ThisCombat
+            && !matches!(
+                self.state.step,
+                Step::BeginCombat
+                    | Step::Attackers
+                    | Step::Blockers
+                    | Step::FirstStrikeDamage
+                    | Step::CombatDamage
+                    | Step::EndCombat
+            )
+        {
+            return;
+        }
+        let attacker = if requirement == CombatRequirement::BlockEventAttacker {
+            let Some(attacker) = item.event_object.as_ref().map(|event| event.object) else {
+                return;
+            };
+            if self.object_ref(attacker.card) != attacker
+                || !self
+                    .state
+                    .attackers
+                    .iter()
+                    .any(|row| row.card == attacker.card)
+            {
+                return;
+            }
+            Some(attacker)
+        } else {
+            None
+        };
+        let mut blockers = self.keyword_subjects(item, subject);
+        blockers.sort_unstable();
+        blockers.dedup();
+        let rows: Vec<_> = blockers
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| CombatRequirementRow {
+                blocker: self.object_ref(id),
+                attacker,
+                require_attack: requirement == CombatRequirement::AttackOrBlock,
+                duration,
+            })
+            .collect();
+        if !rows.is_empty() {
+            self.state
+                .combat_rules
+                .get_or_insert_with(Default::default)
+                .creature_requirements
+                .extend(rows);
+        }
+    }
     pub(super) fn restrict_blocker_power(&mut self, item: &SpellView, group: u16, minimum: i32) {
         let recipients: Vec<_> = item
             .targets
@@ -487,6 +560,15 @@ impl Game {
             .filter(|bound| bound.group == group && self.same_target_object(**bound))
             .filter_map(|bound| bound.object)
             .filter(|object| self.on_battlefield(object.card))
+            .collect();
+        self.add_block_requirements(recipients);
+    }
+    pub(super) fn require_subject_blocked(&mut self, item: &SpellView, subject: Subject) {
+        let recipients = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_ref(id))
             .collect();
         self.add_block_requirements(recipients);
     }
@@ -705,6 +787,9 @@ pub(super) fn cover_block_slots(game: &Game, slots: &[CardId], available: &[Card
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     fn maximum_block_requirements(&self, selected: &[(CardId, CardId)]) -> Option<usize> {
+        if self.has_creature_block_requirements() {
+            return self.maximum_weighted_block_requirements(selected);
+        }
         let available: Vec<_> = (0..self.state.objects.len())
             .map(|id| id as CardId)
             .filter(|&id| self.can_be_blocker(id) && !selected.iter().any(|&(b, _)| b == id))
@@ -791,11 +876,12 @@ impl Game {
         Some(search(&can_cover, &mut slots, &normal, &bundles, fixed))
     }
     pub(super) fn block_requirements_complete(&self) -> bool {
-        if !self
-            .state
-            .attackers
-            .iter()
-            .any(|a| self.block_requirement_weight(a.card) > 0)
+        if !self.has_creature_block_requirements()
+            && !self
+                .state
+                .attackers
+                .iter()
+                .any(|a| self.block_requirement_weight(a.card) > 0)
         {
             return true;
         }
@@ -811,14 +897,21 @@ impl Game {
             })
             .map(|a| self.block_requirement_weight(a.card))
             .sum();
-        Some(achieved) == self.maximum_block_requirements(&[])
+        let creature_requirements = self
+            .state
+            .selected_blocks
+            .iter()
+            .map(|&(blocker, attacker)| self.creature_block_requirement_weight(blocker, attacker))
+            .sum::<usize>();
+        Some(achieved + creature_requirements) == self.maximum_block_requirements(&[])
     }
     pub(super) fn block_requirements_preserved(&self, blocker: CardId, attacker: CardId) -> bool {
-        if !self
-            .state
-            .attackers
-            .iter()
-            .any(|a| self.block_requirement_weight(a.card) > 0)
+        if !self.has_creature_block_requirements()
+            && !self
+                .state
+                .attackers
+                .iter()
+                .any(|a| self.block_requirement_weight(a.card) > 0)
         {
             return true;
         }

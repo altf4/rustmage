@@ -3,10 +3,26 @@
   "catalogue_id": 3296,
   "oracle_id": "78f9ec0f-6015-4024-aca6-9a14cba373fa",
   "facts_sha256": "d736f20acb016f861d505a77fc62c3456027e05b68367e81c08bf73b62c6d146",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f2aed8946a37884c80c6d8032c0644a2a5e6f5babab90fa8f842ea78602cad57"
   },
-  "physical_metadata_sha256": "621f908a715ee9c704cba48af525fc8288dfbfb4aac1871f25d9213eef14276e"
+  "physical_metadata_sha256": "621f908a715ee9c704cba48af525fc8288dfbfb4aac1871f25d9213eef14276e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PyrotechnicPerformer.java",
+  "java_sha256": "36558924c38790425e465c83bf50c36748b0f49ba01a123c7777677e18af1c34",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpAllTriggeredAbility.java",
+      "sha256": "758d39cefb1211145c871f01fc7d315c7f56d9e8cd8a9590ec207ade873a8f69"
+    }
+  ]
 }

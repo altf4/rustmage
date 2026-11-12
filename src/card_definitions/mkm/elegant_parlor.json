@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7574512c3a646debf081b78994958464669d914b11531d652caf378751c408f5"
   },
-  "physical_metadata_sha256": "b53241f26507d0ac86bcc9b84855b9f9fb7cc371eaff1a3e256be8c90dad6673"
+  "physical_metadata_sha256": "b53241f26507d0ac86bcc9b84855b9f9fb7cc371eaff1a3e256be8c90dad6673",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ElegantParlor.java",
+  "java_sha256": "ed8065158b601beb24845d7c1d5e10fe7857aeeda3dce073725560b1b2c8b7da",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

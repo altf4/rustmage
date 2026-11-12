@@ -41,7 +41,7 @@ impl Card {
 
 #[derive(Clone, Copy)]
 enum TriggerCause<'a> {
-    Ordinary,
+    Ordinary(Option<i128>),
     Attack,
     Entry(&'a [ObjectRef]),
     CreatureDeath,
@@ -52,7 +52,15 @@ pub(super) fn additional_triggers<W: CharacteristicWorld + ?Sized>(
     query: &characteristic_query::CharacteristicQuery<'_, W>,
     id: CardId,
 ) -> usize {
-    additional_triggers_for_event(query, id, TriggerCause::Ordinary)
+    additional_triggers_for_event(query, id, TriggerCause::Ordinary(None))
+}
+
+pub(super) fn additional_triggers_with_power<W: CharacteristicWorld + ?Sized>(
+    query: &characteristic_query::CharacteristicQuery<'_, W>,
+    id: CardId,
+    power: i128,
+) -> usize {
+    additional_triggers_for_event(query, id, TriggerCause::Ordinary(Some(power)))
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn additional_attack_triggers<W: CharacteristicWorld + ?Sized>(
@@ -84,6 +92,10 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
         return 0;
     }
     let mut extra = 0usize;
+    let mut power = match cause {
+        TriggerCause::Ordinary(power) => power,
+        _ => None,
+    };
     for &provider in providers {
         let object = query.object(provider);
         if object.zone != Zone::Battlefield {
@@ -108,7 +120,7 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                     }
                     // The source view carries all ordinary extras into event
                     // dispatch. Entry, attack and death add only their own scopes.
-                    _ => matches!(cause, TriggerCause::Ordinary),
+                    _ => matches!(cause, TriggerCause::Ordinary(_)),
                 };
                 if !matches_event {
                     continue;
@@ -128,6 +140,11 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                 scope,
                                 AdditionalTriggerScope::ControlledCreatureSubtype(_)
                             ) || query.kinds(id) & 1 != 0)
+                    }
+                    AdditionalTriggerScope::ControlledCreaturePowerAtMost(maximum) => {
+                        recipient.controller == object.controller
+                            && query.kinds(id) & 1 != 0
+                            && *power.get_or_insert_with(|| query.stats(id).power) <= maximum
                     }
                     AdditionalTriggerScope::ControlledLegendaryCreature => {
                         recipient.controller == object.controller

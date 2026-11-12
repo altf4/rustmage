@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c69a7e0a125ce35b577ed1a253523861a14f07511c2df4cd0457b6ca5e0505a5"
   },
-  "physical_metadata_sha256": "9a5c3710ba6b23776d954ad2df5b6116d69d1f86c32bb4413c0e0b755c3d5bfd"
+  "physical_metadata_sha256": "9a5c3710ba6b23776d954ad2df5b6116d69d1f86c32bb4413c0e0b755c3d5bfd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExtractAConfession.java",
+  "java_sha256": "c6c08b24b0d2afa96f26189f23742a85f232cfab3170a099e777bc6c7088e2b6",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CollectEvidenceAbility.java",
+      "sha256": "1ea9025eb7543ca48e370d708b8d945ca80031d6a3a93197ca018632cbe6e12e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CollectedEvidenceCondition.java",
+      "sha256": "bd361350ead778f42d1614af685e0873ddeb77b67c0bfa153e649136f7c9bf3d"
+    }
+  ]
 }

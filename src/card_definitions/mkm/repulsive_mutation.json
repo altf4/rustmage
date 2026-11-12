@@ -3,10 +3,14 @@
   "catalogue_id": 3465,
   "oracle_id": "611bfaa6-b098-48d9-9e49-1e7dc8687f15",
   "facts_sha256": "3208169308fce7839cb82ad873cb5cad0116b5cc8c7a6f420df65eeb4f66a7d5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7af1b29b57e10bfd01309c56edf714af5dceb4e0b2bfff587b97b3a3f6cd97fb"
   },
-  "physical_metadata_sha256": "030af27a94ef8372fb2e6e8d055cb699b237091dcb06de6fb7fe8daf1779514b"
+  "physical_metadata_sha256": "963e39194ba7d7433d74094cc2c72d0c16713a4d7efc60af03aba2089a749ea9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RepulsiveMutation.java",
+  "java_sha256": "ef2007b5f207855de3a64e9826d27f2ed090268a162ca8d658d971746f5add91",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

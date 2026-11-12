@@ -3,10 +3,26 @@
   "catalogue_id": 2676,
   "oracle_id": "ccb39f4a-2684-4eb7-9066-aad81ae08962",
   "facts_sha256": "38e009ffecc3ed469375ee5c8497d3921bea76791561d7ae304b1d3790f983ac",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cd92e4b935d4c4d5064a4a37fba3f29d1751257b7a601b9fd96b056e8e9c08ce"
   },
-  "physical_metadata_sha256": "09740cff0477286aa7636c4da1580d39b4781c6a4f2b49edd0b33ac39f5fb15d"
+  "physical_metadata_sha256": "09740cff0477286aa7636c4da1580d39b4781c6a4f2b49edd0b33ac39f5fb15d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MassacreGirlKnownKiller.java",
+  "java_sha256": "2d969175fa3e19018171d17f1507a78d7d22036af3307f37a141e16e3885e555",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WitherAbility.java",
+      "sha256": "11ab0a230f7faae0791dc6a67a5db54dc79804ccbb44ef19ff0f80fc805205e7"
+    }
+  ]
 }

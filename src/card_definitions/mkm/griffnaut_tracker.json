@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ced218352615693358732229bcf826b18462866d7ef4e3a9feba36298db4726e"
   },
-  "physical_metadata_sha256": "b7453940b95866d21781140fe4bcca6e9c35435dae3f2b1bc8b892dbbbf2bddf"
+  "physical_metadata_sha256": "b7453940b95866d21781140fe4bcca6e9c35435dae3f2b1bc8b892dbbbf2bddf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GriffnautTracker.java",
+  "java_sha256": "33cb0b70bfc61e0f3e986bbd3255b76eab5987400cdfce566e9fe4eb51ae7774",
+  "rules_tests": "mkm_white_blue_cards"
 }

@@ -6,6 +6,7 @@ use super::*;
 pub(super) enum LinkedExileMode {
     ReturnCreature { plus_one: u64 },
     CopyMutant,
+    CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
 }
 
@@ -120,9 +121,23 @@ impl Game {
         self.remember_linked_exile_events(item, &events);
         self.finish_zone_events(&events, &[]);
     }
-    pub(super) fn exile_controller_library_top_linked(&mut self, item: &SpellView, amount: u16) {
+    pub(super) fn exile_controller_library_top_linked(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        face_down: bool,
+    ) {
         let ids = exile::top_library_cards(self, item.controller, u128::from(amount));
-        self.exile_objects_linked(item, &ids);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        if face_down {
+            for event in &events {
+                if event.was_card && event.moved && event.destination == Zone::Exile {
+                    self.remember_face_down_exile(event.after, 0, None);
+                }
+            }
+        }
+        self.remember_linked_exile_events(item, &events);
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn exile_grave_targets_linked(
@@ -208,6 +223,20 @@ impl Game {
                 })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
+            Some(LinkedExileMode::CopyCreatureUntilEndOfTurn) => {
+                if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+                    return Vec::new();
+                }
+                self.linked_exile_for_item(&resolution.item)
+                    .into_iter()
+                    .filter(|object| {
+                        let exiled = &self.state.objects[object.card as usize];
+                        exiled.is_card()
+                            && exiled.card.is_creature()
+                            && !self.exiled_face_down(*object)
+                    })
+                    .collect()
+            }
             Some(LinkedExileMode::CopyWhileAttached) => {
                 let item = &resolution.item;
                 let Some(event) = item.attachment_trigger.as_deref() else {
@@ -268,6 +297,24 @@ impl Game {
         true
     }
 
+    pub(super) fn may_decline_linked_exile_copy(&self) -> bool {
+        self.state
+            .linked_choices
+            .as_ref()
+            .and_then(|state| state.linked_exile_mode)
+            == Some(LinkedExileMode::CopyCreatureUntilEndOfTurn)
+    }
+
+    pub(super) fn decline_linked_exile_copy(&mut self) {
+        assert!(self.may_decline_linked_exile_copy());
+        self.state
+            .linked_choices
+            .as_mut()
+            .unwrap()
+            .linked_exile_mode = None;
+        self.run_program();
+    }
+
     pub(super) fn finish_linked_exile_effect(&mut self, mode: LinkedExileMode, object: ObjectRef) {
         let resolution = self.state.resolving.as_mut().unwrap();
         let player = resolution.item.controller;
@@ -284,6 +331,13 @@ impl Game {
                     movement.effect_counter = Some((CounterKind::PlusOne, plus_one));
                 }
                 self.stage_entries(vec![movement], None);
+            }
+            LinkedExileMode::CopyCreatureUntilEndOfTurn => {
+                let source = resolution.item.source.expect("linked copy source").object;
+                if self.on_battlefield(source.card) && self.object_ref(source.card) == source {
+                    let recipe = self.copiable_recipe(object);
+                    self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
+                }
             }
             LinkedExileMode::CopyMutant => {
                 let recipe = mutant_copy(self.state.objects[object.card as usize].card);
@@ -350,6 +404,7 @@ impl Game {
             permanent_spell_only: false,
             uncast_to_hand: false,
             siege_transformed: false,
+            spell_kinds: 0,
             paid: None,
             casts_remaining: Some(1),
             pending_cast: None,

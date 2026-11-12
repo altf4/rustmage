@@ -1,16 +1,20 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+use crate::engine::temporary_tokens::TokenCleanup;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::BeginCombat,
+            relation: CastRelation::You,
+            guard: StepGuard::Always,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::CreateTemporaryTokensThenCleanup {
+            token: Card(5266),
+            amount: AmountValue::Fixed(1),
+            keywords: Keywords::HASTE,
+            cleanup: TokenCleanup::OwnEndStepSacrifice,
+        }],
+    }],
     ..CardRules::EMPTY
 };

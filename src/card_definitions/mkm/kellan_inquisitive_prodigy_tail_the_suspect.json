@@ -3,10 +3,21 @@
   "catalogue_id": 2340,
   "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
   "facts_sha256": "39c9895b3a8da6820a7a2f9b0d1a36ada350979efd6ed95bdaa2837e45210aae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "28b1976b1764b48f847aac33a7375988058319f86720d2b8f601af06ee70b829"
   },
-  "physical_metadata_sha256": "a8b6d0ef2f282b479bc4ffadd3e3b0a033037d87d195996a9aec9000b324b2ee"
+  "physical_metadata_sha256": "0d5fb345e5904e582e61284c1ebddc6b13637367da57818c7355c1fdeec51b8d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanInquisitiveProdigy.java",
+  "java_sha256": "4c4db9f98ee637afbc9fe610e34867363987b7ed5dfe39ef4c9af1504585a494",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    }
+  ]
 }

@@ -4,33 +4,49 @@ use crate::cards::StaticAbilityFragment;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn source_power_forbids_block(&self, attacker: CardId) -> bool {
+    fn source_forbids_block(&self, attacker: CardId, blocker: CardId) -> bool {
         self.state.objects[attacker as usize]
             .card
             .static_ability_groups()
             .iter()
             .flat_map(|group| group.fragments)
             .any(|fragment| {
-                let crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(
-                    maximum,
-                ) = *fragment
-                else {
-                    return false;
+                let active = || {
+                    self.continuous_fragment_available(attacker, |candidate| {
+                        std::ptr::eq(candidate, fragment)
+                    })
                 };
-                self.continuous_fragment_available(attacker, |candidate| {
-                    std::ptr::eq(candidate, fragment)
-                }) && self.stats(attacker).power <= maximum
+                match *fragment {
+                    StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(maximum) => {
+                        active() && self.stats(attacker).power <= maximum
+                    }
+                    StaticAbilityFragment::CannotBeBlockedByNamelessCreatures => {
+                        active()
+                            && ability_world::CharacteristicWorld::name(self, blocker).is_empty()
+                    }
+                    _ => false,
+                }
             })
     }
 
     fn controlled_creature_block_forbidden(&self, attacker: CardId, blocker: CardId) -> bool {
         let controller = self.state.objects[attacker as usize].controller;
+        let attacker_stats = std::cell::OnceCell::new();
+        let blocker_power = std::cell::OnceCell::new();
         self.state.static_sources.iter().copied().any(|source| {
             self.state.objects[source as usize].controller == controller
                 && self.active_rule_fragment(source, |fragment| match *fragment {
                     StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(maximum) => {
-                        let stats = self.stats(attacker);
+                        let stats = attacker_stats.get_or_init(|| self.stats(attacker));
                         stats.power <= maximum || stats.toughness <= maximum
+                    }
+                    StaticAbilityFragment::ControlledCreaturesCannotBeBlockedByPower {
+                        attacker_maximum,
+                        blocker_minimum,
+                    } => {
+                        attacker_stats.get_or_init(|| self.stats(attacker)).power <= attacker_maximum
+                            && *blocker_power.get_or_init(|| self.stats(blocker).power)
+                                >= blocker_minimum
                     }
                     StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword { subtype, blocker_keyword } => {
                         self.has_subtype(attacker, subtype) && self.keywords(blocker).contains(blocker_keyword)
@@ -87,7 +103,7 @@ impl Game {
             return false;
         }
         if self.flying_block_forbidden(blocker, attacker)
-            || self.source_power_forbids_block(attacker)
+            || self.source_forbids_block(attacker, blocker)
             || self.controlled_creature_block_forbidden(attacker, blocker)
             || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)

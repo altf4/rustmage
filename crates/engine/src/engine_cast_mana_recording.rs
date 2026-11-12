@@ -148,7 +148,9 @@ impl Game {
         };
         let additional = a.additional_cost().and_then(|spec| {
             use additional_costs::ManaCostObjects;
-            let selection = if spec.kind == EffectChoiceKind::Forage {
+            let selection = if evidence::threshold(spec).is_some() {
+                ManaCostObjects::from_slice(&a.evidence.as_ref()?.selected)
+            } else if spec.kind == EffectChoiceKind::Forage {
                 ManaCostObjects::from_slice(&a.forage.as_ref()?.selected)
             } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
                 ManaCostObjects::from_slice(a.additional_group.as_deref()?)

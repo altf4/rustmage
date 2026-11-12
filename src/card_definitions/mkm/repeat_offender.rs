@@ -1,16 +1,34 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 1),
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        cost: ActivationCost {
+            colored: [0, 0, 1, 0, 0, 0],
+            generic: 2,
+            mana_component: true,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::IfSubjectSuspected {
+                subject: Subject::Source,
+                skip: 2,
+            },
+            Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            },
+            Instruction::Skip(1),
+            Instruction::Suspect {
+                subject: Subject::Source,
+            },
+        ],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6090de611054b59ee72db5ff5472b73c23edbf17b6f7f64d3105c12075a60a5a"
   },
-  "physical_metadata_sha256": "6ab7344533fa14e60095f7a2d104c1db71c86c72ceaa77bd21f70d8899dc860e"
+  "physical_metadata_sha256": "6ab7344533fa14e60095f7a2d104c1db71c86c72ceaa77bd21f70d8899dc860e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaucousTheater.java",
+  "java_sha256": "124d262fe94e5539dec273afa2e0ac43caabf170b9266e15705b81364e39c5ec",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

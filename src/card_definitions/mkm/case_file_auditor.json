@@ -3,10 +3,21 @@
   "catalogue_id": 660,
   "oracle_id": "8c612741-2b30-43b3-bd3f-7df19662d298",
   "facts_sha256": "e3aefa3b90d2e841735557552bcc568df6457d7ad2e3e4252f43699b5558de10",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33c8209086492f80669bc4b032573a4feae608d6381bb69dddfff318934279cb"
   },
-  "physical_metadata_sha256": "fc8317f80543f765c5c6e2a9fc579bff62ee3a194a3d862a50ecca1ae58401ef"
+  "physical_metadata_sha256": "fc8317f80543f765c5c6e2a9fc579bff62ee3a194a3d862a50ecca1ae58401ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseFileAuditor.java",
+  "java_sha256": "5dbac42b9444bc2836ab96e9c01a7708b15b49df2e1f6910ed501403971a5674",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    }
+  ]
 }

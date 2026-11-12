@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1d659af1d77930516568dae221113b0e2e45d60329ca0c8c1aae5c1d394e00a"
   },
-  "physical_metadata_sha256": "21831dddc7a212a12a2a9eb947a97aca149caca5b662be628afc10128c52c8c1"
+  "physical_metadata_sha256": "21831dddc7a212a12a2a9eb947a97aca149caca5b662be628afc10128c52c8c1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Candlestick.java",
+  "java_sha256": "d1f9a7e0aaadf3be9e3641c51fd5fe28f1ec2ab8736d452001a8bdcaa4aeec0a",
+  "rules_tests": "mkm_white_blue_cards"
 }

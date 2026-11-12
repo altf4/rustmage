@@ -8,5 +8,9 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "90a0c5b085382e216f8e47457ef402eb2e457d10189735dc29c4539f50f2a616"
   },
-  "physical_metadata_sha256": "da49efdb6632ec7d1c5fadd0386f8468105a3d7b448229d9224eb3b97870b128"
+  "physical_metadata_sha256": "da49efdb6632ec7d1c5fadd0386f8468105a3d7b448229d9224eb3b97870b128",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SliceFromTheShadows.java",
+  "java_sha256": "5cf33424981e254c52dee7186ae23c1ffd56f072f2ca18c261665de99536cf00",
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

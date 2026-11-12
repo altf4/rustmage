@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9a61467b1fff7afadac376b10ccd2ee780ca1493f5b3674318fb00d261e85df6"
   },
-  "physical_metadata_sha256": "a1e5abd59b6224002e4e0360fb551ba24d4728c494f30e04ce60c4a1d5ab9362"
+  "physical_metadata_sha256": "a1e5abd59b6224002e4e0360fb551ba24d4728c494f30e04ce60c4a1d5ab9362",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/Festerleech.java",
+  "java_sha256": "edc9bedf607a76fb6b366eee48285e077883571dddcf49142841173d548eab34",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    }
+  ]
 }

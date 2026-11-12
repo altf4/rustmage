@@ -3,10 +3,26 @@
   "catalogue_id": 1846,
   "oracle_id": "37f2ec12-d703-40cd-a155-053ae2e4ddcc",
   "facts_sha256": "2d4731dcfd9e88fc0a43a6a78b994fee767ce831f1742d6dfe201bb6f146a700",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c312026d19fd4560af253492c905fed75a69edda6aef4ae5e1ea669fe79d43cf"
   },
-  "physical_metadata_sha256": "c4d173ac7db6a24fb27fe53ab467c86554780c887c968db09878ebcfdd61cc63"
+  "physical_metadata_sha256": "c4d173ac7db6a24fb27fe53ab467c86554780c887c968db09878ebcfdd61cc63",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GraniteWitness.java",
+  "java_sha256": "36d096667c57e74853d9f7247579c5797f2778487312422670f5dcf441bbe123",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    }
+  ]
 }
