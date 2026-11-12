@@ -6896,6 +6896,23 @@ impl Game {
                         false,
                     );
                 }
+                Instruction::DestroyPlayerPermanents { players, kinds } => {
+                    let players: Vec<_> = self.program_players(players, &item).collect();
+                    let objects: Vec<_> = self
+                        .state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .filter_map(|(id, object)| {
+                            let id = id as CardId;
+                            (object.zone == Zone::Battlefield
+                                && players.contains(&object.controller)
+                                && self.current_kinds(id) & kinds != 0)
+                                .then(|| self.object_ref(id))
+                        })
+                        .collect();
+                    self.destroy_objects_outcome(objects);
+                }
                 Instruction::DestroyManaValueExactly { kinds, amount } => {
                     self.destroy_battlefield_mana_value(kinds, self.item_amount(amount, &item));
                 }

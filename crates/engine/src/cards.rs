@@ -3883,6 +3883,11 @@ pub enum Instruction {
         kinds: u16,
         value: AmountValue,
     },
+    /// Simultaneously destroy permanents with any listed kind under the selected players' control.
+    DestroyPlayerPermanents {
+        players: PlayerSet,
+        kinds: u16,
+    },
     DestroyManaValue {
         kinds: u16,
         maximum: AmountValue,
