@@ -1,4 +1,5 @@
 //! Shared-type-line split permanents and the turn-based choices that open doors.
+use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{RoomSpec, StaticAbilityFragment, StaticAbilityGroup};
 
