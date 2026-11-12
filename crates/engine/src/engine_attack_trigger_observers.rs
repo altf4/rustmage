@@ -5,11 +5,18 @@ use crate::cards::StaticAbilityFragment;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
     pub(super) fn observes_trigger(&self) -> bool {
-        matches!(self.kind, StackKind::TriggeredAbility { ability } if self
-            .trigger_definition()
-            .triggers()[usize::from(ability)]
-            .condition
-            .event() == TriggerCondition::OwnAttackerAbilityTriggered)
+        self.trigger_event() == Some(TriggerCondition::OwnAttackerAbilityTriggered)
+    }
+
+    fn trigger_event(&self) -> Option<TriggerCondition> {
+        let StackKind::TriggeredAbility { ability } = self.kind else {
+            return None;
+        };
+        self.source()?;
+        self.trigger_definition()
+            .triggers()
+            .get(usize::from(ability))
+            .map(|trigger| trigger.condition.event())
     }
 
     fn names_declared_attacker(&self, attacker: ObjectRef) -> bool {
@@ -29,16 +36,19 @@ impl SpellView {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn caused_by_own_attack(&self, item: &SpellView, source: ObjectRef) -> bool {
-        let ability = match item.kind {
-            StackKind::DecayedAttack => return true,
-            StackKind::TriggeredAbility { ability } => ability,
-            _ => return false,
+    fn caused_by_own_attack(
+        &self,
+        item: &SpellView,
+        source: ObjectRef,
+        attack: &AttackDeclaration,
+    ) -> bool {
+        if item.kind == StackKind::DecayedAttack {
+            return true;
+        }
+        let Some(event) = item.trigger_event() else {
+            return false;
         };
-        match item.trigger_definition().triggers()[usize::from(ability)]
-            .condition
-            .event()
-        {
+        match event {
             TriggerCondition::SelfAttacks
             | TriggerCondition::SelfAttacksDefendingPlayer
             | TriggerCondition::SelfAttacksIfEquipped
@@ -54,7 +64,11 @@ impl Game {
             TriggerCondition::AttackDeclared { power_min, .. } => {
                 power_min.is_none_or(|minimum| self.stats(source.card).power >= i128::from(minimum))
             }
+            TriggerCondition::OpponentAttacked => {
+                attack.defender == Some(CombatDefender::Player(item.controller.other()))
+            }
             TriggerCondition::ControlledCreatureAttacks
+            | TriggerCondition::CreatureAttacksYou { .. }
             | TriggerCondition::ControlledCreatureAttacksOrBlocks
             | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
             | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
@@ -115,14 +129,16 @@ impl Game {
             if item.is_copy || item.controller != actor {
                 continue;
             }
-            let Some(source) = item.source().map(|source| source.object).filter(|source| {
-                declared.iter().any(|attack| attack.card == source.card)
-                    && self.object_ref(source.card) == *source
-                    && self.is_creature(source.card)
-            }) else {
+            let Some(source) = item.source().map(|source| source.object) else {
                 continue;
             };
-            if !self.caused_by_own_attack(item, source) {
+            let Some(attack) = declared.iter().find(|attack| attack.card == source.card) else {
+                continue;
+            };
+            if self.object_ref(source.card) != source
+                || !self.is_creature(source.card)
+                || !self.caused_by_own_attack(item, source, attack)
+            {
                 continue;
             }
             let item = &mut self.state.pending_triggers[index];

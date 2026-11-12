@@ -499,3 +499,140 @@ fn creature_tap_mana_is_available_to_real_and_projected_payments() {
     assert_eq!(game.state.players[p.index()].mana, [0, 1, 0, 0, 0, 0]);
     assert_eq!(stats(&game, cub), (5, 5));
 }
+
+#[test]
+fn linden_only_causes_the_observer_when_her_own_white_creature_attack_triggers() {
+    let _rules = fixture_rules::activate(&[(named("Impact Tremors"), &ASCENSION)]);
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let ascension = put(&mut game, p, "Impact Tremors", Zone::Battlefield);
+    let linden = put(
+        &mut game,
+        p,
+        "Linden, the Steadfast Queen",
+        Zone::Battlefield,
+    );
+    let companion = put(&mut game, p, "Healer's Hawk", Zone::Battlefield);
+    let mut companion_only = game.clone();
+    attack(&mut companion_only, &[companion]);
+    settle(&mut companion_only);
+    assert_eq!(companion_only.state.players[p.index()].life, 21);
+    assert_eq!(
+        companion_only.counter_count(ascension, CounterKind::Quest),
+        0
+    );
+
+    attack(&mut game, &[linden, companion]);
+    order_triggers(&mut game);
+    assert_eq!(game.state.stack.len(), 3);
+    let observed = game.state.stack.last().unwrap().related_stack.unwrap().id;
+    let original = game
+        .state
+        .stack
+        .iter()
+        .find(|item| item.id == observed)
+        .unwrap();
+    assert_eq!(original.event_object.as_ref().unwrap().object.card, linden);
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].life, 22);
+    assert_eq!(game.counter_count(ascension, CounterKind::Quest), 1);
+}
+
+#[test]
+fn a_creature_source_attacking_a_planeswalker_does_not_cause_its_opponent_attack_trigger() {
+    let _rules = fixture_rules::activate(&[(named("Impact Tremors"), &ASCENSION)]);
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let ascension = put(&mut game, p, "Impact Tremors", Zone::Battlefield);
+    let party = put(&mut game, p, "Party Dude", Zone::Battlefield);
+    let companion = put(&mut game, p, "Grizzly Bears", Zone::Battlefield);
+    let walker = put(
+        &mut game,
+        p.other(),
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    game.add_counter(walker, CounterKind::Loyalty, 4);
+    game.state.objects[party as usize].class_level = 3;
+    game.change_object_form(
+        game.object_ref(party),
+        AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((2, 2)),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        },
+        characteristic_layers::AnimationTypeMode::AddCreature,
+    );
+
+    let mut walker_branch = game.clone();
+    walker_branch.state.step = Step::Attackers;
+    walker_branch.state.pending = Pending::Attackers;
+    let defender = walker_branch.object_ref(walker);
+    act(
+        &mut walker_branch,
+        Action::AttackPlaneswalker {
+            card: party,
+            defender,
+        },
+    );
+    act(&mut walker_branch, Action::Attack { card: companion });
+    act(&mut walker_branch, Action::FinishAttackers);
+    act(&mut walker_branch, Action::FinishTargets);
+    assert_eq!(walker_branch.state.stack.len(), 1);
+    assert_eq!(
+        walker_branch.state.stack[0].source().unwrap().object.card,
+        party
+    );
+    settle(&mut walker_branch);
+    assert_eq!(
+        walker_branch.counter_count(ascension, CounterKind::Quest),
+        0
+    );
+
+    attack(&mut game, &[party, companion]);
+    act(&mut game, Action::FinishTargets);
+    settle(&mut game);
+    assert_eq!(game.counter_count(ascension, CounterKind::Quest), 1);
+}
+
+#[test]
+fn tagged_mana_copy_triggers_use_the_ordinary_order_and_checked_classification() {
+    let p = Player::P0;
+    let mut game = scenario(p);
+    game.state.players[p.index()].mana = [0; 6];
+    let goggles = put(&mut game, p, "Pyromancer's Goggles", Zone::Battlefield);
+    let forest = put(&mut game, p, "Forest", Zone::Battlefield);
+    choose(
+        &mut game,
+        |action| matches!(action, Action::AnnounceMana { card, .. } if *card == goggles),
+    );
+    pay(&mut game);
+    act(&mut game, Action::TapMana { card: forest });
+    let spell = put(&mut game, p, "Lightning Strike", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Player(p.other())));
+    let copy_trigger = game.state.stack.last().unwrap();
+    assert_eq!(copy_trigger.source().unwrap().object.card, goggles);
+    assert!(!copy_trigger.observes_trigger());
+
+    let mut slotless = copy_trigger.clone();
+    slotless.kind = StackKind::TriggeredAbility { ability: u16::MAX };
+    assert!(!slotless.observes_trigger());
+    assert!(!game.caused_by_own_attack(
+        &slotless,
+        game.object_ref(goggles),
+        &AttackDeclaration {
+            card: goggles,
+            defender: Some(CombatDefender::Player(p.other())),
+            blocked: false,
+        },
+    ));
+
+    pass_pair(&mut game);
+    if game.legal_actions().contains(&Action::FinishStackTargets) {
+        act(&mut game, Action::FinishStackTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.state.players[p.other().index()].life, 14);
+}
