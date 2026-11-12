@@ -383,7 +383,7 @@ fn life_replaces_only_the_base_mana_cost_and_x_stays_zero() {
     );
     finish_costs(&mut game);
     let cast = game.state.stack.last().unwrap().cast.unwrap();
-    assert_eq!(cast.kicked, Some(true));
+    assert_eq!(cast.kicker, Some(true));
     assert_eq!(cast.payment, [0, 0, 0, 0, 0, 4]);
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, 19);
