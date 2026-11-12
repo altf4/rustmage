@@ -433,13 +433,13 @@ impl Game {
         for grant in matching {
             let ability = grant.granting_card.triggers()[usize::from(grant.ability)];
             let return_death = match ability.condition.event() {
-                TriggerCondition::SelfLeaves => false,
-                TriggerCondition::SelfDies if event.destination == Zone::Graveyard => false,
+                TriggerCondition::SelfLeaves => None,
+                TriggerCondition::SelfDies if event.destination == Zone::Graveyard => None,
                 TriggerCondition::ReturnDeath(filter)
                     if event.destination == Zone::Graveyard
                         && self.return_death_matches(filter, &event.before, event) =>
                 {
-                    true
+                    Some(filter)
                 }
                 _ => continue,
             };
@@ -451,8 +451,8 @@ impl Game {
             ) {
                 continue;
             }
-            if return_death {
-                self.capture_return_death(event);
+            if let Some(filter) = return_death {
+                self.capture_return_death(event, filter);
             } else if ability
                 .program
                 .contains(&Instruction::DamageEachCreatureByDepartureManaValue)
