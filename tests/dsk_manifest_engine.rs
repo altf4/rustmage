@@ -219,3 +219,173 @@ fn manifest_attachment_uses_only_its_own_successful_entry() {
         );
     }
 }
+
+fn pass_pair(game: &mut Game) {
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+}
+
+#[test]
+fn destruction_sends_the_private_choice_to_the_targets_controller_even_if_it_survives() {
+    const REMAKE: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+            &[
+                Instruction::Destroy,
+                Instruction::ManifestDreadForTargetController,
+            ],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::from_name("Murder").unwrap(), &REMAKE)]);
+    for indestructible in [false, true] {
+        let player = Player::P0;
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let victim = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let object = &mut game.state.objects[victim as usize];
+        object.controller = opponent;
+        if indestructible {
+            object.gained_keywords = Keywords::INDESTRUCTIBLE;
+        }
+        let card = put(&mut game, opponent, "Llanowar Elves", Zone::Library);
+        let spell = put(&mut game, player, "Murder", Zone::Hand);
+        cast(&mut game, spell, Some(Target::Card(victim)));
+        pass_pair(&mut game);
+        assert_eq!(
+            game.object_view(victim).zone,
+            if indestructible {
+                Zone::Battlefield
+            } else {
+                Zone::Graveyard
+            }
+        );
+        assert_eq!(game.actor(), Some(opponent));
+        assert!(game.observe(player).manifest_choice.is_none());
+        assert!(game.observe(opponent).manifest_choice.is_some());
+        let action = selection(&game, card);
+        let saved = game.snapshot();
+        assert!(game.apply(player, action.clone()).is_err());
+        assert_eq!(game.snapshot(), saved);
+        act(&mut game, action);
+        assert_eq!(game.object_view(card).controller, opponent);
+        assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        assert_eq!(
+            game.observe(player).face_down_permanents[0].underlying,
+            None
+        );
+    }
+}
+
+#[test]
+fn the_spell_controller_manifests_after_a_counter_attempt() {
+    const COUNTER: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Spell)),
+            &[Instruction::CounterAndManifestForController],
+        ),
+        ..CardRules::EMPTY
+    };
+    const EMPTY_SPELL: CardRules = CardRules {
+        effect: Effect::Spell(TargetPlan::NONE, &[]),
+        ..CardRules::EMPTY
+    };
+    const UNCOUNTERABLE: CardRules = CardRules {
+        extras: &CardExtras {
+            uncounterable: true,
+            ..CardExtras::EMPTY
+        },
+        ..EMPTY_SPELL
+    };
+    for uncounterable in [false, true] {
+        let _scope = fixture_rules::activate(&[
+            (Card::from_name("Negate").unwrap(), &COUNTER),
+            (
+                Card::from_name("Shock").unwrap(),
+                if uncounterable {
+                    &UNCOUNTERABLE
+                } else {
+                    &EMPTY_SPELL
+                },
+            ),
+        ]);
+        let player = Player::P1;
+        let mut game = scenario(player);
+        let card = put(&mut game, player, "Bear Cub", Zone::Library);
+        let spell = put(&mut game, player, "Shock", Zone::Hand);
+        cast(&mut game, spell, None);
+        act(&mut game, Action::Pass);
+        let counter = put(&mut game, player.other(), "Negate", Zone::Hand);
+        cast(&mut game, counter, Some(Target::Spell(spell)));
+        pass_pair(&mut game);
+        assert_eq!(
+            game.object_view(spell).zone,
+            if uncounterable {
+                Zone::Stack
+            } else {
+                Zone::Graveyard
+            }
+        );
+        assert_eq!(game.actor(), Some(player));
+        assert!(game.observe(player.other()).manifest_choice.is_none());
+        let action = selection(&game, card);
+        act(&mut game, action);
+        assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+        settle(&mut game);
+    }
+}
+
+#[test]
+fn manifest_observer_returns_only_a_card_from_its_own_graveyard_receipt() {
+    const RECOVER: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::YouManifestDread,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::ChooseObjects {
+                kind: EffectChoiceKind::ReturnManifestGraveyardToHand,
+                players: PlayerSet::Controller,
+                filter: SacrificeFilter {
+                    kinds: 0,
+                    keywords: Keywords::NONE,
+                    source_only: false,
+                    nonland: false,
+                    other: false,
+                    tokens: None,
+                    artifact_enchantment_or_token: false,
+                    subtype: None,
+                },
+                amount: 1,
+                optional_skip: None,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Syncopate").unwrap(), &REPEATED),
+        (Card::from_name("Bear Cub").unwrap(), &RECOVER),
+    ]);
+    let player = Player::P0;
+    let (mut game, cards) = with_library(player, &["Forest", "Llanowar Elves"]);
+    let [forest, creature] = cards.try_into().unwrap();
+    put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let unrelated = put(&mut game, player, "Forest", Zone::Graveyard);
+    start_repeated_manifest(&mut game, player, 1);
+    let action = selection(&game, creature);
+    act(&mut game, action);
+    let receipt = game.object_ref(forest);
+    let mut stale = game.clone();
+    stale.move_object(forest, Zone::Exile);
+    stale.move_object(forest, Zone::Graveyard);
+    settle(&mut stale);
+    assert_eq!(stale.object_view(forest).zone, Zone::Graveyard);
+
+    pass_pair(&mut game);
+    let other = Action::SelectGraveyardReturn {
+        object: game.object_ref(unrelated),
+    };
+    reject(&mut game, other);
+    act(&mut game, Action::SelectGraveyardReturn { object: receipt });
+    assert_eq!(game.object_view(forest).zone, Zone::Hand);
+    assert_eq!(game.object_view(unrelated).zone, Zone::Graveyard);
+}

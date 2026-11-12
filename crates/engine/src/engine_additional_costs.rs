@@ -1487,6 +1487,7 @@ impl Game {
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
             | EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+            | EffectChoiceKind::ReturnManifestGraveyardToHand
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)

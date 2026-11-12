@@ -3472,11 +3472,12 @@ impl Game {
         if !self.queue_trigger_from(source, index, grant) {
             return false;
         }
-        // A printed once-per-turn limit caps all additional instances too.
+        // A printed trigger limit caps all additional instances too.
         let queued = self.state.pending_triggers.last().unwrap();
         if queued.trigger_definition().triggers()[index]
             .condition
-            .once_per_turn()
+            .trigger_limit()
+            .is_some()
         {
             return true;
         }
@@ -3888,6 +3889,7 @@ impl Game {
                         ..
                     }
                     | Instruction::DrawTargetControllerIfNotAttacking
+                    | Instruction::ManifestDreadForTargetController
                     | Instruction::DrawIfTargetLegendaryKind(_)
                     | Instruction::LoseLifeTargetCardManaValue(_)
                     | Instruction::MayTargetController { .. }
@@ -5457,6 +5459,23 @@ impl Game {
                         _ => 1,
                     };
                     self.begin_manifest_dread(item.controller, count);
+                }
+                Instruction::ManifestDreadForTargetController => {
+                    if let Some(player) = self
+                        .program_players(PlayerSet::TargetController, &item)
+                        .next()
+                    {
+                        self.begin_manifest_dread(player, 1);
+                    }
+                }
+                Instruction::CounterAndManifestForController => {
+                    if let Some((id, player)) = item.targets.iter().find_map(|bound| {
+                        self.bound_stack_item(bound)
+                            .map(|spell| (spell.id, spell.controller))
+                    }) {
+                        self.counter_stack_item(id, false);
+                        self.begin_manifest_dread(player, 1);
+                    }
                 }
                 Instruction::AttachSourceToLastManifested => {
                     if let Some(target) = resolution

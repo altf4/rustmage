@@ -342,6 +342,22 @@ impl Game {
                 pair.partner.name(),
             ) && !choice.selected[player.index()].contains(&object);
         }
+        if choice.kind == EffectChoiceKind::ReturnManifestGraveyardToHand {
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && choice.selected[player.index()].is_empty()
+                && self.state.resolving.as_ref().is_some_and(|resolution| {
+                    resolution
+                        .item
+                        .manifest_event
+                        .as_ref()
+                        .is_some_and(|event| {
+                            event.player == player && event.graveyard_cards.contains(&object)
+                        })
+                });
+        }
         let graveyard_filter = match choice.kind {
             EffectChoiceKind::ReturnGraveyardToHand { kinds }
             | EffectChoiceKind::ReturnUpToGraveyardToHand { kinds } => Some((kinds, None)),

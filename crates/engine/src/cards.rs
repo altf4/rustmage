@@ -1632,6 +1632,8 @@ pub enum EffectChoiceKind {
     ReturnGraveyardToHand {
         kinds: u16,
     },
+    /// One still-exact graveyard result of the manifest event on this trigger.
+    ReturnManifestGraveyardToHand,
     /// Return any number up to the chosen effect's limit.
     ReturnUpToGraveyardToHand {
         kinds: u16,
@@ -1754,6 +1756,7 @@ impl EffectChoiceKind {
             Self::ReturnTappedCreature => Self::ReturnToHand,
             Self::ReturnGraveyardToHandOrSubtype { kinds, .. }
             | Self::ReturnUpToGraveyardToHand { kinds } => Self::ReturnGraveyardToHand { kinds },
+            Self::ReturnManifestGraveyardToHand => Self::ReturnGraveyardToHand { kinds: 0 },
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
                 ..
@@ -3471,6 +3474,10 @@ pub enum Instruction {
     DestroyOthersIfSourcePowerTwenty,
     /// Look at the top two cards, manifest one and put the rest into the graveyard.
     ManifestDread,
+    /// Manifest for the selected target group's controller, using resolution LKI after a move.
+    ManifestDreadForTargetController,
+    /// Attempt to counter the target spell, then have that spell's controller manifest dread.
+    CounterAndManifestForController,
     /// Complete each manifest separately before proceeding to the next instruction.
     ManifestDreadRepeated(AmountValue),
     /// Attach the resolving Equipment to the last successful manifest in this sequence.
