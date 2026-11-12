@@ -157,6 +157,8 @@ fn enter_and_exile(game: &mut Game, host: CardId, target: CardId) {
 }
 
 fn begin_choose(game: &mut Game, host: CardId) {
+    let player = game.actor().unwrap();
+    let life = game.state.players[player.index()].life;
     act(
         game,
         Action::AnnounceActivate {
@@ -166,6 +168,7 @@ fn begin_choose(game: &mut Game, host: CardId) {
         },
     );
     pay(game);
+    assert_eq!(game.state.players[player.index()].life, life - 1);
     wait_until(game, |g| {
         matches!(g.state.pending, Pending::LinkedExile { .. })
     });
@@ -211,6 +214,7 @@ fn replacing_a_linked_donor_preserves_its_queued_trigger_and_changes_future_acti
         act(&mut game, accept);
         settle(&mut game);
         assert_eq!(game.object_view(second).zone, Zone::Exile);
+        let life_before_choices = game.state.players[player.index()].life;
 
         begin_choose(&mut game, host);
         let unlinked = game.object_ref(unlinked);
@@ -269,7 +273,7 @@ fn replacing_a_linked_donor_preserves_its_queued_trigger_and_changes_future_acti
         begin_choose(&mut game, host);
         select(&mut game, second);
         settle(&mut game);
-        assert_eq!(game.state.players[player.index()].life, 20);
+        assert_eq!(game.state.players[player.index()].life, life_before_choices);
         assert!(
             !game
                 .legal_actions()
@@ -280,14 +284,20 @@ fn replacing_a_linked_donor_preserves_its_queued_trigger_and_changes_future_acti
         let draw = put(&mut game, player, "Quick Study", Zone::Hand);
         cast(&mut game, draw, None);
         settle(&mut game);
-        assert_eq!(game.state.players[player.index()].life, 23);
+        assert_eq!(
+            game.state.players[player.index()].life,
+            life_before_choices + 3
+        );
 
         act(&mut game, activation);
         pay(&mut game);
         game.move_object(second, Zone::Hand);
         game.move_object(second, Zone::Exile);
         settle(&mut game);
-        assert_eq!(game.state.players[player.index()].life, 27);
+        assert_eq!(
+            game.state.players[player.index()].life,
+            life_before_choices + 7
+        );
         assert!(game.object_view(host).acquired_triggers.is_none());
         let stale = borrowed_action(&game, host, second);
         reject(&mut game, stale);
@@ -321,7 +331,7 @@ fn acquired_ward_and_death_templates_use_the_live_or_last_known_recipient() {
     let ward = warded.state.stack.last().unwrap();
     assert_eq!(ward.acquired_trigger_definition, Some(Card::GrizzlyBears));
     assert_eq!(ward.source().unwrap().object, warded.object_ref(host));
-    let decline = Action::ChooseOptional { accept: false };
+    let decline = Action::DeclineResolutionLife;
     wait_until(&mut warded, |g| g.legal_actions().contains(&decline));
     act(&mut warded, decline);
     settle(&mut warded);
