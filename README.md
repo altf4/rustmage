@@ -105,6 +105,18 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | The Lost Caverns of Ixalan | LCI | 291/291 (100%) | ✅ Complete |
 | Wilds of Eldraine | WOE | 281/281 (100%) | ✅ Complete |
 
+## Pioneer tracker
+
+**18 / 68 sets complete · 26%**
+
+`█████░░░░░░░░░░░░░░░`
+
+**4,802 / 15,079 unique Pioneer-legal cards implemented · 32%**
+
+`██████░░░░░░░░░░░░░░`
+
+Tabletop snapshot through **2026-10-15**.
+
 ## Modern tracker
 
 **14 / 113 sets complete · 12%**
