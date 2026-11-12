@@ -490,7 +490,18 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     0
                 }
             }
-            Action::FinishSearch => 0,
+            Action::FinishSearch => {
+                // This single-result search leaves other candidates available as replacements.
+                if observation
+                    .hand_library_search
+                    .as_ref()
+                    .is_some_and(|search| search.selected.is_some())
+                {
+                    70
+                } else {
+                    0
+                }
+            }
             Action::ChooseCreatureType { creature_type } => observation
                 .objects
                 .iter()

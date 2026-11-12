@@ -609,6 +609,7 @@ fn say_its_name_mills_then_recovers_and_pays_exact_three_card_search_cost() {
     let copies = [(); 2].map(|_| put(&mut game, player, "Say Its Name", Zone::Graveyard));
     let wrong = put(&mut game, player.other(), "Say Its Name", Zone::Graveyard);
     let altanak = put(&mut game, player, "Altanak, the Thrice-Called", Zone::Hand);
+    let alternate = put(&mut game, player, "Altanak, the Thrice-Called", Zone::Hand);
     let picked = put(&mut game, player, "Forest", Zone::Library);
     let creature = put(&mut game, player, "Bear Cub", Zone::Library);
     let instant = put(&mut game, player, "Shock", Zone::Library);
@@ -660,9 +661,17 @@ fn say_its_name_mills_then_recovers_and_pays_exact_three_card_search_cost() {
             .is_none()
     );
     act(&mut game, Action::ChooseSearch { card: altanak });
-    act(&mut game, Action::FinishSearch);
+    let view = game.observe(player);
+    assert!(
+        view.actions
+            .contains(&Action::ChooseSearch { card: alternate })
+    );
+    let choice = rustmage::policy::smoke_index_from_observation(&view, &view.actions);
+    assert_eq!(view.actions[choice], Action::FinishSearch);
+    act(&mut game, view.actions[choice].clone());
     settle(&mut game);
     assert_eq!(game.object_view(altanak).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(alternate).zone, Zone::Hand);
     assert_eq!(stats(&game, altanak), (9, 9));
     assert_eq!(game.state.players[player.index()].library, before);
     assert_eq!(game.object_view(wrong).zone, Zone::Graveyard);
