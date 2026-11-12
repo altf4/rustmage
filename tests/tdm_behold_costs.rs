@@ -197,6 +197,7 @@ fn color(g: &mut Game, card: CardId, mask: u8) {
             food_only: false,
             artifact_noncreature: false,
             equipment_name: None,
+            name: None,
             enchantment_noncreature: false,
             additional_card_types: 0,
             colors: Some(mask),
