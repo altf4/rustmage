@@ -1459,6 +1459,7 @@ struct PlayerState {
     turns_started: u8,
     /// Persistent public designation; never reset by turn or zone changes.
     enduring_story: bool,
+    cannot_gain_life_for_game: bool,
     speed: u8,
     speed_triggered_this_turn: bool,
     turn_facts: TurnFactsView,
@@ -3600,6 +3601,8 @@ fn no_colored_damage(value: &[u128; 5]) -> bool {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerView {
     pub enduring_story: bool,
+    #[serde(skip_serializing_if = "is_false")]
+    pub cannot_gain_life_for_game: bool,
     #[serde(skip_serializing_if = "is_zero_u8")]
     pub speed: u8,
     #[serde(skip_serializing_if = "is_false")]
@@ -4442,6 +4445,7 @@ impl Game {
         let mut players = std::array::from_fn(|_| PlayerState {
             turns_started: 0,
             enduring_story: false,
+            cannot_gain_life_for_game: false,
             speed: 0,
             speed_triggered_this_turn: false,
             turn_facts: TurnFactsView::default(),
@@ -12683,6 +12687,7 @@ impl Game {
             },
             players: std::array::from_fn(|i| PlayerView {
                 enduring_story: s.players[i].enduring_story,
+                cannot_gain_life_for_game: s.players[i].cannot_gain_life_for_game,
                 speed: s.players[i].speed,
                 speed_triggered_this_turn: s.players[i].speed_triggered_this_turn,
                 turn_cast_grants: self.player_cast_grants_view(i),

@@ -52,6 +52,9 @@ fn replacements<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
 ) -> Option<Vec<LifeGainReplacementEffect>> {
+    if world.game().state.players[player.index()].cannot_gain_life_for_game {
+        return None;
+    }
     let query = characteristic_query::CharacteristicQuery::in_world(world);
     let mut effects = Vec::new();
     for &id in world.static_sources() {

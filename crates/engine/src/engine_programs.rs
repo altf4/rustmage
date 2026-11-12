@@ -2463,6 +2463,9 @@ impl Game {
                                         | Instruction::DamageScaled(
                                             AmountValue::CastSpellManaValue
                                         )
+                                        | Instruction::DamageRememberPlayersScaled(
+                                            AmountValue::CastSpellManaValue
+                                        )
                                         | Instruction::CreateTokensWithTemporaryKeywords { .. }
                                         | Instruction::DamagePlayers(PlayerSet::CastingPlayer, _)
                                         | Instruction::DamagePlayersScaled(PlayerSet::CastingPlayer, _)
@@ -10969,15 +10972,25 @@ impl Game {
                         .collect();
                     self.apply_damage_batch(&events);
                 }
-                Instruction::DiscardDamagedPlayers(amount) => {
+                Instruction::DiscardDamagedPlayers(_)
+                | Instruction::DamagedPlayersCannotGainLifeForGame => {
                     let resolution = self.state.resolving.as_mut().unwrap();
                     let players = resolution
                         .remembered_damage_players
                         .take()
                         .expect("remembered damage must precede its continuation");
                     for player in [Player::P0, Player::P1] {
-                        if players & (1 << player.index()) != 0 {
-                            resolution.discards[player.index()] = usize::from(amount);
+                        if players & (1 << player.index()) == 0 {
+                            continue;
+                        }
+                        match instruction {
+                            Instruction::DiscardDamagedPlayers(amount) => {
+                                resolution.discards[player.index()] = usize::from(amount);
+                            }
+                            Instruction::DamagedPlayersCannotGainLifeForGame => {
+                                self.state.players[player.index()].cannot_gain_life_for_game = true;
+                            }
+                            _ => unreachable!(),
                         }
                     }
                 }
@@ -11032,6 +11045,7 @@ impl Game {
                 }
                 Instruction::Damage(_)
                 | Instruction::DamageRememberPlayers(_)
+                | Instruction::DamageRememberPlayersScaled(_)
                 | Instruction::DamageScaled(_)
                 | Instruction::DamageByEnteringPower
                 | Instruction::DamagePlayers(_, _)
@@ -11042,6 +11056,7 @@ impl Game {
                         | Instruction::DamageRememberPlayers(amount)
                         | Instruction::DamagePlayers(_, amount) => i128::from(amount),
                         Instruction::DamageScaled(value)
+                        | Instruction::DamageRememberPlayersScaled(value)
                         | Instruction::DamagePlayersScaled(_, value) => {
                             i128::try_from(self.item_amount(value, &item))
                                 .capacity("damage amount representation exhausted")
@@ -11081,7 +11096,11 @@ impl Game {
                             .map(|bound| event(bound.target))
                             .collect()
                     };
-                    if matches!(instruction, Instruction::DamageRememberPlayers(_)) {
+                    if matches!(
+                        instruction,
+                        Instruction::DamageRememberPlayers(_)
+                            | Instruction::DamageRememberPlayersScaled(_)
+                    ) {
                         self.state
                             .resolving
                             .as_mut()

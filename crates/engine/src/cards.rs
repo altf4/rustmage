@@ -4379,8 +4379,11 @@ pub enum Instruction {
     },
     /// Remember actual positive player recipients of this one damage instruction.
     DamageRememberPlayers(i32),
+    DamageRememberPlayersScaled(AmountValue),
     /// Only players actually damaged by the preceding remembered batch discard.
     DiscardDamagedPlayers(u16),
+    /// A lasting prohibition for actual player recipients of the remembered batch.
+    DamagedPlayersCannotGainLifeForGame,
     DamagePlayers(PlayerSet, i32),
     /// A bound untargeted event object, independently of the ability source.
     EventObjectDamagePlayers(PlayerSet, i32),

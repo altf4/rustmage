@@ -365,6 +365,7 @@ impl Game {
                     AmountValue::DeathEventToughness | AmountValue::DeathEventPower
                 ) | Instruction::DrawScaled(_, AmountValue::DeathEventPower)
                     | Instruction::DamageScaled(AmountValue::DeathEventPower)
+                    | Instruction::DamageRememberPlayersScaled(AmountValue::DeathEventPower)
                     | Instruction::PutCountersScaled {
                         amount: AmountValue::DeathEventPower,
                         ..
