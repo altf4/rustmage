@@ -676,6 +676,17 @@ fn reanimation_breaks_an_inherited_link_only_if_the_donor_stops_being_a_creature
         game.state.objects[source as usize].tapped = false;
         act(&mut game, actions[1].clone());
         pay(&mut game);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert_eq!(
+            matches!(game.state.pending, Pending::EntryTimestamp { .. }),
+            !interrupted,
+        );
+        while matches!(game.state.pending, Pending::EntryTimestamp { .. }) {
+            choose(&mut game, |action| {
+                matches!(action, Action::ChooseEntryTimestamp { .. })
+            });
+        }
         settle(&mut game);
         assert_eq!(game.object_view(source).zone, Zone::Graveyard);
         assert_eq!(game.object_view(new_victim).zone, Zone::Battlefield);
