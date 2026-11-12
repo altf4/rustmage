@@ -661,6 +661,8 @@ pub enum StaticAbilityFragment {
     },
     TargetCostReduction(u16, TargetSpellReduction),
     CombatRestriction(u16, CombatRestriction),
+    /// The source cannot be the sole declared attacker or blocker.
+    CantAttackOrBlockAlone,
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.

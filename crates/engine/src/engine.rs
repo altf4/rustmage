@@ -7120,6 +7120,11 @@ impl Game {
                 {
                     return true;
                 }
+                let company = self.has_combat_company_rule(actor);
+                let can_add = |card, defender| {
+                    self.can_attack_defender(card, defender)
+                        && (!company || self.attack_choice_extendable(actor, card, defender))
+                };
                 // Freeze the small defending set once, not one arena scan per
                 // candidate attacker. No allocation occurs when there are none.
                 let walkers: Vec<_> = s
@@ -7140,7 +7145,7 @@ impl Game {
                     {
                         continue;
                     }
-                    if self.can_attack_defender(card, CombatDefender::Player(actor.other()))
+                    if can_add(card, CombatDefender::Player(actor.other()))
                         && emit(Action::Attack { card })
                     {
                         return true;
@@ -7148,15 +7153,15 @@ impl Game {
                     for (i, _) in s.objects.iter().enumerate() {
                         let defender = self.object_ref(i as CardId);
                         if self.battle_can_be_attacked_by(defender, actor)
-                            && self.can_attack_defender(card, CombatDefender::Battle(defender))
+                            && can_add(card, CombatDefender::Battle(defender))
                             && emit(Action::AttackBattle { card, defender })
                         {
                             return true;
                         }
                     }
                     for &defender in &walkers {
-                        if self.can_attack_defender(card, CombatDefender::Planeswalker(defender))
-                            && self.attack_slot_free(defender, None)
+                        if self.attack_slot_free(defender, None)
+                            && can_add(card, CombatDefender::Planeswalker(defender))
                             && emit(Action::AttackPlaneswalker { card, defender })
                         {
                             return true;

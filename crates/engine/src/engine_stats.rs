@@ -401,6 +401,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
