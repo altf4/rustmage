@@ -7128,7 +7128,10 @@ impl Game {
     }
 
     pub(super) fn visit_room_unlock_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
-        let request = self.state.room_unlock_payment.expect("Room unlock payment");
+        let request = self
+            .state
+            .room_unlock_payment()
+            .expect("Room unlock payment");
         if !request.source_is_current(self) {
             return false;
         }
@@ -7418,7 +7421,7 @@ impl Game {
             Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None),
             Pending::RoomUnlockPayment { .. } => (
                 self.state
-                    .room_unlock_payment
+                    .room_unlock_payment()
                     .expect("Room unlock payment")
                     .goal(),
                 false,
@@ -8062,7 +8065,7 @@ impl FundingState<'_> {
                 Pending::RoomUnlockPayment { .. } => world
                     .game
                     .state
-                    .room_unlock_payment
+                    .room_unlock_payment()
                     .is_some_and(|request| request.source_is_current(world)),
                 _ => true,
             };
@@ -8076,7 +8079,7 @@ impl Game {
         let (actor, required, generic) = match pending {
             Pending::PlotPayment { .. } => return Some(self.plot_payment()?.goal()),
             Pending::RoomUnlockPayment { .. } => {
-                return Some(self.state.room_unlock_payment?.goal());
+                return Some(self.state.room_unlock_payment()?.goal());
             }
             Pending::FaceUpPayment { .. } => {
                 let r = self.face_up_payment()?;

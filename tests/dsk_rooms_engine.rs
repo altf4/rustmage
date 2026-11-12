@@ -1408,6 +1408,7 @@ fn locking_and_reopening_use_the_live_door_designation_and_keep_the_object() {
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
     assert!(game.observe(player).room_choice.is_some());
+    let choosing = game.snapshot();
     reject(
         &mut game,
         Action::ChooseRoomDoor {
@@ -1432,8 +1433,15 @@ fn locking_and_reopening_use_the_live_door_designation_and_keep_the_object() {
     assert_eq!(game.object_view(room).name, "");
     assert_eq!(game.object_ref(room), object);
     assert_eq!(game.state.players[player.index()].life, 22);
+    assert!(game.state.room_state.is_none());
+
+    let mut branch = game.clone();
+    branch.restore(&choosing).unwrap();
+    assert_eq!(branch.snapshot(), choosing);
+    assert!(branch.observe(player).room_choice.is_some());
 
     act(&mut game, begin_unlock(object, RoomDoor::Left, BLUE_COST));
+    assert!(game.observe(player).room_unlock_payment.is_some());
     choose(&mut game, |action| {
         matches!(action, Action::PayRoomUnlock { .. })
     });

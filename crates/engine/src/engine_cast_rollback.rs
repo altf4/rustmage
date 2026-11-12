@@ -420,7 +420,7 @@ impl Game {
         if (!casting
             && self.state.combat_payment.is_none()
             && self.face_up_payment().is_none()
-            && self.state.room_unlock_payment.is_none())
+            && self.state.room_unlock_payment().is_none())
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;

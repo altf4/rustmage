@@ -2,6 +2,7 @@
 use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{RoomSpec, StaticAbilityFragment, StaticAbilityGroup};
+use std::sync::Arc;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
@@ -133,15 +134,33 @@ impl RoomChoiceView {
     }
 }
 
+/// Allocated while a Room has an open door or a door decision is pending.
+/// Search branches share this data until they change it.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) type Rows = Option<SharedVec<(ObjectRef, RoomDoors)>>;
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(super) struct RoomState {
+    openings: Vec<(ObjectRef, RoomDoors)>,
+    unlock_payment: Option<RoomUnlockPaymentView>,
+    choice: Option<RoomChoiceView>,
+}
 
-#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn owned_bytes(rows: &Rows) -> usize {
-    rows.as_ref().map_or(0, |rows| {
-        std::mem::size_of::<Vec<(ObjectRef, RoomDoors)>>()
-            + rows.len() * std::mem::size_of::<(ObjectRef, RoomDoors)>()
-    })
+impl RoomState {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.openings.len() * std::mem::size_of::<(ObjectRef, RoomDoors)>()
+    }
+}
+
+impl State {
+    pub(super) fn room_unlock_payment(&self) -> Option<RoomUnlockPaymentView> {
+        self.room_state
+            .as_ref()
+            .and_then(|room| room.unlock_payment)
+    }
+
+    pub(super) fn room_choice(&self) -> Option<RoomChoiceView> {
+        self.room_state.as_ref().and_then(|room| room.choice)
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -154,9 +173,13 @@ pub(super) fn doors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> O
         world
             .game()
             .state
-            .room_openings
+            .room_state
             .as_ref()
-            .and_then(|rows| rows.iter().find(|(object, _)| *object == reference))
+            .and_then(|room| {
+                room.openings
+                    .iter()
+                    .find(|(object, _)| *object == reference)
+            })
             .map_or(RoomDoors::default(), |(_, doors)| *doors),
     )
 }
@@ -311,14 +334,18 @@ impl Game {
             .flatten()
     }
 
+    fn room_state_mut(&mut self) -> &mut RoomState {
+        Arc::make_mut(self.state.room_state.get_or_insert_default())
+    }
+
     pub(super) fn set_room_doors(&mut self, object: ObjectRef, doors: RoomDoors) {
-        self.forget_room_doors(object);
-        if doors != RoomDoors::default() {
-            self.state
-                .room_openings
-                .get_or_insert_default()
-                .push((object, doors));
+        if doors == RoomDoors::default() {
+            self.forget_room_doors(object);
+            return;
         }
+        let rows = &mut self.room_state_mut().openings;
+        rows.retain(|(key, _)| *key != object);
+        rows.push((object, doors));
     }
 
     pub(super) fn open_room_on_entry(&mut self, object: ObjectRef, door: RoomDoor) {
@@ -326,11 +353,16 @@ impl Game {
     }
 
     pub(super) fn forget_room_doors(&mut self, object: ObjectRef) {
-        if let Some(rows) = &mut self.state.room_openings {
-            rows.retain(|(key, _)| *key != object);
-            if rows.is_empty() {
-                self.state.room_openings = None;
-            }
+        let Some(room) = &mut self.state.room_state else {
+            return;
+        };
+        let Some(index) = room.openings.iter().position(|(key, _)| *key == object) else {
+            return;
+        };
+        if room.openings.len() == 1 && room.unlock_payment.is_none() && room.choice.is_none() {
+            self.state.room_state = None;
+        } else {
+            Arc::make_mut(room).openings.remove(index);
         }
     }
 
@@ -483,13 +515,14 @@ impl Game {
         door: RoomDoor,
         cost: ManaCost,
     ) {
-        self.state.room_unlock_payment = Some(RoomUnlockPaymentView {
+        let request = RoomUnlockPaymentView {
             object,
             door,
             controller: player,
             cost,
             definition: self.state.objects[object.card as usize].card,
-        });
+        };
+        self.room_state_mut().unlock_payment = Some(request);
         self.state.pending = Pending::RoomUnlockPayment { player };
         self.state.passes = 0;
     }
@@ -497,8 +530,9 @@ impl Game {
     pub(super) fn finish_room_unlock(&mut self, payment: Mana) {
         let request = self
             .state
-            .room_unlock_payment
-            .take()
+            .room_state
+            .as_mut()
+            .and_then(|room| Arc::make_mut(room).unlock_payment.take())
             .expect("Room unlock payment");
         self.spend_mana_for(request.controller, payment, mana_lots::Purpose::UnlockDoor);
         self.state.pending = Pending::Priority;
@@ -524,7 +558,7 @@ impl Game {
         if !self.visit_room_choices(request, &mut |_| true) {
             return false;
         }
-        self.state.room_choice = Some(request);
+        self.room_state_mut().choice = Some(request);
         self.state.pending = Pending::RoomChoice {
             player: item.controller,
         };
@@ -581,7 +615,12 @@ impl Game {
         door: RoomDoor,
         change: RoomChange,
     ) {
-        let request = self.state.room_choice.take().expect("Room choice");
+        let request = self
+            .state
+            .room_state
+            .as_mut()
+            .and_then(|room| Arc::make_mut(room).choice.take())
+            .expect("Room choice");
         self.state.pending = Pending::Priority;
         self.change_room_door(object, door, change, request.player);
         self.run_program();

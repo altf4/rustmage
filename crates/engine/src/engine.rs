@@ -3351,9 +3351,7 @@ struct State {
     delayed_upkeep_tokens: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     face_changes: faces::Rows,
-    room_openings: rooms::Rows,
-    room_unlock_payment: Option<RoomUnlockPaymentView>,
-    room_choice: Option<RoomChoiceView>,
+    room_state: Option<std::sync::Arc<rooms::RoomState>>,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     cards_exiled_this_turn: bool,
@@ -4736,9 +4734,7 @@ impl Game {
                 delayed_upkeep_tokens: None,
                 modal_history: None,
                 face_changes: None,
-                room_openings: None,
-                room_unlock_payment: None,
-                room_choice: None,
+                room_state: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 cards_exiled_this_turn: false,
@@ -5101,7 +5097,7 @@ impl Game {
                 || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
                 || self.face_up_payment().is_some()
-                || self.state.room_unlock_payment.is_some()
+                || self.state.room_unlock_payment().is_some()
                 || self.state.combat_payment.is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
@@ -5281,7 +5277,7 @@ impl Game {
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
                     && self.face_up_payment().is_none()
-                    && self.state.room_unlock_payment.is_none()
+                    && self.state.room_unlock_payment().is_none()
                     && self.state.combat_payment.is_none()
                 {
                     self.state_based_actions();
@@ -5317,7 +5313,7 @@ impl Game {
                 self.combat_tax_fundable(payment.player, payment.generic)
             } else if self.face_up_payment().is_some() {
                 self.face_up_payment_fundable()
-            } else if let Some(request) = self.state.room_unlock_payment {
+            } else if let Some(request) = self.state.room_unlock_payment() {
                 self.can_fund_room_unlock(request)
             } else {
                 self.current_cast_costs_fundable()
@@ -5347,7 +5343,7 @@ impl Game {
             && self.state.replacements.is_none()
             && self
                 .state
-                .room_unlock_payment
+                .room_unlock_payment()
                 .is_some_and(|request| !self.can_fund_room_unlock(request))
         {
             self.finish_cast_rollback(false);
@@ -6128,7 +6124,7 @@ impl Game {
                 }
             }
             Pending::RoomChoice { .. } => {
-                if self.visit_room_choices(s.room_choice.expect("Room choice"), &mut emit) {
+                if self.visit_room_choices(s.room_choice().expect("Room choice"), &mut emit) {
                     return true;
                 }
             }
@@ -13211,8 +13207,8 @@ impl Game {
                 .face_up_payment()
                 .filter(|p| self.shares_information(viewer, p.controller))
                 .copied(),
-            room_unlock_payment: s.room_unlock_payment,
-            room_choice: s.room_choice,
+            room_unlock_payment: s.room_unlock_payment(),
+            room_choice: s.room_choice(),
             last_manifest_dread: s.manifest.as_ref().and_then(|m| m.last_event.clone()),
             last_turned_face_up: s.manifest.as_ref().and_then(|m| m.last_face_up),
             triggered_this_turn: s.triggered_this_turn.clone(),
@@ -13887,7 +13883,9 @@ impl Game {
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + s.explore_data.as_ref().map_or(0, |d| d.bytes())
             + s.manifest.as_ref().map_or(0, |d| d.bytes())
-            + rooms::owned_bytes(&s.room_openings)
+            + s.room_state
+                .as_deref()
+                .map_or(0, rooms::RoomState::owned_bytes)
             + s.evidence_data.as_ref().map_or(0, |d| d.bytes())
             + (s.free_tokens.len()
                 + s.static_sources.len()
