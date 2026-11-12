@@ -5492,6 +5492,8 @@ pub enum AmountValue {
     TargetPlayerLibraryToGraveyardThisTurn,
     /// Current creatures controlled by the surviving player in the selected target group.
     TargetPlayerCreatureCount,
+    /// Sum the current creatures controlled by the spell's surviving player targets.
+    TargetPlayersCreatureCount,
     /// Current creatures the resolving ability's controller controls at or above this power.
     ControlledCreaturePowerCount {
         minimum: u32,
@@ -5649,6 +5651,7 @@ pub enum ResolvedStatValue {
 pub enum SourceCharacteristicFilter {
     Color(ChoiceColor),
     Instant,
+    Multicolored,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -5663,6 +5666,8 @@ pub enum StatValue {
     DeclaredSubtypeAttackersThisTurn(&'static str),
     /// Number of different planeswalker types among planeswalkers controlled by the source controller.
     DistinctControlledPlaneswalkerTypes,
+    /// Distinct pairs among controlled permanents that have exactly two colors.
+    ControlledTwoColorPairs,
     UnlockedRoomDoors,
     DifferentUnlockedRoomNames,
     /// The source has not dealt combat damage in its current incarnation.
@@ -9654,6 +9659,9 @@ impl Card {
     }
     pub(crate) fn target_cost_increase(self) -> Option<&'static TargetSpellIncrease> {
         authored::rules(self).unwrap().extras.target_cost_increase
+    }
+    pub(crate) fn additional_target_mana(self) -> Option<ManaCost> {
+        authored::rules(self)?.extras.additional_target_mana
     }
     pub(crate) fn has_target_cost_modifier(self) -> bool {
         self.target_cost_reduction().is_some() || self.target_cost_increase().is_some()

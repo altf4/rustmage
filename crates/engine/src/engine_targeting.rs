@@ -2159,6 +2159,7 @@ impl Game {
                     colors & (1u8 << color.index()) != 0
                 }
                 crate::cards::SourceCharacteristicFilter::Instant => Card::kinds_are_instant(kinds),
+                crate::cards::SourceCharacteristicFilter::Multicolored => colors.count_ones() >= 2,
             };
             matches
                 && query.continuous_fragment_available(id, |fragment| {

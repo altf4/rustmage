@@ -52,9 +52,10 @@ impl Game {
     }
 
     pub(super) fn cast_requires_target_payment(&self, actor: Player, card: Card) -> bool {
-        if card
-            .additional_cost()
-            .is_some_and(|cost| cost.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue)
+        if card.additional_target_mana().is_some()
+            || card.additional_cost().is_some_and(|cost| {
+                cost.kind == EffectChoiceKind::CollectEvidenceForTargetManaValue
+            })
         {
             return true;
         }
@@ -409,6 +410,23 @@ impl Game {
         };
         Some((reduced, increased))
     }
+    pub(super) fn with_additional_target_mana(
+        mut base: ManaCost,
+        definition: Card,
+        targets: usize,
+    ) -> Option<ManaCost> {
+        if let Some(mana) = definition.additional_target_mana() {
+            let additional = u32::try_from(targets.saturating_sub(1)).ok()?;
+            for (amount, extra) in base.colored.iter_mut().zip(mana.colored) {
+                *amount = amount.checked_add(extra.checked_mul(additional)?)?;
+            }
+            base.generic = base
+                .generic
+                .checked_add(mana.generic.checked_mul(additional)?)?;
+        }
+        Some(base)
+    }
+
     /// A proposal before targets are complete uses a legal completion; the
     /// final locked total uses the concrete bound target identities instead.
     pub(super) fn target_proposal_total(
@@ -432,6 +450,8 @@ impl Game {
             finished,
         };
         let (reduced, increased) = self.completion_modifiers(&c)?;
+        let target_count = c.chosen.len() + usize::from(c.extra.is_some());
+        let base = Self::with_additional_target_mana(base, source.card, target_count)?;
         let x = u64::from(a.item.x.unwrap_or(0));
         let extra = (u64::from(a.payment_x_symbols()) * x).checked_add(
             source
@@ -534,6 +554,7 @@ impl Game {
             })
         });
         let increased = self.target_spell_increase(actor, id, card, targets);
+        let base = Self::with_additional_target_mana(base, card, targets.len())?;
         self.target_total(actor, id, base, (reduced, increased != 0), extra)
     }
     pub(super) fn target_spell_increase(

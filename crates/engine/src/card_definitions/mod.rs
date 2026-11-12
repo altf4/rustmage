@@ -558,6 +558,8 @@ pub struct CardExtras {
     pub flashback_additional: Option<AdditionalCost>,
     pub target_cost_reduction: Option<&'static TargetSpellReduction>,
     pub target_cost_increase: Option<&'static TargetSpellIncrease>,
+    /// Added to the spell's total cost for every target beyond the first.
+    pub additional_target_mana: Option<ManaCost>,
     pub behold_cast: Option<BeholdCastSpec>,
     pub cast_timing_grants: &'static [CastFilter],
     pub cast_timing_requires_opponent_spell: bool,
@@ -709,6 +711,7 @@ impl CardExtras {
         flashback_additional: None,
         target_cost_reduction: None,
         target_cost_increase: None,
+        additional_target_mana: None,
         behold_cast: None,
         cast_timing_grants: &[],
         cast_timing_requires_opponent_spell: false,

@@ -210,6 +210,16 @@ impl Game {
                 }
                 present.into_iter().filter(|present| *present).count() as i128
             }
+            StatValue::ControlledTwoColorPairs => {
+                let pairs = objects()
+                    .filter(|(_, object)| {
+                        object.zone == Zone::Battlefield && object.controller == owner
+                    })
+                    .map(|(id, _)| colors(id))
+                    .filter(|color| color.count_ones() == 2)
+                    .fold(0u32, |pairs, color| pairs | (1 << color));
+                i128::from(pairs.count_ones())
+            }
             StatValue::DistinctControlledPlaneswalkerTypes => {
                 let mut distinct = std::collections::BTreeSet::new();
                 for (id, object) in objects() {
@@ -992,6 +1002,7 @@ impl Game {
             | AmountValue::TargetPlayerHandSize
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
+            | AmountValue::TargetPlayersCreatureCount
             | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount

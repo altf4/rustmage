@@ -115,6 +115,7 @@ impl Game {
         targets: &[BoundTarget],
         reduction: u64,
     ) -> Option<ManaCost> {
+        let base = Self::with_additional_target_mana(base, card, targets.len())?;
         let extra = (u64::from(payment_symbols) * u64::from(x))
             .checked_add(self.target_spell_increase(actor, id, card, targets))?;
         let mana_value = card.fixed_mana_value() + u64::from(card.x_symbols()) * u64::from(x);
@@ -492,28 +493,25 @@ impl Game {
                 })
                 .unwrap_or(0),
             AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
-            AmountValue::TargetPlayerCreatureCount => item
-                .targets
-                .iter()
-                .find_map(|bound| {
-                    if let Target::Player(player) = bound.target {
-                        Some(
-                            self.state
-                                .objects
-                                .iter()
-                                .enumerate()
-                                .filter(|(id, object)| {
-                                    object.zone == Zone::Battlefield
-                                        && object.controller == player
-                                        && self.is_creature(*id as CardId)
-                                })
-                                .count() as u128,
-                        )
-                    } else {
-                        None
+            AmountValue::TargetPlayerCreatureCount | AmountValue::TargetPlayersCreatureCount => {
+                let mut chosen = 0u8;
+                for player in self.program_players(PlayerSet::Targeted, item) {
+                    chosen |= 1 << player.index();
+                    if amount == AmountValue::TargetPlayerCreatureCount {
+                        break;
                     }
-                })
-                .unwrap_or(0),
+                }
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && chosen & (1 << object.controller.index()) != 0
+                            && self.is_creature(*id as CardId)
+                    })
+                    .count() as u128
+            }
             AmountValue::UntapStepCount => item.event_object.as_ref().map_or(0, |event| {
                 if let EventObjectFacts::UntapStepCount(amount) = event.facts {
                     u128::from(amount)
