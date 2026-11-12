@@ -1307,7 +1307,7 @@ pub(super) struct BasicLandTimeline {
 pub(super) fn nonbasic_land_type_setters<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
 ) -> impl Iterator<Item = (u64, crate::cards::BasicLandType)> {
-    world.roles().into_iter().flat_map(move |roles| {
+    let mut candidates = world.roles().into_iter().flat_map(move |roles| {
         roles
             .characteristic_sources
             .iter()
@@ -1335,9 +1335,31 @@ pub(super) fn nonbasic_land_type_setters<W: ability_world::CharacteristicWorld +
                     .iter()
                     .find(|row| row.source == source)?
                     .timestamp;
-                Some((timestamp, kind))
+                Some((source, timestamp, kind))
             })
-    })
+    });
+    let mut first = candidates.next();
+    let mut retained = Vec::new();
+    if let Some(second) = candidates.next() {
+        retained.push(first.take().expect("first setter candidate"));
+        retained.push(second);
+        retained.extend(candidates);
+        let oldest = *retained
+            .iter()
+            .min_by_key(|&&(source, timestamp, _)| (timestamp, source))
+            .expect("multiple setter candidates");
+        // A setter whose own source is a nonbasic land depends on the other
+        // setters. In a mutual dependency loop, the oldest sets the land
+        // types first and removes the other printed setters.
+        retained.retain(|&(source, _, _)| !is_nonbasic_land(world, source.card));
+        if retained.is_empty() {
+            retained.push(oldest);
+        }
+    }
+    first
+        .into_iter()
+        .chain(retained)
+        .map(|(_, timestamp, kind)| (timestamp, kind))
 }
 
 pub(super) fn is_nonbasic_land<W: ability_world::CharacteristicWorld + ?Sized>(

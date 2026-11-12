@@ -367,3 +367,49 @@ fn setting_the_leyline_sources_land_type_removes_its_printed_grants() {
     assert!(game.object_view(forest).has_subtype("Plains"));
     assert_eq!(game.object_view(bear).colors, 31);
 }
+
+#[test]
+fn land_setter_providers_yield_to_unaffected_sources_and_break_mutual_dependencies() {
+    let _rules = fixture_rules::activate(&[
+        (named("Hill Giant"), &ARTIFACT_LANDS),
+        (named("Goblin Piker"), &MOUNTAIN_SETTER),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let land = put(&mut game, player, "Hidden Courtyard", Zone::Battlefield);
+    let oldest = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+    game.add_counter(oldest, CounterKind::Conqueror, 1);
+    put(
+        &mut game,
+        player,
+        "Leyline of the Guildpact",
+        Zone::Battlefield,
+    );
+    let newest = put(&mut game, player.other(), "Goblin Piker", Zone::Battlefield);
+    game.add_counter(newest, CounterKind::Conqueror, 1);
+    for controller in [player, player.other()] {
+        put(&mut game, controller, "Hill Giant", Zone::Battlefield);
+    }
+    let add_artifact = CharacteristicAddition {
+        card_types: 16,
+        creature_types: &[],
+        colors: 0,
+        duration: AnimationDuration::Permanent,
+    };
+    let newest_ref = game.object_ref(newest);
+    game.add_characteristics_to(&[newest_ref], add_artifact);
+    assert_eq!(game.object_view(newest).kinds, 1 | 2 | 16);
+    assert!(!game.printed_abilities_available(newest));
+    assert!(game.object_view(land).has_subtype("Plains"));
+
+    let oldest_ref = game.object_ref(oldest);
+    game.add_characteristics_to(&[oldest_ref], add_artifact);
+    assert_eq!(game.object_view(oldest).kinds, 1 | 2 | 16);
+    assert!(!game.printed_abilities_available(oldest));
+    assert!(game.object_view(land).has_subtype("Plains"));
+
+    game.move_object(oldest, Zone::Exile);
+    let view = game.object_view(land);
+    assert!(view.has_subtype("Mountain"));
+    assert!(!view.has_subtype("Plains"));
+}
