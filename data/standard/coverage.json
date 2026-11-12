@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "2a3e385de15a29a27656e69cdef76967c3a555a824aea51dea95098d3c3b01e2",
+  "catalogue_version": "c3cff524f0894298eb6f74904366735ece8b6a48d639803eb82c323c47ec3de8",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4708,
-  "implemented_total": 4724,
+  "implemented_standard_cards": 4710,
+  "implemented_total": 4726,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 177,
-      "gated": 87
+      "complete": 179,
+      "gated": 85
     },
     "ecc": {
       "total": 7,
@@ -14060,8 +14060,8 @@
     {
       "name": "Ghostly Dancers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/ghostly_dancers.rs",
       "set": "dsk"
     },
@@ -27828,8 +27828,8 @@
     {
       "name": "Reluctant Role Model",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/reluctant_role_model.rs",
       "set": "dsk"
     },

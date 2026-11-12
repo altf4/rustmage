@@ -157,6 +157,16 @@ fn clockwork_percussionist_and_diversion_specialist_grant_different_play_deadlin
     }
     act(&mut game, Action::AnnounceExile { card: second });
     pay(&mut game);
+    pass_pair(&mut game);
+    choose(&mut game, |action| {
+        matches!(
+            action,
+            Action::ArrangeLibrary {
+                destination: LibraryDestination::Top,
+                ..
+            }
+        )
+    });
     settle(&mut game);
     assert_eq!(game.object_view(second).zone, Zone::Graveyard);
 }
