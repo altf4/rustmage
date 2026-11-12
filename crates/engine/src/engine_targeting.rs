@@ -10,6 +10,7 @@ pub(super) struct ActivationCostChoice {
     pub route: ActivationCostRoute,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 enum SpellAlternative {
     None,
