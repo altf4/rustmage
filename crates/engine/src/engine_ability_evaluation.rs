@@ -609,13 +609,14 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
     (world.has_ability_removal()
         || world.game().state.self_granted_abilities.as_ref().is_some_and(|rows| {
             rows.iter().any(|grant| {
-                if grant.kind != SelfGrantedAbilityKind::OwnTurnFirstStrike {
-                    return false;
-                }
                 let game = world.game();
                 let recipient = world.object(grant.recipient.card);
-                recipient.zone == Zone::Battlefield
-                    && recipient.controller == game.state.active
+                let applies = match grant.kind {
+                    SelfGrantedAbilityKind::OwnTurnFirstStrike => recipient.controller == game.state.active,
+                    SelfGrantedAbilityKind::OtherControlledCreatureKeywords(_) => true,
+                    _ => false,
+                };
+                applies && recipient.zone == Zone::Battlefield
                     && world.reference(grant.recipient.card) == grant.recipient
                     && grant.expires_turn.is_none_or(|turn| turn == game.state.turn)
             })
@@ -1231,20 +1232,38 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         },
                     });
                 }
-                if grant.kind == SelfGrantedAbilityKind::OwnTurnFirstStrike
-                    && recipient.controller == game.state.active
-                {
-                    effects.push(LayerSixEffect {
-                        provider: None,
-                        started_earlier: false,
-                        timestamp: grant.effect_timestamp.expect("self-granted static effect"),
-                        recipients: vec![grant.recipient.card],
-                        action: LayerSixAction::SelfGrantedKeywords {
-                            acquisition: grant.timestamp,
-                            keywords: Keywords::FIRST_STRIKE,
-                        },
-                    });
-                }
+                let (recipients, keywords) = match grant.kind {
+                    SelfGrantedAbilityKind::OwnTurnFirstStrike
+                        if recipient.controller == game.state.active =>
+                    {
+                        (vec![grant.recipient.card], Keywords::FIRST_STRIKE)
+                    }
+                    SelfGrantedAbilityKind::OtherControlledCreatureKeywords(keywords) => {
+                        let recipients = (0..game.state.objects.len())
+                            .map(|id| id as CardId)
+                            .filter(|&id| {
+                                let target = world.object(id);
+                                id != grant.recipient.card
+                                    && target.zone == Zone::Battlefield
+                                    && target.controller == recipient.controller
+                                    && world.kinds(id) & 1 != 0
+                            })
+                            .collect();
+                        (recipients, keywords)
+                    }
+                    _ => continue,
+                };
+                effects.push(LayerSixEffect {
+                    provider: None,
+                    started_earlier: false,
+                    timestamp: grant.effect_timestamp.expect("self-granted static effect"),
+                    recipients,
+                    action: LayerSixAction::SelfGrantedKeywords {
+                        source: grant.recipient.card,
+                        acquisition: grant.timestamp,
+                        keywords,
+                    },
+                });
             }
         }
     }

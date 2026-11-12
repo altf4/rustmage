@@ -4476,6 +4476,12 @@ pub enum Instruction {
     },
     /// Change creature subtypes, base stats and keywords without adding a card type.
     ChangeSourceCreatureForm(AnimationSpec),
+    /// Give the exact source a permanent name, legendary creature form and acquired ability.
+    BecomeNamedLegendaryCreature {
+        name: &'static str,
+        base: (i128, i128),
+        ability: crate::engine::SelfGrantedAbilityKind,
+    },
     /// Change targets' creature form without adding a card type.
     ChangeTargetCreatureForm(AnimationSpec),
     /// Set creature as the card type, retaining supertypes and the CR205.1a exceptions.

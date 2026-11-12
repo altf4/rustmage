@@ -9328,6 +9328,13 @@ impl Game {
                     spec,
                     characteristic_layers::AnimationTypeMode::PreserveCardTypes,
                 ),
+                Instruction::BecomeNamedLegendaryCreature {
+                    name,
+                    base,
+                    ability,
+                } => {
+                    self.become_named_legendary_creature(&item, name, base, ability);
+                }
                 Instruction::SetCreatureForm {
                     types,
                     colors,

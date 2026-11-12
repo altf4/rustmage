@@ -15,6 +15,8 @@ pub enum SelfGrantedAbilityKind {
     AttacksEachCombat,
     /// This permanent has first strike on its current controller's turn.
     OwnTurnFirstStrike,
+    /// Other creatures controlled by the current controller of this exact permanent.
+    OtherControlledCreatureKeywords(Keywords),
     /// A static ability granting controlled permanents one of these tap mana colors.
     ControlledPermanentTapMana { kinds: u16, colors: u8 },
     /// A real immutable activated template, independently acquired per grant.

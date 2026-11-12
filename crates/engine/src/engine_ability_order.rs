@@ -125,6 +125,7 @@ pub(super) enum LayerSixAction {
     GrantSelf(u64),
     /// Apply the effect of an acquired static ability that is still present.
     SelfGrantedKeywords {
+        source: CardId,
         acquisition: u64,
         keywords: Keywords,
     },
@@ -272,6 +273,11 @@ pub(super) fn apply_layer_six<W: ability_world::CharacteristicWorld + ?Sized>(
                 LayerSixAction::SelfGrantedMana { acquisition, mana } => {
                     Some((mana.source.card, acquisition))
                 }
+                LayerSixAction::SelfGrantedKeywords {
+                    source,
+                    acquisition,
+                    ..
+                } => Some((source, acquisition)),
                 _ => None,
             };
             let Some(source) = effect
@@ -386,6 +392,19 @@ pub(super) fn apply_layer_six<W: ability_world::CharacteristicWorld + ?Sized>(
             }
             continue;
         }
+        if let LayerSixAction::SelfGrantedKeywords {
+            source,
+            acquisition,
+            keywords,
+        } = effect.action
+        {
+            if objects[source as usize].self_grants.contains(&acquisition) {
+                for &recipient in &effect.recipients {
+                    objects[recipient as usize].grant_keywords(keywords);
+                }
+            }
+            continue;
+        }
         for &recipient in &effect.recipients {
             let object = &mut objects[recipient as usize];
             match &effect.action {
@@ -394,7 +413,8 @@ pub(super) fn apply_layer_six<W: ability_world::CharacteristicWorld + ?Sized>(
                 | LayerSixAction::RemovePrintedAndGrant(_)
                 | LayerSixAction::RemoveKeywordsAndGrant { .. }
                 | LayerSixAction::InheritCreatureActivations { .. }
-                | LayerSixAction::SelfGrantedMana { .. } => unreachable!(),
+                | LayerSixAction::SelfGrantedMana { .. }
+                | LayerSixAction::SelfGrantedKeywords { .. } => unreachable!(),
                 LayerSixAction::RemoveSubtypeMana => {
                     object.mana.retain(|ability| !ability.subtype_derived);
                 }
@@ -407,14 +427,6 @@ pub(super) fn apply_layer_six<W: ability_world::CharacteristicWorld + ?Sized>(
                     object.inherited.clear();
                 }
                 LayerSixAction::GrantSelf(timestamp) => object.self_grants.push(*timestamp),
-                LayerSixAction::SelfGrantedKeywords {
-                    acquisition,
-                    keywords,
-                } => {
-                    if object.self_grants.contains(acquisition) {
-                        object.grant_keywords(*keywords);
-                    }
-                }
                 LayerSixAction::Grant {
                     keywords,
                     abilities,

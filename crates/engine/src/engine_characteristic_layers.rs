@@ -30,6 +30,9 @@ pub struct AnimationView {
     /// The name and Equipment subtype of a resolved artifact-only form.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub equipment_name: Option<&'static str>,
+    /// A name set by this exact noncopying continuous effect.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<&'static str>,
     /// Set enchantment card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub enchantment_noncreature: bool,
@@ -582,17 +585,20 @@ fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
 ) -> Option<&'static str> {
     if world.roles().is_none_or(|r| {
         r.characteristic_sources.is_empty()
-            && r.animations.iter().all(|row| row.equipment_name.is_none())
+            && r.animations
+                .iter()
+                .all(|row| row.name.is_none() && row.equipment_name.is_none())
     }) {
         return None;
     }
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
-        .chain(
-            animations(world, id)
-                .filter_map(|row| row.equipment_name.map(|name| (row.timestamp, name))),
-        )
+        .chain(animations(world, id).filter_map(|row| {
+            row.name
+                .or(row.equipment_name)
+                .map(|name| (row.timestamp, name))
+        }))
         .max_by_key(|e| e.0)
         .map(|(_, name)| name)
 }
@@ -1059,6 +1065,46 @@ impl Game {
         };
         self.change_object_form(source.object, spec, type_mode);
     }
+    pub(super) fn become_named_legendary_creature(
+        &mut self,
+        item: &SpellView,
+        name: &'static str,
+        base: (i128, i128),
+        ability: SelfGrantedAbilityKind,
+    ) {
+        let Some(source) = item.source.map(|source| source.object) else {
+            return;
+        };
+        if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some(base),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::Permanent,
+        };
+        self.state
+            .roles
+            .as_mut()
+            .unwrap()
+            .animations
+            .push(AnimationView {
+                name: Some(name),
+                legendary: true,
+                ..animation_view(
+                    source,
+                    timestamp,
+                    spec,
+                    AnimationTypeMode::ReplaceWithCreature,
+                    None,
+                    self.state.turn,
+                )
+            });
+        self.grant_recipient_ability(source, item.trigger_definition(), ability, timestamp, None);
+    }
     pub(super) fn add_artifact_to_targets(&mut self, item: &SpellView) {
         let spec = AnimationSpec {
             artifact: true,
@@ -1249,6 +1295,7 @@ pub(super) fn animation_view(
         food_only: false,
         artifact_noncreature: false,
         equipment_name: None,
+        name: None,
         enchantment_noncreature: false,
         additional_card_types: 0,
         colors,
@@ -1285,6 +1332,7 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         food_only: true,
         artifact_noncreature: false,
         equipment_name: None,
+        name: None,
         enchantment_noncreature: false,
         additional_card_types: 0,
         colors: None,
@@ -1399,6 +1447,7 @@ impl AnimationView {
             food_only: false,
             artifact_noncreature: false,
             equipment_name: None,
+            name: None,
             enchantment_noncreature: false,
             additional_card_types: 0,
             colors: Some(colors & 31),
