@@ -187,7 +187,8 @@ fn hand_payment_projects_exact_candidates_and_tracks_revealed_card_lki() {
     assert_ne!(exact, stale);
     reject(&mut game, cost(stale));
     for invalid in [victim, foreign, exiled, land, draw] {
-        reject(&mut game, cost(game.object_ref(invalid)));
+        let action = cost(game.object_ref(invalid));
+        reject(&mut game, action);
     }
     assert_eq!(
         game.observe(player).additional_cost.unwrap().candidates,
