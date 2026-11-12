@@ -278,9 +278,11 @@ fn undergrowth_recon_targets_only_a_land_in_its_controllers_graveyard_at_own_upk
     cast(&mut game, source, None);
     settle(&mut game);
     game.finish_cleanup();
+    game.prepare_triggers();
     assert_eq!(game.state.active, player.other());
     assert!(game.state.stack.is_empty());
     game.finish_cleanup();
+    game.prepare_triggers();
     assert_eq!(game.state.active, player);
     assert_eq!(game.state.step, Step::Upkeep);
     reject(&mut game, target(other_land));
@@ -332,7 +334,7 @@ fn curious_cadaver_returns_for_its_owners_clue_sacrifice() {
     create(&mut game, player.other(), CLUE, 1);
     let own = tokens(&game, player, CLUE)[0];
     let other = tokens(&game, player.other(), CLUE)[0];
-    let nonclue = put(&mut game, player, "Candy Trail", Zone::Battlefield);
+    let nonclue = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
     game.sacrifice_batch(&[(player.other(), other), (player, nonclue)]);
     game.prepare_triggers();
     assert!(game.state.stack.is_empty());
