@@ -3666,6 +3666,7 @@ pub enum Instruction {
     RevealFaceDownTargetAndMayTurnUp,
     /// Turn the exact face-down target up as an effect, without a special-action payment.
     TurnTargetFaceUp,
+    LookAtOpposingFaceDownCreaturesUntilEndOfTurn,
     /// Place counters on the exact permanent from this trigger's event.
     PutCountersOnEventPermanent {
         kind: CounterKind,
@@ -6038,6 +6039,14 @@ pub enum Subject {
     Attached,
 }
 
+/// A counter replacement applied during the face-up status change.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TurnUpCounterAmount {
+    Fixed(u64),
+    Stat(StatValue),
+}
+
 /// Immutable counter replacements evaluated against the pre-entry world.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -7034,6 +7043,7 @@ pub enum StepGuard {
     NoSpellCastFromOwnHandThisTurn,
     CastManaValueAtLeastFourThisTurn,
     CardExiledThisTurn,
+    FaceDownCreatureEnteredThisTurn,
     OpponentHasMoreCardsInHand,
     OpponentControlsMoreCreatures,
     AnyPlayerControlsNoCreatures,
@@ -7620,6 +7630,7 @@ pub enum TriggerCondition {
     SelfTurnedFaceUp,
     #[cfg_attr(not(test), allow(dead_code))]
     PermanentYouControlTurnedFaceUp,
+    SelfOrControlledCreatureTurnedFaceUp,
     YouTurnPermanentFaceUp,
     FaceDownPermanentEntersOrTurnsUpYou,
     YouManifestDread,
@@ -9467,7 +9478,9 @@ impl Card {
     pub(crate) fn printed_defense(self) -> u64 {
         authored::rules(self).unwrap().extras.battle_defense
     }
-    pub(crate) fn as_turned_face_up_counters(self) -> &'static [(CounterKind, u64)] {
+    pub(crate) fn as_turned_face_up_counters(
+        self,
+    ) -> &'static [(CounterKind, TurnUpCounterAmount)] {
         authored::rules(self)
             .unwrap()
             .extras

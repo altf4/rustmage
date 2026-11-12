@@ -563,6 +563,9 @@ impl FundingState<'_> {
                                 || self.game.object_ref(r.id) != self.reference(r.id))
                     })
             }
+            StepGuard::FaceDownCreatureEnteredThisTurn => {
+                state.turn_facts.face_down_creature_entered
+            }
             StepGuard::OpponentHasMoreCardsInHand => {
                 count(Zone::Hand, player.other()) > count(Zone::Hand, player)
             }

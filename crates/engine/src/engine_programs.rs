@@ -1157,6 +1157,7 @@ impl Game {
                     | TriggerCondition::CreatureExploresYou
                     | TriggerCondition::SelfTurnedFaceUp
                     | TriggerCondition::PermanentYouControlTurnedFaceUp
+                    | TriggerCondition::SelfOrControlledCreatureTurnedFaceUp
                     | TriggerCondition::YouTurnPermanentFaceUp
                     | TriggerCondition::YouManifestDread
                     | TriggerCondition::CreatureExploresCardYou { .. }
@@ -5707,6 +5708,12 @@ impl Game {
                     if let Some(object) = self.first_bound_face_down_permanent(&item) {
                         self.turn_manifest_face_up(object, item.controller);
                     }
+                }
+                Instruction::LookAtOpposingFaceDownCreaturesUntilEndOfTurn => {
+                    self.state
+                        .manifest
+                        .get_or_insert_with(Default::default)
+                        .temporary_opposing_look[item.controller.index()] = true;
                 }
                 Instruction::PutCountersOnEventPermanent { kind, amount } => {
                     if let Some(object) = item.event_object.as_ref().map(|event| event.object)

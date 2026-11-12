@@ -167,6 +167,9 @@ pub struct TurnFactsView {
     /// A face-down permanent entered under this player's control or they turned one face up.
     #[serde(skip_serializing_if = "is_false")]
     pub face_down_entry_or_turn_up: bool,
+    /// An exact face-down object entered as a creature under this player's control.
+    #[serde(skip_serializing_if = "is_false")]
+    pub face_down_creature_entered: bool,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -350,7 +353,6 @@ impl Game {
             let id = event.after.card;
             let object = &self.state.objects[id as usize];
             let controller = object.controller;
-            facts[controller.index()].face_down_entry_or_turn_up |= self.is_face_down(event.after);
             let subtypes = self.granted_subtypes(id);
             let zombie = subtypes.has(object.card, "Zombie");
             facts[controller.index()].hero_entered |= subtypes.has(object.card, "Hero");
@@ -366,6 +368,9 @@ impl Game {
                 entry.zombie = zombie;
             }
             let kinds = self.current_kinds(id);
+            let face_down = self.is_face_down(event.after);
+            facts[controller.index()].face_down_entry_or_turn_up |= face_down;
+            facts[controller.index()].face_down_creature_entered |= face_down && kinds & 1 != 0;
             if kinds & (1 | 128) != 0 {
                 entered_types[controller.index()].union(subtypes.creature_type_set(object.card));
             }
@@ -391,6 +396,7 @@ impl Game {
             player.turn_facts.artifact_entered |= event.artifact_entered;
             player.turn_facts.hero_entered |= event.hero_entered;
             player.turn_facts.face_down_entry_or_turn_up |= event.face_down_entry_or_turn_up;
+            player.turn_facts.face_down_creature_entered |= event.face_down_creature_entered;
         }
     }
     pub(super) fn subtype_entered_under_control(&self, player: Player, types: &[&str]) -> bool {

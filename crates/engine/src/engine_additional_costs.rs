@@ -1518,6 +1518,7 @@ impl Game {
             | EffectChoiceKind::HandLand { .. }
             | EffectChoiceKind::SaddleRider(_)
             | EffectChoiceKind::BlinkControlledCreatures
+            | EffectChoiceKind::CloakFromHand
             | EffectChoiceKind::HandCreatures { .. }
             | EffectChoiceKind::ReturnToHandCounting
             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)

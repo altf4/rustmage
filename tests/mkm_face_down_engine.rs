@@ -468,3 +468,207 @@ fn paying_copied_disguise_on_a_cloaked_instant_reveals_it_without_turning_it_up(
     );
     assert!(game.state.stack.is_empty());
 }
+
+const OTHER_CREATURES: StatValue = StatValue::Count(CountFilter {
+    zone: CountZone::Battlefield,
+    relation: 0,
+    kind: 1,
+    exclude: 0,
+    subtype: None,
+    basic: false,
+    other: true,
+    cards_only: false,
+});
+const WARDEN: CardRules = CardRules {
+    effect: Effect::Creature(4, 4),
+    extras: &CardExtras {
+        disguise_cost: Some(DISGUISE),
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::Stat(OTHER_CREATURES),
+        }],
+        as_turned_face_up_counters: &[(
+            CounterKind::PlusOne,
+            TurnUpCounterAmount::Stat(OTHER_CREATURES),
+        )],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const PERFORMER: CardRules = CardRules {
+    effect: Effect::Creature(3, 2),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfOrControlledCreatureTurnedFaceUp,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::EnteringPowerDamagePlayers(PlayerSet::Opponent)],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn turn_up_replacement_precedes_the_trigger_and_departure_keeps_the_damage_actor() {
+    let warden = Card::from_name("Grizzly Bears").unwrap();
+    let performer = Card::from_name("Bear Cub").unwrap();
+    let _scope = fixture_rules::activate(&[(warden, &WARDEN), (performer, &PERFORMER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    spawn(&mut game, player, performer, Zone::Battlefield);
+    let hidden = spawn(&mut game, player, warden, Zone::Hand);
+    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.counter_count(hidden, CounterKind::PlusOne), 0);
+
+    put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    put(
+        &mut game,
+        player.other(),
+        "Healer's Hawk",
+        Zone::Battlefield,
+    );
+    let object = game.object_ref(hidden);
+    act(&mut game, turn_up(object, DISGUISE));
+    choose(&mut game, |action| {
+        matches!(action, Action::PayFaceUp { .. })
+    });
+    assert_eq!(game.counter_count(hidden, CounterKind::PlusOne), 2);
+    assert_eq!(game.state.stack.len(), 1);
+
+    let damage = |game: &Game| 20 - game.state.players[player.other().index()].life;
+    let mut present = game.clone();
+    settle(&mut present);
+    assert_eq!(damage(&present), 6);
+
+    let grow = put(&mut game, player, "Giant Growth", Zone::Hand);
+    cast(&mut game, grow, Some(Target::Card(hidden)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(stats(&game, hidden), (9, 9));
+    let removal = put(&mut game, player, "Murder", Zone::Hand);
+    cast(&mut game, removal, Some(Target::Card(hidden)));
+    settle(&mut game);
+    assert_eq!(game.object_view(hidden).zone, Zone::Graveyard);
+    assert_eq!(damage(&game), 9);
+}
+
+const ENTRY_TIPSTER: CardRules = CardRules {
+    effect: Effect::Creature(1, 1),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::InterveningIf {
+            guard: StepGuard::FaceDownCreatureEnteredThisTurn,
+            event: &TriggerCondition::AtStep {
+                step: TriggerStep::End,
+                relation: CastRelation::You,
+                guard: StepGuard::Always,
+            },
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::PutCountersScaled {
+            subject: Subject::Source,
+            kind: CounterKind::PlusOne,
+            amount: AmountValue::Fixed(1),
+        }],
+    }],
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn end_step_observes_earlier_face_down_creature_entry_and_ignores_flip_only() {
+    let tipster = Card::from_name("Grizzly Bears").unwrap();
+    let _scope = fixture_rules::activate(&[(tipster, &ENTRY_TIPSTER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let hidden = spawn(&mut game, player, smuggler, Zone::Hand);
+    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    pay(&mut game);
+    settle(&mut game);
+
+    let mut flip_only = game.clone();
+    flip_only.begin_turn();
+    flip_only.state.step = Step::Main2;
+    flip_only.state.priority = player;
+    let hidden_object = game.object_ref(hidden);
+    for (branch, expected) in [(&mut game, 1), (&mut flip_only, 0)] {
+        // Enter the observer after the face-down creature to test turn history.
+        let source = spawn(branch, player, tipster, Zone::Battlefield);
+        branch.state.step = Step::Main2;
+        branch.state.players[player.index()].mana = [8; 6];
+        act(branch, turn_up(hidden_object, DISGUISE));
+        choose(branch, |action| matches!(action, Action::PayFaceUp { .. }));
+        act(branch, Action::Pass);
+        act(branch, Action::Pass);
+        assert_eq!(branch.state.step, Step::End);
+        settle(branch);
+        assert_eq!(branch.counter_count(source, CounterKind::PlusOne), expected);
+    }
+}
+
+const TEMPORARY_LOOK: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::LookAtOpposingFaceDownCreaturesUntilEndOfTurn],
+    ),
+    ..CardRules::EMPTY
+};
+const CLOAK_OWN_TOP: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[Instruction::CloakLibraryTop(PlayerSet::Controller)],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn temporary_look_remembers_known_creatures_and_expires_before_new_entries() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let look = Card::from_name("Opt").unwrap();
+    let cloak = Card::from_name("Shock").unwrap();
+    let _scope = fixture_rules::activate(&[(look, &TEMPORARY_LOOK), (cloak, &CLOAK_OWN_TOP)]);
+    let mut game = scenario(player);
+    let first = put(&mut game, opponent, "Healer's Hawk", Zone::Library);
+    game.state.priority = opponent;
+    let first_cloak = spawn(&mut game, opponent, cloak, Zone::Hand);
+    cast(&mut game, first_cloak, None);
+    settle(&mut game);
+
+    let known = |game: &Game, id| {
+        game.observe(player)
+            .face_down_permanents
+            .iter()
+            .find(|view| view.object.card == id)
+            .unwrap()
+            .underlying
+    };
+    assert_eq!(known(&game, first), None);
+    let peek = spawn(&mut game, player, look, Zone::Hand);
+    cast(&mut game, peek, None);
+    settle(&mut game);
+    assert_eq!(known(&game, first), Card::from_name("Healer's Hawk"));
+
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let disguised = spawn(&mut game, opponent, smuggler, Zone::Hand);
+    game.state.active = opponent;
+    game.state.priority = opponent;
+    act(&mut game, Action::AnnounceDisguise { card: disguised });
+    pay(&mut game);
+    assert_eq!(game.observe(player).face_down_spells[0].underlying, None);
+    settle(&mut game);
+    assert_eq!(known(&game, disguised), Some(smuggler));
+
+    game.state.step = Step::End;
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.active, player);
+    assert_eq!(known(&game, first), Card::from_name("Healer's Hawk"));
+    assert_eq!(known(&game, disguised), Some(smuggler));
+
+    game.state.priority = opponent;
+    game.state.players[opponent.index()].mana = [8; 6];
+    let second = put(&mut game, opponent, "Grizzly Bears", Zone::Library);
+    let second_cloak = spawn(&mut game, opponent, cloak, Zone::Hand);
+    cast(&mut game, second_cloak, None);
+    settle(&mut game);
+    assert_eq!(known(&game, second), None);
+}

@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             colored: [0, 1, 0, 0, 0, 0],
             generic: 5,
         }),
-        as_turned_face_up_counters: &[(CounterKind::PlusOne, 4)],
+        as_turned_face_up_counters: &[(CounterKind::PlusOne, TurnUpCounterAmount::Fixed(4))],
         ..CardExtras::EMPTY
     },
     triggers: &[],

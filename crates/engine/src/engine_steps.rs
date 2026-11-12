@@ -489,6 +489,9 @@ impl Game {
                 return attached_controller_turn(world, source, self.state.active);
             }
             StepGuard::CardExiledThisTurn => return self.state.cards_exiled_this_turn,
+            StepGuard::FaceDownCreatureEnteredThisTurn => {
+                return p.turn_facts.face_down_creature_entered;
+            }
             StepGuard::ControlsGreatestCreaturePower => {
                 return world.controls_greatest_creature_power(player);
             }

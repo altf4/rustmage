@@ -1,7 +1,9 @@
 //! Owned face-down identity, public causes, and private choices.
 use super::ability_world::CharacteristicWorld;
 use super::*;
-use crate::cards::{DisguiseCostModifier, DisguiseSpec, StaticAbilityFragment};
+use crate::cards::{
+    DisguiseCostModifier, DisguiseSpec, StaticAbilityFragment, TurnUpCounterAmount,
+};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
@@ -178,6 +180,7 @@ pub(super) struct ManifestState {
     pub deaths: Vec<ManifestDeath>,
     pub last_event: Option<ManifestDreadEvent>,
     pub last_face_up: Option<ObjectRef>,
+    pub temporary_opposing_look: [bool; 2],
     /// A face-up event whose counter replacements have not finished yet.
     pub face_up_completion: Option<(ObjectRef, Player, u32)>,
 }
@@ -266,6 +269,11 @@ impl Game {
         };
         let mut query = None;
         let mut viewers = [0; 2];
+        for controller in [Player::P0, Player::P1] {
+            if state.temporary_opposing_look[controller.index()] {
+                viewers[controller.other().index()] |= self.face_down_knowledge_mask(controller);
+            }
+        }
         for &id in self.state.static_sources.iter() {
             let source = &self.state.objects[id as usize];
             if source.zone == Zone::Battlefield
@@ -701,13 +709,22 @@ impl Game {
         let mut prospective = self.clone();
         prospective.materialize_face_up(object);
         let card = prospective.state.objects[object.card as usize].card;
+        let o = &prospective.state.objects[object.card as usize];
+        let mut amount = Counters::default();
         let counters = card.as_turned_face_up_counters();
         if !counters.is_empty() && prospective.printed_abilities_available(object.card) {
-            let mut amount = Counters::default();
             for &(kind, value) in counters {
-                amount.add(kind, value);
+                let count = match value {
+                    TurnUpCounterAmount::Fixed(count) => count,
+                    TurnUpCounterAmount::Stat(value) => {
+                        u64::try_from(prospective.stat_value(value, object, o.controller).max(0))
+                            .capacity("face-up counter amount exhausted")
+                    }
+                };
+                amount.add(kind, count);
             }
-            let o = &prospective.state.objects[object.card as usize];
+        }
+        if amount.has_any() {
             let placement = replacements::CounterPlacement {
                 object,
                 placed_by: o.controller,
@@ -774,6 +791,7 @@ impl Game {
             return;
         }
         let controller = turned.controller;
+        let creature = self.current_kinds(object.card) & 1 != 0;
         self.state.players[player.index()]
             .turn_facts
             .face_down_entry_or_turn_up = true;
@@ -796,6 +814,9 @@ impl Game {
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::SelfTurnedFaceUp => source.reference == object,
+                    TriggerCondition::SelfOrControlledCreatureTurnedFaceUp => {
+                        source.reference == object || (creature && source.controller == controller)
+                    }
                     TriggerCondition::PermanentYouControlTurnedFaceUp
                     | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou => {
                         source.controller == controller
@@ -804,6 +825,13 @@ impl Game {
                     _ => false,
                 };
                 if matched && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
+                    let facts = if ability.program.iter().any(|instruction| {
+                        matches!(instruction, Instruction::EnteringPowerDamagePlayers(_))
+                    }) {
+                        EventObjectFacts::DamageActor(self.damage_source(object.card))
+                    } else {
+                        EventObjectFacts::Controller(controller)
+                    };
                     let packet = self.state.pending_triggers.last_mut().unwrap();
                     packet.event_player = Some(player);
                     if source.reference == object {
@@ -811,7 +839,7 @@ impl Game {
                     }
                     packet.set_event_object(EventObjectView {
                         object,
-                        facts: EventObjectFacts::Controller(controller),
+                        facts,
                         semantic_objects: None,
                         conniver_creature: None,
                         subtype_lki: None,

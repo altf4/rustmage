@@ -11926,6 +11926,9 @@ impl Game {
         self.state.casting_prohibited = false;
         self.state.damage_prevention_prohibited = false;
         self.expire_source_prevention();
+        if let Some(state) = &mut self.state.manifest {
+            state.temporary_opposing_look = [false; 2];
+        }
         self.expire_next_turn_callbacks();
         if let Some(roles) = &mut self.state.roles {
             roles.noncombat_damage_increases.clear();

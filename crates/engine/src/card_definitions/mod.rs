@@ -484,7 +484,7 @@ pub struct CardExtras {
     pub activation_put_counters: &'static [(u16, CounterKind, u64)],
     pub fixed_entry_counters: &'static [(CounterKind, u64)],
     pub battle_defense: u64,
-    pub as_turned_face_up_counters: &'static [(CounterKind, u64)],
+    pub as_turned_face_up_counters: &'static [(CounterKind, TurnUpCounterAmount)],
     pub entry_choice: Option<EntryChoiceKind>,
     /// (trigger slot, named-mode index), checked only at the triggering event.
     pub entry_mode_triggers: &'static [(u16, u16)],
