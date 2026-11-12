@@ -943,3 +943,171 @@ fn a_parent_cast_keeps_its_exact_evidence_while_mana_evidence_branches_and_repla
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
 }
+
+const COMBAT_EVIDENCE: CardRules = CardRules {
+    effect: Effect::Creature(6, 6),
+    keywords: Keywords::FLYING.union(Keywords::LIFELINK),
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::PlayerDamaged {
+                subject: DamageSubject::Source,
+                combat_only: true,
+                opponent_only: false,
+                one_or_more: false,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::May { skip: 2 },
+                Instruction::CollectEvidenceX,
+                Instruction::Reflexive { ability: 1 },
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DamagePlayerPermanents {
+                players: PlayerSet::DamagedPlayer,
+                kinds: 1 | 64,
+                amount: AmountValue::ChosenX,
+            }],
+        },
+    ],
+    ..CardRules::EMPTY
+};
+
+fn pass_pair(game: &mut Game) {
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+}
+
+#[test]
+fn announced_evidence_x_is_optional_and_carries_the_declared_amount_to_a_new_damage_trigger() {
+    let _rules = fixture_rules::activate(&[(named("Hill Giant"), &COMBAT_EVIDENCE)]);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let witness = ten_mana_witness(&mut game, player);
+        let foreign = put(&mut game, opponent, "Hill Giant", Zone::Graveyard);
+        let creature = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+        let walker = put(
+            &mut game,
+            opponent,
+            "Chandra, Flameshaper",
+            Zone::Battlefield,
+        );
+        game.add_counter(walker, CounterKind::Loyalty, 5);
+        let artifact = put(&mut game, opponent, "Short Bow", Zone::Battlefield);
+        let friendly = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let murder = put(&mut game, opponent, "Murder", Zone::Hand);
+        let newcomer = put(&mut game, opponent, "Valley Floodcaller", Zone::Hand);
+
+        let mut no_player_hit = game.clone();
+        no_player_hit.apply_damage_batch(&[DamageEvent {
+            preventable: true,
+            source: no_player_hit.damage_source(source),
+            target: Target::Card(walker),
+            amount: 1,
+            combat: true,
+        }]);
+        assert!(no_player_hit.state.pending_triggers.is_empty());
+        no_player_hit.apply_damage_batch(&[DamageEvent {
+            preventable: true,
+            source: no_player_hit.damage_source(source),
+            target: Target::Player(opponent),
+            amount: 1,
+            combat: false,
+        }]);
+        assert!(no_player_hit.state.pending_triggers.is_empty());
+
+        game.state.step = Step::Attackers;
+        game.state.pending = Pending::Attackers;
+        act(&mut game, Action::Attack { card: source });
+        act(&mut game, Action::FinishAttackers);
+        pass_pair(&mut game);
+        act(&mut game, Action::FinishBlockers);
+        pass_pair(&mut game);
+        assert_eq!(game.state.stack.len(), 1);
+        assert_eq!(game.state.players[opponent.index()].life, 14);
+        assert_eq!(game.state.players[player.index()].life, 26);
+        let original = game.state.stack.last().unwrap().id;
+        pass_pair(&mut game);
+
+        let mut declined = game.clone();
+        act(&mut declined, Action::ChooseOptional { accept: false });
+        assert!(declined.state.stack.is_empty());
+        assert!(declined.observe(opponent).last_evidence.is_none());
+
+        act(&mut game, Action::ChooseOptional { accept: true });
+        let domain = game.observe(player).x_choice.unwrap();
+        assert_eq!(
+            domain.intervals,
+            [XInterval {
+                minimum: 0,
+                maximum: 10
+            }]
+        );
+        assert!(game.observe(opponent).x_choice.is_none());
+        reject(&mut game, Action::ChooseX { value: 11 });
+
+        let mut zero = game.clone();
+        act(&mut zero, Action::ChooseX { value: 0 });
+        act(&mut zero, Action::FinishEvidence);
+        let event = zero.observe(opponent).last_evidence.unwrap();
+        assert_eq!((event.threshold, event.total_mana), (0, 0));
+        assert!(event.exiled.is_empty());
+        assert_eq!(zero.state.stack.last().unwrap().x, Some(0));
+        settle(&mut zero);
+        assert_eq!(zero.object_view(creature).zone, Zone::Battlefield);
+        assert_eq!(zero.counter_count(walker, CounterKind::Loyalty), 5);
+
+        let choice = Action::ChooseX { value: 2 };
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == choice)
+            .unwrap();
+        let revision = game.revision();
+        let mut indexed = game.clone();
+        act(&mut game, choice);
+        indexed.apply_index(player, revision, index).unwrap();
+        assert_eq!(indexed.snapshot(), game.snapshot());
+        assert_eq!(game.observe(player).evidence.unwrap().threshold, 2);
+        reject(&mut game, Action::DeclineEvidence);
+        let wrong_owner = choose_evidence(&game, foreign);
+        reject(&mut game, wrong_owner);
+        select_evidence(&mut game, &[witness]);
+        let receipt = game.observe(opponent).last_evidence.unwrap();
+        assert_eq!((receipt.threshold, receipt.total_mana), (2, 10));
+        assert_eq!(game.state.stack.len(), 1);
+        let packet = game.state.stack.last().unwrap();
+        assert_ne!(packet.id, original);
+        assert_eq!(packet.kind, StackKind::TriggeredAbility { ability: 1 });
+        assert_eq!(packet.x, Some(2));
+        assert_eq!(packet.damage_event.unwrap().player, opponent);
+        assert!(packet.targets.is_empty());
+        assert_eq!(game.object_view(creature).zone, Zone::Battlefield);
+
+        game.state.players[opponent.index()].mana = [0, 1, 2, 0, 0, 3];
+        if game.actor() != Some(opponent) {
+            act(&mut game, Action::Pass);
+        }
+        cast(&mut game, murder, Some(Target::Card(source)));
+        pass_pair(&mut game);
+        assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+        if game.actor() != Some(opponent) {
+            act(&mut game, Action::Pass);
+        }
+        cast(&mut game, newcomer, None);
+        pass_pair(&mut game);
+        assert_eq!(game.object_view(newcomer).zone, Zone::Battlefield);
+        settle(&mut game);
+        assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(newcomer).zone, Zone::Graveyard);
+        assert_eq!(game.counter_count(walker, CounterKind::Loyalty), 3);
+        assert_eq!(game.object_view(friendly).zone, Zone::Battlefield);
+        assert!(!game.object_view(artifact).damaged_this_turn);
+        assert_eq!(game.state.players[opponent.index()].life, 14);
+        assert_eq!(game.state.players[player.index()].life, 32);
+    }
+}

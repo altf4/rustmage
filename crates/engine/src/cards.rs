@@ -3583,6 +3583,9 @@ pub enum Instruction {
         threshold: u16,
         skip: usize,
     },
+    /// Declare X, then pay that evidence cost before continuing the program.
+    /// Use a separate optional choice when the payment is optional.
+    CollectEvidenceX,
     EvidenceWard(u16),
     IfEvidence {
         skip: usize,
@@ -4621,6 +4624,12 @@ pub enum Instruction {
     },
     DamagePlayersAndTheirCreatures {
         players: PlayerSet,
+        amount: AmountValue,
+    },
+    /// Simultaneously damage the chosen players' permanents of any listed kind.
+    DamagePlayerPermanents {
+        players: PlayerSet,
+        kinds: u16,
         amount: AmountValue,
     },
     /// Damage legal targets in the selected group using the other legal target's

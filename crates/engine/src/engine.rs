@@ -9276,6 +9276,10 @@ impl Game {
             Action::ChooseX { value }
                 if matches!(self.state.pending, Pending::ResolutionX { .. }) =>
             {
+                if self.choosing_evidence_x() {
+                    self.choose_resolution_evidence_x(value);
+                    return;
+                }
                 let payer = {
                     let r = self.state.resolving.as_mut().unwrap();
                     r.item.x = Some(value);

@@ -5750,12 +5750,18 @@ impl Game {
                     self.return_remembered_cards_for_own_end_step(&item);
                 }
                 Instruction::CollectEvidence { threshold, skip } => {
-                    if self.start_resolution_evidence(threshold, skip, false) {
+                    if self.start_resolution_evidence(threshold.into(), skip, false) {
                         return;
                     }
                 }
+                Instruction::CollectEvidenceX => {
+                    self.state.pending = Pending::ResolutionX {
+                        player: item.controller,
+                    };
+                    return;
+                }
                 Instruction::EvidenceWard(threshold) => {
-                    if self.start_resolution_evidence(threshold, 0, true) {
+                    if self.start_resolution_evidence(threshold.into(), 0, true) {
                         return;
                     }
                 }
@@ -11405,14 +11411,18 @@ impl Game {
                     self.event_object_power_damage_players(&item, players)
                 }
                 Instruction::DamagePlayersAndTheirCreatures { players, .. }
-                | Instruction::DamagePlayerCreatures { players, .. } => {
-                    let creatures_only =
-                        matches!(instruction, Instruction::DamagePlayerCreatures { .. });
-                    let amount = match instruction {
+                | Instruction::DamagePlayerCreatures { players, .. }
+                | Instruction::DamagePlayerPermanents { players, .. } => {
+                    let (include_players, kinds, amount) = match instruction {
                         Instruction::DamagePlayerCreatures { amount, .. } => {
-                            AmountValue::Fixed(amount)
+                            (false, 1, AmountValue::Fixed(amount))
                         }
-                        Instruction::DamagePlayersAndTheirCreatures { amount, .. } => amount,
+                        Instruction::DamagePlayersAndTheirCreatures { amount, .. } => {
+                            (true, 1, amount)
+                        }
+                        Instruction::DamagePlayerPermanents { kinds, amount, .. } => {
+                            (false, kinds, amount)
+                        }
                         _ => unreachable!(),
                     };
                     let amount = i128::try_from(self.item_amount(amount, &item))
@@ -11422,7 +11432,7 @@ impl Game {
                     let targets = players
                         .iter()
                         .copied()
-                        .filter(|_| !creatures_only)
+                        .filter(|_| include_players)
                         .map(Target::Player)
                         .chain(
                             self.state
@@ -11432,7 +11442,7 @@ impl Game {
                                 .filter(|(id, o)| {
                                     o.zone == Zone::Battlefield
                                         && players.contains(&o.controller)
-                                        && self.is_creature(*id as CardId)
+                                        && self.current_kinds(*id as CardId) & kinds != 0
                                 })
                                 .map(|(id, _)| Target::Card(id as CardId)),
                         );

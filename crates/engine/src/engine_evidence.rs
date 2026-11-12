@@ -100,6 +100,22 @@ impl Game {
         (object.card as usize) < self.state.objects.len()
             && additional_costs::graveyard_exile_card_matches(self, player, object, None)
     }
+    fn evidence_values(
+        &self,
+        player: Player,
+        excluded: Option<ObjectRef>,
+    ) -> impl Iterator<Item = u64> + '_ {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(move |(index, card)| {
+                let object = self.object_ref(index as CardId);
+                (Some(object) != excluded && self.evidence_card(player, object))
+                    .then(|| card.card.fixed_mana_value())
+            })
+    }
+
     pub(super) fn can_collect_evidence(
         &self,
         player: Player,
@@ -111,16 +127,31 @@ impl Game {
         }
         // Nonnegative values make existence a linear sum, with no subset search.
         let mut total = 0u128;
-        for (index, card) in self.state.objects.iter().enumerate() {
-            let object = self.object_ref(index as CardId);
-            if Some(object) != excluded && self.evidence_card(player, object) {
-                total += u128::from(card.card.fixed_mana_value());
-                if total >= u128::from(threshold) {
-                    return true;
-                }
-            }
-        }
-        false
+        self.evidence_values(player, excluded).any(|value| {
+            total += u128::from(value);
+            total >= u128::from(threshold)
+        })
+    }
+
+    pub(super) fn choosing_evidence_x(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|r| {
+            r.program.get(r.pc.saturating_sub(1)) == Some(&Instruction::CollectEvidenceX)
+        })
+    }
+
+    pub(super) fn maximum_evidence_x(&self, player: Player) -> u32 {
+        // X uses the shared scalar declaration domain. Summing all eligible
+        // values gives its upper bound because the eventual payment can overpay.
+        self.evidence_values(player, None)
+            .map(u128::from)
+            .sum::<u128>()
+            .min(u128::from(u32::MAX)) as u32
+    }
+
+    pub(super) fn choose_resolution_evidence_x(&mut self, value: u32) {
+        self.state.resolving.as_mut().unwrap().item.x = Some(value);
+        assert!(self.start_resolution_evidence(u64::from(value), 0, false));
+        self.evidence_selection_mut().optional = false;
     }
     pub(super) fn evidence_cast_fundable(
         &self,
@@ -237,7 +268,7 @@ impl Game {
         }));
         self.state.pending = Pending::Evidence { player: p };
     }
-    pub(super) fn start_resolution_evidence(&mut self, n: u16, skip: usize, ward: bool) -> bool {
+    pub(super) fn start_resolution_evidence(&mut self, n: u64, skip: usize, ward: bool) -> bool {
         let r = self.state.resolving.as_ref().unwrap();
         let p = if ward {
             r.item.related_stack.unwrap().controller
@@ -248,7 +279,6 @@ impl Game {
             r.pc.checked_add(skip)
                 .expect("evidence continuation offset");
         assert!(skip_to <= r.program.len());
-        let n = u64::from(n);
         if !self.can_collect_evidence(p, n, None) {
             if ward {
                 let link = r.item.related_stack.unwrap();

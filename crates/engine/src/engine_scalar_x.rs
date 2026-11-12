@@ -377,6 +377,15 @@ impl Game {
             return self.plot_x_choice();
         }
         if let Pending::ResolutionX { player } = self.state.pending {
+            if self.choosing_evidence_x() {
+                return Some(XChoiceView {
+                    card: self.state.resolving.as_ref()?.item.source?.object,
+                    intervals: vec![XInterval {
+                        minimum: 0,
+                        maximum: self.maximum_evidence_x(player),
+                    }],
+                });
+            }
             let mut lo = 0u64;
             let resolving = self.state.resolving.as_ref().unwrap();
             let mut hi = match resolving.program.get(resolving.pc.saturating_sub(1)) {
