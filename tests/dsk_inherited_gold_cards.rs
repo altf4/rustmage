@@ -221,6 +221,12 @@ fn peer_past_the_veil_counts_types_including_its_actual_discard_batch() {
     let old = ["Friendly Teddy", "Nowhere to Run", "Forest"]
         .map(|name| put(&mut game, PLAYER, name, Zone::Hand));
     cast(&mut game, spell, None);
+    pass_pair(&mut game);
+    for card in old {
+        if game.object_view(card).zone == Zone::Hand {
+            act(&mut game, Action::Discard { card });
+        }
+    }
     settle(&mut game);
     assert!(
         old.into_iter()
@@ -250,13 +256,23 @@ fn cautious_survivor_and_shrewd_storyteller_trigger_only_on_the_second_main() {
         game.begin_step(Step::Main1);
         cast(&mut game, grant, None);
         settle(&mut game);
-        attack(&mut game, survivor);
+        for _ in 0..20 {
+            if game.state.pending == Pending::Attackers {
+                break;
+            }
+            act(&mut game, Action::Pass);
+        }
+        act(&mut game, Action::Attack { card: survivor });
+        act(&mut game, Action::FinishAttackers);
         for _ in 0..60 {
             if game.state.step == Step::Main2 {
                 break;
             }
             choose(&mut game, |action| {
-                matches!(action, Action::Pass | Action::FinishBlockers)
+                matches!(
+                    action,
+                    Action::Pass | Action::FinishAttackers | Action::FinishBlockers
+                )
             });
         }
         assert_eq!(game.state.step, Step::Main2);

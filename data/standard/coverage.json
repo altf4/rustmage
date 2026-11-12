@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "eb86f77adeb12104e4a67e4f2958366f4a64c46a000b69bc0cbddb6c7864eb5e",
+  "catalogue_version": "dbc4819eff88c616d1be47a6242131bfbe555c394d9e2e9e9c0f7c00aee22eb4",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4743,
-  "implemented_total": 4760,
+  "implemented_standard_cards": 4746,
+  "implemented_total": 4763,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 212,
-      "gated": 52
+      "complete": 215,
+      "gated": 49
     },
     "ecc": {
       "total": 7,
@@ -1756,8 +1756,8 @@
     {
       "name": "Arabella, Abandoned Doll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/arabella_abandoned_doll.rs",
       "set": "dsk"
     },
@@ -15908,8 +15908,8 @@
     {
       "name": "Hauntwoods Shrieker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/hauntwoods_shrieker.rs",
       "set": "dsk"
     },
@@ -17596,8 +17596,8 @@
     {
       "name": "Inquisitive Glimmer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/inquisitive_glimmer.rs",
       "set": "dsk"
     },

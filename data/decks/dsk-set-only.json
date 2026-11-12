@@ -1,0 +1,456 @@
+{
+  "decks": [
+    {
+      "id": "wu-rooms",
+      "name": "Azorius Rooms and Eerie",
+      "cards": [
+        {
+          "name": "Abandoned Campground",
+          "oracle_id": "0eec9984-cd11-4a52-9234-469c6a5fb9aa",
+          "count": 2
+        },
+        {
+          "name": "Bottomless Pool // Locker Room",
+          "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+          "count": 4
+        },
+        {
+          "name": "Dollmaker's Shop // Porcelain Gallery",
+          "oracle_id": "e633412b-e36b-4ec5-b0d0-7cb24c7503f4",
+          "count": 3
+        },
+        {
+          "name": "Entity Tracker",
+          "oracle_id": "c9db5293-4866-46ec-9ae8-059d27bd50fc",
+          "count": 3
+        },
+        {
+          "name": "Floodfarm Verge",
+          "oracle_id": "f1e9abfb-c3c8-483e-b446-5c2afc9f6394",
+          "count": 4
+        },
+        {
+          "name": "Grand Entryway // Elegant Rotunda",
+          "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+          "count": 4
+        },
+        {
+          "name": "Gremlin Tamer",
+          "oracle_id": "a4e34165-4e53-4c31-bf61-eb772bc3c054",
+          "count": 4
+        },
+        {
+          "name": "Inquisitive Glimmer",
+          "oracle_id": "4abb227a-534e-4300-9009-065a10f10e8a",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 9
+        },
+        {
+          "name": "Optimistic Scavenger",
+          "oracle_id": "0180c67b-c5c8-4a67-9562-d51f9e7ffff5",
+          "count": 4
+        },
+        {
+          "name": "Overlord of the Mistmoors",
+          "oracle_id": "7e64b1dc-a238-4bff-98ff-2bea44340568",
+          "count": 2
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 9
+        },
+        {
+          "name": "Sheltered by Ghosts",
+          "oracle_id": "d13fc657-c6fc-4394-bc70-691050550226",
+          "count": 4
+        },
+        {
+          "name": "Trapped in the Screen",
+          "oracle_id": "20f2fc0e-b1d4-4f80-9c7a-a9fb25fef7b8",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "bg-delirium",
+      "name": "Golgari Delirium",
+      "cards": [
+        {
+          "name": "Altanak, the Thrice-Called",
+          "oracle_id": "6591f243-f94c-4a83-bb16-1fb838d9eb14",
+          "count": 2
+        },
+        {
+          "name": "Balustrade Wurm",
+          "oracle_id": "2dd32fec-5bc3-4cc0-a9b4-814229a64914",
+          "count": 4
+        },
+        {
+          "name": "Broodspinner",
+          "oracle_id": "ad50214c-4d0e-4f95-9098-fd7d64dbf7f4",
+          "count": 4
+        },
+        {
+          "name": "Commune with Evil",
+          "oracle_id": "0248bf01-14e0-4a39-ba3a-5177fe272fe9",
+          "count": 4
+        },
+        {
+          "name": "Drag to the Roots",
+          "oracle_id": "ef4c478c-7019-4ec0-8edf-2a3078a8e97a",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 9
+        },
+        {
+          "name": "Hedge Shredder",
+          "oracle_id": "f22665cd-4710-48df-83c1-3c9081097cb5",
+          "count": 3
+        },
+        {
+          "name": "Osseous Sticktwister",
+          "oracle_id": "33c3a81a-6cea-48c9-b966-67084d96e74f",
+          "count": 4
+        },
+        {
+          "name": "Overlord of the Balemurk",
+          "oracle_id": "652e87af-7cf0-407f-9fb7-1a630fb8dd47",
+          "count": 3
+        },
+        {
+          "name": "Patchwork Beastie",
+          "oracle_id": "6cf995e9-115a-4659-bace-9fbe75898b48",
+          "count": 4
+        },
+        {
+          "name": "Say Its Name",
+          "oracle_id": "474f0675-4088-4f77-8081-f9ed7d492837",
+          "count": 4
+        },
+        {
+          "name": "Strangled Cemetery",
+          "oracle_id": "3a5b3405-a1e3-4aad-ab4e-1b8db2d1f3a8",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 9
+        },
+        {
+          "name": "Terramorphic Expanse",
+          "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "id": "rw-survival",
+      "name": "Boros Survival and Combat",
+      "cards": [
+        {
+          "name": "Arabella, Abandoned Doll",
+          "oracle_id": "7c4bbb1b-29c4-4e06-aed0-b361293a585b",
+          "count": 4
+        },
+        {
+          "name": "Fear of Being Hunted",
+          "oracle_id": "a23293cf-4352-4ce6-8a68-3b30f908e137",
+          "count": 2
+        },
+        {
+          "name": "Hand That Feeds",
+          "oracle_id": "6b348051-3ba8-4aa0-b337-b42d8ef8cbba",
+          "count": 4
+        },
+        {
+          "name": "Most Valuable Slayer",
+          "oracle_id": "f5bece93-afb3-4fa4-83a8-d7eaac032522",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 9
+        },
+        {
+          "name": "Plains",
+          "oracle_id": "bc71ebf6-2056-41f7-be35-b2e5c34afa99",
+          "count": 9
+        },
+        {
+          "name": "Raucous Carnival",
+          "oracle_id": "24a97436-ba61-4ebc-a560-a6c027ccfdf3",
+          "count": 4
+        },
+        {
+          "name": "Reluctant Role Model",
+          "oracle_id": "8d24c12a-a300-4199-b2a9-3d5ead8df617",
+          "count": 4
+        },
+        {
+          "name": "Splitskin Doll",
+          "oracle_id": "934e2634-4b1c-4d92-b4d6-9241620f3770",
+          "count": 4
+        },
+        {
+          "name": "Terramorphic Expanse",
+          "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+          "count": 2
+        },
+        {
+          "name": "The Jolly Balloon Man",
+          "oracle_id": "82ea519f-0e14-43d3-bf46-a1c5352e9600",
+          "count": 4
+        },
+        {
+          "name": "Turn Inside Out",
+          "oracle_id": "be0a3925-8e0d-4ef6-85cb-c9f5eef6b4bb",
+          "count": 4
+        },
+        {
+          "name": "Unsettling Twins",
+          "oracle_id": "b0b2ca8c-cb5a-45f8-ae7c-63ad9ebb4afd",
+          "count": 2
+        },
+        {
+          "name": "Veteran Survivor",
+          "oracle_id": "cc5b1276-d13e-4392-988d-1315bc90a9b1",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "gu-manifest",
+      "name": "Simic Manifest Dread",
+      "cards": [
+        {
+          "name": "Abhorrent Oculus",
+          "oracle_id": "b1a0e129-27f0-4a09-b00d-497e18777306",
+          "count": 4
+        },
+        {
+          "name": "Forest",
+          "oracle_id": "b34bb2dc-c1af-4d77-b0b3-a0fb342a5fc6",
+          "count": 9
+        },
+        {
+          "name": "Growing Dread",
+          "oracle_id": "aa1d8bfa-729a-4e10-8069-57a1d4f4392b",
+          "count": 4
+        },
+        {
+          "name": "Hauntwoods Shrieker",
+          "oracle_id": "09c275bd-8323-485e-81f6-aff1f99d0d03",
+          "count": 4
+        },
+        {
+          "name": "Island",
+          "oracle_id": "b2c6aa39-2d2a-459c-a555-fb48ba993373",
+          "count": 9
+        },
+        {
+          "name": "Lakeside Shack",
+          "oracle_id": "c56cd2ec-5907-4282-9162-d93b7dfd63b5",
+          "count": 4
+        },
+        {
+          "name": "Manifest Dread",
+          "oracle_id": "df5a66d1-61f6-44d9-b464-3ee739e78dce",
+          "count": 4
+        },
+        {
+          "name": "Oblivious Bookworm",
+          "oracle_id": "300fd0a2-23e6-4da9-bfaa-ad626097d5b5",
+          "count": 4
+        },
+        {
+          "name": "Overlord of the Hauntwoods",
+          "oracle_id": "4669e8c7-fc37-4b97-9cb7-8d29b43d9176",
+          "count": 2
+        },
+        {
+          "name": "Paranormal Analyst",
+          "oracle_id": "8cbe71d3-b77b-49a7-9c51-ed308011b8b0",
+          "count": 4
+        },
+        {
+          "name": "Terramorphic Expanse",
+          "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+          "count": 2
+        },
+        {
+          "name": "Threats Around Every Corner",
+          "oracle_id": "5c104ac8-738a-4a9d-a68b-5706018d2061",
+          "count": 4
+        },
+        {
+          "name": "Twist Reality",
+          "oracle_id": "55b0518e-9c87-4f0e-81c2-9c984f760be1",
+          "count": 2
+        },
+        {
+          "name": "Under the Skin",
+          "oracle_id": "8e121178-e9e3-43a5-a174-ecbe47d759f9",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "id": "br-sacrifice",
+      "name": "Rakdos Rooms and Sacrifice",
+      "cards": [
+        {
+          "name": "Blazemire Verge",
+          "oracle_id": "977c2f33-b622-4172-9efb-7f523becd32b",
+          "count": 4
+        },
+        {
+          "name": "Clockwork Percussionist",
+          "oracle_id": "3b74c8ac-9c19-45b0-935f-8630b8da4543",
+          "count": 4
+        },
+        {
+          "name": "Disturbing Mirth",
+          "oracle_id": "7010bfbb-8aea-473b-a9a5-27488de13cc5",
+          "count": 4
+        },
+        {
+          "name": "Fear of Missing Out",
+          "oracle_id": "236ce592-1321-4a7c-b695-fd84496f8924",
+          "count": 2
+        },
+        {
+          "name": "Final Vengeance",
+          "oracle_id": "cdba7f43-df9e-4bfb-9480-721c787ad051",
+          "count": 4
+        },
+        {
+          "name": "Glassworks // Shattered Yard",
+          "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+          "count": 4
+        },
+        {
+          "name": "Infernal Phantom",
+          "oracle_id": "a8225b2e-62bf-45b7-b573-e3ce301a1eab",
+          "count": 4
+        },
+        {
+          "name": "Mountain",
+          "oracle_id": "a3fb7228-e76b-4e96-a40e-20b5fed75685",
+          "count": 9
+        },
+        {
+          "name": "Norin, Swift Survivalist",
+          "oracle_id": "425d755b-7a15-423d-9640-494debc79dd9",
+          "count": 4
+        },
+        {
+          "name": "Nowhere to Run",
+          "oracle_id": "da82ca96-a613-4d00-9e6b-1fece4fc23d0",
+          "count": 2
+        },
+        {
+          "name": "Razortrap Gorge",
+          "oracle_id": "8f69bd3a-244e-42d8-bfac-5a426f4b54b4",
+          "count": 2
+        },
+        {
+          "name": "Saw",
+          "oracle_id": "d88bfa98-6869-4d64-a9d2-07a308a67fe2",
+          "count": 4
+        },
+        {
+          "name": "Swamp",
+          "oracle_id": "56719f6a-1a6c-4c0a-8d21-18f7d7350b68",
+          "count": 9
+        },
+        {
+          "name": "Unholy Annex // Ritual Chamber",
+          "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+          "count": 4
+        }
+      ]
+    }
+  ],
+  "pairings": [
+    {
+      "p0": "wu-rooms",
+      "p1": "bg-delirium",
+      "runs": [
+        {
+          "seed": 20417,
+          "starting_player": 0
+        },
+        {
+          "seed": 20460,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "bg-delirium",
+      "p1": "rw-survival",
+      "runs": [
+        {
+          "seed": 20628,
+          "starting_player": 0
+        },
+        {
+          "seed": 20671,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "rw-survival",
+      "p1": "gu-manifest",
+      "runs": [
+        {
+          "seed": 20839,
+          "starting_player": 0
+        },
+        {
+          "seed": 20882,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "gu-manifest",
+      "p1": "br-sacrifice",
+      "runs": [
+        {
+          "seed": 21050,
+          "starting_player": 0
+        },
+        {
+          "seed": 21093,
+          "starting_player": 1
+        }
+      ]
+    },
+    {
+      "p0": "br-sacrifice",
+      "p1": "wu-rooms",
+      "runs": [
+        {
+          "seed": 21261,
+          "starting_player": 0
+        },
+        {
+          "seed": 21304,
+          "starting_player": 1
+        }
+      ]
+    }
+  ]
+}
