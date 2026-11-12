@@ -985,8 +985,8 @@ impl Game {
                     };
                     if matched && self.queue_zone_trigger(source, index, event) {
                         self.capture_battlefield_departure_facts(event, ability.program);
-                        if matches!(ability.condition.event(), TriggerCondition::ReturnDeath(_)) {
-                            self.capture_return_death(event);
+                        if let TriggerCondition::ReturnDeath(filter) = ability.condition.event() {
+                            self.capture_return_death(event, filter);
                         }
                         let return_tapped = ability.program.iter().any(|instruction| {
                             matches!(
@@ -5629,6 +5629,9 @@ impl Game {
                         .collect::<Vec<_>>();
                     self.destroy_and_create(targets, token, amount);
                 }
+                Instruction::DestroyThenReturnForOwnEndStep => {
+                    self.destroy_then_return_for_own_end_step(&item);
+                }
                 Instruction::CollectEvidence { threshold, skip } => {
                     if self.start_resolution_evidence(threshold, skip, false) {
                         return;
@@ -6109,6 +6112,17 @@ impl Game {
                     Some((counter, 1)),
                 ),
                 Instruction::ReturnDeathCard(kind) => self.return_death_card(&item, kind),
+                Instruction::ReturnDeathCardWithCounters {
+                    under_controller,
+                    tapped,
+                    counter,
+                    amount,
+                } => self.return_death_card_with_counters(
+                    &item,
+                    under_controller,
+                    tapped,
+                    (counter, amount),
+                ),
                 Instruction::ReturnEventCardToHand => self.return_event_card_to_hand(&item),
                 Instruction::ExileEventGraveyardCard => {
                     if let Some(subject) = item.event_object.as_ref().map(|event| event.object)
@@ -7755,6 +7769,15 @@ impl Game {
                 } => {
                     if self.start_effect_choice(&item, kind, players, filter, amount, optional_skip)
                     {
+                        return;
+                    }
+                }
+                Instruction::SacrificeScaled {
+                    players,
+                    filter,
+                    amount,
+                } => {
+                    if self.start_scaled_sacrifice(&item, players, filter, amount) {
                         return;
                     }
                 }

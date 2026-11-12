@@ -35,6 +35,33 @@ impl Game {
         events
     }
 
+    pub(super) fn destroy_then_return_for_own_end_step(&mut self, item: &SpellView) {
+        let events = self.destroy_targets_outcome(&item.targets);
+        let moves = events
+            .iter()
+            .filter(|event| event.moved && event.destination == Zone::Graveyard && event.was_card)
+            .flat_map(ZoneChange::objects_after)
+            .filter_map(|object| {
+                let card = &self.state.objects[object.card as usize];
+                if card.zone != Zone::Graveyard
+                    || self.object_ref(object.card) != object
+                    || !card.is_card()
+                    || self.current_kinds(object.card) & 1 == 0
+                {
+                    return None;
+                }
+                let mut movement = self.entry_move(object.card, Zone::Battlefield, false);
+                movement.controller = item.controller;
+                Some(movement)
+            })
+            .collect();
+        self.stage_entries_with_cleanup(
+            moves,
+            item,
+            entries::EntryCleanup::Token(temporary_tokens::TokenCleanup::OwnEndStepSacrifice),
+        );
+    }
+
     pub(super) fn destroy_targets_unless_greater_creature_power(&mut self, item: &SpellView) {
         if item.targets.is_empty() {
             return;

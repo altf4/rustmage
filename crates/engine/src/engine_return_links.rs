@@ -196,6 +196,17 @@ impl Game {
                     && source.reference == before.reference
                     && before.counters.get(kind) == 0
             }
+            ReturnDeathFilter::SourceWithoutCounters => {
+                source.reference == before.reference && !before.counters.has_any()
+            }
+            ReturnDeathFilter::Creature(relation) => {
+                before.is_creature()
+                    && match relation {
+                        CastRelation::You => source.controller == before.controller,
+                        CastRelation::Opponent => source.controller != before.controller,
+                        CastRelation::Any => true,
+                    }
+            }
             ReturnDeathFilter::SourceRevival => {
                 before.is_creature()
                     && source.reference == before.reference
@@ -274,23 +285,26 @@ impl Game {
                     origin: provider.copied_grant_origin(),
                 });
                 if self.queue_zone_trigger_from(recipient, index, event, Some(grant)) {
-                    self.capture_return_death(event);
+                    self.capture_return_death(event, filter);
                 }
             }
         }
     }
-    pub(super) fn capture_return_death(&mut self, event: &ZoneChange) {
-        self.state.pending_triggers.last_mut().unwrap().return_link =
-            Some(Box::new(ReturnLinkView::from_event(
-                event,
-                event.before.owner,
-                Some((
-                    CounterKind::Revival,
-                    event.before.counters.get(CounterKind::Revival),
-                )),
-                false,
-                false,
-            )));
+    pub(super) fn capture_return_death(&mut self, event: &ZoneChange, filter: ReturnDeathFilter) {
+        let trigger = self.state.pending_triggers.last_mut().unwrap();
+        if matches!(filter, ReturnDeathFilter::Creature(_)) {
+            trigger.event_player = Some(event.before.controller);
+        }
+        trigger.return_link = Some(Box::new(ReturnLinkView::from_event(
+            event,
+            event.before.owner,
+            Some((
+                CounterKind::Revival,
+                event.before.counters.get(CounterKind::Revival),
+            )),
+            false,
+            false,
+        )));
     }
     pub(super) fn return_event_card_to_hand(&mut self, item: &SpellView) {
         let Some(link) = &item.return_link else {
@@ -655,6 +669,33 @@ impl Game {
         link.set_recipient_values(controller, counter);
         let modification = (kind != ReturnKind::Persist).then_some((kind, source.object));
         self.stage_linked_return(&link, modification);
+    }
+
+    pub(super) fn return_death_card_with_counters(
+        &mut self,
+        item: &SpellView,
+        under_controller: bool,
+        tapped: bool,
+        counter: (CounterKind, u64),
+    ) {
+        let Some(link) = &item.return_link else {
+            return;
+        };
+        let movements = link
+            .cards()
+            .filter(|&card| self.can_follow_return(card))
+            .map(|card| {
+                let mut movement = self.entry_move(card.object.card, Zone::Battlefield, tapped);
+                movement.controller = if under_controller {
+                    item.controller
+                } else {
+                    self.state.objects[card.object.card as usize].owner
+                };
+                movement.effect_counter = Some(counter);
+                movement
+            })
+            .collect();
+        self.stage_entries(movements, None);
     }
 
     pub(super) fn return_targets_as_skeletons(&mut self, item: &SpellView) {

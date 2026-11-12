@@ -2715,6 +2715,13 @@ pub enum Instruction {
         actual_exile_only: bool,
     },
     ReturnDeathCard(ReturnKind),
+    /// Return the exact death card with a counter under its owner or this ability's controller.
+    ReturnDeathCardWithCounters {
+        under_controller: bool,
+        tapped: bool,
+        counter: CounterKind,
+        amount: u64,
+    },
     ResolveDelayedReturn,
     CaptureDelayedReturnTarget,
     /// Return the delayed packet's exact, still-present battlefield group.
@@ -3564,6 +3571,8 @@ pub enum Instruction {
         token: Card,
         amount: u16,
     },
+    /// Return creature cards actually destroyed this way. Sacrifice the entrants at your next end step.
+    DestroyThenReturnForOwnEndStep,
     IfTeamwork {
         skip: usize,
     },
@@ -4073,6 +4082,11 @@ pub enum Instruction {
         filter: SacrificeFilter,
         amount: u16,
         optional_skip: Option<usize>,
+    },
+    SacrificeScaled {
+        players: PlayerSet,
+        filter: SacrificeFilter,
+        amount: AmountValue,
     },
     /// Sacrifice any number of matching permanents together and remember the actual count.
     MaySacrificeAnyNumber(SacrificeFilter),
@@ -6917,6 +6931,8 @@ pub enum ReturnDeathFilter {
     SourceCounter { kind: CounterKind, minimum: u64 },
     SourceRevival,
     SourceWithoutCounter(CounterKind),
+    SourceWithoutCounters,
+    Creature(CastRelation),
     ControlledNontokenNonAngel,
     OpposingNontokenCreature,
     ControlledSubtype(&'static str),

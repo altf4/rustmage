@@ -933,11 +933,31 @@ impl Game {
             kind,
             players,
             filter,
-            amount,
+            u32::from(amount),
             optional_skip,
             false,
             None,
         )
+    }
+    pub(super) fn start_scaled_sacrifice(
+        &mut self,
+        item: &SpellView,
+        players: PlayerSet,
+        filter: SacrificeFilter,
+        amount: AmountValue,
+    ) -> bool {
+        let count = u32::try_from(self.item_amount(amount, item)).unwrap_or(u32::MAX);
+        count != 0
+            && self.start_effect_choice_inner(
+                item,
+                EffectChoiceKind::Sacrifice,
+                players,
+                filter,
+                count,
+                None,
+                false,
+                None,
+            )
     }
     fn hand_entry_payment_legal(&self, player: Player, object: ObjectRef) -> bool {
         let o = &self.state.objects[object.card as usize];
@@ -1582,7 +1602,7 @@ impl Game {
         kind: EffectChoiceKind,
         players: PlayerSet,
         filter: SacrificeFilter,
-        amount: u16,
+        amount: u32,
         optional_skip: Option<usize>,
         greatest: bool,
         discard_mana_value_life: Option<Player>,
@@ -1670,7 +1690,7 @@ impl Game {
             discarded: None,
             kind,
             filter,
-            amount: u32::from(amount),
+            amount,
             discard_mana_value_life,
             hand_defender: None,
             entry_life_bonus: None,
@@ -1812,15 +1832,15 @@ impl Game {
                 );
             if let Some(skip_to) = choice.skip_to
                 && !private_choice
-                && available < usize::from(amount)
+                && available < amount as usize
             {
                 self.state.resolving.as_mut().unwrap().pc = skip_to;
                 return false;
             }
             choice.required[player.index()] = if private_choice {
-                u32::from(amount)
+                amount
             } else {
-                u32::from(amount).min(u32::try_from(available).capacity("choice count exhausted"))
+                amount.min(u32::try_from(available).capacity("choice count exhausted"))
             };
         }
         self.state.resolving.as_mut().unwrap().choice = Some(Box::new(choice));
