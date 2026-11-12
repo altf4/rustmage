@@ -222,7 +222,7 @@ fn free_cast_during_resolution_offers_both_halves_and_halves_cannot_be_deck_card
     }
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
-    assert_eq!(game.object_view(split).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(split).zone, Zone::Exile);
     assert_eq!(game.object_view(split).card, SPLIT);
 
     let invalid = Game::new(Config {
