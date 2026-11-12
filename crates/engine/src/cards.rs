@@ -5657,6 +5657,17 @@ pub enum StatValue {
     Sum(&'static [StatValue]),
 }
 impl StatValue {
+    /// Current lands controlled by the evaluating player, including tokens.
+    pub const CONTROLLER_LANDS: Self = Self::Count(CountFilter {
+        zone: CountZone::Battlefield,
+        relation: 0,
+        kind: 2,
+        exclude: 0,
+        subtype: None,
+        basic: false,
+        other: false,
+        cards_only: false,
+    });
     /// Distinct card types among physical cards in the evaluating controller's graveyard.
     pub const CONTROLLER_GRAVEYARD_CARD_TYPES: Self = Self::CardTypes(CountFilter {
         zone: CountZone::Graveyard,
@@ -6824,6 +6835,8 @@ pub enum StepGuard {
     OwnSourceAndNamedCreature(Card),
     SourceReceivedCounterThisTurn,
     SourceEnteredThisTurn(bool),
+    /// A land entered under this player's control and their current land count is prime.
+    LandEnteredAndPrimeLandCount,
     PutCounterOnCreatureThisTurn,
     YourTurn,
     YourMainPhase,

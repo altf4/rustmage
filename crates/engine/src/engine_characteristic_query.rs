@@ -1502,6 +1502,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.world.entry_controller_this_turn(source)
     }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.world.lands_entered_this_turn(player)
+    }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)
     }

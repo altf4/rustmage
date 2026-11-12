@@ -556,6 +556,17 @@ impl Game {
                 return minimum.is_none_or(|min| value >= min)
                     && maximum.is_none_or(|max| value <= max);
             }
+            StepGuard::LandEnteredAndPrimeLandCount => {
+                if world.lands_entered_this_turn(player) == 0 {
+                    return false;
+                }
+                let lands =
+                    self.stat_value_in_world(world, StatValue::CONTROLLER_LANDS, source, player);
+                return lands >= 2
+                    && (2..)
+                        .take_while(|&divisor| divisor <= lands / divisor)
+                        .all(|divisor| lands % divisor != 0);
+            }
             StepGuard::GainedLife => return p.life_gained_this_turn > 0,
             StepGuard::ScriedOrSurveilledThisTurn => return p.scried_or_surveilled_this_turn,
             StepGuard::LoyaltyAbilityActivatedThisTurn => {

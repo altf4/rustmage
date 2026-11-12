@@ -322,6 +322,12 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
                 .map(|entry| entry.controller)
         })
     }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.entry_projection.as_ref().map_or(
+            self.game.state.players[player.index()].lands_entered_this_turn,
+            |projection| projection.lands_entered[player.index()],
+        )
+    }
     fn battle_protector(&self, object: ObjectRef) -> Option<Player> {
         self.entry_projection
             .as_ref()

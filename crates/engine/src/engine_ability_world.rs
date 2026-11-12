@@ -1286,6 +1286,9 @@ pub(super) trait CharacteristicWorld {
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
         self.entry_controller_this_turn(source).is_some()
     }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.game().state.players[player.index()].lands_entered_this_turn
+    }
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.game().entry_controller_this_turn(source)
     }
@@ -2194,6 +2197,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.parent.entry_controller_this_turn(source)
+    }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.parent.lands_entered_this_turn(player)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
