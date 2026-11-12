@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-spirit-flying-blue",
+  "catalogue_id": 5675,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "6593cb5e1c85ac5e41a7f60064aedb4f0958406511a64453b2c86e5441548b9c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/SpiritBlueToken.java",
+  "java_sha256": "9d604d19461ac04d8f403fcce344db49a1fe7b979eb482385069a1ced9965679"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-everywhere",
+  "catalogue_id": 5677,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "6f3970b0be7f86e61637116be365091f621391719ba5369859a84d2aa9b7473f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/EverywhereToken.java",
+  "java_sha256": "779ea06a3f55df781071303ef1e2d4285efd28c6d070c36d26014708a0596645"
+}

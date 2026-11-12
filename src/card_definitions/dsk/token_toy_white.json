@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-toy-white",
+  "catalogue_id": 5669,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c0c2d66117b44304d89075c174931c27953cc7aafd1eb523bae3204811412c1e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ToyToken.java",
+  "java_sha256": "f00bd23ce26f75ca1787df52eab9f795ec45e39f393c394cab8a8ef6bb20311b"
+}

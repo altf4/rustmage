@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-beast-company-white",
+  "catalogue_id": 5674,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "1a63a5bd0c80ef007209c72d80eb20e92b1555e982cf53731926b6942de734f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BeastieToken.java",
+  "java_sha256": "8ee9ae4d5cfdea9e15dc3ef8158ab554735bcfcc04d4744041d183f75e07d133"
+}

@@ -2187,9 +2187,86 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/forgotten_cellar.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5669 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_toy_white.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5670 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_horror_enchantment_black.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5671 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_demon_flying_black.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5672 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_spirit_flying_white.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5673 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_insect_flying_white.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5674 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_beast_company_white.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5675 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_spirit_flying_blue.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5676 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_shard.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5677 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_everywhere.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5678 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_spider_reach_green.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5679 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/token_primo.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 311] = [
+pub static ENTRIES: [CatalogueEntry; 322] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Abandoned Campground", oracle_id: Some("0eec9984-cd11-4a52-9234-469c6a5fb9aa"), mana_cost: "", type_line: "Land", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_0028::RULES.keywords, deck_limit: authored::card_0028::RULES.deck_limit }, effect: authored::card_0028::RULES.checked_effect(), triggers: authored::card_0028::RULES.triggers, activated: authored::card_0028::RULES.activated, enters: authored::card_0028::RULES.enters, entry: authored::card_0028::RULES.entry, kind: 2, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_0028::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Abhorrent Oculus", oracle_id: Some("b1a0e129-27f0-4a09-b00d-497e18777306"), mana_cost: "{2}{U}", type_line: "Creature — Eye", oracle_keywords: &["Flying", "Manifest", "Manifest dread"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0030::RULES.keywords, deck_limit: authored::card_0030::RULES.deck_limit }, effect: authored::card_0030::RULES.effect, triggers: authored::card_0030::RULES.triggers, activated: authored::card_0030::RULES.activated, enters: authored::card_0030::RULES.enters, entry: authored::card_0030::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_0030::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Acrobatic Cheerleader", oracle_id: Some("d8ce3f18-26fe-47e8-be8b-0d89d7de7038"), mana_cost: "{1}{W}", type_line: "Creature — Human Survivor", oracle_keywords: &["Survival"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0050::RULES.keywords, deck_limit: authored::card_0050::RULES.deck_limit }, effect: authored::card_0050::RULES.effect, triggers: authored::card_0050::RULES.triggers, activated: authored::card_0050::RULES.activated, enters: authored::card_0050::RULES.enters, entry: authored::card_0050::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_0050::RULES },
@@ -2501,6 +2578,17 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Unholy Annex",
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Ritual Chamber", oracle_id: Some("bd388ad9-a47b-4b0b-b94a-8e4343cd3de5"), mana_cost: "{3}{B}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5666::RULES.keywords, deck_limit: authored::card_5666::RULES.deck_limit }, effect: authored::card_5666::RULES.effect, triggers: authored::card_5666::RULES.triggers, activated: authored::card_5666::RULES.activated, enters: authored::card_5666::RULES.enters, entry: authored::card_5666::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 2, 0, 0, 0], generic: 3 }, rules: &authored::card_5666::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Walk-In Closet", oracle_id: Some("52e77cc3-f8e9-4a20-811b-fe1e46a96ad7"), mana_cost: "{2}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5667::RULES.keywords, deck_limit: authored::card_5667::RULES.deck_limit }, effect: authored::card_5667::RULES.effect, triggers: authored::card_5667::RULES.triggers, activated: authored::card_5667::RULES.activated, enters: authored::card_5667::RULES.enters, entry: authored::card_5667::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_5667::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Forgotten Cellar", oracle_id: Some("52e77cc3-f8e9-4a20-811b-fe1e46a96ad7"), mana_cost: "{3}{G}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5668::RULES.keywords, deck_limit: authored::card_5668::RULES.deck_limit }, effect: authored::card_5668::RULES.effect, triggers: authored::card_5668::RULES.triggers, activated: authored::card_5668::RULES.activated, enters: authored::card_5668::RULES.enters, entry: authored::card_5668::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 2, 0], generic: 3 }, rules: &authored::card_5668::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-toy-white", oracle_id: None, mana_cost: "", type_line: "Artifact Creature — Toy", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5669::RULES.keywords, deck_limit: authored::card_5669::RULES.deck_limit }, effect: authored::card_5669::RULES.checked_effect(), triggers: authored::card_5669::RULES.triggers, activated: authored::card_5669::RULES.activated, enters: authored::card_5669::RULES.enters, entry: authored::card_5669::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5669::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-horror-enchantment-black", oracle_id: None, mana_cost: "", type_line: "Enchantment Creature — Horror", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5670::RULES.keywords, deck_limit: authored::card_5670::RULES.deck_limit }, effect: authored::card_5670::RULES.checked_effect(), triggers: authored::card_5670::RULES.triggers, activated: authored::card_5670::RULES.activated, enters: authored::card_5670::RULES.enters, entry: authored::card_5670::RULES.entry, kind: 33, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5670::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-demon-flying-black", oracle_id: None, mana_cost: "", type_line: "Creature — Demon", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5671::RULES.keywords, deck_limit: authored::card_5671::RULES.deck_limit }, effect: authored::card_5671::RULES.checked_effect(), triggers: authored::card_5671::RULES.triggers, activated: authored::card_5671::RULES.activated, enters: authored::card_5671::RULES.enters, entry: authored::card_5671::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5671::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-spirit-flying-white", oracle_id: None, mana_cost: "", type_line: "Creature — Spirit", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5672::RULES.keywords, deck_limit: authored::card_5672::RULES.deck_limit }, effect: authored::card_5672::RULES.checked_effect(), triggers: authored::card_5672::RULES.triggers, activated: authored::card_5672::RULES.activated, enters: authored::card_5672::RULES.enters, entry: authored::card_5672::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5672::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-insect-flying-white", oracle_id: None, mana_cost: "", type_line: "Creature — Insect", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5673::RULES.keywords, deck_limit: authored::card_5673::RULES.deck_limit }, effect: authored::card_5673::RULES.checked_effect(), triggers: authored::card_5673::RULES.triggers, activated: authored::card_5673::RULES.activated, enters: authored::card_5673::RULES.enters, entry: authored::card_5673::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5673::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-beast-company-white", oracle_id: None, mana_cost: "", type_line: "Creature — Beast", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5674::RULES.keywords, deck_limit: authored::card_5674::RULES.deck_limit }, effect: authored::card_5674::RULES.checked_effect(), triggers: authored::card_5674::RULES.triggers, activated: authored::card_5674::RULES.activated, enters: authored::card_5674::RULES.enters, entry: authored::card_5674::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5674::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-spirit-flying-blue", oracle_id: None, mana_cost: "", type_line: "Creature — Spirit", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5675::RULES.keywords, deck_limit: authored::card_5675::RULES.deck_limit }, effect: authored::card_5675::RULES.checked_effect(), triggers: authored::card_5675::RULES.triggers, activated: authored::card_5675::RULES.activated, enters: authored::card_5675::RULES.enters, entry: authored::card_5675::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5675::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-shard", oracle_id: None, mana_cost: "", type_line: "Enchantment — Shard", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5676::RULES.keywords, deck_limit: authored::card_5676::RULES.deck_limit }, effect: authored::card_5676::RULES.checked_effect(), triggers: authored::card_5676::RULES.triggers, activated: authored::card_5676::RULES.activated, enters: authored::card_5676::RULES.enters, entry: authored::card_5676::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5676::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-everywhere", oracle_id: None, mana_cost: "", type_line: "Land — Plains Island Swamp Mountain Forest", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5677::RULES.keywords, deck_limit: authored::card_5677::RULES.deck_limit }, effect: authored::card_5677::RULES.checked_effect(), triggers: authored::card_5677::RULES.triggers, activated: authored::card_5677::RULES.activated, enters: authored::card_5677::RULES.enters, entry: authored::card_5677::RULES.entry, kind: 2, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5677::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-spider-reach-green", oracle_id: None, mana_cost: "", type_line: "Creature — Spider", oracle_keywords: &["Reach"], standard_legal: false, legendary: false, implemented: true, keywords: authored::card_5678::RULES.keywords, deck_limit: authored::card_5678::RULES.deck_limit }, effect: authored::card_5678::RULES.checked_effect(), triggers: authored::card_5678::RULES.triggers, activated: authored::card_5678::RULES.activated, enters: authored::card_5678::RULES.enters, entry: authored::card_5678::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5678::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/dsk-primo", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Fractal", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: true, keywords: authored::card_5679::RULES.keywords, deck_limit: authored::card_5679::RULES.deck_limit }, effect: authored::card_5679::RULES.checked_effect(), triggers: authored::card_5679::RULES.triggers, activated: authored::card_5679::RULES.activated, enters: authored::card_5679::RULES.enters, entry: authored::card_5679::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5679::RULES },
 ];
 }
 pub use cards::ENTRIES;

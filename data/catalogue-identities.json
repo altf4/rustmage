@@ -5674,7 +5674,18 @@
     4,
     4,
     16,
-    16
+    16,
+    1,
+    4,
+    4,
+    1,
+    1,
+    1,
+    2,
+    0,
+    0,
+    16,
+    18
   ],
   "aliases": [
     [
@@ -6540,6 +6551,50 @@
     [
       "@token/drake_2_2_blue_flying",
       5339
+    ],
+    [
+      "@token/dsk-beast-company-white",
+      5674
+    ],
+    [
+      "@token/dsk-demon-flying-black",
+      5671
+    ],
+    [
+      "@token/dsk-everywhere",
+      5677
+    ],
+    [
+      "@token/dsk-horror-enchantment-black",
+      5670
+    ],
+    [
+      "@token/dsk-insect-flying-white",
+      5673
+    ],
+    [
+      "@token/dsk-primo",
+      5679
+    ],
+    [
+      "@token/dsk-shard",
+      5676
+    ],
+    [
+      "@token/dsk-spider-reach-green",
+      5678
+    ],
+    [
+      "@token/dsk-spirit-flying-blue",
+      5675
+    ],
+    [
+      "@token/dsk-spirit-flying-white",
+      5672
+    ],
+    [
+      "@token/dsk-toy-white",
+      5669
     ],
     [
       "@token/e18e80a7504b51c4aff3d868",
@@ -30696,6 +30751,72 @@
       "name": "Wall Token",
       "subtypes": "Wall",
       "colors": 1
+    },
+    {
+      "factory_identity": "@token/dsk-toy-white",
+      "name": "Toy Token",
+      "subtypes": "Toy",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dsk-horror-enchantment-black",
+      "name": "Horror Token",
+      "subtypes": "Horror",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/dsk-demon-flying-black",
+      "name": "Demon Token",
+      "subtypes": "Demon",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/dsk-spirit-flying-white",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dsk-insect-flying-white",
+      "name": "Insect Token",
+      "subtypes": "Insect",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dsk-beast-company-white",
+      "name": "Beast Token",
+      "subtypes": "Beast",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/dsk-spirit-flying-blue",
+      "name": "Spirit Token",
+      "subtypes": "Spirit",
+      "colors": 2
+    },
+    {
+      "factory_identity": "@token/dsk-shard",
+      "name": "Shard Token",
+      "subtypes": "Shard",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/dsk-everywhere",
+      "name": "Everywhere",
+      "subtypes": "Plains Island Swamp Mountain Forest",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/dsk-spider-reach-green",
+      "name": "Spider Token",
+      "subtypes": "Spider",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/dsk-primo",
+      "name": "Primo, the Indivisible",
+      "subtypes": "Fractal",
+      "colors": 18
     }
   ],
   "emblems": [
@@ -194446,6 +194567,313 @@
         0
       ],
       "generic": 3
+    },
+    {
+      "index": 5669,
+      "module": "card_5669",
+      "path": "dsk/token_toy_white.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-toy-white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Toy",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5670,
+      "module": "card_5670",
+      "path": "dsk/token_horror_enchantment_black.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-horror-enchantment-black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Enchantment Creature — Horror",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 33,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5671,
+      "module": "card_5671",
+      "path": "dsk/token_demon_flying_black.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-demon-flying-black",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Demon",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5672,
+      "module": "card_5672",
+      "path": "dsk/token_spirit_flying_white.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-spirit-flying-white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5673,
+      "module": "card_5673",
+      "path": "dsk/token_insect_flying_white.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-insect-flying-white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Insect",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5674,
+      "module": "card_5674",
+      "path": "dsk/token_beast_company_white.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-beast-company-white",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Beast",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5675,
+      "module": "card_5675",
+      "path": "dsk/token_spirit_flying_blue.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-spirit-flying-blue",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5676,
+      "module": "card_5676",
+      "path": "dsk/token_shard.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-shard",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Enchantment — Shard",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5677,
+      "module": "card_5677",
+      "path": "dsk/token_everywhere.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-everywhere",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Land — Plains Island Swamp Mountain Forest",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 2,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5678,
+      "module": "card_5678",
+      "path": "dsk/token_spider_reach_green.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-spider-reach-green",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spider",
+      "oracle_keywords": [
+        "Reach"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5679,
+      "module": "card_5679",
+      "path": "dsk/token_primo.rs",
+      "set": "dsk",
+      "category": "token",
+      "name": "@token/dsk-primo",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Fractal",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
     }
   ]
 }

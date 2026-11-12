@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-primo",
+  "catalogue_id": 5679,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "de9aca23c86025121f14f58f8935ff0c7ded40cc69d11621f7792475de54494c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/PrimoTheIndivisibleToken.java",
+  "java_sha256": "755507fc8c1d2cc7c56ba188847fb3fea7332204ecfa8a78478d6379785ca1de"
+}
