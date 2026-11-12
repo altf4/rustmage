@@ -1945,7 +1945,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
+            .and_then(|state| state.face_up_completion.map(|(object, _, _)| object))
             == Some(p.object)
             && self.is_face_down(p.object)
         {
@@ -2019,7 +2019,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
+            .and_then(|state| state.face_up_completion.map(|(object, _, _)| object))
             && placements
                 .iter()
                 .any(|placement| placement.object == object && placement.entry_index.is_none())

@@ -451,6 +451,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CantGainLife
                             | crate::cards::StaticAbilityFragment::EnchantedPlayerCantGainLife
                             | crate::cards::StaticAbilityFragment::LookAtOpponentFaceDownCreatures
+                            | crate::cards::StaticAbilityFragment::OpponentFaceUpProhibitedOnOwnTurn
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }

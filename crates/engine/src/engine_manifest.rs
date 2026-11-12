@@ -1,7 +1,7 @@
 //! Owned face-down identity, public causes, and private choices.
 use super::ability_world::CharacteristicWorld;
 use super::*;
-use crate::cards::StaticAbilityFragment;
+use crate::cards::{DisguiseCostModifier, DisguiseSpec, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
@@ -12,7 +12,7 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
     let prohibits = |fragment: &StaticAbilityFragment| {
         matches!(fragment, StaticAbilityFragment::AttachedFaceUpProhibited)
     };
-    world.attachment_sources().iter().copied().any(|id| {
+    if world.attachment_sources().iter().copied().any(|id| {
         let source = world.object(id);
         source.zone == Zone::Battlefield
             && source.attached_to == Some(object)
@@ -24,7 +24,33 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
             && query
                 .get_or_insert_with(|| characteristic_query::CharacteristicQuery::in_world(world))
                 .continuous_fragment_available(id, prohibits)
-    })
+    }) {
+        return true;
+    }
+
+    let active = world.game().state.active;
+    let prevents_opponent = |fragment: &StaticAbilityFragment| {
+        matches!(
+            fragment,
+            StaticAbilityFragment::OpponentFaceUpProhibitedOnOwnTurn
+        )
+    };
+    world.object(object.card).controller != active
+        && world.static_sources().iter().copied().any(|id| {
+            let source = world.object(id);
+            source.zone == Zone::Battlefield
+                && source.controller == active
+                && world
+                    .definition(id)
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(prevents_opponent))
+                && query
+                    .get_or_insert_with(|| {
+                        characteristic_query::CharacteristicQuery::in_world(world)
+                    })
+                    .continuous_fragment_available(id, prevents_opponent)
+        })
 }
 
 /// The public rule or effect that made an object face down (CR 708.6).

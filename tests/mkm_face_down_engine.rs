@@ -135,6 +135,30 @@ fn cloak_keeps_opponent_owned_identity_private_and_allows_either_payment() {
     assert!(game.legal_actions().contains(&turn_up(object, DISGUISE)));
     assert!(game.legal_actions().contains(&turn_up(object, PRINTED)));
 
+    let mut ward = game.clone();
+    act(&mut ward, Action::Pass);
+    let opposing_spell = spawn(&mut ward, player.other(), remove, Zone::Hand);
+    cast(&mut ward, opposing_spell, Some(Target::Card(hidden)));
+    for _ in 0..8 {
+        if ward
+            .legal_actions()
+            .contains(&Action::DeclineResolutionMana)
+        {
+            break;
+        }
+        act(&mut ward, Action::Pass);
+    }
+    assert_eq!(
+        ward.state.pending,
+        Pending::ResolutionMana {
+            player: player.other()
+        }
+    );
+    act(&mut ward, Action::DeclineResolutionMana);
+    settle(&mut ward);
+    assert_eq!(ward.object_view(opposing_spell).zone, Zone::Graveyard);
+    assert!(ward.is_face_down(object));
+
     let remove = spawn(&mut game, player, remove, Zone::Hand);
     cast(&mut game, remove, Some(Target::Card(hidden)));
     settle(&mut game);
@@ -266,6 +290,12 @@ fn variable_disguise_locks_the_chosen_value_and_binds_it_to_the_turn_up_trigger(
             .iter()
             .any(|action| matches!(action, Action::PayFaceUp { .. }))
     );
+    reject(
+        &mut game,
+        Action::PayFaceUp {
+            payment: [0, 2, 0, 0, 0, 0],
+        },
+    );
     reject(&mut game, Action::ChooseX { value: u32::MAX });
     let before = game.snapshot();
     let mut branch = game.clone();
@@ -333,4 +363,59 @@ fn disguise_hybrid_payment_uses_the_live_count_of_qualifying_graveyard_cards() {
     });
     assert_eq!(game.state.players[player.index()].mana, [0; 6]);
     assert!(!game.is_face_down(object));
+}
+
+const TURN_UP_WATCH: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 0,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[StaticAbilityFragment::OpponentFaceUpProhibitedOnOwnTurn],
+}];
+const WATCHDOG: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: TURN_UP_WATCH,
+    extras: &CardExtras {
+        static_ability_groups: TURN_UP_WATCH,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const FORCE_TURN_UP: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Creature)),
+        &[Instruction::TurnTargetFaceUp],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn live_own_turn_prohibition_applies_to_effects_and_paid_turn_up() {
+    let bear = Card::from_name("Grizzly Bears").unwrap();
+    let shock = Card::from_name("Shock").unwrap();
+    let _scope = fixture_rules::activate(&[(bear, &WATCHDOG), (shock, &FORCE_TURN_UP)]);
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let provider = spawn(&mut game, player.other(), bear, Zone::Battlefield);
+    let hidden = spawn(&mut game, player, smuggler, Zone::Hand);
+    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    pay(&mut game);
+    settle(&mut game);
+    let object = game.object_ref(hidden);
+    assert!(game.legal_actions().contains(&turn_up(object, DISGUISE)));
+
+    game.state.active = player.other();
+    game.state.priority = player;
+    reject(&mut game, turn_up(object, DISGUISE));
+    let spell = spawn(&mut game, player, shock, Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(hidden)));
+    settle(&mut game);
+    assert!(game.is_face_down(object));
+    assert_eq!(
+        game.observe(player.other()).face_down_permanents[0].underlying,
+        None
+    );
+
+    game.move_object(provider, Zone::Graveyard);
+    game.state.priority = player;
+    assert!(game.legal_actions().contains(&turn_up(object, DISGUISE)));
 }
