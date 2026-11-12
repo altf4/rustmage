@@ -770,7 +770,8 @@ fn stack_copy_enters_with_same_half_while_a_battlefield_copy_enters_locked() {
     assert!(stack_copy.is_copy);
     assert_eq!(stack_copy.cast.unwrap().face, CastFace::RoomRight);
     let spell_copy_id = stack_copy.source.unwrap().id;
-    cast(&mut game, second_copier, Some(Target::Spell(spell_copy_id)));
+    let copy_target = Target::Stack(stack_copy.id);
+    cast(&mut game, second_copier, Some(copy_target));
     settle_rooms(&mut game);
     let rooms: Vec<_> = game
         .observe(player)
