@@ -252,10 +252,10 @@ fn behind_the_mask_uses_only_its_linked_evidence_when_unraveler_pays_for_the_spe
         origin: PaidCastOrigin::Ordinary,
     };
     act(&mut game, alternative);
-    act(&mut game, target(artifact));
     let mut alternative_only = game.clone();
     for (branch, collect) in [(&mut alternative_only, false), (&mut game, true)] {
         act(branch, Action::ChooseCollectEvidence { collect });
+        act(branch, target(artifact));
         act(branch, Action::BeginOrderedCosts);
         choose_cost(branch, CastCostClause::OriginEvidence(10));
         evidence(branch, &[origin_fuel]);
