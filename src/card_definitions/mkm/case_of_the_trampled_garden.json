@@ -3,10 +3,31 @@
   "catalogue_id": 671,
   "oracle_id": "575a0dc2-206a-406a-90b3-72a92f2ea87a",
   "facts_sha256": "a9ca77688904b2e532d5db7cde077554b4863f226d6a9c3bccfdd2f1921aa122",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eb7938ed3d4b8efe2a6089680d15ec2b015e0b96d5a23ce243e12d4865086697"
   },
-  "physical_metadata_sha256": "94e51b7b21538096a6f15456b4a21636202b31f601b7bb85547f43b5ab7bb13e"
+  "physical_metadata_sha256": "94e51b7b21538096a6f15456b4a21636202b31f601b7bb85547f43b5ab7bb13e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CaseOfTheTrampledGarden.java",
+  "java_sha256": "0c2c6ae345c289344b92f192b841706a55066a3545e14f94a1bb693555a65edc",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CaseAbility.java",
+      "sha256": "1dee85ba94e14af7d4fb257620ca65e6810e1c3ff259c4711401e1d9dd266dcd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/FormidableCondition.java",
+      "sha256": "7e524f8f4c9f86e5c75e84a7f40a2db92c7917a9721596e4e8cf71dbbf70cd41"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/DistributeCountersEffect.java",
+      "sha256": "745e7d5d527b57c5dd4a8b5e477a62c2d856ae9731d1d575ec29891351978e62"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 3589,
   "oracle_id": "a3f09898-6c77-4d68-8d10-8440c75f884c",
   "facts_sha256": "e2541a57b71d7284b548239dd3c88fd075c55a8185ce4a3a556eac1fde5ce644",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eed6dd34f08810444f18138b54013f6e570d993d5252d03f4a57d04749867943"
   },
-  "physical_metadata_sha256": "79b2fe99061d8b4d9a9779b679af7dfd6d728c18e16e3c07d18b79d416f513b9"
+  "physical_metadata_sha256": "79b2fe99061d8b4d9a9779b679af7dfd6d728c18e16e3c07d18b79d416f513b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/Rope.java",
+  "java_sha256": "6a518be7c2ff32235d9f3c490f91c0451cf55e8fb9fc2c446ad75b089d893e57",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByMoreThanOneAttachedEffect.java",
+      "sha256": "ec044941982f10f2cc27d4a6f6d8c915c81d289f29080b932391e37d087d5d12"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/ClueAbility.java",
+      "sha256": "ade27801ef45e9379e70fa7a5a8528f847e9df65d86410f562818e94b1e908b6"
+    }
+  ]
 }

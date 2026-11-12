@@ -3,10 +3,31 @@
   "catalogue_id": 182,
   "oracle_id": "4adcd967-9ff7-4940-b8b9-0c4215bbcb75",
   "facts_sha256": "bf9a46e462ea9d39b5118a3143c0892c3ba61e24eab45a979c86a6724229a93f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "acd406d6e51e1654b10236bf78818cf8769270a6da213519ac53e059f1d4ee82"
   },
-  "physical_metadata_sha256": "95715507b93f63096a721cebac64d0ad9d0b8f44fc3f7332ebde556afb10f231"
+  "physical_metadata_sha256": "95715507b93f63096a721cebac64d0ad9d0b8f44fc3f7332ebde556afb10f231",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnzragTheQuakeMole.java",
+  "java_sha256": "cd21af7ab3777d45c52d93b1dc226462739efd693863e14c6e817d300d0dc26f",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/BecomesBlockedSourceTriggeredAbility.java",
+      "sha256": "a6fd68a591f2a8b99d5d1d6fc52adfaee6ba12683b2a23aafece837c68f4c4fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AdditionalCombatPhaseEffect.java",
+      "sha256": "52f33fcfab80ac5e2027406daace88dec6cd258ea19421a98551e2d34394efd3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/MustBeBlockedByAtLeastOneSourceEffect.java",
+      "sha256": "42ab952dae5eebdb7102f4b9fcaecab4c07c03e855267c0e83d8d35a5f478cd5"
+    }
+  ]
 }

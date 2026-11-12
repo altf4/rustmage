@@ -3,10 +3,21 @@
   "catalogue_id": 100,
   "oracle_id": "11b7ee78-fca6-4b34-93e4-e60492583d50",
   "facts_sha256": "73e38f3b271a526beab9aefaa744b2f7a3a1182624bf59766331bd8c95f8d443",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6198f2b12ec57af3625b851821438e563ad4eacc4e8c041c1b0c19698f6adb99"
   },
-  "physical_metadata_sha256": "feb464f81ff0d6c964332f0c7805f834846de795bba9fc8b77cb19571ddf0521"
+  "physical_metadata_sha256": "feb464f81ff0d6c964332f0c7805f834846de795bba9fc8b77cb19571ddf0521",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AgrusKosSpiritOfJustice.java",
+  "java_sha256": "c1bf3c205ff7e13a5523e691c535b4890df67f9cb59596945b2a52b5f6da0424",
+  "rules_tests": "tests/mkm_cards_green_gold/combat.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    }
+  ]
 }

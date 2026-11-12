@@ -48,3 +48,6 @@ mod face_down;
 
 #[path = "mkm_cards_green_gold/events.rs"]
 mod events;
+
+#[path = "mkm_cards_green_gold/combat.rs"]
+mod combat;
