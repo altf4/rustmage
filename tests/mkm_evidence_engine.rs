@@ -680,6 +680,8 @@ fn printed_and_alternative_evidence_use_disjoint_cards_and_commit_two_ordered_ev
     for branch in [&mut game, &mut reverse] {
         choose_cost(branch, CastCostClause::Mana);
         pay(branch);
+        assert_eq!(branch.state.pending, Pending::OrderTriggers { player });
+        choose(branch, |action| matches!(action, Action::PutTrigger { .. }));
         settle(branch);
         assert_eq!(
             branch.state.players[player.index()].cards_drawn_this_turn,

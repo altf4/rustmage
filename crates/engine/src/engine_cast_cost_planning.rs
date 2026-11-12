@@ -47,14 +47,20 @@ impl CostContext {
 
     fn from_announcement(a: &Announcement) -> Option<Box<Self>> {
         let c = a.cast_costs.as_ref()?;
-        let mut selected = a.additional_group.as_deref().cloned().unwrap_or_default();
-        if selected.is_empty() {
-            selected.extend(a.additional);
-        }
-        let mut exact = a.additional.is_some() || a.additional_group_complete;
-        if let Some(f) = &a.forage {
-            selected = f.selected.clone();
-            exact = f.complete();
+        let mut selected = Vec::new();
+        let mut exact = false;
+        // Paid selections remain on the announcement as receipts. Only an
+        // unpaid printed cost can supply the current choice's prefix.
+        if !a.additional_paid {
+            selected = a.additional_group.as_deref().cloned().unwrap_or_default();
+            if selected.is_empty() {
+                selected.extend(a.additional);
+            }
+            exact = a.additional.is_some() || a.additional_group_complete;
+            if let Some(f) = &a.forage {
+                selected = f.selected.clone();
+                exact = f.complete();
+            }
         }
         if let Some(e) = a.evidence.as_ref().filter(|e| !e.paid) {
             selected = e.selected.clone();
