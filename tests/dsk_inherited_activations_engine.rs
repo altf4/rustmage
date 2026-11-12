@@ -702,7 +702,7 @@ fn reanimation_breaks_an_inherited_link_only_if_the_donor_stops_being_a_creature
 }
 
 #[test]
-fn a_nameless_manifest_with_a_granted_ability_becomes_a_donor_when_turned_face_up() {
+fn a_nameless_manifest_donates_its_granted_ability_before_and_after_turning_up() {
     let mimic = named("Grizzly Bears");
     let _rules = fixture_rules::activate(&[(mimic, &MIMIC)]);
     let mut game = scenario(PLAYER);
@@ -754,7 +754,11 @@ fn a_nameless_manifest_with_a_granted_ability_becomes_a_donor_when_turned_face_u
             .iter()
             .any(|row| row.donor == ghired_ref && granted_by_ghired(row))
     );
-    assert!(borrowed.iter().all(|row| row.donor != face_down.reference));
+    assert!(
+        borrowed
+            .iter()
+            .any(|row| row.donor == face_down.reference && granted_by_ghired(row))
+    );
 
     choose(
         &mut game,

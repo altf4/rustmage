@@ -135,11 +135,8 @@ pub(super) fn donors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
                 && donor.zone == Zone::Battlefield
                 && donor.controller == recipient.controller
                 && world.kinds(candidate) & 1 != 0
-        })
-        .filter(|&candidate| {
-            // CR201.2c: the creature being compared must have at least one name.
-            let donor_name = world.name(candidate);
-            !donor_name.is_empty() && !crate::card_names::same_name(donor_name, name)
+                // CR201.2a: a nameless creature does not share a name.
+                && !crate::card_names::same_name(world.name(candidate), name)
         })
         .collect()
 }

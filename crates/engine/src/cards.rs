@@ -7029,6 +7029,7 @@ pub enum EntryPredicate {
     SourceOrSubtypeAny(&'static [&'static str]),
     /// A predicate on each actual entrant, distinct from batch token-entry events.
     Token,
+    FaceDown,
     NoncreatureNonland,
     NontokenArtifact,
     NontokenEquipment,

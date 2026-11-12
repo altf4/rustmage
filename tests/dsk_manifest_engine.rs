@@ -815,6 +815,56 @@ fn a_look_permission_learns_face_down_creatures_through_a_live_provider() {
 }
 
 #[test]
+fn an_entry_only_observer_ignores_face_up_entries_and_turning_a_permanent_up() {
+    const ENTRY_ONLY: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::FilteredEntersYou(EntryPredicate::FaceDown),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::PlusOne,
+                amount: 1,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Syncopate").unwrap(), &REPEATED),
+        (Card::from_name("Bear Cub").unwrap(), &ENTRY_ONLY),
+    ]);
+    let player = Player::P0;
+    let (mut game, cards) = with_library(player, &["Grizzly Bears"]);
+    let yours = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let opposing = put(&mut game, player.other(), "Bear Cub", Zone::Battlefield);
+
+    let ordinary = put(&mut game, player, "Hill Giant", Zone::Hand);
+    cast(&mut game, ordinary, None);
+    settle(&mut game);
+    assert_eq!(game.counter_count(yours, CounterKind::PlusOne), 0);
+
+    start_repeated_manifest(&mut game, player, 1);
+    settle(&mut game);
+    let face_down = game.object_ref(cards[0]);
+    assert!(game.is_face_down(face_down));
+    assert_eq!(game.counter_count(yours, CounterKind::PlusOne), 1);
+    assert_eq!(game.counter_count(opposing, CounterKind::PlusOne), 0);
+
+    choose(
+        &mut game,
+        |action| matches!(action, Action::BeginFaceUp { object, .. } if *object == face_down),
+    );
+    choose(&mut game, |action| {
+        matches!(action, Action::PayFaceUp { .. })
+    });
+    settle(&mut game);
+    assert_eq!(game.object_ref(cards[0]), face_down);
+    assert!(!game.is_face_down(face_down));
+    assert_eq!(game.counter_count(yours, CounterKind::PlusOne), 1);
+    assert_eq!(game.counter_count(opposing, CounterKind::PlusOne), 0);
+}
+
+#[test]
 fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
     use rustmage_core::cards::authored::object;
 

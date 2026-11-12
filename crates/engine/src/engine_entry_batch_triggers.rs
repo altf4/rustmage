@@ -218,6 +218,7 @@ impl Game {
                 same || subtypes.iter().any(|typ| entered.has_subtype(typ))
             }
             EntryPredicate::Token => entered.is_token(),
+            EntryPredicate::FaceDown => self.is_face_down(entered.reference),
             EntryPredicate::NontokenArtifact => !entered.is_token() && entered.kinds & 16 != 0,
             EntryPredicate::NontokenEquipment => {
                 !entered.is_token() && entered.kinds & 16 != 0 && entered.has_subtype("Equipment")
