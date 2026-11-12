@@ -4658,6 +4658,10 @@ pub enum Instruction {
         subject: Subject,
         keywords: Keywords,
     },
+    RemoveKeywordsUntilNextTurn {
+        subject: Subject,
+        keywords: Keywords,
+    },
     /// Freeze a union of current battlefield recipients, including noncreatures.
     GrantPermanentGroupKeywords {
         filters: &'static [BattlefieldFilter],

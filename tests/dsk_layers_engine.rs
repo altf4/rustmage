@@ -286,3 +286,138 @@ fn permanent_additive_color_follows_setter_timestamps_and_survives_ability_loss(
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 3];
     assert!(game.legal_actions().contains(&activation));
 }
+
+#[test]
+fn attached_hexproof_lasts_only_for_the_exact_auras_entry_turn() {
+    use rustmage_core::cards::authored::CardExtras;
+    const BONUS: Stats = Stats {
+        power: 1,
+        toughness: 1,
+    };
+    const AURA: AuraSpec = AuraSpec {
+        kinds: 1,
+        relation: 0,
+        bonus: EquipmentSpec {
+            stats: BONUS,
+            keywords: Keywords::NONE,
+        },
+    };
+    const GROUPS: &[StaticAbilityGroup] = &[
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::AttachmentEntryTurnKeywords(
+                Keywords::HEXPROOF,
+            )],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Modify,
+            fragments: &[StaticAbilityFragment::AttachmentStats(BONUS)],
+        },
+    ];
+    const RESCUE: CardRules = CardRules {
+        effect: Effect::Aura(CREATURE),
+        keywords: Keywords::FLASH,
+        aura: Some(AURA),
+        static_groups: GROUPS,
+        extras: &CardExtras {
+            aura: Some(AURA),
+            static_ability_groups: GROUPS,
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[(Card::from_name("Pacifism").unwrap(), &RESCUE)]);
+    let active = Player::P0;
+    let player = active.other();
+    let mut game = scenario(active);
+    let protected = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let shock = put(&mut game, active, "Shock", Zone::Hand);
+    let aura = put(&mut game, player, "Pacifism", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Card(protected)));
+    act(&mut game, Action::Pass);
+    cast(&mut game, aura, Some(Target::Card(protected)));
+    settle(&mut game);
+    assert_eq!(game.object_view(protected).damage, 0);
+    assert!(game.keywords(protected).contains(Keywords::HEXPROOF));
+    assert_eq!(stats(&game, protected), (3, 3));
+
+    advance_turn(&mut game);
+    assert_eq!(stats(&game, protected), (3, 3));
+    assert!(!game.keywords(protected).contains(Keywords::HEXPROOF));
+}
+
+fn advance_turn(game: &mut Game) {
+    let turn = game.state.turn;
+    for _ in 0..32 {
+        if game.state.turn != turn {
+            return;
+        }
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::FinishAttackers)
+        });
+    }
+    panic!("next turn did not begin");
+}
+
+#[test]
+fn flight_removal_lasts_until_the_source_controllers_next_turn() {
+    const WEAKEN: CardRules = CardRules {
+        effect: Effect::Spell(
+            CREATURE,
+            &[
+                Instruction::TargetStatsUntilNextTurn {
+                    power: -2,
+                    toughness: 0,
+                },
+                Instruction::RemoveKeywordsUntilNextTurn {
+                    subject: Subject::Targets,
+                    keywords: Keywords::FLYING,
+                },
+            ],
+        ),
+        ..CardRules::EMPTY
+    };
+    const FLIGHT: CardRules = CardRules {
+        effect: Effect::Spell(
+            CREATURE,
+            &[Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::FLYING,
+            }],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Opt").unwrap(), &WEAKEN),
+        (Card::from_name("Giant Growth").unwrap(), &FLIGHT),
+    ]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let creature = put(&mut game, opponent, "Serra Angel", Zone::Battlefield);
+    assert!(game.keywords(creature).contains(Keywords::FLYING));
+    let spell = put(&mut game, player, "Opt", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert!(!game.keywords(creature).contains(Keywords::FLYING));
+    assert_eq!(stats(&game, creature), (2, 4));
+
+    advance_turn(&mut game);
+    assert_eq!(game.state.active, opponent);
+    assert!(!game.keywords(creature).contains(Keywords::FLYING));
+    assert_eq!(stats(&game, creature), (2, 4));
+    let mut still_removed = game.clone();
+    advance_turn(&mut still_removed);
+    assert_eq!(still_removed.state.active, player);
+    assert!(still_removed.keywords(creature).contains(Keywords::FLYING));
+    assert_eq!(stats(&still_removed, creature), (4, 4));
+
+    game.state.players[opponent.index()].mana[4] = 1;
+    let spell = put(&mut game, opponent, "Giant Growth", Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(creature)));
+    settle(&mut game);
+    assert!(game.keywords(creature).contains(Keywords::FLYING));
+    assert_eq!(stats(&game, creature), (2, 4));
+}

@@ -140,7 +140,7 @@ impl Game {
             return;
         };
         let recipients = self.battlefield_group(item, filters);
-        self.remove_group_keywords(source.object, recipients, keywords);
+        self.remove_group_keywords(source.object, recipients, keywords, None);
     }
 
     pub(super) fn remove_group_keywords(
@@ -148,11 +148,24 @@ impl Game {
         source: ObjectRef,
         recipients: Vec<CardId>,
         keywords: Keywords,
+        until_next_turn_of: Option<Player>,
     ) {
         let keywords = keywords.without(keywords.resolution_rules());
         if recipients.is_empty() || keywords == Keywords::NONE {
             return;
         }
+        let (origin, expires_turn) = until_next_turn_of.map_or(
+            (
+                KeywordEffectOrigin::ResolutionRemoval { source },
+                Some(self.state.turn),
+            ),
+            |controller| {
+                (
+                    KeywordEffectOrigin::ResolutionRemovalUntilNextTurn { source, controller },
+                    None,
+                )
+            },
+        );
         let timestamp = self.next_role_timestamp();
         for id in recipients {
             let recipient = self.object_ref(id);
@@ -163,11 +176,11 @@ impl Game {
                 .keyword_effects
                 .push(KeywordEffectView {
                     recipient,
-                    origin: KeywordEffectOrigin::ResolutionRemoval { source },
+                    origin,
                     keywords,
                     rules: Keywords::NONE,
                     timestamp,
-                    expires_turn: Some(self.state.turn),
+                    expires_turn,
                 });
         }
     }

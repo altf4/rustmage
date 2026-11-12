@@ -85,6 +85,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             value
         }
+        StaticAbilityFragment::AttachmentEntryTurnKeywords(value) => {
+            if !world.attached(source, id) || !world.entered_this_turn(source) {
+                return None;
+            }
+            value
+        }
         StaticAbilityFragment::AttachedTurnKeywords(value) => {
             if provider.controller != world.game().state.active || !world.attached(source, id) {
                 return None;
@@ -639,12 +645,13 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
             source.zone == Zone::Battlefield
                 && source.attached_to.is_some()
                 && source.card.static_ability_groups().iter().any(|group| {
-                    group.fragments.iter().any(|fragment| {
-                        matches!(
-                            fragment,
-                            StaticAbilityFragment::AttachmentRule(_)
-                                | StaticAbilityFragment::RemoveAttachedKeywords(_)
-                        )
+                    group.fragments.iter().any(|fragment| match fragment {
+                        StaticAbilityFragment::AttachmentRule(_)
+                        | StaticAbilityFragment::RemoveAttachedKeywords(_) => true,
+                        StaticAbilityFragment::AttachmentEntryTurnKeywords(_) => {
+                            world.entered_this_turn(world.reference(id))
+                        }
+                        _ => false,
                     })
                 })
         })
@@ -828,6 +835,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceCounterCreature { .. }
                         | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
+                        | StaticAbilityFragment::AttachmentEntryTurnKeywords(..)
                         | StaticAbilityFragment::AttachmentAttackingKeywords(..)
                         | StaticAbilityFragment::AdditionalTriggers {
                             scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
@@ -1040,7 +1048,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     started_earlier: false,
                     timestamp: row.timestamp,
                     recipients: vec![row.recipient.card],
-                    action: if matches!(row.origin, KeywordEffectOrigin::ResolutionRemoval { .. }) {
+                    action: if matches!(
+                        row.origin,
+                        KeywordEffectOrigin::ResolutionRemoval { .. }
+                            | KeywordEffectOrigin::ResolutionRemovalUntilNextTurn { .. }
+                    ) {
                         LayerSixAction::RemoveKeywordsAndGrant {
                             keywords: row.keywords,
                             grants: Vec::new(),

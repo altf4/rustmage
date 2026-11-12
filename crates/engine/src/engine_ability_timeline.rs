@@ -18,6 +18,10 @@ pub enum KeywordEffectOrigin {
     ResolutionRemoval {
         source: ObjectRef,
     },
+    ResolutionRemovalUntilNextTurn {
+        source: ObjectRef,
+        controller: Player,
+    },
     ResolutionUntilNextTurn {
         source: ObjectRef,
         controller: Player,
@@ -116,6 +120,7 @@ impl Card {
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | StaticAbilityFragment::AttachmentKeywords(..)
+                            | StaticAbilityFragment::AttachmentEntryTurnKeywords(..)
                             | StaticAbilityFragment::AttachmentAttackingKeywords(..)
                             | StaticAbilityFragment::AdditionalTriggers {
                                 scope: crate::cards::AdditionalTriggerScope::EquippedCreatureAndOwnedEmblemDeath,
@@ -339,7 +344,12 @@ impl Game {
     pub(super) fn expire_next_turn_keywords(&mut self, player: Player) {
         if let Some(state) = &mut self.state.roles {
             state.keyword_effects.retain(|row| {
-                !matches!(row.origin, KeywordEffectOrigin::ResolutionUntilNextTurn { controller, .. } if controller == player)
+                !matches!(
+                    row.origin,
+                    KeywordEffectOrigin::ResolutionUntilNextTurn { controller, .. }
+                        | KeywordEffectOrigin::ResolutionRemovalUntilNextTurn { controller, .. }
+                        if controller == player
+                )
             });
         }
     }

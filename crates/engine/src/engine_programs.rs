@@ -10951,7 +10951,7 @@ impl Game {
                 Instruction::RemovePlayerCreatureKeywords { players, keywords } => {
                     if let Some(source) = item.source {
                         let recipients = self.player_creature_recipients(players, &item);
-                        self.remove_group_keywords(source.object, recipients, keywords);
+                        self.remove_group_keywords(source.object, recipients, keywords, None);
                     }
                 }
                 Instruction::UntapControlledLands => {
@@ -11578,6 +11578,15 @@ impl Game {
                             .object,
                         item.controller,
                         keywords,
+                    );
+                }
+                Instruction::RemoveKeywordsUntilNextTurn { subject, keywords } => {
+                    let recipients = self.keyword_subjects(&item, subject);
+                    self.remove_group_keywords(
+                        item.source.expect("keyword removal has a source").object,
+                        recipients,
+                        keywords,
+                        Some(item.controller),
                     );
                 }
                 Instruction::GrantControlledTokenKeywordsUntilNextTurn(keywords) => {

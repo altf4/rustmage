@@ -509,6 +509,7 @@ pub enum StaticAbilityFragment {
     AttachmentStatsPerAttachment(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
+    AttachmentEntryTurnKeywords(Keywords),
     AttachmentAttackingKeywords(Keywords),
     AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
