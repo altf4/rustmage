@@ -149,6 +149,11 @@ pub enum StaticAbilityFragment {
     ControlledInstantSorcerySplitSecond,
     /// Grant keywords to controlled instant and sorcery spells on the stack.
     ControlledInstantSorceryKeywords(Keywords),
+    /// Grant keywords to controlled instant and sorcery spells of this subtype.
+    ControlledInstantSorcerySubtypeKeywords {
+        subtype: &'static str,
+        keywords: Keywords,
+    },
     /// Permanents controlled by this source's controller cannot be sacrificed.
     ControlledPermanentsCannotBeSacrificed,
     /// No player may activate abilities of matching battlefield permanent kinds.
@@ -549,6 +554,11 @@ pub enum StaticAbilityFragment {
         subtypes: &'static [&'static str],
         keywords: Keywords,
     },
+    /// Add artifact and creature while controlling enough permanents with this name.
+    SourceArtifactCreatureWhileControlNamed {
+        name: &'static str,
+        minimum: u16,
+    },
     /// This source becomes a creature with these subtypes and keywords while it
     /// has the required counters, optionally only on its controller's turn. Its type change
     /// starts in layer four; the same ability's base stats are a separate
@@ -764,6 +774,8 @@ pub enum StaticAbilityFragment {
     AuraEnchantedCantAttackController,
     /// The source's evasion ability excludes blockers with an effective subtype.
     CannotBeBlockedBySubtype(&'static str),
+    /// The source can block or be blocked only by creatures of this effective subtype.
+    CanOnlyBlockOrBeBlockedBySubtype(&'static str),
     ControlledSubtypeCannotBeBlockedByKeyword {
         subtype: &'static str,
         blocker_keyword: Keywords,

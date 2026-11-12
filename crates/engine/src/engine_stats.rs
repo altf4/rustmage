@@ -368,6 +368,7 @@ impl Game {
                         fragment,
                         crate::cards::StaticAbilityFragment::ControlledInstantSorcerySplitSecond
                             | crate::cards::StaticAbilityFragment::ControlledInstantSorceryKeywords(_)
+                            | crate::cards::StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ReplaceLifePaymentWithLibraryExile
                             | crate::cards::StaticAbilityFragment::NoSpellsOrNonmanaDuringCombat
                             | crate::cards::StaticAbilityFragment::OpponentsWhoAttackedControllerOrPlaneswalkerCannotCast

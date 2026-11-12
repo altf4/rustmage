@@ -88,6 +88,7 @@ impl Card {
                             | StaticAbilityFragment::SourceCounterSubtype { .. }
                             | StaticAbilityFragment::SourceCounterCreature { .. }
                             | StaticAbilityFragment::SourceAdditionalCreature { .. }
+                            | StaticAbilityFragment::SourceArtifactCreatureWhileControlNamed { .. }
                             | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                             | StaticAbilityFragment::SourceOffTurnCreature
                             | StaticAbilityFragment::ControlledCreatureSubtype { .. }

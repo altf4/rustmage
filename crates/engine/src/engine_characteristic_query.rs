@@ -693,6 +693,14 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         Keywords::SPLIT_SECOND
                     }
                     StaticAbilityFragment::ControlledInstantSorceryKeywords(grant) => grant,
+                    StaticAbilityFragment::ControlledInstantSorcerySubtypeKeywords {
+                        subtype,
+                        keywords: grant,
+                    } if CharacteristicWorld::subtypes(self, id)
+                        .has(self.effective_spell_card(id), subtype) =>
+                    {
+                        grant
+                    }
                     _ => continue,
                 };
                 if !keywords.contains(grant)

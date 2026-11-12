@@ -33,7 +33,8 @@ impl Game {
             rules.turn_callbacks.iter().any(|row| {
                 matches!(
                     row.event,
-                    TurnCallbackEvent::ControlledCreatureDeath
+                    TurnCallbackEvent::AnyCreatureDeath
+                        | TurnCallbackEvent::ControlledCreatureDeath
                         | TurnCallbackEvent::ControlledNontokenCreatureDeath
                 )
             })
@@ -47,14 +48,15 @@ impl Game {
                 && event.before.kinds & 1 != 0
             {
                 self.queue_matching_turn_callbacks(None, |row| {
-                    row.item.controller == event.before.controller
-                        && match row.event {
-                            TurnCallbackEvent::ControlledCreatureDeath => true,
-                            TurnCallbackEvent::ControlledNontokenCreatureDeath => {
-                                !event.before.is_token()
-                            }
-                            _ => false,
+                    let controlled = row.item.controller == event.before.controller;
+                    match row.event {
+                        TurnCallbackEvent::AnyCreatureDeath => true,
+                        TurnCallbackEvent::ControlledCreatureDeath => controlled,
+                        TurnCallbackEvent::ControlledNontokenCreatureDeath => {
+                            controlled && !event.before.is_token()
                         }
+                        _ => false,
+                    }
                 });
             }
         }

@@ -501,6 +501,16 @@ impl Game {
                     }
                 })
                 .unwrap_or(0),
+            AmountValue::TargetDamagedThisTurn(group) => {
+                u128::from(item.targets.iter().any(|&bound| {
+                    bound.group == group
+                        && self.same_target_object(bound)
+                        && matches!(
+                            bound.target,
+                            Target::Card(id) if self.state.objects[id as usize].damaged_this_turn
+                        )
+                }))
+            }
             AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
             AmountValue::TargetPlayerCreatureCount | AmountValue::TargetPlayersCreatureCount => {
                 let mut chosen = 0u8;

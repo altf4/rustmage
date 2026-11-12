@@ -56,6 +56,16 @@ impl Game {
         })
     }
 
+    fn combat_pair_excluded_by_subtype(&self, source: CardId, other: CardId) -> bool {
+        self.active_rule_fragment(source, |fragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::CanOnlyBlockOrBeBlockedBySubtype(subtype)
+                    if !self.has_subtype(other, subtype)
+            )
+        })
+    }
+
     pub(super) fn can_be_blocker(&self, id: CardId) -> bool {
         self.state.objects.get(id as usize).is_some_and(|b| {
             b.zone == Zone::Battlefield
@@ -104,6 +114,8 @@ impl Game {
         }
         if self.flying_block_forbidden(blocker, attacker)
             || self.source_forbids_block(attacker, blocker)
+            || self.combat_pair_excluded_by_subtype(attacker, blocker)
+            || self.combat_pair_excluded_by_subtype(blocker, attacker)
             || self.controlled_creature_block_forbidden(attacker, blocker)
             || self.blocker_subtype_excluded(attacker, blocker)
             || self.live_static_forbids_block(blocker, attacker)

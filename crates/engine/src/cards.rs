@@ -2440,6 +2440,7 @@ pub enum TurnCallbackEvent {
     SpellCast,
     NoncreatureCast,
     CreatureEntry,
+    AnyCreatureDeath,
     ControlledCreatureDeath,
     ControlledNontokenCreatureDeath,
     ControlledCreatureCombatDamagePlayerOrPlaneswalker,
@@ -5856,6 +5857,8 @@ pub enum AmountValue {
     ControllerHandDeficit(u16),
     /// Current hand size of the spell's surviving targeted player.
     TargetPlayerHandSize,
+    /// Whether a surviving permanent target in this group was dealt damage this turn.
+    TargetDamagedThisTurn(u16),
     /// Successful library-to-graveyard transitions for the surviving target this turn.
     TargetPlayerLibraryToGraveyardThisTurn,
     /// Current creatures controlled by the surviving player in the selected target group.

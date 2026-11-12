@@ -1072,6 +1072,7 @@ impl Game {
             }
             AmountValue::PaidSourceCounterQuantity(_)
             | AmountValue::TargetPlayerHandSize
+            | AmountValue::TargetDamagedThisTurn(_)
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
             | AmountValue::TargetPlayersCreatureCount

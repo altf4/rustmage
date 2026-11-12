@@ -1321,6 +1321,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
                                         | StaticAbilityFragment::NonbasicLandTypeWhileCounter { .. }
                                         | StaticAbilityFragment::ControlledNonlandAllColors
+                                        | StaticAbilityFragment::SourceArtifactCreatureWhileControlNamed { .. }
                                         | StaticAbilityFragment::ControlledTokenTapMana { .. }
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)

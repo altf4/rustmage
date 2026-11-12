@@ -198,6 +198,23 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
                                 (!subtypes.is_empty()).then_some(SubtypeChange::Add(subtypes));
                             Some((1, true, change))
                         }
+                        StaticAbilityFragment::SourceArtifactCreatureWhileControlNamed {
+                            name,
+                            minimum,
+                        } if (0..world.game().state.objects.len())
+                            .map(|index| index as CardId)
+                            .filter(|&id| {
+                                let candidate = world.object(id);
+                                candidate.zone == Zone::Battlefield
+                                    && candidate.controller == object.controller
+                                    && crate::card_names::same_name(world.name(id), name)
+                            })
+                            .take(usize::from(minimum))
+                            .count()
+                            == usize::from(minimum) =>
+                        {
+                            Some((17, true, None))
+                        }
                         StaticAbilityFragment::SourceCounterCreature {
                             own_turn,
                             kind,
