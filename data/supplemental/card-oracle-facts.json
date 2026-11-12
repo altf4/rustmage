@@ -390,6 +390,73 @@
           "released_at": "2024-02-09"
         }
       }
+    },
+    {
+      "facts_sha256": "a5df44b7d0bfed7c0159290d9f3a283cb93d9708e1e52261aa7032a6a10b8c77",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/tla/167",
+      "source_response_sha256": "7527a6c8cc27c0328fb9ee6471ec79c4ac63c0365fcbf872856ed91330c1c047",
+      "facts": {
+        "oracle_id": "2b0afb89-0944-4861-b9c3-e909e2ac215e",
+        "name": "Badgermole Cub",
+        "layout": "normal",
+        "mana_cost": "{1}{G}",
+        "cmc": 2.0,
+        "type_line": "Creature — Badger Mole",
+        "oracle_text": "When this creature enters, earthbend 1. (Target land you control becomes a 0/0 creature with haste that's still a land. Put a +1/+1 counter on it. When it dies or is exiled, return it to the battlefield tapped.)\nWhenever you tap a creature for mana, add an additional {G}.",
+        "power": "2",
+        "toughness": "2",
+        "colors": [
+          "G"
+        ],
+        "color_identity": [
+          "G"
+        ],
+        "keywords": [
+          "Earthbend"
+        ],
+        "produced_mana": [
+          "G"
+        ],
+        "reference_printing": {
+          "id": "340c5799-4964-44dd-8c48-8f3f3aba5211",
+          "set": "tla",
+          "collector_number": "167",
+          "released_at": "2025-11-21"
+        }
+      }
+    },
+    {
+      "facts_sha256": "6fead642f521b3623392469088e567392dd3846af081bf76ed4f8bb59e436d2d",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/tla/54",
+      "source_response_sha256": "317457ea8a177a6972823024b2efe81bedf0d64d454b430e477df9269c7cd90c",
+      "facts": {
+        "oracle_id": "0259a9ed-0558-4183-b737-871ed5573c32",
+        "name": "Gran-Gran",
+        "layout": "normal",
+        "mana_cost": "{U}",
+        "cmc": 1.0,
+        "type_line": "Legendary Creature — Human Peasant Ally",
+        "oracle_text": "Whenever Gran-Gran becomes tapped, draw a card, then discard a card.\nNoncreature spells you cast cost {1} less to cast as long as there are three or more Lesson cards in your graveyard.",
+        "power": "1",
+        "toughness": "2",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "fa434b41-e5f7-4989-865a-95db67b05cb1",
+          "set": "tla",
+          "collector_number": "54",
+          "released_at": "2025-11-21"
+        }
+      }
     }
   ]
 }

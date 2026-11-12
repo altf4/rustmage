@@ -1,0 +1,16 @@
+{
+  "name": "Avatar Kuruk",
+  "catalogue_id": 5700,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "354ecc614b9a8764ef2642ed726abd403eb77cffd09be80bad7bf8b4ab69cea8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLegendOfKuruk.java",
+  "java_sha256": "169da6a4995b7394c05024d90647b9489f5b3764ac50feb12b7ecdd7f3ad2d2b",
+  "oracle_face": {
+    "oracle_id": "201b8936-18f4-4881-a1d4-c308cf3832bf",
+    "index": 1,
+    "sha256": "23fc40c90a1d7249d209d85705151899a7f2fe3fe8fe57d19dfe191e96457ff3"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Avatar Roku",
+  "catalogue_id": 5702,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "59ba0df534d92e25ce24ca63f68101446be2aa919bbf54be6e6ee73170195ec5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLegendOfRoku.java",
+  "java_sha256": "37ba7d0f5897a06541cb6f28fcab31427edf56c6897d8834802c55a0c3e1d4f8",
+  "oracle_face": {
+    "oracle_id": "2f26f270-26d9-46d3-957f-19f52d51eb03",
+    "index": 1,
+    "sha256": "c885b2420127b4220d613826ee50dc67315003b28c80a21ac799b30da1597e8b"
+  }
+}

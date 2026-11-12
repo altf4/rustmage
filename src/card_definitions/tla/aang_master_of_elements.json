@@ -1,0 +1,16 @@
+{
+  "name": "Aang, Master of Elements",
+  "catalogue_id": 5699,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "af148cb9540a81d529bf9eb694d7d7c05844d778848eac2713df18cb81e63b9d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AvatarAang.java",
+  "java_sha256": "7610dd2e50041b898b3929ee6f8ecd35845105075fe52d626db0b32a55675114",
+  "oracle_face": {
+    "oracle_id": "b4872bac-5822-4c35-9b73-38c4e3ffa477",
+    "index": 1,
+    "sha256": "d28289d3da3da980d71ea36616a08da602c62fcaafef398fc220269668392bdb"
+  }
+}

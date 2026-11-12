@@ -1,0 +1,11 @@
+{
+  "name": "@token/tla-bear",
+  "catalogue_id": 5708,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "b1a194398de9b3efad36a17cfef67f72068cded7a414ddd23d3e187bf37d7909",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/BearsCompanionBearToken.java",
+  "java_sha256": "fedf3d1f34c19ef3c7a3424aa6202f9cebceab8650121b608b2c95feedc2f2fe"
+}

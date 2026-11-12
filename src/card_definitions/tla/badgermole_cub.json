@@ -1,12 +1,12 @@
 {
   "name": "Badgermole Cub",
   "catalogue_id": 304,
-  "oracle_id": null,
-  "facts_sha256": null,
+  "oracle_id": "2b0afb89-0944-4861-b9c3-e909e2ac215e",
+  "facts_sha256": "a5df44b7d0bfed7c0159290d9f3a283cb93d9708e1e52261aa7032a6a10b8c77",
   "complete": false,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "da6650310769e5e391d477b06e1390d6ea1e5aad038a8b6c314e35bb1937a77d"
   },
-  "physical_metadata_sha256": "89e9a7f278b62611511719c914f2521ea98bafc05638c5dfcd9c3e9b08782f2f"
+  "physical_metadata_sha256": "61f051bf621e9be913acf41609661f74a8d90087a6ab5f072cb1967b52765f78"
 }

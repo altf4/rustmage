@@ -1,0 +1,16 @@
+{
+  "name": "Avatar Yangchen",
+  "catalogue_id": 5703,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "5a7691aa85fccd30cba39ff1234243da7c077e515f54d6f8848d5939490d7a47",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLegendOfYangchen.java",
+  "java_sha256": "aa1b035ec7d58fe5f4f3df336aa331cf85f8bd1cb0157f178dcdedb943e5c7dd",
+  "oracle_face": {
+    "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
+    "index": 1,
+    "sha256": "2a77b2eb66ac34f9bd3176f541ad29a85dc6f2ebd43330ffa5815e00a74699ba"
+  }
+}

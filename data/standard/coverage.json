@@ -1,10 +1,10 @@
 {
   "schema": 1,
-  "catalogue_version": "ac10025c9bc31417ff57d7c7c610492408d57ca9f156df1b3592502a9f6a0294",
+  "catalogue_version": "29d20ea3b3e09d93c4d197b3c2fc5b1cb6d7c94894f0fe20161c0503ce9cc724",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4987,
   "implemented_total": 5005,
-  "token_definitions": 215,
+  "token_definitions": 221,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
   "omen_definitions": 13,
@@ -2617,8 +2617,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/badgermole_cub.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/tla/badgermole_cub.rs",
+      "set": "tla"
     },
     {
       "name": "Badlands Revival",
@@ -14921,8 +14921,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/gran_gran.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/tla/gran_gran.rs",
+      "set": "tla"
     },
     {
       "name": "Grand Abolisher",

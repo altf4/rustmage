@@ -1,0 +1,16 @@
+{
+  "name": "Fire Lord Sozin",
+  "catalogue_id": 5704,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "3f6f675c43fea0422fb5e0d983611fec967d8c674e2a3c9ad55c4b7c7ec62d17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheRiseOfSozin.java",
+  "java_sha256": "a962bf843b66e01bd07585e249c62db9b3a4edb5476f43ac92d5b8c9df938661",
+  "oracle_face": {
+    "oracle_id": "9b0b217d-cc9d-4187-89cb-f13160ed2983",
+    "index": 1,
+    "sha256": "068e414f4ab9b134a70cd2525a0b03a080ad04b21cfd3ec8aa5162cae0cfe5a6"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Avatar Kyoshi",
+  "catalogue_id": 5701,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "eaa154602af1847e3d15953d80b0e8a64d9b5d4d4f302a39c0bd8d69bc13e30f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLegendOfKyoshi.java",
+  "java_sha256": "f3e5799f4b35a2fab0398ca72852fdf30405302704776cf8b2736ca2a636c1cf",
+  "oracle_face": {
+    "oracle_id": "e41e8754-028c-4399-b530-de9e134d04b0",
+    "index": 1,
+    "sha256": "7fbd71fab1b0237406bc0e4a646f5ccae580587b87dfe64a2f0a3bd5ed031907"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Aang, Destined Savior",
+  "catalogue_id": 5698,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "88faf599ed2756022d410926d154185bb78194923c0449117f79fa3210b065b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AangAtTheCrossroads.java",
+  "java_sha256": "7dda5bead8c90fcee8c7583c175affc3046c451c780f8f7c6d29dfe1b0816b5a",
+  "oracle_face": {
+    "oracle_id": "96e5d4a1-e59f-4140-823f-a17e15ee5d8d",
+    "index": 1,
+    "sha256": "7946efac3e3bb312295336fc9d8a01c8fa83420add3d5b1e60dd14130f2daa61"
+  }
+}
