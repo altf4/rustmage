@@ -349,6 +349,8 @@ pub enum TargetGroupConstraint {
     DifferentControllers,
     OtherThanGroup(u16),
     TotalManaValueAtMost(u64),
+    /// Bind the sole target group's combined mana-value budget to the packet's X.
+    TotalManaValueAtMostX,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

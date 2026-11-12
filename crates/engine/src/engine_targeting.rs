@@ -1160,6 +1160,20 @@ impl Game {
             .program()
             .map(|(plan, _)| plan)
             .unwrap_or(TargetPlan::NONE);
+        if let TargetPlan::Single(mut spec) = plan
+            && let TargetRule::Grouped {
+                base,
+                constraint: TargetGroupConstraint::TotalManaValueAtMostX,
+            } = spec.rule
+        {
+            spec.rule = TargetRule::Grouped {
+                base,
+                constraint: TargetGroupConstraint::TotalManaValueAtMost(u64::from(
+                    item.x.unwrap_or(0),
+                )),
+            };
+            plan = TargetPlan::Single(spec);
+        }
         if let Some((TargetPlan::Single(mut spec), program)) = item.program()
             && program.contains(&Instruction::TargetsExactlyX)
         {
@@ -1560,6 +1574,7 @@ impl Game {
         match constraint {
             TargetGroupConstraint::OtherThanGroup(_) | TargetGroupConstraint::TotalManaValueAtMost(_)
                 | TargetGroupConstraint::DistinctCardTypeSlots => unreachable!(),
+            TargetGroupConstraint::TotalManaValueAtMostX => false,
             TargetGroupConstraint::ControllerOfPlayerGroup(first_group) => object.zone == Zone::Battlefield
                 && chosen.iter().find(|b| b.group == first_group).is_some_and(|b| matches!(b.target, Target::Player(player) if object.controller == player)),
             TargetGroupConstraint::GraveyardOwnerOfPlayerGroup(first_group) => object.zone == Zone::Graveyard
@@ -2486,6 +2501,7 @@ impl Game {
                     TargetGroupConstraint::OtherThanGroup(_)
                     | TargetGroupConstraint::SharedCreatureType
                     | TargetGroupConstraint::TotalManaValueAtMost(_) => None,
+                    TargetGroupConstraint::TotalManaValueAtMostX => return false,
                 };
                 return zone.is_none_or(|zone| matches!(target, Target::Card(id) if lookup(id).is_some_and(|o| o.zone == zone)))
                     && self.target_matches_in_world(
