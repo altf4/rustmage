@@ -80,7 +80,7 @@ fn qualified_search_reveals_before_lands_enter_tapped_or_creatures_go_to_hand() 
         reject(&mut game, Action::ChooseSearch { card: other });
         reject(&mut game, Action::ChooseSearch { card: enemy_land });
 
-        let rng = game.state.rng.clone();
+        let rng = game.state.rng;
         let mut missed = game.clone();
         act(&mut missed, Action::FinishSearch);
         assert!(missed.observe(opponent).zone_reveals.is_empty());
