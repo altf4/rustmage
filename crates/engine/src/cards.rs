@@ -4484,6 +4484,7 @@ pub enum Instruction {
         color: ChoiceColor,
         amount: AmountValue,
     },
+    /// Resolve one instance of firebending and add its combat-retained red mana.
     AddCombatRed(u16),
     AddCombatRedScaled(AmountValue),
     AddRetainedManaScaled {
@@ -5906,6 +5907,8 @@ pub enum StatValue {
     },
     /// One count for each actual declaration by this player this turn.
     DeclaredAttackersThisTurn,
+    /// Number of different bending actions this player has completed this turn.
+    ElementsBentThisTurn,
     /// Distinct creature incarnations declared by either player this turn.
     DistinctDeclaredAttackersThisTurn,
     DeclaredSubtypeAttackersThisTurn(&'static str),
@@ -7514,6 +7517,8 @@ pub enum TriggerCondition {
     ControlledCreatureAttacksOrBlocks,
     /// The controller completed a positive scry or surveil instruction.
     ScryOrSurveil,
+    /// The controller completed a qualifying bending action.
+    BendsYou,
     /// One event for each completed proliferate, even when no object was chosen.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     Proliferated(CastRelation),

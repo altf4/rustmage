@@ -17,9 +17,9 @@ impl Game {
                 _ => None,
             })
             .collect();
-        self.airbend_objects(&ids);
+        self.airbend_objects(item.controller, &ids);
     }
-    pub(super) fn airbend_objects(&mut self, ids: &[CardId]) {
+    pub(super) fn airbend_objects(&mut self, actor: Player, ids: &[CardId]) {
         let events = self.move_objects_raw(ids, Zone::Exile);
         for event in &events {
             if event.moved
@@ -33,11 +33,17 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        if events
+            .iter()
+            .any(|event| event.moved && event.destination == Zone::Exile)
+        {
+            self.record_bend(actor, bending::BendKind::Air);
+        }
     }
 
     /// Airbend the current creature set as one simultaneous zone-change batch.
     /// The exception is an exact incarnation, never a reused card ID.
-    pub(super) fn airbend_other_creatures(&mut self, exception: Option<ObjectRef>) {
+    pub(super) fn airbend_other_creatures(&mut self, actor: Player, exception: Option<ObjectRef>) {
         let ids: Vec<_> = (0..self.state.objects.len())
             .map(|id| id as CardId)
             .filter(|&id| {
@@ -46,7 +52,7 @@ impl Game {
                     && exception != Some(self.object_ref(id))
             })
             .collect();
-        self.airbend_objects(&ids);
+        self.airbend_objects(actor, &ids);
     }
 
     pub(super) fn exile_targets_play(

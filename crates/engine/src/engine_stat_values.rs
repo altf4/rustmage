@@ -133,6 +133,12 @@ impl Game {
             StatValue::DeclaredAttackersThisTurn => {
                 self.declared_attackers_this_turn(owner) as i128
             }
+            StatValue::ElementsBentThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .turn_facts
+                    .bent_elements
+                    .count_ones(),
+            ),
             StatValue::DistinctDeclaredAttackersThisTurn => {
                 self.state.attacked_this_turn.len() as i128
             }

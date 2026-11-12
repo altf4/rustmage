@@ -6148,11 +6148,13 @@ impl Game {
                     );
                 }
                 Instruction::AddCombatRed(amount) => {
-                    self.add_combat_red(item.controller, u128::from(amount))
+                    self.add_combat_red(item.controller, u128::from(amount));
+                    self.record_bend(item.controller, bending::BendKind::Fire);
                 }
                 Instruction::AddCombatRedScaled(value) => {
                     let amount = self.item_amount(value, &item);
                     self.add_combat_red(item.controller, amount);
+                    self.record_bend(item.controller, bending::BendKind::Fire);
                 }
                 Instruction::AddPoison(set, amount) => {
                     let mut poison = [0; 2];
@@ -11009,7 +11011,7 @@ impl Game {
                             .then_some(target.object)
                             .flatten()
                     });
-                    self.airbend_other_creatures(exception);
+                    self.airbend_other_creatures(item.controller, exception);
                 }
                 Instruction::ProhibitOpponentNonhandCastsUntilNextTurn => {
                     self.state

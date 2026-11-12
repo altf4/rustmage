@@ -298,6 +298,9 @@ pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 #[path = "engine_cast_payments.rs"]
 pub mod cast_payments;
 #[doc(hidden)]
+#[path = "engine_bending.rs"]
+pub mod bending;
+#[doc(hidden)]
 #[path = "engine_earthbend.rs"]
 pub mod earthbend;
 #[doc(hidden)]
@@ -3403,6 +3406,7 @@ struct State {
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
     expend_sources: expend::Sources,
+    bend_sources: bending::Sources,
     activation_observers: Option<SharedVec<CardId>>,
     attack_sources: Vec<CardId>,
     tap_sources: Vec<CardId>,
@@ -4802,6 +4806,7 @@ impl Game {
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
                 expend_sources: None,
+                bend_sources: None,
                 activation_observers: None,
                 attack_sources: Vec::new(),
                 tap_sources: Vec::new(),
@@ -11314,6 +11319,7 @@ impl Game {
             self.state.static_sources.retain(|&source| source != id);
             self.state.cast_sources.retain(|&source| source != id);
             self.forget_expend_source(id);
+            self.forget_bend_source(id);
             self.forget_activation_observer(id);
             self.state.attack_sources.retain(|&source| source != id);
             self.forget_control_change_source(id);
@@ -14064,6 +14070,7 @@ impl Game {
             })
             + ability_target_events::owned_bytes(&s.ability_target_sources)
             + expend::owned_bytes(&s.expend_sources)
+            + bending::owned_bytes(&s.bend_sources)
             + miracle::owned_bytes(&s.miracle)
             + prepared::owned_bytes(&s.preparations)
             + s.adventures.as_ref().map_or(0, |p| p.bytes())

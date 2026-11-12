@@ -170,6 +170,9 @@ pub struct TurnFactsView {
     /// An exact face-down object entered as a creature under this player's control.
     #[serde(skip_serializing_if = "is_false")]
     pub face_down_creature_entered: bool,
+    /// Bending completed this turn, in air, earth, fire, water bit order.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub bent_elements: u8,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -299,7 +302,8 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         TriggerCondition::SpellCast {
             filter: CastFilter::FirstQualifiedCreature(_),
             ..
-        } => true,
+        }
+        | TriggerCondition::BendsYou => true,
         TriggerCondition::When { guard, event }
         | TriggerCondition::InterveningIf { guard, event } => {
             guard_uses_facts(guard) || condition_uses_facts(*event)
@@ -446,7 +450,9 @@ impl Game {
         // Suppression does not hide a publicly known definition; old queued packets
         // keep the facts visible after their source leaves or changes controller.
         let observer = self.state.players.iter().any(|p| {
-            p.turn_facts.exhaust_activated_this_turn || p.turn_facts.coin_flipped_this_turn
+            p.turn_facts.exhaust_activated_this_turn
+                || p.turn_facts.coin_flipped_this_turn
+                || p.turn_facts.bent_elements != 0
         }) || self.state.objects.iter().any(|o| {
             o.zone == Zone::Battlefield
                 && (o.card.triggers().iter().any(trigger_uses_facts)

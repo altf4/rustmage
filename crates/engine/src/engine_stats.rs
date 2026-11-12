@@ -106,6 +106,7 @@ impl Game {
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
         self.register_expend_source(id);
+        self.register_bend_source(id);
         self.register_trigger_multiplier_source(id);
         self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);

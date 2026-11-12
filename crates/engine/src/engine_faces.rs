@@ -415,6 +415,7 @@ impl Game {
     }
     pub(super) fn remove_face_providers(&mut self, id: CardId) {
         self.forget_expend_source(id);
+        self.forget_bend_source(id);
         self.forget_trigger_multiplier_source(id);
         self.forget_activation_observer(id);
         self.forget_ability_target_source(id);
