@@ -104,6 +104,25 @@ const DEATH_CALLBACK: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
+const DISCARD_ONE: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::Draw(PlayerSet::Controller, 1),
+            Instruction::DiscardOneNonlandReflexive(0),
+        ],
+    ),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::Reflexive,
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::PlusOne,
+            amount: 1,
+        }],
+    }],
+    ..CardRules::EMPTY
+};
 
 fn declare_attacker(game: &mut Game, attacker: CardId) {
     game.state.step = Step::Attackers;
@@ -422,5 +441,66 @@ fn paid_waterbend_observes_each_actual_death_until_cleanup() {
         game.prepare_triggers();
         settle(&mut game);
         assert_eq!(game.state.players[active.index()].life, life + 3);
+    }
+}
+
+#[test]
+fn a_mandatory_discard_queues_a_target_only_after_a_nonland_choice() {
+    let spell = Card::from_name("Divination").unwrap();
+    let _rules = fixture_rules::activate(&[(spell, &DISCARD_ONE)]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let spell = spawn(&mut game, player, spell, Zone::Hand);
+        let nonland = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+        let land = game.top_library_card(player).unwrap();
+        let own = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+        let opposing = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+        cast(&mut game, spell, None);
+        act(&mut game, Action::Pass);
+        act(&mut game, Action::Pass);
+        assert_eq!(game.object_view(land).zone, Zone::Hand);
+        assert!(game.observe(player.other()).actions.is_empty());
+        reject(&mut game, Action::ChooseOptional { accept: false });
+
+        let mut chose_land = game.clone();
+        act(&mut chose_land, Action::Discard { card: land });
+        settle(&mut chose_land);
+        assert_eq!(chose_land.object_view(land).zone, Zone::Graveyard);
+        assert_eq!(chose_land.counter_count(own, CounterKind::PlusOne), 0);
+
+        let checkpoint = game.snapshot();
+        let mut indexed = game.clone();
+        let action = Action::Discard { card: nonland };
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|a| *a == action)
+            .unwrap();
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        act(&mut game, action);
+        assert_eq!(indexed.snapshot(), game.snapshot());
+        assert!(matches!(game.state.pending, Pending::Targets { .. }));
+        reject(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(opposing),
+            },
+        );
+        act(
+            &mut game,
+            Action::ChooseTarget {
+                target: Target::Card(own),
+            },
+        );
+        settle(&mut game);
+        assert_eq!(game.counter_count(own, CounterKind::PlusOne), 1);
+        indexed.restore(&checkpoint).unwrap();
+        assert!(
+            indexed
+                .legal_actions()
+                .contains(&Action::Discard { card: land })
+        );
     }
 }

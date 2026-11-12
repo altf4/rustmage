@@ -11523,14 +11523,21 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::DiscardTwoNonlandReflexive(ability) => {
-                    self.state.resolving.as_mut().unwrap().discards[item.controller.index()] = 2;
-                    self.state.resolving.as_mut().unwrap().discard_after =
-                        Some(discard_events::DiscardAfter::ReflexiveCount {
-                            controller: item.controller,
-                            ability,
-                            nonland_only: true,
-                        });
+                Instruction::DiscardTwoNonlandReflexive(ability)
+                | Instruction::DiscardOneNonlandReflexive(ability) => {
+                    let amount =
+                        if matches!(instruction, Instruction::DiscardTwoNonlandReflexive(_)) {
+                            2
+                        } else {
+                            1
+                        };
+                    let resolution = self.state.resolving.as_mut().unwrap();
+                    resolution.discards[item.controller.index()] = amount;
+                    resolution.discard_after = Some(discard_events::DiscardAfter::ReflexiveCount {
+                        controller: item.controller,
+                        ability,
+                        nonland_only: true,
+                    });
                 }
                 Instruction::SearchLibraryOrOutsideLegendarySplit {
                     maximum,

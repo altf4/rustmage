@@ -4486,6 +4486,8 @@ pub enum Instruction {
     RevealTwoOutsideCardsWithSelf(&'static [SelfOutsideEntryTemplate]),
     /// Discard two, then create a reflexive trigger for actual nonland discards.
     DiscardTwoNonlandReflexive(u16),
+    /// Discard one card, then queue this template only for an actual nonland discard.
+    DiscardOneNonlandReflexive(u16),
     TargetStatsUntilNextTurn {
         power: i32,
         toughness: i32,
