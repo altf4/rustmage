@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8409dc6627a3cb4c500231b7905cca6c275f8402be5681311d62a026f33cb58a",
+  "catalogue_version": "122d06265c66697b87d2fa9e2f97c2e15f8df90122fe262cad34054c69184a4a",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4837,
-  "implemented_total": 4854,
+  "implemented_standard_cards": 4852,
+  "implemented_total": 4869,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -101,8 +101,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 146,
-      "complete": 118
+      "gated": 131,
+      "complete": 133
     },
     "mom": {
       "total": 1,
@@ -2163,8 +2163,8 @@
     {
       "name": "Assemble the Players",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/assemble_the_players.rs",
       "set": "mkm"
     },
@@ -2307,8 +2307,8 @@
     {
       "name": "Aurelia's Vindicator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/aurelia_s_vindicator.rs",
       "set": "mkm"
     },
@@ -4779,8 +4779,8 @@
     {
       "name": "Bubble Smuggler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/bubble_smuggler.rs",
       "set": "mkm"
     },
@@ -7171,8 +7171,8 @@
     {
       "name": "Coveted Falcon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/coveted_falcon.rs",
       "set": "mkm"
     },
@@ -7515,8 +7515,8 @@
     {
       "name": "Cryptic Coat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/cryptic_coat.rs",
       "set": "mkm"
     },
@@ -8403,8 +8403,8 @@
     {
       "name": "Defenestrated Phantom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/defenestrated_phantom.rs",
       "set": "mkm"
     },
@@ -11179,8 +11179,8 @@
     {
       "name": "Essence of Antiquity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/essence_of_antiquity.rs",
       "set": "mkm"
     },
@@ -11371,8 +11371,8 @@
     {
       "name": "Exit Specialist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/exit_specialist.rs",
       "set": "mkm"
     },
@@ -13011,8 +13011,8 @@
     {
       "name": "Forum Familiar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/forum_familiar.rs",
       "set": "mkm"
     },
@@ -18731,8 +18731,8 @@
     {
       "name": "Karlov Watchdog",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/karlov_watchdog.rs",
       "set": "mkm"
     },
@@ -22563,8 +22563,8 @@
     {
       "name": "Mistway Spy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/mistway_spy.rs",
       "set": "mkm"
     },
@@ -23267,8 +23267,8 @@
     {
       "name": "Museum Nightwatch",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/museum_nightwatch.rs",
       "set": "mkm"
     },
@@ -25235,8 +25235,8 @@
     {
       "name": "Perimeter Enforcer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/perimeter_enforcer.rs",
       "set": "mkm"
     },
@@ -26235,8 +26235,8 @@
     {
       "name": "Projektor Inspector",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/projektor_inspector.rs",
       "set": "mkm"
     },
@@ -38675,8 +38675,8 @@
     {
       "name": "Unyielding Gatekeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/unyielding_gatekeeper.rs",
       "set": "mkm"
     },
