@@ -3,10 +3,26 @@
   "catalogue_id": 1437,
   "oracle_id": "878e5e0d-beb9-4f8d-a640-62140c907e52",
   "facts_sha256": "4c78b43ea5dde9de484b5283687c70ccb329941908f024778cb762b2a628480c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e9a6d1eab572e16c2cbfc72e2ba62301f4a4098967dec21916010986dc132e17"
   },
-  "physical_metadata_sha256": "634b2688cebae28c0693adab18c9d1a7106b575cea6019cf1904286e795e1ab8"
+  "physical_metadata_sha256": "634b2688cebae28c0693adab18c9d1a7106b575cea6019cf1904286e795e1ab8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FanaticOfTheHarrowing.java",
+  "java_sha256": "a7b7e83d4258730ffb17e9027fd40816ac1aeb7811f9af75b327c7a59169a16c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_discard_costs.rs"
 }

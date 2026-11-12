@@ -3,10 +3,26 @@
   "catalogue_id": 808,
   "oracle_id": "2a9783c5-084b-4cd3-b7fa-ae9d7fed51d1",
   "facts_sha256": "07b7bea1e60491b9a0d498054d37b563eaa9e8c771a10f1774d0d1d82371bf64",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ef49a7195a968b9d55332aa8cb32cc0ba46a7bb72c433de9295a7c4e696ed573"
   },
-  "physical_metadata_sha256": "61426ee226ff5bb163f1843026c64625101cef08a4f62f99148053e269daaad4"
+  "physical_metadata_sha256": "61426ee226ff5bb163f1843026c64625101cef08a4f62f99148053e269daaad4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/ComeBackWrong.java",
+  "java_sha256": "ccb66b7475c57c8517f6f0da97b368eacf8a51fbf41d577c136f3effd49ef376",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfPlayersNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "5ed0f569dfc97b2a0fa9a7c3aa1c177a17b68f9476124014f5d07dc65d7e36d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeTargetEffect.java",
+      "sha256": "c45c32e2c47bd7f62480c732af33864bcac93ec246a9cf7e292dd32a2d10917c"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_death_choices.rs"
 }

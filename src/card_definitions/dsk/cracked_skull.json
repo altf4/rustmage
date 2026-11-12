@@ -3,10 +3,36 @@
   "catalogue_id": 875,
   "oracle_id": "4415b65d-5473-4b19-94f7-e5cf4ce64d5e",
   "facts_sha256": "a196361794b795253362c52ad41b15a1bca1e9d3ef635c26093d75d2da741c06",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c414d9e4dfbbabf8686ce26a32b3638af562c570d3c2f231835df2191bd3763a"
   },
-  "physical_metadata_sha256": "f1eacb50277533f2c62d89ec843ab792c886144aee8456f899bfd6d5b9565176"
+  "physical_metadata_sha256": "f1eacb50277533f2c62d89ec843ab792c886144aee8456f899bfd6d5b9565176",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CrackedSkull.java",
+  "java_sha256": "e03a1fb0136513b91d1dedde125bddf20f05471d14e098172169a390ef1bb0cb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageAttachedTriggeredAbility.java",
+      "sha256": "aaecc7b1355a3be8e19c41220e24848e0831efb047bb27f49f28dce4336e780f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/LookTargetHandChooseDiscardEffect.java",
+      "sha256": "817a2830666c69f508dda459fdd513c62f67a6915d1753a8b33f2338807e2c8f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_discard_costs.rs"
 }

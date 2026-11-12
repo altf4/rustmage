@@ -3,10 +3,36 @@
   "catalogue_id": 4802,
   "oracle_id": "6662968e-ca9e-454c-be44-24ad10e43d3e",
   "facts_sha256": "2fba12a1ab386abc88fb4d00fcd3f5cfbefe82e89d33a7c88f56ac82e16c9cea",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8b67eba41ea75ae44dea498d6df062d79c686ef852180591c3ed6c54558f8395"
   },
-  "physical_metadata_sha256": "ec78cdbbf7149f5191320b24ffb14f3327df0a7cbeee9777884ccdc5e2e52db0"
+  "physical_metadata_sha256": "ec78cdbbf7149f5191320b24ffb14f3327df0a7cbeee9777884ccdc5e2e52db0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnstoppableSlasher.java",
+  "java_sha256": "89625f80c304dfe0460562dd5e63fe15e64603d2e9b88e2bf3c1f5164838ca5f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseHalfLifeTargetEffect.java",
+      "sha256": "f40b9977dd7a0c411bb2cb7de86717277837ffa688f000b4f13402a5a07a4644"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_death_choices.rs"
 }

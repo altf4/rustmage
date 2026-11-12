@@ -1,16 +1,36 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(2, 2),
     keywords: Keywords::MENACE,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::OtherFilteredEntersYou(EntryPredicate::CreaturePowerAtMost(2)),
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::IfOptionalAbilityUnused { skip: 3 },
+            Instruction::MayPayCosts {
+                costs: &[ResolutionCost {
+                    objects: Some(ResolutionObjectCost {
+                        cost: AdditionalCost {
+                            kind: EffectChoiceKind::Discard,
+                            filter: SacrificeFilter {
+                                keywords: Keywords::NONE,
+                                source_only: false,
+                                kinds: 0,
+                                nonland: false,
+                                other: false,
+                                tokens: None,
+                                artifact_enchantment_or_token: false,
+                                subtype: None,
+                            },
+                        },
+                        count: 1,
+                    }),
+                    ..ResolutionCost::FREE
+                }],
+                skip: 2,
+            },
+            Instruction::RecordOncePerTurn,
+            Instruction::Draw(PlayerSet::Controller, 1),
+        ],
+    }],
     ..CardRules::EMPTY
 };

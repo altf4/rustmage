@@ -3,10 +3,36 @@
   "catalogue_id": 1836,
   "oracle_id": "a37387f0-9d57-49ff-aa38-2c6b359e8916",
   "facts_sha256": "e88dfcbef5acd9206e8929b3ae6fa3ca96520ad8c92851b9b31f8bdc4745f523",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f84df87011a2dc552827d78769d29d4bb276079f987d99479320bd04be8881a1"
   },
-  "physical_metadata_sha256": "ec228b099c418b36b425687a939932255d93acb7cab3a9d29adc643ec6c459de"
+  "physical_metadata_sha256": "ec228b099c418b36b425687a939932255d93acb7cab3a9d29adc643ec6c459de",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrabThePrize.java",
+  "java_sha256": "2319f0b62b110415d7f932607d6a4b607878c8ae2dff5c8d45faee9d2fed0f2e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardTargetCost.java",
+      "sha256": "003c775808c1e2c48f7c67ce1fd2f1c24d7fa905bcf61b52609e8e73b82aed01"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_discard_costs.rs"
 }

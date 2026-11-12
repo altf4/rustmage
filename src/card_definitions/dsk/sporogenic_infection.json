@@ -3,10 +3,36 @@
   "catalogue_id": 4069,
   "oracle_id": "659a259d-f75e-4af3-b568-c63225e647de",
   "facts_sha256": "660d91004d8e4dad693e1de521b840603ff5e2af499fba0cd052dfaa9d8ea06f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8b351b543a450602e3ec8ee44ee4aaa94f299a0d1ef3c1207c3b5d466831e300"
   },
-  "physical_metadata_sha256": "407bd95357ce403a9a6ce16f8752ebf768b801050a32c390554e7d734d5cdba1"
+  "physical_metadata_sha256": "407bd95357ce403a9a6ce16f8752ebf768b801050a32c390554e7d734d5cdba1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SporogenicInfection.java",
+  "java_sha256": "48861486fff8e790412a699a1ae64aac66c33ae4351789a233f2b81341f209a7",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageAttachedTriggeredAbility.java",
+      "sha256": "aaecc7b1355a3be8e19c41220e24848e0831efb047bb27f49f28dce4336e780f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SacrificeEffect.java",
+      "sha256": "c6d6af5f7c0f53c978e092e82dd8123b8da86ae9d5c3ec21321b28ecea0cd967"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_death_choices.rs"
 }
