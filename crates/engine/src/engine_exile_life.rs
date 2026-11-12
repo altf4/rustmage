@@ -22,12 +22,12 @@ impl Game {
     }
     pub(super) fn has_exile_life_permission(&self, player: Player, card: CardId) -> bool {
         self.state.objects[card as usize].zone == Zone::Exile
-            && self.state.exile_permissions.iter().any(|row| {
+            && (self.state.exile_permissions.iter().any(|row| {
                 row.life_instead_of_mana
                     && row.player == player
                     && row.object == self.object_ref(card)
                     && row.expiry.active(self.state.turn)
-            })
+            }) || self.has_linked_life_play_permission(player, card))
     }
     pub(super) fn visit_exile_life_casts(
         &self,

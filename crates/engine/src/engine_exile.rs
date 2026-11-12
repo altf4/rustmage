@@ -140,6 +140,7 @@ impl Game {
                     && self.exile_permission_guard(p)
                     && !p.cast_only
             })
+            || self.has_linked_life_play_permission(player, card)
     }
     pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
         if self.state.objects[card as usize].zone != Zone::Exile {

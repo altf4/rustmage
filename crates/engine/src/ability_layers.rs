@@ -85,6 +85,8 @@ pub enum StaticAbilityFragment {
     },
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
+    /// Play cards exiled by this source during your turn, using life to cast spells.
+    PlayLinkedExileOnOwnTurnForLife,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
