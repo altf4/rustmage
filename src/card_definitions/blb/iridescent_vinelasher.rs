@@ -1,14 +1,16 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(1, 2),
     triggers: &[
         TriggeredAbility {
             condition: TriggerCondition::SelfOffspring,
             targets: TargetPlan::Single(TargetSpec::NONE),
-            program: &[Instruction::CreateTokens {
-                token: Card(5282),
+            program: &[Instruction::CreateCopyTokenWithExceptions {
+                subject: Subject::Source,
                 amount: 1,
-                tapped: false,
+                exceptions: CopyExceptions {
+                    base: Some((1, 1)),
+                    ..CopyExceptions::NONE
+                },
             }],
         },
         TriggeredAbility {
@@ -34,7 +36,6 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             colored: [0, 0, 0, 0, 0, 0],
             generic: 2,
         }),
-        offspring_copy: Some(Card(5282)),
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

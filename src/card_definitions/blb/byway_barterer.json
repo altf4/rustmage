@@ -3,10 +3,41 @@
   "catalogue_id": 608,
   "oracle_id": "a864b032-6e1a-4211-ad6e-54a5a5c7321b",
   "facts_sha256": "5bbe47a4d099c3735ad494b5ed26cbff8fd5217e594b1d312a550b12905052d7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4a14ce90a1b09296925abee21852e3d2d81c9e399d0b9d2247d9f1297c6de932"
   },
-  "physical_metadata_sha256": "3bfd26166c2984c2fae5200baf57eaa27cfe12576a45f52a737fa7bcc8f9e585"
+  "physical_metadata_sha256": "3bfd26166c2984c2fae5200baf57eaa27cfe12576a45f52a737fa7bcc8f9e585",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BywayBarterer.java",
+  "java_sha256": "d9a77f935eee5ba2a10b4f0496efdae1633a689d3fa445220d1cd2af99a4ce82",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardHandCost.java",
+      "sha256": "070e69a35af785aced9d186215f0cd304b9265775000b413252e0a635ad4d2b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_expend.rs"
 }

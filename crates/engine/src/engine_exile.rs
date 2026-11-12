@@ -767,9 +767,9 @@ impl Game {
         })
     }
 
-    pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) {
+    pub(super) fn exile_until_source_leaves(&mut self, item: &SpellView) -> Vec<ZoneChange> {
         let Some(source) = item.source else {
-            return;
+            return Vec::new();
         };
         let objects = item
             .targets
@@ -782,7 +782,7 @@ impl Game {
             source.object,
             &objects,
             item.source_ability_origin,
-        );
+        )
     }
     /// A non-target hand choice and an ordinary bound target share the same exact
     /// movement/link transaction. Only an actual arrival in exile creates a link.
@@ -803,9 +803,9 @@ impl Game {
         source: ObjectRef,
         objects: &[ObjectRef],
         ability_origin: Option<u64>,
-    ) {
+    ) -> Vec<ZoneChange> {
         if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
-            return;
+            return Vec::new();
         }
         let ids: Vec<_> = objects
             .iter()
@@ -826,6 +826,7 @@ impl Game {
             }
         }
         self.finish_zone_events(&events, &[]);
+        events
     }
 
     pub(super) fn linked_exile_to_graveyard_tokens(&mut self, item: &SpellView, token: Card) {
@@ -878,7 +879,9 @@ impl Game {
             if event.moved
                 && let Some(player) = event.sacrificed_by
             {
-                let count = &mut self.state.players[player.index()].permanents_sacrificed_this_turn;
+                let player = &mut self.state.players[player.index()];
+                player.food_sacrificed_this_turn |= event.before.has_subtype("Food");
+                let count = &mut player.permanents_sacrificed_this_turn;
                 *count = count
                     .checked_add(1)
                     .capacity("permanent sacrifice history exhausted");
@@ -907,6 +910,7 @@ impl Game {
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
         self.death_batch_triggers(events, death_sources);
+        self.battlefield_departure_batch_triggers(events);
         self.creature_death_turn_callbacks(events);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
@@ -968,7 +972,7 @@ impl Game {
                 }
             })
         };
-        self.batch_creature_entry_triggers(events, &sources, entry_suppression);
+        self.batch_entry_triggers(events, &sources, entry_suppression);
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();

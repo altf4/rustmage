@@ -3,10 +3,31 @@
   "catalogue_id": 617,
   "oracle_id": "d605d9d1-c01a-4ef6-89f9-06fae8cd57e6",
   "facts_sha256": "22b0b173c740edcc3666eb0cc6e7bff496b3429927d19d414693a0a72ccd714b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "70e9e3c0d76f1320b31a3fff5928cc65171468de2c2082b4f3518ba394aeb1f8"
   },
-  "physical_metadata_sha256": "ab1c42ac14a3f9716efb9ed7f161d1ab14dcbf7ec8534e9eee42a95d27f2d198"
+  "physical_metadata_sha256": "ab1c42ac14a3f9716efb9ed7f161d1ab14dcbf7ec8534e9eee42a95d27f2d198",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CalamitousTide.java",
+  "java_sha256": "38312dd7fbe2b85198457fbb8d5949aa21a96cb36e4699ee904169479b592869",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawDiscardControllerEffect.java",
+      "sha256": "c848e9073c0f087183812189947b72de49f9ec0431ca7246b5251e54a5e64782"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_guards.rs"
 }

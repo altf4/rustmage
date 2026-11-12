@@ -228,11 +228,18 @@ impl Game {
         {
             return;
         }
+        let bit = 1 << item.controller.index();
+        let history = &mut self.state.objects[id as usize].targeted_this_turn_by;
+        let first_for_controller = *history & bit == 0;
+        *history |= bit;
         let source = self.object_view(id);
         for (index, ability) in source.card.triggers().iter().enumerate() {
             let event = ability.condition.event();
             let matched = match event {
                 TriggerCondition::Ward => source.controller != item.controller,
+                TriggerCondition::FirstTargetedByController => {
+                    first_for_controller && source.controller == item.controller
+                }
                 TriggerCondition::SelfTargeted {
                     relation,
                     spells_only,
@@ -280,6 +287,7 @@ impl Game {
                                 matches!(
                                     fragment,
                                     crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                                    | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                                         | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                                         | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                                 )

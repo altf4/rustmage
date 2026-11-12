@@ -1,16 +1,22 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
+use rustmage_core::engine::Zone;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(2, 3),
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::BattlefieldDeparture(DepartureRule {
+            kinds: 1,
+            relation: CastRelation::You,
+            subject: DepartureSubject::SelfOrOtherMatching,
+            destinations: &[Zone::Hand, Zone::Library, Zone::Exile, Zone::Command],
+            ..DepartureRule::ANY
+        }),
+        targets: TargetPlan::Single(TargetSpec::one(TargetRule::creature_you_control())),
+        program: &[Instruction::PutCounters {
+            subject: Subject::Targets,
+            kind: CounterKind::PlusOne,
+            amount: 1,
+        }],
+    }],
     ..CardRules::EMPTY
 };

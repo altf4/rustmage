@@ -9,32 +9,45 @@ pub struct SourceCounterQuantityView {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
-    fn amount(value: AmountValue, kinds: &mut Vec<CounterKind>) {
-        match value {
-            AmountValue::SourceTotalCounters => {
-                for kind in CounterKind::ALL {
-                    if !kinds.contains(&kind) {
-                        kinds.push(kind);
-                    }
-                }
-            }
-            AmountValue::SourceCounterQuantity(kind) => {
+fn read_counter_amount(value: AmountValue, kinds: &mut Vec<CounterKind>) {
+    match value {
+        AmountValue::SourceTotalCounters => {
+            for kind in CounterKind::ALL {
                 if !kinds.contains(&kind) {
                     kinds.push(kind);
                 }
             }
-            AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
-                amount(*value, kinds)
+        }
+        AmountValue::SourceCounterQuantity(kind) => {
+            if !kinds.contains(&kind) {
+                kinds.push(kind);
             }
-            AmountValue::Sum(values) => {
-                for value in values {
-                    amount(*value, kinds);
-                }
+        }
+        AmountValue::Multiple { value, .. } | AmountValue::Divided { value, .. } => {
+            read_counter_amount(*value, kinds)
+        }
+        AmountValue::Sum(values) => {
+            for value in values {
+                read_counter_amount(*value, kinds);
             }
-            _ => (),
+        }
+        _ => (),
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn read_target_counter_kinds(targets: TargetPlan, kinds: &mut Vec<CounterKind>) {
+    if let TargetPlan::Single(spec) = targets {
+        match spec.rule {
+            TargetRule::ManaValueExactly { amount, .. }
+            | TargetRule::ManaValueAtMost { amount, .. } => read_counter_amount(amount, kinds),
+            _ => {}
         }
     }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
     for instruction in program {
         match *instruction {
             Instruction::CreateTokensWithSourceCounters { .. }
@@ -51,6 +64,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::ModalUpToX { modes, .. } => {
                 for mode in modes {
                     read_counter_kinds(mode.program, kinds);
+                    read_target_counter_kinds(mode.targets, kinds);
                 }
             }
             Instruction::SelectLibraryTo(effect)
@@ -58,14 +72,14 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::SelectLibraryThenMayTransform(effect)
             | Instruction::SelectLibraryThenReflexiveEquipment { effect, .. } => {
                 if let Some(value) = effect.maximum_mana_value {
-                    amount(value, kinds);
+                    read_counter_amount(value, kinds);
                 }
             }
             Instruction::CounterUnlessPayCosts { costs, .. }
             | Instruction::MayPayCosts { costs, .. } => {
                 for cost in costs {
                     for value in cost.extra_generic.into_iter().chain(cost.life) {
-                        amount(value, kinds);
+                        read_counter_amount(value, kinds);
                     }
                 }
             }
@@ -91,6 +105,9 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::Mill(_, MillAmount::Amount(value))
             | Instruction::GainLifeScaled(_, value)
             | Instruction::LoseLifeScaled(_, value)
+            | Instruction::OpponentSacrificeDiscardOrLoseLife {
+                repetitions: value, ..
+            }
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
@@ -118,6 +135,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::GrowPermanentGroupScaled { amount: value, .. }
             | Instruction::ReduceColoredSpellCostsThisTurn { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
+            | Instruction::CreateCopyTokensScaled { amount: value, .. }
             | Instruction::CreateTokensAttackingScaled { amount: value, .. }
             | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
@@ -127,7 +145,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             }
             | Instruction::CreateTokensThenCounters {
                 counters: value, ..
-            } => amount(value, kinds),
+            } => read_counter_amount(value, kinds),
             _ => (),
         }
     }
@@ -140,10 +158,12 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
 )]
 pub(super) fn counter_quantity_facts(
     program: &[Instruction],
+    targets: TargetPlan,
     count: impl Fn(CounterKind) -> u64,
 ) -> Option<Box<Vec<SourceCounterQuantityView>>> {
     let mut kinds = Vec::new();
     read_counter_kinds(program, &mut kinds);
+    read_target_counter_kinds(targets, &mut kinds);
     if kinds.is_empty() {
         return None;
     }

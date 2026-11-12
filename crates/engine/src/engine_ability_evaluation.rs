@@ -158,14 +158,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
-        StaticAbilityFragment::ConditionalWard {
-            condition,
-            filter,
-            ability,
-        } => {
-            if !world.conditional_ward_applies(source, condition, filter, id) {
-                return None;
-            }
+        StaticAbilityFragment::ConditionalWard { .. }
+        | StaticAbilityFragment::CounterBearingPermanentWard { .. } => {
+            let ability = world.conditional_ward_ability(source, id, *fragment)?;
             return Some(LayerSixGrant {
                 recipient: id,
                 keywords: Keywords::NONE,
@@ -330,6 +325,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::OtherCreaturesFood(ability) => {
+            if world.reference(id) == source || world.kinds(id) & 1 == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![key(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::ControlledPlaneswalkerActivation(ability)
         | StaticAbilityFragment::ControlledArtifactFood(ability)
         | StaticAbilityFragment::ControlledArtifactActivation(ability)
@@ -365,6 +371,19 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
             if !own || world.kinds(id) & kinds == 0 {
+                return None;
+            }
+            keywords
+        }
+        StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
+            condition,
+            keywords,
+        } => {
+            if !own
+                || world.kinds(id) & 1 == 0
+                || !world.equipped(id)
+                || world.value(condition, source.card) == 0
+            {
                 return None;
             }
             keywords
@@ -592,6 +611,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
@@ -620,7 +640,11 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                 && source.attached_to.is_some()
                 && source.card.static_ability_groups().iter().any(|group| {
                     group.fragments.iter().any(|fragment| {
-                        matches!(fragment, StaticAbilityFragment::AttachmentRule(_))
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::AttachmentRule(_)
+                                | StaticAbilityFragment::RemoveAttachedKeywords(_)
+                        )
                     })
                 })
         })
@@ -783,6 +807,16 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                 .fragments
                 .iter()
                 .any(|f| matches!(f, StaticAbilityFragment::RemoveAttachedAbilities));
+            let removed_keywords =
+                origin
+                    .fragments
+                    .iter()
+                    .fold(Keywords::NONE, |removed, fragment| match *fragment {
+                        StaticAbilityFragment::RemoveAttachedKeywords(keywords) => {
+                            removed.union(keywords)
+                        }
+                        _ => removed,
+                    });
             let provides = origin.fragments.iter().any(|f| {
                 matches!(
                     f,
@@ -805,6 +839,7 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
                         | StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                         | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                         | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
@@ -826,11 +861,13 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::ChosenTypeKeywords(..)
                         | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                         | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
+                        | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                         | StaticAbilityFragment::ControlledTappedKeywords { .. }
                         | StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                         | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                         | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                         | StaticAbilityFragment::ControlledArtifactFood(_)
+                        | StaticAbilityFragment::OtherCreaturesFood(_)
                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
@@ -840,9 +877,10 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         | StaticAbilityFragment::LiveKeywords(..)
                 )
             });
-            let effect = if enabled && (removes || provides) {
+            let removes_keywords = removed_keywords != Keywords::NONE;
+            let effect = if enabled && (removes || removes_keywords || provides) {
                 let time = timestamp(world, source);
-                let recipients: Vec<_> = if removes {
+                let recipients: Vec<_> = if removes || removes_keywords {
                     object
                         .attached_to
                         .filter(|recipient| world.attachment_link(source, *recipient))
@@ -868,6 +906,11 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                         LayerSixAction::RemoveAndGrant(rows)
                     } else {
                         LayerSixAction::Remove
+                    }
+                } else if removes_keywords {
+                    LayerSixAction::RemoveKeywordsAndGrant {
+                        keywords: removed_keywords,
+                        grants: rows,
                     }
                 } else {
                     LayerSixAction::GrantEach(rows)
@@ -916,7 +959,8 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
             }
             let action = match row.kind {
                 SourceLinkedEffectKind::RemoveAbilities
-                | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn => LayerSixAction::Remove,
+                | SourceLinkedEffectKind::RemoveAbilitiesUntilEndOfTurn
+                | SourceLinkedEffectKind::RemoveAbilitiesUntilNextTurn => LayerSixAction::Remove,
                 SourceLinkedEffectKind::Treasure | SourceLinkedEffectKind::ReturnedTreasure => {
                     let returned = row.kind == SourceLinkedEffectKind::ReturnedTreasure;
                     let grants = vec![LayerSixGrant {
@@ -997,7 +1041,10 @@ pub(super) fn evaluate_abilities<W: CharacteristicWorld + ?Sized>(world: &W) -> 
                     timestamp: row.timestamp,
                     recipients: vec![row.recipient.card],
                     action: if matches!(row.origin, KeywordEffectOrigin::ResolutionRemoval { .. }) {
-                        LayerSixAction::RemoveKeywords(row.keywords)
+                        LayerSixAction::RemoveKeywordsAndGrant {
+                            keywords: row.keywords,
+                            grants: Vec::new(),
+                        }
                     } else {
                         LayerSixAction::Grant {
                             keywords: row.keywords,

@@ -295,6 +295,12 @@ impl Game {
         actor: Player,
     ) -> bool {
         match guard {
+            ActivationGuard::OncePerIncarnation(guard) => {
+                self.activation_guard_available(*guard, source, actor)
+            }
+            ActivationGuard::SourcePowerAtLeast(minimum) => {
+                self.stats(source).power >= i128::from(minimum)
+            }
             ActivationGuard::SourceCounterAtLeast { kind, minimum } => {
                 self.counter_count(source, kind) >= minimum
             }
@@ -387,6 +393,9 @@ impl Game {
                     })
                     .count()
                     >= usize::from(minimum)
+            }
+            ActivationGuard::SubtypeEnteredUnderYourControl(types) => {
+                self.subtype_entered_under_control(actor, types)
             }
             ActivationGuard::ControlSubtypeAny(_) => {
                 self.state.objects.iter().enumerate().any(|(id, o)| {
@@ -483,8 +492,7 @@ impl Game {
                 object.owner
             }) != actor
             || (ability.sorcery && !sorcery)
-            || ((ability.once_per_turn || ability.exhaust)
-                && object.used_abilities & (1u64 << index) != 0)
+            || (ability.has_use_limit() && object.used_abilities & (1u64 << index) != 0)
             || (ability.cost.life != 0 && i128::from(ability.cost.life) > life)
         {
             return false;
@@ -1257,6 +1265,7 @@ impl Game {
                         matches!(fragment,
                         crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactFood(index)
+                        | crate::cards::StaticAbilityFragment::OtherCreaturesFood(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
                         | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability: index, .. }
@@ -1270,7 +1279,7 @@ impl Game {
             && ability != embalm::ACTIVATION_INDEX
         {
             if let Some(slot) = item.borrowed_slot {
-                self.record_borrowed_use(source.object, slot, definition.exhaust);
+                self.record_borrowed_use(source.object, slot, definition.lifetime_use_limit());
             } else {
                 self.record_copy_activation_use(item, ability);
             }

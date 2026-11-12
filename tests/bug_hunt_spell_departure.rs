@@ -166,7 +166,10 @@ fn a_flashback_cast_counts_its_own_graveyard_departure_for_a_history_discount() 
         },
     );
     settle(&mut game);
-    assert!(!game.state.players[player.index()].card_left_graveyard_this_turn);
+    assert_eq!(
+        game.state.players[player.index()].cards_left_graveyard_this_turn,
+        0
+    );
     game.state.players[player.index()].mana = [1, 0, 0, 1, 0, 0];
     act(
         &mut game,

@@ -26,6 +26,7 @@ impl Game {
                     TriggerCondition::SpellCast { .. }
                         | TriggerCondition::SpellCastOrLandPlayed
                         | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                 )
         }) {
             self.state.cast_sources.push(id);
@@ -55,6 +56,18 @@ impl Game {
         }) {
             self.state.death_sources.push(id);
         }
+        if triggers.iter().any(|ability| {
+            ability.condition.origin() == Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::ControlledSubtypeAttackDeclaration(_)
+                        | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
+                        | TriggerCondition::ControlledSubtypeAttacks { .. }
+                        | TriggerCondition::ControlledSubtypeAttacksAny(_)
+                )
+        }) {
+            self.state.attack_sources.push(id);
+        }
     }
     /// Ceasing a token/card copy is not a zone change, but must release its
     /// graveyard observer indexes before the reusable object slot is occupied.
@@ -72,6 +85,9 @@ impl Game {
         if self.state.damage_sources.contains(&id) {
             self.state.damage_sources.retain(|&source| source != id);
         }
+        if self.state.attack_sources.contains(&id) {
+            self.state.attack_sources.retain(|&source| source != id);
+        }
     }
     pub(super) fn register_battlefield_sources(&mut self, id: CardId) {
         let object = self.object_ref(id);
@@ -86,6 +102,7 @@ impl Game {
         self.register_battlefield_providers(id);
     }
     pub(super) fn register_battlefield_providers(&mut self, id: CardId) {
+        self.register_expend_source(id);
         self.register_trigger_multiplier_source(id);
         self.register_activation_observer(id);
         self.register_zone_rule_card(self.state.objects[id as usize].card);
@@ -160,6 +177,7 @@ impl Game {
                     | TriggerCondition::ControlledSubtypeAttacksAny(_)
                     | TriggerCondition::ControlledSubtypeAttackAtLeast { .. }
                     | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
+                    | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
@@ -228,7 +246,9 @@ impl Game {
         if triggers.iter().any(|ability| {
             matches!(
                 ability.condition.event(),
-                TriggerCondition::LifeGained { .. } | TriggerCondition::LifeLost { .. }
+                TriggerCondition::LifeGained { .. }
+                    | TriggerCondition::LifeLost { .. }
+                    | TriggerCondition::LifeGainedOrLostOwnTurn
             )
         }) {
             self.state.life_sources.push(id);
@@ -248,6 +268,7 @@ impl Game {
                     | TriggerCondition::SelfLeaves
                     | TriggerCondition::PermanentLeaves(_)
                     | TriggerCondition::BattlefieldDeparture(_)
+                    | TriggerCondition::BattlefieldDepartureBatch(_)
                     | TriggerCondition::OpponentHighestPowerCreatureDies
                     | TriggerCondition::SelfOrControlledPermanentDies(_)
                     | TriggerCondition::ChosenCreatureLeaves
@@ -303,6 +324,7 @@ impl Game {
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
                             | TriggerCondition::ModalSpellCastByYou
+                            | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
                     )
             })
         {
@@ -358,6 +380,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)
+                            | crate::cards::StaticAbilityFragment::OtherCreaturesFood(_)
                             | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(_)
                             | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
@@ -371,6 +394,7 @@ impl Game {
                                     | crate::cards::StaticAbilityFragment::ControlledSubtypeEntryCounters { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledEntryCountersByManaValue { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
+                            | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
@@ -379,8 +403,10 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeIgnoresLegendRule(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedIfSourcePowerAtMost(_)
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
+                            | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithPowerAtLeast(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
+                            | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
@@ -431,6 +457,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
                             | crate::cards::StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
+                            | crate::cards::StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)

@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4af6602ddfc56805c40b2306ab76f4efce9970a1ccf1dd8cd5e3b5bf91d3ded4"
   },
-  "physical_metadata_sha256": "57792b4f92e62e8052eebdd2d5334ce954f3869e3aba1af978c143f996457d42"
+  "physical_metadata_sha256": "57792b4f92e62e8052eebdd2d5334ce954f3869e3aba1af978c143f996457d42",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlameLash.java",
+  "java_sha256": "2116f7ba654bb6c75c479e9b1cbb8c6b94acc57c58c10e21fa9a00cf3666b7dc",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetAnyTarget.java",
+      "sha256": "94f28b8a4a9908ef9b7599805c0ac39faf0aae249231969cd51373db206ebf34"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_targets.rs"
 }

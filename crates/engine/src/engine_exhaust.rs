@@ -105,7 +105,7 @@ impl Game {
         ability: &ActivatedAbility,
     ) -> Option<ActivatedAbility> {
         let mut readiness = self.activation_readiness(actor, ability);
-        if !ability.exhaust || source == grantor {
+        if !ability.lifetime_use_limit() || source == grantor {
             return Some(readiness);
         }
         let origin = self.copied_grant_origin(grantor);
@@ -117,19 +117,23 @@ impl Game {
                     && row.ability == index
                     && row.origin == origin
             })
-        }) && (readiness.exhaust || ability.once_per_turn && used.turn == self.state.turn)
+        }) && (readiness.lifetime_use_limit()
+            || ability.once_per_turn && used.turn == self.state.turn)
         {
             return None;
         }
         // Recipient printed-use bits belong to independent abilities, not this grant.
         readiness.exhaust = false;
         readiness.once_per_turn = false;
+        if let ActivationGuard::OncePerIncarnation(condition) = readiness.guard {
+            readiness.guard = *condition;
+        }
         Some(readiness)
     }
     pub(super) fn record_external_exhaust_use(&mut self, item: &SpellView, ability: u16) -> bool {
         if let (Some(source), Some(grant)) = (item.source, item.self_granted_activation.as_ref()) {
             let rules = source.card.activation(ability);
-            if (rules.once_per_turn || rules.exhaust)
+            if rules.has_use_limit()
                 && self.on_battlefield(source.id)
                 && self.object_ref(source.id) == source.object
             {
@@ -165,7 +169,7 @@ impl Game {
         else {
             return false;
         };
-        if !source.card.activation(ability).exhaust {
+        if !source.card.activation(ability).lifetime_use_limit() {
             return false;
         }
         if !self.on_battlefield(source.object.card)

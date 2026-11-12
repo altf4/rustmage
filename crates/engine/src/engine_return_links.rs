@@ -130,6 +130,7 @@ pub(super) struct DelayedReturn {
 pub(super) struct ImmediateBlink {
     pub rows: Vec<ReturnLinkView>,
     pub attacking: bool,
+    pub capture_entry: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str], Keywords)> {
@@ -332,6 +333,7 @@ impl Game {
         });
         let Some(id) = target else { return };
         let small = ability_world::CharacteristicWorld::mana_value(self, id) <= 3;
+        let capture_entry = self.take_blink_entry_capture();
         let events = self.move_objects_raw(&[id], Zone::Exile);
         let returning = events
             .iter()
@@ -347,6 +349,7 @@ impl Game {
             .immediate_blink_return = Some(Box::new(ImmediateBlink {
             rows: returning,
             attacking: false,
+            capture_entry,
         }));
         self.finish_zone_events(&events, &[]);
     }
@@ -420,6 +423,7 @@ impl Game {
         attacking_controller: Option<Player>,
         follow_public_move: bool,
     ) {
+        let capture_entry = self.take_blink_entry_capture();
         let events = self.move_objects_raw(ids, Zone::Exile);
         let returning = events
             .iter()
@@ -446,16 +450,25 @@ impl Game {
         resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
             rows: returning,
             attacking: attacking_controller.is_some(),
+            capture_entry,
         }));
         self.finish_zone_events(&events, &[]);
     }
+    fn take_blink_entry_capture(&mut self) -> bool {
+        self.state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.search_result.as_mut())
+            .is_some_and(|frame| std::mem::take(&mut frame.capture_next_entry))
+    }
+
     pub(super) fn resume_immediate_blink(&mut self) -> bool {
         let resolution = self.state.resolving.as_mut().unwrap();
         let Some(blink) = resolution.immediate_blink_return.take() else {
             return false;
         };
         let attacking = blink.attacking;
-        let moves = blink
+        let moves: Vec<_> = blink
             .rows
             .iter()
             .flat_map(|link| link.cards().map(|card| (card, link.exile_after)))
@@ -477,6 +490,22 @@ impl Game {
                 Some(movement)
             })
             .collect();
+        if blink.capture_entry {
+            let frame = self
+                .state
+                .resolving
+                .as_mut()
+                .unwrap()
+                .search_result
+                .as_mut()
+                .expect("pending blink owns an entry capture");
+            frame.capture_next_entry = true;
+            frame.blink_companions = moves
+                .iter()
+                .skip(1)
+                .map(|movement| (movement.before.reference, None))
+                .collect();
+        }
         self.stage_entries(moves, None);
         true
     }
@@ -486,6 +515,7 @@ impl Game {
         under_owner: bool,
         tapped: bool,
         actual_exile_only: bool,
+        counter: Option<(CounterKind, u64)>,
     ) {
         let ids: Vec<_> = item
             .targets
@@ -519,10 +549,24 @@ impl Game {
                     } else {
                         item.controller
                     },
-                    counter: None,
+                    counter,
                 })
             });
-        if let Some(first) = returning.next() {
+        // A chosen target still establishes a delayed trigger if the counter
+        // return has no physical card to follow. An exact exile link cannot
+        // return a token, a redirected object, or a later incarnation.
+        let empty_return = || {
+            let counter = counter?;
+            let event = events.first()?;
+            Some(ReturnCardView {
+                object: event.after,
+                zone: Zone::Exile,
+                controller: event.before.owner,
+                counter: Some(counter),
+                tapped,
+            })
+        };
+        if let Some(first) = returning.next().or_else(empty_return) {
             let companions: Vec<_> = returning.collect();
             self.register_delayed_return(
                 item,

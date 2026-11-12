@@ -41,7 +41,7 @@ pub struct EntryTapView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn entry_tap_effects(&self, movement: &entries::EntryMove) -> Vec<EntryTapEffect> {
-        let kinds = if movement.requires_characteristic_preview() {
+        let kinds = if movement.requires_characteristic_preview(self) {
             self.ghost_entry_preview(&movement.replacement_preview())
                 .map_or_else(|| movement.entry_kinds(), |view| view.kinds)
         } else {

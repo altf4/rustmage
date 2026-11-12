@@ -3,6 +3,19 @@ use super::*;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn controlled_token_ids(&self, player: Player) -> impl Iterator<Item = CardId> + '_ {
+        self.state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(move |(id, object)| {
+                (object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && object.is_token())
+                .then_some(id as CardId)
+            })
+    }
+
     pub(super) fn create_tokens(
         &mut self,
         controller: Player,
@@ -253,6 +266,7 @@ impl Game {
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
+                    targeted_this_turn_by: 0,
                     dealt_damage_this_incarnation: false,
                     dealt_combat_damage_this_incarnation: false,
                     deathtouch_since_sba: false,
@@ -361,6 +375,7 @@ impl Game {
         object.damage = 0;
         object.damaged_this_turn = false;
         object.dealt_damage_this_turn = false;
+        object.targeted_this_turn_by = 0;
         object.dealt_damage_this_incarnation = false;
         object.dealt_combat_damage_this_incarnation = false;
         object.deathtouch_since_sba = false;

@@ -34,7 +34,8 @@ pub enum WebSlingingOrigin {
     GraveyardCounters,
     GraveyardLife {
         life: u32,
-        entry_counter: CounterKind,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        entry_counter: Option<CounterKind>,
     },
     LinkedExileCounters {
         source: ObjectRef,
@@ -236,6 +237,10 @@ impl Game {
                         web_slinging: Some(cost),
                         linked_exile_paid,
                         paid_graveyard,
+                        library_top: match origin {
+                            WebSlingingOrigin::LibraryTop { permission } => Some(permission),
+                            _ => None,
+                        },
                         ..Default::default()
                     },
                 ) && emit(Action::AnnounceWebSlinging {
@@ -287,7 +292,7 @@ impl Game {
                 life,
                 entry_counter: kind,
             } => {
-                entry_counter = Some(kind);
+                entry_counter = kind;
                 origin_life_cost = Some(life);
             }
             WebSlingingOrigin::LinkedExileCounters { source } => {
@@ -360,8 +365,7 @@ impl Game {
                         Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
                 }
                 if let Some(permission) = paid_graveyard {
-                    announcement.limited_cast_permission =
-                        Some(Box::new(LimitedCastPermission::PaidGraveyard(permission)));
+                    announcement.set_paid_graveyard_cast_permission(permission);
                 }
                 announcement.origin_additional_cost = origin_additional_cost;
                 if let Some(life) = origin_life_cost {

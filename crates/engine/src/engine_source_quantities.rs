@@ -279,11 +279,12 @@ impl Game {
             // departure facts must survive final payment of the parent ability.
             return;
         }
-        item.source_counter_lki = card_quantities::counter_quantity_facts(program, |kind| {
-            self.source_counter_quantity_live(source, kind)
-                .expect("exact activated quantity source")
-        });
         let targets = item.program().map_or(TargetPlan::NONE, |(plan, _)| plan);
+        item.source_counter_lki =
+            card_quantities::counter_quantity_facts(program, targets, |kind| {
+                self.source_counter_quantity_live(source, kind)
+                    .expect("exact activated quantity source")
+            });
         if selected(program) != SelectedQuantities::default()
             || reads_chosen_type(program)
             || targets.reads_source_creature_type()

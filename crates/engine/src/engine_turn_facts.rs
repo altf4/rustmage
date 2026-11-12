@@ -14,6 +14,9 @@ pub struct TurnFactsView {
     /// Counts begun combat phases, capped at two.
     #[serde(skip_serializing_if = "is_zero")]
     pub combat_phases_started: u8,
+    /// Counts begun main phases, capped after the second.
+    #[serde(skip_serializing_if = "is_zero")]
+    pub main_phases_started: u8,
     #[serde(skip_serializing_if = "is_zero_kinds")]
     pub cast_card_kinds: u16,
     /// Human and legendary creature casts, each capped at two.
@@ -76,6 +79,72 @@ pub(super) struct AttackPowerEvent {
     pub total: i128,
 }
 
+/// Keep the immutable face and the uncommon effective subtype overrides.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct CreatureTypeCast {
+    object: ObjectRef,
+    controller: Player,
+    card: Card,
+    subtypes: Option<Box<GrantedSubtypes>>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn creature_type_cast_bytes(rows: &Option<SharedVec<CreatureTypeCast>>) -> usize {
+    rows.as_ref().map_or(0, |rows| {
+        rows.len() * std::mem::size_of::<CreatureTypeCast>()
+            + rows.iter().filter(|row| row.subtypes.is_some()).count()
+                * std::mem::size_of::<GrantedSubtypes>()
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Game {
+    pub(super) fn is_first_other_creature_type_cast(
+        &self,
+        caster: Player,
+        source: ObjectRef,
+        subtype: &str,
+        spell: Card,
+        spell_subtypes: GrantedSubtypes,
+    ) -> bool {
+        spell_subtypes.has(spell, subtype)
+            && !self
+                .state
+                .creature_type_casts
+                .iter()
+                .flat_map(|casts| casts.iter())
+                .any(|cast| {
+                    cast.controller == caster
+                    // Spell-to-permanent entry advances this physical object's
+                    // generation exactly once. Blink/recast has a new source.
+                    && !(cast.object.card == source.card
+                        && cast.object.generation.checked_add(1) == Some(source.generation))
+                    && cast.subtypes.as_deref().copied().unwrap_or_default().has(cast.card, subtype)
+                })
+    }
+
+    pub(super) fn record_creature_type_cast(
+        &mut self,
+        event: &CastPaymentEvent,
+        kinds: u16,
+        subtypes: GrantedSubtypes,
+    ) {
+        // Only creatures and kindred spells can have a creature type.
+        if kinds & (1 | 128) != 0 {
+            self.state
+                .creature_type_casts
+                .get_or_insert_default()
+                .push(CreatureTypeCast {
+                    object: event.object,
+                    controller: event.controller,
+                    card: event.card,
+                    subtypes: (subtypes != GrantedSubtypes::default()).then(|| Box::new(subtypes)),
+                });
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn guard_uses_facts(guard: StepGuard) -> bool {
     matches!(
@@ -87,6 +156,7 @@ fn guard_uses_facts(guard: StepGuard) -> bool {
             | StepGuard::NoSpellCastFromOwnHandThisTurn
             | StepGuard::CastManaValueAtLeastFourThisTurn
             | StepGuard::FirstCombatPhase
+            | StepGuard::SecondMainPhase
     )
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -136,6 +206,7 @@ impl Game {
         // Every simultaneous newcomer/provider/attachment is installed already.
         self.refresh_controllers();
         let mut facts = [TurnFactsView::default(); 2];
+        let mut entered_types = [subtypes::CreatureTypeSet::default(); 2];
         for event in events {
             if !event.moved
                 || event.destination != Zone::Battlefield
@@ -162,6 +233,9 @@ impl Game {
                 entry.zombie = zombie;
             }
             let kinds = self.current_kinds(id);
+            if kinds & (1 | 128) != 0 {
+                entered_types[controller.index()].union(subtypes.creature_type_set(object.card));
+            }
             facts[controller.index()].artifact_entered |= kinds & 16 != 0;
             if kinds & 2 != 0 {
                 let count = &mut self.state.players[controller.index()].lands_entered_this_turn;
@@ -170,10 +244,30 @@ impl Game {
                     .capacity("land entry history exhausted");
             }
         }
+        if entered_types.iter().any(|types| !types.is_empty()) {
+            let history = std::sync::Arc::make_mut(
+                self.state
+                    .entered_creature_types
+                    .get_or_insert_with(Default::default),
+            );
+            for (record, new) in history.iter_mut().zip(entered_types) {
+                record.union(new);
+            }
+        }
         for (player, event) in self.state.players.iter_mut().zip(facts) {
             player.turn_facts.artifact_entered |= event.artifact_entered;
             player.turn_facts.hero_entered |= event.hero_entered;
         }
+    }
+    pub(super) fn subtype_entered_under_control(&self, player: Player, types: &[&str]) -> bool {
+        self.state
+            .entered_creature_types
+            .as_ref()
+            .is_some_and(|rows| {
+                types
+                    .iter()
+                    .any(|subtype| rows[player.index()].contains(subtype))
+            })
     }
     pub(super) fn record_attack_turn_facts(
         &mut self,

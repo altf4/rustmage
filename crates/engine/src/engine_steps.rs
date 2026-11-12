@@ -22,12 +22,26 @@ pub(super) fn attached_controller_turn<W: ability_world::CharacteristicWorld + ?
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn second_main_phase(&self) -> bool {
+        matches!(self.state.step, Step::Main1 | Step::Main2)
+            && self.state.players[self.state.active.index()]
+                .turn_facts
+                .main_phases_started
+                == 2
+    }
+
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
         self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
             self.queue_delayed_token_cleanup(Step::Upkeep);
+        }
+        if matches!(step, Step::Main1 | Step::Main2) {
+            let phases = &mut self.state.players[self.state.active.index()]
+                .turn_facts
+                .main_phases_started;
+            *phases = (*phases + 1).min(3);
         }
         if step == Step::BeginCombat {
             let phases = &mut self.state.players[self.state.active.index()]
@@ -421,6 +435,7 @@ impl Game {
             }
             StepGuard::Always => return true,
             StepGuard::FirstCombatPhase => return self.first_combat_phase(),
+            StepGuard::SecondMainPhase => return self.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => return self.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 return p.turn_facts.permanent_left_battlefield;
@@ -543,6 +558,9 @@ impl Game {
             }
             StepGuard::OpponentNoncombatDamageLastTurn => {
                 return self.state.players[player.other().index()].noncombat_damage_last_turn;
+            }
+            StepGuard::GainedOrLostLife => {
+                return world.gained_life(player) || world.lost_life(player);
             }
             StepGuard::GainedAndLostLife => {
                 return p.life_gained_this_turn > 0 && p.life_lost_this_turn > 0;

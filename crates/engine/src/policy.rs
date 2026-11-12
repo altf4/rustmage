@@ -62,7 +62,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 Instruction::GrantKeywords { .. } => Some(true),
                 Instruction::Connive { .. }
                 | Instruction::CreateCopyToken { .. }
+                | Instruction::CreateCopyTokensScaled { .. }
                 | Instruction::CreateCopyTokenWithExceptions { .. }
+                | Instruction::CreateCopyTokenUntilNextEndStep { .. }
                 | Instruction::CreateCounteredCopyToken { .. } => Some(true),
                 Instruction::Grow {
                     power, toughness, ..
@@ -203,11 +205,13 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::BeginImprovise
             | Action::BeginDelve
             | Action::BeginWaterbend
+            | Action::BeginCreatureTapPayment
             | Action::BeginOrderedCosts => 40,
             Action::ChooseConvoker { .. }
             | Action::ChooseImproviser { .. }
             | Action::ChooseDelver { .. }
             | Action::ChooseWaterbender { .. }
+            | Action::ChooseCreatureTapPayment { .. }
             | Action::ChooseHarmonizer { .. } => 50,
             Action::ChooseMobilizeDefender { .. }
             | Action::ChooseEntryAttackingDefender { .. }
@@ -758,6 +762,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseToken { .. } => 10,
             Action::ChooseKeyword { .. }
             | Action::ChooseResolutionColor { .. }
+            | Action::ChoosePermanentType { .. }
             | Action::ChoosePowerThreshold { .. } => 10,
             Action::CancelAttackDeclaration
             | Action::AbortAttackPayment

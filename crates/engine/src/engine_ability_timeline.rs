@@ -74,6 +74,7 @@ impl Card {
                         StaticAbilityFragment::BorrowGraveyardActivations(..)
                             | StaticAbilityFragment::GrantLinkedExileCreatureActivationsWithCounter(_)
                             | StaticAbilityFragment::RemoveAttachedAbilities
+                            | StaticAbilityFragment::RemoveAttachedKeywords(_)
                             | StaticAbilityFragment::ControlAttached
                             | StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::AttachedChosenColor
@@ -98,6 +99,7 @@ impl Card {
                             | StaticAbilityFragment::KeywordGrant(..)
                             | StaticAbilityFragment::ControlledPermanentKeywords { .. }
                             | StaticAbilityFragment::ControlledEquippedCreatureKeywords(_)
+                            | StaticAbilityFragment::ConditionalEquippedCreatureKeywords { .. }
                             | StaticAbilityFragment::ControlledTappedKeywords { .. }
                             | StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
@@ -105,6 +107,7 @@ impl Card {
                             | StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(..)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
@@ -121,6 +124,7 @@ impl Card {
                             | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                             | StaticAbilityFragment::HarnessedTrigger(..)
                             | StaticAbilityFragment::ConditionalWard { .. }
+                            | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | StaticAbilityFragment::AttachmentTrigger(..)
@@ -186,6 +190,7 @@ impl Game {
                         StaticAbilityFragment::AttachedCharacteristics(..)
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::ControlledArtifactFood(_)
+                            | StaticAbilityFragment::OtherCreaturesFood(_)
                     )
                 })
             })

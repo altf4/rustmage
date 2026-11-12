@@ -161,6 +161,7 @@ impl Game {
                         && event.before.controller == row.packet.controller
                 }
                 DelayedTargetEvent::CombatDamageToPlayer
+                | DelayedTargetEvent::CombatDamage
                 | DelayedTargetEvent::ControlLostWhileAttached => false,
             };
             if matches {
@@ -216,31 +217,53 @@ impl Game {
         let Some(rows) = self.state.delayed_target_events.as_ref() else {
             return;
         };
-        let hits = events
+        let watch_any = rows
             .iter()
-            .filter_map(|event| {
-                if event.amount > 0
-                    && event.combat
-                    && let Target::Player(player) = event.target
-                {
-                    Some((event.source.reference, player))
-                } else {
-                    None
+            .any(|row| row.event == DelayedTargetEvent::CombatDamage);
+        let mut player_hits = std::collections::BTreeSet::new();
+        let mut amounts = std::collections::BTreeMap::<ObjectRef, u128>::new();
+        for event in events
+            .iter()
+            .filter(|event| event.combat && event.amount > 0)
+        {
+            let dealer = event.source.reference;
+            if let Target::Player(player) = event.target {
+                player_hits.insert((dealer, player));
+            }
+            if watch_any {
+                let amount = amounts.entry(dealer).or_default();
+                *amount = amount
+                    .checked_add(event.amount as u128)
+                    .capacity("combat damage amount exhausted");
+            }
+        }
+        let mut packets = Vec::new();
+        for row in rows
+            .iter()
+            .filter(|row| row.expires_turn == Some(self.state.turn))
+        {
+            match row.event {
+                DelayedTargetEvent::CombatDamageToPlayer => {
+                    packets.extend(
+                        player_hits
+                            .iter()
+                            .filter(|(dealer, _)| *dealer == row.subject)
+                            .map(|_| row.packet.clone()),
+                    );
                 }
-            })
-            .collect::<std::collections::BTreeSet<_>>();
-        let packets = rows
-            .iter()
-            .filter(|row| {
-                row.event == DelayedTargetEvent::CombatDamageToPlayer
-                    && row.expires_turn == Some(self.state.turn)
-            })
-            .flat_map(|row| {
-                hits.iter()
-                    .filter(move |(source, _)| *source == row.subject)
-                    .map(move |_| row.packet.clone())
-            })
-            .collect::<Vec<_>>();
+                DelayedTargetEvent::CombatDamage => {
+                    if let Some(&amount) = amounts.get(&row.subject) {
+                        let mut packet = row.packet.clone();
+                        packet.creature_combat_event = Some(Box::new(CreatureCombatEventView {
+                            dealer: row.subject,
+                            amount,
+                        }));
+                        packets.push(packet);
+                    }
+                }
+                _ => (),
+            }
+        }
         for mut packet in packets {
             packet.id = self.next_stack_id();
             self.state.pending_triggers.push(packet);

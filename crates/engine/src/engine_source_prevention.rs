@@ -88,9 +88,11 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Unprepare { subject }
         | Instruction::ChooseGrantKeywords { subject, .. }
         | Instruction::CreateCopyToken { subject, .. }
+        | Instruction::CreateCopyTokensScaled { subject, .. }
         | Instruction::Suspect { subject }
         | Instruction::CreateRole { subject, .. }
         | Instruction::CreateCopyTokenWithExceptions { subject, .. }
+        | Instruction::CreateCopyTokenUntilNextEndStep { subject, .. }
         | Instruction::CreateCounteredCopyToken { subject, .. }
         | Instruction::IfSubject { subject, .. }
         | Instruction::IfSubjectSubtype { subject, .. }
@@ -132,7 +134,8 @@ fn attached_target(rule: TargetRule) -> bool {
             *predicate == crate::cards::TargetPredicate::OtherThanSourceAttachment
                 || attached_target(*base)
         }
-        TargetRule::ManaValueExactly { base, .. }
+        TargetRule::OtherThanEventObject { base, .. }
+        | TargetRule::ManaValueExactly { base, .. }
         | TargetRule::ManaValueAtMost { base, .. }
         | TargetRule::Grouped { base, .. } => attached_target(*base),
         TargetRule::Union(rules) => rules.iter().copied().any(attached_target),

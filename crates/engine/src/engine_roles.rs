@@ -291,8 +291,8 @@ impl Game {
         reflexive.targets.clear();
         reflexive.target_type_slots = None;
         reflexive.mode = None;
-        if let Some((_, program)) = reflexive.program()
-            && let Some(facts) = card_quantities::counter_quantity_facts(program, |kind| {
+        if let Some((targets, program)) = reflexive.program()
+            && let Some(facts) = card_quantities::counter_quantity_facts(program, targets, |kind| {
                 self.source_counter_quantity_live(source.object, kind)
                     .unwrap_or_else(|| {
                         item.source_counter_lki

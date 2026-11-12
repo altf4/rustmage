@@ -1983,7 +1983,7 @@
     4,
     1,
     16,
-    0,
+    8,
     8,
     1,
     8,
@@ -4179,7 +4179,7 @@
     1,
     0,
     10,
-    0,
+    2,
     2,
     16,
     1,
@@ -5624,6 +5624,10 @@
     8,
     2,
     0,
+    1,
+    0,
+    0,
+    4,
     1
   ],
   "aliases": [
@@ -6376,12 +6380,28 @@
       5344
     ],
     [
+      "@token/blb-cragflame",
+      5619
+    ],
+    [
       "@token/blb-ral-otter",
       5467
     ],
     [
+      "@token/blb-snail",
+      5621
+    ],
+    [
+      "@token/blb-sword",
+      5620
+    ],
+    [
       "@token/blb-vren-rat",
       5483
+    ],
+    [
+      "@token/blb-wall",
+      5622
     ],
     [
       "@token/blood",
@@ -30421,6 +30441,30 @@
       "factory_identity": "@token/otj-flying-spirit",
       "name": "Spirit Token",
       "subtypes": "Spirit",
+      "colors": 1
+    },
+    {
+      "factory_identity": "@token/blb-cragflame",
+      "name": "Cragflame",
+      "subtypes": "Equipment",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/blb-sword",
+      "name": "Sword",
+      "subtypes": "Equipment",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/blb-snail",
+      "name": "Snail Token",
+      "subtypes": "Snail",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/blb-wall",
+      "name": "Wall Token",
+      "subtypes": "Wall",
       "colors": 1
     }
   ],
@@ -76753,7 +76797,7 @@
         0,
         0,
         0,
-        0,
+        1,
         0
       ],
       "generic": 0
@@ -87882,25 +87926,27 @@
     {
       "index": 1977,
       "module": "card_1977",
-      "path": "legacy/heartfire_hero.rs",
-      "set": "legacy",
+      "path": "blb/heartfire_hero.rs",
+      "set": "blb",
       "category": "physical",
       "name": "Heartfire Hero",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "49e1e202-37bf-46ed-93d1-1adb13726039",
+      "facts_sha256": "248afee8f1ab730c868ea4fc7d843b858fe891e1bacc342ca2c0601dc678013c",
+      "mana_cost": "{R}",
+      "type_line": "Creature — Mouse Soldier",
+      "oracle_keywords": [
+        "Valiant"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
@@ -91181,8 +91227,8 @@
         0,
         0,
         0,
-        0,
-        0,
+        2,
+        2,
         0
       ],
       "generic": 0
@@ -111981,7 +112027,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -123528,7 +123574,7 @@
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -149322,7 +149368,7 @@
       "colored": [
         0,
         0,
-        0,
+        2,
         0,
         0,
         0
@@ -151344,23 +151390,23 @@
     {
       "index": 4173,
       "module": "card_4173",
-      "path": "legacy/stormchaser_s_talent.rs",
-      "set": "legacy",
+      "path": "blb/stormchaser_s_talent.rs",
+      "set": "blb",
       "category": "physical",
       "name": "Stormchaser's Talent",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "00c1788d-c52f-4839-9cd8-11fb86c418b6",
+      "facts_sha256": "b6a78d7c7a73f15f385eb2bb3c26bf13cb361caf47e6d8639f7939060a652765",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment — Class",
       "oracle_keywords": [],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 32,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
@@ -192818,6 +192864,114 @@
       "oracle_keywords": [
         "Flying"
       ]
+    },
+    {
+      "index": 5619,
+      "module": "card_5619",
+      "path": "synthetic/token_blb_cragflame.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/blb-cragflame",
+      "mana_cost": "",
+      "type_line": "Legendary Artifact — Equipment",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5620,
+      "module": "card_5620",
+      "path": "synthetic/token_blb_sword.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 16,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/blb-sword",
+      "mana_cost": "",
+      "type_line": "Artifact — Equipment",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5621,
+      "module": "card_5621",
+      "path": "synthetic/token_blb_snail.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/blb-snail",
+      "mana_cost": "",
+      "type_line": "Creature — Snail",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
+    },
+    {
+      "index": 5622,
+      "module": "card_5622",
+      "path": "synthetic/token_blb_wall.rs",
+      "set": "synthetic",
+      "category": "token",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "name": "@token/blb-wall",
+      "mana_cost": "",
+      "type_line": "Creature — Wall",
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0,
+      "oracle_keywords": []
     }
   ]
 }

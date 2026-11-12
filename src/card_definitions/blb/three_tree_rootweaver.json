@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "03bb2f7f8e754d2de268d2c6f64116c0129355bd898d6a62854b766a1c98573c"
   },
-  "physical_metadata_sha256": "5fa208d543f762e103235f2dbde76627c4509f72fdbb5192c56211b030ec2710"
+  "physical_metadata_sha256": "5fa208d543f762e103235f2dbde76627c4509f72fdbb5192c56211b030ec2710",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThreeTreeRootweaver.java",
+  "java_sha256": "bb96ed91d3833029f275f573baeb06bf15206f16a27a7cc8ed3cdf4ef470c506",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_forage.rs"
 }

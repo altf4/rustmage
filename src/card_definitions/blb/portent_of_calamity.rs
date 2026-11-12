@@ -1,16 +1,29 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::SelectLibraryToExileRemember(LibrarySelectionEffect {
+                spec: LibrarySelectionSpec {
+                    look: 0,
+                    count: LibrarySelectionCount::DistinctCardTypes(
+                        1 | 2 | 4 | 8 | 16 | 32 | 64 | 128 | 256,
+                    ),
+                    filter: LibrarySelectionFilter::Any,
+                    optional: true,
+                    reveal: true,
+                    remainder: LibraryRemainder::Graveyard,
+                },
+                look: LibraryLook::ChosenX,
+                destination: LibraryPickDestination::Exile,
+                public: true,
+                maximum_mana_value: None,
+            }),
+            Instruction::CastOneRememberedExileFreeThenRestToHand { minimum: 4 },
+        ],
+    ),
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

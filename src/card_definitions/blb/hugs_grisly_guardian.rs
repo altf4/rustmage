@@ -1,16 +1,29 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(5, 5),
     keywords: Keywords::TRAMPLE,
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::TRAMPLE)],
+        },
+        StaticAbilityGroup {
+            line: 2,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::AdditionalLandPlays(1)],
+        },
+    ],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::SelfEnters,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::ExileTopPlayScaled {
+            amount: AmountValue::ChosenX,
+            next_turn: true,
+        }],
+    }],
+    extras: &CardExtras {
+        x_symbols: 1,
+        ..CardExtras::EMPTY
+    },
     ..CardRules::EMPTY
 };

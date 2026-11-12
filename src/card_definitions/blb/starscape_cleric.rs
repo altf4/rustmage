@@ -1,14 +1,16 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(2, 1),
     triggers: &[
         TriggeredAbility {
             condition: TriggerCondition::SelfOffspring,
             targets: TargetPlan::Single(TargetSpec::NONE),
-            program: &[Instruction::CreateTokens {
-                token: Card(5257),
+            program: &[Instruction::CreateCopyTokenWithExceptions {
+                subject: Subject::Source,
                 amount: 1,
-                tapped: false,
+                exceptions: CopyExceptions {
+                    base: Some((1, 1)),
+                    ..CopyExceptions::NONE
+                },
             }],
         },
         TriggeredAbility {
@@ -33,19 +35,22 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     static_groups: &[StaticAbilityGroup {
         line: 1,
         first_layer: AbilityLayer::Ability,
-        fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
+        fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+            Keywords::FLYING.union(Keywords::CANT_BLOCK),
+        )],
     }],
     extras: &CardExtras {
         static_ability_groups: &[StaticAbilityGroup {
             line: 1,
             first_layer: AbilityLayer::Ability,
-            fragments: &[StaticAbilityFragment::IntrinsicKeywords(Keywords::FLYING)],
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(
+                Keywords::FLYING.union(Keywords::CANT_BLOCK),
+            )],
         }],
         offspring_cost: Some(ManaCost {
             colored: [0, 0, 1, 0, 0, 0],
             generic: 2,
         }),
-        offspring_copy: Some(Card(5257)),
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY

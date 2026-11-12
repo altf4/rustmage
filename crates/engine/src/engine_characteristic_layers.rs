@@ -304,6 +304,7 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             let kinds = match spec.form {
                 PermanentForm::Creature | PermanentForm::AddCreature => 1,
                 PermanentForm::Land => 2,
+                PermanentForm::FoodArtifact => 16,
                 PermanentForm::Preserve
                 | PermanentForm::PreserveWithColors
                 | PermanentForm::AddCreatureSubtypes => return None,
@@ -363,6 +364,13 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
         result |= 17;
     }
     changes.sort_by_key(|c| c.0);
+    if let Some(timestamp) = other_creatures_food_timestamp(world, id)
+        && let Some(creature_since) = creature_scope_timestamp(result, &changes)
+    {
+        let timestamp = timestamp.max(creature_since);
+        let after = changes.partition_point(|change| change.0 <= timestamp);
+        changes.insert(after, (timestamp, 16, true));
+    }
     (result, changes)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -377,6 +385,70 @@ fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, result:
     }
     result
 }
+/// Latest layer-four provider applying to other creatures. Its effect began
+/// before layer six and still applies if the provider subsequently loses abilities.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn other_creatures_food_timestamp<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<u64> {
+    let roles = world.roles()?;
+    roles
+        .characteristic_sources
+        .iter()
+        .copied()
+        .filter(|source| {
+            let provider = world.object(source.card);
+            source.card != id
+                && provider.zone == Zone::Battlefield
+                && world.reference(source.card) == *source
+                && provider.card.static_ability_groups().iter().any(|group| {
+                    group.fragments.iter().any(|fragment| {
+                        matches!(fragment, StaticAbilityFragment::OtherCreaturesFood(_))
+                    }) && entry_modes::group_enabled(world, *source, group)
+                })
+        })
+        .filter_map(|source| {
+            roles
+                .ability_timestamps
+                .iter()
+                .find(|row| row.source == source)
+                .map(|row| row.timestamp)
+        })
+        .max()
+}
+
+/// Fast entry paths have no entrant-specific layer-four changes. The existing
+/// creature-to-Food effects still apply when determining entry replacements.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn fast_entry_kinds<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    entrant: CardId,
+    kinds: u16,
+) -> u16 {
+    if kinds & (1 | 16) == 1 && other_creatures_food_timestamp(world, entrant).is_some() {
+        kinds | 16
+    } else {
+        kinds
+    }
+}
+
+/// A creature-only type or subtype grant depends on the effect that made its
+/// recipient a creature. If the recipient is still a creature, return the
+/// start of that uninterrupted creature scope (zero for intrinsic creatures).
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn creature_scope_timestamp(mut kinds: u16, changes: &[(u64, u16, bool)]) -> Option<u64> {
+    let mut latest = 0;
+    for &(timestamp, mask, additive) in changes {
+        let was_creature = kinds & 1 != 0;
+        kinds = if additive { kinds | mask } else { mask };
+        if !was_creature && kinds & 1 != 0 {
+            latest = timestamp;
+        }
+    }
+    (kinds & 1 != 0).then_some(latest)
+}
+
 /// A creature-only subtype grant depends on an effect which first animates its
 /// recipient. Its type addition follows that effect even with an older source.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -385,18 +457,8 @@ pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> Option<u64> {
     let object = world.object(id);
-    let (mut result, changes) = kind_timeline(world, id, original_kinds(world, id, object));
-    let mut latest = None;
-    for (timestamp, mask, additive) in changes {
-        let was_creature = result & 1 != 0;
-        result = if additive { result | mask } else { mask };
-        if result & 1 == 0 {
-            latest = None;
-        } else if !was_creature {
-            latest = Some(timestamp);
-        }
-    }
-    latest
+    let (result, changes) = kind_timeline(world, id, original_kinds(world, id, object));
+    creature_scope_timestamp(result, &changes).filter(|&timestamp| timestamp != 0)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -511,6 +573,8 @@ pub(super) enum SubtypeChange {
     BasicLand(crate::cards::BasicLandType),
     AddBasicLand(crate::cards::BasicLandType),
     FoodOnly,
+    FoodArtifact,
+    AddFood,
     TreasureOnly,
     EquipmentOnly,
 }
@@ -564,6 +628,7 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             let change = match s.form {
                 PermanentForm::Creature => SubtypeChange::Named(s.creature_types, true),
                 PermanentForm::Land => SubtypeChange::LandOnly,
+                PermanentForm::FoodArtifact => SubtypeChange::FoodArtifact,
                 PermanentForm::Preserve | PermanentForm::PreserveWithColors => {
                     SubtypeChange::Named(s.creature_types, false)
                 }
@@ -621,6 +686,13 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
     // The timestamp sort is stable, so a dependent grant follows the
     // subtype change on the same enabling animation.
     changes.extend(dependent_attachments);
+    if let Some(timestamp) = other_creatures_food_timestamp(world, id) {
+        let (initial, timeline) =
+            kind_timeline(world, id, original_kinds(world, id, world.object(id)));
+        if let Some(creature_since) = creature_scope_timestamp(initial, &timeline) {
+            changes.push((timestamp.max(creature_since), SubtypeChange::AddFood));
+        }
+    }
     changes
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

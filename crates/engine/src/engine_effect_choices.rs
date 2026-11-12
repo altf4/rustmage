@@ -19,6 +19,12 @@ pub(super) struct DiscardDrawChoice {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct RepeatedLifeChoice {
+    remaining: u128,
+    life: u16,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EffectChoice {
     discard_draw: Option<DiscardDrawChoice>,
     pub discarded: Option<Box<[ObjectRef]>>,
@@ -493,6 +499,15 @@ impl Game {
                 && !choice.selected[player.index()].contains(&object)
                 && choice.selected[player.index()].len() < maximum as usize;
         }
+        if let EffectChoiceKind::DeployFromHandOrGraveyard { filter, .. } = choice.kind {
+            return o.owner == player
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && matches!(o.zone, Zone::Hand | Zone::Graveyard)
+                && o.card.is_creature()
+                && filter.matches(o.card)
+                && choice.selected[player.index()].is_empty();
+        }
         if let EffectChoiceKind::HandCreatures { maximum } = choice.kind {
             return o.zone == Zone::Hand
                 && o.owner == player
@@ -837,6 +852,39 @@ impl Game {
         self.on_battlefield(card) && self.is_creature(card) && self.stats(card).power <= maximum
     }
 
+    pub(super) fn start_repeated_life_choice(&mut self, repetitions: u128, life: u16) {
+        if repetitions != 0 {
+            self.state.resolving.as_mut().unwrap().repeated_life_choice =
+                Some(Box::new(RepeatedLifeChoice {
+                    remaining: repetitions,
+                    life,
+                }));
+        }
+    }
+    pub(super) fn advance_repeated_life_choice(&mut self) -> bool {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        let Some(sequence) = &mut resolution.repeated_life_choice else {
+            return false;
+        };
+        if sequence.remaining == 0 {
+            resolution.repeated_life_choice = None;
+            return false;
+        }
+        sequence.remaining -= 1;
+        let item = resolution.item.clone();
+        self.start_effect_choice(
+            &item,
+            EffectChoiceKind::SacrificeOrDiscard { nonland: false },
+            PlayerSet::Opponent,
+            SacrificeFilter {
+                nonland: true,
+                ..evidence::cost(0).filter
+            },
+            1,
+            Some(0),
+        )
+    }
+
     pub(super) fn start_effect_choice(
         &mut self,
         item: &SpellView,
@@ -1126,8 +1174,13 @@ impl Game {
             .choice
             .take()
             .unwrap();
-        let item = &self.state.resolving.as_ref().unwrap().item;
+        let resolution = self.state.resolving.as_ref().unwrap();
+        let item = &resolution.item;
         let player = item.controller;
+        let entry_counter = match resolution.program.get(resolution.pc.saturating_sub(1)) {
+            Some(Instruction::ChooseGraveyardReturnWithCounter(counter)) => Some((*counter, 1)),
+            _ => None,
+        };
         if matches!(
             choice.kind,
             EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
@@ -1155,6 +1208,7 @@ impl Game {
             .map(|r| {
                 let mut movement = self.entry_move(r.card, Zone::Battlefield, false);
                 movement.controller = player;
+                movement.effect_counter = entry_counter;
                 movement
             })
             .collect::<Vec<_>>();
@@ -1315,6 +1369,17 @@ impl Game {
         if !movements.is_empty() {
             self.stage_entries(movements, None);
         }
+    }
+
+    pub(super) fn return_graveyard_tapped_attacking(&mut self, object: ObjectRef, player: Player) {
+        let card = &self.state.objects[object.card as usize];
+        if self.object_ref(object.card) != object || card.zone != Zone::Graveyard {
+            return;
+        }
+        let mut movement = self.entry_move(object.card, Zone::Battlefield, true);
+        movement.controller = player;
+        movement.choose_attacking_defender = true;
+        self.stage_entries(vec![movement], None);
     }
 
     pub(super) fn attacking_return_combat(&self, player: Player) -> bool {
@@ -1530,7 +1595,11 @@ impl Game {
                 "any-number resolution choice finishes with any subset"
             );
         }
-        if matches!(kind, EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)) {
+        if matches!(
+            kind,
+            EffectChoiceKind::ReturnToHandCounting
+                | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+        ) {
             self.state.resolving.as_mut().unwrap().moved_count = Some(0);
         }
         let resolution = self.state.resolving.as_ref().unwrap();
@@ -1689,30 +1758,10 @@ impl Game {
                 choice.amount = u32::try_from(available).capacity("choice count exhausted");
                 continue;
             }
-            if let Some(skip_to) = choice.skip_to
-                && !private_optional_discard
-                && !matches!(
-                    kind,
-                    EffectChoiceKind::SacrificeOrDiscard { .. }
-                        | EffectChoiceKind::BottomHand
-                        | EffectChoiceKind::HandExileCopy
-                        | EffectChoiceKind::HandPlot { .. }
-                        | EffectChoiceKind::HandCreature
-                        | EffectChoiceKind::HandCreatureAttacking { .. }
-                        | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
-                        | EffectChoiceKind::HandCreatureAndLand
-                        | EffectChoiceKind::HandPermanent { .. }
-                        | EffectChoiceKind::HandLand { .. }
-                )
-                && available < usize::from(amount)
-            {
-                self.state.resolving.as_mut().unwrap().pc = skip_to;
-                return false;
-            }
             // Optional private choices always present the same actor/phase,
             // even with no eligible card. The player can decline without revealing
             // whether their hidden hand contains a matching card.
-            choice.required[player.index()] = if private_optional_discard
+            let private_choice = private_optional_discard
                 || matches!(
                     kind,
                     EffectChoiceKind::SacrificeOrDiscard { .. }
@@ -1725,7 +1774,16 @@ impl Game {
                         | EffectChoiceKind::HandCreatureAndLand
                         | EffectChoiceKind::HandPermanent { .. }
                         | EffectChoiceKind::HandLand { .. }
-                ) {
+                        | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
+                );
+            if let Some(skip_to) = choice.skip_to
+                && !private_choice
+                && available < usize::from(amount)
+            {
+                self.state.resolving.as_mut().unwrap().pc = skip_to;
+                return false;
+            }
+            choice.required[player.index()] = if private_choice {
                 u32::from(amount)
             } else {
                 u32::from(amount).min(u32::try_from(available).capacity("choice count exhausted"))
@@ -1869,6 +1927,20 @@ impl Game {
                 self.state.pending = Pending::EffectChoice { player };
                 return true;
             }
+        }
+        if let EffectChoiceKind::DeployFromHandOrGraveyard { counter, .. } = choice.kind {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let object = choice.selected[player.index()][0];
+            self.state.resolving.as_mut().unwrap().choice = None;
+            let mut entry = self.entry_move(object.card, Zone::Battlefield, false);
+            assert_eq!(
+                entry.before.reference, object,
+                "selected exact deployment card"
+            );
+            entry.controller = player;
+            entry.effect_counter = Some((counter, 1));
+            self.stage_entries(vec![entry], None);
+            return false;
         }
         if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
             self.finish_saddle_rider_choice(effect);
@@ -2242,7 +2314,13 @@ impl Game {
             .unwrap()
             .program
             .get(self.state.resolving.as_ref().unwrap().pc.saturating_sub(1))
-            .is_some_and(|i| matches!(i, Instruction::CounterRelatedUnlessSacrifice(_)));
+            .is_some_and(|i| {
+                matches!(
+                    i,
+                    Instruction::CounterRelatedUnlessSacrifice(_)
+                        | Instruction::CounterRelatedUnlessSacrificeSubtype(_)
+                )
+            });
         if ward {
             let valid = choice.selected.iter().enumerate().all(|(seat, rows)| {
                 let player = if seat == 0 { Player::P0 } else { Player::P1 };
@@ -2266,6 +2344,7 @@ impl Game {
         if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::ReturnToHand
+                | EffectChoiceKind::ReturnToHandCounting
                 | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                 | EffectChoiceKind::ReturnGraveyardToHand { .. }
         ) {
@@ -2473,6 +2552,7 @@ impl Game {
         } else if matches!(
             choice.kind.payment_kind(),
             EffectChoiceKind::ExileGraveyard
+                | EffectChoiceKind::ExileControlled
                 | EffectChoiceKind::ExileFromHand
                 | EffectChoiceKind::ExileCardFromAnyGraveyard
                 | EffectChoiceKind::ExileGreatestManaValue
@@ -2483,6 +2563,7 @@ impl Game {
             if matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::ExileGraveyard
+                    | EffectChoiceKind::ExileControlled
                     | EffectChoiceKind::ExileFromHand
                     | EffectChoiceKind::ExileCardFromAnyGraveyard
                     | EffectChoiceKind::ExileGreatestManaValue
@@ -2698,14 +2779,23 @@ impl Game {
             .collect();
         if !ids.is_empty() {
             let events = self.move_objects_raw(&ids, Zone::Hand);
-            if let EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) = choice.kind {
+            if matches!(
+                choice.kind,
+                EffectChoiceKind::ReturnToHandCounting
+                    | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
+            ) {
                 let count = events
                     .iter()
                     .filter(|event| {
                         event.moved
                             && event.destination == Zone::Hand
-                            && event.before.reference != choice.source
-                            && event.before.has_subtype(subtype)
+                            && match choice.kind {
+                                EffectChoiceKind::ReturnToHandCountingOtherSubtype(subtype) => {
+                                    event.before.reference != choice.source
+                                        && event.before.has_subtype(subtype)
+                                }
+                                _ => true,
+                            }
                     })
                     .count();
                 self.state.resolving.as_mut().unwrap().moved_count = Some(count as u64);
@@ -2845,6 +2935,7 @@ impl Game {
                 | EffectChoiceKind::HandCreatureAttacking { .. }
                 | EffectChoiceKind::HandCreatureHasteSacrifice { .. }
                 | EffectChoiceKind::HandLand { .. }
+                | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
         ) && let Some(frame) = self
             .state
             .resolving
@@ -2858,11 +2949,22 @@ impl Game {
             frame.closed = true;
         }
         let resolution = self.state.resolving.as_ref().unwrap();
+        if matches!(choice.kind, EffectChoiceKind::SacrificeOrDiscard { .. })
+            && let Some(sequence) = &resolution.repeated_life_choice
+        {
+            self.lose_life(player, i128::from(sequence.life));
+            self.run_program();
+            return;
+        }
         let ward_victim = resolution
             .program
             .get(resolution.pc.saturating_sub(1))
             .is_some_and(|instruction| {
-                matches!(instruction, Instruction::CounterRelatedUnlessSacrifice(_))
+                matches!(
+                    instruction,
+                    Instruction::CounterRelatedUnlessSacrifice(_)
+                        | Instruction::CounterRelatedUnlessSacrificeSubtype(_)
+                )
             })
             .then_some(resolution.item.related_stack)
             .flatten();
@@ -3025,6 +3127,7 @@ impl Game {
             && matches!(
                 choice.kind.payment_kind(),
                 EffectChoiceKind::LandCards { .. }
+                    | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
             );
         let candidates = self
             .state

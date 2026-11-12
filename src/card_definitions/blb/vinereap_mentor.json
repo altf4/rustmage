@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e7664a4060e77311b8fd1c622e76b9be230a91889beb30cccd04f20b3d711d6b"
   },
-  "physical_metadata_sha256": "91489e8367bb0f476703cc495bb00660286e27ea7bddb9623fc8e679b98334f6"
+  "physical_metadata_sha256": "91489e8367bb0f476703cc495bb00660286e27ea7bddb9623fc8e679b98334f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/VinereapMentor.java",
+  "java_sha256": "02fbca128ccddbc137ccac1b82240317f6de5fdaedb71af16ef825da456ef3a5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrDiesSourceTriggeredAbility.java",
+      "sha256": "cc63649c52975b7de190b2f45fda8f94e462716367c82fa8064cd51314ce08c0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_existing_typal.rs"
 }

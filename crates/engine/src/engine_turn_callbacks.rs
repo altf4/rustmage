@@ -7,7 +7,17 @@ use crate::cards::TurnCallbackEvent;
 pub struct TurnCallbackView {
     pub event: TurnCallbackEvent,
     pub once: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expiry: Option<TurnCallbackExpiry>,
     pub item: SpellView,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub enum TurnCallbackExpiry {
+    /// The next actual turn of this packet's controller has not yet begun.
+    EndOfNextTurn,
+    /// Expire in this specific turn's cleanup.
+    EndOfTurn(u32),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -105,6 +115,7 @@ impl Game {
         event: TurnCallbackEvent,
         ability: u16,
         once: bool,
+        expiry: Option<TurnCallbackExpiry>,
     ) {
         let mut packet = item.clone();
         packet.id = self.next_stack_id();
@@ -126,9 +137,33 @@ impl Game {
             .push(TurnCallbackView {
                 event,
                 once,
+                expiry,
                 item: packet,
             });
     }
+    pub(super) fn expire_next_turn_callbacks(&mut self) {
+        if let Some(rules) = &mut self.state.combat_rules {
+            let expiry = Some(TurnCallbackExpiry::EndOfTurn(self.state.turn));
+            rules.turn_callbacks.retain(|row| row.expiry != expiry);
+        }
+    }
+
+    pub(super) fn queue_cast_turn_callbacks(
+        &mut self,
+        caster: Player,
+        object: Option<ObjectRef>,
+        noncreature: bool,
+    ) {
+        self.queue_matching_turn_callbacks(object, |row| {
+            row.item.controller == caster
+                && match row.event {
+                    TurnCallbackEvent::SpellCast => object.is_some(),
+                    TurnCallbackEvent::NoncreatureCast => noncreature,
+                    _ => false,
+                }
+        });
+    }
+
     pub(super) fn queue_turn_callbacks(
         &mut self,
         event: TurnCallbackEvent,

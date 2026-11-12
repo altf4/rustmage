@@ -3,10 +3,36 @@
   "catalogue_id": 972,
   "oracle_id": "67d2a021-a042-4e5f-b6e4-39cb35514794",
   "facts_sha256": "4e2464f5c0b033b12c98f718474f965df8f0b86d1c891b6a74725afe828c1f56",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "12bdb0c5947346c3ae325ee3998ba4fc98786a278d0a07943ab98e174bd5daf2"
   },
-  "physical_metadata_sha256": "38b5d56a74219a904435fafadd42ce479ae1cf84cffd44e704574e6ba052aba5"
+  "physical_metadata_sha256": "38b5d56a74219a904435fafadd42ce479ae1cf84cffd44e704574e6ba052aba5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DarkstarAugur.java",
+  "java_sha256": "d31e1644c805177efd04b680e80307f8884e009359010932d1eb69260ead489a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/RevealPutInHandLoseLifeEffect.java",
+      "sha256": "173bd84073e72de72fe9c4807517a2a6c08b54869407420de6b37027eb754159"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_black_01.rs"
 }

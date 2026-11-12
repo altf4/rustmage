@@ -3,10 +3,31 @@
   "catalogue_id": 1532,
   "oracle_id": "b173245e-2009-48ff-ac42-5f28d12aec79",
   "facts_sha256": "57ce47c6391350f40d37433e85d12d699115d124c0ac85271351b4e0ba63764f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b7cdde2dc8d46021c820e3f26f0e58494ce0ed3d6c8afe5413d40b849508d492"
   },
-  "physical_metadata_sha256": "3990b1858228b615c82c01282c8fc1196773a528d400e45dd36f6f4cbb4684e0"
+  "physical_metadata_sha256": "3990b1858228b615c82c01282c8fc1196773a528d400e45dd36f6f4cbb4684e0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FireglassMentor.java",
+  "java_sha256": "c70e90325ed0fa753f3f49f59b8b8241ff4049ebd0d9fb904cca409aa03a9eb8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/OpponentsLostLifeCondition.java",
+      "sha256": "e6e580749e62910b7a3d7eb5ed1aad71ea925393b017be31701e76f50bd00141"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfSecondMainTriggeredAbility.java",
+      "sha256": "fb8861aeb5942bdb16cc2e9aa85b448d43e8a9680ef37d4f572af0d15979269e"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_casts.rs"
 }

@@ -11,6 +11,23 @@ pub struct PaidGraveyardCastPermission {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entry_counter: Option<CounterKind>,
     pub additional_types: &'static [&'static str],
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub repeat_with_forage: bool,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Announcement {
+    pub(super) fn set_paid_graveyard_cast_permission(
+        &mut self,
+        permission: PaidGraveyardCastPermission,
+    ) {
+        self.limited_cast_permission =
+            Some(Box::new(LimitedCastPermission::PaidGraveyard(permission)));
+        if permission.repeat_with_forage {
+            self.add_cast_cost_clause(CastCostClause::Mana);
+            self.add_cast_cost_clause(CastCostClause::OriginForage);
+        }
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -20,6 +37,7 @@ impl Game {
         item: &SpellView,
         entry_counter: Option<CounterKind>,
         additional_types: &'static [&'static str],
+        repeat_with_forage: bool,
     ) {
         let Some(source) = item.source else { return };
         assert!(
@@ -39,6 +57,7 @@ impl Game {
                 turn: self.state.turn,
                 entry_counter,
                 additional_types,
+                repeat_with_forage,
             });
     }
 
@@ -58,19 +77,7 @@ impl Game {
         {
             return None;
         }
-        let definition = if method == CastMethod::Disguise {
-            if face != CastFace::Normal {
-                return None;
-            }
-            self.disguise_cast_definition(object.card)
-        } else {
-            match face {
-                CastFace::Normal => Some(card.card),
-                CastFace::Adventure => card.card.adventure_spell(),
-                CastFace::Omen => card.card.omen_spell(),
-                CastFace::Back => card.card.back_face(),
-            }
-        }?;
+        let definition = self.paid_graveyard_spell_definition(object, face, method)?;
         if !definition.is_creature() || matches!(definition.effect(), Effect::Unsupported) {
             return None;
         }
@@ -81,6 +88,26 @@ impl Game {
             .iter()
             .copied()
             .find(|row| row.player == actor && row.turn == self.state.turn && row.id == permission)
+    }
+
+    fn paid_graveyard_spell_definition(
+        &self,
+        object: ObjectRef,
+        face: CastFace,
+        method: CastMethod,
+    ) -> Option<Card> {
+        let card = self.state.objects[object.card as usize].card;
+        if method == CastMethod::Disguise {
+            return (face == CastFace::Normal)
+                .then(|| self.disguise_cast_definition(object.card))
+                .flatten();
+        }
+        match face {
+            CastFace::Normal => Some(card),
+            CastFace::Adventure => card.adventure_spell(),
+            CastFace::Omen => card.omen_spell(),
+            CastFace::Back => card.back_face(),
+        }
     }
 
     pub(super) fn visit_paid_graveyard_casts(
@@ -140,12 +167,24 @@ impl Game {
                 ) {
                     return true;
                 }
+                let free = permission.repeat_with_forage
+                    && self
+                        .paid_graveyard_spell_definition(object, face, CastMethod::Normal)
+                        .is_some_and(|definition| {
+                            self.filtered_free_cast_available(actor, definition)
+                                || self.turn_free_creature_available(actor, definition)
+                        });
                 let costs = [
                     (CastMethod::Normal, false),
                     (CastMethod::Normal, true),
                     (CastMethod::Sneak, false),
+                    (CastMethod::Free, false),
+                    (CastMethod::Free, true),
                 ];
                 for (method, flash_surcharge) in costs {
+                    if method == CastMethod::Free && !free {
+                        continue;
+                    }
                     if method == CastMethod::Sneak
                         && (face != CastFace::Normal
                             || self.state.active != actor
@@ -229,12 +268,13 @@ impl Game {
         item.cast.as_mut().unwrap().method = method;
         if method == CastMethod::Sneak {
             Self::configure_sneak(&mut item);
+        } else if method == CastMethod::Free && item.source.unwrap().card.x_symbols() > 0 {
+            item.x = Some(0);
         }
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         self.apply_paid_graveyard_spell_types(&mut item, permission);
         self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
-            a.limited_cast_permission =
-                Some(Box::new(LimitedCastPermission::PaidGraveyard(permission)));
+            a.set_paid_graveyard_cast_permission(permission);
         });
     }
 
@@ -243,17 +283,19 @@ impl Game {
         item: &SpellView,
         permission: PaidGraveyardCastPermission,
     ) {
-        let permissions = &mut self
-            .state
-            .linked_choices
-            .as_mut()
-            .unwrap()
-            .graveyard_paid_permissions;
-        let position = permissions
-            .iter()
-            .position(|row| *row == permission)
-            .expect("retained paid graveyard grant");
-        permissions.remove(position);
+        if !permission.repeat_with_forage {
+            let permissions = &mut self
+                .state
+                .linked_choices
+                .as_mut()
+                .unwrap()
+                .graveyard_paid_permissions;
+            let position = permissions
+                .iter()
+                .position(|row| *row == permission)
+                .expect("retained paid graveyard grant");
+            permissions.remove(position);
+        }
         if let Some(kind) = permission.entry_counter {
             self.record_cast_entry_counters(item.source.expect("paid spell").object, kind, 1);
         }

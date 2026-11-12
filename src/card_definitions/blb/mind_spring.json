@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c029a29b532149cb4c4a8420ccc1cb7f5c5f26d980a2a313bb99fa622ca7d817"
   },
-  "physical_metadata_sha256": "da02ddb34fbd6308ed81b45b46ee427a924ee3d17a91fa3c79baadf6084a7657"
+  "physical_metadata_sha256": "da02ddb34fbd6308ed81b45b46ee427a924ee3d17a91fa3c79baadf6084a7657",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MindSpring.java",
+  "java_sha256": "f0bfb27159308ed0e560b7bab11bcdde559ce78e7f7c38e78f2593656e6cc005",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/GetXValue.java",
+      "sha256": "f89e88f92691f18be851d355a42fecc0dfa47cc55d5f67c1a7aee84426f98cc0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_blue.rs"
 }

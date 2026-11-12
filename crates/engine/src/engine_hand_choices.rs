@@ -26,6 +26,7 @@ pub enum HandChoiceKind {
     },
     /// Mandatory permanent unlinked exile of a card with no land type.
     ExileRevealedNonland,
+    ExileRevealedNonlandCast,
     ExileRevealedOrCreature,
     ExileRevealedLinked,
     ExileRevealedLinkedOptional,
@@ -465,7 +466,11 @@ impl Game {
         });
         true
     }
-    pub(super) fn start_revealed_hand_exile_nonland(&mut self, item: &SpellView) -> bool {
+    pub(super) fn start_revealed_hand_exile_nonland(
+        &mut self,
+        item: &SpellView,
+        cast_while_exiled: bool,
+    ) -> bool {
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
@@ -480,7 +485,11 @@ impl Game {
             return false;
         }
         self.set_hand_interaction(HandInteraction {
-            kind: HandChoiceKind::ExileRevealedNonland,
+            kind: if cast_while_exiled {
+                HandChoiceKind::ExileRevealedNonlandCast
+            } else {
+                HandChoiceKind::ExileRevealedNonland
+            },
             actor: item.controller,
             controller: item.controller,
             victim: Some(victim),
@@ -526,7 +535,7 @@ impl Game {
                     && o.is_card()
                     && self.current_kinds(reference.card) & kinds != 0
             }
-            HandChoiceKind::ExileRevealedNonland => {
+            HandChoiceKind::ExileRevealedNonland | HandChoiceKind::ExileRevealedNonlandCast => {
                 o.zone == Zone::Hand
                     && Some(o.owner) == interaction.victim
                     && o.is_card()
@@ -678,6 +687,21 @@ impl Game {
                 | HandChoiceKind::ExileRevealedNonland => {
                     self.move_object(object.card, Zone::Exile);
                 }
+                HandChoiceKind::ExileRevealedNonlandCast => {
+                    let event = self.move_object(object.card, Zone::Exile);
+                    if event.moved
+                        && event.destination == Zone::Exile
+                        && let Some(permission) = self.grant_exile_play_permission_with_expiry(
+                            interaction.controller,
+                            event.after,
+                            None,
+                            exile::ExilePlayExpiry::WhileExiled,
+                        )
+                    {
+                        permission.cast_only = true;
+                        permission.spend_any_mana = true;
+                    }
+                }
                 HandChoiceKind::ExileRevealedOrCreature
                 | HandChoiceKind::LookMayExileUntilSourceLeaves => {
                     let origin = self
@@ -689,7 +713,7 @@ impl Game {
                         interaction.source,
                         &[object],
                         origin,
-                    )
+                    );
                 }
                 HandChoiceKind::ExileRevealedLinked => {
                     let event = self.move_object(object.card, Zone::Exile);

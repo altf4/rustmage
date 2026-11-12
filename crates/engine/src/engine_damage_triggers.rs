@@ -339,6 +339,20 @@ impl Game {
         }
     }
 
+    pub(super) fn live_combat_damage_dealer(&self, item: &SpellView) -> Option<CardId> {
+        let dealer = item
+            .creature_combat_event
+            .as_ref()
+            .map(|event| event.dealer)
+            .or_else(|| {
+                item.damage_event
+                    .filter(|event| event.combat)
+                    .and_then(|event| event.dealer)
+            })?;
+        (self.on_battlefield(dealer.card) && self.object_ref(dealer.card) == dealer)
+            .then_some(dealer.card)
+    }
+
     pub(super) fn player_damage_triggers(&mut self, events: &[DamageEvent]) {
         if self.state.damage_sources.is_empty() {
             return;

@@ -144,12 +144,13 @@ impl Game {
         };
         let additional = a.additional_cost().and_then(|spec| {
             use additional_costs::ManaCostObjects;
-            let selection =
-                if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
-                    ManaCostObjects::from_slice(a.additional_group.as_deref()?)
-                } else {
-                    ManaCostObjects::One(a.additional?)
-                };
+            let selection = if spec.kind == EffectChoiceKind::Forage {
+                ManaCostObjects::from_slice(&a.forage.as_ref()?.selected)
+            } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
+                ManaCostObjects::from_slice(a.additional_group.as_deref()?)
+            } else {
+                ManaCostObjects::One(a.additional?)
+            };
             Some((spec, selection))
         });
         self.start_cast_mana_capture(

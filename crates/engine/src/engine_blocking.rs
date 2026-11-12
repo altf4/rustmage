@@ -150,6 +150,12 @@ impl Game {
             rules.blocker_power_limits.iter().any(|limit| {
                 limit.attacker == attacker && self.stats(blocker).power >= i128::from(limit.minimum)
             })
+        }) || self.active_rule_fragment(attacker, |fragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::CannotBeBlockedByCreaturesWithPowerAtLeast(minimum)
+                    if self.stats(blocker).power >= *minimum
+            )
         })
     }
 

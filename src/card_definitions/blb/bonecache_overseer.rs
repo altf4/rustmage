@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const DEPARTURES: StatValue = StatValue::AtLeast {
+    value: &StatValue::CardsLeftGraveyardThisTurn,
+    minimum: 3,
+};
+const FOOD: StatValue = StatValue::FoodSacrificedThisTurn;
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Creature(1, 1),
+    activated: &[ActivatedAbility {
+        exhaust: false,
+        guard: ActivationGuard::StatAtLeast {
+            value: StatValue::Sum(&[DEPARTURES, FOOD]),
+            minimum: 1,
+        },
+        cycling: false,
+        origin: ActivationOrigin::Battlefield,
+        cost: ActivationCost {
+            tap: true,
+            life: 1,
+            ..ActivationCost::ZERO
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        sorcery: false,
+        once_per_turn: false,
+    }],
     ..CardRules::EMPTY
 };

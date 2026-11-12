@@ -274,6 +274,17 @@ impl Game {
         if tokens.is_empty() {
             return;
         }
+        if let TokenCleanup::NextEndStepExile { ability } = cleanup {
+            self.schedule_delayed_step(
+                item,
+                TriggerStep::End,
+                CastRelation::Any,
+                ability,
+                tokens,
+                None,
+            );
+            return;
+        }
         let Some(source) = item.source else {
             return;
         };

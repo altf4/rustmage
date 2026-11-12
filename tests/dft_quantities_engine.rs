@@ -321,7 +321,7 @@ fn total_counter_quantity_opts_in_through_conditional_headers_and_nested_modal_p
             skip: 0,
         }],
     }])];
-    let facts = card_quantities::counter_quantity_facts(program, |kind| {
+    let facts = card_quantities::counter_quantity_facts(program, TargetPlan::NONE, |kind| {
         if kind == CounterKind::Charge { 7 } else { 0 }
     })
     .unwrap();

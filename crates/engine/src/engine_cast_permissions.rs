@@ -10,6 +10,8 @@ pub(super) struct OriginAlternative {
     pub web_slinging: Option<ManaCost>,
     pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
+    pub library_top: Option<LibraryTopCastPermission>,
+    pub resolution_discard: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -579,6 +581,8 @@ impl Game {
             web_slinging,
             linked_exile_paid,
             paid_graveyard,
+            library_top,
+            resolution_discard,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -773,6 +777,20 @@ impl Game {
             },
             |spec| spec.x_symbols > 0,
         );
+        if object.zone == Zone::Library
+            && library_top.is_none()
+            && method != CastMethod::LibraryLife
+            && self.state.resolving.is_none()
+            && !scalar_x
+            && !cast_origins::library_spell_value_permission(
+                self,
+                actor,
+                definition,
+                item.mana_value(),
+            )
+        {
+            return false;
+        }
         if scalar_x
             && !self.cast_uses_target_life_costs(actor, definition)
             && origin_life_cost.is_none()
@@ -780,6 +798,8 @@ impl Game {
             && exile_play_surcharge == 0
             && linked_exile_paid.is_none()
             && paid_graveyard.is_none()
+            && library_top.is_none()
+            && !(object.zone == Zone::Library && flash_surcharge)
         {
             return !self
                 .scalar_x_intervals_for_definition(actor, card, definition)
@@ -797,7 +817,7 @@ impl Game {
             activation_reductions: None,
             limited_cast_permission: linked_exile_paid
                 .map(LimitedCastPermission::LinkedExilePaid)
-                .or_else(|| paid_graveyard.map(LimitedCastPermission::PaidGraveyard))
+                .or_else(|| library_top.map(LimitedCastPermission::LibraryTop))
                 .map(Box::new),
             origin_counter_cost,
             origin_additional_cost,
@@ -830,6 +850,12 @@ impl Game {
             harmonize_discount: 0,
             additional_paid: false,
         };
+        if let Some(permission) = paid_graveyard {
+            a.set_paid_graveyard_cast_permission(permission);
+        }
+        if resolution_discard {
+            a.add_origin_discard_cost();
+        }
         let life = warp
             .map(|spec| spec.life)
             .filter(|&life| life != 0)
@@ -844,6 +870,7 @@ impl Game {
                 | CastMethod::WebSlinging
         ) || origin_additional_cost.is_some()
             || life.is_some() && warp.is_none()
+            || resolution_discard
         {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }

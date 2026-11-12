@@ -77,25 +77,47 @@ impl Game {
             .extend(ready.into_iter().map(|row| row.item));
     }
 
-    fn delayed_battlefield_objects(&self, item: &SpellView) -> Vec<CardId> {
-        let Some(group) = &item.event_object else {
-            return Vec::new();
-        };
-        let additional = group
-            .semantic_objects
+    fn delayed_objects_in_zone<'a>(
+        &'a self,
+        item: &'a SpellView,
+        zone: Zone,
+    ) -> impl Iterator<Item = CardId> + 'a {
+        item.event_object
             .iter()
-            .flat_map(|rows| rows.iter())
-            .filter_map(|reference| match *reference {
-                DamageSourceRef::Object(object) => Some(object),
-                DamageSourceRef::StackObject { .. } => None,
-            });
-        std::iter::once(group.object)
-            .chain(additional)
-            .filter(|&object| {
-                self.on_battlefield(object.card) && self.object_ref(object.card) == object
+            .flat_map(|group| {
+                let additional = group
+                    .semantic_objects
+                    .iter()
+                    .flat_map(|rows| rows.iter())
+                    .filter_map(|reference| match *reference {
+                        DamageSourceRef::Object(object) => Some(object),
+                        DamageSourceRef::StackObject { .. } => None,
+                    });
+                std::iter::once(group.object).chain(additional)
+            })
+            .filter(move |&object| {
+                self.state
+                    .objects
+                    .get(object.card as usize)
+                    .is_some_and(|current| {
+                        current.zone == zone && current.generation == object.generation
+                    })
             })
             .map(|object| object.card)
-            .collect()
+    }
+
+    pub(super) fn count_delayed_exiled_cards(&self, item: &SpellView) -> usize {
+        self.delayed_objects_in_zone(item, Zone::Exile)
+            .filter(|&id| self.state.objects[id as usize].is_card())
+            .count()
+    }
+
+    pub(super) fn exile_delayed_battlefield_objects(&mut self, item: &SpellView) {
+        let ids = self
+            .delayed_objects_in_zone(item, Zone::Battlefield)
+            .collect::<Vec<_>>();
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn remove_delayed_object_counters(
@@ -104,14 +126,19 @@ impl Game {
         kind: CounterKind,
         amount: u64,
     ) {
-        for id in self.delayed_battlefield_objects(item) {
+        let ids = self
+            .delayed_objects_in_zone(item, Zone::Battlefield)
+            .collect::<Vec<_>>();
+        for id in ids {
             let removed = self.counter_count(id, kind).min(amount);
             self.pay_counters(id, &Counters::of(kind, removed));
         }
     }
 
     pub(super) fn return_delayed_battlefield_objects_to_hand(&mut self, item: &SpellView) {
-        let ids = self.delayed_battlefield_objects(item);
+        let ids = self
+            .delayed_objects_in_zone(item, Zone::Battlefield)
+            .collect::<Vec<_>>();
         let events = self.move_objects_raw(&ids, Zone::Hand);
         self.finish_zone_events(&events, &[]);
     }

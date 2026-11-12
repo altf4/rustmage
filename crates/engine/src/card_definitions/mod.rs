@@ -201,12 +201,14 @@ impl CardRules {
                         );
                     }
                     grant @ (StaticAbilityFragment::ControlledArtifactFood(ability)
+                    | StaticAbilityFragment::OtherCreaturesFood(ability)
                     | StaticAbilityFragment::ControlledArtifactActivation(ability)) => {
                         assert!(
                             matches!(
                                 (grant, self.static_groups[group].first_layer),
                                 (
-                                    StaticAbilityFragment::ControlledArtifactFood(_),
+                                    StaticAbilityFragment::ControlledArtifactFood(_)
+                                        | StaticAbilityFragment::OtherCreaturesFood(_),
                                     AbilityLayer::Type
                                 ) | (
                                     StaticAbilityFragment::ControlledArtifactActivation(_),

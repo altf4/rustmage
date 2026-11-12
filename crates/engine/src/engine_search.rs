@@ -11,6 +11,16 @@ pub(super) struct SearchResult {
     pub put_in_hand: bool,
     pub capture_next_entry: bool,
     pub closed: bool,
+    /// Further exact returns, for example the other half of a melded permanent.
+    pub blink_companions: Vec<(ObjectRef, Option<ObjectRef>)>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SearchResult {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.blink_companions.len() * std::mem::size_of::<(ObjectRef, Option<ObjectRef>)>()
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -354,6 +364,14 @@ impl Game {
             .filter(|event| event.destination == Zone::Exile)
             .map(|event| event.after);
         frame.put_in_hand = movement.is_some_and(|event| event.destination == Zone::Hand);
+        for (origin, entered) in &mut frame.blink_companions {
+            *entered = events.iter().find_map(|event| {
+                (event.before.reference == *origin
+                    && event.moved
+                    && event.destination == Zone::Battlefield)
+                    .then_some(event.after)
+            });
+        }
     }
 
     pub(super) fn exiled_search_result(&self) -> Option<ObjectRef> {
@@ -455,6 +473,31 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn captured_entry_result_has_subtype(&self, subtypes: &[&str]) -> bool {
+        self.state
+            .resolving
+            .as_ref()
+            .and_then(|resolution| resolution.search_result.as_ref())
+            .is_some_and(|frame| {
+                frame
+                    .entered
+                    .into_iter()
+                    .chain(
+                        frame
+                            .blink_companions
+                            .iter()
+                            .filter_map(|(_, entered)| *entered),
+                    )
+                    .any(|object| {
+                        self.on_battlefield(object.card)
+                            && self.object_ref(object.card) == object
+                            && subtypes
+                                .iter()
+                                .any(|subtype| self.has_subtype(object.card, subtype))
+                    })
+            })
+    }
+
     pub(super) fn captured_entry_result(&self) -> Option<ObjectRef> {
         self.state
             .resolving

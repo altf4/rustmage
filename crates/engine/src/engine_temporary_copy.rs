@@ -252,6 +252,7 @@ impl Game {
             recipe.replacement_subtype = None;
             recipe.exceptions.spider_human_hero = false;
             recipe.exceptions.shapeshifter_rogue = false;
+            recipe.exceptions.bird = false;
             recipe.exceptions.reflection = false;
         }
         let types = incoming
@@ -801,9 +802,15 @@ impl Game {
     pub(super) fn reset_copy_turn_uses(&mut self) {
         if let Some(rows) = &mut self.state.temporary_copies {
             for row in rows.iter_mut() {
-                row.original_used &= row.physical_card.exhaust_mask();
+                row.original_used = row
+                    .physical_card
+                    .retain_lifetime_activation_uses(row.original_used);
                 for layer in &mut row.layers {
-                    layer.used_abilities &= layer.value.recipe.definition.exhaust_mask();
+                    layer.used_abilities = layer
+                        .value
+                        .recipe
+                        .definition
+                        .retain_lifetime_activation_uses(layer.used_abilities);
                 }
             }
         }

@@ -63,6 +63,32 @@ impl Game {
         let Some(context) = item.gift_context() else {
             return;
         };
+        // Giving the gift is a resolution event even if the payload is replaced
+        // or the beneficiary cannot receive it (CR 702.174c).
+        let givers: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.zone == Zone::Battlefield
+                    && object.controller == item.controller
+                    && object
+                        .card
+                        .triggers()
+                        .iter()
+                        .any(|ability| ability.condition.event() == TriggerCondition::GiftGiven)
+            })
+            .map(|(id, _)| id as CardId)
+            .collect();
+        for id in givers {
+            let source = self.object_view(id);
+            for (index, ability) in source.card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::GiftGiven {
+                    self.queue_trigger(&source, index);
+                }
+            }
+        }
         match context.kind {
             GiftKind::Card => self.draw_many(context.beneficiary, 1),
             GiftKind::Food | GiftKind::Treasure | GiftKind::TappedFish => {

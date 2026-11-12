@@ -169,14 +169,22 @@ impl Game {
                         && has_counters(*id)
                 })
                 .count() as i128,
-            StatValue::ControlledCreaturesWithCounter(kind) => objects()
-                .filter(|&(id, object)| {
-                    object.zone == Zone::Battlefield
-                        && object.controller == owner
-                        && kinds(id, object) & 1 != 0
-                        && counter_count(id, kind) > 0
-                })
-                .count() as i128,
+            StatValue::ControlledCreaturesWithCounter(kind)
+            | StatValue::ControlledLandsWithCounter(kind) => {
+                let required = if matches!(value, StatValue::ControlledLandsWithCounter(_)) {
+                    2
+                } else {
+                    1
+                };
+                objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && kinds(id, object) & required != 0
+                            && counter_count(id, kind) > 0
+                    })
+                    .count() as i128
+            }
             StatValue::DistinctCreatureCounterKinds => {
                 // No allocation or source-owned counter copy, including sparse kinds.
                 let mut present = [false; CounterKind::ALL.len()];
@@ -347,9 +355,16 @@ impl Game {
                 }
                 i128::from(sizes.into_iter().any(|size| size <= usize::from(maximum)))
             }
-            StatValue::ControllerHandSize => objects()
-                .filter(|(_, o)| o.owner == owner && o.zone == Zone::Hand && o.is_card())
-                .count() as i128,
+            StatValue::ControllerHandSize | StatValue::OpponentHandSize => {
+                let player = if value == StatValue::ControllerHandSize {
+                    owner
+                } else {
+                    owner.other()
+                };
+                objects()
+                    .filter(|(_, o)| o.owner == player && o.zone == Zone::Hand && o.is_card())
+                    .count() as i128
+            }
             StatValue::MountOrVehicleEntriesThisTurn => {
                 i128::from(self.state.players[owner.index()].mount_or_vehicle_entries_this_turn)
             }
@@ -357,14 +372,27 @@ impl Game {
                 i128::from(self.state.players[owner.index()].nonland_permanents_entered_this_turn)
             }
             StatValue::ControlledCreatureDiedThisTurn => {
-                i128::from(self.state.players[owner.index()].controlled_creature_died_this_turn)
+                i128::from(world.controlled_creatures_died(owner) > 0)
+            }
+            StatValue::ControlledCreaturesDiedThisTurn => {
+                i128::from(world.controlled_creatures_died(owner))
             }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
+            StatValue::OpponentLostLifeThisTurn => i128::from(world.lost_life(owner.other())),
+            StatValue::CardsLeftGraveyardThisTurn => {
+                i128::from(world.graveyard_departure_count(owner))
+            }
+            StatValue::FoodSacrificedThisTurn => i128::from(world.food_sacrificed(owner)),
             StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
                 object.zone == Zone::Exile
                     && object.owner == owner
                     && self.is_adventurer_card(id, object)
             })),
+            StatValue::GraveyardCards => objects()
+                .filter(|(_, card)| {
+                    card.zone == Zone::Graveyard && card.owner == owner && card.is_card()
+                })
+                .count() as i128,
             StatValue::GraveyardInstantSorceryAdventure => {
                 adventure::graveyard_instant_sorcery_adventure_count(
                     owner,
@@ -530,6 +558,9 @@ impl Game {
             StatValue::CreatureSpellsCastThisTurn => {
                 i128::from(self.state.players[owner.index()].creature_spells_cast_this_turn)
             }
+            StatValue::InstantSorcerySpellsCastThisTurn => {
+                i128::from(self.state.players[owner.index()].instant_sorcery_cast_this_turn)
+            }
             StatValue::NoncreatureSpellsCastThisTurn => {
                 let player = &self.state.players[owner.index()];
                 i128::from(
@@ -634,6 +665,19 @@ impl Game {
                     .count(),
             )
             .capacity("stat count exhausted"),
+            StatValue::CreaturesOfChosenType => {
+                let Some(EntryChoiceValue::CreatureType(typ)) = world.entry_value(source) else {
+                    return 0;
+                };
+                objects()
+                    .filter(|&(id, object)| {
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && kinds(id, object) & 1 != 0
+                            && subtypes(id).has(object.card, typ.name())
+                    })
+                    .count() as i128
+            }
             StatValue::DistinctManaValues(filter) => {
                 let mut values: Vec<_> = objects()
                     .filter(|&(id, o)| {
@@ -779,7 +823,23 @@ impl Game {
                 .into_iter()
                 .map(|object| u128::from(self.object_mana_value(object.card)))
                 .sum(),
+            AmountValue::ControlledCreaturePowerCount { minimum } => {
+                let query = self.characteristic_query();
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter(|(id, object)| {
+                        let id = *id as CardId;
+                        object.zone == Zone::Battlefield
+                            && object.controller == owner
+                            && ability_world::CharacteristicWorld::kinds(&query, id) & 1 != 0
+                            && query.stats(id).power >= i128::from(minimum)
+                    })
+                    .count() as u128
+            }
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
+            AmountValue::TokensYouControl => self.controlled_token_ids(owner).count() as u128,
             AmountValue::NonbasicLandsYouControl => self.nonbasic_land_count(owner) as u128,
             AmountValue::Devotion(color) => self
                 .state
@@ -854,6 +914,7 @@ impl Game {
             | AmountValue::TargetPlayerHandSize
             | AmountValue::TargetPlayerLibraryToGraveyardThisTurn
             | AmountValue::TargetPlayerCreatureCount
+            | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
             | AmountValue::MovedCount
             | AmountValue::RememberedCount

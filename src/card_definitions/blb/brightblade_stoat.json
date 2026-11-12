@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "41a4ff0d9973935436928b56da8f048ff3f1f8f0d6bdf1250e1163a7f85ca04d"
   },
-  "physical_metadata_sha256": "c333a8a2ca1e41c12ee7b3719fb01ef0cf458ce305196aed9071bf55e4554c2b"
+  "physical_metadata_sha256": "c333a8a2ca1e41c12ee7b3719fb01ef0cf458ce305196aed9071bf55e4554c2b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BrightbladeStoat.java",
+  "java_sha256": "13abfe49ddfbe3dbde172aaa58831611f30c94ceddd44a1320cdb66839004c4d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirstStrikeAbility.java",
+      "sha256": "997831ae93b8f148ce96ac211e3e2a86e2df46403677fe1106d7c20554678235"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_white.rs"
 }

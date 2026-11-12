@@ -522,7 +522,7 @@ fn anchor_requires_both_own_turn_and_actual_own_graveyard_departure_before_annou
         );
         g.state.active = p;
         g.begin_turn();
-        assert!(!g.state.players[p.index()].card_left_graveyard_this_turn);
+        assert_eq!(g.state.players[p.index()].cards_left_graveyard_this_turn, 0);
     }
 }
 

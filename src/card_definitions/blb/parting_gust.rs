@@ -1,16 +1,35 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const TARGET: TargetPlan = TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
+    base: &TargetRule::Creature,
+    predicate: &TargetPredicate::Nontoken,
+}));
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TARGET,
+        &[
+            Instruction::GiveGift,
+            Instruction::IfGift {
+                promised: true,
+                skip: 1,
+            },
+            Instruction::Exile,
+            Instruction::IfGift {
+                promised: false,
+                skip: 1,
+            },
+            Instruction::BlinkUntilEndStepWithCounter {
+                counter: CounterKind::PlusOne,
+                actual_exile_only: false,
+            },
+        ],
+    ),
+    extras: &CardExtras {
+        gift: Some(GiftSpec {
+            kind: GiftKind::TappedFish,
+            token: Some(Card(5317)),
+            promised_targets: TARGET,
+        }),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

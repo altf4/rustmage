@@ -32,7 +32,7 @@ fn route(g: &Game, card: CardId) -> Action {
         method: CastMethod::Normal,
         flash_surcharge: false,
         life: 3,
-        entry_counter: CounterKind::Finality,
+        entry_counter: Some(CounterKind::Finality),
     }
 }
 

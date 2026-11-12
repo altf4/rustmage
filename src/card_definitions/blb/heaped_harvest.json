@@ -3,10 +3,46 @@
   "catalogue_id": 1976,
   "oracle_id": "bbfc5011-a9b7-442d-a443-974a5a64de46",
   "facts_sha256": "301ff86de709004ba15f5c0fda6afb0e134c2839f4c78bd318bbd5f06ba5b5ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cffb24e23ed8e97e696d88207b3dedac342bab74fb26f05e3742f0bd0d32dc60"
   },
-  "physical_metadata_sha256": "ff081e1b85fea19e56b56ba808ca75844bf507c279ef1abf4214df95ce5f1a49"
+  "physical_metadata_sha256": "ff081e1b85fea19e56b56ba808ca75844bf507c279ef1abf4214df95ce5f1a49",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HeapedHarvest.java",
+  "java_sha256": "71b3ace3c8b61d8496a023ad8854c0f1ec778c376683b098855d2199afbb61c1",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SacrificeSourceTriggeredAbility.java",
+      "sha256": "aaf077484872644c7f9b2d70c878b76f7880edae52611abf89575e0cd6ffc60c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/meta/OrTriggeredAbility.java",
+      "sha256": "c9914e0f4ca4c5081ba6240285f9190d1969bef1f9f42ba9f23f245250a0a4a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/token/FoodAbility.java",
+      "sha256": "79d6d33dd5aa5cf0a53784c96639953598780ecb010fcb3adc5f3db677ee22b4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_entries.rs"
 }

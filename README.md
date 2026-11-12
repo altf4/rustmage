@@ -89,7 +89,7 @@ Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
 | Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
 | Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
 | Avatar: The Last Airbender | TLA | 108/286 (38%) | ⏳ Partial |
-| Bloomburrow | BLB | 135/279 (48%) | ⏳ Partial |
+| Bloomburrow | BLB | 279/279 (100%) | ✅ Complete |
 | Duskmourn: House of Horror | DSK | 91/276 (33%) | ⏳ Partial |
 | Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |
 | Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |

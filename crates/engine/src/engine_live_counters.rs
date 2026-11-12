@@ -109,6 +109,11 @@ impl Game {
             self.state.objects[id as usize].counters = hot;
         }
         let object = self.object_ref(id);
+        if let Some(roles) = &mut self.state.roles {
+            roles
+                .basic_land_types
+                .retain(|row| !row.expires_with(object, &counters));
+        }
         set(&mut self.state.named_counters, object, counters.named);
         if before != after {
             keyword_counters::sync_effects(

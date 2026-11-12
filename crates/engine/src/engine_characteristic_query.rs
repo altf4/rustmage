@@ -744,6 +744,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(Keywords::RIOT)
                         }
+                        StaticAbilityFragment::ConditionalEquippedCreatureKeywords {
+                            condition,
+                            keywords: grant,
+                        } if target.controller == object.controller
+                            && self.is_creature(id)
+                            && self.equipped(id)
+                            && self.world.value(condition, source) != 0 =>
+                        {
+                            keywords = keywords.union(grant)
+                        }
                         StaticAbilityFragment::ControlledEquippedCreatureKeywords(grant)
                             if target.controller == object.controller
                                 && self.is_creature(id)
@@ -1145,16 +1155,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             Some(ward)
                         }
-                        StaticAbilityFragment::ConditionalWard {
-                            condition,
-                            filter,
-                            ability,
-                        } if self
+                        StaticAbilityFragment::ConditionalWard { .. }
+                        | StaticAbilityFragment::CounterBearingPermanentWard { .. } => self
                             .world
-                            .conditional_ward_applies(source, condition, filter, recipient) =>
-                        {
-                            Some(ability)
-                        }
+                            .conditional_ward_ability(source, recipient, *fragment),
                         StaticAbilityFragment::ControlledCreatureTrigger {
                             ability,
                             other,
@@ -1435,6 +1439,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()
+    }
+    fn controlled_creatures_died(&self, player: Player) -> u64 {
+        self.world.controlled_creatures_died(player)
     }
     fn card_left_graveyard(&self, player: Player) -> bool {
         self.world.card_left_graveyard(player)

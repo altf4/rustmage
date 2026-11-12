@@ -3,10 +3,36 @@
   "catalogue_id": 4832,
   "oracle_id": "81c509b2-3164-47e9-94b3-bdba0487d2f1",
   "facts_sha256": "2e8a4e4cca22d21475ecad17867d7a764651130d9ce2ebcc92dbd0506ba2c531",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9b742cccaf813eac7d342e39d1e63149c6a0012e03dc15ee8c7ef369c920f1c9"
   },
-  "physical_metadata_sha256": "6cb0377b7446f25eb55f35dd9c257546b4e0e6c4843821e9d812f3c06abb2e99"
+  "physical_metadata_sha256": "6cb0377b7446f25eb55f35dd9c257546b4e0e6c4843821e9d812f3c06abb2e99",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValleyQuestcaller.java",
+  "java_sha256": "5154709aa077fd57c149285422157e2e449f5ac3e16872d833e6ec3b907357c9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOneOrMoreTriggeredAbility.java",
+      "sha256": "b2036e1b813dfb756550392d8942d44c19bc686360e9fd61d6253b4c982a8ed9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ScryEffect.java",
+      "sha256": "2b5d4d62bb612633238db872252ec41349e37180816e4a965002ee3b6f8d0b58"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_classes.rs"
 }

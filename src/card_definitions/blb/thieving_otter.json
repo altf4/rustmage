@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "835872e5262825883eb6cce399e0be1a4053f9d9b8d7d91376cad9737c36a01e"
   },
-  "physical_metadata_sha256": "4ea72df735100d2cd8af76d6484ca021661353963b082bf8acf15e7777aa7b98"
+  "physical_metadata_sha256": "4ea72df735100d2cd8af76d6484ca021661353963b082bf8acf15e7777aa7b98",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThievingOtter.java",
+  "java_sha256": "332b1e91931eaf642325640c36033c0fecab6c2e149399fb181024ce0edc6ef5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsDamageToOpponentTriggeredAbility.java",
+      "sha256": "e67524334cee9f522e30fd08c89da9c13b107aacb68922cb8b47279a76eb1195"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_blue.rs"
 }

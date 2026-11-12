@@ -49,5 +49,6 @@
       "sha256": "36c9c240bb0e9509d304d9300d0a157085253b4ab5d9a52cbdf1d051a43221b6"
     }
   ],
-  "implementation": "Full DFT Oracle/main XMage and reusable bodies reviewed; working directly authored typed land behavior preserved. Every printed obligation has actual legal-action outcome evidence in docs/aetherdrift-audit/colorless-inherited-lands-authored.json; root validation is recorded there."
+  "implementation": "Full DFT Oracle/main XMage and reusable bodies reviewed; working directly authored typed land behavior preserved. Every printed obligation has actual legal-action outcome evidence in docs/aetherdrift-audit/colorless-inherited-lands-authored.json; root validation is recorded there.",
+  "rules_tests": "tests/dft_colorless_cards_inherited_lands.rs::each_gainland_enters_tapped_gains_its_controller_one_life_then_produces_either_color"
 }

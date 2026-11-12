@@ -102,6 +102,11 @@ impl Announcement {
             for &object in &costs.teammates {
                 add(object);
             }
+            if let Some(selection) = &costs.origin_forage {
+                for &object in &selection.selected {
+                    add(object);
+                }
+            }
             for row in &costs.clauses {
                 match row.clause {
                     CastCostClause::Blight {
@@ -243,6 +248,7 @@ impl EntryProjection {
                 timestamp,
                 static_source: true,
                 permanent: false,
+                expires_at_next_turn_of: None,
             });
         }
         if !card.live_static_effects().is_empty() {
@@ -271,6 +277,7 @@ impl EntryProjection {
                         F::AttachedCharacteristics(_)
                             | F::AttachedChosenColor
                             | F::ControlledArtifactFood(_)
+                            | F::OtherCreaturesFood(_)
                     )
                 })
             }) {
@@ -501,6 +508,7 @@ impl FundingState<'_> {
             }
             StepGuard::Always => true,
             StepGuard::FirstCombatPhase => self.game.first_combat_phase(),
+            StepGuard::SecondMainPhase => self.game.second_main_phase(),
             StepGuard::SourceSneakedThisTurn => self.game.source_sneaked_this_turn(source),
             StepGuard::PermanentLeftBattlefieldThisTurn => {
                 self.permanent_left_battlefield[player.index()]
@@ -531,6 +539,7 @@ impl FundingState<'_> {
             StepGuard::OpponentNoncombatDamageLastTurn => {
                 self.game.state.players[player.other().index()].noncombat_damage_last_turn
             }
+            StepGuard::GainedOrLostLife => self.gained_life(player) || self.lost_life(player),
             StepGuard::GainedAndLostLife => self.gained_life(player) && self.lost_life(player),
             StepGuard::Attacked => state.attacked_this_turn,
             StepGuard::CreatureDied => self.creatures_died > 0,
@@ -886,7 +895,7 @@ impl FundingState<'_> {
     }
     fn initialize_entry_tap(&self, m: &mut entries::EntryMove) -> Vec<entry_tap::EntryTapEffect> {
         let mut effects = Vec::new();
-        let kinds = if m.requires_characteristic_preview() {
+        let kinds = if m.requires_characteristic_preview(self) {
             self.preview_entry_view(&m.replacement_preview())
                 .map_or_else(|| m.entry_kinds(), |view| view.kinds)
         } else {
@@ -1396,6 +1405,36 @@ impl FundingState<'_> {
                                 }
                             }
                         }
+                        if let StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat {
+                            kind,
+                            amount,
+                        } = *fragment
+                            && self.fragment_available(id, |f| std::ptr::eq(f, fragment))
+                        {
+                            let reference = self.reference(id);
+                            let count = self.game.stat_value_in_world(
+                                self,
+                                amount,
+                                reference,
+                                provider.controller,
+                            );
+                            if count > 0 {
+                                let count = u64::try_from(count)
+                                    .capacity("projected entry counter bonus exhausted");
+                                for movement in &mut moves {
+                                    if movement.before.reference != reference
+                                        && self
+                                            .preview_entry_view(&movement.replacement_preview())
+                                            .is_some_and(|view| {
+                                                view.controller == provider.controller
+                                                    && view.is_creature()
+                                            })
+                                    {
+                                        movement.counters.add(kind, count);
+                                    }
+                                }
+                            }
+                        }
                         if matches!(
                             fragment,
                             StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
@@ -1500,7 +1539,7 @@ impl FundingState<'_> {
             return self.visit_entry_counters(moves, order, at + 1, actual, emit);
         }
         let type_sensitive =
-            m.requires_characteristic_preview() || replacements::entry_kind_sensitive(self);
+            m.requires_characteristic_preview(self) || replacements::entry_kind_sensitive(self);
         let preview = if current.is_none()
             && (type_sensitive
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card))
@@ -1547,7 +1586,7 @@ impl FundingState<'_> {
         );
         let refresh = |placement: &replacements::CounterPlacement| {
             let mut refreshed = placement.clone();
-            if m.requires_characteristic_preview()
+            if m.requires_characteristic_preview(self)
                 || replacements::entry_kind_sensitive(self)
                 || replacements::entry_power_sensitive(self, m.controller, m.before.card)
             {
@@ -1723,6 +1762,7 @@ impl FundingState<'_> {
             o.damage = 0;
             o.damaged_this_turn = false;
             o.dealt_damage_this_turn = false;
+            o.targeted_this_turn_by = 0;
             o.dealt_damage_this_incarnation = false;
             o.dealt_combat_damage_this_incarnation = false;
             o.deathtouch_since_sba = false;
@@ -1980,6 +2020,7 @@ impl FundingState<'_> {
                     timestamp,
                     static_source: false,
                     permanent: true,
+                    expires_at_next_turn_of: None,
                 });
             }
         }
@@ -2750,19 +2791,22 @@ impl<'g> FundingState<'g> {
             let ability = step
                 .borrowed
                 .map_or_else(|| card.activation(step.ability.unwrap()), |b| b.rules());
-            let Some(spec) = ability.cost.additional else {
+            let Some(spec) = ability
+                .cost
+                .additional
+                .and_then(|printed| external.payment_spec(printed))
+            else {
                 return false;
             };
             let reference = step
                 .output
                 .as_ref()
                 .map_or_else(|| self.reference(source.id), |o| o.instance.source);
-            if external.kind != spec.kind
-                || external
-                    .selection
-                    .objects()
-                    .iter()
-                    .any(|&object| !self.cost_object(spec, object, reference))
+            if external
+                .selection
+                .objects()
+                .iter()
+                .any(|&object| !self.cost_object(spec, object, reference))
             {
                 return false;
             }
@@ -3184,7 +3228,20 @@ impl<'g> FundingState<'g> {
                     viable && emit(&step.allocation)
                 };
                 let spec = a.additional_cost().filter(|_| !a.additional_paid);
-                if let Some(spec) = spec
+                if spec.is_some_and(|spec| spec.kind == EffectChoiceKind::Forage) {
+                    let source = a.item.source.unwrap();
+                    let rules = source.card.activation(ability);
+                    let (route, prefix) = a.forage.as_ref().map_or((None, &[][..]), |selection| {
+                        (selection.route, selection.selected.as_slice())
+                    });
+                    found = self.visit_forage_mana_cost_groups(
+                        source.object,
+                        route,
+                        prefix,
+                        rules.cost.sacrifice || rules.cost.exile_self,
+                        &mut |cost| finish(Some(cost)),
+                    );
+                } else if let Some(spec) = spec
                     && matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_))
                 {
                     let source = a.item.source.unwrap().object;

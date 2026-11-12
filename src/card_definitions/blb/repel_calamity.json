@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1a4c0529c9ce772f87601bc109149f2c6ccf64781ef5a22910e637f20029aadd"
   },
-  "physical_metadata_sha256": "ed97fa7e2db4a7704d01d68e00060e16213c78382b443551b00ee2bc18e09b08"
+  "physical_metadata_sha256": "ed97fa7e2db4a7704d01d68e00060e16213c78382b443551b00ee2bc18e09b08",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RepelCalamity.java",
+  "java_sha256": "81240271f2ec4644ab1a3e22e37162d5645d88a96ad588a93bce6ebca80cec4e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_inherited_white.rs"
 }

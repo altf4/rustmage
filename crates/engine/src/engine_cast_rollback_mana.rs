@@ -434,6 +434,7 @@ impl Game {
             ManaEventKind::Activated { item, .. } => self.purpose_for_item(item),
             _ => mana_lots::Purpose::Other,
         };
+        let mut forage = None;
         match &event.kind {
             ManaEventKind::Basic { .. } | ManaEventKind::Granted { .. } => {
                 if self.object_ref(source.card) != source
@@ -480,8 +481,19 @@ impl Game {
                 }
                 if let Some((spec, selection)) = additional {
                     let objects = selection.objects();
+                    let (spec, forage_route) = if spec.kind == EffectChoiceKind::Forage {
+                        let route = match objects.len() {
+                            1 => ForageRoute::Food,
+                            3 => ForageRoute::ExileThree,
+                            _ => return false,
+                        };
+                        (route.mana_cost().expect("forage mana cost").0, Some(route))
+                    } else {
+                        (*spec, None)
+                    };
                     let kind = spec.kind.payment_kind();
                     let amount = match kind {
+                        EffectChoiceKind::ExileGraveyard if forage_route.is_some() => 3,
                         EffectChoiceKind::Sacrifice | EffectChoiceKind::ExileGraveyard => 1,
                         EffectChoiceKind::TapPermanents(amount) => amount as usize,
                         _ => return false,
@@ -492,11 +504,16 @@ impl Game {
                                 || (matches!(kind, EffectChoiceKind::TapPermanents(_))
                                     && cost.tap
                                     && object == source)
-                                || !self.additional_candidate(*spec, event.actor, source, object)
+                                || !self.additional_candidate(spec, event.actor, source, object)
                         })
                     {
                         return false;
                     }
+                    forage = forage_route.map(|route| forage::ForageSelection {
+                        route: Some(route),
+                        selected: objects.to_vec(),
+                        skip_to: 0,
+                    });
                 }
             }
         }
@@ -544,7 +561,10 @@ impl Game {
                 let sacrifice = additional.as_ref().is_some_and(|(spec, _)| {
                     spec.kind.payment_kind() == EffectChoiceKind::Sacrifice
                 });
-                if !sacrifice && let Some((spec, selection)) = additional {
+                if forage.is_none()
+                    && !sacrifice
+                    && let Some((spec, selection)) = additional
+                {
                     if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
                         let cards = selection
                             .objects()
@@ -563,7 +583,9 @@ impl Game {
                 {
                     return false;
                 }
-                if sacrifice && let Some((_, selection)) = additional {
+                if let Some(selection) = &forage {
+                    self.commit_forage(event.actor, selection);
+                } else if sacrifice && let Some((_, selection)) = additional {
                     self.sacrifice_batch(&[(event.actor, selection.objects()[0].card)]);
                 }
                 self.commit_activation_use(&item);

@@ -87,6 +87,30 @@ impl Game {
         }
         let mut proposal = a.clone();
         proposal.cost = Some(cost);
+        if (a.has_ordered_origin_payment() || a.has_ordered_life_cost())
+            && a.forage.is_none()
+            && let Some(spec) = proposal
+                .additional_cost()
+                .filter(|&spec| forage::is_forage_cost(spec))
+        {
+            return [
+                ForageRoute::Food,
+                ForageRoute::ExileThree,
+                ForageRoute::Black,
+            ]
+            .into_iter()
+            .any(|route| {
+                if route == ForageRoute::Black && spec.kind != EffectChoiceKind::ForageOrBlack {
+                    return false;
+                }
+                proposal.forage = Some(Box::new(forage::ForageSelection {
+                    route: Some(route),
+                    selected: Vec::new(),
+                    skip_to: 0,
+                }));
+                self.behold_announcement_fundable(&proposal, cost)
+            });
+        }
         proposal.cast_costs.get_or_insert_with(Default::default);
         proposal.initialize_cast_costs(convoke::cost_potential(
             self,

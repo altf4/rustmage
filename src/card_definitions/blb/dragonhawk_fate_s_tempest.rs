@@ -1,16 +1,35 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from complete pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(5, 5),
     keywords: Keywords::FLYING,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEntersOrAttacks,
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::ExileTopLibraryRemember {
+                    players: PlayerSet::Controller,
+                    amount: AmountValue::ControlledCreaturePowerCount { minimum: 4 },
+                },
+                Instruction::ScheduleStepWithExiledResult {
+                    step: TriggerStep::End,
+                    relation: CastRelation::You,
+                    ability: 1,
+                },
+                Instruction::GrantExiledResultPlayUntilNextEndStep,
+            ],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::Reflexive,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DamagePlayersScaled(
+                PlayerSet::Opponent,
+                AmountValue::Multiple {
+                    value: &AmountValue::DelayedExiledCardCount,
+                    factor: 2,
+                },
+            )],
+        },
+    ],
     ..CardRules::EMPTY
 };

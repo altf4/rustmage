@@ -3,10 +3,31 @@
   "catalogue_id": 2300,
   "oracle_id": "0a2fbdd3-4940-4bbf-ae19-f6d00d7ff294",
   "facts_sha256": "3ed83fa75efb5cc2ee2a50e67f69d40cff312281ea311cbf1b84dca70f446ebe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c946b978136e38ee6eeed0be29a080ea9090053be6eba8c44edeb7d48fe5eb5c"
   },
-  "physical_metadata_sha256": "8e982f57309caa61ca0e80054cbe89f1bfc41d4a9fad1b2014365891ec353f32"
+  "physical_metadata_sha256": "8e982f57309caa61ca0e80054cbe89f1bfc41d4a9fad1b2014365891ec353f32",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JunkbladeBruiser.java",
+  "java_sha256": "ab9f888933c7640ee07790605dd4effd299e98b9f52c65857e6df20a47eacf8a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/TrampleAbility.java",
+      "sha256": "a0e3aeaa0f5ede614d3fdaef33117e209fbcace32a90015732d65d6d5ef8133c"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_gold_expend.rs"
 }

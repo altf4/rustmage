@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b66b90c13c195733d9cf3bf027a45195a83e10f053c56c3d34f8af81d69ebd46"
   },
-  "physical_metadata_sha256": "08590bc5db76e0a26db9b8971d10d7ae8e1f8e614da480de7f9fdfcf680fa238"
+  "physical_metadata_sha256": "08590bc5db76e0a26db9b8971d10d7ae8e1f8e614da480de7f9fdfcf680fa238",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThundertrapTrainer.java",
+  "java_sha256": "8bb215466f10c3edd90ccc8431323f4c94e0d73c14071d5abb0cd2862656884b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LookLibraryAndPickControllerEffect.java",
+      "sha256": "04b0d04b69bfadc479e5237de62f058d4350086f1bba5bf577a7efc39735421e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_wu_offspring.rs"
 }

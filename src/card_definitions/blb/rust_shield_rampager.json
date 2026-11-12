@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "25771e5b289f2ba87584eecb274c33381c33cb9f3f0056de2feb863392884acf"
   },
-  "physical_metadata_sha256": "9d802176139b5d536b1b821906e7e2c3b01e0a2944e7dd78f81150fa6031b192"
+  "physical_metadata_sha256": "9d802176139b5d536b1b821906e7e2c3b01e0a2944e7dd78f81150fa6031b192",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RustShieldRampager.java",
+  "java_sha256": "f0c25be6905aab6e5b9c84a6a48d8db11d733072e078b50054ffbdd8f900c4b6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DauntAbility.java",
+      "sha256": "c993aad0af01a2479b23a8752136b1fda361fc28da3e1b921be9d6d945906a02"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/OffspringAbility.java",
+      "sha256": "9e3620de5724a8d48e2058c815a76cf870ee74852e8002ec4e05e6e5151fad9b"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_offspring_valiant.rs"
 }

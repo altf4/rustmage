@@ -3,10 +3,31 @@
   "catalogue_id": 330,
   "oracle_id": "08e173e3-4c28-49d2-bb57-ccf533f20daf",
   "facts_sha256": "e2e3667022fdfd6700e7389536e18a1670879892c58308d035695f3eed832712",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ca12a33b530366c47746239bb3ed22b7795f8bb9692cb9002d6e5f08e6c26e65"
   },
-  "physical_metadata_sha256": "b14970f5643334190338419335a124728517d4ce69acb00e5701c609f870f395"
+  "physical_metadata_sha256": "b14970f5643334190338419335a124728517d4ce69acb00e5701c609f870f395",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BarkKnuckleBoxer.java",
+  "java_sha256": "c072e24269251a183e2f0b97a52ba51426e7c0cc3f75779d518d8b5ea6268c7c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ExpendTriggeredAbility.java",
+      "sha256": "591503c06643d3d0d26b10b9cb3c71b348273c92973833ad3e533cc4fd49e7c1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ],
+  "rules_tests": "tests/blb_cards_rg_expend.rs"
 }

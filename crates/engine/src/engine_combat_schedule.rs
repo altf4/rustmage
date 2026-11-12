@@ -24,11 +24,24 @@ impl Game {
         let Some(mut rules) = self.state.combat_rules.take() else {
             return;
         };
+        let active = self.state.active;
         let mut continuing = rules.require_all_attack_until_next_turn;
-        continuing[self.state.active.index()] = 0;
-        if continuing != [0; 2] {
+        continuing[active.index()] = 0;
+        let turn = self.state.turn;
+        rules.turn_callbacks.retain_mut(|row| {
+            if row.expiry != Some(TurnCallbackExpiry::EndOfNextTurn) {
+                return false;
+            }
+            if row.item.controller == active {
+                row.expiry = Some(TurnCallbackExpiry::EndOfTurn(turn));
+            }
+            true
+        });
+        if continuing != [0; 2] || !rules.turn_callbacks.is_empty() {
+            let turn_callbacks = std::mem::take(&mut rules.turn_callbacks);
             *rules = Default::default();
             rules.require_all_attack_until_next_turn = continuing;
+            rules.turn_callbacks = turn_callbacks;
             self.state.combat_rules = Some(rules);
         }
     }

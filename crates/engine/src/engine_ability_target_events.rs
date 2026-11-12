@@ -83,6 +83,7 @@ impl Game {
                             TriggerCondition::CommittedCrime
                                 | TriggerCondition::ControlledAbilityTargetsPlayerOrPermanent
                                 | TriggerCondition::OpponentTargetsControlledCreatureOrSpell
+                                | TriggerCondition::OpponentTargetsControlledCreature
                         )
                 }
                 Zone::Graveyard => {
@@ -202,13 +203,24 @@ impl Game {
             .collect();
         for source in sources {
             for (index, ability) in source.card.triggers().iter().enumerate() {
-                if ability.condition.event()
-                    == TriggerCondition::OpponentTargetsControlledCreatureOrSpell
-                    && self.queue_trigger(&source, index)
-                {
+                let creature_only = ability.condition.event()
+                    == TriggerCondition::OpponentTargetsControlledCreature;
+                let matched = if creature_only {
+                    matches!(bound.target, Target::Card(_))
+                } else {
+                    ability.condition.event()
+                        == TriggerCondition::OpponentTargetsControlledCreatureOrSpell
+                };
+                if matched && self.queue_trigger(&source, index) {
                     let packet = self.state.pending_triggers.last_mut().unwrap();
+                    if creature_only {
+                        // Target restrictions refer to the creature that was targeted.
+                        packet.refer_objects(bound.object);
+                    }
                     packet.refer_sources(item.semantic_stack_reference());
-                    packet.refer_objects(bound.object);
+                    if !creature_only {
+                        packet.refer_objects(bound.object);
+                    }
                 }
             }
         }

@@ -136,6 +136,7 @@ impl Game {
         }
         self.state.suspend.as_mut().unwrap().offering = Some(source.object);
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
+            discard_instead_of_mana: false,
             permanent_type: None,
             permanent_spell_only: false,
             uncast_to_hand: false,

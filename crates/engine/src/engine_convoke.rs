@@ -368,6 +368,7 @@ impl Game {
         if done {
             return true;
         }
+        let activation_tap = self.item_activation_tap_payment(&a.item);
         for id in 0..self.state.objects.len() {
             let object = self.object_ref(id as CardId);
             if f.contains(object) {
@@ -385,11 +386,16 @@ impl Game {
             {
                 return true;
             }
-            if self.item_waterbend(&a.item) != 0
-                && f.improvised.len() < usize::from(self.item_waterbend(&a.item))
-                && waterbend::eligible(self, a.item.controller, object)
-                && self.waterbender_fundable(object)
-                && emit(Action::ChooseWaterbender { object })
+            if let Some(payment) = activation_tap
+                && (f.improvised.len() as u64) < payment.cap()
+                && payment.eligible(self, a.item.controller, object)
+                && self.activation_tap_fundable(a, f, payment, object)
+                && emit(match payment.kind {
+                    waterbend::TapPaymentKind::Waterbend(_) => Action::ChooseWaterbender { object },
+                    waterbend::TapPaymentKind::Creatures => {
+                        Action::ChooseCreatureTapPayment { object }
+                    }
+                })
             {
                 return true;
             }
@@ -418,16 +424,18 @@ impl Game {
         }
         false
     }
-    fn waterbender_fundable(&self, object: ObjectRef) -> bool {
-        let a = self.state.announcing.as_ref().unwrap();
-        let f = a.convoke.as_ref().unwrap();
+    fn activation_tap_fundable(
+        &self,
+        a: &Announcement,
+        f: &ConvokeSelection,
+        payment: waterbend::TapPayment,
+        object: ObjectRef,
+    ) -> bool {
         let Some(generic) = f.remaining.generic.checked_sub(1) else {
             return false;
         };
         let mut excluded = f.objects();
         excluded.push(object);
-        let used = u16::try_from(excluded.len()).unwrap_or(u16::MAX);
-        let cap = self.item_waterbend(&a.item).saturating_sub(used);
         convoke::payable_in(
             self,
             a.item.controller,
@@ -436,7 +444,7 @@ impl Game {
                 .map(u128::from),
             f.remaining.colored,
             generic,
-            &waterbend::masks(self, a.item.controller, cap, &excluded),
+            &payment.masks(self, a.item.controller, &excluded),
         )
     }
     fn contributor_fundable(

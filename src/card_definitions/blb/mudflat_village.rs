@@ -1,16 +1,70 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
-pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+const TAP: ActivatedAbility = ActivatedAbility {
+    guard: ActivationGuard::Always,
+    origin: ActivationOrigin::Battlefield,
+    cost: ActivationCost {
+        tap: true,
+        ..ActivationCost::ZERO
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    targets: TargetPlan::NONE,
+    program: &[Instruction::AddMana(ManaProduction::Fixed([
+        0, 0, 0, 0, 0, 1,
+    ]))],
+    cycling: false,
+    exhaust: false,
+    sorcery: false,
+    once_per_turn: false,
+};
+
+const GRAVEYARD: TargetRule = TargetRule::Object {
+    zone: TargetZone::Graveyard,
+    kinds: 0,
+    relation: 0,
+    other: false,
+    nonland: false,
+    tapped: false,
+    min_mana: 0,
+    max_mana: u32::MAX,
+};
+
+const fn subtype(predicate: &'static TargetPredicate) -> TargetRule {
+    TargetRule::Filtered {
+        base: &GRAVEYARD,
+        predicate,
+    }
+}
+
+pub(in crate::cards) const RULES: CardRules = CardRules {
+    effect: Effect::Land,
+    activated: &[
+        TAP,
+        ActivatedAbility {
+            program: &[Instruction::AddMana(ManaProduction::Tagged {
+                production: &ManaProduction::Fixed([0, 0, 1, 0, 0, 0]),
+                quality: &ManaQuality {
+                    restriction: ManaRestriction::CreatureSpells,
+                    spell_bonus: ManaSpellBonus::None,
+                    retention: ManaRetention::Step,
+                },
+            })],
+            ..TAP
+        },
+        ActivatedAbility {
+            cost: ActivationCost {
+                colored: [0, 0, 1, 0, 0, 0],
+                generic: 1,
+                mana_component: true,
+                sacrifice: true,
+                ..TAP.cost
+            },
+            targets: TargetPlan::Single(TargetSpec::one(TargetRule::Union(&[
+                subtype(&TargetPredicate::Subtype("Bat")),
+                subtype(&TargetPredicate::Subtype("Lizard")),
+                subtype(&TargetPredicate::Subtype("Rat")),
+                subtype(&TargetPredicate::Subtype("Squirrel")),
+            ]))),
+            program: &[Instruction::ReturnToHand],
+            ..TAP
+        },
+    ],
     ..CardRules::EMPTY
 };

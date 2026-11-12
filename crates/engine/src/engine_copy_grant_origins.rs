@@ -108,12 +108,14 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                     fragment,
                     F::AttachmentTrigger(_)
                         | F::ConditionalWard { .. }
+                        | F::CounterBearingPermanentWard { .. }
                         | F::OwnTurnSourceAndKindCreatureWard { .. }
                         | F::ControlledCreatureTrigger { .. }
                         | F::SourceMaxSpeedActivation(_)
                         | F::AttachmentActivation { .. }
                         | F::ControlledPlaneswalkerActivation(_)
                         | F::ControlledArtifactFood(_)
+                        | F::OtherCreaturesFood(_)
                         | F::ControlledArtifactActivation(_)
                         | F::ControlledNontokenCreatureActivation(_)
                         | F::OtherControlledSubtypeTapManaActivation { .. }

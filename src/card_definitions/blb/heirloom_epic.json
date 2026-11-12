@@ -3,10 +3,29 @@
   "catalogue_id": 1993,
   "oracle_id": "43037ef5-09e8-4881-beff-ed38cf7574c6",
   "facts_sha256": "a3e8a652b3738e14fc7c930f51815074710d9122399bf3b12145509332628abf",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b73ff2f2caa6b92d0b1d0df616ca28d3b7cf3b6bc04d4e0660cbcc0817fea6db"
   },
-  "physical_metadata_sha256": "82393ff3f56836f337a6fbf00885a61590e463d4e19f229145eadf888786e2a5"
+  "physical_metadata_sha256": "82393ff3f56836f337a6fbf00885a61590e463d4e19f229145eadf888786e2a5",
+  "xmage_absence": {
+    "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+    "oracle_id": "43037ef5-09e8-4881-beff-ed38cf7574c6",
+    "inventory_path": "data/standard/xmage-inventory.json",
+    "inventory_sha256": "06a0e948e65878232f223738461a85c11e417d6a279c11ee1c38d8f971d37cc7",
+    "evidence": "The pinned Bloomburrow table comments out number 246 and the pinned card-class tree has no Heirloom Epic implementation."
+  },
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage.Sets/src/mage/sets/Bloomburrow.java",
+      "sha256": "2bf39c4e61805713e495e8b1f281c36ca5dcda7ef3e2ca3e4384db487ee69a33"
+    }
+  ],
+  "rules_authority": {
+    "title": "Bloomburrow Release Notes",
+    "url": "https://magic.wizards.com/en/news/feature/bloomburrow-release-notes"
+  },
+  "rules_tests": "tests/blb_cards_gold_artifacts.rs"
 }
