@@ -3,7 +3,7 @@
   "catalogue_id": 5689,
   "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
   "facts_sha256": "7d0a870a9f2f3c7afd5eedebf8465ef991da90561161f6ee12224d0acb064069",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "7820ee8c119a5d466a5969a42db7332513865d4f9878b901cca4320285221794",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FlotsamJetsam.java",
@@ -12,5 +12,6 @@
     "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
     "index": 0,
     "sha256": "93c7590d22d6c5ff706d78535646cbf6268e8b02d8235cfdb04bced2bfd484fe"
-  }
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

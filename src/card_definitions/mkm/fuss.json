@@ -3,7 +3,7 @@
   "catalogue_id": 5691,
   "oracle_id": "88e9006a-cfdf-40f3-80d5-23465f3dceca",
   "facts_sha256": "6402fad22ec89a8de7ca0754c3899a837195fb1ddb309c7b6451e69582ed2af6",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "0225c8490ec5a501ac1608fb29c4f2108caefb3a87b3c1cb44259315e8f380e8",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FussBother.java",
@@ -12,5 +12,6 @@
     "oracle_id": "88e9006a-cfdf-40f3-80d5-23465f3dceca",
     "index": 0,
     "sha256": "5d0bc9cff07d6653eed7a66efcd3a3952057619dd25243779cddaa0cf12d9680"
-  }
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

@@ -3,7 +3,7 @@
   "catalogue_id": 5696,
   "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
   "facts_sha256": "cb61219aad82757f8655447c9072db6da9371dbd2d0be15be8d3a2397485b89c",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "87859503945d573d8fd7d14860a2620f633d279893e1fdb414224caaf3c3d518",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/p/PushPull.java",
@@ -12,5 +12,6 @@
     "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
     "index": 1,
     "sha256": "9d8ada44260532ba87f118e621b275a07578775f6532b75fd1f52e9ef876dc93"
-  }
+  },
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }
