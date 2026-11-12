@@ -286,6 +286,7 @@ fn hope_can_start_on_the_battlefield_and_modifies_each_lifelink_gain() {
     let own = put(&mut game, PLAYER, "Bear Cub", Zone::Battlefield);
     let enemy = put(&mut game, OPPONENT, "Bear Cub", Zone::Battlefield);
     let shock = put(&mut game, OPPONENT, "Shock", Zone::Hand);
+    let mountain = put(&mut game, OPPONENT, "Mountain", Zone::Battlefield);
     let hawks: [CardId; 2] =
         std::array::from_fn(|_| put(&mut game, PLAYER, "Healer's Hawk", Zone::Battlefield));
     cast(&mut game, leyline, None);
@@ -306,6 +307,7 @@ fn hope_can_start_on_the_battlefield_and_modifies_each_lifelink_gain() {
     assert_eq!(stats(&game, enemy), (2, 2));
 
     act(&mut game, Action::Pass);
+    act(&mut game, Action::TapMana { card: mountain });
     cast(&mut game, shock, Some(Target::Player(PLAYER)));
     settle(&mut game);
     assert_eq!(game.state.players[PLAYER.index()].life, 25);
