@@ -3,10 +3,26 @@
   "catalogue_id": 1567,
   "oracle_id": "66e74e8f-036e-4b26-a4a8-2365891765bc",
   "facts_sha256": "cdb8795eedaf7a618653b4586909522d0f8ee0195b07f2fa794d27f74794f4d8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1c0334686eae0bd3673788d0c3f22657ebf431a47754184b5bc614a6741ed937"
   },
-  "physical_metadata_sha256": "d43230ac68000bd3a1568a9c9001c3aef5bd5ac130febd7c5940b1f2e5796ebd"
+  "physical_metadata_sha256": "d43230ac68000bd3a1568a9c9001c3aef5bd5ac130febd7c5940b1f2e5796ebd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlourishingBloomKin.java",
+  "java_sha256": "86092ef242af00eb252ca7f1243d5e270b0ec73a535cd6c7f56556fbd216c936",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    }
+  ]
 }

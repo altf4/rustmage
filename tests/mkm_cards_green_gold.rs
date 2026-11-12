@@ -42,3 +42,6 @@ fn tokens(game: &Game, player: Player, factory: u16) -> Vec<CardId> {
         .filter(|&id| game.object_view(id).card == card)
         .collect()
 }
+
+#[path = "mkm_cards_green_gold/face_down.rs"]
+mod face_down;

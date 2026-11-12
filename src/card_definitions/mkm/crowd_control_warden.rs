@@ -1,16 +1,43 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+const OTHER_CREATURES: StatValue = StatValue::Count(CountFilter {
+    zone: CountZone::Battlefield,
+    relation: 0,
+    kind: 1,
+    exclude: 0,
+    subtype: None,
+    basic: false,
+    other: true,
+    cards_only: false,
+});
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Creature(4, 4),
+    extras: &CardExtras {
+        disguise: Some(DisguiseSpec {
+            mana: ManaCost {
+                colored: [0, 0, 0, 0, 2, 0],
+                generic: 3,
+            },
+            alternatives: &[
+                ManaCost {
+                    colored: [1, 0, 0, 0, 1, 0],
+                    generic: 3,
+                },
+                ManaCost {
+                    colored: [2, 0, 0, 0, 0, 0],
+                    generic: 3,
+                },
+            ],
+            modifier: DisguiseCostModifier::None,
+        }),
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::Stat(OTHER_CREATURES),
+        }],
+        as_turned_face_up_counters: &[(
+            CounterKind::PlusOne,
+            TurnUpCounterAmount::Stat(OTHER_CREATURES),
+        )],
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

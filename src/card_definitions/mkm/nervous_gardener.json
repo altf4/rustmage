@@ -3,10 +3,26 @@
   "catalogue_id": 2918,
   "oracle_id": "15dca6a7-8367-4b86-a86c-e44f10fb3c53",
   "facts_sha256": "13a3aabdfaeb9d7bb5139bf60fe86a10b614139cfee473e95d64cd16608b84c9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a3f91a763156a54c38b148874e5328a1561a61b0a0403accd7574b2177bc81e4"
   },
-  "physical_metadata_sha256": "239343606621922d285db80895434ea98a41d7027211eefaecee97906d89a09a"
+  "physical_metadata_sha256": "239343606621922d285db80895434ea98a41d7027211eefaecee97906d89a09a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/n/NervousGardener.java",
+  "java_sha256": "f2bc34f9907ba142675f253fda90ac6a39c848fb9de60421704c25234cbf6e51",
+  "rules_tests": "tests/mkm_cards_green_gold/face_down.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    }
+  ]
 }
