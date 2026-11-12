@@ -298,7 +298,7 @@ fn assassins_trophy_lets_the_targets_controller_find_an_untapped_basic_even_if_i
     pass_pair(&mut declined);
     assert_eq!(declined.object_view(victim).zone, Zone::Graveyard);
     assert_eq!(declined.actor(), Some(opponent));
-    let before = declined.state.rng.clone();
+    let before = declined.state.rng;
     act(&mut declined, Action::ChooseOptional { accept: false });
     assert_eq!(declined.state.rng, before);
 

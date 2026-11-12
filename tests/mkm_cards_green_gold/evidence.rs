@@ -67,7 +67,7 @@ fn analyze_the_pollen_changes_qualified_search_only_after_evidence() {
     for card in [nonbasic, creature] {
         reject(&mut basic_only, Action::ChooseSearch { card });
     }
-    let before_shuffle = basic_only.state.rng.clone();
+    let before_shuffle = basic_only.state.rng;
     let mut miss = basic_only.clone();
     act(&mut miss, Action::FinishSearch);
     assert_ne!(miss.state.rng, before_shuffle);
