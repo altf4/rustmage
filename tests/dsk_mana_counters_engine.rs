@@ -231,8 +231,13 @@ fn prohibited_placement_preserves_mana_and_later_sacrifice_counts_all_counter_ki
 
 #[test]
 fn failed_cast_rollback_retains_or_reverses_the_actual_replaced_counter_placement() {
+    const LAND_MANA: CardRules = CardRules {
+        effect: Effect::Land,
+        ..MANA
+    };
+    let land = named("Hidden Cataract");
     let _rules = fixture_rules::activate(&[
-        (named("Gingerbrute"), &MANA),
+        (land, &LAND_MANA),
         (named("Fountainport Bell"), &EXTRA_NEST_PROVIDER),
     ]);
     let mut game = scenario(PLAYER);
@@ -279,7 +284,8 @@ fn failed_cast_rollback_retains_or_reverses_the_actual_replaced_counter_placemen
             )
         });
     }
-    let source = put(&mut game, PLAYER, "Gingerbrute", Zone::Battlefield);
+    // The independent mana source cannot become a fallback casualty payment.
+    let source = spawn(&mut game, PLAYER, land, Zone::Battlefield);
     let doubler = put(&mut game, PLAYER, "Doubling Season", Zone::Battlefield);
     let adder = put(&mut game, PLAYER, "Fountainport Bell", Zone::Battlefield);
     let spell = put(&mut game, PLAYER, "Candy Grapple", Zone::Hand);
