@@ -66,11 +66,31 @@ impl Game {
         };
         recipe.face_structure()
     }
+    pub(super) fn capture_delayed_transform_serial(&self, item: &mut SpellView) {
+        let tracks_transform = item
+            .triggered_ability()
+            .program
+            .contains(&Instruction::TransformSource)
+            || item.modes().is_some_and(|modes| {
+                modes
+                    .iter()
+                    .any(|mode| mode.program.contains(&Instruction::TransformSource))
+            });
+        item.source_transform = item
+            .source
+            .filter(|_| tracks_transform)
+            .map(|source| self.transform_serial(source.object));
+    }
+
     pub(super) fn capture_transform_stack_serial(&self, item: &mut SpellView) {
         let tracks_transform = if item.is_copy {
-            // A copied ability inherits the tracked source, but gets a fresh
-            // timestamp when this packet is put on the stack (CR 701.27f).
+            // A copied ability gets a fresh timestamp when put on the stack.
             item.kind != StackKind::Spell && item.source_transform.is_some()
+        } else if matches!(item.kind, StackKind::TriggeredAbility { .. })
+            && item.source_transform.is_some()
+        {
+            // A delayed transform uses its creation timestamp (CR 701.27g).
+            false
         } else {
             item.program()
                 .is_some_and(|(_, program)| program.contains(&Instruction::TransformSource))

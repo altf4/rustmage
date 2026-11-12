@@ -48,6 +48,7 @@ impl Game {
         packet.additional_triggers = 0;
         packet.cast = None;
         packet.is_copy = false;
+        self.capture_delayed_transform_serial(&mut packet);
         self.state
             .linked_choices
             .get_or_insert_default()

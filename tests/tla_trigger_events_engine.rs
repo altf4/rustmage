@@ -286,7 +286,7 @@ fn optional_transform_rewards_only_the_accepted_live_incarnation() {
 }
 
 #[test]
-fn multiple_next_upkeep_callbacks_share_the_actual_stack_transform_serial() {
+fn multiple_next_upkeep_callbacks_share_the_same_creation_transform_serial() {
     let _rules =
         fixture_rules::activate(&[(named(FRONT), &DELAYED_FRONT), (named(BACK), &BACK_RULES)]);
     let player = Player::P0;
@@ -305,4 +305,68 @@ fn multiple_next_upkeep_callbacks_share_the_actual_stack_transform_serial() {
     drain(&mut game);
     assert_eq!(game.object_view(source).card, named(BACK));
     assert_eq!(game.transform_serial(game.object_ref(source)), 1);
+}
+
+#[test]
+fn a_later_upkeep_callback_cannot_undo_an_earlier_transform_after_its_creation() {
+    let _rules =
+        fixture_rules::activate(&[(named(FRONT), &DELAYED_FRONT), (named(BACK), &BACK_RULES)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let source = put(&mut game, player, FRONT, Zone::Battlefield);
+    let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let removal = put(&mut game, opponent, "Shock", Zone::Hand);
+    game.move_object(first, Zone::Hand);
+    drain(&mut game);
+
+    game.state.active = opponent;
+    game.state.priority = opponent;
+    game.begin_step(Step::Upkeep);
+    game.prepare_triggers();
+    assert_eq!(game.state.stack.len(), 1);
+    cast(&mut game, removal, Some(Target::Card(second)));
+    drain(&mut game);
+    let exact = game.object_ref(source);
+    assert_eq!(game.object_view(second).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(source).card, named(BACK));
+    assert_eq!(game.transform_serial(exact), 1);
+    assert_eq!(game.observe(player).delayed_steps.unwrap().len(), 1);
+
+    let snapshot = game.snapshot();
+    let next_upkeep = |branch: &mut Game| {
+        branch.state.active = player;
+        branch.state.priority = player;
+        branch.begin_step(Step::Upkeep);
+        drain(branch);
+        assert_eq!(branch.object_ref(source), exact);
+        assert_eq!(branch.object_view(source).card, named(BACK));
+        assert_eq!(branch.transform_serial(exact), 1);
+    };
+    next_upkeep(&mut game);
+    let mut restored = game.clone();
+    restored.restore(&snapshot).unwrap();
+    next_upkeep(&mut restored);
+    assert_eq!(game.snapshot(), restored.snapshot());
+}
+
+#[test]
+fn an_ordinary_transform_trigger_samples_when_it_reaches_the_stack() {
+    let _rules =
+        fixture_rules::activate(&[(named(FRONT), &OPTIONAL_FRONT), (named(BACK), &BACK_RULES)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, FRONT, Zone::Battlefield);
+    let exact = game.object_ref(source);
+    game.begin_step(Step::Upkeep);
+    assert_eq!(game.state.pending_triggers.len(), 1);
+    game.transform_permanent(exact);
+    game.prepare_triggers();
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::ChooseOptional { accept: true });
+    drain(&mut game);
+    assert_eq!(game.object_view(source).card, named(FRONT));
+    assert_eq!(game.transform_serial(exact), 2);
 }
