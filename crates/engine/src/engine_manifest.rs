@@ -67,7 +67,7 @@ pub enum FaceDownCause {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl FaceDownCause {
-    fn definition(self) -> Card {
+    pub(super) fn definition(self) -> Card {
         let identity = match self {
             Self::Disguise | Self::Cloak => "@face-down/disguise",
             Self::Manifest => "@face-down/manifest",
@@ -623,7 +623,11 @@ impl Game {
             .payment
             .take()
             .unwrap();
-        self.spend_mana_for(request.controller, payment, mana_lots::Purpose::FaceUp);
+        self.spend_mana_for(
+            request.controller,
+            payment,
+            mana_lots::Purpose::face_up(self, request.object),
+        );
         // The replacement engine captures this as its resume state. Set it
         // before beginning the transition so a suspended choice is never lost.
         self.state.pending = Pending::Priority;

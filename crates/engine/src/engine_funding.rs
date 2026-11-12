@@ -4905,7 +4905,7 @@ impl<'g> FundingState<'g> {
             .sum()
     }
     pub(super) fn live_mana_purpose(&self) -> mana_lots::Purpose {
-        self.purpose.with_live_spell_types(self, self.actor)
+        self.purpose.with_live_characteristics(self, self.actor)
     }
     /// Final-purpose facts follow the speculative world, including subtype grants
     /// lost or gained while mana abilities are activated.
@@ -5384,7 +5384,7 @@ impl Game {
     }
     pub(super) fn can_fund_face_up(&self, goal: FundingGoal, object: ObjectRef) -> bool {
         let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(mana_lots::Purpose::FaceUp);
+        state.set_purpose(mana_lots::Purpose::face_up(self, object));
         state.required_face_up = Some(object);
         state.reachable(&goal, &mut HashSet::new())
     }
@@ -7129,7 +7129,7 @@ impl Game {
             source: None,
         };
         let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(mana_lots::Purpose::FaceUp);
+        state.set_purpose(mana_lots::Purpose::face_up(self, request.object));
         if !manifest::face_up_prohibited(self, request.object)
             && visit_funding_payments(
                 mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
@@ -8078,7 +8078,7 @@ impl FundingState<'_> {
             return true;
         };
         let mut next = self.clone();
-        next.set_purpose(mana_lots::Purpose::guided_payment(pending));
+        next.set_purpose(self.game.guided_payment_mana_purpose(pending));
         next.set_cost_context(None);
         next.payment_source = None;
         next.cost_group = None;
@@ -8172,10 +8172,9 @@ impl Game {
                     source: None,
                 });
             let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(resume.map_or(
-                mana_lots::Purpose::Other,
-                mana_lots::Purpose::guided_payment,
-            ));
+            world.set_purpose(resume.map_or(mana_lots::Purpose::Other, |pending| {
+                self.guided_payment_mana_purpose(pending)
+            }));
             world.set_cost_context(None);
             world.payment_source = None;
             world.cost_group = None;

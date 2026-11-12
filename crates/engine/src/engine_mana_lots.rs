@@ -45,6 +45,7 @@ pub enum ManaRestrictionView {
     LandActivation,
     AbilityActivation,
     TurnFaceUp,
+    FaceDownSpellOrTurnCreatureFaceUp,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
@@ -214,6 +215,9 @@ impl Quality {
                 ManaRestriction::LandActivation => ManaRestrictionView::LandActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
                 ManaRestriction::TurnFaceUp => ManaRestrictionView::TurnFaceUp,
+                ManaRestriction::FaceDownSpellOrTurnCreatureFaceUp => {
+                    ManaRestrictionView::FaceDownSpellOrTurnCreatureFaceUp
+                }
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ArtifactActivation => ManaRestrictionView::ArtifactActivation,
                 ManaRestriction::ArtifactSpellOrActivation => {
@@ -328,7 +332,12 @@ impl Quality {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & 2 != 0)
             }
             ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
-            ManaRestrictionView::TurnFaceUp => matches!(purpose, Purpose::FaceUp),
+            ManaRestrictionView::TurnFaceUp => matches!(purpose, Purpose::FaceUp { .. }),
+            ManaRestrictionView::FaceDownSpellOrTurnCreatureFaceUp => {
+                matches!(purpose, Purpose::FaceUp { creature: true, .. })
+                    || matches!(purpose, Purpose::Spell(source)
+                        if source.card == manifest::FaceDownCause::Disguise.definition())
+            }
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
@@ -371,7 +380,7 @@ impl Quality {
                     || matches!(purpose, Purpose::Spell(facts) if facts.has_subtype("Room"))
             }
             ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp => {
-                matches!(purpose, Purpose::UnlockDoor | Purpose::FaceUp)
+                matches!(purpose, Purpose::UnlockDoor | Purpose::FaceUp { .. })
                     || matches!(purpose, Purpose::Spell(facts) if facts.kinds & 32 != 0)
             }
             ManaRestrictionView::Unrestricted => true,
@@ -401,30 +410,36 @@ impl Quality {
 pub(super) enum Purpose {
     Other,
     UnlockDoor,
-    FaceUp,
+    FaceUp { object: ObjectRef, creature: bool },
     Spell(Source),
     Activation(Source),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Purpose {
-    pub(super) fn guided_payment(pending: &Pending) -> Self {
-        match pending {
-            Pending::FaceUpPayment { .. } => Self::FaceUp,
-            Pending::RoomUnlockPayment { .. } => Self::UnlockDoor,
-            _ => Self::Other,
-        }
+    pub(super) fn face_up<W: ability_world::CharacteristicWorld + ?Sized>(
+        world: &W,
+        object: ObjectRef,
+    ) -> Self {
+        let creature = world.reference(object.card) == object
+            && world.object(object.card).zone == Zone::Battlefield
+            && world.kinds(object.card) & CREATURE_KIND != 0;
+        Self::FaceUp { object, creature }
     }
 
-    pub(super) fn with_live_spell_types<W: ability_world::CharacteristicWorld + ?Sized>(
+    pub(super) fn with_live_characteristics<W: ability_world::CharacteristicWorld + ?Sized>(
         self,
         world: &W,
         caster: Player,
     ) -> Self {
-        let Self::Spell(mut spell) = self else {
-            return self;
-        };
-        spell.subtypes = subtypes::spell_subtypes(world, caster, spell.card, spell.subtypes);
-        Self::Spell(spell)
+        match self {
+            Self::Spell(mut spell) => {
+                spell.subtypes =
+                    subtypes::spell_subtypes(world, caster, spell.card, spell.subtypes);
+                Self::Spell(spell)
+            }
+            Self::FaceUp { object, .. } => Self::face_up(world, object),
+            _ => self,
+        }
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -938,7 +953,7 @@ impl Game {
         if self.state.mana_lots.is_none() {
             return pool;
         }
-        let purpose = purpose.with_live_spell_types(self, actor);
+        let purpose = purpose.with_live_characteristics(self, actor);
         available(pool.map(u128::from), self.mana_lots(actor), purpose)
             .map(|amount| u32::try_from(amount).expect("subset of concrete mana pool"))
     }
@@ -1542,7 +1557,7 @@ impl Game {
             return SpendOutcome::default();
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
-        let purpose = purpose.with_live_spell_types(self, actor);
+        let purpose = purpose.with_live_characteristics(self, actor);
         let lots = self.state.mana_lots.as_ref().unwrap().pools[actor.index()].clone();
         let ordinary = ordinary(pool, &lots);
         let available = available(pool, &lots, purpose);
@@ -1739,7 +1754,10 @@ impl Game {
                 (*payment, self.purpose_for_item(&a.item))
             }
             Action::PayRoomUnlock { payment } => (*payment, Purpose::UnlockDoor),
-            Action::PayFaceUp { payment } => (*payment, Purpose::FaceUp),
+            Action::PayFaceUp { payment } => (
+                *payment,
+                self.guided_payment_mana_purpose(&self.state.pending),
+            ),
             Action::PayPlot { payment }
             | Action::PayResolutionMana { payment }
             | Action::PayAttackCost { payment }
@@ -1907,6 +1925,18 @@ pub(super) fn visit_allocations(
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn guided_payment_mana_purpose(&self, pending: &Pending) -> Purpose {
+        match pending {
+            Pending::FaceUpPayment { .. } => {
+                self.face_up_payment().map_or(Purpose::Other, |request| {
+                    Purpose::face_up(self, request.object)
+                })
+            }
+            Pending::RoomUnlockPayment { .. } => Purpose::UnlockDoor,
+            _ => Purpose::Other,
+        }
+    }
+
     pub(super) fn funding_purpose(&self, goal: &FundingGoal) -> Purpose {
         if let Some((source, ability, _, definition, slot)) = &goal.source {
             if let Some(item) = self
@@ -1949,7 +1979,7 @@ impl Game {
             .as_ref()
             .filter(|a| a.item.controller == goal.actor)
             .map_or_else(
-                || Purpose::guided_payment(&self.state.pending),
+                || self.guided_payment_mana_purpose(&self.state.pending),
                 |a| self.purpose_for_item(&a.item),
             )
     }

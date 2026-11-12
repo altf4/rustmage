@@ -962,6 +962,8 @@ pub enum ManaRestriction {
     AbilityActivation,
     /// Only the special action of turning a permanent face up.
     TurnFaceUp,
+    /// Cast a face-down spell or pay to turn a face-down creature face up.
+    FaceDownSpellOrTurnCreatureFaceUp,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

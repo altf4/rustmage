@@ -397,7 +397,7 @@ impl Game {
         if payment == [0; 6] {
             return true;
         }
-        let purpose = purpose.with_live_spell_types(self, event.actor);
+        let purpose = purpose.with_live_characteristics(self, event.actor);
         let pool = self.state.players[event.actor.index()].mana.map(u128::from);
         let lots = self.mana_lots(event.actor);
         let ordinary = mana_lots::ordinary(pool, lots);
