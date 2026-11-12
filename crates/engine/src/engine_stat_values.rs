@@ -592,8 +592,13 @@ impl Game {
             .capacity("noncombat damage history representation exhausted"),
             StatValue::LinkedExileCardTypes => {
                 let mut mask = 0u16;
+                let origin = world.ability_origin(source.card);
                 if let Some(links) = &self.state.linked_choices {
-                    for link in links.links.iter().filter(|link| link.source == source) {
+                    for link in links.links.iter().filter(|link| {
+                        link.source == source
+                            && link.ability_origin == origin
+                            && link.acquired_link_cohort.is_none()
+                    }) {
                         if let Some((id, object)) = objects().find(|(id, object)| {
                             *id == link.exiled.card
                                 && object.generation == link.exiled.generation
@@ -620,6 +625,7 @@ impl Game {
                             let exiled = world.object(link.exiled.card);
                             link.source == source
                                 && link.ability_origin == origin
+                                && link.acquired_link_cohort.is_none()
                                 && world.reference(link.exiled.card) == link.exiled
                                 && exiled.zone == Zone::Exile
                                 && exiled.is_card()

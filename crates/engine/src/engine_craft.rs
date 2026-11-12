@@ -212,6 +212,7 @@ impl Game {
                     source,
                     exiled,
                     ability_origin: None,
+                    acquired_link_cohort: None,
                 });
             let first_slot = graveyard_borrowing::next_slot(self, source);
             self.state

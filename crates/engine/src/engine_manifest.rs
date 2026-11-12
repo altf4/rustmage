@@ -732,11 +732,8 @@ impl Game {
     }
 
     pub(super) fn manifest_dread_for_linked_exile_owners(&mut self, item: &SpellView) {
-        let Some(source) = item.source else {
-            return;
-        };
         let owners = self
-            .linked_exile_for_origin(source.object, item.source_ability_origin)
+            .linked_exile_for_item(item)
             .iter()
             .map(|object| &self.state.objects[object.card as usize])
             .filter(|object| object.is_card())

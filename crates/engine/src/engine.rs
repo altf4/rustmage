@@ -1922,6 +1922,9 @@ pub struct SpellView {
     pub reflexive_subject: Option<Box<ReflexiveSubjectView>>,
     pub source_move: Option<Box<TriggerSourceMoveView>>,
     pub borrowed_slot: Option<u64>,
+    /// Paired acquired abilities share a link cohort even when their use slots differ.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub self_granted_activation: Option<Box<SelfGrantedActivationContext>>,
     pub crew: Option<Box<CrewContext>>,
@@ -12550,6 +12553,7 @@ impl Game {
                                 source: link.source,
                                 exiled: link.exiled,
                                 ability_origin: link.ability_origin,
+                                acquired_link_cohort: None,
                             }),
                     )
                     .filter(|link| self.can_view_hideaway(viewer, link.exiled))

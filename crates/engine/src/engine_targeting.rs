@@ -1092,6 +1092,7 @@ struct TargetSourceCharacteristics<'a> {
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
     event_object: Option<&'a EventObjectView>,
+    acquired_link_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -1103,6 +1104,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             spell: Some(definition),
             chosen_creature_type: None,
             event_object: None,
+            acquired_link_cohort: None,
         }
     }
     fn from_item(item: &'a SpellView) -> Self {
@@ -1120,6 +1122,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
                 .as_ref()
                 .map(|facts| facts.chosen_creature_type),
             event_object: item.event_object.as_deref(),
+            acquired_link_cohort: item.linked_activation_cohort(),
         }
     }
 }
@@ -2357,7 +2360,11 @@ impl Game {
             TargetRule::LinkedExileCreature { ability_origin } => {
                 return matches!(target,Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
-                    && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
+                    && self.linked_exile_for_cohort(
+                        source,
+                        ability_origin.unwrap_or_else(||self.copy_ability_origin(source)),
+                        qualification.and_then(|source| source.acquired_link_cohort),
+                    ).contains(&world.reference(id))));
             }
             TargetRule::FaceUpExiledCard { owner } => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
@@ -3001,6 +3008,7 @@ impl Game {
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            acquired_link_cohort: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_types_lki: None,

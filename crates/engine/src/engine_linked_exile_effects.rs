@@ -24,17 +24,31 @@ fn mutant_copy(card: Card) -> CopyRecipe {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    fn linked_exile_for_item(&self, item: &SpellView) -> Vec<ObjectRef> {
+    pub(super) fn linked_exile_for_item(&self, item: &SpellView) -> Vec<ObjectRef> {
         let Some(source) = item.source else {
             return Vec::new();
         };
-        self.linked_exile_for_origin(source.object, item.source_ability_origin)
+        self.linked_exile_for_cohort(
+            source.object,
+            item.source_ability_origin,
+            item.linked_activation_cohort(),
+        )
     }
 
     pub(super) fn link_exile_to_ability(
         &mut self,
         source: ObjectRef,
         ability_origin: Option<u64>,
+        exiled: ObjectRef,
+    ) {
+        self.link_exile_with_cohort(source, ability_origin, None, exiled);
+    }
+
+    pub(super) fn link_exile_with_cohort(
+        &mut self,
+        source: ObjectRef,
+        ability_origin: Option<u64>,
+        acquired_link_cohort: Option<u64>,
         exiled: ObjectRef,
     ) {
         self.state
@@ -46,6 +60,7 @@ impl Game {
                 source,
                 exiled,
                 ability_origin,
+                acquired_link_cohort,
             });
     }
 
@@ -60,6 +75,7 @@ impl Game {
                 let exiled = link.exiled;
                 if link.source == source
                     && link.ability_origin == origin
+                    && link.acquired_link_cohort.is_none()
                     && world.reference(exiled.card) == exiled
                     && world.object(exiled.card).zone == Zone::Exile
                     && world.object(exiled.card).is_card()
@@ -80,7 +96,12 @@ impl Game {
         for event in events {
             if event.was_card && event.moved && event.destination == Zone::Exile {
                 for exiled in event.objects_after() {
-                    self.link_exile_to_ability(source.object, item.source_ability_origin, exiled);
+                    self.link_exile_with_cohort(
+                        source.object,
+                        item.source_ability_origin,
+                        item.linked_activation_cohort(),
+                        exiled,
+                    );
                 }
             }
         }
@@ -126,7 +147,12 @@ impl Game {
         let events = self.move_objects_raw(&ids, Zone::Exile);
         for event in &events {
             if event.moved && event.destination == Zone::Exile {
-                self.link_exile_to_ability(source, item.source_ability_origin, event.after);
+                self.link_exile_with_cohort(
+                    source,
+                    item.source_ability_origin,
+                    item.linked_activation_cohort(),
+                    event.after,
+                );
                 if creature_reflexive.is_some() && event.was_card && event.before.is_creature() {
                     self.remember_borrowed_exile(item, event.after, true);
                 }
@@ -206,7 +232,7 @@ impl Game {
                     .map(|link| link.exiled)
                     .collect()
             }
-            None => self.linked_exile_candidates(source),
+            None => self.linked_exile_for_item(&resolution.item),
         }
     }
 

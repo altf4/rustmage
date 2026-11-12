@@ -18,8 +18,14 @@ enum DonorAbility {
         fragment: Option<(u16, u16)>,
     },
     SelfGranted(u64),
-    Borrowed(u64),
-    Inherited(u64),
+    Borrowed {
+        slot: u64,
+        link_cohort: u64,
+    },
+    Inherited {
+        slot: u64,
+        link_cohort: u64,
+    },
     Mana {
         source: ObjectRef,
         origin: ManaGrantOrigin,
@@ -33,6 +39,51 @@ pub(super) struct Acquisition {
     line: u16,
     donor: ObjectRef,
     ability: DonorAbility,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Acquisition {
+    pub(super) fn shares_link_cohort(self, other: Self) -> bool {
+        self.borrower_origin == other.borrower_origin
+            && self.line == other.line
+            && self.donor == other.donor
+            && match (self.ability, other.ability) {
+                (
+                    DonorAbility::Borrowed {
+                        link_cohort: left, ..
+                    },
+                    DonorAbility::Borrowed {
+                        link_cohort: right, ..
+                    },
+                )
+                | (
+                    DonorAbility::Inherited {
+                        link_cohort: left, ..
+                    },
+                    DonorAbility::Inherited {
+                        link_cohort: right, ..
+                    },
+                ) => left == right,
+                (
+                    DonorAbility::Granted {
+                        source: left,
+                        timestamp: left_time,
+                        fragment: left_fragment,
+                    },
+                    DonorAbility::Granted {
+                        source: right,
+                        timestamp: right_time,
+                        fragment: right_fragment,
+                    },
+                ) => {
+                    left == right
+                        && left_time == right_time
+                        && left_fragment.map(|(line, _)| line)
+                            == right_fragment.map(|(line, _)| line)
+                }
+                (left, right) => left == right,
+            }
+    }
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -301,7 +352,10 @@ impl DonorInventory {
                         Template::new(
                             ability.definition,
                             ability.ability,
-                            DonorAbility::Borrowed(ability.slot),
+                            DonorAbility::Borrowed {
+                                slot: ability.slot,
+                                link_cohort: ability.link_cohort,
+                            },
                         )
                     })
                 })
@@ -336,7 +390,10 @@ impl DonorInventory {
                     ..Template::new(
                         ability.definition,
                         ability.ability,
-                        DonorAbility::Inherited(ability.slot),
+                        DonorAbility::Inherited {
+                            slot: ability.slot,
+                            link_cohort: ability.link_cohort,
+                        },
                     )
                 })
             })
@@ -457,6 +514,7 @@ impl DonorInventories {
                     definition: template.definition,
                     ability: template.ability,
                     slot: 0,
+                    link_cohort: 0,
                     used: false,
                     once_per_turn: false,
                     acquisition: 0,

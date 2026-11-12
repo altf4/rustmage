@@ -798,6 +798,7 @@ impl Game {
                                 source: interaction.source,
                                 exiled: event.after,
                                 ability_origin,
+                                acquired_link_cohort: None,
                             });
                     }
                 }

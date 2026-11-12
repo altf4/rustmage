@@ -87,6 +87,7 @@ pub(super) struct Descriptor {
     pub definition: Card,
     pub ability: u16,
     pub slot: u64,
+    pub(super) link_cohort: u64,
     pub used: bool,
     pub once_per_turn: bool,
     pub(super) acquisition: u64,
@@ -318,6 +319,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: index as u16,
                 slot,
+                link_cohort: 0,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -344,6 +346,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                     definition: card.card,
                     ability: crate::cards::activation_slots::intrinsic(color),
                     slot,
+                    link_cohort: 0,
                     used: false,
                     once_per_turn: link.once_per_turn,
                     acquisition: link.first_slot,
@@ -363,6 +366,7 @@ pub(super) fn inventory<W: CharacteristicWorld + ?Sized>(
                 definition: card.card,
                 ability: u16::MAX,
                 slot,
+                link_cohort: 0,
                 used: false,
                 once_per_turn: link.once_per_turn,
                 acquisition: link.first_slot,
@@ -434,6 +438,38 @@ pub(super) fn assign_slot<W: CharacteristicWorld + ?Sized>(
     if !rows.contains(&desired) {
         rows.push(desired);
     }
+    ability.link_cohort = desired
+        .definition
+        .filter(|&definition| paired_ghost_activation(definition, desired.ability))
+        .and_then(|definition| {
+            rows.iter()
+                .filter(|row| {
+                    row.shares_link_cohort(desired)
+                        && paired_ghost_activation(definition, row.ability)
+                })
+                .map(|row| row.slot)
+                .min()
+        })
+        .unwrap_or(slot);
+}
+
+// ReturnLinkedGhosts is the paired reader for one exact graveyard-exile
+// template. Other acquired abilities retain their individual slot as origin.
+fn paired_ghost_activation(definition: Card, index: u16) -> bool {
+    let abilities = definition.activations();
+    let Some(ability) = abilities.get(usize::from(index)) else {
+        return false;
+    };
+    let writes = |ability: &ActivatedAbility| {
+        ability
+            .program
+            .contains(&Instruction::ExileGraveTargetsLinked)
+    };
+    let reads =
+        |ability: &ActivatedAbility| ability.program.contains(&Instruction::ReturnLinkedGhosts);
+    (writes(ability) || reads(ability))
+        && abilities.iter().filter(|ability| writes(ability)).count() == 1
+        && abilities.iter().filter(|ability| reads(ability)).count() == 1
 }
 
 impl SlotRow {
@@ -442,6 +478,19 @@ impl SlotRow {
             == Self {
                 slot: self.slot,
                 ..other
+            }
+    }
+
+    fn shares_link_cohort(&self, other: Self) -> bool {
+        self.source == other.source
+            && self.grantor == other.grantor
+            && self.acquisition == other.acquisition
+            && self.graveyard == other.graveyard
+            && self.definition == other.definition
+            && match (self.inherited, other.inherited) {
+                (None, None) => true,
+                (Some(left), Some(right)) => left.shares_link_cohort(right),
+                _ => false,
             }
     }
 }
@@ -601,6 +650,8 @@ impl Game {
             self.copiable_recipe(item.source.expect("activated ability has source").object),
         ));
         item.borrowed_slot = Some(descriptor.slot);
+        item.acquired_link_cohort =
+            (descriptor.link_cohort != descriptor.slot).then_some(descriptor.link_cohort);
         item
     }
     pub(super) fn activate_borrowed_mana(

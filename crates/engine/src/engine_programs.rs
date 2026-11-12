@@ -1700,6 +1700,7 @@ impl Game {
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            acquired_link_cohort: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_types_lki: None,
@@ -4657,14 +4658,7 @@ impl Game {
                 }
                 Instruction::ReturnGraveyardNameTapped => self.return_graveyard_name_tapped(&item),
                 Instruction::ReturnOneLinkedExileToHand => {
-                    if !self
-                        .linked_exile_candidates(
-                            item.source
-                                .expect("instruction requires an object source")
-                                .object,
-                        )
-                        .is_empty()
-                    {
+                    if !self.linked_exile_for_item(&item).is_empty() {
                         self.state.pending = Pending::LinkedExile {
                             player: item.controller,
                         };
@@ -9578,13 +9572,9 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::RandomLinkedExileToBattlefield => self
-                    .random_linked_exile_to_battlefield(
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object,
-                        item.controller,
-                    ),
+                Instruction::RandomLinkedExileToBattlefield => {
+                    self.random_linked_exile_to_battlefield(&item)
+                }
                 Instruction::ExileTopPlayScaled { amount, next_turn } => {
                     let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
@@ -12230,11 +12220,7 @@ impl Game {
                     self.effect_counters(changes, replacements::ResumeMode::Program);
                 }
                 Instruction::ReturnLinkedGhosts => {
-                    let ids = self.linked_exile_candidates(
-                        item.source
-                            .expect("instruction requires an object source")
-                            .object,
-                    );
+                    let ids = self.linked_exile_for_item(&item);
                     let moves = ids
                         .into_iter()
                         .filter(|r| self.current_kinds(r.card) & 1 != 0)

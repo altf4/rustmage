@@ -110,6 +110,13 @@ const AURA_MANA: CardRules = CardRules {
     }],
     ..AURA
 };
+const COPY_ABILITY: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::YourAbility)),
+        &[Instruction::CopyTargetAbility { group: 0 }],
+    ),
+    ..CardRules::EMPTY
+};
 
 fn named(name: &str) -> Card {
     Card::from_name(name).unwrap()
@@ -438,4 +445,157 @@ fn land_type_and_attachment_mana_use_the_inheritor_in_actual_and_projected_payme
             assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
         }
     }
+}
+
+fn animated_vacuum(game: &mut Game) -> CardId {
+    let vacuum = put(game, PLAYER, "Ghost Vacuum", Zone::Battlefield);
+    game.change_object_form(
+        game.object_ref(vacuum),
+        AnimationSpec {
+            artifact: false,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: Some((2, 2)),
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        AnimationTypeMode::AddCreature,
+    );
+    vacuum
+}
+
+fn inherited_link_action(game: &Game, source: CardId, donor: CardId, ability: u16) -> Action {
+    announcement(
+        inherited(game, source)
+            .into_iter()
+            .find(|row| row.donor == game.object_ref(donor) && row.ability == ability)
+            .unwrap(),
+    )
+}
+
+fn exile_with_inherited_link(game: &mut Game, source: CardId, donor: CardId, victim: CardId) {
+    game.state.objects[source as usize].tapped = false;
+    let action = inherited_link_action(game, source, donor, 0);
+    act(game, action);
+    act(
+        game,
+        Action::ChooseTarget {
+            target: Target::Card(victim),
+        },
+    );
+    pay(game);
+    settle(game);
+    assert_eq!(game.object_view(victim).zone, Zone::Exile);
+}
+
+#[test]
+fn two_vacuums_and_a_curator_have_separate_linked_exile_through_copy_and_sacrifice() {
+    let mimic = named("Grizzly Bears");
+    let copier = named("Opt");
+    let _rules = fixture_rules::activate(&[(mimic, &MIMIC), (copier, &COPY_ABILITY)]);
+    let mut game = scenario(PLAYER);
+    let source = spawn(&mut game, PLAYER, mimic, Zone::Battlefield);
+    let first_vacuum = animated_vacuum(&mut game);
+    let second_vacuum = animated_vacuum(&mut game);
+    let curator = put(&mut game, PLAYER, "Keen-Eyed Curator", Zone::Battlefield);
+    let [first, second, curated, original] =
+        ["Hill Giant", "Healer's Hawk", "Bear Cub", "Savannah Lions"]
+            .map(|name| put(&mut game, PLAYER.other(), name, Zone::Graveyard));
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: second_vacuum,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(original),
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+
+    exile_with_inherited_link(&mut game, source, first_vacuum, first);
+    exile_with_inherited_link(&mut game, source, second_vacuum, second);
+    exile_with_inherited_link(&mut game, source, curator, curated);
+    let source_ref = game.object_ref(source);
+    let view = game.observe(PLAYER);
+    let links = view
+        .linked_exile
+        .iter()
+        .filter(|row| row.source == source_ref)
+        .collect::<Vec<_>>();
+    assert_eq!(links.len(), 3);
+    let cohorts = links
+        .iter()
+        .map(|row| row.acquired_link_cohort.unwrap())
+        .collect::<std::collections::BTreeSet<_>>();
+    assert_eq!(cohorts.len(), 3);
+    let first_cohort = links[0].acquired_link_cohort;
+    assert_eq!(links[0].exiled, game.object_ref(first));
+
+    game.state.objects[source as usize].tapped = false;
+    let return_first = inherited_link_action(&game, source, first_vacuum, 1);
+    let checkpoint = game.snapshot();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == return_first)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed
+        .apply_index(PLAYER, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, return_first);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    game.restore(&checkpoint).unwrap();
+    game.apply_index(PLAYER, game.revision(), index).unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    pay(&mut game);
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+    let packet = game.state.stack.last().unwrap();
+    assert_eq!(packet.source.unwrap().object, source_ref);
+    assert_eq!(packet.acquired_link_cohort, first_cohort);
+    let target = Target::Stack(packet.id);
+    let spell = spawn(&mut game, PLAYER, copier, Zone::Hand);
+    cast(&mut game, spell, Some(target));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let copied = game.state.stack.last().unwrap();
+    assert!(copied.is_copy);
+    assert_eq!(copied.acquired_link_cohort, first_cohort);
+    settle(&mut game);
+    assert_eq!(game.object_view(first).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(first).controller, PLAYER);
+    assert_eq!(game.counter_count(first, CounterKind::Flying), 1);
+    assert!(game.object_view(first).has_subtype("Spirit"));
+    assert_eq!(stats(&game, first), (1, 1));
+    for card in [second, curated, original] {
+        assert_eq!(game.object_view(card).zone, Zone::Exile);
+    }
+}
+
+#[test]
+fn a_pair_inherited_through_another_creature_uses_its_own_linked_cohort() {
+    let first = named("Grizzly Bears");
+    let second = named("Bear Cub");
+    let _rules = fixture_rules::activate(&[(first, &MIMIC), (second, &MIMIC)]);
+    let mut game = scenario(PLAYER);
+    let older = spawn(&mut game, PLAYER, first, Zone::Battlefield);
+    let newer = spawn(&mut game, PLAYER, second, Zone::Battlefield);
+    let vacuum = animated_vacuum(&mut game);
+    let direct = put(&mut game, PLAYER.other(), "Hill Giant", Zone::Graveyard);
+    let indirect = put(&mut game, PLAYER.other(), "Healer's Hawk", Zone::Graveyard);
+    exile_with_inherited_link(&mut game, newer, vacuum, direct);
+    exile_with_inherited_link(&mut game, newer, older, indirect);
+    game.state.objects[newer as usize].tapped = false;
+    let return_indirect = inherited_link_action(&game, newer, older, 1);
+    act(&mut game, return_indirect);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(newer).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(direct).zone, Zone::Exile);
+    assert_eq!(game.object_view(indirect).zone, Zone::Battlefield);
 }

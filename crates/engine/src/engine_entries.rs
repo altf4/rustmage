@@ -1236,6 +1236,7 @@ impl Game {
                                 source: event.after,
                                 exiled,
                                 ability_origin,
+                                acquired_link_cohort: None,
                             });
                     }
                 }

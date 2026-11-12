@@ -272,6 +272,7 @@ fn link(g: &mut Game, source: CardId, exiled: CardId) {
         source: g.object_ref(source),
         exiled: g.object_ref(exiled),
         ability_origin: g.copy_ability_origin(g.object_ref(source)),
+        acquired_link_cohort: None,
         exiled_turn: g.state.turn,
     };
     g.state
