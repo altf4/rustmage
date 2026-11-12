@@ -3129,16 +3129,17 @@ impl Game {
         &mut self,
         player: Player,
         recipes: Vec<CopyRecipe>,
+        amount: u128,
         tapped: bool,
     ) {
-        if recipes.is_empty() {
+        if recipes.is_empty() || amount == 0 {
             return;
         }
         let groups = recipes
             .iter()
             .map(|recipe| TokenGroupView {
                 token: recipe.definition,
-                amount: 1,
+                amount,
                 tapped,
             })
             .collect();

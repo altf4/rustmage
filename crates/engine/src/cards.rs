@@ -3141,6 +3141,8 @@ pub enum Instruction {
         subject: Subject,
         amount: AmountValue,
     },
+    /// Create this many copies of each still-legal permanent target in one batch.
+    CreateCopiesOfEachTarget(AmountValue),
     /// Skip instructions unless this is the specified successful resolution this turn.
     IfThisAbilityResolutionNumber {
         number: u64,

@@ -5346,7 +5346,7 @@ impl Game {
                         .into_iter()
                         .map(|row| row.recipe)
                         .collect();
-                    self.stage_copy_recipes(item.controller, recipes, true);
+                    self.stage_copy_recipes(item.controller, recipes, 1, true);
                 }
                 Instruction::CopyControlledNonlandsFromTarget => {
                     self.copy_target_to_controlled_cohort(&item, true);
@@ -8568,6 +8568,10 @@ impl Game {
                         self.stage_copy_creation(item.controller, recipe, amount);
                     }
                 }
+                Instruction::CreateCopiesOfEachTarget(value) => {
+                    let amount = self.item_amount(value, &item);
+                    self.copy_each_target(&item, amount);
+                }
                 Instruction::CreateCounteredCopyToken {
                     subject,
                     exceptions,
@@ -9659,7 +9663,7 @@ impl Game {
                                     base: Some(base),
                                     ..CopyExceptions::NONE
                                 });
-                        self.stage_copy_recipes(item.controller, vec![recipe], false);
+                        self.stage_copy_recipes(item.controller, vec![recipe], 1, false);
                     }
                 }
                 Instruction::AnimateEntryResultIfSubtype { subtype, spec } => {

@@ -137,6 +137,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::ReduceColoredSpellCostsThisTurn { amount: value, .. }
             | Instruction::CreateTokensScaled { amount: value, .. }
             | Instruction::CreateCopyTokensScaled { amount: value, .. }
+            | Instruction::CreateCopiesOfEachTarget(value)
             | Instruction::CreateTokensAttackingScaled { amount: value, .. }
             | Instruction::CreateTokensWithSourceDeparture { amount: value, .. }
             | Instruction::EndureScaled { amount: value, .. }
