@@ -35,7 +35,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
             Instruction::AnimateSource(AnimationSpec {
                 artifact: true,
                 creature_types: AnimationCreatureTypes::Unchanged,
-                base: Some((0, 0)),
+                base: None,
                 keywords: Keywords::NONE,
                 duration: AnimationDuration::Permanent,
             }),

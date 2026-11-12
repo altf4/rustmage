@@ -182,6 +182,12 @@ fn fatal_fissure_observes_the_exact_targets_death_and_then_targets_a_land() {
     game.prepare_triggers();
     settle(&mut game);
     assert_eq!(game.current_kinds(land), 2);
+    let mut after_turn = game.clone();
+    after_turn.finish_cleanup();
+    after_turn.move_object(victim, Zone::Graveyard);
+    after_turn.prepare_triggers();
+    settle(&mut after_turn);
+    assert_eq!(after_turn.current_kinds(land), 2);
     game.move_object(victim, Zone::Graveyard);
     game.prepare_triggers();
     reject(&mut game, target(enemy_land));

@@ -491,8 +491,11 @@ fn watery_grasp_stops_untap_and_waterbends_the_attached_creature_into_its_owners
     assert!(!game.object_view(creature).tapped);
     game.state.objects[creature as usize].tapped = true;
     game.state.active = p.other();
-    game.begin_step(Step::Untap);
+    assert!(!game.untap_active_player());
     assert!(game.object_view(creature).tapped);
+    let mut externally_untapped = game.clone();
+    externally_untapped.untap_objects(&[creature], untap_rules::UntapCause::Effect);
+    assert!(!externally_untapped.object_view(creature).tapped);
     game.state.active = p;
     game.state.priority = p;
     game.state.step = Step::Main1;

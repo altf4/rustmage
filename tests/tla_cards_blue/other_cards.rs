@@ -5,7 +5,20 @@ fn gran_gran_loots_on_tap_and_reduces_noncreature_spells_at_three_lessons() {
     let p = Player::P1;
     let mut game = scenario(p);
     let gran = put(&mut game, p, "Gran-Gran", Zone::Battlefield);
-    assert!(!game.object_view(gran).card.is_standard_legal());
+    let identity = game.object_view(gran).card;
+    let mut decks = [vec![Card::Forest; 60], vec![Card::Forest; 60]];
+    decks[p.index()][0] = identity;
+    let mut config = Config {
+        decks,
+        seed: 1,
+        starting_player: p,
+        deck_rules: DeckRules::Standard,
+    };
+    assert!(
+        matches!(Game::new(config.clone()), Err(Error::InvalidDeck(message)) if message.contains("not Standard legal"))
+    );
+    config.deck_rules = DeckRules::Freeform;
+    assert!(Game::new(config).is_ok());
     let third = put(&mut game, p, "Accumulate Wisdom", Zone::Graveyard);
     for _ in 0..2 {
         put(&mut game, p, "It'll Quench Ya!", Zone::Graveyard);

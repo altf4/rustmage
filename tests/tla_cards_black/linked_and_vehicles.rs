@@ -189,6 +189,62 @@ fn koh_switches_between_entry_and_death_linked_donors_at_one_life_each() {
 }
 
 #[test]
+fn lo_and_li_find_a_lesson_or_noble_and_grant_lifelink_to_both_printed_classes() {
+    let p = Player::P1;
+    let mut game = scenario(p);
+    let tutors = put(&mut game, p, "Lo and Li, Twin Tutors", Zone::Hand);
+    let lesson = put(&mut game, p, "Firebending Lesson", Zone::Library);
+    let noble = put(&mut game, p, "Mai, Scornful Striker", Zone::Library);
+    let other = put(&mut game, p, "Bear Cub", Zone::Library);
+    let opposing = put(
+        &mut game,
+        p.other(),
+        "Mai, Scornful Striker",
+        Zone::Battlefield,
+    );
+    let victim = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
+    let kindred = put(&mut game, p, "Firdoch Core", Zone::Battlefield);
+    cast(&mut game, tutors, None);
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    reject(&mut game, Action::ChooseSearch { card: other });
+    let mut noble_choice = game.clone();
+    act(&mut noble_choice, Action::ChooseSearch { card: noble });
+    if noble_choice.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut noble_choice, Action::FinishSearch);
+    }
+    assert_eq!(noble_choice.object_view(noble).zone, Zone::Hand);
+
+    act(&mut game, Action::ChooseSearch { card: lesson });
+    if game.legal_actions().contains(&Action::FinishSearch) {
+        act(&mut game, Action::FinishSearch);
+    }
+    assert!(game.has_subtype(kindred, "Noble"));
+    assert!(!game.keywords(kindred).contains(Keywords::LIFELINK));
+    let mut animated = game.clone();
+    act(&mut animated, activate(kindred, 1));
+    pay(&mut animated);
+    settle(&mut animated);
+    assert!(animated.keywords(kindred).contains(Keywords::LIFELINK));
+    game.move_object(noble, Zone::Battlefield);
+    assert!(game.keywords(noble).contains(Keywords::LIFELINK));
+    assert!(!game.keywords(opposing).contains(Keywords::LIFELINK));
+    game.move_object(noble, Zone::Exile);
+    game.move_object(opposing, Zone::Exile);
+    act(&mut game, Action::AnnounceCast { card: lesson });
+    act(&mut game, Action::ChooseKicker { pay: false });
+    act(&mut game, target(victim));
+    pay(&mut game);
+    assert!(game.keywords(lesson).contains(Keywords::LIFELINK));
+    let mut remove = game.clone();
+    remove.move_object(tutors, Zone::Exile);
+    settle(&mut remove);
+    assert_eq!(remove.state.players[p.index()].life, 20);
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].life, 22);
+}
+
+#[test]
 fn phoenix_fleet_airship_copies_after_sacrifice_crews_for_one_and_counts_eight_live_names() {
     let p = Player::P0;
     let mut game = scenario(p);
@@ -237,6 +293,7 @@ fn fire_nation_drill_may_tap_then_destroy_and_strips_both_keywords_before_crewin
     let drill = put(&mut game, p, "The Fire Nation Drill", Zone::Hand);
     let victim = put(&mut game, p.other(), "Hill Giant", Zone::Battlefield);
     let too_big = put(&mut game, p.other(), "Canyon Crawler", Zone::Battlefield);
+    let unprotected_big = put(&mut game, p.other(), "Canyon Crawler", Zone::Battlefield);
     let contributor = put(&mut game, p, "Bear Cub", Zone::Battlefield);
     let protection = Keywords::HEXPROOF
         .union(Keywords::hexproof_from_color(ChoiceColor::Black))
@@ -255,6 +312,7 @@ fn fire_nation_drill_may_tap_then_destroy_and_strips_both_keywords_before_crewin
     assert_eq!(no_tap.object_view(victim).zone, Zone::Battlefield);
     act(&mut game, Action::ChooseOptional { accept: true });
     assert!(game.object_view(drill).tapped);
+    reject(&mut game, target(unprotected_big));
     reject(&mut game, target(too_big));
     act(&mut game, target(victim));
     settle(&mut game);
