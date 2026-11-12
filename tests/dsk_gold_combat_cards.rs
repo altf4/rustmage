@@ -215,9 +215,8 @@ fn fear_of_exposure_requires_two_distinct_cost_objects_besides_its_mana() {
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
     reject(&mut game, announce.clone());
     let mana = put(&mut game, player, "Forest", Zone::Battlefield);
-    act(&mut game, announce);
     act(&mut game, Action::TapMana { card: mana });
-    pay(&mut game);
+    act(&mut game, announce);
     choose_additional_clause(&mut game, player);
     let bad = [
         additional_cost(&game, artifact),
