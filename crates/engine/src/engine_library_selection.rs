@@ -1387,9 +1387,12 @@ impl Game {
         // CR 701.58e: each card from the same library is cloaked separately.
         // Keep the selected order across entry and replacement continuations.
         while let Some(object) = frame.selected.pop() {
-            if let Some(entry) =
+            let entry = if frame.public {
                 self.face_down_entry(object, controller, FaceDownCause::Cloak, false)
-            {
+            } else {
+                self.hidden_cloak_entry(object, controller)
+            };
+            if let Some(entry) = entry {
                 frame.entering = true;
                 self.state.resolving.as_mut().unwrap().selection = Some(frame);
                 self.stage_entries(vec![entry], None);

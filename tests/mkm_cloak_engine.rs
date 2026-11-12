@@ -155,9 +155,16 @@ fn two_selected_library_cards_cloak_separately_then_the_rest_go_on_bottom() {
     settle(&mut game);
     assert_eq!(game.state.players[player.index()].life, life + 2);
     let hidden = game.observe(player.other()).face_down_permanents;
+    assert_eq!(hidden.len(), 2);
+    assert!(
+        hidden
+            .iter()
+            .all(|row| ![first, second].contains(&row.object.card))
+    );
+    let private = game.observe(player).face_down_permanents;
     assert_eq!(
-        hidden.iter().map(|row| row.object.card).collect::<Vec<_>>(),
-        [second, first]
+        private.iter().map(|row| row.underlying).collect::<Vec<_>>(),
+        [Card::from_name("Shock"), Some(Card::Island)]
     );
     assert!(
         hidden
@@ -167,4 +174,96 @@ fn two_selected_library_cards_cloak_separately_then_the_rest_go_on_bottom() {
     let library = &game.state.players[player.index()].library;
     assert_eq!(library.last(), Some(&outside));
     assert!(library[..2].contains(&rest1) && library[..2].contains(&rest2));
+}
+
+#[test]
+fn private_cloak_choices_cannot_be_matched_to_a_previously_revealed_library_card() {
+    let spell = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[(spell, &LIBRARY)]);
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    put(&mut game, player, "Mountain", Zone::Library);
+    let alternate = put(&mut game, player, "Plains", Zone::Library);
+    let common = put(&mut game, player, "Forest", Zone::Library);
+    let revealed = put(&mut game, player, "Shock", Zone::Library);
+    let scout = put(&mut game, player, "Cenote Scout", Zone::Hand);
+    cast(&mut game, scout, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let revealed = game.object_ref(revealed);
+    act(
+        &mut game,
+        Action::ChooseExplore {
+            object: revealed,
+            graveyard: false,
+        },
+    );
+    assert_eq!(
+        game.observe(opponent).known_library_top[player.index()]
+            .as_ref()
+            .unwrap()
+            .object,
+        revealed
+    );
+
+    start(&mut game, player, spell);
+    let mut omitted = game.clone();
+    for (branch, first) in [(&mut game, revealed.card), (&mut omitted, alternate)] {
+        for card in [first, common] {
+            act(branch, Action::SelectLibrary { card });
+        }
+        if branch
+            .legal_actions()
+            .contains(&Action::FinishLibrarySelection)
+        {
+            act(branch, Action::FinishLibrarySelection);
+        }
+        settle(branch);
+    }
+
+    let public = |game: &Game| {
+        let mut view = game.observe(opponent);
+        view.revision = 0;
+        assert!(view.known_library_top[player.index()].is_none());
+        assert!(
+            view.face_down_permanents
+                .iter()
+                .all(|row| { row.underlying.is_none() && row.object.card != revealed.card })
+        );
+        serde_json::to_value(view).unwrap()
+    };
+    assert_eq!(public(&game), public(&omitted));
+    assert_eq!(
+        game.observe(player).face_down_permanents[0].underlying,
+        Card::from_name("Shock")
+    );
+    assert_eq!(
+        omitted.observe(player).face_down_permanents[0].underlying,
+        Some(Card::Plains)
+    );
+    assert!(omitted.state.players[player.index()].library[..2].contains(&revealed.card));
+}
+
+#[test]
+fn a_skipped_library_cloak_restores_the_exact_original_library_slot() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let original = put(&mut game, player, "Island", Zone::Library);
+    let top = put(&mut game, player, "Plains", Zone::Library);
+    let library = game.state.players[player.index()].library.clone();
+    let exact = game.object_ref(original);
+    let mut entry = game.hidden_cloak_entry(exact, player).unwrap();
+    assert_ne!(entry.before.id, original);
+    assert_eq!(
+        game.state.players[player.index()].library.last(),
+        Some(&top)
+    );
+    entry.skipped = true;
+    game.stage_entries(vec![entry], None);
+    assert!(!game.advance_entries());
+    assert_eq!(game.state.players[player.index()].library, library);
+    assert_eq!(game.object_ref(original), exact);
+    assert_eq!(game.object_view(original).card, Card::Island);
+    assert!(game.observe(player).face_down_permanents.is_empty());
 }

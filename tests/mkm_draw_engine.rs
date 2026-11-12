@@ -237,3 +237,32 @@ fn the_second_draw_changes_abilities_and_combat_counts_completed_draws_live() {
     assert!(keywords.contains(Keywords::DEFENDER));
     assert!(!keywords.contains(Keywords::VIGILANCE));
 }
+
+#[test]
+fn empty_library_skip_coalesces_overlapping_count_only_draw_replacements() {
+    let spell = named("Quick Study");
+    let _rules = fixture_rules::activate(&[(spell, &DRAW_ONE)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let source = put(&mut game, player, "Living Conundrum", Zone::Battlefield);
+    let quantum = put(&mut game, player, "Quantum Riddler", Zone::Battlefield);
+    let doubler = put(&mut game, player, "Vnwxt, Verbose Host", Zone::Battlefield);
+    game.state.players[player.index()].speed = 4;
+    for id in game.state.players[player.index()].library.clone() {
+        game.move_object(id, Zone::Exile);
+    }
+    let draw = spawn(&mut game, player, spell, Zone::Hand);
+    cast(&mut game, draw, None);
+    let mut unprotected = game.clone();
+    unprotected.move_object(source, Zone::Graveyard);
+    pass_pair(&mut unprotected);
+    let order = unprotected.observe(player).actions;
+    for card in [quantum, doubler] {
+        let source = unprotected.object_ref(card);
+        assert!(order.contains(&Action::ChooseDrawReplacement { source }));
+    }
+    settle(&mut game);
+    assert_eq!(game.outcome(), None);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 0);
+    assert!(!game.state.players[player.index()].attempted_empty_draw);
+}

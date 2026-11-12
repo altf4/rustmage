@@ -107,7 +107,7 @@ fn the_face_down_creature_can_use_the_lots_to_turn_up_as_equipment() {
     let producer = spawn(&mut game, player, source, Zone::Battlefield);
     let weapon = Card::from_name("Concealed Weapon").unwrap();
     let hidden = spawn(&mut game, player, weapon, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     assert!(game.object_view(hidden).is_creature());

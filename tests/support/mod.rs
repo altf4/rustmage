@@ -104,6 +104,21 @@ pub(crate) fn pay(g: &mut Game) {
     choose(g, |a| matches!(a, Action::PayCosts { .. }));
 }
 
+pub(crate) fn announce_hand_disguise(game: &mut Game, card: CardId) -> ObjectRef {
+    act(game, Action::AnnounceDisguise { card });
+    let object = game
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .item
+        .source
+        .unwrap()
+        .object;
+    assert_ne!(object.card, card);
+    object
+}
+
 pub(crate) fn cast(g: &mut Game, id: CardId, target: Option<Target>) {
     if let Some(action) = g
         .legal_actions()

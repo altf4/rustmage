@@ -1,4 +1,4 @@
-//! Face-down cohorts use fresh public identities across concealed movements.
+//! Fresh public identities for cards moved by private face-down choices.
 use super::*;
 use std::num::NonZeroU32;
 
@@ -86,14 +86,7 @@ impl Game {
     ) {
         let moves: Vec<_> = objects
             .into_iter()
-            .filter_map(|object| {
-                let (fresh, old) = self.fresh_hidden_cloak_slot(object)?;
-                let mut movement = self
-                    .face_down_entry(fresh, controller, FaceDownCause::Cloak, false)
-                    .expect("validated hidden cloak card");
-                movement.face_down.as_mut().unwrap().obscured_origin = Some(old);
-                Some(movement)
-            })
+            .filter_map(|object| self.hidden_cloak_entry(object, controller))
             .collect();
         if moves.is_empty() {
             self.cloak_one(None, controller, false);
@@ -102,10 +95,29 @@ impl Game {
         }
     }
 
-    fn fresh_hidden_cloak_slot(&mut self, original: ObjectRef) -> Option<(ObjectRef, NonZeroU32)> {
+    pub(super) fn hidden_cloak_entry(
+        &mut self,
+        object: ObjectRef,
+        controller: Player,
+    ) -> Option<entries::EntryMove> {
+        let (fresh, old) = self.fresh_hidden_card_slot(object)?;
+        let mut movement = self
+            .face_down_entry(fresh, controller, FaceDownCause::Cloak, false)
+            .expect("validated hidden cloak card");
+        movement.face_down.as_mut().unwrap().obscured_origin = Some(old);
+        Some(movement)
+    }
+
+    pub(super) fn fresh_hidden_card_slot(
+        &mut self,
+        original: ObjectRef,
+    ) -> Option<(ObjectRef, NonZeroU32)> {
         let card = self.state.objects.get(original.card as usize)?;
-        let hidden = match card.zone {
+        let origin = card.zone;
+        let owner = card.owner;
+        let hidden = match origin {
             Zone::Hand => !self.state.known_hand.contains(&original),
+            Zone::Library => true,
             Zone::Exile => self.exiled_face_down(original),
             _ => false,
         };
@@ -128,12 +140,24 @@ impl Game {
             generation: 0,
         };
         self.state.objects.push(card);
+        if origin == Zone::Library {
+            self.replace_hidden_library_slot(owner, original.card, fresh.card);
+        }
         self.state.objects[original.card as usize].zone = Zone::Outside;
         self.copy_face_down_exile_knowledge(original, fresh);
         Some((fresh, old))
     }
 
-    pub(super) fn finish_hidden_cloak_identity(
+    fn replace_hidden_library_slot(&mut self, owner: Player, old: CardId, fresh: CardId) {
+        let slot = self.state.players[owner.index()]
+            .library
+            .iter_mut()
+            .rfind(|slot| **slot == old)
+            .expect("hidden library card has a slot");
+        *slot = fresh;
+    }
+
+    pub(super) fn finish_hidden_card_identity(
         &mut self,
         old: NonZeroU32,
         fresh: ObjectRef,
@@ -145,7 +169,11 @@ impl Game {
             && self.object_ref(fresh.card) == fresh
             && self.state.objects[fresh.card as usize].zone == origin;
         let retired = if restored {
+            let owner = self.state.objects[original.card as usize].owner;
             self.state.objects[original.card as usize].zone = origin;
+            if origin == Zone::Library {
+                self.replace_hidden_library_slot(owner, fresh.card, original.card);
+            }
             self.copy_face_down_exile_knowledge(fresh, original);
             fresh
         } else {

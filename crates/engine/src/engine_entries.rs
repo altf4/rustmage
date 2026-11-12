@@ -1079,7 +1079,7 @@ impl Game {
             if movement.skipped
                 && let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin)
             {
-                self.finish_hidden_cloak_identity(
+                self.finish_hidden_card_identity(
                     origin,
                     movement.before.reference,
                     movement.before.zone,
@@ -1254,7 +1254,7 @@ impl Game {
                 },
             );
             if let Some(origin) = movement.face_down.and_then(|face| face.obscured_origin) {
-                self.finish_hidden_cloak_identity(
+                self.finish_hidden_card_identity(
                     origin,
                     event.before.reference,
                     event.before.zone,

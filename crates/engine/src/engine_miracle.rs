@@ -232,6 +232,11 @@ impl Game {
         if self.draws_prohibited() {
             return;
         }
+        // Every supported draw modifier changes only the count. When every
+        // draw will be skipped, the replacement orders have identical results.
+        if self.top_library_card(player).is_none() && self.skips_empty_library_draws(player) {
+            return;
+        }
         if !request.replaced && !request.batch_checked && request.amount > 0 {
             let additional = self.quantum_draw_sources(player);
             let doublers = if request.amount == 1 && !additional.is_empty() {

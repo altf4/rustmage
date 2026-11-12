@@ -23,6 +23,7 @@ struct BlockAssignments {
     // Menace and similar restrictions make these slots optional as a group.
     bundles: Vec<BlockBundle>,
     fixed_blocks: usize,
+    upper_bound: usize,
 }
 
 impl BlockAssignments {
@@ -33,7 +34,9 @@ impl BlockAssignments {
         has_company_bundle: bool,
         best: &mut Option<usize>,
     ) {
-        if self.slots.iter().map(|slots| slots.required).sum::<usize>() > self.edges.len() {
+        if best.is_some_and(|score| score >= self.upper_bound)
+            || self.slots.iter().map(|slots| slots.required).sum::<usize>() > self.edges.len()
+        {
             return;
         }
         if let Some(&row) = self.bundles.get(bundle) {
@@ -328,11 +331,20 @@ impl Game {
         } else {
             (slots.iter().all(|slots| slots.required == 0) && !fixed_needs_company).then_some(score)
         };
+        // Each unused blocker can earn at most its best pair award, and
+        // each previously unblocked attacker can earn its first-block award once.
+        let upper_bound = edges
+            .iter()
+            .map(|row| row.iter().flatten().copied().max().unwrap_or_default())
+            .chain(slots.iter().map(|slot| slot.first_block))
+            .chain(bundles.iter().map(|bundle| bundle.first_block))
+            .fold(score, usize::saturating_add);
         BlockAssignments {
             edges,
             slots,
             bundles,
             fixed_blocks: selected.len(),
+            upper_bound,
         }
         .maximize(0, score, false, &mut best);
         best

@@ -505,8 +505,8 @@ impl Game {
         let reference = self.object_ref(id);
         let object = &self.state.objects[id as usize];
         let physical = object.card;
-        let known = match object.zone {
-            Zone::Hand => self.state.known_hand.contains(&reference),
+        let origin = object.zone;
+        let known = match origin {
             Zone::Graveyard => true,
             Zone::Exile => self.can_view_hideaway(player.other(), reference),
             Zone::Library => self.public_library_top(object.owner) == Some(reference),
@@ -516,6 +516,23 @@ impl Game {
         // capture these before applying face-down spell characteristics.
         let modifiers = self.exile_cast_modifiers(player, id);
         let stash_origin = self.foreign_stash(player, id);
+        let id = if origin == Zone::Hand {
+            // Remaining known disguise candidates would identify the card by
+            // elimination. The cast checkpoint retains the pre-announcement
+            // hand knowledge if the proposed cast has to be reversed.
+            let objects = &self.state.objects;
+            self.state.known_hand.retain(|known| {
+                let card = &objects[known.card as usize];
+                card.owner != player || card.card.disguise_spec().is_none()
+            });
+            let (fresh, original) = self
+                .fresh_hidden_card_slot(reference)
+                .expect("validated private disguise origin");
+            self.finish_hidden_card_identity(original, fresh, Zone::Hand, true);
+            fresh.card
+        } else {
+            id
+        };
         self.state.objects[id as usize].card =
             Card::from_name("@face-down/disguise").expect("pinned catalogue identity");
         let mut item = self.cast_item(player, id, [0; 6]);

@@ -295,3 +295,28 @@ fn an_attack_or_block_requirement_follows_control_and_lasts_through_each_combat(
     pass_pair(&mut game);
     assert!(!game.attacks_each_combat(creature));
 }
+
+#[test]
+fn one_required_blocker_cannot_score_more_by_enabling_many_menace_bundles() {
+    let _rules =
+        fixture_rules::activate(&[(named("Opt"), &MUST_BLOCK), (named("Hill Giant"), &MENACE)]);
+    let player = Player::P0;
+    let defender = player.other();
+    let mut game = scenario(player);
+    let attackers: Vec<_> = (0..20)
+        .map(|_| put(&mut game, player, "Hill Giant", Zone::Battlefield))
+        .collect();
+    let blockers: Vec<_> = (0..40)
+        .map(|_| put(&mut game, defender, "Bear Cub", Zone::Battlefield))
+        .collect();
+    cast_requirement(&mut game, player, "Opt", blockers[0]);
+    declare(&mut game, &attackers);
+    pass_pair(&mut game);
+    assert_eq!(game.state.pending, Pending::Blockers);
+    assert_eq!(game.maximum_weighted_block_requirements(&[]), Some(1));
+    let first = attackers[0];
+    assert_eq!(
+        game.maximum_weighted_block_requirements(&[(blockers[0], first), (blockers[1], first)]),
+        Some(1)
+    );
+}

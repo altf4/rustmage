@@ -52,7 +52,7 @@ fn disguise_only_allows_disguise_payment_and_keeps_the_incarnation() {
         let smuggler = Card::from_name("Bubble Smuggler").unwrap();
         let mut game = scenario(player);
         let hidden = spawn(&mut game, player, smuggler, Zone::Hand);
-        act(&mut game, Action::AnnounceDisguise { card: hidden });
+        let hidden = announce_hand_disguise(&mut game, hidden).card;
         pay(&mut game);
         let spells = game.observe(player.other()).face_down_spells;
         assert_eq!(spells.len(), 1);
@@ -268,7 +268,7 @@ fn variable_disguise_locks_the_chosen_value_and_binds_it_to_the_turn_up_trigger(
     let player = Player::P0;
     let mut game = scenario(player);
     let hidden = spawn(&mut game, player, bear, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
 
@@ -333,7 +333,7 @@ fn disguise_hybrid_payment_uses_the_live_count_of_qualifying_graveyard_cards() {
     let player = Player::P1;
     let mut game = scenario(player);
     let hidden = spawn(&mut game, player, bear, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     let object = game.object_ref(hidden);
@@ -397,7 +397,7 @@ fn live_own_turn_prohibition_applies_to_effects_and_paid_turn_up() {
     let mut game = scenario(player);
     let provider = spawn(&mut game, player.other(), bear, Zone::Battlefield);
     let hidden = spawn(&mut game, player, smuggler, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     let object = game.object_ref(hidden);
@@ -514,7 +514,7 @@ fn turn_up_replacement_precedes_the_trigger_and_departure_keeps_the_damage_actor
     let mut game = scenario(player);
     spawn(&mut game, player, performer, Zone::Battlefield);
     let hidden = spawn(&mut game, player, warden, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     assert_eq!(game.counter_count(hidden, CounterKind::PlusOne), 0);
@@ -580,7 +580,7 @@ fn end_step_observes_earlier_face_down_creature_entry_and_ignores_flip_only() {
     let mut game = scenario(player);
     let smuggler = Card::from_name("Bubble Smuggler").unwrap();
     let hidden = spawn(&mut game, player, smuggler, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
 
@@ -651,7 +651,7 @@ fn temporary_look_remembers_known_creatures_and_expires_before_new_entries() {
     let disguised = spawn(&mut game, opponent, smuggler, Zone::Hand);
     game.state.active = opponent;
     game.state.priority = opponent;
-    act(&mut game, Action::AnnounceDisguise { card: disguised });
+    let disguised = announce_hand_disguise(&mut game, disguised).card;
     pay(&mut game);
     assert_eq!(game.observe(player).face_down_spells[0].underlying, None);
     settle(&mut game);
@@ -719,6 +719,15 @@ fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
                 || matches!(action, Action::AnnounceTaxedExile { object, method: CastMethod::Disguise, .. } if object.card == card)
         }).expect("discounted disguise");
         act(&mut branch, action);
+        let card = branch
+            .state
+            .announcing
+            .as_ref()
+            .unwrap()
+            .item
+            .source
+            .unwrap()
+            .id;
         act(
             &mut branch,
             Action::PayCosts {
@@ -730,4 +739,95 @@ fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
         branch.state.players[player.index()].mana = [0, 4, 0, 0, 0, 0];
         reject(&mut branch, turn_up(object, DISGUISE));
     }
+}
+
+#[test]
+fn casting_a_previously_revealed_disguise_keeps_the_private_hand_choice_concealed() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(opponent);
+    let first = put(&mut game, player, "Bubble Smuggler", Zone::Hand);
+    let second = put(&mut game, player, "Concealed Weapon", Zone::Hand);
+    let unchanged = put(&mut game, player, "Forest", Zone::Hand);
+    let discarded = put(&mut game, player, "Shock", Zone::Hand);
+    let spell = put(&mut game, opponent, "Cerebral Confiscation", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player),
+        },
+    );
+    pay(&mut game);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let object = game.object_ref(discarded);
+    act(&mut game, Action::ChooseRevealedDiscard { object });
+    for card in [first, second, unchanged] {
+        assert!(
+            game.observe(opponent)
+                .known_hand
+                .contains(&game.object_ref(card))
+        );
+    }
+
+    game.state.active = player;
+    game.state.priority = player;
+    let saved = game.snapshot();
+    let mut other = game.clone();
+    let mut indexed = game.clone();
+    let announce = Action::AnnounceDisguise { card: first };
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == announce)
+        .unwrap();
+    let first_spell = announce_hand_disguise(&mut game, first);
+    let second_spell = announce_hand_disguise(&mut other, second);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    assert_eq!(first_spell, second_spell);
+    let public = |game: &Game| {
+        let mut view = game.observe(opponent);
+        view.revision = 0;
+        assert_eq!(view.known_hand, [game.object_ref(unchanged)]);
+        assert!(
+            view.face_down_spells
+                .iter()
+                .all(|row| row.underlying.is_none())
+        );
+        assert!(
+            view.face_down_permanents
+                .iter()
+                .all(|row| row.underlying.is_none())
+        );
+        serde_json::to_value(view).unwrap()
+    };
+    assert_eq!(public(&game), public(&other));
+    reject(&mut game, Action::PayCosts { payment: [0; 6] });
+    for branch in [&mut game, &mut other] {
+        pay(branch);
+    }
+    assert_eq!(public(&game), public(&other));
+    settle(&mut game);
+    settle(&mut other);
+    assert_eq!(public(&game), public(&other));
+    assert_eq!(
+        game.observe(player).face_down_permanents[0].underlying,
+        Card::from_name("Bubble Smuggler")
+    );
+    assert_eq!(
+        other.observe(player).face_down_permanents[0].underlying,
+        Card::from_name("Concealed Weapon")
+    );
+    indexed.restore(&saved).unwrap();
+    assert!(
+        indexed
+            .observe(opponent)
+            .known_hand
+            .contains(&indexed.object_ref(first))
+    );
 }

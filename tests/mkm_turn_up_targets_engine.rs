@@ -107,7 +107,7 @@ fn paid_x_bounds_one_optional_group_and_the_link_returns_the_exact_cohort() {
     let third = put(&mut game, player, "Bear Cub", Zone::Graveyard);
     let ineligible = put(&mut game, player, "Shock", Zone::Graveyard);
     let hidden = spawn(&mut game, player, source, Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     let object = game.object_ref(hidden);
