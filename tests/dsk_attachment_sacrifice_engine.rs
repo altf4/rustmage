@@ -107,8 +107,8 @@ fn pass_pair(game: &mut Game) {
     act(game, Action::Pass);
 }
 
-fn choose_object(game: &Game, id: CardId) -> Action {
-    Action::ChooseEffectObject {
+fn sacrifice(game: &Game, id: CardId) -> Action {
+    Action::Sacrifice {
         object: game.object_ref(id),
     }
 }
@@ -136,8 +136,8 @@ fn attack_choice_excludes_the_original_attacker_and_equipment_after_reattaching(
     let mut prevented = game.clone();
     let forest = put(&mut prevented, player, "Forest", Zone::Battlefield);
     pass_pair(&mut prevented);
-    let sacrifice = choose_object(&prevented, forest);
-    act(&mut prevented, sacrifice);
+    let payment = sacrifice(&prevented, forest);
+    act(&mut prevented, payment);
     assert_eq!(prevented.object_view(forest).zone, Zone::Battlefield);
     // CR 118.11-12: the optional cost was chosen even though the move was replaced.
     assert_eq!(
@@ -147,8 +147,8 @@ fn attack_choice_excludes_the_original_attacker_and_equipment_after_reattaching(
 
     pass_pair(&mut game);
     assert_eq!(game.actor(), Some(player));
-    let gear_choice = choose_object(&game, gear);
-    let attacker_choice = choose_object(&game, attacker);
+    let gear_choice = sacrifice(&game, gear);
+    let attacker_choice = sacrifice(&game, attacker);
     reject(&mut game, gear_choice);
     reject(&mut game, attacker_choice);
 
@@ -160,7 +160,7 @@ fn attack_choice_excludes_the_original_attacker_and_equipment_after_reattaching(
     );
 
     let save = game.snapshot();
-    let action = choose_object(&game, new_recipient);
+    let action = sacrifice(&game, new_recipient);
     let mut indexed = game.clone();
     let index = game
         .legal_actions()
@@ -217,8 +217,8 @@ fn targeted_player_sacrifices_around_the_current_or_departed_aura_attachment() {
     ] {
         pass_pair(branch);
         assert_eq!(branch.actor(), Some(player));
-        let illegal = choose_object(branch, excluded);
-        let legal = choose_object(branch, paid);
+        let illegal = sacrifice(branch, excluded);
+        let legal = sacrifice(branch, paid);
         reject(branch, illegal);
         reject(branch, Action::DeclineEffectPayment);
         act(branch, legal);
