@@ -391,7 +391,7 @@ impl Game {
             .map(|row| self.object_view(row.object.card))
             .collect();
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::ChosenPlayerLosesGame
                     && self.queue_trigger(&source, index)
                 {
@@ -404,7 +404,7 @@ impl Game {
     }
     fn queue_self_transform_triggers(&mut self, object: ObjectRef) {
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if matches!(
                 ability.condition.event(),
                 TriggerCondition::SelfTransforms | TriggerCondition::SelfEntersOrTransforms

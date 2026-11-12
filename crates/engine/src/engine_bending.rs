@@ -23,19 +23,17 @@ pub(super) fn owned_bytes(sources: &Sources) -> usize {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn register_bend_source(&mut self, id: CardId) {
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                matches!(
-                    ability.condition.event(),
-                    TriggerCondition::BendsYou | TriggerCondition::OwnAttackerAbilityTriggered
-                ) && !ability.condition.is_granted()
-                    && ability.condition.origin() != Some(TargetZone::Graveyard)
-            })
-        {
-            self.state.bend_sources.get_or_insert_default().push(id);
+        if self.has_trigger(id, |ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::BendsYou | TriggerCondition::OwnAttackerAbilityTriggered
+            ) && !ability.condition.is_granted()
+                && ability.condition.origin() != Some(TargetZone::Graveyard)
+        }) {
+            let sources = self.state.bend_sources.get_or_insert_default();
+            if !sources.contains(&id) {
+                sources.push(id);
+            }
         }
     }
 
@@ -58,7 +56,7 @@ impl Game {
                 continue;
             }
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::BendsYou {
                     self.queue_trigger(&source, index);
                 }

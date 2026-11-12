@@ -8,6 +8,7 @@ pub(super) enum LinkedExileMode {
     CopyMutant,
     CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
+    BorrowCreatureAbilities,
 }
 
 fn mutant_copy(card: Card) -> CopyRecipe {
@@ -223,7 +224,10 @@ impl Game {
                 })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
-            Some(LinkedExileMode::CopyCreatureUntilEndOfTurn) => {
+            Some(
+                LinkedExileMode::CopyCreatureUntilEndOfTurn
+                | LinkedExileMode::BorrowCreatureAbilities,
+            ) => {
                 if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
                     return Vec::new();
                 }
@@ -338,6 +342,10 @@ impl Game {
                     let recipe = self.copiable_recipe(object);
                     self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
                 }
+            }
+            LinkedExileMode::BorrowCreatureAbilities => {
+                let item = resolution.item.clone();
+                self.select_linked_creature_abilities(&item, object);
             }
             LinkedExileMode::CopyMutant => {
                 let recipe = mutant_copy(self.state.objects[object.card as usize].card);

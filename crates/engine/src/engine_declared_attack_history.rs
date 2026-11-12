@@ -86,14 +86,22 @@ impl Game {
             .map_or_else(Vec::new, |h| h.queried.clone());
         // Public definitions opt in even when currently suppressed: restoration
         // during the combat must not query newly changed live characteristics.
-        for object in self
+        for (id, object) in self
             .state
             .objects
             .iter()
-            .filter(|o| o.zone == Zone::Battlefield)
+            .enumerate()
+            .filter(|(_, o)| o.zone == Zone::Battlefield)
         {
             for ability in object.card.triggers() {
                 collect(ability.condition, &mut queried);
+            }
+            if let Some(grant) = borrowed_activations::chosen_trigger_donor(self, id as CardId) {
+                for ability in grant.definition.triggers() {
+                    if !ability.condition.is_granted() {
+                        collect(ability.condition, &mut queried);
+                    }
+                }
             }
         }
         for grant in self

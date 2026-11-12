@@ -2830,6 +2830,8 @@ pub enum Instruction {
     GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
     ChooseLinkedCreatureReturnWithCounters(u64),
+    /// Choose one face-up creature card linked to this exact source ability.
+    ChooseLinkedCreatureAbilities,
     ReturnOtherLinkedExileToHand,
     ExileGraveyardCaptureMutantCopy,
     CreateCapturedCopy,
@@ -4137,6 +4139,8 @@ pub enum Instruction {
     ReturnEventCardToHand,
     /// Exile the exact graveyard card referred to by this ability's event.
     ExileEventGraveyardCard,
+    /// Exile the exact graveyard event cards and link each actual exile to this ability.
+    ExileEventGraveyardCardLinked,
     /// Exile the exact event permanent, allowing its actual resulting cards to be played this turn.
     ExileEventPermanentPlayThisTurn,
     /// Put the physical cards from this source's actual death on their owner's library bottom.
@@ -9647,6 +9651,17 @@ impl Card {
             .unwrap()
             .extras
             .borrows_exiled_activations
+            || self.grants_chosen_linked_creature_abilities()
+    }
+    pub(crate) fn grants_chosen_linked_creature_abilities(self) -> bool {
+        self.static_ability_groups().iter().any(|group| {
+            group.fragments.iter().any(|fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::GrantChosenLinkedCreatureAbilities
+                )
+            })
+        })
     }
     /// Intrinsic land/dork mana is stored separately from printed activation tables.
     /// The reserved index is used only by a captured inherited-ability descriptor.

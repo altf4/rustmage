@@ -1293,6 +1293,16 @@ impl Game {
         })
     }
 
+    fn observes_own_source_mana(&self, id: CardId) -> bool {
+        self.has_trigger(id, |ability| {
+            !ability.condition.is_granted()
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCastUsingSourceMana(_)
+                )
+        })
+    }
+
     fn observes_mana_producer(&self, producer: ObjectRef, copyable_trigger: bool) -> bool {
         if !self.on_battlefield(producer.card) || self.object_ref(producer.card) != producer {
             return false;
@@ -1302,9 +1312,8 @@ impl Game {
         if copyable_trigger {
             return true;
         }
-        let card = self.state.objects[producer.card as usize].card;
         if !self.is_face_down(producer)
-            && (Self::has_source_mana_trigger(card, false)
+            && (self.observes_own_source_mana(producer.card)
                 || self
                     .physical_copy_faces(producer)
                     .turned()
@@ -1328,8 +1337,7 @@ impl Game {
     fn spending_lots(&self, lots: &[Lot]) -> (Vec<SpendingLot>, Vec<Option<usize>>) {
         let copyable_trigger = !lots.is_empty()
             && (self.state.cast_sources.iter().any(|&id| {
-                !self.is_face_down(self.object_ref(id))
-                    && Self::has_source_mana_trigger(self.state.objects[id as usize].card, false)
+                !self.is_face_down(self.object_ref(id)) && self.observes_own_source_mana(id)
             }) || self.state.objects.iter().enumerate().any(|(id, object)| {
                 if object.zone != Zone::Battlefield {
                     return false;

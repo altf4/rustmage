@@ -116,7 +116,7 @@ impl Game {
             .filter(|&id| {
                 let object = &self.state.objects[id as usize];
                 object.controller == actor
-                    && object.card.triggers().iter().any(|ability| {
+                    && self.has_trigger(id, |ability| {
                         ability.condition.event() == TriggerCondition::OwnAttackerAbilityTriggered
                     })
             })
@@ -166,7 +166,7 @@ impl Game {
         }
         for cause in causes {
             for observer in &observers {
-                for (index, ability) in observer.card.triggers().iter().enumerate() {
+                for (index, ability) in observer.trigger_templates() {
                     if ability.condition.event() == TriggerCondition::OwnAttackerAbilityTriggered
                         && self.queue_trigger(observer, index)
                     {

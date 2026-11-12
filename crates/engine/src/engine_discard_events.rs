@@ -265,7 +265,7 @@ impl Game {
             let cycling = cycled == Some(event.before.reference);
             // Self-discard/cycle triggers use the card in its destination zone.
             let source = self.object_view(event.after.card);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::SelfDiscarded
                     || cycling && ability.condition.event() == TriggerCondition::SelfCycled
                 {
@@ -294,7 +294,7 @@ impl Game {
             }
         }
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let (relation, one_or_more, kinds) = match ability.condition.event() {
                     TriggerCondition::Discarded {
                         relation,

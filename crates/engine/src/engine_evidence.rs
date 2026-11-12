@@ -131,7 +131,7 @@ impl Game {
             return;
         };
         if exiled.is_empty()
-            || !source.card.triggers().iter().any(|trigger| {
+            || !source.trigger_templates().any(|(_, trigger)| {
                 trigger.program.iter().any(|instruction| {
                     matches!(instruction, Instruction::CastLinkedEvidenceInstantOrSorcery { activation } if *activation == ability)
                 })
@@ -225,8 +225,9 @@ impl Game {
 
     pub(super) fn register_evidence_source(&mut self, id: CardId) {
         let d = self.evidence_data();
-        assert!(!d.sources.contains(&id));
-        d.sources.push(id);
+        if !d.sources.contains(&id) {
+            d.sources.push(id);
+        }
     }
     fn evidence_card(&self, player: Player, object: ObjectRef) -> bool {
         (object.card as usize) < self.state.objects.len()
@@ -692,7 +693,7 @@ impl Game {
         for id in sources {
             let source = self.object_view(id);
             if source.controller == e.player {
-                for (i, a) in source.card.triggers().iter().enumerate() {
+                for (i, a) in source.trigger_templates() {
                     if a.condition.event() == TriggerCondition::EvidenceCollected {
                         self.queue_trigger(&source, i);
                     }

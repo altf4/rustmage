@@ -89,8 +89,7 @@ impl Game {
         };
         let sources = self.indexed_trigger_sources(&self.state.draw_sources);
         for (source, grant) in sources {
-            let definition = grant.as_ref().map_or(source.card, |g| g.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 let TriggerCondition::CardDrawn { relation, ordinal } = ability.condition.event()
                 else {
                     continue;

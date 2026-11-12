@@ -1391,6 +1391,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
+            acquired_triggers: borrowed_activations::chosen_trigger_donor(self, id)
+                .filter(|_| self.printed_abilities_available(id))
+                .map(Box::new),
             kinds,
             colors: CharacteristicWorld::colors(self, id),
             effective_legendary: {

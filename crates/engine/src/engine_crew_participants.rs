@@ -18,21 +18,21 @@ impl Game {
         &self,
         selected: &[ObjectRef],
     ) -> Vec<(ObjectView, Option<AttachmentTriggerView>)> {
-        let has_event = |card: Card| {
-            card.triggers()
-                .iter()
-                .any(|ability| ability.condition.event() == TriggerCondition::SelfCrewsOrSaddles)
+        let has_event = |id| {
+            self.has_trigger(id, |ability| {
+                ability.condition.event() == TriggerCondition::SelfCrewsOrSaddles
+            })
         };
         let mut ids: Vec<_> = selected
             .iter()
-            .filter(|object| has_event(self.state.objects[object.card as usize].card))
+            .filter(|object| has_event(object.card))
             .map(|object| object.card)
             .collect();
         // CR603.10 uses post-event characteristics. A participant can have a
         // real trigger granted by an attachment; freeze its effective post-tap
         // availability and grant origin before later costs or responses change it.
         for &id in &self.state.attachment_sources {
-            if has_event(self.state.objects[id as usize].card)
+            if has_event(id)
                 && !ids.contains(&id)
                 && self
                     .attachment_recipient(id)
@@ -45,12 +45,9 @@ impl Game {
             .into_iter()
             .filter(|(source, _)| selected.contains(&source.reference))
             .filter(|(source, grant)| {
-                grant
-                    .as_ref()
-                    .map_or(source.card, |grant| grant.granting_card)
-                    .triggers()
-                    .iter()
-                    .any(|ability| {
+                source
+                    .trigger_templates_from(grant.as_ref())
+                    .any(|(_, ability)| {
                         ability.condition.event() == TriggerCondition::SelfCrewsOrSaddles
                     })
             })
@@ -63,10 +60,7 @@ impl Game {
         recipient: ObjectRef,
     ) {
         for (source, grant) in sources {
-            let definition = grant
-                .as_ref()
-                .map_or(source.card, |grant| grant.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() == TriggerCondition::SelfCrewsOrSaddles
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {

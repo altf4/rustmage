@@ -11,6 +11,7 @@ impl Game {
             source: item.source.expect("triggered ability has source").object,
             ability,
             origin: item.source_ability_origin,
+            acquired_link_cohort: item.acquired_link_cohort,
             controller: Some(item.controller),
         }
     }

@@ -109,6 +109,8 @@ pub enum StaticAbilityFragment {
     SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
+    /// This permanent has the activated and triggered abilities of its chosen linked card.
+    GrantChosenLinkedCreatureAbilities,
     /// Cast owned cards linked to this permanent using ordinary mana costs.
     LinkedExilePaidCast {
         filter: CastFilter,

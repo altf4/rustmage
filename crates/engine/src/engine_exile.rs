@@ -988,10 +988,10 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, o)| {
+                .filter(|(id, o)| {
                     (matches!(o.zone, Zone::Battlefield | Zone::Command)
                         && (o.zone == Zone::Battlefield || o.card.is_emblem())
-                        && !o.card.triggers().is_empty())
+                        && self.has_trigger(*id as CardId, |_| true))
                         || (o.zone == Zone::Graveyard
                             && o.card
                                 .triggers()
@@ -1055,7 +1055,7 @@ impl Game {
             {
                 continue;
             }
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let entrants = match ability.condition.event() {
                     TriggerCondition::TokensEnterYou => tokens,
                     TriggerCondition::TokensEnterOpponent => {

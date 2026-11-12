@@ -766,7 +766,9 @@ pub use outside_choices::{
 #[path = "engine_outside_names.rs"]
 pub mod outside_names;
 use borrowed_activations::Descriptor as BorrowedDescriptor;
-pub use borrowed_activations::{BorrowedAbilityView, GraveyardBorrowedAbilityView};
+pub use borrowed_activations::{
+    AcquiredTriggersView, BorrowedAbilityView, GraveyardBorrowedAbilityView,
+};
 pub use inherited_activations::InheritedAbilityView;
 #[doc(hidden)]
 #[path = "engine_graveyard_borrowing.rs"]
@@ -2036,6 +2038,9 @@ pub struct SpellView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reflexive_target_limit: Option<u32>,
     pub attachment_trigger: Option<Box<AttachmentTriggerView>>,
+    /// Immutable triggered program supplied by an exact linked acquisition.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_trigger_definition: Option<Card>,
     pub cast: Option<CastInfo>,
     /// The exact event object; this is a non-targeted reference, never rebound.
     pub entering_object: Option<ObjectRef>,
@@ -2443,13 +2448,22 @@ impl SpellView {
             }
     }
     pub(crate) fn trigger_definition(&self) -> Card {
-        self.attachment_trigger
-            .as_ref()
-            .filter(|event| event.granted)
-            .map_or(
-                self.source.expect("object-backed stack kind").card,
-                |event| event.granting_card,
-            )
+        self.acquired_trigger_definition.unwrap_or_else(|| {
+            self.attachment_trigger
+                .as_ref()
+                .filter(|event| event.granted)
+                .map_or(
+                    self.source.expect("object-backed stack kind").card,
+                    |event| event.granting_card,
+                )
+        })
+    }
+
+    fn triggered_ability(&self) -> &'static crate::cards::TriggeredAbility {
+        let StackKind::TriggeredAbility { ability } = self.kind else {
+            panic!("expected a triggered ability packet")
+        };
+        &self.trigger_definition().triggers()[usize::from(ability)]
     }
 
     pub(crate) fn modes(&self) -> Option<&'static [SpellMode]> {
@@ -3583,6 +3597,9 @@ pub struct ObjectView {
     /// Frozen effective nonkeyword abilities only while a removal effect exists.
     /// None is the allocation-free complete printed/default-grant case.
     pub abilities: Option<Box<AbilityAvailabilityView>>,
+    /// Exact linked donor whose triggered abilities this view owns.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_triggers: Option<Box<AcquiredTriggersView>>,
     /// Current card-type bits; Card is the effective immutable rules definition.
     /// A temporary copy retains its physical identity in `temporary_copy`.
     pub kinds: u16,
@@ -3659,6 +3676,10 @@ impl ObjectView {
                 std::mem::size_of::<AbilityAvailabilityView>()
                     + a.grants.len() * std::mem::size_of::<GrantedAbilityView>()
             })
+            + self
+                .acquired_triggers
+                .as_ref()
+                .map_or(0, |_| std::mem::size_of::<AcquiredTriggersView>())
             + self.power_up_uses.len() * std::mem::size_of::<PowerUpUseView>()
     }
     pub(super) fn copied_grant_origin(&self) -> Option<u64> {
@@ -4032,6 +4053,8 @@ pub struct TriggerUse {
     pub ability: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
     /// "Do this only once each turn" is tracked per resolving controller.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub controller: Option<Player>,
@@ -4046,6 +4069,8 @@ pub struct IncarnationTriggerUse {
     pub ability: u16,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub origin: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
 }
 
 /// Every integer in this inclusive range is a legal damage assignment.

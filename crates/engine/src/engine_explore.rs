@@ -100,8 +100,9 @@ impl Game {
     }
     pub(super) fn register_explore_source(&mut self, id: CardId) {
         let d = self.explore_data();
-        assert!(!d.sources.contains(&id));
-        d.sources.push(id);
+        if !d.sources.contains(&id) {
+            d.sources.push(id);
+        }
     }
     pub(super) fn explore_completed(
         &mut self,
@@ -129,7 +130,7 @@ impl Game {
             for id in sources {
                 let source = self.object_view(id);
                 if source.controller == explorer.controller {
-                    for (index, ability) in source.card.triggers().iter().enumerate() {
+                    for (index, ability) in source.trigger_templates() {
                         let matches_event = match ability.condition.event() {
                             TriggerCondition::CreatureExploresYou => true,
                             TriggerCondition::CreatureExploresCardYou { land } => {

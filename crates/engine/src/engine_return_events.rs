@@ -8,14 +8,10 @@ impl Game {
             .death_sources
             .iter()
             .filter(|&&id| {
-                self.state.objects[id as usize]
-                    .card
-                    .triggers()
-                    .iter()
-                    .any(|a| {
-                        a.condition.event()
-                            == TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
-                    })
+                self.has_trigger(id, |a| {
+                    a.condition.event()
+                        == TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
+                })
             })
             .map(|&id| self.object_view(id))
             .collect();
@@ -39,7 +35,7 @@ impl Game {
                 {
                     continue;
                 }
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     if ability.condition.event()
                         == TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
                     {

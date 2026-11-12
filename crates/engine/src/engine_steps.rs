@@ -97,10 +97,7 @@ impl Game {
         }
         let sources = self.indexed_trigger_sources(&self.state.step_sources);
         for (source, grant) in sources {
-            let definition = grant
-                .as_ref()
-                .map_or(source.card, |event| event.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if self.step_event_matches(ability.condition, step, source.controller) {
                     self.queue_trigger_from(&source, index, grant.map(Box::new));
                 }
@@ -188,6 +185,7 @@ impl Game {
             ninjutsu_defender: None,
             delayed_sacrifice: None,
             x: None,
+            acquired_trigger_definition: None,
             attachment_trigger: None,
             cast: None,
             entering_object: None,

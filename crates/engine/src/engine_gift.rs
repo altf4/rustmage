@@ -70,20 +70,18 @@ impl Game {
             .objects
             .iter()
             .enumerate()
-            .filter(|(_, object)| {
+            .filter(|(id, object)| {
                 object.zone == Zone::Battlefield
                     && object.controller == item.controller
-                    && object
-                        .card
-                        .triggers()
-                        .iter()
-                        .any(|ability| ability.condition.event() == TriggerCondition::GiftGiven)
+                    && self.has_trigger(*id as CardId, |ability| {
+                        ability.condition.event() == TriggerCondition::GiftGiven
+                    })
             })
             .map(|(id, _)| id as CardId)
             .collect();
         for id in givers {
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::GiftGiven {
                     self.queue_trigger(&source, index);
                 }

@@ -97,16 +97,12 @@ impl Game {
         fresh_entry: bool,
     ) {
         if !self.state.counter_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::ControlledCreatureCountersPlaced { .. }
-                    )
-                })
+            self.has_trigger(id, |ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::ControlledCreatureCountersPlaced { .. }
+                )
+            })
         }) {
             return;
         }
@@ -155,7 +151,7 @@ impl Game {
                 if source.controller != recipient.controller {
                     continue;
                 }
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     if let TriggerCondition::ControlledCreatureCountersPlaced { first_only } =
                         ability.condition.event()
                         && (!first_only || first)

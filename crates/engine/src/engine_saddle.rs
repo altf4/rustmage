@@ -416,7 +416,7 @@ impl Game {
         if !history.saddled {
             history.saddled = true;
             let source = self.object_view(recipient.card);
-            for (index, a) in source.card.triggers().iter().enumerate() {
+            for (index, a) in source.trigger_templates() {
                 if matches!(a.condition.event(), TriggerCondition::SelfSaddledFirst) {
                     self.queue_trigger(&source, index);
                 }

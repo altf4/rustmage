@@ -132,8 +132,35 @@ impl Game {
             self.state.attachment_sources.push(id);
         }
         self.register_ability_target_source(id);
-        let triggers = self.state.objects[id as usize].card.triggers();
-        if triggers.iter().any(|a| {
+        self.register_battlefield_observer_indexes(id, false);
+        self.register_remaining_static_sources(id);
+    }
+
+    pub(super) fn register_chosen_link_triggers(&mut self, id: CardId) {
+        self.register_expend_source(id);
+        self.register_bend_source(id);
+        self.register_activation_observer(id);
+        self.register_ability_target_source(id);
+        self.register_battlefield_observer_indexes(id, true);
+    }
+
+    fn register_battlefield_observer_indexes(&mut self, id: CardId, already_registered: bool) {
+        let card = self.state.objects[id as usize].card;
+        let acquired = borrowed_activations::chosen_trigger_donor(self, id);
+        let triggers = || {
+            card.triggers().iter().chain(
+                acquired
+                    .into_iter()
+                    .flat_map(|grant| grant.definition.triggers())
+                    .filter(|a| !a.condition.is_granted()),
+            )
+        };
+        let register = |sources: &mut Vec<CardId>| {
+            if !already_registered || !sources.contains(&id) {
+                sources.push(id);
+            }
+        };
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::OtherCreatureCountersAdded { .. }
@@ -146,9 +173,9 @@ impl Game {
                     | TriggerCondition::StateCounterAtLeast { .. }
             )
         }) {
-            self.state.counter_sources.push(id);
+            register(&mut self.state.counter_sources);
         }
-        if triggers.iter().any(|a| {
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::AttachedCreatureBecomesTapped
@@ -158,15 +185,12 @@ impl Game {
                     | TriggerCondition::OpponentCreatureTappedByYou { .. }
             )
         }) {
-            self.state.tap_sources.push(id);
+            register(&mut self.state.tap_sources);
         }
-        if triggers
-            .iter()
-            .any(|a| a.condition.event() == TriggerCondition::EvidenceCollected)
-        {
+        if triggers().any(|a| a.condition.event() == TriggerCondition::EvidenceCollected) {
             self.register_evidence_source(id);
         }
-        if triggers.iter().any(|a| {
+        if triggers().any(|a| {
             matches!(
                 a.condition.event(),
                 TriggerCondition::CreatureExploresYou
@@ -175,7 +199,7 @@ impl Game {
         }) {
             self.register_explore_source(id);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
@@ -207,26 +231,23 @@ impl Game {
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
-            self.state.attack_sources.push(id);
+            register(&mut self.state.attack_sources);
         }
-        if triggers
-            .iter()
+        if triggers()
             .any(|ability| ability.condition.event() == TriggerCondition::OpponentTakesPermanent)
         {
-            self.state
-                .roles
-                .get_or_insert_default()
-                .control_change_sources
-                .get_or_insert_default()
-                .push(id);
+            register(
+                self.state
+                    .roles
+                    .get_or_insert_default()
+                    .control_change_sources
+                    .get_or_insert_default(),
+            );
         }
-        if triggers
-            .iter()
-            .any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil)
-        {
-            self.state.scry_sources.push(id);
+        if triggers().any(|ability| ability.condition.event() == TriggerCondition::ScryOrSurveil) {
+            register(&mut self.state.scry_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             ability.condition.origin() != Some(TargetZone::Graveyard)
                 && matches!(
                     ability.condition.event(),
@@ -235,17 +256,17 @@ impl Game {
                         | TriggerCondition::DiscoveredYou
                 )
         }) {
-            self.state.draw_sources.push(id);
+            register(&mut self.state.draw_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::Discarded { .. } | TriggerCondition::DiscardedKinds { .. }
             )
         }) {
-            self.state.discard_sources.push(id);
+            register(&mut self.state.discard_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
@@ -267,9 +288,9 @@ impl Game {
                     | TriggerCondition::ControlledCreatureCombatDamageOwnTurn
             )
         }) {
-            self.state.damage_sources.push(id);
+            register(&mut self.state.damage_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::LifeGained { .. }
@@ -277,9 +298,9 @@ impl Game {
                     | TriggerCondition::LifeGainedOrLostOwnTurn
             )
         }) {
-            self.state.life_sources.push(id);
+            register(&mut self.state.life_sources);
         }
-        if triggers.iter().any(|ability| {
+        if triggers().any(|ability| {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PermanentCardsEnterYourGraveyard
@@ -322,42 +343,35 @@ impl Game {
                     | TriggerCondition::SacrificedByAny { .. }
             )
         }) {
-            self.state.death_sources.push(id);
+            register(&mut self.state.death_sources);
         }
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() != Some(TargetZone::Graveyard)
-                    && matches!(
-                        ability.condition.event(),
-                        TriggerCondition::AtStep { .. }
-                            | TriggerCondition::Chapter { .. }
-                            | TriggerCondition::OwnUntapStepUntaps
-                    )
-            })
-        {
-            self.state.step_sources.push(id);
+        if triggers().any(|ability| {
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::AtStep { .. }
+                        | TriggerCondition::Chapter { .. }
+                        | TriggerCondition::OwnUntapStepUntaps
+                )
+        }) {
+            register(&mut self.state.step_sources);
         }
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                ability.condition.origin() != Some(TargetZone::Graveyard)
-                    && matches!(
-                        ability.condition.event(),
-                        TriggerCondition::SpellCast { .. }
-                            | TriggerCondition::SpellCastUsingSourceMana(_)
-                            | TriggerCondition::SpellCastOrLandPlayed
-                            | TriggerCondition::ModalSpellCastByYou
-                            | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
-                    )
-            })
-        {
-            self.state.cast_sources.push(id);
+        if triggers().any(|ability| {
+            ability.condition.origin() != Some(TargetZone::Graveyard)
+                && matches!(
+                    ability.condition.event(),
+                    TriggerCondition::SpellCast { .. }
+                        | TriggerCondition::SpellCastUsingSourceMana(_)
+                        | TriggerCondition::SpellCastOrLandPlayed
+                        | TriggerCondition::ModalSpellCastByYou
+                        | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
+                )
+        }) {
+            register(&mut self.state.cast_sources);
         }
+    }
+
+    fn register_remaining_static_sources(&mut self, id: CardId) {
         if self.state.objects[id as usize]
             .card
             .static_ability_groups()

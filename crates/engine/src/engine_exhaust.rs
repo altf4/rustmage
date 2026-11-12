@@ -284,7 +284,7 @@ impl Game {
             .map(|id| self.object_view(id))
             .collect();
         for observer in observers {
-            for (index, trigger) in observer.card.triggers().iter().enumerate() {
+            for (index, trigger) in observer.trigger_templates() {
                 if trigger.condition.event() == TriggerCondition::ExhaustAbilityActivated
                     && self.queue_trigger(&observer, index)
                 {

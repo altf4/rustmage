@@ -243,8 +243,7 @@ impl Game {
         // by this search does not see the search that found it.
         let sources = self.indexed_trigger_sources(&self.state.draw_sources);
         for (source, grant) in sources {
-            let definition = grant.as_ref().map_or(source.card, |row| row.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if let TriggerCondition::LibrarySearched { relation } = ability.condition.event()
                     && match relation {
                         CastRelation::You => source.controller == player,

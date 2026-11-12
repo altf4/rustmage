@@ -21,7 +21,7 @@ impl Game {
             return;
         }
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if let TriggerCondition::Chapter { number } = ability.condition
                 && before < u64::from(number)
                 && u64::from(number) <= after

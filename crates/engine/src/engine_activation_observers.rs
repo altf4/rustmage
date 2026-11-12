@@ -4,23 +4,18 @@ use crate::cards::TriggerLimit;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn register_activation_observer(&mut self, id: CardId) {
-        if self.state.objects[id as usize]
-            .card
-            .triggers()
-            .iter()
-            .any(|ability| {
-                matches!(
-                    ability.condition.event(),
-                    TriggerCondition::CreatureAbilityActivated
-                        | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
-                        | TriggerCondition::NonmanaAbilityActivated
-                        | TriggerCondition::ExhaustAbilityActivated
-                        | TriggerCondition::LoyaltyAbilityActivated
-                        | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
-                        | TriggerCondition::OpponentLoyaltyAbilityActivated
-                )
-            })
-        {
+        if self.has_trigger(id, |ability| {
+            matches!(
+                ability.condition.event(),
+                TriggerCondition::CreatureAbilityActivated
+                    | TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer
+                    | TriggerCondition::NonmanaAbilityActivated
+                    | TriggerCondition::ExhaustAbilityActivated
+                    | TriggerCondition::LoyaltyAbilityActivated
+                    | TriggerCondition::LoyaltyAbilityActivatedRemoving(_)
+                    | TriggerCondition::OpponentLoyaltyAbilityActivated
+            )
+        }) {
             let sources = self.state.activation_observers.get_or_insert_default();
             if !sources.contains(&id) {
                 sources.push(id);
@@ -62,7 +57,7 @@ impl Game {
             .map(|&id| self.object_view(id))
             .collect();
         for source in observers {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::CreatureAbilityActivated
                     && self.queue_trigger(&source, index)
                 {
@@ -138,7 +133,7 @@ impl Game {
                 .map(|&id| self.object_view(id))
                 .collect();
             for source in observers {
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     let qualifies = match ability.condition.event() {
                         TriggerCondition::NonmanaAbilityActivated => true,
                         TriggerCondition::AbilityActivatedTargetingCreatureOrPlayer => {
@@ -202,7 +197,7 @@ impl Game {
                 .map(|&id| self.object_view(id))
                 .collect();
             for source in observers {
-                for (index, ability) in source.card.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates() {
                     let triggered = match ability.condition.event() {
                         TriggerCondition::LoyaltyAbilityActivated => {
                             source.controller == item.controller
@@ -244,6 +239,7 @@ impl Game {
                     source: identity.object,
                     ability,
                     origin: item.source_ability_origin,
+                    acquired_link_cohort: item.acquired_link_cohort,
                     controller: None,
                 };
                 if !self.state.triggered_this_turn.contains(&used) {
@@ -256,6 +252,7 @@ impl Game {
                     definition,
                     ability,
                     origin: item.source_ability_origin,
+                    acquired_link_cohort: item.acquired_link_cohort,
                 });
             }
             None => {}

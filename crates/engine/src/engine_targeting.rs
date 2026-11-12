@@ -3112,6 +3112,7 @@ impl Game {
             x: None,
             loyalty_x: None,
             reflexive_target_limit: None,
+            acquired_trigger_definition: None,
             attachment_trigger: None,
             cast: Some(CastInfo {
                 spend_any_mana: self.exile_cast_modifiers(actor, card).0

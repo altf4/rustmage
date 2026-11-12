@@ -385,7 +385,7 @@ impl Game {
         player: Player,
     ) {
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if ability.condition.event() == TriggerCondition::SelfDoorUnlocked(door) {
                 self.queue_trigger(&source, index);
             }
@@ -396,9 +396,9 @@ impl Game {
                 .objects
                 .iter()
                 .enumerate()
-                .filter(|(_, object)| {
+                .filter(|(id, object)| {
                     matches!(object.zone, Zone::Battlefield | Zone::Graveyard)
-                        && object.card.triggers().iter().any(|ability| {
+                        && self.has_trigger(*id as CardId, |ability| {
                             ability.condition.event() == TriggerCondition::Eerie
                                 && (object.zone == Zone::Battlefield
                                     || ability.condition.origin() == Some(TargetZone::Graveyard))
@@ -410,10 +410,7 @@ impl Game {
                 if source.controller != player {
                     continue;
                 }
-                let definition = grant
-                    .as_ref()
-                    .map_or(source.card, |grant| grant.granting_card);
-                for (index, ability) in definition.triggers().iter().enumerate() {
+                for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                     if ability.condition.event() == TriggerCondition::Eerie {
                         self.queue_trigger_from(&source, index, grant.map(Box::new));
                     }

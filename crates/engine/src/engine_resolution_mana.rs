@@ -271,7 +271,7 @@ impl Game {
                     game.opposing_creature_hexproof_and_ward_disabled(id, item.controller)
                 })
         };
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             let event = ability.condition.event();
             let matched = match event {
                 TriggerCondition::Ward => ward_triggers(self),

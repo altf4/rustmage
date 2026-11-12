@@ -15,7 +15,7 @@ impl ZoneChange {
 impl Game {
     pub(super) fn death_batch_triggers(&mut self, events: &[ZoneChange], sources: &[ObjectView]) {
         for source in sources {
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let condition = ability.condition.event();
                 if !matches!(
                     condition,

@@ -337,7 +337,7 @@ impl Game {
             }
         }
         let source = self.object_view(object.card);
-        for (index, ability) in source.card.triggers().iter().enumerate() {
+        for (index, ability) in source.trigger_templates() {
             if ability.condition.event() == TriggerCondition::SelfBecomesPlotted {
                 self.queue_trigger(&source, index);
             }

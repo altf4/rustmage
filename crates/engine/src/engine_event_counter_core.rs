@@ -73,7 +73,7 @@ impl Game {
             if amount == 0 {
                 continue;
             }
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let event = ability.condition.event();
                 let amounts = match event {
                     TriggerCondition::AttachedDealtCombatDamage => [amount, 0],
@@ -253,7 +253,7 @@ impl Game {
             .filter(|&id| {
                 let object = &self.state.objects[id as usize];
                 object.zone == Zone::Battlefield
-                    && object.card.triggers().iter().any(|ability| {
+                    && self.has_trigger(id, |ability| {
                         matches!(
                             ability.condition.event(),
                             TriggerCondition::StateCounterAtLeast { kind, minimum }
@@ -268,7 +268,7 @@ impl Game {
                 .temporary_copy
                 .as_ref()
                 .map(|copy| copy.active_origin);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 let TriggerCondition::StateCounterAtLeast { kind, minimum } =
                     ability.condition.event()
                 else {
@@ -277,16 +277,18 @@ impl Game {
                 if self.counter_count(source.reference.card, kind) < minimum {
                     continue;
                 }
+                let first_acquired = granted_abilities::ACQUIRED_TRIGGER_INDEX;
+                let cohort = (index >= first_acquired)
+                    .then(|| source.acquired_triggers.as_ref().unwrap().cohort);
+                let slot = u16::try_from(index % first_acquired).expect("trigger slot");
                 let matches = |item: &SpellView| {
                     !item.is_copy
                         && item.source_ability_origin == origin
+                        && item.acquired_link_cohort == cohort
                         && item.source.is_some_and(|identity| {
                             identity.object == source.reference && identity.card == source.card
                         })
-                        && item.kind
-                            == (StackKind::TriggeredAbility {
-                                ability: index as u16,
-                            })
+                        && item.kind == (StackKind::TriggeredAbility { ability: slot })
                 };
                 let queued = self
                     .state

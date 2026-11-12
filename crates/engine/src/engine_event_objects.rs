@@ -748,12 +748,9 @@ impl Game {
         }
         let sources = self.state.tap_sources.clone();
         for id in sources {
-            if !self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|a| a.condition.event() == TriggerCondition::AttachedCreatureBecomesTapped)
-            {
+            if !self.has_trigger(id, |a| {
+                a.condition.event() == TriggerCondition::AttachedCreatureBecomesTapped
+            }) {
                 continue;
             }
             let Some(recipient) = self.attachment_recipient(id) else {
@@ -765,7 +762,7 @@ impl Game {
                 continue;
             }
             let source = self.object_view(id);
-            for (index, ability) in source.card.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates() {
                 if ability.condition.event() == TriggerCondition::AttachedCreatureBecomesTapped
                     && self.queue_trigger(&source, index)
                 {

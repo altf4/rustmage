@@ -466,9 +466,9 @@ impl Game {
             p.turn_facts.exhaust_activated_this_turn
                 || p.turn_facts.coin_flipped_this_turn
                 || p.turn_facts.bent_elements != 0
-        }) || self.state.objects.iter().any(|o| {
+        }) || self.state.objects.iter().enumerate().any(|(id, o)| {
             o.zone == Zone::Battlefield
-                && (o.card.triggers().iter().any(trigger_uses_facts)
+                && (self.has_trigger(id as CardId, trigger_uses_facts)
                     || o.card.static_ability_groups().iter().any(|group| {
                         group.fragments.iter().any(|fragment| match fragment {
                             StaticAbilityFragment::KeywordGrant(_, grant) => {

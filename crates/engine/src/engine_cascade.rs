@@ -372,8 +372,7 @@ impl Game {
             if source.zone != Zone::Battlefield || source.controller != player {
                 continue;
             }
-            let definition = grant.as_ref().map_or(source.card, |row| row.granting_card);
-            for (index, ability) in definition.triggers().iter().enumerate() {
+            for (index, ability) in source.trigger_templates_from(grant.as_ref()) {
                 if ability.condition.event() == TriggerCondition::DiscoveredYou
                     && self.queue_trigger_from(&source, index, grant.map(Box::new))
                 {

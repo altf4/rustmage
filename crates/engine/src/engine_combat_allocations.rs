@@ -259,16 +259,12 @@ impl Game {
             return Vec::new();
         }
         let observes_excess = self.state.damage_sources.iter().any(|&id| {
-            self.state.objects[id as usize]
-                .card
-                .triggers()
-                .iter()
-                .any(|ability| {
-                    matches!(
-                        ability.condition.event(),
-                        TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
-                    )
-                })
+            self.has_trigger(id, |ability| {
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
+                )
+            })
         });
         if !observes_excess {
             return Vec::new();
