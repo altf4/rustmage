@@ -448,6 +448,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithLessPower
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedByCreaturesWithPowerAtLeast(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreaturesWithPowerAtLeastMaxOneBlocker(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreaturesCannotBeBlockedByPower { .. }
                             | crate::cards::StaticAbilityFragment::ConditionalWard { .. }
                             | crate::cards::StaticAbilityFragment::CounterBearingPermanentWard { .. }

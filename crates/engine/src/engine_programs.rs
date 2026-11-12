@@ -9251,13 +9251,17 @@ impl Game {
                             placed: false,
                         }));
                 }
-                Instruction::PutEventCountersOnTargets => {
+                Instruction::PutEventCountersOnTargets | Instruction::PutEventCounters { .. } => {
+                    let subject = match instruction {
+                        Instruction::PutEventCounters { subject } => subject,
+                        _ => Subject::Targets,
+                    };
                     let event = item.event_object.as_ref().expect("counter event facts");
                     let EventObjectFacts::DeathCounters(counters) = &event.facts else {
                         unreachable!("counter event facts")
                     };
                     let changes = self
-                        .keyword_subjects(&item, Subject::Targets)
+                        .keyword_subjects(&item, subject)
                         .into_iter()
                         .map(|id| (self.object_ref(id), counters.clone()))
                         .collect();

@@ -78,6 +78,7 @@ impl DepartureRule {
             && (!self.nontoken || !before.is_token())
             && (!self.modified || before.modified)
             && (self.kinds == 0 || before.kinds & self.kinds != 0)
+            && before.kinds & self.excluded_kinds == 0
             && self
                 .subtype
                 .is_none_or(|subtype| before.has_subtype(subtype))
@@ -344,6 +345,7 @@ impl Game {
                 instruction,
                 Instruction::ExileDeathCounterTotalUntilNextEnd
                     | Instruction::PutEventCountersOnTargets
+                    | Instruction::PutEventCounters { .. }
                     | Instruction::CreateTokensScaled {
                         amount: AmountValue::DepartureCounterCount(_),
                         ..

@@ -93,16 +93,16 @@ fn linked_casts_follow_current_control_and_can_use_any_type_of_mana_with_flash()
 
     let first = game.object_ref(creature);
     let land = game.object_ref(land);
-    reject(&mut game, Action::ChooseEffectObject { object: land });
-    act(&mut game, Action::ChooseEffectObject { object: first });
+    reject(&mut game, Action::SelectResolutionExile { object: land });
+    act(&mut game, Action::SelectResolutionExile { object: first });
     finish_choice(&mut game);
     assert_eq!(game.object_view(creature).zone, Zone::Exile);
     assert_eq!(game.object_view(spell).zone, Zone::Graveyard);
     assert_eq!(game.actor(), Some(opponent));
 
     let object = game.object_ref(spell);
-    reject(&mut game, Action::ChooseEffectObject { object: land });
-    let choice = Action::ChooseEffectObject { object };
+    reject(&mut game, Action::SelectResolutionExile { object: land });
+    let choice = Action::SelectResolutionExile { object };
     let checkpoint = game.snapshot();
     let revision = game.revision();
     let index = game

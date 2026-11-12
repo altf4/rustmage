@@ -818,7 +818,7 @@ impl Game {
             let count = selected.iter().filter(|&&(_, id)| id == a.card).count();
             let weight = self.block_requirement_weight(a.card);
             let minimum = self.minimum_blockers(a.card);
-            let max_one = self.keywords(a.card).contains(Keywords::MAX_ONE_BLOCKER);
+            let max_one = self.attacker_at_most_one_blocker(a.card);
             if count > 0 {
                 if max_one && (count > 1 || minimum > 1) {
                     return None;

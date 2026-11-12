@@ -767,6 +767,7 @@ pub enum StaticAbilityFragment {
     CanBlockOnlyFlying,
     /// Controlled creatures meeting either live stat bound cannot be blocked.
     ControlledCreaturesCannotBeBlockedIfPowerOrToughnessAtMost(i128),
+    ControlledCreaturesWithPowerAtLeastMaxOneBlocker(i128),
     /// A controlled attacker and its proposed blocker must both meet these
     /// effective power bounds for the restriction to apply.
     ControlledCreaturesCannotBeBlockedByPower {

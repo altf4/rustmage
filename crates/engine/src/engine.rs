@@ -6079,6 +6079,11 @@ impl Game {
                     let object = self.object_ref(index as CardId);
                     if self.effect_choice_candidate(choice, player, object) {
                         let action = match choice.kind.payment_kind() {
+                            EffectChoiceKind::ExileGraveyard
+                                if choice.kind == EffectChoiceKind::ExileGraveyardLinked =>
+                            {
+                                Action::SelectResolutionExile { object }
+                            }
                             EffectChoiceKind::KeepSharedCreatureTypes => {
                                 Action::ChooseSharedCreature { object }
                             }

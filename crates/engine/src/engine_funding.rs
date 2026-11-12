@@ -7157,7 +7157,7 @@ impl Game {
             || announcement.linked_origin_counter_cost().is_some()
             || announcement
                 .additional_cost()
-                .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))
+                .is_some_and(|s| s.kind.additional_life_payment().is_some()))
             && announcement
                 .cast_costs
                 .as_ref()

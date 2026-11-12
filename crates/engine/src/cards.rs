@@ -545,6 +545,7 @@ pub enum TargetPredicate {
     Damaged,
     DealtDamage,
     HasCounter(CounterKind),
+    NoCounters,
     PowerAtLeast(i32),
     PowerAtMost(i32),
     ToughnessAtLeast(i32),
@@ -1796,6 +1797,7 @@ pub enum EffectChoiceKind {
     DiscardHand,
     /// Choose one card to discard or pay the specified life.
     DiscardOrLife(u32),
+    PayLife(u32),
     DiscardNamed(&'static str),
     /// Discard a legendary card sharing a name with a controlled legendary permanent.
     DiscardMatchingLegendary,
@@ -1912,6 +1914,13 @@ impl EffectChoiceKind {
             bearer_kinds,
         })
     }
+    pub(crate) fn additional_life_payment(self) -> Option<u32> {
+        match self {
+            Self::DiscardOrLife(amount) | Self::PayLife(amount) => Some(amount),
+            _ => None,
+        }
+    }
+
     pub(crate) fn payment_kind(self) -> Self {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
@@ -5525,6 +5534,9 @@ pub enum Instruction {
     PutSourceCountersOnTargets,
     /// The complete frozen multiset on the independent creature which died.
     PutEventCountersOnTargets,
+    PutEventCounters {
+        subject: Subject,
+    },
     /// Choose one controlled permanent of the subtype for every WUBRG color,
     /// place simultaneous +1/+1 counters, and win for five distinct successes.
     PutColorCountersAndWin {
@@ -7609,6 +7621,8 @@ pub enum DepartureSubject {
 pub struct DepartureRule {
     /// A union of qualifying permanent kinds. Zero allows all kinds.
     pub kinds: u16,
+    /// Exclude a permanent with any of these effective pre-event kinds.
+    pub excluded_kinds: u16,
     /// A required effective pre-event subtype, independent of the destination.
     pub subtype: Option<&'static str>,
     /// All of these effective abilities must be present before the departure.
@@ -7629,6 +7643,7 @@ pub struct DepartureRule {
 impl DepartureRule {
     pub const ANY: Self = Self {
         kinds: 0,
+        excluded_kinds: 0,
         subtype: None,
         keywords: Keywords::NONE,
         relation: CastRelation::Any,

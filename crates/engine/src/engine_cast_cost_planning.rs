@@ -1917,7 +1917,7 @@ impl FundingState<'_> {
                 world.complete_cost_rows(later, remaining)
             });
         }
-        if let EffectChoiceKind::DiscardOrLife(life) = spec.kind.payment_kind() {
+        if let Some(life) = spec.kind.additional_life_payment() {
             if !c.exact && self.life >= i128::from(life) {
                 let mut next = self.clone();
                 next.pay_projected_life(next.actor, life, &[]);
@@ -1925,7 +1925,7 @@ impl FundingState<'_> {
                     return true;
                 }
             }
-            if c.additional_life {
+            if c.additional_life || matches!(spec.kind, EffectChoiceKind::PayLife(_)) {
                 return false;
             }
             spec.kind = EffectChoiceKind::Discard;
@@ -2834,10 +2834,8 @@ impl Game {
             )
         }) || delve::potential(self)
             || additional.is_some_and(|a| {
-                matches!(
-                    a.kind.payment_kind(),
-                    EffectChoiceKind::DiscardOrLife(_) | EffectChoiceKind::BlightCost(_)
-                )
+                a.kind.additional_life_payment().is_some()
+                    || matches!(a.kind.payment_kind(), EffectChoiceKind::BlightCost(_))
             })
             || additional.is_some()
                 && (convoke::potential(self, spell.card)

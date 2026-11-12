@@ -254,7 +254,7 @@ impl Announcement {
                 && self.additional_cost().is_some()
                 || self
                     .additional_cost()
-                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_))))
+                    .is_some_and(|s| s.kind.additional_life_payment().is_some()))
         {
             self.cast_costs.get_or_insert_with(Default::default);
         }
@@ -322,7 +322,7 @@ impl Announcement {
                 || improvise
                 || self
                     .additional_cost()
-                    .is_some_and(|s| matches!(s.kind, EffectChoiceKind::DiscardOrLife(_)))
+                    .is_some_and(|s| s.kind.additional_life_payment().is_some())
                 || self
                     .item
                     .cast

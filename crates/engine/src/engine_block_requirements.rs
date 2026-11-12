@@ -266,9 +266,7 @@ impl Game {
                 .count();
             let minimum = self.minimum_blockers(attacker.card);
             let weight = self.block_requirement_weight(attacker.card);
-            let max_one = self
-                .keywords(attacker.card)
-                .contains(Keywords::MAX_ONE_BLOCKER);
+            let max_one = self.attacker_at_most_one_blocker(attacker.card);
             let eligible = edges.iter().filter(|row| row[index].is_some()).count();
             let capacity = if max_one {
                 1usize.saturating_sub(count).min(eligible)

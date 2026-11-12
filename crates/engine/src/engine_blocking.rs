@@ -175,6 +175,24 @@ impl Game {
         })
     }
 
+    pub(super) fn attacker_at_most_one_blocker(&self, attacker: CardId) -> bool {
+        if has_attacker_keyword(self, attacker, Keywords::MAX_ONE_BLOCKER) {
+            return true;
+        }
+        let controller = self.state.objects[attacker as usize].controller;
+        let power = std::cell::OnceCell::new();
+        self.state.static_sources.iter().copied().any(|source| {
+            self.state.objects[source as usize].controller == controller
+                && self.active_rule_fragment(source, |fragment| {
+                    matches!(
+                        *fragment,
+                        StaticAbilityFragment::ControlledCreaturesWithPowerAtLeastMaxOneBlocker(minimum)
+                            if *power.get_or_init(|| self.stats(attacker).power) >= minimum
+                    )
+                })
+        })
+    }
+
     pub(super) fn minimum_blockers(&self, attacker: CardId) -> usize {
         if has_attacker_keyword(self, attacker, Keywords::MIN_THREE_BLOCKERS) {
             3
@@ -197,8 +215,7 @@ impl Game {
                     .filter(|&&(_, id)| id == a.card)
                     .count();
                 (count == 0 || count >= self.minimum_blockers(a.card))
-                    && (!has_attacker_keyword(self, a.card, Keywords::MAX_ONE_BLOCKER)
-                        || count <= 1)
+                    && (!self.attacker_at_most_one_blocker(a.card) || count <= 1)
             })
     }
 
@@ -213,7 +230,7 @@ impl Game {
             .attackers
             .iter()
             .filter_map(|attack| {
-                let max_one = has_attacker_keyword(self, attack.card, Keywords::MAX_ONE_BLOCKER);
+                let max_one = self.attacker_at_most_one_blocker(attack.card);
                 let needed = if attack.card == attacker {
                     if max_one {
                         return None;
@@ -244,7 +261,7 @@ impl Game {
         taxed: bool,
     ) -> Option<usize> {
         let selected = self.state.selected_blocks.len() + 1;
-        if has_attacker_keyword(self, attacker, Keywords::MAX_ONE_BLOCKER)
+        if self.attacker_at_most_one_blocker(attacker)
             && self
                 .state
                 .selected_blocks
@@ -278,7 +295,7 @@ impl Game {
         }
         if needs
             .iter()
-            .any(|&id| has_attacker_keyword(self, id, Keywords::MAX_ONE_BLOCKER))
+            .any(|&id| self.attacker_at_most_one_blocker(id))
         {
             return None;
         }
