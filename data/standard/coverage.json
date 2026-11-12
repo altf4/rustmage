@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "28f18d5f91e3ce7fc45143f85d0f838ca9c2cf06b7415fbc7758a741d25793c5",
+  "catalogue_version": "abbaf27797e9c747b3fe8888b1e0b1ecd742ed320c1a9132547adb83df0fe2c5",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4725,
-  "implemented_total": 4741,
+  "implemented_standard_cards": 4737,
+  "implemented_total": 4754,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 194,
-      "gated": 70
+      "complete": 206,
+      "gated": 58
     },
     "ecc": {
       "total": 7,
@@ -5812,8 +5812,8 @@
     {
       "name": "Chainsaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/chainsaw.rs",
       "set": "dsk"
     },
@@ -7692,8 +7692,8 @@
     {
       "name": "Cursed Recording",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cursed_recording.rs",
       "set": "dsk"
     },
@@ -9252,8 +9252,8 @@
     {
       "name": "Doomsday Excruciator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/doomsday_excruciator.rs",
       "set": "dsk"
     },
@@ -10852,8 +10852,8 @@
     {
       "name": "Enduring Courage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/enduring_courage.rs",
       "set": "dsk"
     },
@@ -10876,8 +10876,8 @@
     {
       "name": "Enduring Tenacity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/enduring_tenacity.rs",
       "set": "dsk"
     },
@@ -11884,8 +11884,8 @@
     {
       "name": "Fear of Burning Alive",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_burning_alive.rs",
       "set": "dsk"
     },
@@ -15204,8 +15204,8 @@
     {
       "name": "Grievous Wound",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/grievous_wound.rs",
       "set": "dsk"
     },
@@ -18988,8 +18988,8 @@
     {
       "name": "Killer's Mask",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/killer_s_mask.rs",
       "set": "dsk"
     },
@@ -20060,8 +20060,8 @@
     {
       "name": "Leyline of Resonance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/leyline_of_resonance.rs",
       "set": "dsk"
     },
@@ -20084,8 +20084,8 @@
     {
       "name": "Leyline of the Void",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/leyline_of_the_void.rs",
       "set": "dsk"
     },
@@ -30100,8 +30100,8 @@
     {
       "name": "Screaming Nemesis",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/screaming_nemesis.rs",
       "set": "dsk"
     },
@@ -36116,8 +36116,8 @@
     {
       "name": "The Rollercrusher Ride",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_rollercrusher_ride.rs",
       "set": "dsk"
     },
@@ -38796,8 +38796,8 @@
     {
       "name": "Valgavoth, Terror Eater",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/valgavoth_terror_eater.rs",
       "set": "dsk"
     },
