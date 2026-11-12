@@ -3807,6 +3807,15 @@ impl Game {
                         return;
                     }
                     Effect::Creature(..) | Effect::Permanent => {
+                        let linked_cast_exile = if item.is_copy {
+                            [None; 2]
+                        } else if let Some(EventObjectFacts::LinkedExileCost(cards)) =
+                            item.event_object.as_deref().map(|event| &event.facts)
+                        {
+                            *cards
+                        } else {
+                            [item.cast.and_then(|cast| cast.behold_exiled), None]
+                        };
                         if source.card.other_face().is_some() {
                             self.state.objects[source.id as usize].card = source.card;
                         }
@@ -3859,7 +3868,7 @@ impl Game {
                             || !source.card.hand_cast_entry_counters().is_empty()
                             || !source.card.cast_entry_counters().is_empty()
                             || !source.card.evoke_costs().is_empty()
-                            || item.cast.is_some_and(|c| c.behold_exiled.is_some())
+                            || linked_cast_exile[0].is_some()
                             || source.card.entry_choice().is_some()
                             || source.card.entry_copy().is_some()
                             || source.card.entry_exile_counters().is_some()
@@ -3884,7 +3893,7 @@ impl Game {
                                 item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                             movement.evoked = item.cast.is_some_and(|c| c.evoked);
                             movement.apply_impending_cost(item.cast);
-                            movement.behold_exiled = item.cast.and_then(|cast| cast.behold_exiled);
+                            movement.linked_cast_exile = linked_cast_exile;
                             movement.offspring_paid =
                                 item.cast.is_some_and(|c| c.offspring == Some(true));
                             movement.kicked = item.cast.is_some_and(|c| c.kicker == Some(true));
@@ -8065,6 +8074,20 @@ impl Game {
                     }
                 }
                 Instruction::BecomeCopy(spec) => self.resolve_in_place_copy(&item, spec),
+                Instruction::CopyTargetForSourceIncarnation => {
+                    if let (Some(source), Some(recipe)) = (
+                        item.source,
+                        self.recipe_for_subject(&item, Subject::Targets),
+                    ) {
+                        self.apply_temporary_copy(
+                            source.object,
+                            recipe,
+                            CopyDeadline::WhileSource {
+                                source: source.object,
+                            },
+                        );
+                    }
+                }
                 Instruction::CopySourceFromRememberedPermanent => {
                     let blueprint = self.live_remembered_permanents().next();
                     if let (Some(source), Some(blueprint)) = (item.source, blueprint) {

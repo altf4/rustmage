@@ -81,7 +81,7 @@ pub(super) struct EntryMove {
     pub cast_payment: Option<Mana>,
     pub evoked: bool,
     pub cast_for_impending: bool,
-    pub behold_exiled: Option<ObjectRef>,
+    pub linked_cast_exile: [Option<ObjectRef>; 2],
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Additive type effect following the exact spell into the prospective entry.
     pub cast_added_creature_types: &'static [&'static str],
@@ -361,7 +361,7 @@ impl EntryMove {
             cast_payment: None,
             evoked: false,
             cast_for_impending: false,
-            behold_exiled: None,
+            linked_cast_exile: [None; 2],
             cast_event: None,
             cast_added_creature_types: &[],
             cast_origin: None,
@@ -1332,20 +1332,18 @@ impl Game {
             event.evoked = movement.evoked;
             if event.moved
                 && event.destination == Zone::Battlefield
-                && let Some(exiled) = movement.behold_exiled
-                && self.object_ref(exiled.card) == exiled
-                && self.state.objects[exiled.card as usize].zone == Zone::Exile
+                && movement.linked_cast_exile[0].is_some()
+                && self.state.objects[event.after.card as usize].card == event.before.card
             {
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .links
-                    .push(LinkedExileView {
-                        exiled_turn: self.state.turn,
-                        source: event.after,
-                        exiled,
-                        ability_origin: None,
-                    });
+                // CR 607.2q links only the actual spell's paid exile to this entry.
+                let origin = self.copy_ability_origin(event.after);
+                for exiled in movement.linked_cast_exile.into_iter().flatten() {
+                    if self.object_ref(exiled.card) == exiled
+                        && self.state.objects[exiled.card as usize].zone == Zone::Exile
+                    {
+                        self.link_exile_to_ability(event.after, origin, exiled);
+                    }
+                }
             }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;

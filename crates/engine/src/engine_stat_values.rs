@@ -602,6 +602,28 @@ impl Game {
                 }
                 i128::from(mask.count_ones())
             }
+            StatValue::LinkedExileCardCount => {
+                if world.reference(source.card) != source
+                    || world.object(source.card).zone != Zone::Battlefield
+                {
+                    return 0;
+                }
+                let origin = world.ability_origin(source.card);
+                self.state.linked_choices.as_ref().map_or(0, |choices| {
+                    choices
+                        .links
+                        .iter()
+                        .filter(|link| {
+                            let exiled = world.object(link.exiled.card);
+                            link.source == source
+                                && link.ability_origin == origin
+                                && world.reference(link.exiled.card) == link.exiled
+                                && exiled.zone == Zone::Exile
+                                && exiled.is_card()
+                        })
+                        .count() as i128
+                })
+            }
             StatValue::CraftMaterialColorCount => {
                 i128::from(self.craft_colors(world, source).count_ones())
             }

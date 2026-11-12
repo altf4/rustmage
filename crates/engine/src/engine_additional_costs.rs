@@ -1479,6 +1479,7 @@ impl Game {
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
             | EffectChoiceKind::ExileCreatureAndGraveyard
+            | EffectChoiceKind::ExileControlledForLinkedReturn
             | EffectChoiceKind::ExileControlledLinked
             | EffectChoiceKind::ExileGrantingAttachment
             | EffectChoiceKind::ReturnRememberedCreature
@@ -1544,7 +1545,23 @@ impl Game {
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
-                self.move_object(object.card, Zone::Exile);
+                let event = self.move_object(object.card, Zone::Exile);
+                if spec.kind == EffectChoiceKind::ExileControlledForLinkedReturn
+                    && event.was_card
+                    && event.moved
+                    && event.destination == Zone::Exile
+                {
+                    let cards = event
+                        .melded_after
+                        .map_or([Some(event.after), None], |cards| cards.map(Some));
+                    a.item.set_event_object(EventObjectView {
+                        object,
+                        facts: EventObjectFacts::LinkedExileCost(cards),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
+                }
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)

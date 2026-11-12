@@ -67,6 +67,8 @@ pub enum EventObjectFacts {
         card: Card,
         power: i128,
     },
+    /// One paid battlefield exile can yield two physical cards if it was melded.
+    LinkedExileCost([Option<ObjectRef>; 2]),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -440,6 +442,7 @@ impl Game {
                     | EventObjectFacts::DiscoverAmount(_)
                     | EventObjectFacts::CountersPlaced { .. }
                     | EventObjectFacts::ChosenCostCreaturePower(_)
+                    | EventObjectFacts::LinkedExileCost(_)
                     | EventObjectFacts::RevealedCostCreature { .. } => {
                         continue;
                     }

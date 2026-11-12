@@ -1530,6 +1530,8 @@ pub enum EffectChoiceKind {
     ExileCraftMaterials(CraftMaterials),
     /// Internal projected route for a controlled battlefield material.
     ExileControlled,
+    /// Pay by exiling a controlled permanent and link its cards to the resulting permanent.
+    ExileControlledForLinkedReturn,
     /// Exile a nonempty group of controlled permanents. Their live mana values
     /// set X and must cover the announced target's mana value.
     ExilePermanentsForTargetManaValue {
@@ -1804,6 +1806,7 @@ impl EffectChoiceKind {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
+            Self::ExileControlledForLinkedReturn => Self::ExileControlled,
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeSelection
             | Self::SacrificeExceptAttackingAttachment
@@ -2957,6 +2960,8 @@ pub enum Instruction {
     },
     BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),
+    /// The source copies its target for the lifetime of that exact permanent.
+    CopyTargetForSourceIncarnation,
     /// Copy a frozen cast spell's copiable values until cleanup without entering.
     CopyTargetsFromCastSpell,
     /// Copy the chosen permanent's copiable values onto this exact source until cleanup.
@@ -5608,6 +5613,7 @@ pub enum StatValue {
     LifeLostThisTurn,
     OpponentLostLifeThisTurn,
     LinkedExileCardTypes,
+    LinkedExileCardCount,
     CreaturesDiedThisTurn,
     LifeGainedThisTurn,
     /// Number of distinct colors among the cards still exiled by this Craft.
