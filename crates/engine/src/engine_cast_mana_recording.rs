@@ -48,6 +48,7 @@ impl Game {
             quality: None,
             spent_lots: Vec::new(),
             counter_costs: Vec::new(),
+            counter_effect: None,
             entries: Vec::new(),
             life_payments: Vec::new(),
             life_gains: Vec::new(),
@@ -295,6 +296,22 @@ impl Game {
             .and_then(|r| r.capture.as_mut())
         {
             capture.event.counter_costs.push(placements.to_vec());
+        }
+    }
+    pub(super) fn record_cast_mana_counter_effect(
+        &mut self,
+        placements: &[replacements::CounterPlacement],
+    ) {
+        if let Some(capture) = self
+            .state
+            .cast_rollback
+            .as_mut()
+            .and_then(|r| r.capture.as_mut())
+            && let [placement] = placements
+            && placement.amount.has_any()
+        {
+            assert!(capture.event.counter_effect.is_none());
+            capture.event.counter_effect = Some(Box::new(placement.clone()));
         }
     }
     pub(super) fn record_cast_mana_life_payment(

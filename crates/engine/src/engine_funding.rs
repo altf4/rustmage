@@ -1,7 +1,7 @@
 //! Exact reachability for the admitted pure mana sources; no game-state clones,
 //! heuristics that discard legal plans, or mutation during action generation.
 use super::*;
-use crate::cards::{ReplacementFilter, StaticAbilityFragment};
+use crate::cards::{ManaCounterFollowup, ReplacementFilter, StaticAbilityFragment};
 use ability_world::CharacteristicWorld;
 use std::cell::RefCell;
 use std::collections::HashSet;
@@ -3067,7 +3067,6 @@ impl<'g> FundingState<'g> {
         step: &FundingMove,
         tap_bonus: &mana_tap_bonus::TapBonusOutput,
         production: Mana,
-        time_removal: Option<ObjectRef>,
     ) {
         self.add_completed_mana(
             production,
@@ -3077,8 +3076,25 @@ impl<'g> FundingState<'g> {
         if let Some(output) = &step.output {
             self.project_mana_color_change(output, production);
         }
-        if let Some(source) = time_removal {
-            self.project_mana_time_removal(source);
+    }
+    fn visit_mana_counter_followup(
+        mut self,
+        followup: Option<(ObjectRef, ManaCounterFollowup)>,
+        emit: &mut dyn FnMut(&Self) -> bool,
+    ) -> bool {
+        match followup {
+            Some((source, ManaCounterFollowup::RemoveTime)) => {
+                self.project_mana_time_removal(source);
+                emit(&self)
+            }
+            Some((source, ManaCounterFollowup::Place { kind, amount })) => self
+                .visit_mana_source_counter_placement(
+                    source,
+                    Some((kind, u64::from(amount))),
+                    true,
+                    emit,
+                ),
+            None => emit(&self),
         }
     }
     fn add_completed_mana(&mut self, production: Mana, quality: Option<mana_lots::Quality>) {
@@ -3139,7 +3155,7 @@ impl<'g> FundingState<'g> {
         &self,
         step: &FundingMove,
         tap_bonus: &mana_tap_bonus::ManaTapReceipt,
-        time_removal: Option<ObjectRef>,
+        followup: Option<(ObjectRef, ManaCounterFollowup)>,
         goal: Option<&FundingGoal>,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
@@ -3152,8 +3168,8 @@ impl<'g> FundingState<'g> {
                     return false;
                 }
                 let mut next = self.clone();
-                next.add_funding_output(step, bonus, replaced, time_removal);
-                emit(&next)
+                next.add_funding_output(step, bonus, replaced);
+                next.visit_mana_counter_followup(followup, emit)
             })
         };
         if let Some(output) = &step.output {
@@ -4490,6 +4506,24 @@ impl<'g> FundingState<'g> {
                         .mana_activations(object.card)
                         .any(|(_, ability, _, _, _)| ability.mana_removes_time_counter())
             })
+        }) {
+            return true;
+        }
+        // A post-production placement can enable a guarded producer or change
+        // its output. Current inventory cannot exclude those continuations.
+        if self.resources.iter().any(|resource| {
+            let object = &resource.object;
+            object.controller == goal.actor
+                && object.zone == Zone::Battlefield
+                && self
+                    .mana_activations(resource.id)
+                    .any(|(_, ability, _, _, _)| {
+                        (!object.tapped || !ability.cost.tap)
+                            && matches!(
+                                ability.mana_counter_followup(),
+                                Some(ManaCounterFollowup::Place { amount, .. }) if amount != 0
+                            )
+                    })
         }) {
             return true;
         }
@@ -7910,13 +7944,15 @@ impl FundingState<'_> {
                     next.project_mana_color_change(output, production);
                 }
                 next.project_paid_mana_use(&a.item);
-                if let StackKind::ActivatedAbility { ability } = a.item.kind
-                    && let Some(source) = a.item.source
-                    && source.card.activation(ability).mana_removes_time_counter()
-                {
-                    next.project_mana_time_removal(source.object);
-                }
-                emit(&next)
+                let followup = match (a.item.kind, a.item.source) {
+                    (StackKind::ActivatedAbility { ability }, Some(source)) => source
+                        .card
+                        .activation(ability)
+                        .mana_counter_followup()
+                        .map(|followup| (source.object, followup)),
+                    _ => None,
+                };
+                next.visit_mana_counter_followup(followup, emit)
             })
         };
         if let Some(output) = &a.mana_output {

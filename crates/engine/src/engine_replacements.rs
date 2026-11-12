@@ -10,6 +10,7 @@ pub(super) enum ResumeMode {
     Pending,
     CastCosts,
     ActivationCosts,
+    ManaEffects,
     Entry,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1936,15 +1937,17 @@ impl Game {
         player_counters: [[u64; 5]; 2],
         proliferated: Option<Player>,
         completion: Option<Box<CounterCompletion>>,
-        activation_cost: bool,
+        mode: ResumeMode,
     ) {
         for placement in &mut placements {
             if placement_prohibited(self, placement) {
                 placement.amount = Counters::default();
             }
         }
-        if activation_cost {
-            self.record_cast_mana_counter_cost(&placements);
+        match mode {
+            ResumeMode::ActivationCosts => self.record_cast_mana_counter_cost(&placements),
+            ResumeMode::ManaEffects => self.record_cast_mana_counter_effect(&placements),
+            _ => {}
         }
         let completed = completion.as_ref().is_some_and(|c| {
             let CounterCompletion::Reflexive(c) = c.as_ref() else {
@@ -2224,7 +2227,7 @@ impl Game {
                 player_counters,
                 proliferated,
                 completion,
-                mode == ResumeMode::ActivationCosts,
+                mode,
             );
             self.finish_face_up_counter_replacement();
             return;
@@ -2317,6 +2320,46 @@ impl Game {
             Vec::new(),
         );
     }
+    pub(super) fn apply_frozen_mana_counter_placements(
+        &mut self,
+        object: ObjectRef,
+        player: Player,
+        placements: &[CounterPlacement],
+    ) -> bool {
+        // Replacement effects can set `effect` even on a cost event.
+        if placements.len() > 1
+            || !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || placements
+                .iter()
+                .any(|p| p.object != object || p.entry_index.is_some() || p.placed_by != player)
+            || placements.iter().any(|p| {
+                CounterKind::ALL.into_iter().any(|kind| {
+                    self.counter_count(object.card, kind)
+                        .checked_add(p.amount.get(kind))
+                        .is_none()
+                })
+            })
+        {
+            return false;
+        }
+        // The receipt owns the original observer packets. Apply the physical
+        // event without redispatching observers in the reconstructed world.
+        for placement in placements {
+            for kind in CounterKind::ALL {
+                self.add_counter(object.card, kind, placement.amount.get(kind));
+            }
+            if placement.amount.has_any() {
+                self.record_counter_placement(
+                    object,
+                    player,
+                    placement.amount.plus_one > 0,
+                    placement.amount.lore > 0,
+                );
+            }
+        }
+        true
+    }
     pub(super) fn activation_cost_counters(
         &mut self,
         object: ObjectRef,
@@ -2325,43 +2368,10 @@ impl Game {
         player: Player,
     ) {
         if let Some(receipt) = self.take_frozen_mana_counter_cost() {
-            if let Some(placements) = receipt {
-                // Replacement effects can set `effect` even on a cost event.
-                if placements.len() > 1
-                    || !self.on_battlefield(object.card)
-                    || self.object_ref(object.card) != object
-                    || placements.iter().any(|p| {
-                        p.object != object || p.entry_index.is_some() || p.placed_by != player
-                    })
-                    || placements.iter().any(|p| {
-                        CounterKind::ALL.into_iter().any(|kind| {
-                            self.counter_count(object.card, kind)
-                                .checked_add(p.amount.get(kind))
-                                .is_none()
-                        })
-                    })
-                {
-                    self.fail_frozen_mana_replay();
-                } else {
-                    // The receipt owns the actual observer packets. Applying
-                    // the physical event must not redispatch observers against
-                    // a different reconstructed world.
-                    for placement in &placements {
-                        for kind in CounterKind::ALL {
-                            self.add_counter(object.card, kind, placement.amount.get(kind));
-                        }
-                    }
-                    for placement in &placements {
-                        if placement.amount.has_any() {
-                            self.record_counter_placement(
-                                object,
-                                player,
-                                placement.amount.plus_one > 0,
-                                placement.amount.lore > 0,
-                            );
-                        }
-                    }
-                }
+            if let Some(placements) = receipt
+                && !self.apply_frozen_mana_counter_placements(object, player, &placements)
+            {
+                self.fail_frozen_mana_replay();
             }
             return;
         }
@@ -2794,7 +2804,8 @@ impl Game {
         if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
             return;
         }
-        if self.state.replacements.is_none()
+        if mode != ResumeMode::ManaEffects
+            && self.state.replacements.is_none()
             && !self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize]
                     .card
@@ -3790,7 +3801,7 @@ impl Game {
                             totals,
                             batch.proliferated,
                             batch.completion,
-                            state.mode == ResumeMode::ActivationCosts,
+                            state.mode,
                         );
                         continue;
                     }

@@ -7920,6 +7920,38 @@ pub struct ActivatedAbility {
     pub once_per_turn: bool,
 }
 
+/// Immediate counter work after a mana ability's production.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ManaCounterFollowup {
+    RemoveTime,
+    Place { kind: CounterKind, amount: u32 },
+}
+impl ManaCounterFollowup {
+    pub(crate) fn from_program(program: &[Instruction]) -> Option<Self> {
+        match program {
+            [
+                Instruction::AddMana(production),
+                Instruction::RemoveSourceCounterIfAny {
+                    kind: CounterKind::Time,
+                    skip: 0,
+                },
+            ] if matches!(production.base(), ManaProduction::Fixed(_)) => Some(Self::RemoveTime),
+            [
+                Instruction::AddMana(_),
+                Instruction::PutCounters {
+                    subject: Subject::Source,
+                    kind,
+                    amount,
+                },
+            ] => Some(Self::Place {
+                kind: *kind,
+                amount: *amount,
+            }),
+            _ => None,
+        }
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ActivatedAbility {
     pub(crate) fn lifetime_use_limit(&self) -> bool {
@@ -7990,15 +8022,12 @@ impl ActivatedAbility {
             .strip_prefix(&[Instruction::ExertCost])
             .unwrap_or(self.program)
     }
+    pub(crate) fn mana_counter_followup(&self) -> Option<ManaCounterFollowup> {
+        ManaCounterFollowup::from_program(self.mana_program())
+    }
     /// A Time counter is removed after production if the same permanent is still present.
     pub(crate) fn mana_removes_time_counter(&self) -> bool {
-        matches!(
-            self.mana_program(),
-            [
-                Instruction::AddMana(production),
-                Instruction::RemoveSourceCounterIfAny { kind: CounterKind::Time, skip: 0 },
-            ] if matches!(production.base(), ManaProduction::Fixed(_))
-        )
+        self.mana_counter_followup() == Some(ManaCounterFollowup::RemoveTime)
     }
     pub(crate) fn mana_production(&self) -> Option<ManaProduction> {
         if self.cost.loyalty.is_some() {
@@ -8011,7 +8040,7 @@ impl ActivatedAbility {
                 Instruction::Reflexive { .. } | Instruction::CopyNextInstantSorcery { .. },
             ] if !self.targets.has_targets() => Some(*production),
             [Instruction::AddMana(production), _]
-                if !self.targets.has_targets() && self.mana_removes_time_counter() =>
+                if !self.targets.has_targets() && self.mana_counter_followup().is_some() =>
             {
                 Some(*production)
             }

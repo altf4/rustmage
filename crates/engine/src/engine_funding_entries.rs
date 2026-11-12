@@ -2656,18 +2656,21 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'g> FundingState<'g> {
-    fn visit_mana_source_counter_cost(
+    pub(super) fn visit_mana_source_counter_placement(
         &self,
         object: ObjectRef,
-        cost: Option<(CounterKind, u64)>,
+        placement: Option<(CounterKind, u64)>,
+        effect: bool,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        let Some((kind, amount)) = cost.filter(|(_, amount)| *amount != 0) else {
+        let Some((kind, amount)) = placement.filter(|(_, amount)| *amount != 0) else {
             return emit(self);
         };
-        if self.reference(object.card) != object || replacements::counters_prohibited(self, object)
+        if self.reference(object.card) != object
+            || (effect && self.object(object.card).zone != Zone::Battlefield)
+            || replacements::counters_prohibited(self, object)
         {
-            return false;
+            return effect && emit(self);
         }
         let recipient = self.object(object.card);
         let placement = replacements::CounterPlacement {
@@ -2681,7 +2684,7 @@ impl<'g> FundingState<'g> {
             subtypes: self.subtypes(object.card),
             kind: CharacteristicWorld::kinds(self, object.card),
             power: self.power(object.card),
-            effect: false,
+            effect,
             entry_index: None,
             private: false,
         };
@@ -2763,14 +2766,14 @@ impl<'g> FundingState<'g> {
         });
         let source_counter_cost =
             definition.and_then(|(definition, index)| definition.activation_put_counter(index));
-        let time_removal = definition
-            .filter(|(definition, index)| definition.activation(*index).mana_removes_time_counter())
-            .map(|_| {
-                step.output.as_ref().map_or_else(
-                    || self.reference(self.resources[step.resource].id),
-                    |output| output.instance.source,
-                )
-            });
+        let counter_followup = definition.and_then(|(definition, index)| {
+            let followup = definition.activation(index).mana_counter_followup()?;
+            let source = step.output.as_ref().map_or_else(
+                || self.reference(self.resources[step.resource].id),
+                |output| output.instance.source,
+            );
+            Some((source, followup))
+        });
         if source_counter_cost.is_none()
             && step.external.is_none()
             && self.cast_costs.is_none()
@@ -2800,10 +2803,10 @@ impl<'g> FundingState<'g> {
                 && let Some(bonus) = receipt.singleton(production)
                 && next.completed_mana_fits(replaced, bonus.total)
             {
-                next.add_funding_output(step, &bonus, replaced, time_removal);
-                return emit(&next);
+                next.add_funding_output(step, &bonus, replaced);
+                return next.visit_mana_counter_followup(counter_followup, emit);
             }
-            return next.visit_output(step, &receipt, time_removal, goal, emit);
+            return next.visit_output(step, &receipt, counter_followup, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2870,17 +2873,22 @@ impl<'g> FundingState<'g> {
         // The executor taps before this source-counter event, then performs
         // departure costs. Retain the captured tap bonus while replacements
         // update the counter world used by subsequent costs and mana output.
-        next.visit_mana_source_counter_cost(reference, source_counter_cost, &mut |world| {
-            world.visit_mana_cost_departures(
-                reference,
-                departed.then_some(destination),
-                external,
-                &mut |world| {
-                    let bonus = bonus.with_event_effects(world, self.actor, tap_source);
-                    world.visit_output(step, &bonus, time_removal, goal, emit)
-                },
-            )
-        })
+        next.visit_mana_source_counter_placement(
+            reference,
+            source_counter_cost,
+            false,
+            &mut |world| {
+                world.visit_mana_cost_departures(
+                    reference,
+                    departed.then_some(destination),
+                    external,
+                    &mut |world| {
+                        let bonus = bonus.with_event_effects(world, self.actor, tap_source);
+                        world.visit_output(step, &bonus, counter_followup, goal, emit)
+                    },
+                )
+            },
+        )
     }
     pub(super) fn visit_mana_cost_departures(
         &self,
