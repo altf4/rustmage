@@ -316,7 +316,7 @@ impl Coverage {
             {
                 continue;
             }
-            let Some((_, card)) = packet.source_identity() else {
+            let Some((source, card)) = packet.source_identity() else {
                 continue;
             };
             let Some(cast) = packet.cast else {
@@ -324,7 +324,19 @@ impl Coverage {
             };
             self.colors |= card.colors();
             self.casts += 1;
-            self.names.insert(cast.physical_card.unwrap_or(card).name());
+            let physical = cast
+                .physical_card
+                .or_else(|| {
+                    after
+                        .face_down_spells
+                        .iter()
+                        .find(|row| row.object == source)
+                        .and_then(|row| row.underlying)
+                })
+                .unwrap_or(card);
+            if !physical.name().is_empty() {
+                self.names.insert(physical.name());
+            }
             if matches!(cast.face, CastFace::SplitLeft | CastFace::SplitRight) {
                 self.add("split half cast", 1);
             }
