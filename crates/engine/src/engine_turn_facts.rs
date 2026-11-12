@@ -174,6 +174,7 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         TriggerCondition::InZone { event, .. }
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
+        | TriggerCondition::OncePerIncarnation(event)
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)

@@ -71,6 +71,7 @@ pub(super) fn condition_refers_to_attachment(condition: TriggerCondition) -> boo
         TriggerCondition::InZone { event, .. }
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
+        | TriggerCondition::OncePerIncarnation(event)
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)

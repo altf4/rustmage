@@ -1,6 +1,8 @@
 //! Typed immutable programs and owned, snapshot-safe execution continuations.
 use super::*;
-use crate::cards::{CastFilter, CastTarget, StaticAbilityFragment, TurnCallbackEvent};
+use crate::cards::{
+    CastFilter, CastTarget, StaticAbilityFragment, TriggerLimit, TurnCallbackEvent,
+};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -1048,6 +1050,7 @@ impl Game {
                     | TriggerCondition::TreasureManaSpent(_)
                     | TriggerCondition::Granted(_)
                     | TriggerCondition::OncePerTurn(_)
+                    | TriggerCondition::OncePerIncarnation(_)
                     | TriggerCondition::DuringOpponentsTurn(_)
                     | TriggerCondition::When { .. }
                     | TriggerCondition::InterveningIf { .. } => {
@@ -1569,7 +1572,9 @@ impl Game {
         {
             return false;
         }
-        if condition == TriggerCondition::SelfDiesWithCounters && !source.counters.has_any() {
+        if condition.without_incarnation_limit() == TriggerCondition::SelfDiesWithCounters
+            && !source.counters.has_any()
+        {
             return false;
         }
         // Graveyard observers must not enable unqualified battlefield abilities.
@@ -1617,19 +1622,33 @@ impl Game {
         }) {
             return false;
         }
-        if condition.once_per_turn() {
-            let used = TriggerUse {
-                source: source.reference,
-                ability: u16::try_from(index).expect("ability index"),
-                origin: ability_origin,
-                controller: None,
-            };
-            if self.state.triggered_this_turn.contains(&used) {
-                return false;
+        let trigger_limit = condition.trigger_limit();
+        // An occurrence counts even if its announcement has no legal targets
+        // or it is subsequently countered or fails to resolve.
+        match trigger_limit {
+            Some(TriggerLimit::Turn) => {
+                let used = TriggerUse {
+                    source: source.reference,
+                    ability: u16::try_from(index).expect("ability index"),
+                    origin: ability_origin,
+                    controller: None,
+                };
+                if self.state.triggered_this_turn.contains(&used) {
+                    return false;
+                }
+                self.state.triggered_this_turn.push(used);
             }
-            // The ability has triggered even if its later announcement has no
-            // legal targets, is countered, or its effect is declined.
-            self.state.triggered_this_turn.push(used);
+            Some(TriggerLimit::Incarnation) => {
+                if !self.record_incarnation_trigger_use(IncarnationTriggerUse {
+                    source: source.reference,
+                    definition,
+                    ability: u16::try_from(index).expect("ability index"),
+                    origin: ability_origin,
+                }) {
+                    return false;
+                }
+            }
+            None => {}
         }
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
@@ -1641,7 +1660,7 @@ impl Game {
             }),
             source_less_rule: None,
             // Explicit limits and state-trigger latching also cap extra instances.
-            additional_triggers: if condition.once_per_turn()
+            additional_triggers: if trigger_limit.is_some()
                 || matches!(
                     condition.event(),
                     TriggerCondition::StateCounterAtLeast { .. }
@@ -1723,7 +1742,7 @@ impl Game {
                             ..
                         },
                     ..
-                } = condition
+                } = condition.without_incarnation_limit()
                 {
                     let rows = facts.get_or_insert_with(Default::default);
                     if !rows.iter().any(|row| row.kind == kind) {

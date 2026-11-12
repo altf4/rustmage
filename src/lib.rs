@@ -14,6 +14,7 @@ use rustmage_core::cards;
 pub use rustmage_core::cards::RetainedCopyActivation;
 pub use rustmage_core::engine::ActivationTapPaymentView;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
+pub use rustmage_core::engine::IncarnationTriggerUse;
 pub use rustmage_core::engine::combat_allocations::{
     BlockerPowerLimitView, PlayerCombatDamageView,
 };

@@ -3806,6 +3806,17 @@ pub struct TriggerUse {
     pub controller: Option<Player>,
 }
 
+/// The trigger limit consumed by one ability on an exact source incarnation.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+pub struct IncarnationTriggerUse {
+    pub source: ObjectRef,
+    pub definition: Card,
+    pub ability: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub origin: Option<u64>,
+}
+
 /// Every integer in this inclusive range is a legal damage assignment.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -4139,6 +4150,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_turned_face_up: Option<ObjectRef>,
     pub triggered_this_turn: Vec<TriggerUse>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub triggered_this_incarnation: Vec<IncarnationTriggerUse>,
     pub ability_resolutions: Vec<AbilityResolutionView>,
     pub role_choices: Vec<RoleGroupView>,
     pub role_timestamps: Vec<RoleTimestampView>,
@@ -11244,6 +11257,7 @@ impl Game {
         }
         self.clear_crew_history();
         self.state.triggered_this_turn.clear();
+        self.prune_incarnation_trigger_uses();
         self.state.creature_type_casts = None;
         self.state.ability_resolutions = None;
         self.state.used_free_hand_permissions = None;
@@ -12839,6 +12853,7 @@ impl Game {
             last_manifest_dread: s.manifest.as_ref().and_then(|m| m.last_event.clone()),
             last_turned_face_up: s.manifest.as_ref().and_then(|m| m.last_face_up),
             triggered_this_turn: s.triggered_this_turn.clone(),
+            triggered_this_incarnation: self.incarnation_trigger_uses(),
             ability_resolutions: s
                 .ability_resolutions
                 .as_ref()

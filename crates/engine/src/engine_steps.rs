@@ -240,6 +240,7 @@ impl Game {
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
+            | TriggerCondition::OncePerIncarnation(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpentBelowValue(event)
@@ -262,6 +263,7 @@ impl Game {
             | TriggerCondition::When { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
+            | TriggerCondition::OncePerIncarnation(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpentBelowValue(event)
@@ -347,7 +349,7 @@ impl Game {
                     maximum,
                 },
             event,
-        } = condition
+        } = condition.without_incarnation_limit()
             && !(self.on_battlefield(source.object.card)
                 && self.object_ref(source.object.card) == source.object)
         {

@@ -6976,6 +6976,8 @@ pub enum TriggerCondition {
     /// One event for each committed spell or ability with an opposing target.
     CommittedCrime,
     OncePerTurn(&'static TriggerCondition),
+    /// Trigger only once for this exact source incarnation and ability.
+    OncePerIncarnation(&'static TriggerCondition),
     /// Qualification checked only when the event occurs.
     When {
         guard: StepGuard,
@@ -7381,13 +7383,39 @@ pub enum TriggerCondition {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum TriggerLimit {
+    Turn,
+    Incarnation,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TriggerCondition {
+    /// The actual second main phase is a trigger-time qualification. The
+    /// tapped intervening-if also checks the source at resolution.
+    pub const SURVIVAL: Self = Self::When {
+        guard: StepGuard::SecondMainPhase,
+        event: &Self::AtStep {
+            step: TriggerStep::MainPhases,
+            relation: CastRelation::You,
+            guard: StepGuard::SourceTapped,
+        },
+    };
+
+    pub(crate) fn without_incarnation_limit(self) -> Self {
+        match self {
+            Self::OncePerIncarnation(event) => event.without_incarnation_limit(),
+            condition => condition,
+        }
+    }
+
     pub(crate) fn requires_mana_spent_below_value(self) -> bool {
         match self {
             Self::ManaSpentBelowValue(_) => true,
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
@@ -7405,6 +7433,7 @@ impl TriggerCondition {
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
@@ -7433,6 +7462,7 @@ impl TriggerCondition {
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::DuringOpponentsTurn(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpentBelowValue(event)
@@ -7454,6 +7484,7 @@ impl TriggerCondition {
             Self::InZone { zone, .. } => Some(zone),
             Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
@@ -7474,6 +7505,7 @@ impl TriggerCondition {
             Self::InZone { event: e, .. }
             | Self::Granted(e)
             | Self::OncePerTurn(e)
+            | Self::OncePerIncarnation(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
             | Self::CastFromExile(e)
@@ -7491,6 +7523,7 @@ impl TriggerCondition {
             Self::Granted(_) | Self::GrantedAttacks => true,
             Self::InZone { event: e, .. }
             | Self::OncePerTurn(e)
+            | Self::OncePerIncarnation(e)
             | Self::DuringOpponentsTurn(e)
             | Self::CastFromHand(e)
             | Self::CastFromExile(e)
@@ -7512,6 +7545,7 @@ impl TriggerCondition {
             | Self::PlayFromOutsideOwnHand(event)
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::TreasureManaSpent(event)
             | Self::ManaSpentBelowValue(event)
             | Self::ManaSpent { event, .. }
@@ -7526,6 +7560,7 @@ impl TriggerCondition {
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::OncePerTurn(event)
+            | Self::OncePerIncarnation(event)
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
@@ -7538,9 +7573,10 @@ impl TriggerCondition {
             event => event,
         }
     }
-    pub(crate) fn once_per_turn(self) -> bool {
+    pub(crate) fn trigger_limit(self) -> Option<TriggerLimit> {
         match self {
-            Self::OncePerTurn(_) => true,
+            Self::OncePerIncarnation(_) => Some(TriggerLimit::Incarnation),
+            Self::OncePerTurn(event) => event.trigger_limit().or(Some(TriggerLimit::Turn)),
             Self::InZone { event, .. }
             | Self::Granted(event)
             | Self::When { event, .. }
@@ -7551,8 +7587,8 @@ impl TriggerCondition {
             | Self::DuringOpponentsTurn(event)
             | Self::CastFromHand(event)
             | Self::CastFromExile(event)
-            | Self::PlayFromOutsideOwnHand(event) => event.once_per_turn(),
-            _ => false,
+            | Self::PlayFromOutsideOwnHand(event) => event.trigger_limit(),
+            _ => None,
         }
     }
 }
