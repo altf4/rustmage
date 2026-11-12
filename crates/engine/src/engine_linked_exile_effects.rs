@@ -6,6 +6,7 @@ use super::*;
 pub(super) enum LinkedExileMode {
     ReturnCreature { plus_one: u64 },
     CopyMutant,
+    CopyCreatureUntilEndOfTurn,
     CopyWhileAttached,
 }
 
@@ -222,6 +223,20 @@ impl Game {
                 })
                 .collect(),
             Some(LinkedExileMode::CopyMutant) => self.linked_exile_for_item(&resolution.item),
+            Some(LinkedExileMode::CopyCreatureUntilEndOfTurn) => {
+                if !self.on_battlefield(source.card) || self.object_ref(source.card) != source {
+                    return Vec::new();
+                }
+                self.linked_exile_for_item(&resolution.item)
+                    .into_iter()
+                    .filter(|object| {
+                        let exiled = &self.state.objects[object.card as usize];
+                        exiled.is_card()
+                            && exiled.card.is_creature()
+                            && !self.exiled_face_down(*object)
+                    })
+                    .collect()
+            }
             Some(LinkedExileMode::CopyWhileAttached) => {
                 let item = &resolution.item;
                 let Some(event) = item.attachment_trigger.as_deref() else {
@@ -298,6 +313,13 @@ impl Game {
                     movement.effect_counter = Some((CounterKind::PlusOne, plus_one));
                 }
                 self.stage_entries(vec![movement], None);
+            }
+            LinkedExileMode::CopyCreatureUntilEndOfTurn => {
+                let source = resolution.item.source.expect("linked copy source").object;
+                if self.on_battlefield(source.card) && self.object_ref(source.card) == source {
+                    let recipe = self.copiable_recipe(object);
+                    self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
+                }
             }
             LinkedExileMode::CopyMutant => {
                 let recipe = mutant_copy(self.state.objects[object.card as usize].card);

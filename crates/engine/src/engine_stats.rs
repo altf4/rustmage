@@ -52,6 +52,9 @@ impl Game {
                 && matches!(
                     ability.condition.event(),
                     TriggerCondition::CreatureDies { .. }
+                        | TriggerCondition::Sacrificed { .. }
+                        | TriggerCondition::SacrificedByAny { .. }
+                        | TriggerCondition::SacrificedByOpponent { .. }
                 )
         }) {
             self.state.death_sources.push(id);

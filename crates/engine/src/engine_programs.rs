@@ -4557,6 +4557,7 @@ impl Game {
                     | Instruction::DestroyAllTargets
                     | Instruction::ReturnGraveyardTargetsToHandOrBattlefield { .. }
                     | Instruction::ExileAllTargetsLinkedToSource
+                    | Instruction::ExileAllTargets
                     // These aggregate operations consume every independently
                     // revalidated target role, regardless of SelectGroup.
                     | Instruction::ExchangeControlTargets
@@ -8469,6 +8470,14 @@ impl Game {
                         self.stage_copy_creation(item.controller, recipe, 1);
                     }
                 }
+                Instruction::MayCopyLinkedExiledCreatureUntilEndOfTurn => {
+                    if self.start_linked_exile_effect(
+                        &item,
+                        linked_exile_effects::LinkedExileMode::CopyCreatureUntilEndOfTurn,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::CopySourceFromRememberedExiledCreature => {
                     if let Some((source, recipe)) = self.remembered_exiled_creature_copy(&item) {
                         self.apply_temporary_copy(source, recipe, CopyDeadline::EndOfTurn);
@@ -12176,9 +12185,13 @@ impl Game {
                 Instruction::GrantCastCreatureKeywords(keywords) => {
                     self.grant_cast_creature_keywords(&item, keywords);
                 }
-                Instruction::GrantCastSpellHaste => {
+                Instruction::GrantCastSpellHaste | Instruction::GrantCastSpellKeywords(_) => {
+                    let keywords = match instruction {
+                        Instruction::GrantCastSpellKeywords(keywords) => keywords,
+                        _ => Keywords::HASTE,
+                    };
                     if let Some(spell) = self.live_cast_spell(&item) {
-                        self.grant_stack_keywords(spell, Keywords::HASTE);
+                        self.grant_stack_keywords(spell, keywords);
                     }
                 }
                 Instruction::RegisterEarthbendReturn => self.register_earthbend_return(&item),
@@ -13531,6 +13544,16 @@ impl Game {
                 }
                 Instruction::DestroyAllTargets => {
                     self.destroy_targets_outcome(&item.targets);
+                }
+                Instruction::ExileAllTargets => {
+                    let mut seen = std::collections::BTreeSet::new();
+                    let targets: Vec<_> = item
+                        .targets
+                        .iter()
+                        .copied()
+                        .filter(|target| target.object.is_some_and(|object| seen.insert(object)))
+                        .collect();
+                    self.move_target_batch(&targets, Zone::Exile);
                 }
                 Instruction::Exile
                 | Instruction::Destroy

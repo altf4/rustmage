@@ -2719,6 +2719,7 @@ pub enum Instruction {
     ReturnOneLinkedExileToHand,
     ExileTargetsLinkedToSource,
     ExileAllTargetsLinkedToSource,
+    ExileAllTargets,
     ExileTargetLibraryLinked(u16),
     ExileControllerLibraryTopLinked(u16),
     /// The same exact linked cohort, with no player granted look or play access.
@@ -2730,6 +2731,7 @@ pub enum Instruction {
     ExileGraveyardCaptureMutantCopy,
     CreateCapturedCopy,
     CopyLinkedExiledAsMutant,
+    MayCopyLinkedExiledCreatureUntilEndOfTurn,
     /// Copy one creature card exiled by the attached source's linked ability
     /// for the remainder of the attachment that caused this trigger.
     CopyUntilDetachedFromLinkedExile,
@@ -4962,6 +4964,7 @@ pub enum Instruction {
     GrantCastCreatureKeywords(Keywords),
     /// Give the exact triggering spell haste until cleanup, including the permanent it becomes.
     GrantCastSpellHaste,
+    GrantCastSpellKeywords(Keywords),
     /// Bestow a real self-owned static ability, rather than a resolved stat modifier.
     GrantSelfAbility(crate::engine::SelfGrantedAbilityKind),
     GrantPermanentSelfAbility(crate::engine::SelfGrantedAbilityKind),
