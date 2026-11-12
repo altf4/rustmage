@@ -6631,7 +6631,8 @@ impl Game {
                         return;
                     }
                 }
-                Instruction::ChooseGraveyardReturnWithCounter(_) => {
+                Instruction::ChooseGraveyardReturnWithCounter(_)
+                | Instruction::ChooseGraveyardReturnFromEither => {
                     if self.start_graveyard_return_selection(&item, 1, None) {
                         return;
                     }

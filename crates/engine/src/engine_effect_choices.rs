@@ -495,7 +495,7 @@ impl Game {
                 sum.saturating_add(self.state.objects[r.card as usize].card.fixed_mana_value())
             });
             return o.zone == Zone::Graveyard
-                && o.owner == player
+                && (o.owner == player || self.graveyard_return_allows_either_owner())
                 && o.is_card()
                 && o.card.is_creature()
                 && self.object_ref(object.card) == object
@@ -1161,6 +1161,15 @@ impl Game {
         })
     }
 
+    fn graveyard_return_allows_either_owner(&self) -> bool {
+        self.state.resolving.as_ref().is_some_and(|resolution| {
+            matches!(
+                resolution.program.get(resolution.pc.saturating_sub(1)),
+                Some(Instruction::ChooseGraveyardReturnFromEither)
+            )
+        })
+    }
+
     fn graveyard_return_targets<'a>(
         &'a self,
         item: &'a SpellView,
@@ -1254,12 +1263,13 @@ impl Game {
             }
             return;
         }
+        let either_owner = self.graveyard_return_allows_either_owner();
         let movements = choice.selected[player.index()]
             .iter()
             .filter(|r| {
                 self.object_ref(r.card) == **r
                     && self.state.objects[r.card as usize].zone == Zone::Graveyard
-                    && self.state.objects[r.card as usize].owner == player
+                    && (self.state.objects[r.card as usize].owner == player || either_owner)
                     && self.state.objects[r.card as usize].is_card()
                     && self.state.objects[r.card as usize].card.is_creature()
             })

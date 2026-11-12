@@ -3703,6 +3703,8 @@ pub enum Instruction {
     ChooseGraveyardReturnCount(AmountValue),
     /// Choose one of your graveyard creature cards to return with an entry counter.
     ChooseGraveyardReturnWithCounter(CounterKind),
+    /// Put one creature card from either graveyard onto the battlefield under your control.
+    ChooseGraveyardReturnFromEither,
     ReturnGraveyardManaValue {
         kinds: u16,
         value: AmountValue,
@@ -7103,7 +7105,7 @@ pub enum DepartureSubject {
     Any,
     Other,
     SelfOnly,
-    /// The source itself, or another object that meets the pre-event filters.
+    /// The source itself with the required counters, or another object that meets every filter.
     SelfOrOtherMatching,
 }
 

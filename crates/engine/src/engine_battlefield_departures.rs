@@ -46,6 +46,14 @@ impl DepartureRule {
             return false;
         }
         let before = &event.before;
+        let counters_match = match self.counters {
+            DepartureCounters::Unrestricted => true,
+            DepartureCounters::Any => before.counters.has_any(),
+            DepartureCounters::Kind(kind) => before.counters.get(kind) != 0,
+        };
+        if !counters_match {
+            return false;
+        }
         if self.subject == DepartureSubject::SelfOrOtherMatching
             && source.reference == before.reference
         {
@@ -61,14 +69,8 @@ impl DepartureRule {
             DepartureSubject::Other => source.reference != before.reference,
             DepartureSubject::SelfOnly => source.reference == before.reference,
         };
-        let counters_match = match self.counters {
-            DepartureCounters::Unrestricted => true,
-            DepartureCounters::Any => before.counters.has_any(),
-            DepartureCounters::Kind(kind) => before.counters.get(kind) != 0,
-        };
         related
             && subject_matches
-            && counters_match
             && before.keywords.contains(self.keywords)
             && (!self.nontoken || !before.is_token())
             && (!self.modified || before.modified)
