@@ -82,7 +82,13 @@ fn an_empty_hand_and_declined_cost_preserve_use_but_an_exiled_discard_consumes_i
 
     enter(&mut game, player, "Bear Cub");
     pass_pair(&mut game);
-    assert_eq!(game.legal_actions(), vec![Action::DeclineResolutionMana]);
+    assert_eq!(
+        game.legal_actions()
+            .into_iter()
+            .filter(|action| *action != Action::Concede)
+            .collect::<Vec<_>>(),
+        [Action::DeclineResolutionMana],
+    );
     reject(&mut game, Action::ChooseOptional { accept: true });
     act(&mut game, Action::DeclineResolutionMana);
 
