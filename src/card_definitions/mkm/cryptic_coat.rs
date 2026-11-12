@@ -36,7 +36,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     }],
     static_groups: &[StaticAbilityGroup {
         line: 1,
-        first_layer: AbilityLayer::Ability,
+        first_layer: AbilityLayer::Modify,
         fragments: &[
             StaticAbilityFragment::AttachmentStats(BONUS.stats),
             StaticAbilityFragment::AttachmentRule(Keywords::CANT_BE_BLOCKED),
