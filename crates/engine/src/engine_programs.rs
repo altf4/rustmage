@@ -4643,8 +4643,13 @@ impl Game {
                         self.forget_prepared(self.object_ref(id));
                     }
                 }
-                Instruction::PartitionLibraryPiles(maximum) => {
-                    self.start_library_piles(item.controller, maximum);
+                Instruction::PartitionLibraryPiles(maximum)
+                | Instruction::PartitionRevealedLibraryPiles(maximum) => {
+                    self.start_library_piles(
+                        item.controller,
+                        maximum,
+                        matches!(instruction, Instruction::PartitionRevealedLibraryPiles(_)),
+                    );
                     return;
                 }
                 Instruction::KeepSharedCreatureTypes => {

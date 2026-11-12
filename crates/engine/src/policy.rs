@@ -149,19 +149,13 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 let piles = observation.library_piles.as_ref().unwrap();
                 // A balanced split is a generic deterministic baseline, using only
                 // the chooser's visible counts rather than library/RNG state.
-                let down = piles.face_down_count <= piles.face_up.len();
-                i128::from((*pile == crate::LibraryPile::FaceDown) == down)
+                let [first, second] = piles.counts();
+                i128::from((pile.index() == 0) == (first <= second))
             }
             Action::ChooseLibraryPile { pile } => {
                 let piles = observation.library_piles.as_ref().unwrap();
-                // The opponent gives away the smaller pile without seeing the
-                // hidden identities. Both empty and face-down piles are legal.
-                -i128::try_from(if *pile == crate::LibraryPile::FaceDown {
-                    piles.face_down_count
-                } else {
-                    piles.face_up.len()
-                })
-                .unwrap()
+                // Give away the smaller pile using only its public size.
+                -i128::try_from(piles.counts()[pile.index()]).unwrap()
             }
             Action::KeepPermanentType { object } => {
                 let permanent = observation

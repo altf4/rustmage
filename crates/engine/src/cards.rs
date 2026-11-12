@@ -2700,6 +2700,8 @@ pub enum Instruction {
     SearchCreaturesUpToChosenX(SearchSpec),
     RandomLinkedExileToBattlefield,
     PartitionLibraryPiles(u16),
+    /// Reveal both piles and remember the number of cards actually moved to the graveyard.
+    PartitionRevealedLibraryPiles(u16),
     KeepOneOfEachPermanentType,
     KeepSharedCreatureTypes,
     RememberOwnSacrifice,

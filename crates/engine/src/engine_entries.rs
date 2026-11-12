@@ -149,10 +149,17 @@ struct EntryCleanupPacket {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
+enum EntryCompletion {
+    Cleanup(Box<EntryCleanupPacket>),
+    RememberMovesTo(Zone),
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryBatch {
     pub atomic_cost: Option<Box<AtomicCostCheckpoint>>,
     pub temporary_copy: Option<Box<SpellView>>,
-    cleanup: Option<Box<EntryCleanupPacket>>,
+    completion: Option<EntryCompletion>,
     pub captures_result: bool,
     pub copying: bool,
     pub discard_context: Option<discard_events::DiscardContext>,
@@ -384,9 +391,12 @@ impl EntryBatch {
             + self.temporary_copy.as_ref().map_or(0, |item| {
                 std::mem::size_of::<SpellView>() + item.owned_bytes()
             })
-            + self.cleanup.as_ref().map_or(0, |packet| {
-                std::mem::size_of::<EntryCleanupPacket>() + packet.item.owned_bytes()
-            })
+            + match &self.completion {
+                Some(EntryCompletion::Cleanup(packet)) => {
+                    std::mem::size_of::<EntryCleanupPacket>() + packet.item.owned_bytes()
+                }
+                _ => 0,
+            }
             + self.discard_context.as_ref().map_or(0, |c| c.owned_bytes())
             + self.moves.len() * std::mem::size_of::<EntryMove>()
             + self
@@ -592,6 +602,20 @@ impl Game {
     pub(super) fn stage_entries(&mut self, moves: Vec<EntryMove>, shuffle_after: Option<Player>) {
         self.stage_entries_inner(moves, shuffle_after, None, None, None, None);
     }
+    pub(super) fn stage_entries_remembering_moves(
+        &mut self,
+        moves: Vec<EntryMove>,
+        destination: Zone,
+    ) {
+        self.stage_entries_inner(
+            moves,
+            None,
+            None,
+            None,
+            None,
+            Some(EntryCompletion::RememberMovesTo(destination)),
+        );
+    }
     pub(super) fn stage_discard_entries(
         &mut self,
         moves: Vec<EntryMove>,
@@ -632,10 +656,10 @@ impl Game {
             None,
             None,
             None,
-            Some(Box::new(EntryCleanupPacket {
+            Some(EntryCompletion::Cleanup(Box::new(EntryCleanupPacket {
                 item: item.clone(),
                 action,
-            })),
+            }))),
         );
     }
     fn stage_entries_inner(
@@ -645,7 +669,7 @@ impl Game {
         discard_context: Option<discard_events::DiscardContext>,
         temporary_copy: Option<Box<SpellView>>,
         atomic_cost: Option<Box<AtomicCostCheckpoint>>,
-        cleanup: Option<Box<EntryCleanupPacket>>,
+        completion: Option<EntryCompletion>,
     ) {
         if atomic_cost.is_none() && self.replay_frozen_mana_entries() {
             return;
@@ -675,7 +699,7 @@ impl Game {
         let batch = EntryBatch {
             atomic_cost,
             temporary_copy,
-            cleanup,
+            completion,
             captures_result,
             copying: true,
             discard_context,
@@ -1619,7 +1643,15 @@ impl Game {
             self.capture_search_result_entry(&events);
         }
         self.capture_returned_explorer(&events);
-        if let Some(packet) = &batch.cleanup {
+        if let Some(EntryCompletion::RememberMovesTo(destination)) = batch.completion {
+            let count = events
+                .iter()
+                .filter(|event| event.moved && event.destination == destination)
+                .count();
+            self.state.resolving.as_mut().unwrap().moved_count =
+                Some(u64::try_from(count).capacity("move count exhausted"));
+        }
+        if let Some(EntryCompletion::Cleanup(packet)) = &batch.completion {
             let recipients = events
                 .iter()
                 .filter(|event| event.moved && event.destination == Zone::Battlefield)
