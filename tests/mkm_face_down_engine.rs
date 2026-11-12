@@ -672,3 +672,62 @@ fn temporary_look_remembers_known_creatures_and_expires_before_new_entries() {
     settle(&mut game);
     assert_eq!(known(&game, second), None);
 }
+
+const CAST_REDUCTION: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::ReduceFaceDownSpellCostsThisTurn(1),
+            Instruction::ReduceFaceDownSpellCostsThisTurn(1),
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn turn_discount_stacks_for_disguise_from_hand_or_exile_and_expires() {
+    let discount = Card::from_name("Opt").unwrap();
+    let _scope = fixture_rules::activate(&[(discount, &CAST_REDUCTION)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let hand = spawn(&mut game, player, smuggler, Zone::Hand);
+    let exile = spawn(&mut game, player.other(), smuggler, Zone::Exile);
+    game.grant_exile_play_permission(player, game.object_ref(exile), false);
+
+    let spell = spawn(&mut game, player, discount, Zone::Hand);
+    cast(&mut game, spell, None);
+    settle(&mut game);
+    let ordinary = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
+    reject(&mut game, Action::AnnounceCast { card: ordinary });
+
+    let mut expired = game.clone();
+    expired.state.step = Step::End;
+    act(&mut expired, Action::Pass);
+    act(&mut expired, Action::Pass);
+    expired.state.active = player;
+    expired.state.priority = player;
+    expired.state.step = Step::Main1;
+    expired.state.players[player.index()].mana = [0, 0, 0, 0, 1, 0];
+    reject(&mut expired, Action::AnnounceDisguise { card: hand });
+
+    for card in [hand, exile] {
+        let mut branch = game.clone();
+        let action = branch.legal_actions().into_iter().find(|action| {
+            matches!(action, Action::AnnounceDisguise { card: id } if *id == card)
+                || matches!(action, Action::AnnounceTaxedExile { object, method: CastMethod::Disguise, .. } if object.card == card)
+        }).expect("discounted disguise");
+        act(&mut branch, action);
+        act(
+            &mut branch,
+            Action::PayCosts {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        settle(&mut branch);
+        let object = branch.object_ref(card);
+        branch.state.players[player.index()].mana = [0, 4, 0, 0, 0, 0];
+        reject(&mut branch, turn_up(object, DISGUISE));
+    }
+}

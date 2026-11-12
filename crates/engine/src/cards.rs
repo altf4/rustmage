@@ -2951,6 +2951,7 @@ pub enum Instruction {
     GrantCreatureGraveyardCast,
     SolveSource,
     ReduceArtifactSpellCostsThisTurn(u32),
+    ReduceFaceDownSpellCostsThisTurn(u32),
     /// Sample a generic discount for this controller's matching spell colors until cleanup.
     ReduceColoredSpellCostsThisTurn {
         colors: u8,

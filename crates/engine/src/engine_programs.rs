@@ -6891,6 +6891,9 @@ impl Game {
                 Instruction::ReduceArtifactSpellCostsThisTurn(amount) => {
                     self.grant_artifact_spell_reduction(item.controller, amount)
                 }
+                Instruction::ReduceFaceDownSpellCostsThisTurn(amount) => {
+                    self.grant_face_down_spell_reduction(item.controller, amount);
+                }
                 Instruction::ReduceColoredSpellCostsThisTurn { colors, amount } => {
                     let amount = self.item_amount(amount, &item);
                     self.grant_colored_spell_reduction(item.controller, colors, amount);
