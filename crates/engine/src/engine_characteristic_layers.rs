@@ -452,13 +452,13 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
     {
         let prior_count = changes.len();
         changes.extend(
-            controlled_characteristic_timestamps(world, id, |fragment| {
+            controlled_characteristic_sources(world, id, |fragment| {
                 matches!(
                     fragment,
                     StaticAbilityFragment::ControlledNontokenArtifactsAreLands
                 )
             })
-            .map(|time| (time.max(artifact_since), CardTypeChange::Add(2))),
+            .map(|(_, time)| (time.max(artifact_since), CardTypeChange::Add(2))),
         );
         if changes.len() != prior_count {
             changes.sort_by_key(|change| change.0);
@@ -632,11 +632,11 @@ fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
         .map(|(_, name)| name)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-pub(super) fn controlled_characteristic_timestamps<'a, W: CharacteristicWorld + ?Sized>(
+pub(super) fn controlled_characteristic_sources<'a, W: CharacteristicWorld + ?Sized>(
     world: &'a W,
     id: CardId,
     matches: impl Fn(&StaticAbilityFragment) -> bool + Copy + 'a,
-) -> impl Iterator<Item = u64> + 'a {
+) -> impl Iterator<Item = (ObjectRef, u64)> + 'a {
     let recipient = world.object(id);
     world.roles().into_iter().flat_map(move |roles| {
         roles
@@ -659,7 +659,7 @@ pub(super) fn controlled_characteristic_timestamps<'a, W: CharacteristicWorld + 
                     .ability_timestamps
                     .iter()
                     .find(|row| row.source == reference)
-                    .map(|row| row.timestamp)
+                    .map(|row| (reference, row.timestamp))
             })
     })
 }
@@ -709,11 +709,15 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
         })
         .chain(chosen_aura_colors(world, id))
         .chain(
-            controlled_characteristic_timestamps(world, id, |fragment| {
+            controlled_characteristic_sources(world, id, |fragment| {
                 matches!(fragment, StaticAbilityFragment::ControlledNonlandAllColors)
             })
-            .filter(|_| world.kinds(id) & 2 == 0)
-            .map(|timestamp| (timestamp, 31)),
+            .filter(|(source, _)| {
+                world.kinds(id) & 2 == 0
+                    && (!subtypes::is_nonbasic_land(world, source.card)
+                        || subtypes::nonbasic_land_type_setters(world).next().is_none())
+            })
+            .map(|(_, timestamp)| (timestamp, 31)),
         )
         .chain(
             animations(world, id)

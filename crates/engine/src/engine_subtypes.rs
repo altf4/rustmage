@@ -1320,6 +1320,13 @@ pub(super) fn nonbasic_land_type_setters<W: ability_world::CharacteristicWorld +
     })
 }
 
+pub(super) fn is_nonbasic_land<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> bool {
+    !world.object(id).card.is_basic_land() && world.kinds(id) & 2 != 0
+}
+
 /// Run all supported layer-four card-type and basic-land-type changes in
 /// timestamp order, recording precisely when intrinsic mana is lost or gained.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1339,9 +1346,19 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     let reference = world.reference(id);
     let printed_land = || world.recipe(id).kinds() & 2 != 0;
     let kind_events = characteristic_layers::land_kind_events(world, id);
-    let mut events: Vec<(u64, Event)> = kind_events
+    let land_since = kind_events.last().map_or_else(
+        || printed_land().then_some(0),
+        |&(time, land)| land.then_some(time),
+    );
+    let mut land_setters = nonbasic_land_type_setters(world).peekable();
+    let has_land_setters = land_since.is_some() && land_setters.peek().is_some();
+    let removes_printed = has_land_setters && !object.card.is_basic_land();
+    // A dependent effect must wait for land status. Effects waiting on the
+    // same transition still order among themselves by their own timestamps.
+    let land_effect_order = |time| (time.max(land_since.unwrap_or(0)), time);
+    let mut events: Vec<((u64, u64), Event)> = kind_events
         .iter()
-        .map(|&(time, land)| (time, Event::Land(land)))
+        .map(|&(time, land)| ((time, 0), Event::Land(land)))
         .collect();
     events.extend(
         world
@@ -1349,7 +1366,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             .into_iter()
             .flat_map(|state| &state.basic_land_types)
             .filter(|row| row.recipient == reference)
-            .map(|row| (row.timestamp, Event::Add(row.kind))),
+            .map(|row| (land_effect_order(row.timestamp), Event::Add(row.kind))),
     );
     events.extend(
         world
@@ -1361,14 +1378,18 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                     && row.kind == SourceLinkedEffectKind::BlankLandWhileBlighted
                     && source_linked_effects::active(world, row)
             })
-            .map(|row| (row.timestamp, Event::Clear)),
+            .map(|row| ((row.timestamp, row.timestamp), Event::Clear)),
     );
-    if object.card.static_ability_groups().iter().any(|group| {
-        group
-            .fragments
-            .iter()
-            .any(|f| matches!(f, crate::cards::StaticAbilityFragment::ChosenBasicLandType))
-    }) && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
+    // An external basic-type setter removes this native type-setting ability
+    // before it can apply. Keep the stored choice for when the setter leaves.
+    if !removes_printed
+        && object.card.static_ability_groups().iter().any(|group| {
+            group
+                .fragments
+                .iter()
+                .any(|f| matches!(f, StaticAbilityFragment::ChosenBasicLandType))
+        })
+        && let Some(EntryChoiceValue::BasicLandType(kind)) = world.entry_value(reference)
         && let Some(time) = world
             .roles()
             .and_then(|state| {
@@ -1379,42 +1400,23 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
             })
             .map(|row| row.timestamp)
     {
-        events.push((time, Event::Set(kind)));
+        events.push((land_effect_order(time), Event::Set(kind)));
     }
-    if world
-        .roles()
-        .is_some_and(|roles| !roles.characteristic_sources.is_empty())
-    {
-        let mut is_land = printed_land();
-        let mut added_at = 0;
-        for (time, land) in kind_events {
-            if land && !is_land {
-                added_at = time;
-            }
-            is_land = land;
-        }
-        if is_land {
-            // The land-only grant depends on type effects that make this
-            // recipient a land. A basic-subtype setter does not change that set.
-            events.extend(
-                characteristic_layers::controlled_characteristic_timestamps(
-                    world,
-                    id,
-                    |fragment| {
-                        matches!(
-                            fragment,
-                            StaticAbilityFragment::ControlledLandsAllBasicTypes
-                        )
-                    },
+    if land_since.is_some() {
+        events.extend(
+            characteristic_layers::controlled_characteristic_sources(world, id, |fragment| {
+                matches!(
+                    fragment,
+                    StaticAbilityFragment::ControlledLandsAllBasicTypes
                 )
-                .map(|time| (time.max(added_at), Event::AddAll)),
+            })
+            .filter(|(source, _)| !has_land_setters || !is_nonbasic_land(world, source.card))
+            .map(|(_, time)| (land_effect_order(time), Event::AddAll)),
+        );
+        if removes_printed {
+            events.extend(
+                land_setters.map(|(time, kind)| (land_effect_order(time), Event::Set(kind))),
             );
-            if !object.card.is_basic_land() {
-                events.extend(
-                    nonbasic_land_type_setters(world)
-                        .map(|(time, kind)| (time.max(added_at), Event::Set(kind))),
-                );
-            }
         }
     }
     if events.is_empty() {
@@ -1440,7 +1442,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     let mut present = initial_types;
     let mut lost_original_types = !is_land;
     let mut ability_changes = Vec::new();
-    for (time, event) in &events {
+    for ((time, _), event) in &events {
         match *event {
             Event::Land(false) => {
                 if is_land {

@@ -207,3 +207,163 @@ fn all_basic_land_types_are_additive_and_frozen_through_cleanup() {
             .any(|kind| view.has_subtype(kind.name()))
     );
 }
+
+#[test]
+fn toph_dependency_keeps_the_order_of_earlier_land_type_effects() {
+    let _rules = fixture_rules::activate(&[
+        (named("Hill Giant"), &ARTIFACT_LANDS),
+        (named("Goblin Piker"), &MOUNTAIN_SETTER),
+    ]);
+    let player = Player::P0;
+    for zhao_later in [false, true] {
+        let mut game = scenario(player);
+        let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        let zhao = if zhao_later {
+            put(
+                &mut game,
+                player,
+                "Leyline of the Guildpact",
+                Zone::Battlefield,
+            );
+            put(&mut game, player, "Goblin Piker", Zone::Battlefield)
+        } else {
+            let zhao = put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+            put(
+                &mut game,
+                player,
+                "Leyline of the Guildpact",
+                Zone::Battlefield,
+            );
+            zhao
+        };
+        game.add_counter(zhao, CounterKind::Conqueror, 1);
+        put(&mut game, player, "Hill Giant", Zone::Battlefield);
+        let view = game.object_view(artifact);
+        assert_eq!(view.kinds, 2 | 16);
+        assert!(view.has_subtype("Mountain"));
+        for kind in BasicLandType::ALL {
+            assert_eq!(
+                view.has_subtype(kind.name()),
+                kind == BasicLandType::Mountain || !zhao_later
+            );
+        }
+        assert!(!game.printed_abilities_available(artifact));
+
+        let hawk = put(&mut game, player, "Healer's Hawk", Zone::Hand);
+        game.state.players[player.index()].mana = [0; 6];
+        let announce = Action::AnnounceCast { card: hawk };
+        if zhao_later {
+            reject(&mut game, announce);
+        } else {
+            act(&mut game, announce);
+            let white = granted_mana(&game, artifact, 0);
+            if game.legal_actions().contains(&white) {
+                act(&mut game, white);
+            } else {
+                act(&mut game, Action::TapMana { card: artifact });
+            }
+            assert_eq!(game.state.players[player.index()].mana, [1, 0, 0, 0, 0, 0]);
+            pay(&mut game);
+            settle(&mut game);
+            assert_eq!(game.object_view(hawk).zone, Zone::Battlefield);
+        }
+    }
+}
+
+#[test]
+fn a_frozen_energy_recipient_regains_basic_types_when_toph_returns() {
+    let _rules = fixture_rules::activate(&[
+        (named("Hill Giant"), &ARTIFACT_LANDS),
+        (named("Opt"), &ALL_BASIC_TYPES),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let toph = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let artifact = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let energy = put(&mut game, player, "Opt", Zone::Hand);
+    cast(&mut game, energy, None);
+    settle(&mut game);
+    assert!(game.object_view(artifact).has_subtype("Plains"));
+
+    game.move_object(toph, Zone::Exile);
+    assert_eq!(game.object_view(artifact).kinds, 16);
+    assert!(!game.object_view(artifact).has_subtype("Plains"));
+    let late = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    game.move_object(toph, Zone::Battlefield);
+    let view = game.object_view(artifact);
+    assert_eq!(view.kinds, 2 | 16);
+    assert!(
+        BasicLandType::ALL
+            .into_iter()
+            .all(|kind| view.has_subtype(kind.name()))
+    );
+    assert!(!game.object_view(late).has_subtype("Plains"));
+}
+
+#[test]
+fn an_external_mountain_setter_suppresses_a_passages_native_choice() {
+    let _rules = fixture_rules::activate(&[(named("Goblin Piker"), &MOUNTAIN_SETTER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let zhao = put(&mut game, player.other(), "Goblin Piker", Zone::Battlefield);
+    let passage = put(&mut game, player, "Multiversal Passage", Zone::Hand);
+    act(&mut game, Action::PlayLand { card: passage });
+    act(
+        &mut game,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::BasicLandType(BasicLandType::Island),
+        },
+    );
+    act(&mut game, Action::ChooseEntryLife { pay: false });
+    assert!(game.object_view(passage).has_subtype("Island"));
+
+    game.add_counter(zhao, CounterKind::Conqueror, 1);
+    let view = game.object_view(passage);
+    assert!(view.has_subtype("Mountain"));
+    assert!(!view.has_subtype("Island"));
+    game.move_object(zhao, Zone::Exile);
+    let view = game.object_view(passage);
+    assert!(view.has_subtype("Island"));
+    assert!(!view.has_subtype("Mountain"));
+}
+
+#[test]
+fn setting_the_leyline_sources_land_type_removes_its_printed_grants() {
+    let _rules = fixture_rules::activate(&[
+        (named("Hill Giant"), &ARTIFACT_LANDS),
+        (named("Goblin Piker"), &MOUNTAIN_SETTER),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let zhao = put(&mut game, player.other(), "Goblin Piker", Zone::Battlefield);
+    game.add_counter(zhao, CounterKind::Conqueror, 1);
+    let leyline = put(
+        &mut game,
+        player,
+        "Leyline of the Guildpact",
+        Zone::Battlefield,
+    );
+    let forest = put(&mut game, player, "Forest", Zone::Battlefield);
+    let bear = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    assert!(game.object_view(forest).has_subtype("Plains"));
+    assert_eq!(game.object_view(bear).colors, 31);
+    let source = game.object_ref(leyline);
+    game.add_characteristics_to(
+        &[source],
+        CharacteristicAddition {
+            card_types: 16,
+            creature_types: &[],
+            colors: 0,
+            duration: AnimationDuration::Permanent,
+        },
+    );
+    assert!(game.object_view(leyline).has_subtype("Mountain"));
+    assert!(game.object_view(forest).has_subtype("Forest"));
+    assert!(!game.object_view(forest).has_subtype("Plains"));
+    assert_eq!(game.object_view(bear).colors, 16);
+
+    game.move_object(zhao, Zone::Exile);
+    assert!(game.object_view(forest).has_subtype("Plains"));
+    assert_eq!(game.object_view(bear).colors, 31);
+}
