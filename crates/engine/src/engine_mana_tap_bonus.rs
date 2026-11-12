@@ -33,6 +33,8 @@ pub struct ManaTapBonus {
     pub(super) land_at_tap: Option<LandAtTap>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub(super) artifact_token_at_tap: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub(super) creature_at_tap: bool,
     #[serde(skip)]
     multiplier: u64,
 }
@@ -45,6 +47,7 @@ impl Default for ManaTapBonus {
             colorless: 0,
             land_at_tap: None,
             artifact_token_at_tap: false,
+            creature_at_tap: false,
             multiplier: 1,
         }
     }
@@ -55,6 +58,7 @@ impl ManaTapBonus {
         self.has_trigger_bonuses()
             || self.land_at_tap.is_some()
             || self.artifact_token_at_tap
+            || self.creature_at_tap
             || self.multiplier != 1
     }
     pub(super) fn has_trigger_bonuses(self) -> bool {
@@ -87,7 +91,8 @@ impl ManaTapBonus {
         let artifact_token = kinds.map_or(self.artifact_token_at_tap, |kinds| {
             kinds & 16 != 0 && object.is_token()
         });
-        if land_kind.is_none() && !artifact_token {
+        let creature = kinds.map_or(self.creature_at_tap, |kinds| kinds & 1 != 0);
+        if land_kind.is_none() && !artifact_token && !creature {
             return receipt;
         }
         let query = characteristic_query::CharacteristicQuery::in_world(world);
@@ -123,6 +128,11 @@ impl ManaTapBonus {
                     }
                     StaticAbilityFragment::ControlledLandTapManaBonus(mana)
                         if provider.controller == actor && land_kind.is_some() =>
+                    {
+                        (Some(ManaProduction::Fixed(mana)), 0, 0)
+                    }
+                    StaticAbilityFragment::ControlledCreatureTapManaBonus(mana)
+                        if provider.controller == actor && creature =>
                     {
                         (Some(ManaProduction::Fixed(mana)), 0, 0)
                     }
@@ -374,6 +384,7 @@ pub(super) fn capture<W: CharacteristicWorld + ?Sized>(
     ManaTapBonus {
         land_at_tap: (kinds & 2 != 0).then(|| LandAtTap::from_card(world.definition(id))),
         artifact_token_at_tap: kinds & 16 != 0 && object.is_token(),
+        creature_at_tap: kinds & 1 != 0,
         ..ManaTapBonus::default()
     }
 }

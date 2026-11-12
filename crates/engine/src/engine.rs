@@ -295,11 +295,14 @@ pub mod observation_schema;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub const OBSERVATION_SCHEMA: u32 = observation_schema::VERSION;
 #[doc(hidden)]
-#[path = "engine_cast_payments.rs"]
-pub mod cast_payments;
+#[path = "engine_attack_trigger_observers.rs"]
+pub mod attack_trigger_observers;
 #[doc(hidden)]
 #[path = "engine_bending.rs"]
 pub mod bending;
+#[doc(hidden)]
+#[path = "engine_cast_payments.rs"]
+pub mod cast_payments;
 #[doc(hidden)]
 #[path = "engine_earthbend.rs"]
 pub mod earthbend;
@@ -1864,6 +1867,7 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
             colorless: 0,
             land_at_tap: None,
             artifact_token_at_tap: false,
+            creature_at_tap: false,
             ..
         }) => serializer.serialize_u32(*red),
         Some(ManaTapBonus {
@@ -1872,6 +1876,7 @@ fn serialize_tap_mana_bonus<S: serde::Serializer>(
             colorless: 0,
             land_at_tap: None,
             artifact_token_at_tap: false,
+            creature_at_tap: false,
             ..
         }) => fixed.serialize(serializer),
         Some(bonus) => bonus.serialize(serializer),
@@ -7872,8 +7877,12 @@ impl Game {
                 }
             }
             Pending::OrderTriggers { player } => {
+                let observers = s.ordering_triggers.iter().all(SpellView::observes_trigger);
                 for item in &s.ordering_triggers {
-                    if item.controller == player && emit(Action::PutTrigger { id: item.id }) {
+                    if item.controller == player
+                        && item.observes_trigger() == observers
+                        && emit(Action::PutTrigger { id: item.id })
+                    {
                         return true;
                     }
                 }
@@ -11679,11 +11688,13 @@ impl Game {
             self.tap_objects_as(actor, &to_tap);
         }
         let power_event = self.record_attack_turn_facts(actor, &declared);
+        let first_attack_trigger = self.state.pending_triggers.len();
         for attack in &declared {
             event(self, attack);
         }
         if self.state.attack_declared {
             self.declaration_triggers(actor, alone, &declared, power_event);
+            self.observe_attack_triggers(actor, &declared, first_attack_trigger);
         }
     }
 

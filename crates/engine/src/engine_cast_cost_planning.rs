@@ -455,6 +455,7 @@ impl FundingState<'_> {
                                 | BasicLandTapManaBonus(_)
                                 | ControlledBasicLandManaMultiplier(_)
                                 | ControlledLandTapManaBonus(_)
+                                | ControlledCreatureTapManaBonus(_)
                                 | ControlledLandColorlessTapManaBonus
                                 | ControlledArtifactTokenTapManaBonus => false,
                                 // This replacement changes only damage amounts;

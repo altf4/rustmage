@@ -1173,6 +1173,7 @@ impl Game {
                     | TriggerCondition::Foraged
                     | TriggerCondition::GiftGiven
                     | TriggerCondition::BendsYou
+                    | TriggerCondition::OwnAttackerAbilityTriggered
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
@@ -3730,6 +3731,7 @@ impl Game {
                 self.state.pending_triggers.push(item);
             }
         }
+        self.conditional_self_attack_triggers(source);
         let defending_player = match defender {
             Some(CombatDefender::Player(player)) => player,
             Some(CombatDefender::Planeswalker(object)) => {
@@ -3802,27 +3804,32 @@ impl Game {
     }
 
     pub(super) fn continue_trigger_order(&mut self) {
-        // Controllers place their batch bottom-to-top in APNAP order. A sole
-        // remaining item has no ordering choice and can be placed automatically.
-        for player in [self.state.active, self.state.active.other()] {
-            loop {
-                let mut indices = self
-                    .state
-                    .ordering_triggers
-                    .iter()
-                    .enumerate()
-                    .filter(|(_, item)| item.controller == player)
-                    .map(|(i, _)| i);
-                let Some(index) = indices.next() else {
-                    break;
-                };
-                if indices.next().is_some() {
-                    self.state.pending = Pending::OrderTriggers { player };
-                    return;
-                }
-                let item = self.state.ordering_triggers.remove(index);
-                if self.start_announcement(item, true) {
-                    return;
+        // CR603.3b places ordinary triggers in APNAP order before abilities
+        // that triggered from another ability triggering. Each pass retains
+        // independent controller choices within that player's own batch.
+        for observers in [false, true] {
+            for player in [self.state.active, self.state.active.other()] {
+                loop {
+                    let mut indices = self
+                        .state
+                        .ordering_triggers
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, item)| {
+                            item.controller == player && item.observes_trigger() == observers
+                        })
+                        .map(|(i, _)| i);
+                    let Some(index) = indices.next() else {
+                        break;
+                    };
+                    if indices.next().is_some() {
+                        self.state.pending = Pending::OrderTriggers { player };
+                        return;
+                    }
+                    let item = self.state.ordering_triggers.remove(index);
+                    if self.start_announcement(item, true) {
+                        return;
+                    }
                 }
             }
         }
@@ -3832,7 +3839,7 @@ impl Game {
 
     pub(super) fn resolve_top(&mut self) {
         let mut item = self.state.stack.pop().unwrap();
-        self.retain_departing_activation_for_triggers(&item);
+        self.retain_departing_ability_for_triggers(&item);
         // Radiation has an intervening-if condition at trigger and resolution.
         if let StackKind::InherentRule {
             rule: SourceLessRule::Radiation,
@@ -5082,6 +5089,11 @@ impl Game {
                 }
                 Instruction::ChangeCastSpellTargets => {
                     if self.change_cast_spell_targets(&item) {
+                        return;
+                    }
+                }
+                Instruction::CopyRelatedTriggeredAbility => {
+                    if self.copy_related_triggered_ability(&item) {
                         return;
                     }
                 }
@@ -10967,6 +10979,7 @@ impl Game {
                 | Instruction::MayIfCombatDamageDealerOnBattlefield { skip }
                 | Instruction::MayIfRememberedExiledCreature { skip }
                 | Instruction::MayDraw { skip }
+                | Instruction::MayCopyRelatedTriggeredAbility { skip }
                 | Instruction::MayExileTop { skip } => {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
@@ -10990,6 +11003,9 @@ impl Game {
                             self.remembered_exiled_creature_copy(&item).is_some()
                         }
                         Instruction::MayDraw { .. } => !self.draws_prohibited(),
+                        Instruction::MayCopyRelatedTriggeredAbility { .. } => {
+                            self.related_triggered_ability(&item).is_some()
+                        }
                         Instruction::MayExileTop { .. } => {
                             self.top_library_card(item.controller).is_some()
                         }

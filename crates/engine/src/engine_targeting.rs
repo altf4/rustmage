@@ -3148,7 +3148,10 @@ impl Game {
     }
 
     /// Returns true only when a decision suspends the enclosing ordering/cast work.
-    pub(super) fn start_announcement(&mut self, item: SpellView, trigger: bool) -> bool {
+    pub(super) fn start_announcement(&mut self, mut item: SpellView, trigger: bool) -> bool {
+        if trigger && item.observes_trigger() {
+            self.capture_observed_trigger(&mut item);
+        }
         let needs_mode = item.modes().is_some() && item.mode.is_none();
         if needs_mode
             && !item
@@ -3187,7 +3190,6 @@ impl Game {
         if !has_choice {
             // Prepaid declarations settle their deferred costs in the caller.
             // A spell is still only a proposal here, so do not fire cast triggers.
-            let mut item = item;
             self.capture_division(&mut item);
             self.capture_transform_stack_serial(&mut item);
             self.state.stack.push(item);

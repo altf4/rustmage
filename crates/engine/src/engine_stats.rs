@@ -365,6 +365,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ArtifactTokenActivationReduction(_)
                             | crate::cards::StaticAbilityFragment::ControlledActivationReduction { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLandTapManaBonus(_)
+                            | crate::cards::StaticAbilityFragment::ControlledCreatureTapManaBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledLandColorlessTapManaBonus
                             | crate::cards::StaticAbilityFragment::ControlledArtifactTokenTapManaBonus
                             | crate::cards::StaticAbilityFragment::AttachmentManaBonus(_)
@@ -439,6 +440,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }
                             | crate::cards::StaticAbilityFragment::ControlledCreatureTrigger { .. }
                             | crate::cards::StaticAbilityFragment::HarnessedTrigger(..)
+                            | crate::cards::StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproofIfSourceCounter { .. }
                             | crate::cards::StaticAbilityFragment::PlayerHexproof
                             | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents

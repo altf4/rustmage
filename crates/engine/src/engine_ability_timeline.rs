@@ -137,6 +137,7 @@ impl Card {
                             | StaticAbilityFragment::AttachedTurnKeywords(..)
                             | StaticAbilityFragment::AttachmentTurnChoiceKeywords { .. }
                             | StaticAbilityFragment::HarnessedTrigger(..)
+                            | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ConditionalWard { .. }
                             | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                             | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }

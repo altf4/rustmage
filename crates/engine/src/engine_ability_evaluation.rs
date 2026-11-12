@@ -253,6 +253,17 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
                 mana: Vec::new(),
             });
         }
+        StaticAbilityFragment::SourceConditionalAttackTrigger { condition, ability } => {
+            if world.reference(id) != source || world.value(condition, source.card) == 0 {
+                return None;
+            }
+            return Some(LayerSixGrant {
+                recipient: id,
+                keywords: Keywords::NONE,
+                abilities: vec![triggered(ability)],
+                mana: Vec::new(),
+            });
+        }
         StaticAbilityFragment::HarnessedTrigger(ability) => {
             if id != source.card || !world.harnessed(source.card) {
                 return None;
@@ -639,6 +650,7 @@ pub(super) fn evaluate_if_needed<W: CharacteristicWorld + ?Sized>(
                         fragment,
                         StaticAbilityFragment::SourceEntryModeActivation { .. }
                             | StaticAbilityFragment::SourceMaxSpeedActivation(_)
+                            | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                             | StaticAbilityFragment::ControlledPlaneswalkerActivation(_)
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
@@ -889,6 +901,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::SourceMaxSpeedActivation(..)
                         | StaticAbilityFragment::SourceEntryModeActivation { .. }
                         | StaticAbilityFragment::HarnessedTrigger(..)
+                        | StaticAbilityFragment::SourceConditionalAttackTrigger { .. }
                         | StaticAbilityFragment::ConditionalWard { .. }
                         | StaticAbilityFragment::CounterBearingPermanentWard { .. }
                         | StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard { .. }

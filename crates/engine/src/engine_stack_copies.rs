@@ -107,11 +107,15 @@ fn delayed_copy_all_spells(item: &SpellView) -> bool {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
-    /// Retain the final characteristics of an activated ability for triggers
-    /// that refer to it after it leaves the stack. These packets are owned, so
-    /// rollback and copied triggers keep the same last-known targets.
-    pub(super) fn retain_departing_activation_for_triggers(&mut self, departed: &SpellView) {
-        if !matches!(departed.kind, StackKind::ActivatedAbility { .. }) {
+    /// Keep the final modes and targets of an ability referenced by a
+    /// nontargeting copy effect, even after it leaves the stack (CR608.2h).
+    pub(super) fn retain_departing_ability_for_triggers(&mut self, departed: &SpellView) {
+        if !matches!(
+            departed.kind,
+            StackKind::ActivatedAbility { .. }
+                | StackKind::TriggeredAbility { .. }
+                | StackKind::DecayedAttack
+        ) {
             return;
         }
         let retain = |packet: &mut SpellView| {
@@ -828,6 +832,42 @@ impl Game {
             return false;
         }
         self.begin_ability_copies(template, item.controller, 1)
+    }
+
+    pub(super) fn capture_observed_trigger(&self, item: &mut SpellView) {
+        // The first APNAP pass has announced the cause's choices by now. An
+        // ability removed during announcement has no copyable stack packet.
+        if let Some(original) = self.live_related_triggered_ability(item) {
+            item.copy_event = Some(Box::new(CopyEvent {
+                spell: original.clone(),
+                amount: 1,
+            }));
+        }
+    }
+
+    fn live_related_triggered_ability(&self, item: &SpellView) -> Option<&SpellView> {
+        let link = item.related_stack?;
+        self.state.stack.iter().find(|candidate| {
+            candidate.id == link.id
+                && matches!(
+                    candidate.kind,
+                    StackKind::TriggeredAbility { .. } | StackKind::DecayedAttack
+                )
+        })
+    }
+
+    pub(super) fn related_triggered_ability<'a>(
+        &'a self,
+        item: &'a SpellView,
+    ) -> Option<&'a SpellView> {
+        self.live_related_triggered_ability(item)
+            .or_else(|| item.copy_event.as_deref().map(|event| &event.spell))
+    }
+
+    pub(super) fn copy_related_triggered_ability(&mut self, item: &SpellView) -> bool {
+        self.related_triggered_ability(item)
+            .cloned()
+            .is_some_and(|template| self.begin_ability_copies(template, item.controller, 1))
     }
 
     fn begin_ability_copies(

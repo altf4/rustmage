@@ -143,7 +143,7 @@ impl Game {
             .iter()
             .filter(|victim| victim.kind != StackKind::Spell)
         {
-            self.retain_departing_activation_for_triggers(victim);
+            self.retain_departing_ability_for_triggers(victim);
         }
         self.state.stack.retain(|item| {
             !victims
@@ -181,7 +181,7 @@ impl Game {
             self.move_object(source.id, if exile { Zone::Exile } else { Zone::Graveyard });
         } else {
             let departed = self.state.stack.remove(index);
-            self.retain_departing_activation_for_triggers(&departed);
+            self.retain_departing_ability_for_triggers(&departed);
             // CR603.8: the state ability may trigger now, even when this
             // effect will remove the source's abilities after countering it.
             if departed.is_original_state_counter_trigger() {

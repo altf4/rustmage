@@ -30,8 +30,10 @@ impl Game {
             .triggers()
             .iter()
             .any(|ability| {
-                ability.condition.event() == TriggerCondition::BendsYou
-                    && !ability.condition.is_granted()
+                matches!(
+                    ability.condition.event(),
+                    TriggerCondition::BendsYou | TriggerCondition::OwnAttackerAbilityTriggered
+                ) && !ability.condition.is_granted()
                     && ability.condition.origin() != Some(TargetZone::Graveyard)
             })
         {

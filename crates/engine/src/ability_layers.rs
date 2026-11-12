@@ -126,6 +126,8 @@ pub enum StaticAbilityFragment {
         leave_one_mana: bool,
     },
     ControlledLandTapManaBonus(Mana),
+    /// Triggered mana when the controller taps a creature for mana.
+    ControlledCreatureTapManaBonus(Mana),
     /// Add one {C} when a controlled land's tap ability produces {C}.
     ControlledLandColorlessTapManaBonus,
     /// Add one mana of a type actually produced by a controlled artifact token tapped for mana.
@@ -427,6 +429,11 @@ pub enum StaticAbilityFragment {
     },
     /// Real immutable trigger template, present only on the harnessed source.
     HarnessedTrigger(u16),
+    /// Grant this source a separate self-attack trigger while the condition holds.
+    SourceConditionalAttackTrigger {
+        condition: StatValue,
+        ability: u16,
+    },
     CantLoseGameAndOpponentsCantWin,
     /// The controller does not lose the state-based action for life at or below zero.
     CantLoseFromNonpositiveLife,

@@ -2993,6 +2993,8 @@ pub enum Instruction {
     },
     CopyStormSpell,
     ChangeSingleStackTarget,
+    /// Copy the exact triggered ability captured by an observer.
+    CopyRelatedTriggeredAbility,
     /// Optionally choose new targets for the exact spell captured by this cast trigger.
     ChangeCastSpellTargets,
     GrantGraveyardCast(GraveyardCastKind),
@@ -5627,6 +5629,10 @@ pub enum Instruction {
     MayDraw {
         skip: usize,
     },
+    /// Offer to copy the exact related ability, including its final stack LKI.
+    MayCopyRelatedTriggeredAbility {
+        skip: usize,
+    },
     /// An optional instruction chosen by an affected player during resolution.
     MayForPlayer {
         player: PlayerSet,
@@ -7519,6 +7525,8 @@ pub enum TriggerCondition {
     ScryOrSurveil,
     /// The controller completed a qualifying bending action.
     BendsYou,
+    /// This player’s declared attacker caused its own ability to trigger.
+    OwnAttackerAbilityTriggered,
     /// One event for each completed proliferate, even when no object was chosen.
     #[allow(dead_code, reason = "Gated typed proliferate foundation")]
     Proliferated(CastRelation),
