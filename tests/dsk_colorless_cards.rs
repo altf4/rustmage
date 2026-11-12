@@ -333,10 +333,9 @@ fn marvin_pays_an_inherited_mana_ability_with_its_own_tap() {
     assert_eq!(stats(&game, marvin), (2, 2));
 
     let production = [0, 0, 0, 0, 1, 0];
-    let action = Action::ActivateInheritedMana {
+    let action = Action::AnnounceInheritedMana {
         source,
         slot: rows[0].slot,
-        payment: [0; 6],
         counter_payment: Counters::default(),
         production,
     };
@@ -345,6 +344,9 @@ fn marvin_pays_an_inherited_mana_ability_with_its_own_tap() {
     removed.move_object(donor, Zone::Exile);
     reject(&mut removed, action.clone());
     act(&mut game, action);
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(&mut game);
+    }
     assert_eq!(game.state.players[P.index()].mana, production);
     assert!(game.object_view(marvin).tapped);
     assert!(!game.object_view(donor).tapped);

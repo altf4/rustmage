@@ -157,10 +157,7 @@ fn the_five_reprinted_basic_lands_are_unlimited_and_produce_their_printed_colors
         let land = play(&mut game, name);
         assert!(!game.object_view(land).tapped);
         let expected = mana(color);
-        choose(&mut game, |action| {
-            matches!(action, Action::ActivateMana { card, production, .. }
-                if *card == land && *production == expected)
-        });
+        act(&mut game, Action::TapMana { card: land });
         assert_eq!(game.state.players[PLAYER.index()].mana, expected);
         assert!(game.object_view(land).tapped);
     }
