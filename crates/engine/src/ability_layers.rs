@@ -331,6 +331,10 @@ pub enum StaticAbilityFragment {
     SourceOffTurnCreature,
     /// This land is the chosen basic land type (CR305.7).
     ChosenBasicLandType,
+    /// Add all five basic land subtypes to each controlled land in layer four.
+    ControlledLandsAllBasicTypes,
+    /// Set every controlled nonland permanent's color to all five colors.
+    ControlledNonlandAllColors,
     OtherSubtypeEntryCounters(&'static str),
     /// A fixed addition from a provider already present before the entry event.
     ControlledSubtypeEntryCounters {

@@ -278,6 +278,8 @@ impl EntryProjection {
                             | F::AttachedChosenColor
                             | F::ControlledArtifactFood(_)
                             | F::OtherCreaturesFood(_)
+                            | F::ControlledLandsAllBasicTypes
+                            | F::ControlledNonlandAllColors
                     )
                 })
             }) {

@@ -1292,14 +1292,17 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     enum Event {
         Land(bool),
         Add(crate::cards::BasicLandType),
+        AddAll,
         Set(crate::cards::BasicLandType),
         Clear,
     }
     let object = world.object(id);
     let reference = world.reference(id);
-    let mut events: Vec<(u64, Event)> = characteristic_layers::land_kind_events(world, id)
-        .into_iter()
-        .map(|(time, land)| (time, Event::Land(land)))
+    let printed_land = || world.recipe(id).kinds() & 2 != 0;
+    let kind_events = characteristic_layers::land_kind_events(world, id);
+    let mut events: Vec<(u64, Event)> = kind_events
+        .iter()
+        .map(|&(time, land)| (time, Event::Land(land)))
         .collect();
     events.extend(
         world
@@ -1339,6 +1342,36 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
     {
         events.push((time, Event::Set(kind)));
     }
+    if world
+        .roles()
+        .is_some_and(|roles| !roles.characteristic_sources.is_empty())
+    {
+        let mut is_land = printed_land();
+        let mut added_at = 0;
+        for (time, land) in kind_events {
+            if land && !is_land {
+                added_at = time;
+            }
+            is_land = land;
+        }
+        if is_land {
+            // The land-only grant depends on type effects that make this
+            // recipient a land. A basic-subtype setter does not change that set.
+            events.extend(
+                characteristic_layers::controlled_characteristic_timestamps(
+                    world,
+                    id,
+                    |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::ControlledLandsAllBasicTypes
+                        )
+                    },
+                )
+                .map(|time| (time.max(added_at), Event::AddAll)),
+            );
+        }
+    }
     if events.is_empty() {
         return BasicLandTimeline {
             initial_types: 0,
@@ -1349,7 +1382,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
         };
     }
     events.sort_by_key(|event| event.0);
-    let mut is_land = world.recipe(id).kinds() & 2 != 0;
+    let mut is_land = printed_land();
     let relevant = is_land
         || events
             .iter()
@@ -1382,6 +1415,15 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                     ability_changes.push((*time, BasicLandAbilityChange::Add(kind)));
                 }
             }
+            Event::AddAll if is_land => {
+                for kind in crate::cards::BasicLandType::ALL {
+                    let bit = 1 << kind.index();
+                    if present & bit == 0 {
+                        present |= bit;
+                        ability_changes.push((*time, BasicLandAbilityChange::Add(kind)));
+                    }
+                }
+            }
             Event::Set(kind) if is_land => {
                 present = 1 << kind.index();
                 lost_original_types = true;
@@ -1392,7 +1434,7 @@ pub(super) fn basic_land_timeline<W: super::ability_world::CharacteristicWorld +
                 lost_original_types = true;
                 // The same timestamp's layer-six removal clears every ability.
             }
-            Event::Add(_) | Event::Set(_) => {}
+            Event::Add(_) | Event::AddAll | Event::Set(_) => {}
         }
     }
     BasicLandTimeline {

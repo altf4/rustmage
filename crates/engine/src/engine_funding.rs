@@ -1275,6 +1275,8 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledActivationReduction { .. }
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
+                                        | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                                        | StaticAbilityFragment::ControlledNonlandAllColors
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                                         | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
@@ -4480,6 +4482,7 @@ impl<'g> FundingState<'g> {
                                 matches!(
                                     fragment,
                                     StaticAbilityFragment::ChosenBasicLandType
+                                        | StaticAbilityFragment::ControlledLandsAllBasicTypes
                                         | StaticAbilityFragment::AttachmentMana(_)
                                         | StaticAbilityFragment::AttachmentSacrificeMana(_)
                                         | StaticAbilityFragment::LandMana { .. }

@@ -597,6 +597,39 @@ fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
         .map(|(_, name)| name)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn controlled_characteristic_timestamps<'a, W: CharacteristicWorld + ?Sized>(
+    world: &'a W,
+    id: CardId,
+    matches: impl Fn(&StaticAbilityFragment) -> bool + Copy + 'a,
+) -> impl Iterator<Item = u64> + 'a {
+    let recipient = world.object(id);
+    world.roles().into_iter().flat_map(move |roles| {
+        roles
+            .characteristic_sources
+            .iter()
+            .filter_map(move |&reference| {
+                let source = world.object(reference.card);
+                if recipient.zone != Zone::Battlefield
+                    || source.zone != Zone::Battlefield
+                    || world.reference(reference.card) != reference
+                    || source.controller != recipient.controller
+                    || !source.card.static_ability_groups().iter().any(|group| {
+                        group.fragments.iter().any(matches)
+                            && entry_modes::group_enabled(world, reference, group)
+                    })
+                {
+                    return None;
+                }
+                roles
+                    .ability_timestamps
+                    .iter()
+                    .find(|row| row.source == reference)
+                    .map(|row| row.timestamp)
+            })
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
 pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
     let object = world.object(id);
@@ -640,6 +673,13 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
             ))
         })
         .chain(chosen_aura_colors(world, id))
+        .chain(
+            controlled_characteristic_timestamps(world, id, |fragment| {
+                matches!(fragment, StaticAbilityFragment::ControlledNonlandAllColors)
+            })
+            .filter(|_| world.kinds(id) & 2 == 0)
+            .map(|timestamp| (timestamp, 31)),
+        )
         .chain(
             animations(world, id)
                 .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),

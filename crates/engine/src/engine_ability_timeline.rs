@@ -102,6 +102,8 @@ impl Card {
                             | StaticAbilityFragment::ChosenCreatureType
                             | StaticAbilityFragment::ChosenTypeKeywords(..)
                             | StaticAbilityFragment::ChosenBasicLandType
+                            | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNonlandAllColors
                             | StaticAbilityFragment::AttachedSubtype(..)
                             | StaticAbilityFragment::AttachedLegendary
                             | StaticAbilityFragment::KeywordGrant(..)
@@ -201,6 +203,8 @@ impl Game {
                             | StaticAbilityFragment::AttachedChosenColor
                             | StaticAbilityFragment::ControlledArtifactFood(_)
                             | StaticAbilityFragment::OtherCreaturesFood(_)
+                            | StaticAbilityFragment::ControlledLandsAllBasicTypes
+                            | StaticAbilityFragment::ControlledNonlandAllColors
                     )
                 })
             })
