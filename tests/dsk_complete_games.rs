@@ -348,7 +348,11 @@ fn duskmourn_standard_games_finish_and_replay_with_real_mechanic_events() {
             1
         );
     }
-    let directory = std::env::var_os("RUSTMAGE_DSK_EVIDENCE_DIR").map(PathBuf::from);
+    let directory = std::env::var_os("RUSTMAGE_DSK_EVIDENCE_DIR")
+        .map(PathBuf::from)
+        .or_else(|| {
+            std::env::var_os("RUSTMAGE_TDM_EVIDENCE_DIR").map(|dir| PathBuf::from(dir).join("dsk"))
+        });
     if let Some(directory) = &directory {
         std::fs::create_dir_all(directory).unwrap();
     }
