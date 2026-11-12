@@ -374,6 +374,13 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
             self.object(id).counters,
         )
     }
+    fn unspent_mana(&self, player: Player) -> u128 {
+        if player == self.actor {
+            self.mana.into_iter().fold(0, u128::saturating_add)
+        } else {
+            CharacteristicWorld::unspent_mana(self.game, player)
+        }
+    }
     fn life(&self, player: Player) -> i128 {
         if player == self.actor {
             self.life

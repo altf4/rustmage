@@ -3819,6 +3819,9 @@ pub struct PlayerView {
     pub other_counters: Vec<PlayerCounterAmountView>,
     pub mana: Mana,
     pub combat_red_mana: u32,
+    /// Color mask of duration-based mana retention, in pool order.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub retained_mana_colors_until_cleanup: Option<u8>,
     pub library_count: usize,
     pub hand_count: usize,
 }
@@ -11995,11 +11998,7 @@ impl Game {
             rules.creature_requirements.clear();
             rules.blocker_power_limits.clear();
             rules.must_attack_this_combat.clear();
-            rules.after_combat.clear();
-            rules.in_inserted_upkeep = false;
-            rules.after_main = None;
-            rules.inserted_phases.clear();
-            rules.end_steps = AdditionalEndStepsView::default();
+            rules.clear_phase_schedule();
             rules.attack_without_defender.clear();
             rules.player_attack_prohibitions = [0; 2];
         }
@@ -12024,6 +12023,7 @@ impl Game {
         }
         // Until-end-of-turn abilities expire before any cleanup-induced SBA death.
         self.expire_temporary_ability_removals();
+        self.expire_mana_color_retention();
         let expired_controls = self.expire_temporary_controls();
         if let Some(rows) = &mut self.state.self_granted_abilities {
             rows.retain(|row| row.expires_turn.is_none());
@@ -13259,6 +13259,10 @@ impl Game {
                     .collect(),
                 mana: s.players[i].mana,
                 combat_red_mana: s.players[i].combat_red_mana,
+                retained_mana_colors_until_cleanup: s.mana_lots.as_ref().and_then(|state| {
+                    let colors = state.retained_colors_until_cleanup[i];
+                    (colors != 0).then_some(colors)
+                }),
                 library_count: s.players[i]
                     .library
                     .iter()

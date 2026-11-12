@@ -704,6 +704,13 @@ pub(super) trait CharacteristicWorld {
         self.counter_amounts(id).get(kind)
     }
     fn life(&self, player: Player) -> i128;
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.game().state.players[player.index()]
+            .mana
+            .into_iter()
+            .map(u128::from)
+            .sum()
+    }
     fn gained_life(&self, player: Player) -> bool;
     fn lost_life(&self, player: Player) -> bool {
         self.game().state.players[player.index()].life_lost_this_turn > 0
@@ -2171,6 +2178,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn life(&self, p: Player) -> i128 {
         self.parent.life(p)
+    }
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.parent.unspent_mana(player)
     }
     fn exhaust_activated_this_turn(&self, player: Player) -> bool {
         self.parent.exhaust_activated_this_turn(player)

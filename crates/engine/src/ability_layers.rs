@@ -453,6 +453,8 @@ pub enum StaticAbilityFragment {
     RetainDamageDuringCleanup,
     /// This ability's controller keeps mana of the specified color at boundaries.
     RetainManaColor(ChoiceColor),
+    /// This controller's mana that would expire becomes red.
+    ExpiringManaBecomesRed,
     NoMaximumHandSize,
     MaximumHandSize(u16),
     /// While the controller has at least this many card types in their graveyard,

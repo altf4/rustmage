@@ -3470,6 +3470,10 @@ pub enum Instruction {
         other: i32,
     },
     DamageForExcess(AmountValue),
+    /// Consume actual excess damage from the preceding instruction.
+    GainExcessDamageLife,
+    AddExcessDamageMana(ChoiceColor),
+    RetainManaColorThisTurn(ChoiceColor),
     /// Skip the following instructions when no positive excess was dealt.
     IfNoExcessDamage {
         skip: usize,
@@ -6032,6 +6036,8 @@ pub enum StatValue {
     /// Signed total power of the cards still exiled by this Craft.
     CraftMaterialPower,
     ControllerLife,
+    /// Unspent mana of all colors and restrictions in the current world.
+    UnspentMana,
     /// Whether this controller has the highest life total, including ties.
     ControllerHasMostLife,
     /// Persistent player designation; zero means the controller has no speed.

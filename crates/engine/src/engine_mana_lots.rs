@@ -9,7 +9,7 @@ pub(super) fn is_zero(amount: &u64) -> bool {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 const CREATURE_KIND: u16 = 1;
 use crate::cards::{
-    CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus,
+    ChoiceColor, CreatureType, ManaQuality, ManaRestriction, ManaRetention, ManaSpellBonus,
     StaticAbilityFragment,
 };
 
@@ -571,6 +571,7 @@ impl ManaLotSpendRange {
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct ManaState {
     pub pools: [SharedVec<Lot>; 2],
+    pub retained_colors_until_cleanup: [u8; 2],
     /// No stated duration: lost or ineligibly spent mana makes its DTA inert,
     /// not ended. Only exact source identity remains observable (CR609.7a).
     #[allow(clippy::box_collection)]
@@ -1098,15 +1099,32 @@ impl Game {
             );
         }
     }
-    fn retained_mana_colors(&self) -> [u8; 2] {
+    pub(super) fn retain_mana_color_until_cleanup(&mut self, player: Player, color: ChoiceColor) {
+        self.state
+            .mana_lots
+            .get_or_insert_default()
+            .retained_colors_until_cleanup[player.index()] |= 1 << color.index();
+    }
+
+    pub(super) fn expire_mana_color_retention(&mut self) {
+        if let Some(state) = &mut self.state.mana_lots {
+            state.retained_colors_until_cleanup = [0; 2];
+        }
+    }
+
+    fn mana_expiry_rules(&self, keep_turn: bool) -> ([u8; 2], [bool; 2]) {
         let mut colors = [0; 2];
+        let mut convert = [false; 2];
         if self
             .state
             .players
             .iter()
             .all(|player| player.mana == [0; 6])
         {
-            return colors;
+            return (colors, convert);
+        }
+        if keep_turn && let Some(state) = &self.state.mana_lots {
+            colors = state.retained_colors_until_cleanup;
         }
         for &id in &self.state.static_sources {
             let source = &self.state.objects[id as usize];
@@ -1116,45 +1134,56 @@ impl Game {
                 .iter()
                 .flat_map(|group| group.fragments)
             {
-                if let StaticAbilityFragment::RetainManaColor(color) = *fragment
-                    && self.active_rule_fragment(id, |candidate| std::ptr::eq(candidate, fragment))
+                if matches!(
+                    fragment,
+                    StaticAbilityFragment::RetainManaColor(_)
+                        | StaticAbilityFragment::ExpiringManaBecomesRed
+                ) && self.active_rule_fragment(id, |candidate| std::ptr::eq(candidate, fragment))
                 {
-                    colors[source.controller.index()] |= 1 << color.index();
+                    match *fragment {
+                        StaticAbilityFragment::RetainManaColor(color) => {
+                            colors[source.controller.index()] |= 1 << color.index();
+                        }
+                        StaticAbilityFragment::ExpiringManaBecomesRed => {
+                            convert[source.controller.index()] = true;
+                        }
+                        _ => unreachable!("mana expiry fragment"),
+                    }
                 }
             }
         }
-        colors
+        (colors, convert)
     }
 
     pub(super) fn clear_step_mana(&mut self, keep_combat: bool, keep_turn: bool) {
-        let retained_colors = self.retained_mana_colors();
+        let (retained_colors, convert) = self.mana_expiry_rules(keep_turn);
         for actor in [Player::P0, Player::P1] {
-            let colors = retained_colors[actor.index()];
+            let index = actor.index();
+            let colors = retained_colors[index];
+            let convert_to_red = convert[index];
+            let mut ordinary =
+                convert_to_red.then(|| self.state.players[index].mana.map(u128::from));
             let mut keep = [0; 6];
             if let Some(state) = self.state.mana_lots.as_mut() {
                 let mut lost_copy_sources = Vec::new();
                 let mut expired_durations = Vec::new();
-                state.pools[actor.index()].retain_mut(|lot| {
+                state.pools[index].retain_mut(|lot| {
+                    if let Some(ordinary) = &mut ordinary {
+                        for (untagged, amount) in ordinary.iter_mut().zip(lot.amounts) {
+                            *untagged -= amount;
+                        }
+                    }
                     if (lot.quality.retention == ManaRetention::Turn && keep_turn)
                         || (lot.quality.retention == ManaRetention::Combat && keep_combat)
                     {
                         return true;
                     }
-                    // A mixed lot keeps only its retained colors and retains
-                    // its restrictions and spending effects.
-                    let mut lost_mana = false;
-                    for (color, amount) in lot.amounts.iter_mut().enumerate() {
-                        if colors & (1 << color) == 0 {
-                            lost_mana |= *amount != 0;
-                            *amount = 0;
-                        }
-                    }
+                    let lost_mana = expire_mana_amounts(&mut lot.amounts, colors, convert_to_red);
                     if lost_mana && let Some(source) = lot.quality.copy_source {
                         lost_copy_sources.push(source.object);
                     }
                     if lot.amounts != [0; 6] && lot.quality.retention != ManaRetention::Step {
-                        // The live color rule saved this mana, but its own
-                        // turn/combat retention deadline has already passed.
+                        // The lot survived its own turn or combat deadline.
                         expired_durations.push(Lot {
                             quality: Quality {
                                 retention: ManaRetention::Step,
@@ -1172,9 +1201,9 @@ impl Game {
                 for source in lost_copy_sources {
                     state.retain_inert_copy_source(source);
                 }
-                for lot in &state.pools[actor.index()] {
+                for lot in &state.pools[index] {
                     for (total, amount) in keep.iter_mut().zip(lot.amounts) {
-                        *total += u32::try_from(amount).expect("concrete lot bound");
+                        *total += amount;
                     }
                 }
             }
@@ -1185,20 +1214,29 @@ impl Game {
                 0
             };
             // Legacy firebending remains implicit until it is migrated to lots.
-            keep[3] += player.combat_red_mana;
-            if colors != 0 {
+            let red = ChoiceColor::Red.index();
+            keep[red] += u128::from(player.combat_red_mana);
+            if let Some(mut ordinary) = ordinary {
+                ordinary[red] -= u128::from(player.combat_red_mana);
+                expire_mana_amounts(&mut ordinary, colors, true);
+                for (kept, amount) in keep.iter_mut().zip(ordinary) {
+                    *kept += amount;
+                }
+            } else if colors != 0 {
                 for (color, amount) in keep.iter_mut().enumerate() {
                     if colors & (1 << color) != 0 {
                         // The pool already includes tagged mana and the combat
                         // subset. Keep its total exactly once for this color.
-                        *amount = player.mana[color];
+                        *amount = u128::from(player.mana[color]);
                     }
                 }
             }
-            player.mana = keep;
+            player.mana =
+                keep.map(|amount| u32::try_from(amount).capacity("mana representation exhausted"));
         }
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
+                && state.retained_colors_until_cleanup == [0; 2]
                 && state.inert_copy_sources.is_none()
                 && state.choice.is_none()
                 && state.tap_bonus.is_none()
@@ -1210,6 +1248,19 @@ impl Game {
             self.state.mana_lots = None;
         }
     }
+}
+
+fn expire_mana_amounts(amounts: &mut [u128; 6], retained_colors: u8, convert_to_red: bool) -> bool {
+    let mut expiring = 0;
+    for (color, amount) in amounts.iter_mut().enumerate() {
+        if retained_colors & (1 << color) == 0 {
+            expiring += std::mem::take(amount);
+        }
+    }
+    if convert_to_red {
+        amounts[ChoiceColor::Red.index()] += expiring;
+    }
+    expiring != 0 && !convert_to_red
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1990,6 +2041,7 @@ impl Game {
     pub(super) fn compact_mana_lots(&mut self) {
         if self.state.mana_lots.as_ref().is_some_and(|state| {
             state.pools.iter().all(|pool| pool.is_empty())
+                && state.retained_colors_until_cleanup == [0; 2]
                 && state.inert_copy_sources.is_none()
                 && state.trace.is_none()
                 && state.prepared.is_none()

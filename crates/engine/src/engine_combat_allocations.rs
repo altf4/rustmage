@@ -72,6 +72,14 @@ struct ExcessDamage {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CombatRulesState {
+    pub(super) fn clear_phase_schedule(&mut self) {
+        self.after_combat.clear();
+        self.in_inserted_upkeep = false;
+        self.land_creature_attackers_only = false;
+        self.after_main = None;
+        self.inserted_phases.clear();
+        self.end_steps = AdditionalEndStepsView::default();
+    }
     pub(super) fn owned_bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + self.after_combat.len() * std::mem::size_of::<AfterCombatPhaseView>()

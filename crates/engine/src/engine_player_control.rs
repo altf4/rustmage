@@ -39,9 +39,14 @@ impl PlayerControlState {
 #[derive(Clone, Debug, Serialize)]
 pub struct PlayerControlView {
     pub pending: [Option<Player>; 2],
+    #[serde(skip_serializing_if = "no_pending_control")]
     pub pending_combat: [Option<Player>; 2],
     pub current: Option<ControlledPlayer>,
     pub semantic_actor: Option<Player>,
+}
+
+fn no_pending_control(pending: &[Option<Player>; 2]) -> bool {
+    *pending == [None; 2]
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

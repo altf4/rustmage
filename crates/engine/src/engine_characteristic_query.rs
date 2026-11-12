@@ -1533,6 +1533,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn life(&self, player: Player) -> i128 {
         self.world.life(player)
     }
+    fn unspent_mana(&self, player: Player) -> u128 {
+        self.world.unspent_mana(player)
+    }
     fn gained_life(&self, player: Player) -> bool {
         self.world.gained_life(player)
     }

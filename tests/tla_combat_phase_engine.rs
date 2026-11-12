@@ -256,3 +256,26 @@ fn land_only_combat_keeps_its_own_place_in_the_inserted_phase_schedule() {
     reach(&mut game, |g| priority(g, player, Step::Main2));
     assert!(!game.observe(player).land_creature_attackers_only);
 }
+
+#[test]
+fn ending_a_turn_discards_inserted_phases_before_cleanup_choices() {
+    let _rules = fixture_rules::activate(&[(named("Opt"), &LAND_COMBAT)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    game.state.step = Step::EndCombat;
+    let combat = put(&mut game, player, "Opt", Zone::Hand);
+    let end_turn = put(&mut game, player, "Time Stop", Zone::Hand);
+    for _ in 0..8 {
+        put(&mut game, player, "Forest", Zone::Hand);
+    }
+    resolve(&mut game, player, combat, None);
+    assert_eq!(game.observe(player).additional_combats, 1);
+    cast(&mut game, end_turn, None);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::Discard);
+    let view = game.observe(player);
+    assert_eq!(view.additional_combats, 0);
+    assert!(view.after_combat_phases.is_none());
+    assert!(!view.land_creature_attackers_only);
+}

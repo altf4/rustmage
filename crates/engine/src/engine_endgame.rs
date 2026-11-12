@@ -126,7 +126,7 @@ impl Game {
         self.state.ending_turn = false;
         self.end_player_control_combat();
         if let Some(rules) = &mut self.state.combat_rules {
-            rules.land_creature_attackers_only = false;
+            rules.clear_phase_schedule();
         }
         self.clear_step_mana(false, true);
         self.state.step = Step::Cleanup;

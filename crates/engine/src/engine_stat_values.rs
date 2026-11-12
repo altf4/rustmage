@@ -119,6 +119,9 @@ impl Game {
         W: CharacteristicWorld + ?Sized,
     {
         match value {
+            StatValue::UnspentMana => {
+                i128::try_from(world.unspent_mana(owner)).unwrap_or(i128::MAX)
+            }
             StatValue::UnlockedRoomDoors => rooms::door_names(world, owner).count() as i128,
             StatValue::DifferentUnlockedRoomNames => rooms::door_names(world, owner)
                 .map(crate::card_names::comparison_key)

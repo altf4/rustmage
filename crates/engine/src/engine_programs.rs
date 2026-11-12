@@ -8714,6 +8714,20 @@ impl Game {
                     self.damage_by_group(&item, first, other)
                 }
                 Instruction::DamageForExcess(amount) => self.damage_for_excess(&item, amount),
+                Instruction::GainExcessDamageLife => {
+                    let amount = self.take_tracked_excess_damage();
+                    self.gain_life(item.controller, i128::from(amount));
+                }
+                Instruction::AddExcessDamageMana(color) => {
+                    let amount = self.take_tracked_excess_damage();
+                    let mut mana = [0; 6];
+                    mana[color.index()] =
+                        u32::try_from(amount).capacity("mana representation exhausted");
+                    self.add_mana(item.controller, mana);
+                }
+                Instruction::RetainManaColorThisTurn(color) => {
+                    self.retain_mana_color_until_cleanup(item.controller, color);
+                }
                 Instruction::IfNoExcessDamage { skip } => {
                     if self.tracked_excess_damage() == 0 {
                         self.clear_tracked_excess_damage();
