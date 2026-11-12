@@ -2778,6 +2778,10 @@ pub enum Instruction {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     },
+    /// Exile the exact targets, then return the public results under your control.
+    BlinkImmediatelyUnderController {
+        tapped: bool,
+    },
     BlinkControlledCreaturesRepeated,
     /// Exile the exact combat-damage dealer and return it under its owner's control.
     BlinkCombatDamageDealer,

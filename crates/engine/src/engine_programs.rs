@@ -6228,6 +6228,9 @@ impl Game {
                 Instruction::BlinkImmediately { counter, tapped } => {
                     self.blink_immediately(&item, counter, tapped)
                 }
+                Instruction::BlinkImmediatelyUnderController { tapped } => {
+                    self.blink_immediately_under_controller(&item, tapped)
+                }
                 Instruction::BlinkCombatDamageDealer => {
                     if let Some(dealer) = self.live_combat_damage_dealer(&item) {
                         self.blink_battlefield_objects_immediately(&[dealer]);

@@ -133,6 +133,14 @@ pub(super) struct ImmediateBlink {
     pub capture_entry: bool,
 }
 
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+enum BlinkControl {
+    Owner,
+    Controller(Player),
+    Attacking(Player),
+}
+
 /// A suspended instruction's follow-up after all effects of a departure finish.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -416,20 +424,35 @@ impl Game {
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
     ) {
-        self.blink_immediately_inner(item, counter, tapped, false, false);
+        self.blink_immediately_inner(item, counter, tapped, BlinkControl::Owner, false);
+    }
+    pub(super) fn blink_immediately_under_controller(&mut self, item: &SpellView, tapped: bool) {
+        self.blink_immediately_inner(
+            item,
+            None,
+            tapped,
+            BlinkControl::Controller(item.controller),
+            true,
+        );
     }
     pub(super) fn blink_immediately_attacking(&mut self, item: &SpellView) {
-        self.blink_immediately_inner(item, None, true, true, true);
+        self.blink_immediately_inner(
+            item,
+            None,
+            true,
+            BlinkControl::Attacking(item.controller),
+            true,
+        );
     }
     pub(super) fn blink_following_public_move(&mut self, item: &SpellView) {
-        self.blink_immediately_inner(item, None, false, false, true);
+        self.blink_immediately_inner(item, None, false, BlinkControl::Owner, true);
     }
     fn blink_immediately_inner(
         &mut self,
         item: &SpellView,
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
-        attacking: bool,
+        control: BlinkControl,
         follow_public_move: bool,
     ) {
         let mut ids = Vec::new();
@@ -442,17 +465,11 @@ impl Game {
                 ids.push(id);
             }
         }
-        self.blink_battlefield_objects(
-            &ids,
-            counter,
-            tapped,
-            attacking.then_some(item.controller),
-            follow_public_move,
-        );
+        self.blink_battlefield_objects(&ids, counter, tapped, control, follow_public_move);
     }
 
     pub(super) fn blink_battlefield_objects_immediately(&mut self, ids: &[CardId]) {
-        self.blink_battlefield_objects(ids, None, false, None, false);
+        self.blink_battlefield_objects(ids, None, false, BlinkControl::Owner, false);
     }
 
     fn blink_battlefield_objects(
@@ -460,7 +477,7 @@ impl Game {
         ids: &[CardId],
         counter: Option<(CounterKind, u64)>,
         tapped: bool,
-        attacking_controller: Option<Player>,
+        control: BlinkControl,
         follow_public_move: bool,
     ) {
         let capture_entry = self.take_blink_entry_capture();
@@ -477,7 +494,12 @@ impl Game {
             .map(|event| {
                 ReturnLinkView::from_event(
                     event,
-                    attacking_controller.unwrap_or(event.before.owner),
+                    match control {
+                        BlinkControl::Owner => event.before.owner,
+                        BlinkControl::Controller(player) | BlinkControl::Attacking(player) => {
+                            player
+                        }
+                    },
                     counter,
                     tapped,
                     false,
@@ -489,7 +511,7 @@ impl Game {
         let resolution = self.state.resolving.as_mut().unwrap();
         resolution.exile_continuation = Some(Box::new(ExileContinuation::Blink(ImmediateBlink {
             rows: returning,
-            attacking: attacking_controller.is_some(),
+            attacking: matches!(control, BlinkControl::Attacking(_)),
             capture_entry,
         })));
         self.finish_zone_events(&events, &[]);
