@@ -107,19 +107,21 @@ const TOGGLE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const RETURN_FILTER: SacrificeFilter = SacrificeFilter {
+    keywords: Keywords::NONE,
+    source_only: false,
+    kinds: 0,
+    nonland: false,
+    other: false,
+    tokens: None,
+    artifact_enchantment_or_token: false,
+    subtype: None,
+};
+
 const RETURN_ENCHANTMENT: Instruction = Instruction::ChooseObjects {
     kind: EffectChoiceKind::ReturnGraveyardToHand { kinds: 32 },
     players: PlayerSet::Controller,
-    filter: SacrificeFilter {
-        keywords: Keywords::NONE,
-        source_only: false,
-        kinds: 0,
-        nonland: false,
-        other: false,
-        tokens: None,
-        artifact_enchantment_or_token: false,
-        subtype: None,
-    },
+    filter: RETURN_FILTER,
     amount: 1,
     optional_skip: None,
 };
@@ -136,7 +138,7 @@ const RETURN_OR_UNLOCK: CardRules = CardRules {
             Instruction::ChooseObjects {
                 kind: EffectChoiceKind::ReturnGraveyardToHand { kinds: 32 },
                 players: PlayerSet::Controller,
-                filter: evidence::cost(0).filter,
+                filter: RETURN_FILTER,
                 amount: 1,
                 optional_skip: Some(1),
             },
