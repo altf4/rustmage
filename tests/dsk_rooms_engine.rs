@@ -107,6 +107,51 @@ const TOGGLE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const RETURN_ENCHANTMENT: Instruction = Instruction::ChooseObjects {
+    kind: EffectChoiceKind::ReturnGraveyardToHand { kinds: 32 },
+    players: PlayerSet::Controller,
+    filter: SacrificeFilter {
+        keywords: Keywords::NONE,
+        source_only: false,
+        kinds: 0,
+        nonland: false,
+        other: false,
+        tokens: None,
+        artifact_enchantment_or_token: false,
+        subtype: None,
+    },
+    amount: 1,
+    optional_skip: None,
+};
+
+const RETURN_OR_UNLOCK: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::IfRoomDoorAvailable {
+                selection: RoomSelection::Controlled,
+                operation: RoomOperation::Unlock,
+                skip: 4,
+            },
+            Instruction::ChooseObjects {
+                kind: EffectChoiceKind::ReturnGraveyardToHand { kinds: 32 },
+                players: PlayerSet::Controller,
+                filter: evidence::cost(0).filter,
+                amount: 1,
+                optional_skip: Some(1),
+            },
+            Instruction::Skip(3),
+            Instruction::ChooseRoomDoor {
+                selection: RoomSelection::Controlled,
+                operation: RoomOperation::Unlock,
+            },
+            Instruction::Skip(1),
+            RETURN_ENCHANTMENT,
+        ],
+    ),
+    ..CardRules::EMPTY
+};
+
 const COPY: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::YourSpell)),
@@ -1330,6 +1375,93 @@ fn locking_and_reopening_use_the_live_door_designation_and_keep_the_object() {
     assert_eq!(game.object_view(room).room_doors, Some(LEFT_ONLY));
     assert_eq!(game.state.players[player.index()].life, 24);
     assert_eq!(game.object_ref(room), object);
+}
+
+#[test]
+fn a_nontargeted_room_alternative_is_available_only_while_a_controlled_door_is_locked() {
+    let spell = card("Opt");
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &ROOM_RULES),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (spell, &RETURN_OR_UNLOCK),
+    ]);
+    let player = Player::P0;
+    let mut base = scenario(player);
+    let room = spawn(&mut base, player, ROOM, Zone::Battlefield);
+    let room_ref = base.object_ref(room);
+    base.set_room_doors(room_ref, LEFT_ONLY);
+    let other = spawn(&mut base, player.other(), ROOM, Zone::Battlefield);
+    let other_ref = base.object_ref(other);
+    let enchantment = put(&mut base, player, "Pacifism", Zone::Graveyard);
+    let return_card = Action::SelectGraveyardReturn {
+        object: base.object_ref(enchantment),
+    };
+    let decline = Action::ChooseOptional { accept: false };
+    let unlock = Action::ChooseRoomDoor {
+        object: room_ref,
+        door: RoomDoor::Right,
+        change: RoomChange::Unlock,
+    };
+
+    let resolve = |game: &mut Game| {
+        let card = spawn(game, player, spell, Zone::Hand);
+        cast(game, card, None);
+        act(game, Action::Pass);
+        act(game, Action::Pass);
+    };
+    let mut both = base.clone();
+    resolve(&mut both);
+    let mut return_branch = both.clone();
+    act(&mut return_branch, return_card.clone());
+    settle_rooms(&mut return_branch);
+    assert_eq!(return_branch.object_view(enchantment).zone, Zone::Hand);
+    assert_eq!(return_branch.object_view(room).room_doors, Some(LEFT_ONLY));
+
+    act(&mut both, decline.clone());
+    reject(
+        &mut both,
+        Action::ChooseRoomDoor {
+            object: other_ref,
+            door: RoomDoor::Right,
+            change: RoomChange::Unlock,
+        },
+    );
+    let checkpoint = both.snapshot();
+    let mut indexed = both.clone();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|a| *a == unlock)
+        .unwrap();
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    act(&mut both, unlock.clone());
+    assert_eq!(indexed.snapshot(), both.snapshot());
+    indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.snapshot(), checkpoint);
+    settle_rooms(&mut both);
+    assert_eq!(both.object_view(enchantment).zone, Zone::Graveyard);
+    assert_eq!(both.object_view(room).room_doors, Some(OPEN));
+
+    let mut return_only = base.clone();
+    return_only.set_room_doors(room_ref, OPEN);
+    resolve(&mut return_only);
+    reject(&mut return_only, decline);
+    act(&mut return_only, return_card);
+    assert_eq!(return_only.object_view(enchantment).zone, Zone::Hand);
+
+    base.move_object(enchantment, Zone::Exile);
+    let mut neither = base.clone();
+    resolve(&mut base);
+    act(&mut base, unlock);
+    settle_rooms(&mut base);
+    assert_eq!(base.object_view(room).room_doors, Some(OPEN));
+    neither.change_controller(room_ref, player.other());
+    resolve(&mut neither);
+    settle_rooms(&mut neither);
+    assert_eq!(neither.object_view(room).room_doors, Some(LEFT_ONLY));
 }
 
 #[test]

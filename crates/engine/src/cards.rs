@@ -3585,6 +3585,12 @@ pub enum Instruction {
         selection: crate::engine::RoomSelection,
         operation: crate::engine::RoomOperation,
     },
+    /// Skip a resolution branch if no door can receive the specified change.
+    IfRoomDoorAvailable {
+        selection: crate::engine::RoomSelection,
+        operation: crate::engine::RoomOperation,
+        skip: usize,
+    },
     /// Look at the top two cards, manifest one and put the rest into the graveyard.
     ManifestDread,
     /// Manifest for the selected target group's controller, using resolution LKI after a move.

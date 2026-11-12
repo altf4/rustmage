@@ -5576,6 +5576,15 @@ impl Game {
                         return;
                     }
                 }
+                Instruction::IfRoomDoorAvailable {
+                    selection,
+                    operation,
+                    skip,
+                } => {
+                    if !self.room_choice_available(&item, selection, operation) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::ManifestDread | Instruction::ManifestDreadRepeated(_) => {
                     let count = match instruction {
                         Instruction::ManifestDreadRepeated(amount) => {

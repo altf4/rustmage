@@ -115,6 +115,24 @@ impl RoomUnlockPaymentView {
     }
 }
 
+impl RoomChoiceView {
+    fn for_resolution(
+        item: &SpellView,
+        selection: RoomSelection,
+        operation: RoomOperation,
+    ) -> Option<Self> {
+        let target = match selection {
+            RoomSelection::Target => Some(item.targets.iter().find_map(|bound| bound.object)?),
+            RoomSelection::Controlled => None,
+        };
+        Some(Self {
+            player: item.controller,
+            target,
+            operation,
+        })
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) type Rows = Option<SharedVec<(ObjectRef, RoomDoors)>>;
 
@@ -500,19 +518,8 @@ impl Game {
         selection: RoomSelection,
         operation: RoomOperation,
     ) -> bool {
-        let target = match selection {
-            RoomSelection::Target => {
-                let Some(object) = item.targets.iter().find_map(|bound| bound.object) else {
-                    return false;
-                };
-                Some(object)
-            }
-            RoomSelection::Controlled => None,
-        };
-        let request = RoomChoiceView {
-            player: item.controller,
-            target,
-            operation,
+        let Some(request) = RoomChoiceView::for_resolution(item, selection, operation) else {
+            return false;
         };
         if !self.visit_room_choices(request, &mut |_| true) {
             return false;
@@ -522,6 +529,16 @@ impl Game {
             player: item.controller,
         };
         true
+    }
+
+    pub(super) fn room_choice_available(
+        &self,
+        item: &SpellView,
+        selection: RoomSelection,
+        operation: RoomOperation,
+    ) -> bool {
+        RoomChoiceView::for_resolution(item, selection, operation)
+            .is_some_and(|request| self.visit_room_choices(request, &mut |_| true))
     }
 
     pub(super) fn visit_room_choices(
