@@ -419,3 +419,52 @@ fn live_own_turn_prohibition_applies_to_effects_and_paid_turn_up() {
     game.state.priority = player;
     assert!(game.legal_actions().contains(&turn_up(object, DISGUISE)));
 }
+
+#[test]
+fn paying_copied_disguise_on_a_cloaked_instant_reveals_it_without_turning_it_up() {
+    let spell = Card::from_name("Opt").unwrap();
+    let _scope = fixture_rules::activate(&[(spell, &CLOAK_OPPOSING_TOP)]);
+    let shock = Card::from_name("Shock").unwrap();
+    let smuggler = Card::from_name("Bubble Smuggler").unwrap();
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let hidden = spawn(&mut game, player.other(), shock, Zone::Library);
+    let cloak = spawn(&mut game, player, spell, Zone::Hand);
+    cast(&mut game, cloak, None);
+    settle(&mut game);
+
+    let donor = spawn(&mut game, player, smuggler, Zone::Battlefield);
+    let copy = put(&mut game, player, "Fleeting Reflection", Zone::Hand);
+    announce(
+        &mut game,
+        copy,
+        &[Target::Card(hidden), Target::Card(donor)],
+    );
+    settle(&mut game);
+
+    let object = game.object_ref(hidden);
+    assert!(game.is_face_down(object));
+    let before = game.state.players[player.index()]
+        .mana
+        .into_iter()
+        .sum::<u32>();
+    act(&mut game, turn_up(object, DISGUISE));
+    choose(&mut game, |action| {
+        matches!(action, Action::PayFaceUp { .. })
+    });
+    assert_eq!(game.object_ref(hidden), object);
+    assert!(game.is_face_down(object));
+    assert_eq!(
+        game.observe(player.other()).face_down_permanents[0].underlying,
+        Some(shock)
+    );
+    assert_eq!(game.counter_count(hidden, CounterKind::PlusOne), 0);
+    assert_eq!(
+        game.state.players[player.index()]
+            .mana
+            .into_iter()
+            .sum::<u32>(),
+        before - 6
+    );
+    assert!(game.state.stack.is_empty());
+}

@@ -621,11 +621,13 @@ impl Game {
         self.state.pending = Pending::Priority;
         self.state.priority = request.controller;
         self.state.passes = 0;
-        assert!(self.turn_manifest_face_up_with_x(
+        // CR 701.58g can reveal a cloaked instant or sorcery and leave
+        // it face down even after paying a copied disguise ability's cost.
+        self.turn_manifest_face_up_with_x(
             request.object,
             request.controller,
             request.x.unwrap_or(0),
-        ));
+        );
     }
     pub(super) fn face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.state
