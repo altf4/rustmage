@@ -1826,6 +1826,18 @@ pub(super) fn player_protection_source<W: CharacteristicWorld + ?Sized>(
     })
 }
 
+/// Hexproof does not affect an Aura that enters attached without targeting.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn player_aura_can_enchant<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    controller: Player,
+    player: Player,
+) -> bool {
+    aura.enchants_player()
+        && (controller == player || player_protection_source(world, player).is_none())
+}
+
 /// Check the prospective Aura and its exact prospective recipient in the same world.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn aura_can_enchant<W: CharacteristicWorld + ?Sized>(

@@ -458,6 +458,7 @@ struct ResourceKey {
     attacking: bool,
     identity: Option<(CardId, u64)>,
     attached: Option<(CardId, u64)>,
+    attached_player: Option<Player>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Hash, PartialEq, Eq)]
@@ -2998,6 +2999,7 @@ impl<'g> FundingState<'g> {
                 object.loyalty_activated_this_turn = false;
                 object.class_level = 1;
                 object.attached_to = None;
+                object.attached_to_player = None;
                 live_counters::set(&mut self.named_counters, reference, None);
             }
             if !preserve_departure_counters {
@@ -3366,6 +3368,7 @@ impl<'g> FundingState<'g> {
                             }))))
                 .then_some((r.id, r.object.generation)),
                 attached: r.object.attached_to.map(|r| (r.card, r.generation)),
+                attached_player: r.object.attached_to_player,
             })
             .collect();
         resources.sort_by_key(|r| {
@@ -3390,7 +3393,13 @@ impl<'g> FundingState<'g> {
                     r.dealt_damage_this_incarnation,
                     r.dealt_combat_damage_this_incarnation,
                 ),
-                (r.owned, r.controlled, r.identity, r.attached),
+                (
+                    r.owned,
+                    r.controlled,
+                    r.identity,
+                    r.attached,
+                    r.attached_player,
+                ),
             )
         });
         // This deliberately narrow equivalence applies only to a standalone

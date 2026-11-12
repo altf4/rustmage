@@ -405,15 +405,22 @@ impl Game {
                     }
                     continue;
                 }
-                let TriggerCondition::PlayerDamaged {
-                    subject,
-                    combat_only,
-                    opponent_only,
-                    one_or_more,
-                } = condition
-                else {
-                    continue;
-                };
+                let (subject, combat_only, opponent_only, one_or_more, enchanted_player) =
+                    match condition {
+                        TriggerCondition::PlayerDamaged {
+                            subject,
+                            combat_only,
+                            opponent_only,
+                            one_or_more,
+                        } => (subject, combat_only, opponent_only, one_or_more, None),
+                        TriggerCondition::AttachedPlayerDamaged => {
+                            let Some(player) = source.attached_to_player else {
+                                continue;
+                            };
+                            (DamageSubject::AnySources, false, false, true, Some(player))
+                        }
+                        _ => continue,
+                    };
                 let mut aggregate = std::collections::BTreeMap::new();
                 let names_dealer = !matches!(
                     subject,
@@ -427,6 +434,7 @@ impl Game {
                     ) && combat)
                         || (combat_only && !combat)
                         || (opponent_only && source.controller == player)
+                        || enchanted_player.is_some_and(|enchanted| enchanted != player)
                         || !self.damage_qualified(&source, dealer, subject)
                     {
                         continue;

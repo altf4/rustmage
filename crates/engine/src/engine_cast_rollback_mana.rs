@@ -857,6 +857,7 @@ impl Game {
             empty.copy_kind = CopyKind::Card;
             empty.generation = 0;
             empty.attached_to = None;
+            empty.attached_to_player = None;
             empty.counters = InitialCounters::default();
             let slot = self.state.objects.len() as CardId;
             self.state.objects.push(empty);

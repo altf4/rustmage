@@ -652,6 +652,7 @@ impl Game {
             loyalty_activated_this_turn: false,
             class_level: 1,
             attached_to: None,
+            attached_to_player: None,
         };
         if card as usize == self.state.objects.len() {
             self.state.objects.push(object);

@@ -1372,6 +1372,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .game()
                 .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
+            attached_to_player: obj.attached_to_player,
             modified: kinds & 1 != 0 && self.has_modification(id),
             attacking: CharacteristicWorld::attacking(self, id),
             power: stats.power,

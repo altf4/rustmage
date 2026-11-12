@@ -223,22 +223,29 @@ impl Game {
                 }) {
                 batch.deaths.push(id);
             }
-            if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
-                && object.attached_to.is_some()
-            {
+            if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0 && object.is_attached() {
                 batch.detached.push(self.object_ref(id));
             } else if ability_world::CharacteristicWorld::is_aura(self, id) {
                 // CR303.4d/704.5p: a creature Aura first becomes unattached;
                 // the next SBA sees the unattached Aura and puts it away.
-                if self.is_creature(id) && object.attached_to.is_some() {
+                if self.is_creature(id) && object.is_attached() {
                     batch.detached.push(self.object_ref(id));
                 } else if !self.printed_abilities_available(id)
-                    || !object
-                        .attached_to
-                        .is_some_and(|target| self.battlefield_aura_can_enchant(id, target))
+                    || !match (object.attached_to, object.attached_to_player) {
+                        (Some(target), None) => self.battlefield_aura_can_enchant(id, target),
+                        (None, Some(player)) => ability_world::player_aura_can_enchant(
+                            self,
+                            object.card,
+                            object.controller,
+                            player,
+                        ),
+                        _ => false,
+                    }
                 {
                     batch.deaths.push(id);
                 }
+            } else if object.attached_to_player.is_some() {
+                batch.detached.push(self.object_ref(id));
             } else if let Some(target) = object.attached_to
                 && !equipment::can_attach(self, self.object_ref(id), target)
             {

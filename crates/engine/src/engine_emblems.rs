@@ -31,6 +31,7 @@ impl Game {
             loyalty_activated_this_turn: false,
             class_level: 1,
             attached_to: None,
+            attached_to_player: None,
         });
         // Emblems supply abilities from the command zone; they did not enter
         // the battlefield and must not appear in its entry history.

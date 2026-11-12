@@ -225,6 +225,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::AttachedPlayerDamaged
                     | TriggerCondition::CombatDamageToController
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
@@ -441,6 +442,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
                             | crate::cards::StaticAbilityFragment::RetainManaColor(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
+                            | crate::cards::StaticAbilityFragment::EnchantedPlayerCantGainLife
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }

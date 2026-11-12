@@ -299,3 +299,248 @@ fn projected_cost_departures_respect_the_same_life_gain_prohibition() {
         assert_eq!(game.snapshot(), saved);
     }
 }
+
+const PLAYER_AURA: CardRules = CardRules {
+    effect: Effect::Aura(TargetPlan::Single(TargetSpec::one(TargetRule::Player {
+        opponent_only: false,
+    }))),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::EnchantedPlayerCantGainLife],
+    }],
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::AttachedPlayerDamaged,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::LoseHalfLifeRoundedUp(PlayerSet::DamagedPlayer)],
+    }],
+    extras: &CardExtras {
+        enchant_player: true,
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn player_aura_follows_actual_damage_batches_and_ends_its_live_restriction_on_departure() {
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Pacifism").unwrap(), &PLAYER_AURA),
+        (Card::Divination, &GAIN_AND_DRAW),
+    ]);
+    let controller = Player::P0;
+    let enchanted = controller.other();
+    let mut game = scenario(controller);
+    let attacker = put(&mut game, controller, "Bear Cub", Zone::Battlefield);
+    let other_attacker = put(&mut game, controller, "Llanowar Elves", Zone::Battlefield);
+    let aura = put(&mut game, controller, "Pacifism", Zone::Hand);
+    cast(&mut game, aura, Some(Target::Player(enchanted)));
+    settle(&mut game);
+    let aura_view = game.object_view(aura);
+    assert_eq!(aura_view.zone, Zone::Battlefield);
+    assert_eq!(aura_view.attached_to_player, Some(enchanted));
+
+    let gain = put(&mut game, controller, "Divination", Zone::Hand);
+    let hand = game.hand_count(controller);
+    cast(&mut game, gain, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[controller.index()].life, 23);
+    assert_eq!(game.state.players[enchanted.index()].life, 20);
+    assert_eq!(game.hand_count(controller), hand);
+    assert!(!prohibit_view(&game, enchanted));
+
+    let shock = put(&mut game, controller, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(controller)));
+    settle(&mut game);
+    assert_eq!(game.state.players[controller.index()].life, 21);
+    assert_eq!(game.state.players[enchanted.index()].life, 20);
+
+    for _ in 0..4 {
+        act(&mut game, Action::Pass);
+    }
+    for card in [attacker, other_attacker] {
+        act(&mut game, Action::Attack { card });
+    }
+    act(&mut game, Action::FinishAttackers);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::FinishBlockers);
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    if game.state.stack.is_empty() {
+        choose(&mut game, |action| {
+            matches!(action, Action::PutTrigger { .. })
+        });
+    }
+    assert_eq!(game.state.stack.len(), 1);
+    let trigger = game.state.stack.last().unwrap();
+    assert_eq!(trigger.source.unwrap().object, aura_view.reference);
+    let damage = trigger.damage_event.unwrap();
+    assert_eq!(damage.player, enchanted);
+    assert_eq!(damage.amount, 3);
+    assert!(damage.combat);
+    assert_eq!(game.state.players[enchanted.index()].life, 17);
+
+    if game.actor() != Some(controller) {
+        act(&mut game, Action::Pass);
+    }
+    game.state.players[controller.index()].mana[0] = 2;
+    let removal = put(&mut game, controller, "Disenchant", Zone::Hand);
+    cast(&mut game, removal, Some(Target::Card(aura)));
+    settle(&mut game);
+    let aura_view = game.object_view(aura);
+    assert_eq!(aura_view.zone, Zone::Graveyard);
+    assert_eq!(aura_view.attached_to_player, None);
+    assert_eq!(game.state.players[enchanted.index()].life, 8);
+    assert_eq!(life_gain::replacement_amounts(&game, enchanted, 3), vec![3]);
+}
+
+#[test]
+fn noncast_player_aura_chooses_through_hexproof_and_keeps_exact_owned_attachments() {
+    const RETURN: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+                zone: TargetZone::Graveyard,
+                kinds: 0,
+                relation: 0,
+                other: false,
+                nonland: true,
+                tapped: false,
+                min_mana: 0,
+                max_mana: u32::MAX,
+            })),
+            &[Instruction::ReturnToBattlefield],
+        ),
+        ..CardRules::EMPTY
+    };
+    const HEXPROOF: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::PlayerHexproof],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Pacifism").unwrap(), &PLAYER_AURA),
+        (Card::from_name("Opt").unwrap(), &RETURN),
+        (Card::from_name("Swiftfoot Boots").unwrap(), &HEXPROOF),
+    ]);
+    let controller = Player::P1;
+    let opponent = controller.other();
+    let mut parent = scenario(controller);
+    put(&mut parent, opponent, "Swiftfoot Boots", Zone::Battlefield);
+    let aura = put(&mut parent, controller, "Pacifism", Zone::Graveyard);
+
+    let mut targeted = parent.clone();
+    let aura_in_hand = put(&mut targeted, controller, "Pacifism", Zone::Hand);
+    act(&mut targeted, Action::AnnounceCast { card: aura_in_hand });
+    reject(&mut targeted, target(Target::Player(opponent)));
+    assert!(
+        targeted
+            .legal_actions()
+            .contains(&target(Target::Player(controller)))
+    );
+
+    let spell = put(&mut parent, controller, "Opt", Zone::Hand);
+    cast(&mut parent, spell, Some(Target::Card(aura)));
+    act(&mut parent, Action::Pass);
+    act(&mut parent, Action::Pass);
+    assert_eq!(
+        parent.state.pending,
+        Pending::AuraEntry { player: controller }
+    );
+    for viewer in [Player::P0, Player::P1] {
+        let entry = parent.observe(viewer).aura_entry.unwrap();
+        assert_eq!(entry.aura, parent.object_ref(aura));
+        assert_eq!(entry.player_candidates, vec![Player::P0, Player::P1]);
+    }
+    let attach_opponent = Action::ChooseAuraPlayerAttachment { player: opponent };
+    let index = parent
+        .legal_actions()
+        .iter()
+        .position(|action| *action == attach_opponent)
+        .unwrap();
+    let saved = parent.snapshot();
+    let revision = parent.revision();
+    let mut raw = parent.clone();
+    let mut indexed = parent.clone();
+    drop(parent);
+    act(&mut raw, attach_opponent);
+    indexed.apply_index(controller, revision, index).unwrap();
+    settle(&mut raw);
+    settle(&mut indexed);
+    assert_eq!(raw.snapshot(), indexed.snapshot());
+    assert_eq!(raw.object_view(aura).attached_to_player, Some(opponent));
+
+    let aura_ref = raw.object_ref(aura);
+    let funding = FundingState::from_game(
+        &raw,
+        &FundingGoal {
+            actor: controller,
+            required: [0; 6],
+            generic: 0,
+            reserve: Some((
+                aura_ref,
+                AdditionalCost {
+                    kind: EffectChoiceKind::Sacrifice,
+                    filter: SacrificeFilter {
+                        kinds: 0,
+                        nonland: true,
+                        source_only: false,
+                        other: false,
+                        tokens: None,
+                        subtype: None,
+                        artifact_enchantment_or_token: false,
+                        keywords: Keywords::NONE,
+                    },
+                },
+            )),
+            source: None,
+        },
+    );
+    assert_eq!(
+        life_gain::replacement_amounts(&funding, opponent, 3),
+        vec![0]
+    );
+    assert_eq!(
+        life_gain::replacement_amounts(&funding, controller, 3),
+        vec![3]
+    );
+    assert!(
+        funding.cost_departures(&[aura_ref], Zone::Graveyard, &mut |projected| {
+            assert_eq!(
+                life_gain::replacement_amounts(projected, opponent, 3),
+                vec![3]
+            );
+            true
+        })
+    );
+    assert_eq!(raw.object_view(aura).attached_to_player, Some(opponent));
+
+    indexed.restore(&saved).unwrap();
+    assert_eq!(
+        indexed.apply_index(controller, revision, index),
+        Err(Error::StaleRevision)
+    );
+    act(
+        &mut indexed,
+        Action::ChooseAuraPlayerAttachment { player: controller },
+    );
+    settle(&mut indexed);
+    assert_eq!(
+        indexed.object_view(aura).attached_to_player,
+        Some(controller)
+    );
+    assert_eq!(raw.object_view(aura).attached_to_player, Some(opponent));
+
+    reach_next_turn(&mut raw);
+    let protection = put(&mut raw, opponent, "Absolute Virtue", Zone::Hand);
+    raw.state.players[opponent.index()].mana = [8; 6];
+    cast(&mut raw, protection, None);
+    settle(&mut raw);
+    assert_eq!(raw.object_view(protection).zone, Zone::Battlefield);
+    assert_eq!(raw.object_view(aura).zone, Zone::Graveyard);
+    assert_eq!(raw.object_view(aura).attached_to_player, None);
+    assert_eq!(life_gain::replacement_amounts(&raw, opponent, 3), vec![3]);
+}

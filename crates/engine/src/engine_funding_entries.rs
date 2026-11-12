@@ -1308,20 +1308,34 @@ impl FundingState<'_> {
             }
             return false;
         }
-        if !m.artifact_return
-            && !m.enchantment_return
-            && m.before.card.aura().is_some()
-            && m.attachment.is_none()
-        {
+        if m.needs_aura_attachment() {
             let mut any = false;
-            for r in &self.resources {
-                let target = self.reference(r.id);
-                if self.aura_candidate(m, target) {
-                    any = true;
-                    let mut next = moves.clone();
-                    next[at].attachment = Some(target);
-                    if self.visit_entry_values(next, at + 1, actual, emit) {
-                        return true;
+            if m.before.card.enchants_player() {
+                for player in [Player::P0, Player::P1] {
+                    if ability_world::player_aura_can_enchant(
+                        self,
+                        m.before.card,
+                        m.controller,
+                        player,
+                    ) {
+                        any = true;
+                        let mut next = moves.clone();
+                        next[at].player_attachment = Some(player);
+                        if self.visit_entry_values(next, at + 1, actual, emit) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                for r in &self.resources {
+                    let target = self.reference(r.id);
+                    if self.aura_candidate(m, target) {
+                        any = true;
+                        let mut next = moves.clone();
+                        next[at].attachment = Some(target);
+                        if self.visit_entry_values(next, at + 1, actual, emit) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1772,6 +1786,7 @@ impl FundingState<'_> {
             o.dealt_combat_damage_this_incarnation = false;
             o.deathtouch_since_sba = false;
             o.attached_to = m.attachment;
+            o.attached_to_player = m.player_attachment;
             o.tapped = m.tapped;
             row.attacking = false;
             let source = ObjectRef {
@@ -2362,6 +2377,7 @@ impl Game {
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
+                | Action::ChooseAuraPlayerAttachment { .. }
                 | Action::ChooseEntryReplacement { .. }
                 | Action::ChooseEntryTimestamp { .. }
                 | Action::ChooseReplacement { .. }
@@ -2561,6 +2577,9 @@ impl Game {
             }
             Some(Action::ChooseAuraAttachment { object }) => {
                 batch.moves[batch.choices[batch.next]].attachment = Some(*object)
+            }
+            Some(Action::ChooseAuraPlayerAttachment { player }) => {
+                batch.moves[batch.choices[batch.next]].player_attachment = Some(*player)
             }
             Some(Action::ChooseEntryLife { pay }) => {
                 let payment = batch

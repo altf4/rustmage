@@ -1182,6 +1182,7 @@ impl Game {
                     | TriggerCondition::OwnUntapStepUntaps
                     | TriggerCondition::CounterThresholdCrossed { .. }
                     | TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::AttachedPlayerDamaged
                     | TriggerCondition::CombatDamageToController
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
@@ -3746,9 +3747,12 @@ impl Game {
                 match source.card.effect() {
                     Effect::Aura(_) => {
                         self.record_resolved_spell_name(&item);
-                        let target = item.targets[0].object.unwrap();
+                        let target = item.targets[0];
                         let mut movement = self.entry_move(source.id, Zone::Battlefield, false);
-                        movement.attachment = Some(target);
+                        match target.target {
+                            Target::Player(player) => movement.player_attachment = Some(player),
+                            _ => movement.attachment = target.object,
+                        }
                         movement.cast_event = item.actual_cast_event().map(Box::new);
                         movement.cast_payment =
                             item.cast.filter(|_| !item.is_copy).map(|c| c.payment);

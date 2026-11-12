@@ -45,6 +45,7 @@ impl Game {
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
                             | TriggerCondition::PlayerDamaged { .. }
+                            | TriggerCondition::AttachedPlayerDamaged
                             | TriggerCondition::CombatDamageToController
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }

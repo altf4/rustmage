@@ -401,6 +401,7 @@ pub enum StaticAbilityFragment {
     /// The controller's first positive batch of coin flips comes up heads and is won.
     FirstCoinFlipsHeads,
     CantGainLife,
+    EnchantedPlayerCantGainLife,
     DamageCantBePrevented,
     /// Combat damage from any source ignores prevention.
     CombatDamageCantBePrevented,

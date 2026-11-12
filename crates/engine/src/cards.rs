@@ -7161,6 +7161,8 @@ pub enum TriggerCondition {
         opponent_only: bool,
         one_or_more: bool,
     },
+    /// One occurrence per actual damage batch to the exact enchanted player.
+    AttachedPlayerDamaged,
     /// One combat damage batch to this observer's controller. EventPlayer is the attacker.
     CombatDamageToController,
     LifeLost {
@@ -8643,6 +8645,9 @@ impl Card {
     pub(crate) fn aura_kind_or_subtype(self) -> Option<&'static str> {
         authored::rules(self).and_then(|rules| rules.extras.aura_kind_or_subtype)
     }
+    pub(crate) fn enchants_player(self) -> bool {
+        authored::rules(self).is_some_and(|rules| rules.extras.enchant_player)
+    }
     pub(crate) fn aura(self) -> Option<AuraSpec> {
         authored::rules(self).map_or_else(|| generated::aura(self), |rules| rules.aura)
     }
@@ -8650,7 +8655,9 @@ impl Card {
         self.equipment().or_else(|| self.aura().map(|a| a.bonus))
     }
     pub(crate) fn is_attachment_source(self) -> bool {
-        self.attachment_bonus().is_some() || (self.is_artifact() && self.has_subtype("Equipment"))
+        self.attachment_bonus().is_some()
+            || self.enchants_player()
+            || (self.is_artifact() && self.has_subtype("Equipment"))
     }
     /// Explicit immutable authored fact. Unreviewed/gated cards conservatively have abilities.
     pub fn has_rules_abilities(self) -> bool {

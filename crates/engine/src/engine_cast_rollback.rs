@@ -229,6 +229,7 @@ impl Game {
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }
+                        | Action::ChooseAuraPlayerAttachment { .. }
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }

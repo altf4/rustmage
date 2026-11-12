@@ -962,6 +962,7 @@ impl FundingState<'_> {
         object.counters = InitialCounters::default();
         object.growth = Stats::default();
         object.attached_to = None;
+        object.attached_to_player = None;
         object.controller = object.owner;
         object.summoning_sick = false;
         object.tapped = false;

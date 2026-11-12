@@ -1044,6 +1044,7 @@ define_actions! {
     ChooseAuraAttachment {
         object: ObjectRef,
     },
+    ChooseAuraPlayerAttachment { player: Player },
     Keep,
     BeginOnBattlefield { object: ObjectRef },
     FinishOpeningHand,
@@ -1433,10 +1434,14 @@ struct Object {
     // Class levels belong to this permanent incarnation, not its copiable values.
     class_level: u8,
     attached_to: Option<ObjectRef>,
+    attached_to_player: Option<Player>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Object {
+    fn is_attached(&self) -> bool {
+        self.attached_to.is_some() || self.attached_to_player.is_some()
+    }
     fn is_copy_token(&self) -> bool {
         self.copy_kind == CopyKind::Token
     }
@@ -3499,6 +3504,8 @@ pub struct ObjectView {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub face: Option<faces::FaceView>,
     pub attached_to: Option<ObjectRef>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub attached_to_player: Option<Player>,
     pub modified: bool,
     pub attacking: bool,
     pub power: i128,
@@ -4594,6 +4601,7 @@ impl Game {
                     loyalty_activated_this_turn: false,
                     class_level: 1,
                     attached_to: None,
+                    attached_to_player: None,
                 });
                 players[p.index()].library.push(id);
             }
@@ -5690,6 +5698,13 @@ impl Game {
                 }
             }
             Pending::AuraEntry { .. } => {
+                for player in [Player::P0, Player::P1] {
+                    if self.entry_player_candidate(player)
+                        && emit(Action::ChooseAuraPlayerAttachment { player })
+                    {
+                        return true;
+                    }
+                }
                 for (id, _) in s.objects.iter().enumerate() {
                     let object = self.object_ref(id as CardId);
                     if self.entry_candidate(object) && emit(Action::ChooseAuraAttachment { object })
@@ -7923,6 +7938,9 @@ impl Game {
             Action::ChooseEntryLife { pay } => self.choose_entry_life(pay),
             Action::ChooseEntryBehold { object } => self.choose_entry_behold(object),
             Action::ChooseAuraAttachment { object } => self.choose_aura_attachment(object),
+            Action::ChooseAuraPlayerAttachment { player } => {
+                self.choose_aura_player_attachment(player)
+            }
             Action::Keep => {
                 self.state.players[actor.index()].kept = true;
                 self.next_mulligan(actor);
@@ -11069,6 +11087,7 @@ impl Game {
         obj.loyalty_activated_this_turn = false;
         obj.class_level = 1;
         obj.attached_to = None;
+        obj.attached_to_player = None;
         // Preserve the zone order of physical cards and transient spell/card
         // copies until state-based cleanup. Card-only library operations filter
         // copies; tokens do not enter this ordered index.
@@ -13905,8 +13924,8 @@ pub mod entries;
 #[path = "engine_entry_tap.rs"]
 pub mod entry_tap;
 pub use entries::{
-    AuraAttachmentView, AuraEntryView, EntryLifeSelection, EntryLifeView, EntryTimestampObjectView,
-    EntryTimestampView,
+    AuraAttachmentView, AuraEntryView, AuraPlayerAttachmentView, EntryLifeSelection, EntryLifeView,
+    EntryTimestampObjectView, EntryTimestampView,
 };
 pub use entry_tap::{EntryTapEffect, EntryTapKind, EntryTapView};
 

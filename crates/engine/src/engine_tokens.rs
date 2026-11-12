@@ -278,6 +278,7 @@ impl Game {
                     loyalty_activated_this_turn: false,
                     class_level: 1,
                     attached_to: None,
+                    attached_to_player: None,
                 };
                 if id as usize == self.state.objects.len() {
                     self.state.objects.push(object);
@@ -387,6 +388,7 @@ impl Game {
         object.loyalty_activated_this_turn = false;
         object.class_level = 1;
         object.attached_to = None;
+        object.attached_to_player = None;
         // No zone-change event: this game object ceases to exist (CR111.7).
         self.set_counters(id, Counters::default());
         self.state.free_tokens.push(id);

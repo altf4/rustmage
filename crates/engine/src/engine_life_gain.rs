@@ -76,6 +76,11 @@ fn replacements<W: CharacteristicWorld + ?Sized>(
             };
             let replacement = match *fragment {
                 StaticAbilityFragment::CantGainLife if available() => return None,
+                StaticAbilityFragment::EnchantedPlayerCantGainLife
+                    if source.attached_to_player == Some(player) && available() =>
+                {
+                    return None;
+                }
                 StaticAbilityFragment::LifeGainAdditional(extra)
                     if source.controller == player && available() =>
                 {

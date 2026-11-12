@@ -320,6 +320,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } | Action::PayResolutionLife => 100,
             Action::DeclineResolutionMana | Action::DeclineResolutionLife => -1,
+            Action::ChooseAuraPlayerAttachment { player } => {
+                target_score(&[], Target::Player(*player))
+            }
             Action::ChooseAuraAttachment { object } => aura_score(
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),

@@ -75,6 +75,7 @@ pub(crate) fn spawn(g: &mut Game, owner: Player, card: Card, zone: Zone) -> Card
         loyalty_activated_this_turn: false,
         class_level: 1,
         attached_to: None,
+        attached_to_player: None,
     });
     match zone {
         Zone::Library => g.state.players[owner.index()].library.push(id),
