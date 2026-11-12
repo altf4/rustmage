@@ -1537,6 +1537,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
                                 | crate::cards::StaticAbilityFragment::MaximumHandSize(_)
                                 | crate::cards::StaticAbilityFragment::SpendAnyManaForCreatures
+                                | crate::cards::StaticAbilityFragment::SpendAnyColorForSpellSubtype(_)
                         )
                     })
             {

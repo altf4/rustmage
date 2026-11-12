@@ -285,6 +285,8 @@ pub enum StaticAbilityFragment {
         life: u32,
     },
     SpendAnyManaForCreatures,
+    /// Spend any mana as a color when casting a spell with this effective subtype.
+    SpendAnyColorForSpellSubtype(&'static str),
     /// Actual mana can meet WUBRG requirements of controlled creatures' activations.
     SpendAnyColorForCreatureActivations,
     SpellImprovise(CastFilter),

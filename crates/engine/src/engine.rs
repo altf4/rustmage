@@ -7036,6 +7036,18 @@ impl Game {
                     {
                         continue;
                     }
+                    let purpose = self.spell_mana_purpose_for_card(actor, card, obj.card);
+                    let pool = self.available_mana(actor, purpose);
+                    let payment_cost = |cost: ManaCost| {
+                        let (colored, generic) = cast_origins::payment_requirements(
+                            self,
+                            actor,
+                            purpose,
+                            cost.colored,
+                            cost.generic,
+                        );
+                        ManaCost { colored, generic }
+                    };
                     if target_cost
                         && self.spell_generic_tax(actor, card, self.effective_spell_card(card)) == 0
                         && obj.zone == Zone::Hand
@@ -7064,20 +7076,16 @@ impl Game {
                                     else {
                                         continue;
                                     };
-                                    payments(
-                                        s.players[actor.index()].mana,
-                                        total.colored,
-                                        total.generic,
-                                        |payment| {
-                                            if !done {
-                                                done = emit(Action::Cast {
-                                                    card,
-                                                    target,
-                                                    payment,
-                                                });
-                                            }
-                                        },
-                                    );
+                                    let total = payment_cost(total);
+                                    payments(pool, total.colored, total.generic, |payment| {
+                                        if !done {
+                                            done = emit(Action::Cast {
+                                                card,
+                                                target,
+                                                payment,
+                                            });
+                                        }
+                                    });
                                     if done {
                                         break;
                                     }
@@ -7124,8 +7132,8 @@ impl Game {
                     }
                     let mut done = false;
                     obj.card.spell_payments(
-                        s.players[actor.index()].mana,
-                        |cost| reduction.apply_to_printed(cost),
+                        pool,
+                        |cost| payment_cost(reduction.apply_to_printed(cost)),
                         |payment| {
                             if done {
                                 return;

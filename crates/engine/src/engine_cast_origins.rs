@@ -37,6 +37,7 @@ impl Card {
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn { .. }
                         | StaticAbilityFragment::SpendAnyManaForCreatures
+                        | StaticAbilityFragment::SpendAnyColorForSpellSubtype(_)
                         | StaticAbilityFragment::GraveyardPermanentTypes
                         | StaticAbilityFragment::GraveyardSmallCreaturesWithFinality
                         | StaticAbilityFragment::GrantGraveyardCreatureSneak { .. }
@@ -287,9 +288,19 @@ pub(super) fn spends_any_color<W: ability_world::CharacteristicWorld + ?Sized>(
     player: Player,
     purpose: mana_lots::Purpose,
 ) -> bool {
-    matches!(purpose, mana_lots::Purpose::Activation(source) if source.activation_object.is_some_and(|source| {
-        activation_spends_any_color(world, player, source)
-    }))
+    match purpose {
+        mana_lots::Purpose::Spell(source) => has_fragment(world, player, |fragment| {
+            let StaticAbilityFragment::SpendAnyColorForSpellSubtype(subtype) = *fragment else {
+                return false;
+            };
+            subtypes::spell_subtypes(world, player, source.card, source.subtypes)
+                .has(source.card, subtype)
+        }),
+        mana_lots::Purpose::Activation(source) => source
+            .activation_object
+            .is_some_and(|object| activation_spends_any_color(world, player, object)),
+        _ => false,
+    }
 }
 fn substitute_mana(mut required: Mana, mut generic: u32, symbols: usize) -> (Mana, u32) {
     for amount in &mut required[..symbols] {
