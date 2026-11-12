@@ -1489,6 +1489,11 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::ConditionalDoubleControlledNoncombatDamage { condition } => {
+                        !event.combat
+                            && event.source.controller == object.controller
+                            && self.stat_value(condition, source, object.controller) != 0
+                    }
                     ReplacementSpec::ConditionalControlledDamageToOpponentPlus {
                         condition,
                         ..
@@ -1767,6 +1772,7 @@ impl Game {
             | ReplacementSpec::DoubleCreatureDamage
             | ReplacementSpec::DoubleEnteredCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage
+            | ReplacementSpec::ConditionalDoubleControlledNoncombatDamage { .. }
             | ReplacementSpec::DoubleEquippedDamage => Self::double_damage(event),
             ReplacementSpec::NoncombatDamageToOpponentPlus(amount)
             | ReplacementSpec::ControlledSubtypeDamagePlus { amount, .. }

@@ -5910,6 +5910,10 @@ pub enum ReplacementSpec {
     DoubleCreatureDamage,
     DoubleEnteredCreatureDamage,
     DoubleOpponentDamage,
+    /// Double noncombat damage by a controlled source while the live condition is true.
+    ConditionalDoubleControlledNoncombatDamage {
+        condition: StatValue,
+    },
     NoncombatDamagePlusSourcePower,
     /// Add a fixed amount to controlled-source noncombat damage to opponents or their permanents.
     NoncombatDamageToOpponentPlus(u16),
