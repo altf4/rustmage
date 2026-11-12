@@ -164,6 +164,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
+                    | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
                     | TriggerCondition::OpponentAttacked
                     | TriggerCondition::AttackDeclared { .. }
                     | TriggerCondition::CreaturesAttackDeclared { .. }

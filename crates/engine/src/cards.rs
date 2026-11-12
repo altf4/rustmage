@@ -3527,6 +3527,10 @@ pub enum Instruction {
     RequireTargetsBlocked {
         group: u16,
     },
+    /// Require the exact subject to be blocked each combat this turn if able.
+    RequireSubjectBlocked {
+        subject: Subject,
+    },
     /// Definition header: announce X as a generic activation mana cost.
     ActivationX,
     /// Definition header for a variable activation with a minimum X.
@@ -7749,6 +7753,8 @@ pub enum TriggerCondition {
     SelfBlocksCreatureWithKeyword(Keywords),
     /// One event for each opposing creature paired with this source by a block.
     SelfBlocksOrBecomesBlockedByCreature,
+    /// One trigger when this attacker becomes blocked, regardless of blocker count.
+    SelfBecomesBlocked,
     /// One event for each controlled attacker of this subtype newly blocked.
     ControlledSubtypeBecomesBlocked(&'static str),
     ControlledCreatureBecomesBlocked,
@@ -7758,6 +7764,9 @@ pub enum TriggerCondition {
     },
     /// Once per declaration, capturing only creatures declared attacking this controller as a player.
     CreaturesAttackYou,
+    /// One opposing declaration with at least this many attackers directed at
+    /// you or your planeswalkers. Recheck those exact attackers at resolution.
+    CreaturesAttackYouOrPlaneswalkersAtLeast(u16),
     OpponentAttacked,
     /// Declaration-time condition; not a resolution-time intervening if.
     SelfAttacksAlone,

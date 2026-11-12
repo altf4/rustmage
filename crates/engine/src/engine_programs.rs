@@ -1239,6 +1239,7 @@ impl Game {
                     | TriggerCondition::SelfCountersAdded { .. }
                     | TriggerCondition::CreatureAttacksYou { .. }
                     | TriggerCondition::CreaturesAttackYou
+                    | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
                     | TriggerCondition::OpponentAttacked
                     | TriggerCondition::OtherCreatureCountersAdded { .. }
                     | TriggerCondition::OtherCreatureCounterPlacedByYou { .. }
@@ -1266,6 +1267,7 @@ impl Game {
                     | TriggerCondition::SelfAttacksOrBlocks
                     | TriggerCondition::SelfBlocksCreatureWithKeyword(_)
                     | TriggerCondition::SelfBlocksOrBecomesBlockedByCreature
+                    | TriggerCondition::SelfBecomesBlocked
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
                     | TriggerCondition::ControlledCreatureBecomesBlocked
                     | TriggerCondition::ControlledCreatureAttacks
@@ -2779,7 +2781,7 @@ impl Game {
     ) {
         self.attachment_attack_triggers(actor, alone);
         self.temporary_attack_triggers(actor);
-        self.defender_attack_group_triggers(declared);
+        self.defender_attack_group_triggers(actor, declared);
         self.crewed_vehicle_attack_triggers(declared);
         let delayed = self
             .state
@@ -3212,7 +3214,7 @@ impl Game {
     }
 
     /// One event per defender player in this declaration, with exact non-targeted subjects.
-    fn defender_attack_group_triggers(&mut self, declared: &[AttackDeclaration]) {
+    fn defender_attack_group_triggers(&mut self, actor: Player, declared: &[AttackDeclaration]) {
         let sources: Vec<_> = self
             .state
             .attack_sources
@@ -3228,6 +3230,7 @@ impl Game {
                             matches!(
                                 ability.condition.event(),
                                 TriggerCondition::CreaturesAttackYou
+                                    | TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(_)
                                     | TriggerCondition::OpponentAttacked
                             )
                         })
@@ -3247,6 +3250,29 @@ impl Game {
                 match ability.condition.event() {
                     TriggerCondition::OpponentAttacked if opponent_attacked => {
                         self.queue_attack_trigger(&source, index);
+                    }
+                    TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(minimum)
+                        if source.controller != actor
+                            && declared
+                                .iter()
+                                .filter(|attack| {
+                                    self.attack_threatens_player_or_planeswalker(
+                                        attack,
+                                        source.controller,
+                                    )
+                                })
+                                .take(usize::from(minimum))
+                                .count()
+                                >= usize::from(minimum)
+                            && self.queue_attack_trigger(&source, index) =>
+                    {
+                        let cohort: Vec<_> = declared
+                            .iter()
+                            .map(|row| self.object_ref(row.card))
+                            .collect();
+                        let packet = self.state.pending_triggers.last_mut().unwrap();
+                        packet.event_player = Some(actor);
+                        packet.refer_objects(cohort);
                     }
                     TriggerCondition::CreaturesAttackYou => {
                         if let Some((&first, rest)) = attackers.split_first()
@@ -3367,6 +3393,15 @@ impl Game {
         }
         if newly_blocked.is_empty() {
             return;
+        }
+        for &id in newly_blocked {
+            let card = self.state.objects[id as usize].card;
+            for (index, ability) in card.triggers().iter().enumerate() {
+                if ability.condition.event() == TriggerCondition::SelfBecomesBlocked {
+                    let source = self.object_view(id);
+                    self.queue_block_subject(&source, index, id);
+                }
+            }
         }
         let sources: Vec<_> = self
             .state
@@ -8674,6 +8709,9 @@ impl Game {
                 }
                 Instruction::RequireTargetsBlocked { group } => {
                     self.require_targets_blocked(&item, group);
+                }
+                Instruction::RequireSubjectBlocked { subject } => {
+                    self.require_subject_blocked(&item, subject);
                 }
                 Instruction::ExileDamagedIfDiesThisTurn
                 | Instruction::EquipDiscardAlternative

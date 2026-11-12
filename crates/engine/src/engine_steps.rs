@@ -331,6 +331,27 @@ impl Game {
         {
             return false;
         }
+        if let TriggerCondition::CreaturesAttackYouOrPlaneswalkersAtLeast(minimum) =
+            condition.event()
+            && !item.event_object.as_ref().is_some_and(|event| {
+                self.state
+                    .attackers
+                    .iter()
+                    .filter(|attack| {
+                        let object = self.object_ref(attack.card);
+                        (object == event.object
+                            || event.semantic_objects.as_ref().is_some_and(|objects| {
+                                objects.contains(&DamageSourceRef::Object(object))
+                            }))
+                            && self.attack_threatens_player_or_planeswalker(attack, item.controller)
+                    })
+                    .take(usize::from(minimum))
+                    .count()
+                    >= usize::from(minimum)
+            })
+        {
+            return false;
+        }
         if condition.event() == TriggerCondition::DelayedTargetControlLostWhileAttached {
             return item.event_object.as_ref().is_some_and(|event| {
                 self.attached_to_controlled_creature(event.object, item.controller)

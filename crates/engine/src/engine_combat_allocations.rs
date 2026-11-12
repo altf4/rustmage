@@ -563,6 +563,15 @@ impl Game {
             .collect();
         self.add_block_requirements(recipients);
     }
+    pub(super) fn require_subject_blocked(&mut self, item: &SpellView, subject: Subject) {
+        let recipients = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        self.add_block_requirements(recipients);
+    }
     fn add_block_requirements(&mut self, recipients: Vec<ObjectRef>) {
         let rules = self.state.combat_rules.get_or_insert_with(Default::default);
         // Repeated spells create independent requirements for the same object.
