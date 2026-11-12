@@ -161,6 +161,7 @@ fn stashed_skeleton_requires_no_suspected_skeleton_and_tutors_at_sorcery_speed()
     assert!(matches!(game.state.pending, Pending::EffectSearch { .. }));
     reject(&mut game, Action::FinishSearch);
     act(&mut game, Action::ChooseSearch { card: found });
+    act(&mut game, Action::FinishSearch);
     settle(&mut game);
     assert_eq!(game.object_view(found).zone, Zone::Hand);
 }
@@ -283,6 +284,11 @@ fn crimson_pulse_rechecks_the_empty_hand_and_its_upkeep_reward_survives_departur
     enter_step(&mut game, Step::Upkeep);
     act(&mut game, Action::Pass);
     cast(&mut game, disenchant, Some(Target::Card(case)));
+    pass_pair(&mut game);
+    pass_pair(&mut game);
+    for card in old {
+        act(&mut game, Action::Discard { card });
+    }
     settle(&mut game);
     assert_eq!(game.object_view(case).zone, Zone::Graveyard);
     assert!(
