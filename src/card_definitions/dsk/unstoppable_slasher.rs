@@ -10,7 +10,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 one_or_more: false,
             },
             targets: TargetPlan::NONE,
-            program: &[Instruction::LoseHalfLifeRoundedUp(PlayerSet::EventPlayer)],
+            program: &[Instruction::LoseHalfLifeRoundedUp(PlayerSet::DamagedPlayer)],
         },
         TriggeredAbility {
             condition: TriggerCondition::ReturnDeath(ReturnDeathFilter::SourceWithoutCounters),
