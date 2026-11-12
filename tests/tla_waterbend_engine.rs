@@ -120,6 +120,26 @@ const LINKED: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const BEND_WATCHER: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::BendsYou,
+        targets: TargetPlan::NONE,
+        program: DRAW,
+    }],
+    ..CardRules::EMPTY
+};
+const COPY: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Spell)),
+        &[Instruction::CopyTargetSpell {
+            group: 0,
+            retarget: false,
+            exceptions: CopyExceptions::NONE,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
 
 fn waterbender(game: &Game, card: CardId) -> Action {
     Action::ChooseWaterbender {
@@ -313,10 +333,13 @@ fn additional_x_respects_target_capacity_and_leaves_mana_value_fixed() {
 
 #[test]
 fn activation_x_enforces_the_printed_minimum_and_reserves_the_tap_symbol() {
-    let _rules = fixture_rules::activate(&[(Card::GoblinPiker, &X_ACTIVATION)]);
+    let watcher = Card::from_name("Impact Tremors").unwrap();
+    let _rules =
+        fixture_rules::activate(&[(Card::GoblinPiker, &X_ACTIVATION), (watcher, &BEND_WATCHER)]);
     let actor = Player::P0;
     let mut game = scenario(actor);
     let source = put(&mut game, actor, "Goblin Piker", Zone::Battlefield);
+    spawn(&mut game, actor, watcher, Zone::Battlefield);
     game.state.players[actor.index()].mana = [0; 6];
     reject(&mut game, activate(source));
     let artifact = put(&mut game, actor, "Short Bow", Zone::Battlefield);
@@ -333,15 +356,18 @@ fn activation_x_enforces_the_printed_minimum_and_reserves_the_tap_symbol() {
     pay(&mut game);
     settle(&mut game);
     assert!(game.object_view(source).tapped);
-    assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 2);
+    assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 3);
 }
 
 #[test]
 fn ward_waterbend_is_paid_by_the_related_spell_controller() {
-    let _rules = fixture_rules::activate(&[(Card::GoblinPiker, &WARD)]);
+    let watcher = Card::from_name("Impact Tremors").unwrap();
+    let _rules = fixture_rules::activate(&[(Card::GoblinPiker, &WARD), (watcher, &BEND_WATCHER)]);
     for payer in [Player::P0, Player::P1] {
         let mut game = scenario(payer);
         let target = put(&mut game, payer.other(), "Goblin Piker", Zone::Battlefield);
+        spawn(&mut game, payer, watcher, Zone::Battlefield);
+        spawn(&mut game, payer.other(), watcher, Zone::Battlefield);
         let spell = put(&mut game, payer, "Lightning Strike", Zone::Hand);
         let artifact = put(&mut game, payer, "Short Bow", Zone::Battlefield);
         let creature = put(&mut game, payer, "Bear Cub", Zone::Battlefield);
@@ -365,12 +391,21 @@ fn ward_waterbend_is_paid_by_the_related_spell_controller() {
         settle(&mut declined);
         assert_eq!(declined.object_view(target).zone, Zone::Battlefield);
         assert!(!declined.object_view(artifact).tapped);
+        assert_eq!(
+            declined.state.players[payer.index()].cards_drawn_this_turn,
+            0
+        );
         reject(&mut game, Action::PayResolutionMana { payment: [0; 6] });
         choose_waterbender(&mut game, creature);
         act(&mut game, Action::PayResolutionMana { payment: [0; 6] });
         settle(&mut game);
         assert_eq!(game.object_view(target).zone, Zone::Graveyard);
         assert!(game.object_view(artifact).tapped && game.object_view(creature).tapped);
+        assert_eq!(game.state.players[payer.index()].cards_drawn_this_turn, 1);
+        assert_eq!(
+            game.state.players[payer.other().index()].cards_drawn_this_turn,
+            0
+        );
     }
 }
 
@@ -413,10 +448,15 @@ fn resolution_waterbend_chooses_after_drawing() {
 #[test]
 fn linked_waterbend_is_exclusive_and_combines_with_printed_additions() {
     let exiled_spell = Card::from_name("Quick Study").unwrap();
-    let _rules =
-        fixture_rules::activate(&[(Card::GoblinPiker, &LINKED), (exiled_spell, &OPTIONAL)]);
+    let watcher = Card::from_name("Impact Tremors").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (Card::GoblinPiker, &LINKED),
+        (exiled_spell, &OPTIONAL),
+        (watcher, &BEND_WATCHER),
+    ]);
     let actor = Player::P0;
     let mut game = scenario(actor);
+    spawn(&mut game, actor, watcher, Zone::Battlefield);
     let source = put(&mut game, actor, "Goblin Piker", Zone::Hand);
     let selected = spawn(&mut game, actor.other(), exiled_spell, Zone::Graveyard);
     let creature = put(&mut game, actor.other(), "Bear Cub", Zone::Graveyard);
@@ -470,11 +510,62 @@ fn linked_waterbend_is_exclusive_and_combines_with_printed_additions() {
     act(&mut game, announcement);
     act(&mut game, Action::ChooseWaterbendCost { pay: true });
     pay(&mut game);
-    let cast = game.state.stack.last().unwrap().cast.unwrap();
+    let cast = game.state.stack.iter().find_map(|item| item.cast).unwrap();
     assert_eq!(cast.method, CastMethod::LinkedExileWaterbend);
     assert_eq!(cast.payment, [0, 0, 0, 0, 0, 5]);
     assert_eq!(game.spell_characteristics()[0].mana_value, 3);
+    choose(&mut game, |action| {
+        matches!(action, Action::PutTrigger { .. })
+    });
     settle(&mut game);
-    assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 1);
+    assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 3);
     assert_eq!(game.object_view(selected).zone, Zone::Graveyard);
+}
+
+#[test]
+fn zero_and_mana_only_waterbend_payments_trigger_once_and_copies_keep_the_receipt() {
+    let variable = Card::from_name("Quick Study").unwrap();
+    let optional = Card::from_name("Opt").unwrap();
+    let watcher = Card::from_name("Impact Tremors").unwrap();
+    let copier = Card::from_name("Lightning Strike").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (variable, &X_CAST),
+        (optional, &OPTIONAL),
+        (watcher, &BEND_WATCHER),
+        (copier, &COPY),
+    ]);
+    for actor in [Player::P0, Player::P1] {
+        let mut game = scenario(actor);
+        spawn(&mut game, actor, watcher, Zone::Battlefield);
+        let spell = spawn(&mut game, actor, variable, Zone::Hand);
+        game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut game, Action::AnnounceCast { card: spell });
+        act(&mut game, Action::ChooseX { value: 0 });
+        if game.legal_actions().contains(&Action::FinishTargets) {
+            act(&mut game, Action::FinishTargets);
+        }
+        pay(&mut game);
+        settle(&mut game);
+        assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 1);
+
+        let spell = spawn(&mut game, actor, optional, Zone::Hand);
+        game.state.players[actor.index()].mana = [0, 1, 0, 0, 0, 2];
+        act(&mut game, Action::AnnounceCast { card: spell });
+        let mut declined = game.clone();
+        act(&mut declined, Action::ChooseWaterbendCost { pay: false });
+        pay(&mut declined);
+        settle(&mut declined);
+        assert_eq!(
+            declined.state.players[actor.index()].cards_drawn_this_turn,
+            1
+        );
+
+        act(&mut game, Action::ChooseWaterbendCost { pay: true });
+        pay(&mut game);
+        let copier = spawn(&mut game, actor, copier, Zone::Hand);
+        game.state.players[actor.index()].mana = [0, 0, 0, 1, 0, 1];
+        cast(&mut game, copier, Some(Target::Spell(spell)));
+        settle(&mut game);
+        assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 4);
+    }
 }

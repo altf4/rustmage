@@ -7,8 +7,6 @@ pub(super) enum BendKind {
     Air = 1,
     Earth = 2,
     Fire = 4,
-    // Waterbend payments use the same observer when that payment path is wired.
-    #[allow(dead_code)]
     Water = 8,
 }
 

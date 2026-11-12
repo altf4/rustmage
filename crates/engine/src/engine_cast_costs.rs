@@ -381,6 +381,9 @@ impl Game {
             if clause == CastCostClause::Mana {
                 costs.mana_paid = true;
                 self.pay_mana_contributors(a);
+                if a.item.kind == StackKind::Spell {
+                    self.record_spell_waterbend_costs(a);
+                }
             }
             if let CastCostClause::OriginCounters(amount) = clause {
                 let selected = a.creature_counter_cost.take().unwrap_or_default();

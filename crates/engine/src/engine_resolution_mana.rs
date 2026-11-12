@@ -935,11 +935,12 @@ impl Game {
         }
         if let Some(payment) = payment {
             self.spend_mana(request.payer, payment);
-            if let Some(waterbend) = &request.waterbend
-                && let Some(selected) = &waterbend.selected
-            {
-                let ids: Vec<_> = selected.iter().map(|object| object.card).collect();
-                self.tap_objects_as(request.payer, &ids);
+            if let Some(waterbend) = &request.waterbend {
+                if let Some(selected) = &waterbend.selected {
+                    let ids: Vec<_> = selected.iter().map(|object| object.card).collect();
+                    self.tap_objects_as(request.payer, &ids);
+                }
+                self.record_bend(request.payer, bending::BendKind::Water);
             }
             if let Some(life) = request.life {
                 self.pay_life(request.payer, life);

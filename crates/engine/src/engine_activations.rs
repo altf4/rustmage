@@ -1205,6 +1205,12 @@ impl Game {
         let cost: ActivationCost = definition.cost;
         self.record_cast_mana_activation(item, payment, &counter_payment);
         self.spend_mana_for(item.controller, payment, self.purpose_for_item(item));
+        if matches!(
+            definition.program.first(),
+            Some(Instruction::WaterbendCost(_) | Instruction::WaterbendXCost { .. })
+        ) {
+            self.record_bend(item.controller, bending::BendKind::Water);
+        }
         self.pay_life(item.controller, i128::from(cost.life));
         let object = &mut self.state.objects[source.id as usize];
         if object.generation != source.object.generation || object.zone != definition.source_zone()

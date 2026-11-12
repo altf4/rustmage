@@ -172,6 +172,16 @@ impl Announcement {
             )
     }
 
+    fn waterbend_addition_amount(&self) -> Option<u32> {
+        match self.spell_waterbend_additional()? {
+            WaterbendAdditional::Required(amount) => Some(amount),
+            WaterbendAdditional::RequiredX => self.item.x,
+            WaterbendAdditional::Optional(amount) => {
+                (self.item.cast?.waterbend == Some(true)).then_some(amount)
+            }
+        }
+    }
+
     pub(super) fn tap_payment(&self) -> Option<TapPayment> {
         if self.activation_cost_route != ActivationCostRoute::Printed {
             return None;
@@ -184,16 +194,7 @@ impl Announcement {
                 self.item.x,
             ),
             StackKind::Spell => {
-                let addition = match self.spell_waterbend_additional() {
-                    Some(WaterbendAdditional::Required(amount)) => Some(amount),
-                    Some(WaterbendAdditional::RequiredX) => self.item.x,
-                    Some(WaterbendAdditional::Optional(amount))
-                        if self.item.cast?.waterbend == Some(true) =>
-                    {
-                        Some(amount)
-                    }
-                    _ => None,
-                };
+                let addition = self.waterbend_addition_amount();
                 let alternate = self.waterbend_alternative();
                 (addition.is_some() || alternate.is_some()).then(|| {
                     TapPayment::waterbend(
@@ -209,6 +210,15 @@ impl Announcement {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn record_spell_waterbend_costs(&mut self, announcement: &Announcement) {
+        // Each committed cost is a separate waterbend event, including {0}.
+        let costs = usize::from(announcement.waterbend_addition_amount().is_some())
+            + usize::from(announcement.waterbend_alternative().is_some());
+        for _ in 0..costs {
+            self.record_bend(announcement.item.controller, bending::BendKind::Water);
+        }
+    }
+
     pub fn waterbend_choice(&self) -> Option<WaterbendChoiceView> {
         if matches!(self.state.pending, Pending::ResolutionMana { .. }) {
             let resolution = self.state.resolving.as_ref()?;

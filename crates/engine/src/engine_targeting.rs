@@ -3740,6 +3740,9 @@ impl Game {
                 announcement.item.mana_copy_sources = outcome.copies;
                 announcement.item.mana_provenance = outcome.provenance;
                 announcement.item.cast.as_mut().unwrap().payment = payment;
+                if announcement.cast_costs.is_none() {
+                    self.record_spell_waterbend_costs(&announcement);
+                }
             }
         }
         self.finish_paid_announcement(announcement);
