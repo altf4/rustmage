@@ -1649,6 +1649,10 @@ pub enum EffectChoiceKind {
     Forage,
     ForageOrBlack,
     Sacrifice,
+    /// Exclude the exact permanent that was attached to the source when it attacked.
+    SacrificeExceptAttackingAttachment,
+    /// Exclude the source's live attachment or its attachment as it left.
+    SacrificeExceptSourceAttachment,
     /// An unbounded resolution selection followed by one sacrifice batch.
     SacrificeSelection,
     /// A creature sacrifice selection that excludes one effective creature subtype.
@@ -1791,7 +1795,9 @@ impl EffectChoiceKind {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
-            Self::SacrificeSelection => Self::Sacrifice,
+            Self::SacrificeSelection
+            | Self::SacrificeExceptAttackingAttachment
+            | Self::SacrificeExceptSourceAttachment => Self::Sacrifice,
             Self::ReturnTappedCreature => Self::ReturnToHand,
             Self::ReturnGraveyardToHandOrSubtype { kinds, .. }
             | Self::ReturnUpToGraveyardToHand { kinds } => Self::ReturnGraveyardToHand { kinds },

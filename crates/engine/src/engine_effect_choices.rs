@@ -207,6 +207,24 @@ impl Game {
         ) {
             return false;
         }
+        let excluded = match choice.kind {
+            EffectChoiceKind::SacrificeExceptAttackingAttachment => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .attachment_trigger
+                .as_ref()
+                .map(|event| event.recipient),
+            EffectChoiceKind::SacrificeExceptSourceAttachment => self
+                .attached_permanent(&self.state.resolving.as_ref().unwrap().item)
+                .map(|id| self.object_ref(id)),
+            _ => None,
+        };
+        if excluded == Some(object) {
+            return false;
+        }
         let o = &self.state.objects[object.card as usize];
         if let EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(maximum) = choice.kind {
             return self.object_ref(object.card) == object
