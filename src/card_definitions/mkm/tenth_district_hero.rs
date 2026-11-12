@@ -57,7 +57,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                 Instruction::BecomeNamedLegendaryCreature {
                     name: "Mileva, the Stalwart",
                     base: (5, 5),
-                    ability: SelfGrantedAbilityKind::OtherControlledCreatureKeywords(
+                    ability: crate::engine::SelfGrantedAbilityKind::OtherControlledCreatureKeywords(
                         Keywords::INDESTRUCTIBLE,
                     ),
                 },
