@@ -9957,7 +9957,7 @@ impl Card {
         }
     }
     #[doc(hidden)]
-    pub fn index(self) -> usize {
+    pub const fn index(self) -> usize {
         self.0 as usize
     }
 }
