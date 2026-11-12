@@ -1667,12 +1667,13 @@ impl Game {
                 self.state.triggered_this_turn.push(used);
             }
             Some(TriggerLimit::Incarnation) => {
-                if !self.record_incarnation_trigger_use(IncarnationTriggerUse {
+                let used = IncarnationTriggerUse {
                     source: source.reference,
                     definition,
                     ability: u16::try_from(index).expect("ability index"),
                     origin: ability_origin,
-                }) {
+                };
+                if !self.record_incarnation_trigger_use(used) {
                     return false;
                 }
             }
