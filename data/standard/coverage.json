@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c3cff524f0894298eb6f74904366735ece8b6a48d639803eb82c323c47ec3de8",
+  "catalogue_version": "28f18d5f91e3ce7fc45143f85d0f838ca9c2cf06b7415fbc7758a741d25793c5",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4710,
-  "implemented_total": 4726,
+  "implemented_standard_cards": 4725,
+  "implemented_total": 4741,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 179,
-      "gated": 85
+      "complete": 194,
+      "gated": 70
     },
     "ecc": {
       "total": 7,
@@ -1316,8 +1316,8 @@
     {
       "name": "Altanak, the Thrice-Called",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/altanak_the_thrice_called.rs",
       "set": "dsk"
     },
@@ -2724,8 +2724,8 @@
     {
       "name": "Balustrade Wurm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/balustrade_wurm.rs",
       "set": "dsk"
     },
@@ -5644,8 +5644,8 @@
     {
       "name": "Cathartic Parting",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cathartic_parting.rs",
       "set": "dsk"
     },
@@ -9012,8 +9012,8 @@
     {
       "name": "Disturbing Mirth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/disturbing_mirth.rs",
       "set": "dsk"
     },
@@ -9396,8 +9396,8 @@
     {
       "name": "Drag to the Roots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/drag_to_the_roots.rs",
       "set": "dsk"
     },
@@ -11932,8 +11932,8 @@
     {
       "name": "Fear of Infinity",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_infinity.rs",
       "set": "dsk"
     },
@@ -16092,8 +16092,8 @@
     {
       "name": "Hedge Shredder",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/hedge_shredder.rs",
       "set": "dsk"
     },
@@ -23460,8 +23460,8 @@
     {
       "name": "Nashi, Searcher in the Dark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/nashi_searcher_in_the_dark.rs",
       "set": "dsk"
     },
@@ -24356,8 +24356,8 @@
     {
       "name": "Omnivorous Flytrap",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/omnivorous_flytrap.rs",
       "set": "dsk"
     },
@@ -25060,8 +25060,8 @@
     {
       "name": "Patchwork Beastie",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/patchwork_beastie.rs",
       "set": "dsk"
     },
@@ -28564,8 +28564,8 @@
     {
       "name": "Rite of the Moth",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/rite_of_the_moth.rs",
       "set": "dsk"
     },
@@ -29812,8 +29812,8 @@
     {
       "name": "Say Its Name",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/say_its_name.rs",
       "set": "dsk"
     },
@@ -38268,8 +38268,8 @@
     {
       "name": "Undead Sprinter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/undead_sprinter.rs",
       "set": "dsk"
     },
@@ -40628,8 +40628,8 @@
     {
       "name": "Wickerfolk Thresher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/wickerfolk_thresher.rs",
       "set": "dsk"
     },
@@ -40868,8 +40868,8 @@
     {
       "name": "Winter, Misanthropic Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/winter_misanthropic_guide.rs",
       "set": "dsk"
     },
