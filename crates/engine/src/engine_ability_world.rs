@@ -121,6 +121,9 @@ pub(super) trait CharacteristicWorld {
     fn food_sacrificed(&self, player: Player) -> bool {
         self.game().state.players[player.index()].food_sacrificed_this_turn
     }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.game().zone_change_turn_history()
+    }
     fn roles(&self) -> Option<&roles::RoleState> {
         self.game().state.roles.as_deref()
     }
@@ -2215,6 +2218,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn food_sacrificed(&self, player: Player) -> bool {
         self.parent.food_sacrificed(player)
+    }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.parent.zone_change_turn_history()
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, p: Player) -> bool {
         self.parent.plus_one_placed_this_turn(object, p)

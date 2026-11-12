@@ -128,6 +128,7 @@ pub(super) struct FundingState<'g> {
     controlled_creatures_died: [u64; 2],
     graveyard_left: [u64; 2],
     food_sacrificed: [bool; 2],
+    pub(super) zone_change_turn_history: turn_facts::ZoneChangeTurnHistory,
     sacrifice_group: Vec<ObjectRef>,
     cost_group: Option<(AdditionalCost, Vec<ObjectRef>)>,
     cast_costs: Option<Box<CostContext>>,
@@ -313,6 +314,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
     fn food_sacrificed(&self, player: Player) -> bool {
         self.food_sacrificed[player.index()]
+    }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.zone_change_turn_history
     }
     fn borrowed_activation_used(&self, source: ObjectRef, slot: u64) -> bool {
         self.borrowed_uses.contains(&(source, slot))
@@ -501,6 +505,7 @@ struct FundingKey {
     histories: Option<(u64, i128, [bool; 2])>,
     graveyard_left: [u64; 2],
     food_sacrificed: [bool; 2],
+    zone_change_turn_history: turn_facts::ZoneChangeTurnHistory,
     controlled_creature_deaths: [u64; 2],
     non_zombie_creature_died: bool,
     borrowed_uses: Vec<(ObjectRef, u64)>,
@@ -1375,6 +1380,7 @@ impl<'g> FundingState<'g> {
                 .players
                 .each_ref()
                 .map(|p| p.food_sacrificed_this_turn),
+            zone_change_turn_history: game.zone_change_turn_history(),
             actor: goal.actor,
             life_lost: game
                 .state
@@ -3547,6 +3553,7 @@ impl<'g> FundingState<'g> {
             )),
             graveyard_left: self.graveyard_left,
             food_sacrificed: self.food_sacrificed,
+            zone_change_turn_history: self.zone_change_turn_history,
             controlled_creature_deaths: self.controlled_creatures_died,
             non_zombie_creature_died: self.non_zombie_creature_died,
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {

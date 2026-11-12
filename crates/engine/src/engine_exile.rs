@@ -917,6 +917,9 @@ impl Game {
             if event.moved
                 && let Some(player) = event.sacrificed_by
             {
+                if event.before.kinds & 16 != 0 {
+                    self.record_artifact_sacrifice(player);
+                }
                 let player = &mut self.state.players[player.index()];
                 player.food_sacrificed_this_turn |= event.before.has_subtype("Food");
                 let count = &mut player.permanents_sacrificed_this_turn;

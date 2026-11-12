@@ -3314,6 +3314,7 @@ struct State {
     battle_combat_types: Option<SharedVec<(ObjectRef, bool)>>,
     combat_defender_types: Option<SharedVec<(ObjectRef, u16)>>,
     permanent_damage_history: Option<SharedVec<event_counter_core::PermanentDamageRecord>>,
+    turn_event_history: Option<std::sync::Arc<turn_facts::TurnEventHistory>>,
     tap_history: tap_history::Rows,
     counter_placement_history: counter_placement_history::Rows,
     cast_entry_counters: cast_entry_counters::Rows,
@@ -4710,6 +4711,7 @@ impl Game {
                 combat_rules: None,
                 combat_payment: None,
                 permanent_damage_history: None,
+                turn_event_history: None,
                 tap_history: None,
                 counter_placement_history: None,
                 cast_entry_counters: None,
@@ -11335,6 +11337,7 @@ impl Game {
                 let count = &mut self.state.players[card.owner.index()].descended_this_turn;
                 *count = count.checked_add(1).capacity("descended history exhausted");
             }
+            self.record_graveyard_arrival(id, &before);
         }
         if (manifested_physical.is_some() || disguised_spell.is_some()) && destination == Zone::Hand
         {
@@ -11592,6 +11595,7 @@ impl Game {
             top.cast_uses.clear();
         }
         self.state.permanent_damage_history = None;
+        self.state.turn_event_history = None;
         self.state.tap_history = None;
         self.state.counter_placement_history = None;
         self.state.cast_entry_counters = None;
@@ -12138,6 +12142,7 @@ impl Game {
                     unreachable!("damage cannot target stack objects")
                 }
             }
+            self.record_damage_source_this_turn(event.source);
             self.record_noncombat_damage_dealt(event);
             // An ability can retain a departed source's last-known reference;
             // do not transfer this history to its new zone incarnation.
@@ -13741,6 +13746,9 @@ impl Game {
             + copy_characteristics::cull_bytes(&s.nightmare_cull)
             + stack_copies::owned_bytes(&s.stack_copy_data)
             + suspend::owned_bytes(&s.suspend)
+            + s.turn_event_history
+                .as_ref()
+                .map_or(0, |history| history.owned_bytes())
             + declared_attack_history::owned_bytes(&s.declared_attack_history)
             + delayed_target_events::owned_bytes(&s.delayed_target_events)
             + s.delayed_artifact_copies.as_ref().map_or(0, |rows| {

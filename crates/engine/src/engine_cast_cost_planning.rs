@@ -906,6 +906,18 @@ impl FundingState<'_> {
                     if food && zone != Zone::Battlefield {
                         n.food_sacrificed[controller.index()] = true;
                     }
+                    if before_zone == Zone::Battlefield && kinds & 16 != 0 {
+                        // Battlefield-to-graveyard cost proposals are sacrifices.
+                        // The payer is the controller in this pre-event world.
+                        if requested == Zone::Graveyard && zone != Zone::Battlefield {
+                            n.zone_change_turn_history.artifact_sacrifices[controller.index()] =
+                                true;
+                        }
+                        if zone == Zone::Graveyard {
+                            n.zone_change_turn_history
+                                .record_artifact_permanent_arrival();
+                        }
+                    }
                     n.project_nonbattlefield_move(*r, zone, meld.map(|entry| entry.front_cards[0]));
                     if let Some(entry) = meld {
                         // The companion follows the chosen event. It does not
@@ -961,6 +973,7 @@ impl FundingState<'_> {
             });
         let resource = &mut self.resources[index];
         let object = &mut resource.object;
+        let graveyard_arrival = object.zone != Zone::Graveyard && zone == Zone::Graveyard;
         object.zone = zone;
         object.generation = object
             .generation
@@ -1014,6 +1027,15 @@ impl FundingState<'_> {
         }
         live_counters::set(&mut self.named_counters, before, None);
         self.project_copy_departure(before, after);
+        let card = self.object(after.card);
+        if graveyard_arrival
+            && card.is_card()
+            && CharacteristicWorld::kinds(self, after.card) & 1 != 0
+        {
+            let owner = card.owner;
+            self.zone_change_turn_history
+                .record_creature_card_arrival(owner);
+        }
         after
     }
     fn visit_death_exile_gains(

@@ -130,6 +130,9 @@ impl Game {
             StatValue::DeclaredAttackersThisTurn => {
                 self.declared_attackers_this_turn(owner) as i128
             }
+            StatValue::DistinctDeclaredAttackersThisTurn => {
+                self.state.attacked_this_turn.len() as i128
+            }
             StatValue::DeclaredSubtypeAttackersThisTurn(subtype) => {
                 self.declared_subtype_attackers(owner, subtype) as i128
             }
@@ -391,6 +394,24 @@ impl Game {
                 i128::from(world.graveyard_departure_count(owner))
             }
             StatValue::FoodSacrificedThisTurn => i128::from(world.food_sacrificed(owner)),
+            StatValue::ArtifactSacrificedThisTurn => {
+                i128::from(world.zone_change_turn_history().artifact_sacrifices[owner.index()])
+            }
+            StatValue::CreatureCardsPutIntoGraveyardsThisTurn => world
+                .zone_change_turn_history()
+                .creature_card_arrivals
+                .into_iter()
+                .map(i128::from)
+                .sum(),
+            StatValue::OwnCreatureCardsPutIntoGraveyardThisTurn => {
+                i128::from(world.zone_change_turn_history().creature_card_arrivals[owner.index()])
+            }
+            StatValue::ArtifactsPutIntoGraveyardsFromBattlefieldThisTurn => {
+                i128::from(world.zone_change_turn_history().artifact_permanent_arrivals)
+            }
+            StatValue::DistinctControlledDamageSourcesThisTurn => {
+                self.distinct_damage_sources_this_turn(owner) as i128
+            }
             StatValue::OwnExiledAdventurerCard => i128::from(objects().any(|(id, object)| {
                 object.zone == Zone::Exile
                     && object.owner == owner

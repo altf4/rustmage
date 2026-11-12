@@ -1493,6 +1493,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn card_left_graveyard(&self, player: Player) -> bool {
         self.world.card_left_graveyard(player)
     }
+    fn zone_change_turn_history(&self) -> turn_facts::ZoneChangeTurnHistory {
+        self.world.zone_change_turn_history()
+    }
     fn static_sources(&self) -> &[CardId] {
         self.world.static_sources()
     }

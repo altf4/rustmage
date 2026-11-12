@@ -5625,6 +5625,8 @@ pub enum StatValue {
     },
     /// One count for each actual declaration by this player this turn.
     DeclaredAttackersThisTurn,
+    /// Distinct creature incarnations declared by either player this turn.
+    DistinctDeclaredAttackersThisTurn,
     DeclaredSubtypeAttackersThisTurn(&'static str),
     /// Number of different planeswalker types among planeswalkers controlled by the source controller.
     DistinctControlledPlaneswalkerTypes,
@@ -5651,6 +5653,15 @@ pub enum StatValue {
     /// Actual physical-card departures from this player's graveyard this turn.
     CardsLeftGraveyardThisTurn,
     FoodSacrificedThisTurn,
+    /// An actual sacrifice of a permanent with the artifact type at departure.
+    ArtifactSacrificedThisTurn,
+    /// Physical creature-card arrivals, with their graveyard characteristics.
+    CreatureCardsPutIntoGraveyardsThisTurn,
+    OwnCreatureCardsPutIntoGraveyardThisTurn,
+    /// Artifact permanents, including tokens, that entered graveyards from the battlefield.
+    ArtifactsPutIntoGraveyardsFromBattlefieldThisTurn,
+    /// Distinct exact sources that dealt positive damage while controlled by this player.
+    DistinctControlledDamageSourcesThisTurn,
     CommittedCrimeThisTurn,
     /// Whether the controller owns a face-up adventurer card in exile.
     OwnExiledAdventurerCard,
