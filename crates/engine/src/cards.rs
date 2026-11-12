@@ -675,6 +675,8 @@ pub enum PlayerSet {
     Controller,
     Opponent,
     Each,
+    /// Each player tied for the greatest number of currently controlled creatures.
+    MostCreatures,
     /// Each player whose own persistent speed is strictly below this threshold.
     SpeedBelow(u8),
     Targeted,

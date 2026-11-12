@@ -4276,6 +4276,18 @@ impl Game {
             PlayerSet::Controller => [Some(controller), None],
             PlayerSet::Opponent => [Some(controller.other()), None],
             PlayerSet::Each => [Some(self.state.active), Some(self.state.active.other())],
+            PlayerSet::MostCreatures => {
+                let mut counts = [0; 2];
+                for (id, object) in self.state.objects.iter().enumerate() {
+                    if object.zone == Zone::Battlefield && self.is_creature(id as CardId) {
+                        counts[object.controller.index()] += 1;
+                    }
+                }
+                let first = self.state.active;
+                [first, first.other()].map(|player| {
+                    (counts[player.index()] >= counts[player.other().index()]).then_some(player)
+                })
+            }
             PlayerSet::SpeedBelow(threshold) => {
                 let first = self.state.active;
                 [first, first.other()].map(|player| {
