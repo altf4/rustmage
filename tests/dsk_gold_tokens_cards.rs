@@ -774,7 +774,7 @@ fn kona_can_put_a_land_or_a_locked_room_onto_the_battlefield_from_hand() {
     );
 
     let mut decline = game.clone();
-    act(&mut decline, Action::ChooseOptional { accept: false });
+    act(&mut decline, Action::DeclineHandEntry);
     settle(&mut decline);
     assert_eq!(decline.object_view(room).zone, Zone::Hand);
     assert_eq!(decline.object_view(land).zone, Zone::Hand);
