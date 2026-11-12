@@ -2533,6 +2533,17 @@ impl Game {
             Vec::new(),
         );
     }
+    pub(super) fn resolution_counter_subject(
+        &self,
+        item: &SpellView,
+        subject: Subject,
+    ) -> Option<ObjectRef> {
+        let ids = self.keyword_subjects(item, subject);
+        let [id] = ids.as_slice() else {
+            return None;
+        };
+        self.on_battlefield(*id).then(|| self.object_ref(*id))
+    }
     pub(super) fn pay_resolution_counter_placement(
         &mut self,
         object: ObjectRef,

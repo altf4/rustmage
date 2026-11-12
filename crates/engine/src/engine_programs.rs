@@ -9321,12 +9321,15 @@ impl Game {
                 Instruction::MoveCountersFromSource { kind, amount } => {
                     self.move_counters_from_source(&item, kind, amount)
                 }
-                Instruction::IfSourceCanReceiveCounters { skip } => {
-                    let payable = item.source.is_some_and(|source| {
-                        self.on_battlefield(source.id)
-                            && self.object_ref(source.id) == source.object
-                            && !replacements::counters_prohibited(self, source.object)
-                    });
+                Instruction::IfSourceCanReceiveCounters { skip }
+                | Instruction::IfSubjectCanReceiveCounters { skip, .. } => {
+                    let subject = match instruction {
+                        Instruction::IfSubjectCanReceiveCounters { subject, .. } => subject,
+                        _ => Subject::Source,
+                    };
+                    let payable = self
+                        .resolution_counter_subject(&item, subject)
+                        .is_some_and(|object| !replacements::counters_prohibited(self, object));
                     if !payable {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
@@ -9335,12 +9338,22 @@ impl Game {
                     player,
                     kind,
                     amount,
+                }
+                | Instruction::PaySubjectCounterPlacement {
+                    player,
+                    kind,
+                    amount,
+                    ..
                 } => {
-                    if let Some(source) = item.source
+                    let subject = match instruction {
+                        Instruction::PaySubjectCounterPlacement { subject, .. } => subject,
+                        _ => Subject::Source,
+                    };
+                    if let Some(object) = self.resolution_counter_subject(&item, subject)
                         && let Some(payer) = self.program_players(player, &item).next()
                     {
                         self.pay_resolution_counter_placement(
-                            source.object,
+                            object,
                             payer,
                             kind,
                             u64::from(amount),

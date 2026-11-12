@@ -4479,8 +4479,20 @@ pub enum Instruction {
     IfSourceCanReceiveCounters {
         skip: usize,
     },
+    /// Skip unless the subject is one exact permanent that can receive counters.
+    IfSubjectCanReceiveCounters {
+        subject: Subject,
+        skip: usize,
+    },
     /// Put counters on the exact source as a cost during resolution (CR118.12).
     PaySourceCounterPlacement {
+        player: PlayerSet,
+        kind: CounterKind,
+        amount: u16,
+    },
+    /// Put counters on one exact permanent as a cost during resolution.
+    PaySubjectCounterPlacement {
+        subject: Subject,
         player: PlayerSet,
         kind: CounterKind,
         amount: u16,
