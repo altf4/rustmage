@@ -71,13 +71,16 @@ fn fear_of_missing_out_discards_before_drawing_and_draws_from_an_empty_hand() {
         let mut game = scenario(player);
         let source = put(&mut game, player, "Fear of Missing Out", Zone::Hand);
         let next = put(&mut game, player, "Mountain", Zone::Library);
-        let discard = with_hand.then(|| put(&mut game, player, "Forest", Zone::Hand));
+        let choices = with_hand
+            .then(|| ["Forest", "Island"].map(|name| put(&mut game, player, name, Zone::Hand)));
         cast(&mut game, source, None);
         pass_pair(&mut game);
-        if let Some(card) = discard {
+        if let Some([discard, keep]) = choices {
+            pass_pair(&mut game);
             assert_eq!(game.object_view(next).zone, Zone::Library);
-            act(&mut game, Action::Discard { card });
-            assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+            act(&mut game, Action::Discard { card: discard });
+            assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+            assert_eq!(game.object_view(keep).zone, Zone::Hand);
         }
         settle(&mut game);
         assert_eq!(game.object_view(next).zone, Zone::Hand);

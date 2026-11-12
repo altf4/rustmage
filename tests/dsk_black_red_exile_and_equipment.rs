@@ -328,12 +328,27 @@ fn valgavoth_links_only_cards_it_exiles_and_plays_the_land_and_life_routes() {
     assert_eq!(game.object_view(land).controller, player);
     act(&mut game, life_route(spell));
     assert_eq!(game.state.players[player.index()].life, 20);
-    choose(&mut game, |action| {
-        matches!(action, Action::ChooseCastCost { .. })
-    });
     if matches!(game.state.pending, Pending::PayCosts { .. }) {
         pay(&mut game);
     }
+    let life_cost = game
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == CastCostClause::AlternativeLife(3) && !row.paid)
+        .expect("three-life alternative cost after closing the mana window");
+    act(
+        &mut game,
+        Action::ChooseCastCost {
+            clause: life_cost.try_into().unwrap(),
+        },
+    );
     assert_eq!(
         game.state.stack.last().unwrap().cast.unwrap().method,
         CastMethod::ExileLife
