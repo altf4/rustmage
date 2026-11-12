@@ -1481,6 +1481,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()
     }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.world.non_zombie_creature_died()
+    }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.world.controlled_creatures_died(player)
     }

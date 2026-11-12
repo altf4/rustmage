@@ -106,6 +106,9 @@ pub(super) trait CharacteristicWorld {
     fn creatures_died(&self) -> u64 {
         self.game().state.creatures_died_this_turn
     }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.game().state.non_zombie_creature_died_this_turn
+    }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.game().state.players[player.index()].controlled_creatures_died_this_turn
     }
@@ -2198,6 +2201,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn creatures_died(&self) -> u64 {
         self.parent.creatures_died()
+    }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.parent.non_zombie_creature_died()
     }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.parent.controlled_creatures_died(player)

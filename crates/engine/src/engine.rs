@@ -969,6 +969,11 @@ define_actions! {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         entry_counter: Option<CounterKind>,
     },
+    AnnounceSelfGraveyardWithCounter {
+        object: ObjectRef,
+        method: CastMethod,
+        flash_surcharge: bool,
+    },
     // One counter for a distributed payment. Keep the existing wire tag.
     ChooseCreatureCounterCost { object: ObjectRef, counter: CounterKind },
     AnnounceAttachedAbility { grantor: ObjectRef, ability: u16 },
@@ -3351,6 +3356,7 @@ struct State {
     cards_exiled_this_turn: bool,
     void_active_this_turn: bool,
     creatures_died_this_turn: u64,
+    non_zombie_creature_died_this_turn: bool,
     free_tokens: Vec<CardId>,
     static_sources: Vec<CardId>,
     cast_sources: Vec<CardId>,
@@ -4232,6 +4238,9 @@ pub struct Observation {
     pub void_active_this_turn: bool,
     /// Actual battlefield-to-graveyard creature transitions this turn, including tokens.
     pub creatures_died_this_turn: u64,
+    /// Whether any such creature lacked the Zombie subtype when it died.
+    #[serde(skip_serializing_if = "is_false")]
+    pub non_zombie_creature_died_this_turn: bool,
     pub graveyard_entries_this_turn: Vec<ObjectRef>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub mayhem_discards_this_turn: Vec<ObjectRef>,
@@ -4730,6 +4739,7 @@ impl Game {
                 cards_exiled_this_turn: false,
                 void_active_this_turn: false,
                 creatures_died_this_turn: 0,
+                non_zombie_creature_died_this_turn: false,
                 free_tokens: Vec::new(),
                 static_sources: Vec::new(),
                 cast_sources: Vec::new(),
@@ -6701,6 +6711,17 @@ impl Game {
                             return true;
                         }
                         if obj.zone == Zone::Graveyard
+                            && self.visit_self_graveyard_counter_casts(
+                                actor,
+                                card,
+                                sorcery,
+                                &mana_alternatives,
+                                &mut emit,
+                            )
+                        {
+                            return true;
+                        }
+                        if obj.zone == Zone::Graveyard
                             && obj.card.graveyard_counter_cost().is_some()
                             && self.permitted_cast_available(
                                 actor,
@@ -8601,13 +8622,30 @@ impl Game {
                 life,
                 entry_counter,
             } => {
-                self.start_graveyard_life_cast(
+                self.start_graveyard_cast_with_terms(
                     actor,
                     object.card,
                     face,
                     method,
                     flash_surcharge,
-                    (life, entry_counter),
+                    (Some(life), entry_counter),
+                );
+            }
+            Action::AnnounceSelfGraveyardWithCounter {
+                object,
+                method,
+                flash_surcharge,
+            } => {
+                let counter = self
+                    .self_graveyard_cast_entry_counter(actor, object)
+                    .expect("selected independent graveyard casting permission");
+                self.start_graveyard_cast_with_terms(
+                    actor,
+                    object.card,
+                    CastFace::Normal,
+                    method,
+                    flash_surcharge,
+                    (None, Some(counter)),
                 );
             }
             Action::AnnounceGraveyardFinality { card, sneak } => {
@@ -10953,6 +10991,7 @@ impl Game {
                 .creatures_died_this_turn
                 .checked_add(1)
                 .capacity("creature death history exhausted");
+            self.state.non_zombie_creature_died_this_turn |= !before.has_subtype("Zombie");
         }
         if before.zone == Zone::Battlefield {
             let controller = &mut self.state.players[before.controller.index()];
@@ -11595,6 +11634,7 @@ impl Game {
         self.state.cards_exiled_this_turn = false;
         self.state.void_active_this_turn = false;
         self.state.creatures_died_this_turn = 0;
+        self.state.non_zombie_creature_died_this_turn = false;
         self.state.graveyard_entries = None;
         self.state.mayhem_discards = None;
         self.state.battlefield_graveyard_entries = None;
@@ -12815,6 +12855,7 @@ impl Game {
             cards_exiled_this_turn: s.cards_exiled_this_turn,
             void_active_this_turn: s.void_active_this_turn,
             creatures_died_this_turn: s.creatures_died_this_turn,
+            non_zombie_creature_died_this_turn: s.non_zombie_creature_died_this_turn,
             mayhem_discards_this_turn: s
                 .mayhem_discards
                 .as_ref()

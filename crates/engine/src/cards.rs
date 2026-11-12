@@ -5577,6 +5577,8 @@ pub enum StatValue {
     ControlledCreatureDiedThisTurn,
     /// Creatures that died this turn while under this player's control.
     ControlledCreaturesDiedThisTurn,
+    /// A creature of either player died without the Zombie subtype in its last known state.
+    NonZombieCreatureDiedThisTurn,
     /// Creatures that actually left the battlefield under this player's control.
     ControlledCreatureDeparturesThisTurn,
     CardLeftGraveyardThisTurn,

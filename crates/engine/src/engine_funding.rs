@@ -124,6 +124,7 @@ pub(super) struct FundingState<'g> {
     activation_tap_payment: Option<waterbend::TapPayment>,
     power_sensitive: bool,
     creatures_died: u64,
+    non_zombie_creature_died: bool,
     controlled_creatures_died: [u64; 2],
     graveyard_left: [u64; 2],
     food_sacrificed: [bool; 2],
@@ -300,6 +301,9 @@ impl ability_world::CharacteristicWorld for FundingState<'_> {
     }
     fn creatures_died(&self) -> u64 {
         self.creatures_died
+    }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.non_zombie_creature_died
     }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.controlled_creatures_died[player.index()]
@@ -498,6 +502,7 @@ struct FundingKey {
     graveyard_left: [u64; 2],
     food_sacrificed: [bool; 2],
     controlled_creature_deaths: [u64; 2],
+    non_zombie_creature_died: bool,
     borrowed_uses: Vec<(ObjectRef, u64)>,
     self_grant_uses: Vec<(ObjectRef, u64)>,
     graveyard_borrowing: Vec<graveyard_borrowing::Row>,
@@ -1354,6 +1359,7 @@ impl<'g> FundingState<'g> {
             activation_tap_payment,
             power_sensitive: power_sensitive || color_count_sensitive,
             creatures_died: game.state.creatures_died_this_turn,
+            non_zombie_creature_died: game.state.non_zombie_creature_died_this_turn,
             controlled_creatures_died: game
                 .state
                 .players
@@ -2971,6 +2977,8 @@ impl<'g> FundingState<'g> {
                 *deaths = deaths
                     .checked_add(1)
                     .capacity("virtual controlled death history exhausted");
+                self.non_zombie_creature_died |= !CharacteristicWorld::subtypes(self, id)
+                    .has(CharacteristicWorld::definition(self, id), "Zombie");
             }
             let face_down_physical = self.projected_face_down_physical(reference);
             let physical_copy = self
@@ -3535,6 +3543,7 @@ impl<'g> FundingState<'g> {
             graveyard_left: self.graveyard_left,
             food_sacrificed: self.food_sacrificed,
             controlled_creature_deaths: self.controlled_creatures_died,
+            non_zombie_creature_died: self.non_zombie_creature_died,
             entries: self.entry_projection.as_ref().map(|p| EntryFundingKey {
                 copy_origins: p.copy_origins.clone(),
                 manifested: p.manifested.clone(),

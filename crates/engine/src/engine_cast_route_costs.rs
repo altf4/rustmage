@@ -188,14 +188,106 @@ impl Game {
         }
         false
     }
-    pub(super) fn start_graveyard_life_cast(
+    pub(super) fn self_graveyard_cast_entry_counter(
+        &self,
+        actor: Player,
+        reference: ObjectRef,
+    ) -> Option<CounterKind> {
+        let object = &self.state.objects[reference.card as usize];
+        if object.zone != Zone::Graveyard
+            || object.owner != actor
+            || !object.is_card()
+            || self.object_ref(reference.card) != reference
+        {
+            return None;
+        }
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .flat_map(|group| group.fragments)
+            .find_map(|fragment| match *fragment {
+                StaticAbilityFragment::SelfGraveyardCastIfWithCounter { condition, counter }
+                    if self.stat_value(condition, reference, actor) != 0 =>
+                {
+                    Some(counter)
+                }
+                _ => None,
+            })
+    }
+
+    pub(super) fn visit_self_graveyard_counter_casts(
+        &self,
+        actor: Player,
+        card: CardId,
+        sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let object = self.object_ref(card);
+        if self
+            .self_graveyard_cast_entry_counter(actor, object)
+            .is_none()
+        {
+            return false;
+        }
+        let face = CastFace::Normal;
+        if self.visit_paid_cast_alternative_face(
+            actor,
+            card,
+            face,
+            sorcery,
+            PaidCastOrigin::SelfGraveyardWithCounter { object },
+            mana_alternatives,
+            emit,
+        ) {
+            return true;
+        }
+        let definition = self.state.objects[card as usize].card;
+        let free = self.filtered_free_cast_available(actor, definition)
+            || self.turn_free_creature_available(actor, definition);
+        let sneak = self.state.active == actor
+            && self.state.step == Step::Blockers
+            && self.has_sneak_cost(actor, card);
+        for (method, available) in [
+            (CastMethod::Normal, true),
+            (CastMethod::Free, free),
+            (CastMethod::Sneak, sneak),
+        ] {
+            if !available {
+                continue;
+            }
+            for flash_surcharge in [false, true] {
+                if flash_surcharge && method == CastMethod::Sneak {
+                    continue;
+                }
+                if self.permitted_cast_available(
+                    actor,
+                    card,
+                    method,
+                    face,
+                    sorcery,
+                    flash_surcharge,
+                ) && emit(Action::AnnounceSelfGraveyardWithCounter {
+                    object,
+                    method,
+                    flash_surcharge,
+                }) {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    pub(super) fn start_graveyard_cast_with_terms(
         &mut self,
         actor: Player,
         card: CardId,
         face: CastFace,
         method: CastMethod,
         flash_surcharge: bool,
-        (life, entry_counter): (u32, Option<CounterKind>),
+        (life, entry_counter): (Option<u32>, Option<CounterKind>),
     ) {
         let mut item = self.cast_item(actor, card, [0; 6]);
         self.set_cast_face(&mut item, face);
@@ -216,7 +308,7 @@ impl Game {
             None,
             None,
             None,
-            Some(life),
+            life,
         );
     }
     pub(super) fn exile_library_top_face_down_play(

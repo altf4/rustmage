@@ -306,6 +306,7 @@ impl Game {
             | Action::AnnounceLinkedPaid { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }
+            | Action::AnnounceSelfGraveyardWithCounter { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>

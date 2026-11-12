@@ -735,25 +735,33 @@ impl FundingState<'_> {
             .iter()
             .map(|r| {
                 let object = self.object(r.card);
+                let kinds = CharacteristicWorld::kinds(self, r.card);
+                let graveyard_move =
+                    object.zone == Zone::Battlefield && requested == Zone::Graveyard;
+                let subtypes = graveyard_move.then(|| self.subtypes(r.card));
+                let has_subtype = |subtype| {
+                    subtypes
+                        .as_ref()
+                        .is_some_and(|types| types.has(self.definition(r.card), subtype))
+                };
                 (
                     object.zone,
                     object.controller,
                     object.owner,
-                    CharacteristicWorld::kinds(self, r.card),
+                    kinds,
                     self.active_melds()
                         .find(|row| row.object == *r)
                         .map(|row| row.entry),
                     object.is_card(),
-                    object.zone == Zone::Battlefield
-                        && requested == Zone::Graveyard
-                        && self.subtypes(r.card).has(self.definition(r.card), "Food"),
+                    has_subtype("Food"),
+                    graveyard_move && kinds & 1 != 0 && !has_subtype("Zombie"),
                 )
             })
             .collect();
         let destinations = objects
             .iter()
             .zip(&before_facts)
-            .map(|(r, &(_, _, _, kinds, _, _, _))| {
+            .map(|(r, &(_, _, _, kinds, _, _, _, _))| {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
@@ -850,8 +858,10 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![(initial, Vec::new())];
-        for ((r, choices), &(before_zone, controller, owner, kinds, meld, was_card, food)) in
-            objects.iter().zip(destinations).zip(&before_facts)
+        for (
+            (r, choices),
+            &(before_zone, controller, owner, kinds, meld, was_card, food, non_zombie),
+        ) in objects.iter().zip(destinations).zip(&before_facts)
         {
             let mut next = Vec::new();
             for (w, gains) in worlds {
@@ -885,6 +895,7 @@ impl FundingState<'_> {
                             .creatures_died
                             .checked_add(1)
                             .capacity("virtual death history exhausted");
+                        n.non_zombie_creature_died |= non_zombie;
                     }
                     if before_zone == Zone::Graveyard && zone != Zone::Graveyard && was_card {
                         let count = &mut n.graveyard_left[owner.index()];

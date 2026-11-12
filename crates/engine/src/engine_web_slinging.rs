@@ -37,6 +37,9 @@ pub enum PaidCastOrigin {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         entry_counter: Option<CounterKind>,
     },
+    SelfGraveyardWithCounter {
+        object: ObjectRef,
+    },
     LinkedExileCounters {
         source: ObjectRef,
     },
@@ -248,6 +251,11 @@ impl Game {
                 terms.life = Some(life);
                 terms.entry_counter = entry_counter;
             }
+            PaidCastOrigin::SelfGraveyardWithCounter { object }
+                if object.card == card && face == CastFace::Normal =>
+            {
+                terms.entry_counter = Some(self.self_graveyard_cast_entry_counter(actor, object)?);
+            }
             PaidCastOrigin::LinkedExileCounters { source } => {
                 terms.counters = Some(self.linked_counter_permission(actor, source, card, face)?);
             }
@@ -264,7 +272,9 @@ impl Game {
                     permission,
                 )?);
             }
-            PaidCastOrigin::LinkedExilePaid { .. } | PaidCastOrigin::GraveyardPaid { .. } => {
+            PaidCastOrigin::LinkedExilePaid { .. }
+            | PaidCastOrigin::GraveyardPaid { .. }
+            | PaidCastOrigin::SelfGraveyardWithCounter { .. } => {
                 return None;
             }
             PaidCastOrigin::TaxedExile { surcharge } => {

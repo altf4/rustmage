@@ -158,6 +158,13 @@ pub enum StaticAbilityFragment {
     /// This grants neither land plays nor flashback's alternative cost/destination.
     SelfGraveyardCastIf(StatValue),
 
+    /// A separate permission to cast this card from its owner's graveyard.
+    /// Only a spell cast using this permission enters with the counter.
+    SelfGraveyardCastIfWithCounter {
+        condition: StatValue,
+        counter: CounterKind,
+    },
+
     /// This exact owned graveyard card has a separate ordinary-mana casting route.
     SelfGraveyardCastWithAdditionalCosts {
         life: u32,

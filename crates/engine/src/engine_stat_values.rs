@@ -382,6 +382,9 @@ impl Game {
             StatValue::ControlledCreaturesDiedThisTurn => {
                 i128::from(world.controlled_creatures_died(owner))
             }
+            StatValue::NonZombieCreatureDiedThisTurn => {
+                i128::from(world.non_zombie_creature_died())
+            }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
             StatValue::OpponentLostLifeThisTurn => i128::from(world.lost_life(owner.other())),
             StatValue::CardsLeftGraveyardThisTurn => {
