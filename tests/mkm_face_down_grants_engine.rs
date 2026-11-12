@@ -21,10 +21,8 @@ const GRANTER: CardRules = CardRules {
         origin: ActivationOrigin::Battlefield,
         cycling: false,
         cost: ActivationCost {
-            mana: ManaCost {
-                colored: [0, 1, 1, 0, 0, 0],
-                generic: 2,
-            },
+            colored: [0, 1, 1, 0, 0, 0],
+            generic: 2,
             ..ActivationCost::ZERO
         },
         targets: TargetPlan::NONE,

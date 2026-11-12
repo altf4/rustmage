@@ -354,7 +354,6 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         | StaticAbilityFragment::ControlledArtifactFood(ability)
         | StaticAbilityFragment::ControlledArtifactActivation(ability)
         | StaticAbilityFragment::ControlledNontokenCreatureActivation(ability)
-        | StaticAbilityFragment::ControlledFaceDownCreatureActivation(ability)
         | StaticAbilityFragment::ControlledFaceDownCreatureActivation(ability) => {
             let kinds = match fragment {
                 StaticAbilityFragment::ControlledPlaneswalkerActivation(_) => 64,
