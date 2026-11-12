@@ -132,6 +132,7 @@ fn destroy_and_return_uses_only_actual_creature_cards_and_sacrifices_exact_entra
         (&mut blink, Zone::Battlefield),
     ] {
         branch.begin_step(Step::End);
+        branch.prepare_triggers();
         settle(branch);
         assert_eq!(branch.object_view(creature).zone, destination);
     }

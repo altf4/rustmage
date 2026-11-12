@@ -209,7 +209,7 @@ fn follow_on_mill_replacement_keeps_the_library_card_private_until_committed() {
     assert_eq!(game.actor(), Some(opponent));
     let view = game.observe(opponent).zone_replacement_choice.unwrap();
     assert_eq!(view.from, Zone::Library);
-    assert_eq!(view.card, Card::from_name("Progenitus").unwrap());
+    assert_eq!(view.card, None);
     assert!(game.observe(player).zone_replacement_choice.is_none());
     assert!(
         game.observe(player)
