@@ -3,10 +3,26 @@
   "catalogue_id": 1615,
   "oracle_id": "d181310f-404b-4f26-8024-b7b537d1fd90",
   "facts_sha256": "b49312f5c57d6713c89a680ce571bac988e1538d8721e0b1c48bdee8143eaf7a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "de9fd8b6386c75329cd90dc81bd69136e932d0c3d7e30261c8ec28504acc5be0"
   },
-  "physical_metadata_sha256": "8ddf392cbf6dd0aae760aa833319cce8dc168e19c01ba959e304560057be2855"
+  "physical_metadata_sha256": "8ddf392cbf6dd0aae760aa833319cce8dc168e19c01ba959e304560057be2855",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FranticScapegoat.java",
+  "java_sha256": "95f1690b7261d490f7fd292ba4685122e152826e29b817b7c115c8116b45b43e",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/BatchTriggeredAbility.java",
+      "sha256": "e2891aafe6a447fbb1347f9b0a52cf2b8f79bc566e7518933f12bd4ed503ad86"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+      "sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+    }
+  ]
 }

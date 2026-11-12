@@ -3,10 +3,26 @@
   "catalogue_id": 1804,
   "oracle_id": "ff4b9723-d5f1-40d2-aa35-fa3d2a6f4b5c",
   "facts_sha256": "545381bc074f9acf7b4c8ab954947dcad64ecd1daf5511ca61fe376321d63da3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7f32e30f46f2258ee85f97df889829d3091605e1d6a8784c6f5d1c6fa58437cf"
   },
-  "physical_metadata_sha256": "e8ac27bae45d5110ed0fc6efe260dd0c10a62c9d4e8a777d95a1e86aba2afa07"
+  "physical_metadata_sha256": "e8ac27bae45d5110ed0fc6efe260dd0c10a62c9d4e8a777d95a1e86aba2afa07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GoblinMaskmaker.java",
+  "java_sha256": "390e135d3a8af0137dc8b8bc76189c66390996cf138873104b023f903db15496",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    }
+  ]
 }

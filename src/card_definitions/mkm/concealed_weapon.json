@@ -3,7 +3,7 @@
   "catalogue_id": 822,
   "oracle_id": "104565b1-2db8-4c01-ae3d-14087768be45",
   "facts_sha256": "a9409e9e99693172fb47d4482758cbee30beca753ec3348b92e7e5f499741914",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3be44b3f2cfeb6fef355c1563439210f4dfe20d5f41398b862457d0c99df47ee"
@@ -12,12 +12,27 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/c/ConcealedWeapon.java",
   "java_sha256": "cf6fae09b90e3bd38f6f5c0b4972ccc1335a2c7d172e28d28171f7d5c0e4d3b5",
-  "rules_tests": "src/engine_manifest.rs",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
       "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
       "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
     }
   ]
 }

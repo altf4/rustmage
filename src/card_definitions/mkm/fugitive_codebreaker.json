@@ -3,10 +3,36 @@
   "catalogue_id": 1642,
   "oracle_id": "af2b36ee-2945-41d3-a186-8fd28f3cde16",
   "facts_sha256": "30cbeebc5837710603881ebe818748897276ae5fade381759a03a3b9a193ca0d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91e329eafc8195ef0a1a2856c7d14dc280d2fdf3d37c801f925d6ec16d972ef5"
   },
-  "physical_metadata_sha256": "21c88560086e431e5591891929eb1d044ded9f389c8b57f4ad4259edfb571e92"
+  "physical_metadata_sha256": "21c88560086e431e5591891929eb1d044ded9f389c8b57f4ad4259edfb571e92",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FugitiveCodebreaker.java",
+  "java_sha256": "615f6e242de1aca83eca0a5d4af000675cb6fe07dc14e6216ca54473a01a6db5",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ProwessAbility.java",
+      "sha256": "4841a6c5a32b09d6a63e326d29c8ce04f2fdad3575e1897f202cae110718c8a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/discard/DiscardHandControllerEffect.java",
+      "sha256": "eb06f3b2c08e062ab3b8cdb8257c987c02ea8c42df4f9df0e167bb550a601982"
+    }
+  ]
 }

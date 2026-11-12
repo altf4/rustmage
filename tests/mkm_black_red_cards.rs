@@ -9,6 +9,9 @@ mod cases_and_costs;
 #[path = "mkm_black_red_cards/exile_and_evidence.rs"]
 mod exile_and_evidence;
 
+#[path = "mkm_black_red_cards/disguise.rs"]
+mod disguise;
+
 use rustmage_core::{cards::*, engine::*};
 use support::{act, choose, pay};
 
@@ -57,4 +60,15 @@ fn tokens(game: &Game, player: Player, card: Card) -> Vec<CardId> {
     game.controlled_token_ids(player)
         .filter(|&id| game.object_view(id).card == card)
         .collect()
+}
+
+fn begin_attack(game: &mut Game, attacker: CardId) {
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(game, Action::Attack { card: attacker });
+    act(game, Action::FinishAttackers);
+}
+
+fn life(game: &Game, player: Player) -> i128 {
+    game.state.players[player.index()].life
 }

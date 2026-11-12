@@ -1,16 +1,9 @@
-use super::{activation, additional, enter_step, pass_pair, target, tokens};
+use super::{activation, additional, begin_attack, enter_step, life, pass_pair, target, tokens};
 use crate::support::*;
 use rustmage_core::{cards::*, engine::*};
 
 const THOPTER: Card = Card::from_catalogue_id(5266);
 const GOBLIN: Card = Card::from_catalogue_id(5324);
-
-fn begin_attack(game: &mut Game, attacker: CardId) {
-    game.state.step = Step::Attackers;
-    game.state.pending = Pending::Attackers;
-    act(game, Action::Attack { card: attacker });
-    act(game, Action::FinishAttackers);
-}
 
 fn evidence(game: &mut Game, cards: &[CardId]) {
     for &card in cards {
@@ -23,10 +16,6 @@ fn evidence(game: &mut Game, cards: &[CardId]) {
 fn pick(game: &mut Game, card: CardId) {
     let object = game.object_ref(card);
     act(game, Action::ChooseEffectObject { object });
-}
-
-fn life(game: &Game, player: Player) -> i128 {
-    game.state.players[player.index()].life
 }
 
 #[test]

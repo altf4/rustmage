@@ -3,10 +3,31 @@
   "catalogue_id": 134,
   "oracle_id": "57eba48e-87bd-4b54-8635-7348020f2ba4",
   "facts_sha256": "ce2755d4c789a761d1c0582e071684a213dfd6a9edfc1c93ed99b473b67a7422",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "831178e99832c5618d4f7bdda641d145d67c27ee2216695e2aada14ec936aa3f"
   },
-  "physical_metadata_sha256": "52b4f47ed91e680326e9847e531bdc26823a84a88a10d465b3f8080c4f1afe17"
+  "physical_metadata_sha256": "52b4f47ed91e680326e9847e531bdc26823a84a88a10d465b3f8080c4f1afe17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AlleyAssailant.java",
+  "java_sha256": "7fe3185420a8e7dc691c6572cf06819a19c386e537dfd711a254f2042cdd818e",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/TurnedFaceUpSourceTriggeredAbility.java",
+      "sha256": "bc24a1a8af5c0e2e30b497886ef9179bc5d4d3588c08df863a1602a052179934"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAbility.java",
+      "sha256": "147582b81a6ea9f26c8835600282fe7311c08dcb1ff983b26587e455c2c4514a"
+    }
+  ]
 }

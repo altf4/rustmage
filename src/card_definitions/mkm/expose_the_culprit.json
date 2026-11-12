@@ -3,10 +3,31 @@
   "catalogue_id": 1409,
   "oracle_id": "4f7e4aff-ef68-44fe-a0dc-b9ab0ecd7146",
   "facts_sha256": "d094894642adfe8697096e51761b0c61d59ccc284c6d7c6676796689c12f5c80",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "18feae27102498be9b776a1d8da82261ec9ec5383109b74ec76c3727c2362d1e"
   },
-  "physical_metadata_sha256": "e6931e64dee089aa51911f160b956406040efae5dbf1c66db8c84fd507713d07"
+  "physical_metadata_sha256": "e6931e64dee089aa51911f160b956406040efae5dbf1c66db8c84fd507713d07",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExposeTheCulprit.java",
+  "java_sha256": "3ad120313c2fa696d629e1683c9990c68b2c110e4bfe3cae721c84d67bacef17",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/TurnFaceUpTargetEffect.java",
+      "sha256": "158908ccb9c23c8f9f54b99d44bfcd37ef26a39ad6fef9224fa7af64f524293c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestEffect.java",
+      "sha256": "3e10e9e875387a4e22f4a16410900548e2925071fb537a86a83ec8aef6a5b80e"
+    }
+  ]
 }

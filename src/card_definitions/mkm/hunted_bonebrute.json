@@ -3,10 +3,36 @@
   "catalogue_id": 2103,
   "oracle_id": "c1d9c41a-0941-4b7e-b8a6-890d30386458",
   "facts_sha256": "2e2f1be5c9236030574b9300d9a17639f925d2a6991f78b0a2a1319b836bd83b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c36bd09fc8bcd572a0fbf19d2381e4aa60e0e9652ebefbe120a9c36525f50784"
   },
-  "physical_metadata_sha256": "2bb08bd62b4414cc499fe33b6aefd2504681c64b9a6a715518e8818c66343023"
+  "physical_metadata_sha256": "2bb08bd62b4414cc499fe33b6aefd2504681c64b9a6a715518e8818c66343023",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HuntedBonebrute.java",
+  "java_sha256": "488433afa1f16dab90aa3d470e4aff52a60f9cadde64a4fa99036139389a20a1",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DisguiseAbility.java",
+      "sha256": "0e200137f6e8dcb1cc83ff4850cf05e33826683fa8a6824503ca75810abef0d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenTargetEffect.java",
+      "sha256": "899cbb24bb096977a1368027ba991506de15e4dcda39c6378a05daef65c295a7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/WhiteDogToken.java",
+      "sha256": "3568753be8ae92498f7c9912fde5ab36b9b16ce8ee7799f84e10a1bd907aaf42"
+    }
+  ]
 }
