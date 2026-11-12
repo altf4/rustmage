@@ -64,5 +64,5 @@
       "sha256": "135cc53e0202fad251c5902855c6001ba5de1d05fb4dd4341c7f8a17ecec4ef2"
     }
   ],
-  "rules_tests": "tests/tla_cards_red.rs"
+  "rules_tests": "tests/tla_cards_red/spells.rs"
 }

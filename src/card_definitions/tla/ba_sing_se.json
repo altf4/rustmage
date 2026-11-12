@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/b/BaSingSe.java",
   "java_sha256": "4327b6f16e75eba037fddaa39ed0f250daa82dd3d3a4549b44df992beb60fcce",
-  "rules_tests": "tests/tla_cards_green.rs",
+  "rules_tests": "tests/tla_cards_green/earthbend.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

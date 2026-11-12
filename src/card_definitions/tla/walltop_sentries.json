@@ -39,5 +39,5 @@
       "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
     }
   ],
-  "rules_tests": "tests/tla_cards_green.rs"
+  "rules_tests": "tests/tla_cards_green/creatures.rs"
 }

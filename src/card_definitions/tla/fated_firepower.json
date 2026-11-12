@@ -54,5 +54,5 @@
       "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
     }
   ],
-  "rules_tests": "tests/tla_cards_red.rs"
+  "rules_tests": "tests/tla_cards_red/firebending.rs"
 }

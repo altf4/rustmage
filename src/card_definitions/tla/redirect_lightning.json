@@ -49,5 +49,5 @@
       "sha256": "99560fbe32eaeab547ae49a4777fd670f509879b2401942bfa1be73388292e0a"
     }
   ],
-  "rules_tests": "tests/tla_cards_red.rs"
+  "rules_tests": "tests/tla_cards_red/spells.rs"
 }

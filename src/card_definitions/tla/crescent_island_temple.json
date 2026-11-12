@@ -69,5 +69,5 @@
       "sha256": "d75a8d019eb81987f6900c1a1c1642605b899bedbe73fcb61eb7c69578318431"
     }
   ],
-  "rules_tests": "tests/tla_cards_green.rs"
+  "rules_tests": "tests/tla_cards_green/sagas.rs"
 }

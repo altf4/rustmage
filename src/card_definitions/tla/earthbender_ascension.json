@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EarthbenderAscension.java",
   "java_sha256": "ccd795ee227a7aca8fed42b3be51adf486d05198e3c11f9e202966244ad5cfd1",
-  "rules_tests": "tests/tla_cards_green.rs",
+  "rules_tests": "tests/tla_cards_green/earthbend.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fc2987a1cf061c0da9355eb59a978af77fcd72350fccc78a182fb538cafcba16"
   },
-  "physical_metadata_sha256": "b6332ee32c136d0b7c983a93bc98bab9c131fc5344a81ab439514ea5f55da90e"
+  "physical_metadata_sha256": "b6332ee32c136d0b7c983a93bc98bab9c131fc5344a81ab439514ea5f55da90e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SaberToothMooseLion.java",
+  "java_sha256": "e59692890a6eb10518b6a3f3f6f47853c551f600b51207858af0425996304c9e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ForestcyclingAbility.java",
+      "sha256": "6371d112d7d6a07c461680adff46572224790d10ac3bd284989ee3a1052f8dc2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ReachAbility.java",
+      "sha256": "99cf1067899dff68c26a4d403159b7f70653df59b029831c5b4979f4e2afc559"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_green/inherited.rs"
 }
