@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "122d06265c66697b87d2fa9e2f97c2e15f8df90122fe262cad34054c69184a4a",
+  "catalogue_version": "99d6db9a6e3a5e0d9d5b7945807b80f8ad1f54b533bb04d1fad8b6d14704dd58",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4852,
-  "implemented_total": 4869,
+  "implemented_standard_cards": 4875,
+  "implemented_total": 4893,
   "token_definitions": 215,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -101,8 +101,8 @@
     },
     "mkm": {
       "total": 264,
-      "gated": 131,
-      "complete": 133
+      "gated": 108,
+      "complete": 156
     },
     "mom": {
       "total": 1,
@@ -875,8 +875,8 @@
     {
       "name": "Agency Outfitter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/agency_outfitter.rs",
       "set": "mkm"
     },
@@ -1635,8 +1635,8 @@
     {
       "name": "Anzrag's Rampage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/anzrag_s_rampage.rs",
       "set": "mkm"
     },
@@ -3171,8 +3171,8 @@
     {
       "name": "Behind the Mask",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/behind_the_mask.rs",
       "set": "mkm"
     },
@@ -5147,8 +5147,8 @@
     {
       "name": "Call a Surprise Witness",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/call_a_surprise_witness.rs",
       "set": "mkm"
     },
@@ -6843,16 +6843,16 @@
     {
       "name": "Connecting the Dots",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/connecting_the_dots.rs",
       "set": "mkm"
     },
     {
       "name": "Conspiracy Unraveler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/conspiracy_unraveler.rs",
       "set": "mkm"
     },
@@ -11395,8 +11395,8 @@
     {
       "name": "Expedited Inheritance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/expedited_inheritance.rs",
       "set": "mkm"
     },
@@ -15811,8 +15811,8 @@
     {
       "name": "Harried Dronesmith",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/harried_dronesmith.rs",
       "set": "mkm"
     },
@@ -17275,8 +17275,8 @@
     {
       "name": "Illicit Masquerade",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/illicit_masquerade.rs",
       "set": "mkm"
     },
@@ -17443,8 +17443,8 @@
     {
       "name": "Incinerator of the Guilty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/incinerator_of_the_guilty.rs",
       "set": "mkm"
     },
@@ -17851,8 +17851,8 @@
     {
       "name": "Intrude on the Mind",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/intrude_on_the_mind.rs",
       "set": "mkm"
     },
@@ -18219,8 +18219,8 @@
     {
       "name": "Jaded Analyst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/jaded_analyst.rs",
       "set": "mkm"
     },
@@ -19499,16 +19499,16 @@
     {
       "name": "Krenko's Buzzcrusher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/krenko_s_buzzcrusher.rs",
       "set": "mkm"
     },
     {
       "name": "Krenko, Baron of Tin Street",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/krenko_baron_of_tin_street.rs",
       "set": "mkm"
     },
@@ -19731,8 +19731,8 @@
     {
       "name": "Lamplight Phoenix",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/lamplight_phoenix.rs",
       "set": "mkm"
     },
@@ -20363,8 +20363,8 @@
     {
       "name": "Living Conundrum",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/living_conundrum.rs",
       "set": "mkm"
     },
@@ -20707,8 +20707,8 @@
     {
       "name": "Lost in the Maze",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/lost_in_the_maze.rs",
       "set": "mkm"
     },
@@ -23811,8 +23811,8 @@
     {
       "name": "No Witnesses",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/no_witnesses.rs",
       "set": "mkm"
     },
@@ -25787,8 +25787,8 @@
     {
       "name": "Polygraph Orb",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/polygraph_orb.rs",
       "set": "mkm"
     },
@@ -26195,8 +26195,8 @@
     {
       "name": "Proft's Eidetic Memory",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/proft_s_eidetic_memory.rs",
       "set": "mkm"
     },
@@ -27715,8 +27715,8 @@
     {
       "name": "Reenact the Crime",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/reenact_the_crime.rs",
       "set": "mkm"
     },
@@ -33187,8 +33187,8 @@
     {
       "name": "Steamcore Scholar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/steamcore_scholar.rs",
       "set": "mkm"
     },
@@ -33803,8 +33803,8 @@
     {
       "name": "Sudden Setback",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/sudden_setback.rs",
       "set": "mkm"
     },
@@ -35251,8 +35251,8 @@
     {
       "name": "Tenth District Hero",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/mkm/tenth_district_hero.rs",
       "set": "mkm"
     },
