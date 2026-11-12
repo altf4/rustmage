@@ -114,6 +114,35 @@ fn target(target: Target) -> Action {
     Action::ChooseTarget { target }
 }
 
+fn choose_prevention(game: &mut Game, player: Player) {
+    assert_eq!(game.state.pending, Pending::ZoneReplacement { player });
+    assert!(
+        game.observe(player.other())
+            .zone_replacement_choice
+            .is_none()
+    );
+    let action = Action::ChooseZoneReplacement {
+        effect: ZoneReplacementKind::Prevent,
+    };
+    let saved = game.snapshot();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|choice| *choice == action)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    act(game, action);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&saved).unwrap();
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(game.snapshot(), indexed.snapshot());
+}
+
 #[test]
 fn any_discard_is_one_private_batch_and_caps_a_separate_trigger_by_actual_moves() {
     let _rules = fixture_rules::activate(&[(card(DEMON), &DEMON_RULES)]);
@@ -190,6 +219,8 @@ fn any_discard_is_one_private_batch_and_caps_a_separate_trigger_by_actual_moves(
     zone_replacements::TEST_PREVENT_ZONE_MOVE
         .with(|slot| slot.set(Some(game.object_ref(prevented))));
     act(&mut game, choose_hand(None));
+    assert_eq!(game.hand_count(player), 3);
+    choose_prevention(&mut game, player);
     zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|slot| slot.set(None));
     assert_eq!(game.object_view(land).zone, Zone::Exile);
     assert_eq!(game.object_view(spell).zone, Zone::Exile);
@@ -253,6 +284,10 @@ fn each_player_discards_together_and_only_the_controllers_actual_discard_draws()
         assert_eq!(game.actor(), Some(enemy));
         assert_eq!(game.object_view(opposing).zone, Zone::Hand);
         act(&mut game, Action::Discard { card: opposing });
+        if prevent_own {
+            assert_eq!(game.object_view(opposing).zone, Zone::Hand);
+            choose_prevention(&mut game, player);
+        }
         zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|slot| slot.set(None));
         settle(&mut game);
         assert_eq!(game.object_view(opposing).zone, Zone::Exile);
