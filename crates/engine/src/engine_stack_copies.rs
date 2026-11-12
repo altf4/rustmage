@@ -479,12 +479,19 @@ impl Game {
             SpellCopyCount::EarlierSpellsThisTurn => earlier_spells,
         };
         for trigger in &mut self.state.pending_triggers[first_trigger..] {
+            if let Some(event) = cast_event
+                && let StackKind::TriggeredAbility { ability } = trigger.kind
+                && trigger.source.is_some()
+                && let Some(template) = trigger
+                    .trigger_definition()
+                    .triggers()
+                    .get(usize::from(ability))
+            {
+                trigger.bind_cast_spell_subtypes(template.program, event, spell_subtypes);
+            }
             let Some((_, program)) = trigger.program() else {
                 continue;
             };
-            if let Some(event) = cast_event {
-                trigger.bind_cast_spell_subtypes(program, event, spell_subtypes);
-            }
             if let Some(amount) = program.iter().find_map(|i| match i {
                 Instruction::CopyCapturedSpell { count, .. } => Some(copy_count(*count)),
                 Instruction::CopyCastSpell {

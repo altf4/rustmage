@@ -127,6 +127,32 @@ const EARTHBEND_LESSON: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const CAST_LESSON_MODE: CardRules = CardRules {
+    effect: Effect::Creature(3, 4),
+    triggers: &[TriggeredAbility {
+        condition: CAST_NONCREATURE,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::Modal(&[
+            SpellMode {
+                text: "You gain 2 life if that spell is a Lesson.",
+                targets: TargetPlan::NONE,
+                program: &[
+                    Instruction::IfEventObjectSubtype {
+                        subtype: "Lesson",
+                        skip: 1,
+                    },
+                    Instruction::GainLife(PlayerSet::Controller, 2),
+                ],
+            },
+            SpellMode {
+                text: "You gain 1 life.",
+                targets: TargetPlan::NONE,
+                program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+            },
+        ])],
+    }],
+    ..CardRules::EMPTY
+};
 const COUNTER_OBSERVER: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
@@ -402,6 +428,27 @@ fn lesson_earthbend_uses_the_exact_departed_spell_and_two_counter_placements() {
 }
 
 #[test]
+fn cast_subtype_is_captured_before_the_trigger_mode_is_chosen() {
+    let _rules = fixture_rules::activate(&[(named("Hill Giant"), &CAST_LESSON_MODE)]);
+    let p = Player::P0;
+    let mut game = scenario(p);
+    let source = put(&mut game, p, "Hill Giant", Zone::Battlefield);
+    let card = put(&mut game, p, "Firebending Lesson", Zone::Hand);
+    act(&mut game, Action::AnnounceCast { card });
+    act(&mut game, Action::ChooseKicker { pay: false });
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(source),
+        },
+    );
+    pay(&mut game);
+    act(&mut game, Action::ChooseMode { mode: 0 });
+    settle(&mut game);
+    assert_eq!(game.state.players[p.index()].life, 22);
+}
+
+#[test]
 fn effective_ally_colors_include_kindred_and_count_each_live_color_once() {
     let _rules = fixture_rules::activate(&[(named("Grizzly Bears"), &ALLY_COLORS)]);
     let p = Player::P0;
@@ -431,6 +478,8 @@ fn effective_ally_colors_include_kindred_and_count_each_live_color_once() {
     assert!(!game.is_creature(kindred));
     assert_eq!(stats(&game, provider), (3, 2));
 
+    game.set_color_effects(&[kindred], 2, AnimationDuration::Permanent);
+    assert_eq!(stats(&game, provider), (2, 2));
     game.set_color_effects(&[kindred], 2 | 8, AnimationDuration::Permanent);
     assert_eq!(stats(&game, provider), (3, 2));
     game.change_controller(object, p.other());
