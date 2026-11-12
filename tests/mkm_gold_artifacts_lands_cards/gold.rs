@@ -175,8 +175,8 @@ fn private_eye_buffs_only_other_controlled_detectives_and_targets_on_draw_two() 
     );
     let other = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     assert_eq!(game.stats(eye).power, 3);
-    assert_eq!(game.stats(own).power, 2);
-    assert_eq!(game.stats(opposing).power, 1);
+    assert_eq!(stats(&game, own).power, 2);
+    assert_eq!(stats(&game, opposing).power, 1);
     assert_eq!(game.stats(other).power, 2);
     let draw = put(&mut game, player, "Quick Study", Zone::Hand);
     cast(&mut game, draw, None);
@@ -782,7 +782,7 @@ fn trostani_uses_both_hybrid_payments_and_grants_all_three_keywords_until_cleanu
         }
         pay(&mut branch);
         settle(&mut branch);
-        assert_eq!(branch.stats(trostani), (4, 4));
+        assert_eq!(stats(&branch, trostani), (4, 4));
     }
     cast(&mut game, trostani, None);
     settle(&mut game);
@@ -838,14 +838,14 @@ fn warleaders_call_pumps_only_its_creatures_and_damages_for_each_controlled_entr
     let opposing = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
     cast(&mut game, call, None);
     settle(&mut game);
-    assert_eq!(game.stats(own), (3, 3));
-    assert_eq!(game.stats(opposing), (2, 2));
+    assert_eq!(stats(&game, own), (3, 3));
+    assert_eq!(stats(&game, opposing), (2, 2));
     assert_eq!(game.state.players[opponent.index()].life, 20);
     for (name, life) in [("Grizzly Bears", 19), ("Bear Cub", 18)] {
         let creature = put(&mut game, player, name, Zone::Hand);
         cast(&mut game, creature, None);
         settle(&mut game);
-        assert_eq!(game.stats(creature), (3, 3));
+        assert_eq!(stats(&game, creature), (3, 3));
         assert_eq!(game.state.players[opponent.index()].life, life);
     }
     assert_eq!(game.state.players[player.index()].life, 20);
