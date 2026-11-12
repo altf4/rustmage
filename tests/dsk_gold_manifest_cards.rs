@@ -360,6 +360,62 @@ fn under_the_skin_offers_any_own_permanent_in_the_graveyard_and_can_decline() {
 }
 
 #[test]
+fn threats_around_every_corner_searches_only_for_controlled_face_down_entries() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let found = put(&mut game, player, "Island", Zone::Library);
+    let ineligible = put(&mut game, player, "Thornwood Falls", Zone::Library);
+    let [milled, facedown] = top_pair(&mut game, player, "Shock", "Bear Cub");
+    cast_named(&mut game, player, "Threats Around Every Corner");
+    reach_manifest(&mut game, player);
+    manifest(&mut game, facedown);
+    progress_until(&mut game, |game| {
+        game.observe(player).search_choice.is_some()
+    });
+    assert!(game.observe(player.other()).search_choice.is_none());
+    assert_eq!(game.object_view(milled).zone, Zone::Graveyard);
+    reject(&mut game, Action::ChooseSearch { card: ineligible });
+    let library_before = game.state.players[player.index()]
+        .library
+        .iter()
+        .copied()
+        .filter(|card| *card != found)
+        .collect::<Vec<_>>();
+    act(&mut game, Action::ChooseSearch { card: found });
+    act(&mut game, Action::FinishSearch);
+    settle(&mut game);
+    assert_eq!(game.object_view(found).zone, Zone::Battlefield);
+    assert!(game.object_view(found).tapped);
+    assert_ne!(
+        game.state.players[player.index()].library.as_slice(),
+        library_before.as_slice()
+    );
+
+    turn_face_up(&mut game, facedown);
+    settle(&mut game);
+    let [_, theirs] = top_pair(&mut game, player.other(), "Forest", "Bear Cub");
+    act(&mut game, Action::Pass);
+    cast_named(&mut game, player.other(), "Growing Dread");
+    reach_manifest(&mut game, player.other());
+    manifest(&mut game, theirs);
+    settle(&mut game);
+    assert!(game.is_face_down(game.object_ref(theirs)));
+
+    let [_, another] = top_pair(&mut game, player, "Shock", "Bear Cub");
+    cast_named(&mut game, player, "Manifest Dread");
+    reach_manifest(&mut game, player);
+    manifest(&mut game, another);
+    progress_until(&mut game, |game| {
+        game.observe(player).search_choice.is_some()
+    });
+    let library_before = game.state.players[player.index()].library.clone();
+    act(&mut game, Action::FinishSearch);
+    settle(&mut game);
+    assert_ne!(game.state.players[player.index()].library, library_before);
+    assert_eq!(game.object_view(ineligible).zone, Zone::Library);
+}
+
+#[test]
 fn valgavoths_onslaught_pays_double_x_and_counters_only_its_two_results() {
     let player = Player::P1;
     let mut game = scenario(player);
