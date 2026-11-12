@@ -77,6 +77,21 @@ fn all_roles_animate_once_before_observers_see_the_combined_entries() {
     );
     act(&mut game, Action::Pass);
     act(&mut game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::EntryTimestamp { player });
+    let exact_target = game.object_ref(target);
+    let exact_enchantment = game.object_ref(enchantment);
+    assert!(
+        game.legal_actions()
+            .contains(&Action::ChooseEntryTimestamp {
+                object: exact_enchantment,
+            })
+    );
+    act(
+        &mut game,
+        Action::ChooseEntryTimestamp {
+            object: exact_target,
+        },
+    );
     for _ in 0..2 {
         if !matches!(game.state.pending, Pending::OrderTriggers { .. }) {
             break;
@@ -85,7 +100,15 @@ fn all_roles_animate_once_before_observers_see_the_combined_entries() {
             matches!(action, Action::PutTrigger { .. })
         });
     }
-    assert_eq!(game.state.stack.len(), 2);
+    assert_eq!(
+        game.state.stack.len(),
+        2,
+        "pending {:?}, land {:?}, enchantment {:?}, stack {:?}",
+        game.state.pending,
+        game.object_view(target).zone,
+        game.object_view(enchantment).zone,
+        game.state.stack,
+    );
     settle(&mut game);
     assert_eq!(game.state.players[player.other().index()].life, 18);
     assert_eq!(game.object_ref(target).generation, generation + 1);
