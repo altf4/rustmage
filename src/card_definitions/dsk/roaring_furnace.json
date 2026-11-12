@@ -1,0 +1,16 @@
+{
+  "name": "Roaring Furnace",
+  "catalogue_id": 5655,
+  "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+  "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+    "index": 0,
+    "sha256": "b1723cda5c989318959b92ea345c97a0cea30a48213632c36cb715816bda63fd"
+  },
+  "physical_metadata_sha256": "d7af67056caa3028f689d2f9de4b22b5e56267aae047fd29359c8a0d194b44a3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RoaringFurnaceSteamingSauna.java",
+  "java_sha256": "6745422aeb8c6841ebacfe3bd5078894d052cd28c0f89ff6384beb7b210ca7c5"
+}

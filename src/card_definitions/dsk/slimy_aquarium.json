@@ -1,0 +1,16 @@
+{
+  "name": "Slimy Aquarium",
+  "catalogue_id": 5664,
+  "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+  "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+    "index": 1,
+    "sha256": "e99b713d19d2e8e76ab975adddcb9e0b535f111e67c3fef9e4a5e5be034d7c4d"
+  },
+  "physical_metadata_sha256": "70e0789d222435b20a2084fae876cf047956411fca024bf283ca93225c2a8016",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnderwaterTunnelSlimyAquarium.java",
+  "java_sha256": "9904cd6ebbab1e4b343961d77649099950dc43fdc0aeb1f289871089f468c1c2"
+}

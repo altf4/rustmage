@@ -1,0 +1,16 @@
+{
+  "name": "Smoky Lounge",
+  "catalogue_id": 5657,
+  "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+  "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+    "index": 0,
+    "sha256": "12896d57625c8d1c0efbcb6a6ca76ede19c5aee687c856db0df50a476afb2aed"
+  },
+  "physical_metadata_sha256": "5572ece3cf946c7bfa85e36bbe52b12c7f9dc7a5d4c5ae1a35e79d98f7a27dfa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SmokyLoungeMistySalon.java",
+  "java_sha256": "4e81c20eb9197546f78a357fc670ac54d51ccd669ad8e087567ac7dcd92ee290"
+}

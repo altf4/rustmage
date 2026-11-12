@@ -1,0 +1,16 @@
+{
+  "name": "Drowned Diner",
+  "catalogue_id": 5646,
+  "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+  "facts_sha256": "4fb3381bd2bd0e2f7dfba9aa8fed610ef1f9e276870402e71ae53585879fd063",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+    "index": 1,
+    "sha256": "dbae7dd86609d7a9c5719d8d4947fcf7d90ffeec8f8fde59ef81d6fa1a4eaad7"
+  },
+  "physical_metadata_sha256": "86cf33b9762689e3c28db21d3594ae8b25b67f11e412f992515f86c8a9b4734f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeatLockerDrownedDiner.java",
+  "java_sha256": "bfcbd79d8a612cc1da4d182e30b8544bfb1570d3c2a7ffd0e73e2c747c4533c1"
+}

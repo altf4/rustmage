@@ -1,0 +1,16 @@
+{
+  "name": "Grand Entryway",
+  "catalogue_id": 5641,
+  "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+  "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+    "index": 0,
+    "sha256": "3cd70fb34bac1986cdca48c1897a71bc58a50ce9d6482bbecd4786563b12ea7d"
+  },
+  "physical_metadata_sha256": "d9528ee7c5d85bccd51306d7c1445aba121b695120f5fb5c54c2de8dc78c4bdc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrandEntrywayElegantRotunda.java",
+  "java_sha256": "a2e6163976ae08ea4f65f3d44377e4d824b072e53830485d1f2124edec2fe612"
+}

@@ -22,7 +22,7 @@ def validate_simple_mana_components(metadata, records):
     """Check fixed printed components, skipping hybrid and other special symbols."""
     checked = 0
     for card in metadata['cards']:
-        if card['category'] not in ('physical', 'back_face') or not records[card['index']]['complete']:
+        if card['category'] not in ('physical', 'back_face', 'room_face') or not records[card['index']]['complete']:
             continue
         card = dict(card, **card.get('front_face', {}))
         cost = card['mana_cost']
@@ -96,6 +96,7 @@ def load(root=ROOT):
         records[index]=dict(record,source=source,relative=source.relative_to(root).as_posix())
         fingerprint.extend(canonical(record));fingerprint.extend(source.read_bytes())
     if records.keys()!=by_id.keys():raise ValueError('missing card definitions: '+str(sorted(by_id.keys()-records.keys())))
+    room_faces = defaultdict(list)
     for card in metadata['cards']:
         if 'front_face' in card:
             oracle = facts[card['oracle_id']]
@@ -105,10 +106,28 @@ def load(root=ROOT):
             if oracle['layout'] in ('modal_dfc', 'transform'):
                 back = by_id[card['back_face']]
                 if back['face_parent'] != card['index'] or any(back[key] != oracle['card_faces'][1][key] for key in ['name','mana_cost','type_line']): raise ValueError('back face facts changed')
-        face_pin = records[card['index']].get('oracle_face')
+        record = records[card['index']]
+        face_pin = record.get('oracle_face')
+        if card['category'] == 'room_face':
+            oracle_id = card['oracle_id']
+            if (not face_pin or face_pin['oracle_id'] != oracle_id
+                    or oracle_id not in by_oracle or card['standard_legal']
+                    or facts[oracle_id]['layout'] != 'split'
+                    or face_pin['index'] not in (0, 1)
+                    or 'face_parent' in card or 'back_face' in card):
+                raise ValueError('invalid nondeck Room face: ' + card['name'])
+            room_faces[oracle_id].append(face_pin['index'])
+            if record['complete'] != records[by_oracle[oracle_id]['index']]['complete']:
+                raise ValueError('Room admission differs between card and face: ' + card['name'])
         if face_pin:
             face = facts[face_pin['oracle_id']]['card_faces'][face_pin['index']]
             if hashlib.sha256(canonical(face)).hexdigest() != face_pin['sha256']: raise ValueError('Oracle face pin changed')
+            if card['category'] == 'room_face' and any(
+                    card[key] != face[key] for key in ('name', 'mana_cost', 'type_line')):
+                raise ValueError('Room face facts changed: ' + card['name'])
+    for oracle_id, faces in room_faces.items():
+        if sorted(faces) != [0, 1]:
+            raise ValueError('expected both pinned Room faces: ' + by_oracle[oracle_id]['name'])
     validate_simple_mana_components(metadata, records)
     fingerprint.extend((root/'crates/engine/src/card_definitions/mod.rs').read_bytes())
     return metadata,records,hashlib.sha256(fingerprint).hexdigest()

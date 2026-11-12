@@ -1,0 +1,16 @@
+{
+  "name": "Restricted Office",
+  "catalogue_id": 5653,
+  "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+  "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+    "index": 0,
+    "sha256": "8d866ab579ad2031557f1c77a891e821db508e0ebdc654b3c3b9de1cdc462ff1"
+  },
+  "physical_metadata_sha256": "b10c0ce5bc6348854e71058d9e8542fe09a7edc21e752d050aa02895a6523f7e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RestrictedOfficeLectureHall.java",
+  "java_sha256": "e8848b0d22a108cdb0023341e38c1e690e563bea382cc474157ff678674e7e1c"
+}

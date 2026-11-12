@@ -1,0 +1,16 @@
+{
+  "name": "Lecture Hall",
+  "catalogue_id": 5654,
+  "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+  "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+    "index": 1,
+    "sha256": "e30c8f43db91d93e23aa69aae99f54c9c1c232ee1c4abc9091f43113480e66ac"
+  },
+  "physical_metadata_sha256": "84fd2618a66a269651292ad78361bdedfa00a18b4d0aec8542cb0b9f71f540c5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RestrictedOfficeLectureHall.java",
+  "java_sha256": "e8848b0d22a108cdb0023341e38c1e690e563bea382cc474157ff678674e7e1c"
+}

@@ -328,6 +328,39 @@
           "released_at": "2024-08-02"
         }
       }
+    },
+    {
+      "facts_sha256": "7415c197781bff787072a6e993b2ec44b60c5f869ac24482a021cd0111023bd1",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/dsk/157",
+      "source_response_sha256": "a18410883243cb6131c5bfc1ccd181a2a687b3b9403868eb853dbdbbd34fc32a",
+      "facts": {
+        "oracle_id": "fcb7c93c-46ab-49b5-a6e0-35d73f3be8f0",
+        "name": "Screaming Nemesis",
+        "layout": "normal",
+        "mana_cost": "{2}{R}",
+        "cmc": 3.0,
+        "type_line": "Creature — Spirit",
+        "oracle_text": "Haste\nWhenever this creature is dealt damage, it deals that much damage to any other target. If a player is dealt damage this way, they can't gain life for the rest of the game.",
+        "power": "3",
+        "toughness": "3",
+        "colors": [
+          "R"
+        ],
+        "color_identity": [
+          "R"
+        ],
+        "keywords": [
+          "Haste"
+        ],
+        "reference_printing": {
+          "id": "ce35e6fb-ff54-44c4-a216-7ddd37f46882",
+          "set": "dsk",
+          "collector_number": "157",
+          "released_at": "2024-09-27"
+        }
+      }
     }
   ]
 }

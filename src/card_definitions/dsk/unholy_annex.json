@@ -1,0 +1,16 @@
+{
+  "name": "Unholy Annex",
+  "catalogue_id": 5665,
+  "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+  "facts_sha256": "7cb6ff1136187b89668bbdc696844ddd17d23b44518716ee78b5fb9e26edfec7",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+    "index": 0,
+    "sha256": "6e9dbea911ecd46904ea50959d610c472a685c35d77e40ae77bb8088ac4c5950"
+  },
+  "physical_metadata_sha256": "c8054d909ad8cd5438beb1b1530e8cab055911a6b1152594c28aa197dbbb996a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnholyAnnexRitualChamber.java",
+  "java_sha256": "8d9eb1dde559fe76ce2bfea2110ed339d605ac1c939309e17b5a18c649169673"
+}

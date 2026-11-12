@@ -1,0 +1,16 @@
+{
+  "name": "Weight Room",
+  "catalogue_id": 5650,
+  "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+  "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+    "index": 1,
+    "sha256": "7c063fadb6e5ef5dd81d4f9edc8ce68317581955112cbebe5719118c90cf35da"
+  },
+  "physical_metadata_sha256": "f38f4339cce910054b3edb8b4c56066279609f9b5491c1a7076e86db715c4989",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MolderingGymWeightRoom.java",
+  "java_sha256": "5f2a8998f1012d5dc846a8e6b685a767c38c33547223bc6d6b379ff8f97a3dd8"
+}

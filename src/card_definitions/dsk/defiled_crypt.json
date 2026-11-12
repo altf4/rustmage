@@ -1,0 +1,16 @@
+{
+  "name": "Defiled Crypt",
+  "catalogue_id": 5631,
+  "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+  "facts_sha256": "10c73b92929d1cbfbd77e8b639d6269bb8e6f6f7f13edb4a24dc0d1a63f67de4",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+    "index": 0,
+    "sha256": "c79fa10d3511e9a7eded9281c6e4653227ff9cf39d6bf6e6e61ef7320864f77f"
+  },
+  "physical_metadata_sha256": "1506df6ade0c6ccc7697bf6fc7b643e9a899ad6b922b2d8941d7b52f26bf14d7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DefiledCryptCadaverLab.java",
+  "java_sha256": "f5edac058f076b7f0576971ecb718b876b82bba2603b8956a2b56d09c3bb35eb"
+}

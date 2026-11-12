@@ -1,0 +1,16 @@
+{
+  "name": "Misty Salon",
+  "catalogue_id": 5658,
+  "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+  "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+    "index": 1,
+    "sha256": "8a9b4edf28eb7ba1622efcd6f8aebd46d545d1f52a756ccc54900e268773a6cd"
+  },
+  "physical_metadata_sha256": "29268a7eeebd360b98542b942111910b6bb780d5cfd30b7d282c3e7f2d0827b6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SmokyLoungeMistySalon.java",
+  "java_sha256": "4e81c20eb9197546f78a357fc670ac54d51ccd669ad8e087567ac7dcd92ee290"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Forgotten Cellar",
+  "catalogue_id": 5668,
+  "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+  "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+    "index": 1,
+    "sha256": "df8b2df60f7830d6d5a27a40411792839b998b09eaa01bf3044c064290d0244f"
+  },
+  "physical_metadata_sha256": "79b9a3abc63151aece2abda77ce79f5233a02ecb3413e3f80c9b676623ace9b0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WalkInClosetForgottenCellar.java",
+  "java_sha256": "5f4440eb832d57cf2bd90cad792998871590bf090b79ea8a5868e893bb829169"
+}

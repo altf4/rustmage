@@ -1,0 +1,16 @@
+{
+  "name": "Widow's Walk",
+  "catalogue_id": 5634,
+  "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+  "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+    "index": 1,
+    "sha256": "5c0fad59ed9dab2ed2e05e48f6a57c262a11174721b1f45c0ab473fa242d4a9a"
+  },
+  "physical_metadata_sha256": "17ec31c918c414465a8fef5347ac75aaada2709ae0d27dc74b052d91e3998df7",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DerelictAtticWidowsWalk.java",
+  "java_sha256": "3cf23e75f522331719b9537ede13916c779ac4111589f72fcf62238e662a14de"
+}

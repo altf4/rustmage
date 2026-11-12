@@ -1,0 +1,16 @@
+{
+  "name": "Shattered Yard",
+  "catalogue_id": 5640,
+  "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+  "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+    "index": 1,
+    "sha256": "1db9d05968218f9756662553155177e8d166f62e9364ed94ca77f3eeea2b7086"
+  },
+  "physical_metadata_sha256": "b7299f42016a5b1e615ce3c8a2fc2d30c2abab8d386aca655d5e291e2b4f512b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlassworksShatteredYard.java",
+  "java_sha256": "68cc160bb2f692300793e537d444a26d6ab9efc8e171086d18e4a66c035b89ae"
+}

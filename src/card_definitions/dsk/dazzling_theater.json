@@ -1,0 +1,16 @@
+{
+  "name": "Dazzling Theater",
+  "catalogue_id": 5629,
+  "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+  "facts_sha256": "28a84da97fccda9a19930713fea7ede8d0ab383c7832615ca2a8660b96827ee9",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+    "index": 0,
+    "sha256": "329777fa0db6f6be075ef2a8cdf2ca0abf571578865234a1d63bbc78fa2a58a0"
+  },
+  "physical_metadata_sha256": "b8bfe87488c672e84d457cc326eb9c99089ee675965e085a5578778259b993dc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DazzlingTheaterPropRoom.java",
+  "java_sha256": "eeae369abb70a9dcbe02f333f2ddcd061d5fe83226c6d486e96e047877a509d3"
+}

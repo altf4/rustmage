@@ -1403,6 +1403,13 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/scrabbling_skullcrab.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_3739 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/screaming_nemesis.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 pub(super) mod card_3777 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
@@ -1858,9 +1865,331 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/winter_misanthropic_guide.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5623 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/bottomless_pool.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5624 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/locker_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5625 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/central_elevator.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5626 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/promising_stairs.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5627 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/charred_foyer.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5628 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/warped_space.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5629 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/dazzling_theater.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5630 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/prop_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5631 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/defiled_crypt.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5632 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/cadaver_lab.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5633 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/derelict_attic.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5634 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/widows_walk.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5635 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/dollmakers_shop.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5636 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/porcelain_gallery.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5637 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/funeral_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5638 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/awakening_hall.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5639 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/glassworks.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5640 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/shattered_yard.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5641 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/grand_entryway.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5642 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/elegant_rotunda.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5643 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/greenhouse.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5644 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/rickety_gazebo.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5645 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/meat_locker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5646 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/drowned_diner.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5647 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/mirror_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5648 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/fractured_realm.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5649 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/moldering_gym.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5650 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/weight_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5651 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/painters_studio.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5652 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/defaced_gallery.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5653 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/restricted_office.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5654 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/lecture_hall.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5655 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/roaring_furnace.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5656 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/steaming_sauna.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5657 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/smoky_lounge.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5658 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/misty_salon.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5659 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/surgical_suite.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5660 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/hospital_room.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5661 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/ticket_booth.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5662 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/tunnel_of_hate.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5663 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/underwater_tunnel.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5664 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/slimy_aquarium.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5665 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/unholy_annex.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5666 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/ritual_chamber.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5667 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/walk_in_closet.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5668 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/dsk/forgotten_cellar.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 264] = [
+pub static ENTRIES: [CatalogueEntry; 311] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Abandoned Campground", oracle_id: Some("0eec9984-cd11-4a52-9234-469c6a5fb9aa"), mana_cost: "", type_line: "Land", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_0028::RULES.keywords, deck_limit: authored::card_0028::RULES.deck_limit }, effect: authored::card_0028::RULES.checked_effect(), triggers: authored::card_0028::RULES.triggers, activated: authored::card_0028::RULES.activated, enters: authored::card_0028::RULES.enters, entry: authored::card_0028::RULES.entry, kind: 2, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_0028::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Abhorrent Oculus", oracle_id: Some("b1a0e129-27f0-4a09-b00d-497e18777306"), mana_cost: "{2}{U}", type_line: "Creature — Eye", oracle_keywords: &["Flying", "Manifest", "Manifest dread"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0030::RULES.keywords, deck_limit: authored::card_0030::RULES.deck_limit }, effect: authored::card_0030::RULES.effect, triggers: authored::card_0030::RULES.triggers, activated: authored::card_0030::RULES.activated, enters: authored::card_0030::RULES.enters, entry: authored::card_0030::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_0030::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Acrobatic Cheerleader", oracle_id: Some("d8ce3f18-26fe-47e8-be8b-0d89d7de7038"), mana_cost: "{1}{W}", type_line: "Creature — Human Survivor", oracle_keywords: &["Survival"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0050::RULES.keywords, deck_limit: authored::card_0050::RULES.deck_limit }, effect: authored::card_0050::RULES.effect, triggers: authored::card_0050::RULES.triggers, activated: authored::card_0050::RULES.activated, enters: authored::card_0050::RULES.enters, entry: authored::card_0050::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_0050::RULES },
@@ -2060,6 +2389,7 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Saw", oracle_i
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Sawblade Skinripper", oracle_id: Some("96fd3ee0-84fb-439b-9e2d-b55afe6850a7"), mana_cost: "{1}{B}{R}", type_line: "Creature — Human Assassin", oracle_keywords: &["Menace"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3702::RULES.keywords, deck_limit: authored::card_3702::RULES.deck_limit }, effect: authored::card_3702::RULES.effect, triggers: authored::card_3702::RULES.triggers, activated: authored::card_3702::RULES.activated, enters: authored::card_3702::RULES.enters, entry: authored::card_3702::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 1, 1, 0, 0], generic: 1 }, rules: &authored::card_3702::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Say Its Name", oracle_id: Some("474f0675-4088-4f77-8081-f9ed7d492837"), mana_cost: "{1}{G}", type_line: "Sorcery", oracle_keywords: &["Mill"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3703::RULES.keywords, deck_limit: authored::card_3703::RULES.deck_limit }, effect: authored::card_3703::RULES.effect, triggers: authored::card_3703::RULES.triggers, activated: authored::card_3703::RULES.activated, enters: authored::card_3703::RULES.enters, entry: authored::card_3703::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 1 }, rules: &authored::card_3703::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Scrabbling Skullcrab", oracle_id: Some("1448489c-dfb8-43aa-ae3d-ed832381c1d9"), mana_cost: "{U}", type_line: "Creature — Crab Skeleton", oracle_keywords: &["Mill", "Eerie"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3734::RULES.keywords, deck_limit: authored::card_3734::RULES.deck_limit }, effect: authored::card_3734::RULES.effect, triggers: authored::card_3734::RULES.triggers, activated: authored::card_3734::RULES.activated, enters: authored::card_3734::RULES.enters, entry: authored::card_3734::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_3734::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Screaming Nemesis", oracle_id: Some("fcb7c93c-46ab-49b5-a6e0-35d73f3be8f0"), mana_cost: "{2}{R}", type_line: "Creature — Spirit", oracle_keywords: &["Haste"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_3739::RULES.keywords, deck_limit: authored::card_3739::RULES.deck_limit }, effect: authored::card_3739::RULES.effect, triggers: authored::card_3739::RULES.triggers, activated: authored::card_3739::RULES.activated, enters: authored::card_3739::RULES.enters, entry: authored::card_3739::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_3739::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Seized from Slumber", oracle_id: Some("7ac608bc-dc2a-43c9-9b3b-1b985c121d60"), mana_cost: "{4}{W}", type_line: "Instant", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_3777::RULES.keywords, deck_limit: authored::card_3777::RULES.deck_limit }, effect: authored::card_3777::RULES.checked_effect(), triggers: authored::card_3777::RULES.triggers, activated: authored::card_3777::RULES.activated, enters: authored::card_3777::RULES.enters, entry: authored::card_3777::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_3777::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Shardmage's Rescue", oracle_id: Some("406247ee-2b86-4068-b5fa-65cdc83a82f4"), mana_cost: "{W}", type_line: "Enchantment — Aura", oracle_keywords: &["Enchant", "Flash"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3813::RULES.keywords, deck_limit: authored::card_3813::RULES.deck_limit }, effect: authored::card_3813::RULES.effect, triggers: authored::card_3813::RULES.triggers, activated: authored::card_3813::RULES.activated, enters: authored::card_3813::RULES.enters, entry: authored::card_3813::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_3813::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Shepherding Spirits", oracle_id: Some("e8ff3e99-eca9-44a5-baac-99ee34df3c36"), mana_cost: "{4}{W}{W}", type_line: "Creature — Spirit", oracle_keywords: &["Flying", "Plainscycling", "Landcycling", "Typecycling", "Cycling"], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_3827::RULES.keywords, deck_limit: authored::card_3827::RULES.deck_limit }, effect: authored::card_3827::RULES.checked_effect(), triggers: authored::card_3827::RULES.triggers, activated: authored::card_3827::RULES.activated, enters: authored::card_3827::RULES.enters, entry: authored::card_3827::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [2, 0, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_3827::RULES },
@@ -2125,6 +2455,52 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Wickerfolk Thr
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Wildfire Wickerfolk", oracle_id: Some("50c7b13d-f217-45de-837c-49f934840368"), mana_cost: "{R}{G}", type_line: "Artifact Creature — Scarecrow", oracle_keywords: &["Delirium", "Haste"], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_5065::RULES.keywords, deck_limit: authored::card_5065::RULES.deck_limit }, effect: authored::card_5065::RULES.checked_effect(), triggers: authored::card_5065::RULES.triggers, activated: authored::card_5065::RULES.activated, enters: authored::card_5065::RULES.enters, entry: authored::card_5065::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 1, 1, 0], generic: 0 }, rules: &authored::card_5065::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Winter's Intervention", oracle_id: Some("91967284-6711-4ef3-bb9b-5ba873da8bb2"), mana_cost: "{1}{B}", type_line: "Instant", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_5083::RULES.keywords, deck_limit: authored::card_5083::RULES.deck_limit }, effect: authored::card_5083::RULES.checked_effect(), triggers: authored::card_5083::RULES.triggers, activated: authored::card_5083::RULES.activated, enters: authored::card_5083::RULES.enters, entry: authored::card_5083::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_5083::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Winter, Misanthropic Guide", oracle_id: Some("5a9baafb-bffd-4e28-bbe1-b4154cd86bf3"), mana_cost: "{1}{B}{R}{G}", type_line: "Legendary Creature — Human Warlock", oracle_keywords: &["Delirium", "Ward"], standard_legal: true, legendary: true, implemented: false, keywords: authored::card_5085::RULES.keywords, deck_limit: authored::card_5085::RULES.deck_limit }, effect: authored::card_5085::RULES.effect, triggers: authored::card_5085::RULES.triggers, activated: authored::card_5085::RULES.activated, enters: authored::card_5085::RULES.enters, entry: authored::card_5085::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 1, 1, 1, 0], generic: 1 }, rules: &authored::card_5085::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Bottomless Pool", oracle_id: Some("b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff"), mana_cost: "{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5623::RULES.keywords, deck_limit: authored::card_5623::RULES.deck_limit }, effect: authored::card_5623::RULES.effect, triggers: authored::card_5623::RULES.triggers, activated: authored::card_5623::RULES.activated, enters: authored::card_5623::RULES.enters, entry: authored::card_5623::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5623::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Locker Room", oracle_id: Some("b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff"), mana_cost: "{4}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5624::RULES.keywords, deck_limit: authored::card_5624::RULES.deck_limit }, effect: authored::card_5624::RULES.effect, triggers: authored::card_5624::RULES.triggers, activated: authored::card_5624::RULES.activated, enters: authored::card_5624::RULES.enters, entry: authored::card_5624::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_5624::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Central Elevator", oracle_id: Some("927fa223-69a3-4563-80b1-b578f3d031f1"), mana_cost: "{3}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5625::RULES.keywords, deck_limit: authored::card_5625::RULES.deck_limit }, effect: authored::card_5625::RULES.effect, triggers: authored::card_5625::RULES.triggers, activated: authored::card_5625::RULES.activated, enters: authored::card_5625::RULES.enters, entry: authored::card_5625::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5625::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Promising Stairs", oracle_id: Some("927fa223-69a3-4563-80b1-b578f3d031f1"), mana_cost: "{2}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5626::RULES.keywords, deck_limit: authored::card_5626::RULES.deck_limit }, effect: authored::card_5626::RULES.effect, triggers: authored::card_5626::RULES.triggers, activated: authored::card_5626::RULES.activated, enters: authored::card_5626::RULES.enters, entry: authored::card_5626::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5626::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Charred Foyer", oracle_id: Some("9f50ec9f-78e6-403f-8f41-84d603fee0eb"), mana_cost: "{3}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5627::RULES.keywords, deck_limit: authored::card_5627::RULES.deck_limit }, effect: authored::card_5627::RULES.effect, triggers: authored::card_5627::RULES.triggers, activated: authored::card_5627::RULES.activated, enters: authored::card_5627::RULES.enters, entry: authored::card_5627::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 3 }, rules: &authored::card_5627::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Warped Space", oracle_id: Some("9f50ec9f-78e6-403f-8f41-84d603fee0eb"), mana_cost: "{4}{R}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5628::RULES.keywords, deck_limit: authored::card_5628::RULES.deck_limit }, effect: authored::card_5628::RULES.effect, triggers: authored::card_5628::RULES.triggers, activated: authored::card_5628::RULES.activated, enters: authored::card_5628::RULES.enters, entry: authored::card_5628::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 2, 0, 0], generic: 4 }, rules: &authored::card_5628::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Dazzling Theater", oracle_id: Some("c46a02db-13d6-477f-9da0-822599470168"), mana_cost: "{3}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5629::RULES.keywords, deck_limit: authored::card_5629::RULES.deck_limit }, effect: authored::card_5629::RULES.effect, triggers: authored::card_5629::RULES.triggers, activated: authored::card_5629::RULES.activated, enters: authored::card_5629::RULES.enters, entry: authored::card_5629::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5629::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Prop Room", oracle_id: Some("c46a02db-13d6-477f-9da0-822599470168"), mana_cost: "{2}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5630::RULES.keywords, deck_limit: authored::card_5630::RULES.deck_limit }, effect: authored::card_5630::RULES.effect, triggers: authored::card_5630::RULES.triggers, activated: authored::card_5630::RULES.activated, enters: authored::card_5630::RULES.enters, entry: authored::card_5630::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5630::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Defiled Crypt", oracle_id: Some("f97de425-c7ab-4688-8606-159370d179ee"), mana_cost: "{3}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5631::RULES.keywords, deck_limit: authored::card_5631::RULES.deck_limit }, effect: authored::card_5631::RULES.effect, triggers: authored::card_5631::RULES.triggers, activated: authored::card_5631::RULES.activated, enters: authored::card_5631::RULES.enters, entry: authored::card_5631::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 3 }, rules: &authored::card_5631::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Cadaver Lab", oracle_id: Some("f97de425-c7ab-4688-8606-159370d179ee"), mana_cost: "{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5632::RULES.keywords, deck_limit: authored::card_5632::RULES.deck_limit }, effect: authored::card_5632::RULES.effect, triggers: authored::card_5632::RULES.triggers, activated: authored::card_5632::RULES.activated, enters: authored::card_5632::RULES.enters, entry: authored::card_5632::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 0 }, rules: &authored::card_5632::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Derelict Attic", oracle_id: Some("993b7b94-ed06-422d-9c7e-52a74ce9d045"), mana_cost: "{2}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5633::RULES.keywords, deck_limit: authored::card_5633::RULES.deck_limit }, effect: authored::card_5633::RULES.effect, triggers: authored::card_5633::RULES.triggers, activated: authored::card_5633::RULES.activated, enters: authored::card_5633::RULES.enters, entry: authored::card_5633::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 2 }, rules: &authored::card_5633::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Widow's Walk", oracle_id: Some("993b7b94-ed06-422d-9c7e-52a74ce9d045"), mana_cost: "{3}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5634::RULES.keywords, deck_limit: authored::card_5634::RULES.deck_limit }, effect: authored::card_5634::RULES.effect, triggers: authored::card_5634::RULES.triggers, activated: authored::card_5634::RULES.activated, enters: authored::card_5634::RULES.enters, entry: authored::card_5634::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 3 }, rules: &authored::card_5634::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Dollmaker's Shop", oracle_id: Some("e633412b-e36b-4ec5-b0d0-7cb24c7503f4"), mana_cost: "{1}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5635::RULES.keywords, deck_limit: authored::card_5635::RULES.deck_limit }, effect: authored::card_5635::RULES.effect, triggers: authored::card_5635::RULES.triggers, activated: authored::card_5635::RULES.activated, enters: authored::card_5635::RULES.enters, entry: authored::card_5635::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5635::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Porcelain Gallery", oracle_id: Some("e633412b-e36b-4ec5-b0d0-7cb24c7503f4"), mana_cost: "{4}{W}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5636::RULES.keywords, deck_limit: authored::card_5636::RULES.deck_limit }, effect: authored::card_5636::RULES.effect, triggers: authored::card_5636::RULES.triggers, activated: authored::card_5636::RULES.activated, enters: authored::card_5636::RULES.enters, entry: authored::card_5636::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [2, 0, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_5636::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Funeral Room", oracle_id: Some("a39d541e-86c1-4595-a2e9-f107def5bbc6"), mana_cost: "{2}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5637::RULES.keywords, deck_limit: authored::card_5637::RULES.deck_limit }, effect: authored::card_5637::RULES.effect, triggers: authored::card_5637::RULES.triggers, activated: authored::card_5637::RULES.activated, enters: authored::card_5637::RULES.enters, entry: authored::card_5637::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 2 }, rules: &authored::card_5637::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Awakening Hall", oracle_id: Some("a39d541e-86c1-4595-a2e9-f107def5bbc6"), mana_cost: "{6}{B}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5638::RULES.keywords, deck_limit: authored::card_5638::RULES.deck_limit }, effect: authored::card_5638::RULES.effect, triggers: authored::card_5638::RULES.triggers, activated: authored::card_5638::RULES.activated, enters: authored::card_5638::RULES.enters, entry: authored::card_5638::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 2, 0, 0, 0], generic: 6 }, rules: &authored::card_5638::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Glassworks", oracle_id: Some("4122720b-cad9-4ebb-b458-be71411c21e3"), mana_cost: "{2}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5639::RULES.keywords, deck_limit: authored::card_5639::RULES.deck_limit }, effect: authored::card_5639::RULES.effect, triggers: authored::card_5639::RULES.triggers, activated: authored::card_5639::RULES.activated, enters: authored::card_5639::RULES.enters, entry: authored::card_5639::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5639::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Shattered Yard", oracle_id: Some("4122720b-cad9-4ebb-b458-be71411c21e3"), mana_cost: "{4}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5640::RULES.keywords, deck_limit: authored::card_5640::RULES.deck_limit }, effect: authored::card_5640::RULES.effect, triggers: authored::card_5640::RULES.triggers, activated: authored::card_5640::RULES.activated, enters: authored::card_5640::RULES.enters, entry: authored::card_5640::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 4 }, rules: &authored::card_5640::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Grand Entryway", oracle_id: Some("f7574379-d10e-4bbf-b0b1-13feee753d8b"), mana_cost: "{1}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5641::RULES.keywords, deck_limit: authored::card_5641::RULES.deck_limit }, effect: authored::card_5641::RULES.effect, triggers: authored::card_5641::RULES.triggers, activated: authored::card_5641::RULES.activated, enters: authored::card_5641::RULES.enters, entry: authored::card_5641::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5641::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Elegant Rotunda", oracle_id: Some("f7574379-d10e-4bbf-b0b1-13feee753d8b"), mana_cost: "{2}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5642::RULES.keywords, deck_limit: authored::card_5642::RULES.deck_limit }, effect: authored::card_5642::RULES.effect, triggers: authored::card_5642::RULES.triggers, activated: authored::card_5642::RULES.activated, enters: authored::card_5642::RULES.enters, entry: authored::card_5642::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5642::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Greenhouse", oracle_id: Some("a341eb75-e6a0-468b-8c83-61102249c648"), mana_cost: "{2}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5643::RULES.keywords, deck_limit: authored::card_5643::RULES.deck_limit }, effect: authored::card_5643::RULES.effect, triggers: authored::card_5643::RULES.triggers, activated: authored::card_5643::RULES.activated, enters: authored::card_5643::RULES.enters, entry: authored::card_5643::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_5643::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Rickety Gazebo", oracle_id: Some("a341eb75-e6a0-468b-8c83-61102249c648"), mana_cost: "{3}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5644::RULES.keywords, deck_limit: authored::card_5644::RULES.deck_limit }, effect: authored::card_5644::RULES.effect, triggers: authored::card_5644::RULES.triggers, activated: authored::card_5644::RULES.activated, enters: authored::card_5644::RULES.enters, entry: authored::card_5644::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 3 }, rules: &authored::card_5644::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Meat Locker", oracle_id: Some("897eef47-3e99-4a5f-8a3e-ddb06bc95e9a"), mana_cost: "{2}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5645::RULES.keywords, deck_limit: authored::card_5645::RULES.deck_limit }, effect: authored::card_5645::RULES.effect, triggers: authored::card_5645::RULES.triggers, activated: authored::card_5645::RULES.activated, enters: authored::card_5645::RULES.enters, entry: authored::card_5645::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5645::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Drowned Diner", oracle_id: Some("897eef47-3e99-4a5f-8a3e-ddb06bc95e9a"), mana_cost: "{3}{U}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5646::RULES.keywords, deck_limit: authored::card_5646::RULES.deck_limit }, effect: authored::card_5646::RULES.effect, triggers: authored::card_5646::RULES.triggers, activated: authored::card_5646::RULES.activated, enters: authored::card_5646::RULES.enters, entry: authored::card_5646::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 2, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5646::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Mirror Room", oracle_id: Some("e7a1c21b-5966-4ce0-a925-0b3cb3c3db00"), mana_cost: "{2}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5647::RULES.keywords, deck_limit: authored::card_5647::RULES.deck_limit }, effect: authored::card_5647::RULES.effect, triggers: authored::card_5647::RULES.triggers, activated: authored::card_5647::RULES.activated, enters: authored::card_5647::RULES.enters, entry: authored::card_5647::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5647::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Fractured Realm", oracle_id: Some("e7a1c21b-5966-4ce0-a925-0b3cb3c3db00"), mana_cost: "{5}{U}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5648::RULES.keywords, deck_limit: authored::card_5648::RULES.deck_limit }, effect: authored::card_5648::RULES.effect, triggers: authored::card_5648::RULES.triggers, activated: authored::card_5648::RULES.activated, enters: authored::card_5648::RULES.enters, entry: authored::card_5648::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 2, 0, 0, 0, 0], generic: 5 }, rules: &authored::card_5648::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Moldering Gym", oracle_id: Some("34d0d070-fcaf-410e-a002-012cbe104fb7"), mana_cost: "{2}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5649::RULES.keywords, deck_limit: authored::card_5649::RULES.deck_limit }, effect: authored::card_5649::RULES.effect, triggers: authored::card_5649::RULES.triggers, activated: authored::card_5649::RULES.activated, enters: authored::card_5649::RULES.enters, entry: authored::card_5649::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_5649::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Weight Room", oracle_id: Some("34d0d070-fcaf-410e-a002-012cbe104fb7"), mana_cost: "{5}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5650::RULES.keywords, deck_limit: authored::card_5650::RULES.deck_limit }, effect: authored::card_5650::RULES.effect, triggers: authored::card_5650::RULES.triggers, activated: authored::card_5650::RULES.activated, enters: authored::card_5650::RULES.enters, entry: authored::card_5650::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 5 }, rules: &authored::card_5650::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Painter's Studio", oracle_id: Some("2af01e09-f233-4675-89cd-470816471c62"), mana_cost: "{2}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5651::RULES.keywords, deck_limit: authored::card_5651::RULES.deck_limit }, effect: authored::card_5651::RULES.effect, triggers: authored::card_5651::RULES.triggers, activated: authored::card_5651::RULES.activated, enters: authored::card_5651::RULES.enters, entry: authored::card_5651::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5651::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Defaced Gallery", oracle_id: Some("2af01e09-f233-4675-89cd-470816471c62"), mana_cost: "{1}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5652::RULES.keywords, deck_limit: authored::card_5652::RULES.deck_limit }, effect: authored::card_5652::RULES.effect, triggers: authored::card_5652::RULES.triggers, activated: authored::card_5652::RULES.activated, enters: authored::card_5652::RULES.enters, entry: authored::card_5652::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5652::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Restricted Office", oracle_id: Some("b36286fa-4007-4276-af9c-d8f0da9e94d1"), mana_cost: "{2}{W}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5653::RULES.keywords, deck_limit: authored::card_5653::RULES.deck_limit }, effect: authored::card_5653::RULES.effect, triggers: authored::card_5653::RULES.triggers, activated: authored::card_5653::RULES.activated, enters: authored::card_5653::RULES.enters, entry: authored::card_5653::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [2, 0, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5653::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Lecture Hall", oracle_id: Some("b36286fa-4007-4276-af9c-d8f0da9e94d1"), mana_cost: "{5}{U}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5654::RULES.keywords, deck_limit: authored::card_5654::RULES.deck_limit }, effect: authored::card_5654::RULES.effect, triggers: authored::card_5654::RULES.triggers, activated: authored::card_5654::RULES.activated, enters: authored::card_5654::RULES.enters, entry: authored::card_5654::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 2, 0, 0, 0, 0], generic: 5 }, rules: &authored::card_5654::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Roaring Furnace", oracle_id: Some("d5f31713-d380-42ba-8052-4b8d9beb3958"), mana_cost: "{1}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5655::RULES.keywords, deck_limit: authored::card_5655::RULES.deck_limit }, effect: authored::card_5655::RULES.effect, triggers: authored::card_5655::RULES.triggers, activated: authored::card_5655::RULES.activated, enters: authored::card_5655::RULES.enters, entry: authored::card_5655::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 1 }, rules: &authored::card_5655::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Steaming Sauna", oracle_id: Some("d5f31713-d380-42ba-8052-4b8d9beb3958"), mana_cost: "{3}{U}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5656::RULES.keywords, deck_limit: authored::card_5656::RULES.deck_limit }, effect: authored::card_5656::RULES.effect, triggers: authored::card_5656::RULES.triggers, activated: authored::card_5656::RULES.activated, enters: authored::card_5656::RULES.enters, entry: authored::card_5656::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 2, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5656::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Smoky Lounge", oracle_id: Some("4f70b0ee-c24c-45fa-b878-9ba69266344f"), mana_cost: "{2}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5657::RULES.keywords, deck_limit: authored::card_5657::RULES.deck_limit }, effect: authored::card_5657::RULES.effect, triggers: authored::card_5657::RULES.triggers, activated: authored::card_5657::RULES.activated, enters: authored::card_5657::RULES.enters, entry: authored::card_5657::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5657::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Misty Salon", oracle_id: Some("4f70b0ee-c24c-45fa-b878-9ba69266344f"), mana_cost: "{3}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5658::RULES.keywords, deck_limit: authored::card_5658::RULES.deck_limit }, effect: authored::card_5658::RULES.effect, triggers: authored::card_5658::RULES.triggers, activated: authored::card_5658::RULES.activated, enters: authored::card_5658::RULES.enters, entry: authored::card_5658::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5658::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Surgical Suite", oracle_id: Some("68bb76af-f933-430a-a66a-fe4a7d6be4e0"), mana_cost: "{1}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5659::RULES.keywords, deck_limit: authored::card_5659::RULES.deck_limit }, effect: authored::card_5659::RULES.effect, triggers: authored::card_5659::RULES.triggers, activated: authored::card_5659::RULES.activated, enters: authored::card_5659::RULES.enters, entry: authored::card_5659::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5659::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Hospital Room", oracle_id: Some("68bb76af-f933-430a-a66a-fe4a7d6be4e0"), mana_cost: "{3}{W}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5660::RULES.keywords, deck_limit: authored::card_5660::RULES.deck_limit }, effect: authored::card_5660::RULES.effect, triggers: authored::card_5660::RULES.triggers, activated: authored::card_5660::RULES.activated, enters: authored::card_5660::RULES.enters, entry: authored::card_5660::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5660::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Ticket Booth", oracle_id: Some("4d01b62b-b924-4da5-8ff5-b2f29d7f19b2"), mana_cost: "{2}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5661::RULES.keywords, deck_limit: authored::card_5661::RULES.deck_limit }, effect: authored::card_5661::RULES.effect, triggers: authored::card_5661::RULES.triggers, activated: authored::card_5661::RULES.activated, enters: authored::card_5661::RULES.enters, entry: authored::card_5661::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5661::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Tunnel of Hate", oracle_id: Some("4d01b62b-b924-4da5-8ff5-b2f29d7f19b2"), mana_cost: "{4}{R}{R}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5662::RULES.keywords, deck_limit: authored::card_5662::RULES.deck_limit }, effect: authored::card_5662::RULES.effect, triggers: authored::card_5662::RULES.triggers, activated: authored::card_5662::RULES.activated, enters: authored::card_5662::RULES.enters, entry: authored::card_5662::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 2, 0, 0], generic: 4 }, rules: &authored::card_5662::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Underwater Tunnel", oracle_id: Some("2b46394e-d337-4b1a-88e6-7fdac2ee4ac4"), mana_cost: "{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5663::RULES.keywords, deck_limit: authored::card_5663::RULES.deck_limit }, effect: authored::card_5663::RULES.effect, triggers: authored::card_5663::RULES.triggers, activated: authored::card_5663::RULES.activated, enters: authored::card_5663::RULES.enters, entry: authored::card_5663::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5663::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Slimy Aquarium", oracle_id: Some("2b46394e-d337-4b1a-88e6-7fdac2ee4ac4"), mana_cost: "{3}{U}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5664::RULES.keywords, deck_limit: authored::card_5664::RULES.deck_limit }, effect: authored::card_5664::RULES.effect, triggers: authored::card_5664::RULES.triggers, activated: authored::card_5664::RULES.activated, enters: authored::card_5664::RULES.enters, entry: authored::card_5664::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_5664::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Unholy Annex", oracle_id: Some("bd388ad9-a47b-4b0b-b94a-8e4343cd3de5"), mana_cost: "{2}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5665::RULES.keywords, deck_limit: authored::card_5665::RULES.deck_limit }, effect: authored::card_5665::RULES.effect, triggers: authored::card_5665::RULES.triggers, activated: authored::card_5665::RULES.activated, enters: authored::card_5665::RULES.enters, entry: authored::card_5665::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 2 }, rules: &authored::card_5665::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Ritual Chamber", oracle_id: Some("bd388ad9-a47b-4b0b-b94a-8e4343cd3de5"), mana_cost: "{3}{B}{B}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5666::RULES.keywords, deck_limit: authored::card_5666::RULES.deck_limit }, effect: authored::card_5666::RULES.effect, triggers: authored::card_5666::RULES.triggers, activated: authored::card_5666::RULES.activated, enters: authored::card_5666::RULES.enters, entry: authored::card_5666::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 2, 0, 0, 0], generic: 3 }, rules: &authored::card_5666::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Walk-In Closet", oracle_id: Some("52e77cc3-f8e9-4a20-811b-fe1e46a96ad7"), mana_cost: "{2}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5667::RULES.keywords, deck_limit: authored::card_5667::RULES.deck_limit }, effect: authored::card_5667::RULES.effect, triggers: authored::card_5667::RULES.triggers, activated: authored::card_5667::RULES.activated, enters: authored::card_5667::RULES.enters, entry: authored::card_5667::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_5667::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Forgotten Cellar", oracle_id: Some("52e77cc3-f8e9-4a20-811b-fe1e46a96ad7"), mana_cost: "{3}{G}{G}", type_line: "Enchantment — Room", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5668::RULES.keywords, deck_limit: authored::card_5668::RULES.deck_limit }, effect: authored::card_5668::RULES.effect, triggers: authored::card_5668::RULES.triggers, activated: authored::card_5668::RULES.activated, enters: authored::card_5668::RULES.enters, entry: authored::card_5668::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 2, 0], generic: 3 }, rules: &authored::card_5668::RULES },
 ];
 }
 pub use cards::ENTRIES;

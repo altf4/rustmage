@@ -1,0 +1,16 @@
+{
+  "name": "Tunnel of Hate",
+  "catalogue_id": 5662,
+  "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+  "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+    "index": 1,
+    "sha256": "c8231eae94c650a33836d7d7c7d1d80fa773a5e7c3b0cbdf2fc7a964fd76d8a9"
+  },
+  "physical_metadata_sha256": "07c12936977f28b15faf655e2dada5c79ceb71732f3177dd679a6a7d6d8d13fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TicketBoothTunnelOfHate.java",
+  "java_sha256": "4d9363a6f9068fc2d44aca1c83812aeb783324762bcf27453fcf0fea446880df"
+}

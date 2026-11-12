@@ -1,0 +1,16 @@
+{
+  "name": "Moldering Gym",
+  "catalogue_id": 5649,
+  "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+  "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+    "index": 0,
+    "sha256": "9a110f27fe7607e58f3fa12d418966a3b2b366397996d34f894a1b0b5ff3b638"
+  },
+  "physical_metadata_sha256": "31650c46ab34982632a58a39bd73565377a6667f5a5ddd11bf8c4c1d8bee80ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MolderingGymWeightRoom.java",
+  "java_sha256": "5f2a8998f1012d5dc846a8e6b685a767c38c33547223bc6d6b379ff8f97a3dd8"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Defaced Gallery",
+  "catalogue_id": 5652,
+  "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+  "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+    "index": 1,
+    "sha256": "f19c68e9e5e3f3c7c6e404a4e52e3f6b96c89683d453a2b37d27942a6e60679f"
+  },
+  "physical_metadata_sha256": "765a498b4e36aca375037c4c10207e5bf4fb772fa7be7a80b58cb9443f4d9198",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PaintersStudioDefacedGallery.java",
+  "java_sha256": "9523ce604f43cf90bbcfc4f15518f67d013abd5fb6511a875ac4652ec7e727e9"
+}

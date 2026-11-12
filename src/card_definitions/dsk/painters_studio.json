@@ -1,0 +1,16 @@
+{
+  "name": "Painter's Studio",
+  "catalogue_id": 5651,
+  "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+  "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+    "index": 0,
+    "sha256": "4f4bf57704302cf0506a359410ad0da2e982b30e71de0d6318f0230b0a26b89a"
+  },
+  "physical_metadata_sha256": "f0e535d856553cf36e3369b8bb9589162da5af84ef46a5840ccac02ff6cbca3e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PaintersStudioDefacedGallery.java",
+  "java_sha256": "9523ce604f43cf90bbcfc4f15518f67d013abd5fb6511a875ac4652ec7e727e9"
+}

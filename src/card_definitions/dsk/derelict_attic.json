@@ -1,0 +1,16 @@
+{
+  "name": "Derelict Attic",
+  "catalogue_id": 5633,
+  "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+  "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+    "index": 0,
+    "sha256": "fee3bfabb70d18894b70b5b75fb3d68d6ebaedb1e5d5e0ce89ef1fe784cf6109"
+  },
+  "physical_metadata_sha256": "f1da3992cd20bc74203c14f197ce115d310e5e60d258248c8531e3d16e0c7500",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DerelictAtticWidowsWalk.java",
+  "java_sha256": "3cf23e75f522331719b9537ede13916c779ac4111589f72fcf62238e662a14de"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Walk-In Closet",
+  "catalogue_id": 5667,
+  "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+  "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+    "index": 0,
+    "sha256": "ec4eaf2ed576bc947d02f8d4f788bcc2f3bd05ce6aff456dbae5ef0c1d1289c8"
+  },
+  "physical_metadata_sha256": "217aef59a262bf0488e8e590855c820e98c8d56a915d2ad38cf526e5d097292f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WalkInClosetForgottenCellar.java",
+  "java_sha256": "5f4440eb832d57cf2bd90cad792998871590bf090b79ea8a5868e893bb829169"
+}

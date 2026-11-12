@@ -3745,7 +3745,7 @@
     16,
     0,
     4,
-    0,
+    8,
     4,
     4,
     4,
@@ -5628,7 +5628,53 @@
     0,
     0,
     4,
-    1
+    1,
+    2,
+    2,
+    2,
+    2,
+    8,
+    8,
+    1,
+    1,
+    4,
+    4,
+    4,
+    4,
+    1,
+    1,
+    4,
+    4,
+    8,
+    8,
+    1,
+    1,
+    16,
+    16,
+    2,
+    2,
+    2,
+    2,
+    16,
+    16,
+    8,
+    8,
+    1,
+    2,
+    8,
+    2,
+    8,
+    2,
+    1,
+    1,
+    8,
+    8,
+    2,
+    2,
+    4,
+    4,
+    16,
+    16
   ],
   "aliases": [
     [
@@ -8064,6 +8110,10 @@
       289
     ],
     [
+      "Awakening Hall",
+      5638
+    ],
+    [
       "Axebane Ferox",
       290
     ],
@@ -9060,6 +9110,10 @@
       511
     ],
     [
+      "Bottomless Pool",
+      5623
+    ],
+    [
       "Bottomless Pool // Locker Room",
       512
     ],
@@ -9520,6 +9574,10 @@
       614
     ],
     [
+      "Cadaver Lab",
+      5632
+    ],
+    [
       "Caelorna, Coral Tyrant",
       615
     ],
@@ -9884,6 +9942,10 @@
       698
     ],
     [
+      "Central Elevator",
+      5625
+    ],
+    [
       "Central Elevator // Promising Stairs",
       699
     ],
@@ -10002,6 +10064,10 @@
     [
       "Charming Scoundrel",
       727
+    ],
+    [
+      "Charred Foyer",
+      5627
     ],
     [
       "Charred Foyer // Warped Space",
@@ -11140,6 +11206,10 @@
       990
     ],
     [
+      "Dazzling Theater",
+      5629
+    ],
+    [
       "Dazzling Theater // Prop Room",
       991
     ],
@@ -11292,6 +11362,10 @@
       1025
     ],
     [
+      "Defaced Gallery",
+      5652
+    ],
+    [
       "Defend the Rider",
       1026
     ],
@@ -11306,6 +11380,10 @@
     [
       "Defibrillating Current",
       1029
+    ],
+    [
+      "Defiled Crypt",
+      5631
     ],
     [
       "Defiled Crypt // Cadaver Lab",
@@ -11378,6 +11456,10 @@
     [
       "Depressurize",
       1046
+    ],
+    [
+      "Derelict Attic",
+      5633
     ],
     [
       "Derelict Attic // Widow's Walk",
@@ -11716,6 +11798,10 @@
       1122
     ],
     [
+      "Dollmaker's Shop",
+      5635
+    ],
+    [
       "Dollmaker's Shop // Porcelain Gallery",
       1123
     ],
@@ -12014,6 +12100,10 @@
     [
       "Drover Grizzly",
       1192
+    ],
+    [
+      "Drowned Diner",
+      5646
     ],
     [
       "Druid of the Cowl",
@@ -12382,6 +12472,10 @@
     [
       "Elegant Parlor",
       1279
+    ],
+    [
+      "Elegant Rotunda",
+      5642
     ],
     [
       "Elegy Acolyte",
@@ -13744,6 +13838,10 @@
       4
     ],
     [
+      "Forgotten Cellar",
+      5668
+    ],
+    [
       "Forgotten Monument",
       1594
     ],
@@ -13826,6 +13924,10 @@
     [
       "Fractalize",
       1613
+    ],
+    [
+      "Fractured Realm",
+      5648
     ],
     [
       "Frantic Firebolt",
@@ -13974,6 +14076,10 @@
     [
       "Fumigate",
       1648
+    ],
+    [
+      "Funeral Room",
+      5637
     ],
     [
       "Funeral Room // Awakening Hall",
@@ -14500,6 +14606,10 @@
       1768
     ],
     [
+      "Glassworks",
+      5639
+    ],
+    [
       "Glassworks // Shattered Yard",
       1769
     ],
@@ -14836,6 +14946,10 @@
       1844
     ],
     [
+      "Grand Entryway",
+      5641
+    ],
+    [
       "Grand Entryway // Elegant Rotunda",
       1845
     ],
@@ -14962,6 +15076,10 @@
     [
       "Greenbelt Radical",
       1872
+    ],
+    [
+      "Greenhouse",
+      5643
     ],
     [
       "Greenhouse // Rickety Gazebo",
@@ -15862,6 +15980,10 @@
     [
       "Horrid Vigor",
       2074
+    ],
+    [
+      "Hospital Room",
+      5660
     ],
     [
       "Host of the Hereafter",
@@ -17588,6 +17710,10 @@
       2466
     ],
     [
+      "Lecture Hall",
+      5654
+    ],
+    [
       "Lecturing Scornmage",
       2467
     ],
@@ -17878,6 +18004,10 @@
     [
       "Locke Cole",
       2534
+    ],
+    [
+      "Locker Room",
+      5624
     ],
     [
       "Locthwain Scorn",
@@ -18564,6 +18694,10 @@
       2693
     ],
     [
+      "Meat Locker",
+      5645
+    ],
+    [
       "Meat Locker // Drowned Diner",
       2694
     ],
@@ -18940,6 +19074,10 @@
       2783
     ],
     [
+      "Mirror Room",
+      5647
+    ],
+    [
       "Mirror Room // Fractured Realm",
       2784
     ],
@@ -19008,6 +19146,10 @@
       2800
     ],
     [
+      "Misty Salon",
+      5658
+    ],
+    [
       "Mjölnir, Hammer of Thor",
       2801
     ],
@@ -19042,6 +19184,10 @@
     [
       "Mold Adder",
       2809
+    ],
+    [
+      "Moldering Gym",
+      5649
     ],
     [
       "Moldering Gym // Weight Room",
@@ -20252,6 +20398,10 @@
       3091
     ],
     [
+      "Painter's Studio",
+      5651
+    ],
+    [
       "Painter's Studio // Defaced Gallery",
       3092
     ],
@@ -20756,6 +20906,10 @@
       3204
     ],
     [
+      "Porcelain Gallery",
+      5636
+    ],
+    [
       "Portent of Calamity",
       3205
     ],
@@ -20968,12 +21122,20 @@
       3256
     ],
     [
+      "Promising Stairs",
+      5626
+    ],
+    [
       "Promising Vein",
       3257
     ],
     [
       "Prompto Argentum",
       3258
+    ],
+    [
+      "Prop Room",
+      5630
     ],
     [
       "Prophesied End",
@@ -21972,6 +22134,10 @@
       3496
     ],
     [
+      "Restricted Office",
+      5653
+    ],
+    [
       "Restricted Office // Lecture Hall",
       3497
     ],
@@ -22054,6 +22220,10 @@
     [
       "Rick Jones, Destined Sidekick",
       3517
+    ],
+    [
+      "Rickety Gazebo",
+      5644
     ],
     [
       "Rictus Robber",
@@ -22188,6 +22358,10 @@
       3547
     ],
     [
+      "Ritual Chamber",
+      5666
+    ],
+    [
       "River Herald Guide",
       3548
     ],
@@ -22250,6 +22424,10 @@
     [
       "Roar of the Fifth People",
       5586
+    ],
+    [
+      "Roaring Furnace",
+      5655
     ],
     [
       "Roaring Furnace // Steaming Sauna",
@@ -23376,6 +23554,10 @@
       3821
     ],
     [
+      "Shattered Yard",
+      5640
+    ],
+    [
       "Shatterwing Pegasus",
       3822
     ],
@@ -23852,6 +24034,10 @@
       3926
     ],
     [
+      "Slimy Aquarium",
+      5664
+    ],
+    [
       "Slimy Dualleech",
       3927
     ],
@@ -23898,6 +24084,10 @@
     [
       "Smile at Death",
       3937
+    ],
+    [
+      "Smoky Lounge",
+      5657
     ],
     [
       "Smoky Lounge // Misty Salon",
@@ -24688,6 +24878,10 @@
       4125
     ],
     [
+      "Steaming Sauna",
+      5656
+    ],
+    [
       "Steampath Charger",
       4126
     ],
@@ -25310,6 +25504,10 @@
     [
       "Surgical Precision",
       4268
+    ],
+    [
+      "Surgical Suite",
+      5659
     ],
     [
       "Surgical Suite // Hospital Room",
@@ -26740,6 +26938,10 @@
       4590
     ],
     [
+      "Ticket Booth",
+      5661
+    ],
+    [
       "Ticket Booth // Tunnel of Hate",
       4591
     ],
@@ -27232,6 +27434,10 @@
       4704
     ],
     [
+      "Tunnel of Hate",
+      5662
+    ],
+    [
       "Turn Inside Out",
       4705
     ],
@@ -27532,6 +27738,10 @@
       4770
     ],
     [
+      "Underwater Tunnel",
+      5663
+    ],
+    [
       "Underwater Tunnel // Slimy Aquarium",
       4771
     ],
@@ -27578,6 +27788,10 @@
     [
       "Unfortunate Accident",
       4782
+    ],
+    [
+      "Unholy Annex",
+      5665
     ],
     [
       "Unholy Annex // Ritual Chamber",
@@ -28336,6 +28550,10 @@
       4955
     ],
     [
+      "Walk-In Closet",
+      5667
+    ],
+    [
       "Walk-In Closet // Forgotten Cellar",
       4956
     ],
@@ -28438,6 +28656,10 @@
     [
       "Warmaker Gunship",
       4981
+    ],
+    [
+      "Warped Space",
+      5628
     ],
     [
       "Warren Elder",
@@ -28652,6 +28874,10 @@
       5032
     ],
     [
+      "Weight Room",
+      5650
+    ],
+    [
       "Welcome to Sweettooth",
       5033
     ],
@@ -28750,6 +28976,10 @@
     [
       "Widow's Bite",
       5056
+    ],
+    [
+      "Widow's Walk",
+      5634
     ],
     [
       "Wild Hypothesis",
@@ -138786,29 +139016,31 @@
     {
       "index": 3739,
       "module": "card_3739",
-      "path": "legacy/screaming_nemesis.rs",
-      "set": "legacy",
+      "path": "dsk/screaming_nemesis.rs",
+      "set": "dsk",
       "category": "physical",
       "name": "Screaming Nemesis",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
-      "oracle_keywords": [],
+      "oracle_id": "fcb7c93c-46ab-49b5-a6e0-35d73f3be8f0",
+      "facts_sha256": "7415c197781bff787072a6e993b2ec44b60c5f869ac24482a021cd0111023bd1",
+      "mana_cost": "{2}{R}",
+      "type_line": "Creature — Spirit",
+      "oracle_keywords": [
+        "Haste"
+      ],
       "standard_legal": false,
       "legendary": false,
-      "kind": 0,
+      "kind": 1,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
         0,
         0,
-        0,
+        1,
         0,
         0
       ],
-      "generic": 0
+      "generic": 2
     },
     {
       "index": 3740,
@@ -192972,6 +193204,1248 @@
       ],
       "generic": 0,
       "oracle_keywords": []
+    },
+    {
+      "index": 5623,
+      "module": "card_5623",
+      "path": "dsk/bottomless_pool.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Bottomless Pool",
+      "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+      "facts_sha256": "42cad1866abe5f42ec9995788a6e7e4ad9a0c2a99c2dc06fa6ec953a07773228",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5624,
+      "module": "card_5624",
+      "path": "dsk/locker_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Locker Room",
+      "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+      "facts_sha256": "42cad1866abe5f42ec9995788a6e7e4ad9a0c2a99c2dc06fa6ec953a07773228",
+      "mana_cost": "{4}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5625,
+      "module": "card_5625",
+      "path": "dsk/central_elevator.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Central Elevator",
+      "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+      "facts_sha256": "6a4759952b4435c679897d2adffe65304a7ba8e889426add635c04b5a9fdf634",
+      "mana_cost": "{3}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5626,
+      "module": "card_5626",
+      "path": "dsk/promising_stairs.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Promising Stairs",
+      "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+      "facts_sha256": "6a4759952b4435c679897d2adffe65304a7ba8e889426add635c04b5a9fdf634",
+      "mana_cost": "{2}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5627,
+      "module": "card_5627",
+      "path": "dsk/charred_foyer.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Charred Foyer",
+      "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+      "facts_sha256": "3ff5734f37daf29b2c58ab9af5497629c1a53f277994d0818e34a0da227c35bd",
+      "mana_cost": "{3}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5628,
+      "module": "card_5628",
+      "path": "dsk/warped_space.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Warped Space",
+      "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+      "facts_sha256": "3ff5734f37daf29b2c58ab9af5497629c1a53f277994d0818e34a0da227c35bd",
+      "mana_cost": "{4}{R}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5629,
+      "module": "card_5629",
+      "path": "dsk/dazzling_theater.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Dazzling Theater",
+      "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+      "facts_sha256": "28a84da97fccda9a19930713fea7ede8d0ab383c7832615ca2a8660b96827ee9",
+      "mana_cost": "{3}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5630,
+      "module": "card_5630",
+      "path": "dsk/prop_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Prop Room",
+      "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+      "facts_sha256": "28a84da97fccda9a19930713fea7ede8d0ab383c7832615ca2a8660b96827ee9",
+      "mana_cost": "{2}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5631,
+      "module": "card_5631",
+      "path": "dsk/defiled_crypt.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Defiled Crypt",
+      "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+      "facts_sha256": "10c73b92929d1cbfbd77e8b639d6269bb8e6f6f7f13edb4a24dc0d1a63f67de4",
+      "mana_cost": "{3}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5632,
+      "module": "card_5632",
+      "path": "dsk/cadaver_lab.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Cadaver Lab",
+      "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+      "facts_sha256": "10c73b92929d1cbfbd77e8b639d6269bb8e6f6f7f13edb4a24dc0d1a63f67de4",
+      "mana_cost": "{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5633,
+      "module": "card_5633",
+      "path": "dsk/derelict_attic.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Derelict Attic",
+      "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+      "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
+      "mana_cost": "{2}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5634,
+      "module": "card_5634",
+      "path": "dsk/widows_walk.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Widow's Walk",
+      "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
+      "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
+      "mana_cost": "{3}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5635,
+      "module": "card_5635",
+      "path": "dsk/dollmakers_shop.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Dollmaker's Shop",
+      "oracle_id": "e633412b-e36b-4ec5-b0d0-7cb24c7503f4",
+      "facts_sha256": "b88e07cab9284a07447a119842800865d058ef8fee604b3068b95c11c4e7bd81",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5636,
+      "module": "card_5636",
+      "path": "dsk/porcelain_gallery.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Porcelain Gallery",
+      "oracle_id": "e633412b-e36b-4ec5-b0d0-7cb24c7503f4",
+      "facts_sha256": "b88e07cab9284a07447a119842800865d058ef8fee604b3068b95c11c4e7bd81",
+      "mana_cost": "{4}{W}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5637,
+      "module": "card_5637",
+      "path": "dsk/funeral_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Funeral Room",
+      "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
+      "facts_sha256": "203257b110e7f17a416febe0c065768f8270495a4f46ef3801b56d9cfa1c8968",
+      "mana_cost": "{2}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5638,
+      "module": "card_5638",
+      "path": "dsk/awakening_hall.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Awakening Hall",
+      "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
+      "facts_sha256": "203257b110e7f17a416febe0c065768f8270495a4f46ef3801b56d9cfa1c8968",
+      "mana_cost": "{6}{B}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      "generic": 6
+    },
+    {
+      "index": 5639,
+      "module": "card_5639",
+      "path": "dsk/glassworks.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Glassworks",
+      "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+      "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
+      "mana_cost": "{2}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5640,
+      "module": "card_5640",
+      "path": "dsk/shattered_yard.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Shattered Yard",
+      "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+      "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
+      "mana_cost": "{4}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5641,
+      "module": "card_5641",
+      "path": "dsk/grand_entryway.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Grand Entryway",
+      "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+      "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5642,
+      "module": "card_5642",
+      "path": "dsk/elegant_rotunda.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Elegant Rotunda",
+      "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+      "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
+      "mana_cost": "{2}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5643,
+      "module": "card_5643",
+      "path": "dsk/greenhouse.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Greenhouse",
+      "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+      "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5644,
+      "module": "card_5644",
+      "path": "dsk/rickety_gazebo.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Rickety Gazebo",
+      "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+      "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
+      "mana_cost": "{3}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5645,
+      "module": "card_5645",
+      "path": "dsk/meat_locker.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Meat Locker",
+      "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+      "facts_sha256": "4fb3381bd2bd0e2f7dfba9aa8fed610ef1f9e276870402e71ae53585879fd063",
+      "mana_cost": "{2}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5646,
+      "module": "card_5646",
+      "path": "dsk/drowned_diner.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Drowned Diner",
+      "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+      "facts_sha256": "4fb3381bd2bd0e2f7dfba9aa8fed610ef1f9e276870402e71ae53585879fd063",
+      "mana_cost": "{3}{U}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5647,
+      "module": "card_5647",
+      "path": "dsk/mirror_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Mirror Room",
+      "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+      "facts_sha256": "531854415a3ab6e4f1f399f020da228e832f000f93a90b1b3589d6d60b4dcedd",
+      "mana_cost": "{2}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5648,
+      "module": "card_5648",
+      "path": "dsk/fractured_realm.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Fractured Realm",
+      "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+      "facts_sha256": "531854415a3ab6e4f1f399f020da228e832f000f93a90b1b3589d6d60b4dcedd",
+      "mana_cost": "{5}{U}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 5
+    },
+    {
+      "index": 5649,
+      "module": "card_5649",
+      "path": "dsk/moldering_gym.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Moldering Gym",
+      "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+      "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5650,
+      "module": "card_5650",
+      "path": "dsk/weight_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Weight Room",
+      "oracle_id": "34d0d070-fcaf-410e-a002-012cbe104fb7",
+      "facts_sha256": "14b58ed85a635f9c76215146b4a71e75a107840c0752ca92cb931027d1f915bb",
+      "mana_cost": "{5}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 5
+    },
+    {
+      "index": 5651,
+      "module": "card_5651",
+      "path": "dsk/painters_studio.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Painter's Studio",
+      "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+      "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
+      "mana_cost": "{2}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5652,
+      "module": "card_5652",
+      "path": "dsk/defaced_gallery.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Defaced Gallery",
+      "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
+      "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
+      "mana_cost": "{1}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5653,
+      "module": "card_5653",
+      "path": "dsk/restricted_office.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Restricted Office",
+      "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+      "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
+      "mana_cost": "{2}{W}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5654,
+      "module": "card_5654",
+      "path": "dsk/lecture_hall.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Lecture Hall",
+      "oracle_id": "b36286fa-4007-4276-af9c-d8f0da9e94d1",
+      "facts_sha256": "28a8f0078f5428be5bd39c3ff93b6c05d1ebfe2aa95439db3a24419c29d9125d",
+      "mana_cost": "{5}{U}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 5
+    },
+    {
+      "index": 5655,
+      "module": "card_5655",
+      "path": "dsk/roaring_furnace.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Roaring Furnace",
+      "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+      "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
+      "mana_cost": "{1}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5656,
+      "module": "card_5656",
+      "path": "dsk/steaming_sauna.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Steaming Sauna",
+      "oracle_id": "d5f31713-d380-42ba-8052-4b8d9beb3958",
+      "facts_sha256": "f31c4c4de92517952c5c118d284d3bbd23cf20d0a731cfa030b9a1d22ed69f13",
+      "mana_cost": "{3}{U}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5657,
+      "module": "card_5657",
+      "path": "dsk/smoky_lounge.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Smoky Lounge",
+      "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+      "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
+      "mana_cost": "{2}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5658,
+      "module": "card_5658",
+      "path": "dsk/misty_salon.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Misty Salon",
+      "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+      "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
+      "mana_cost": "{3}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5659,
+      "module": "card_5659",
+      "path": "dsk/surgical_suite.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Surgical Suite",
+      "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+      "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
+      "mana_cost": "{1}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5660,
+      "module": "card_5660",
+      "path": "dsk/hospital_room.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Hospital Room",
+      "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+      "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
+      "mana_cost": "{3}{W}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5661,
+      "module": "card_5661",
+      "path": "dsk/ticket_booth.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Ticket Booth",
+      "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+      "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+      "mana_cost": "{2}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5662,
+      "module": "card_5662",
+      "path": "dsk/tunnel_of_hate.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Tunnel of Hate",
+      "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+      "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+      "mana_cost": "{4}{R}{R}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5663,
+      "module": "card_5663",
+      "path": "dsk/underwater_tunnel.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Underwater Tunnel",
+      "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+      "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
+      "mana_cost": "{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5664,
+      "module": "card_5664",
+      "path": "dsk/slimy_aquarium.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Slimy Aquarium",
+      "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+      "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
+      "mana_cost": "{3}{U}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5665,
+      "module": "card_5665",
+      "path": "dsk/unholy_annex.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Unholy Annex",
+      "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+      "facts_sha256": "7cb6ff1136187b89668bbdc696844ddd17d23b44518716ee78b5fb9e26edfec7",
+      "mana_cost": "{2}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5666,
+      "module": "card_5666",
+      "path": "dsk/ritual_chamber.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Ritual Chamber",
+      "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
+      "facts_sha256": "7cb6ff1136187b89668bbdc696844ddd17d23b44518716ee78b5fb9e26edfec7",
+      "mana_cost": "{3}{B}{B}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      "generic": 3
+    },
+    {
+      "index": 5667,
+      "module": "card_5667",
+      "path": "dsk/walk_in_closet.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Walk-In Closet",
+      "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+      "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
+      "mana_cost": "{2}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5668,
+      "module": "card_5668",
+      "path": "dsk/forgotten_cellar.rs",
+      "set": "dsk",
+      "category": "room_face",
+      "name": "Forgotten Cellar",
+      "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
+      "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
+      "mana_cost": "{3}{G}{G}",
+      "type_line": "Enchantment — Room",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 32,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "generic": 3
     }
   ]
 }

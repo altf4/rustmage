@@ -1,0 +1,16 @@
+{
+  "name": "Ticket Booth",
+  "catalogue_id": 5661,
+  "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+  "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+  "complete": false,
+  "oracle_face": {
+    "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+    "index": 0,
+    "sha256": "99157d813e703061618bceeb83f8c7ece491c5a96f3726713c1a6ad70dab3e13"
+  },
+  "physical_metadata_sha256": "3896ec6c0abea3a175443ed2d76ddf4b8427cf33314223bc0adc564b6948a4bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TicketBoothTunnelOfHate.java",
+  "java_sha256": "4d9363a6f9068fc2d44aca1c83812aeb783324762bcf27453fcf0fea446880df"
+}
