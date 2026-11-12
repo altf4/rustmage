@@ -509,6 +509,41 @@ impl Game {
         self.stage_entries(moves, None);
         true
     }
+    pub(super) fn exile_target_and_copy_to_subtype_until_end_step(
+        &mut self,
+        item: &SpellView,
+        subtype: &'static str,
+    ) {
+        let Some(blueprint) = item.targets.iter().find_map(|bound| {
+            bound.object.filter(|reference| {
+                self.same_target_object(*bound) && self.on_battlefield(reference.card)
+            })
+        }) else {
+            return;
+        };
+
+        let before = self.copiable_recipe(blueprint);
+        let event = self.move_object(blueprint.card, Zone::Exile);
+        // The copy instruction uses battlefield LKI on departure, or the
+        // creature's current copiable values if the move was prevented.
+        let recipe = if event.moved {
+            before
+        } else {
+            self.copiable_recipe(blueprint)
+        };
+        self.copy_to_controlled_subtype_until_end_step(item.controller, subtype, recipe);
+
+        let mut returning =
+            ReturnLinkView::from_event(&event, event.before.owner, None, false, false);
+        if !event.moved || event.destination != Zone::Exile {
+            // The delayed trigger still happens, with no exile object to return.
+            returning.object = blueprint;
+            returning.zone = Zone::Exile;
+            returning.additional_returning = None;
+        }
+        self.register_delayed_return(item, returning);
+    }
+
     pub(super) fn blink_group_until_end_step(
         &mut self,
         item: &SpellView,

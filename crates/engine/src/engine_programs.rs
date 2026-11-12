@@ -6048,6 +6048,9 @@ impl Game {
                 Instruction::BlinkExiledTargetsUntilEndStep => {
                     self.blink_group_until_end_step(&item, true, false, true, None)
                 }
+                Instruction::ExileTargetAndCopyToSubtypeUntilEndStep { subtype } => {
+                    self.exile_target_and_copy_to_subtype_until_end_step(&item, subtype)
+                }
                 Instruction::PreventPlayerDamageUntilNextTurn => {
                     self.prevent_player_damage_until_next_turn(&item)
                 }

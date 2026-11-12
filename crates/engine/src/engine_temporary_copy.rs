@@ -39,6 +39,7 @@ impl CopyOverrides {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum CopyDeadline {
     EndOfTurn,
+    NextEndStep,
     NextTurn { player: Player, created_turn: u32 },
     WhileSource { source: ObjectRef },
     WhileAttached { source: ObjectRef, origin: u64 },
@@ -54,7 +55,7 @@ impl CopyDeadline {
     fn expired(self, turn: u32, active: Player, cleanup: bool) -> bool {
         match self {
             Self::EndOfTurn => cleanup,
-            Self::WhileSource { .. } | Self::WhileAttached { .. } => false,
+            Self::NextEndStep | Self::WhileSource { .. } | Self::WhileAttached { .. } => false,
             Self::NextTurn {
                 player,
                 created_turn,
@@ -144,12 +145,6 @@ impl Row {
     }
     pub(super) fn active(&self) -> &Layer {
         self.layers.last().expect("live temporary copy has a layer")
-    }
-    pub(super) fn expire(&mut self, turn: u32, active: Player, cleanup: bool) -> bool {
-        let old = self.layers.len();
-        self.layers
-            .retain(|layer| !layer.value.deadline.expired(turn, active, cleanup));
-        old != self.layers.len()
     }
     pub(super) fn view(&self) -> TemporaryCopyView {
         TemporaryCopyView {
@@ -331,6 +326,41 @@ impl Game {
                 .then_some(self.object_ref(id))
             })
             .collect::<Vec<_>>();
+        self.apply_temporary_copy_cohort(recipients, recipe, |recipient| {
+            if nonlands {
+                CopyDeadline::WhileSource { source: recipient }
+            } else {
+                CopyDeadline::EndOfTurn
+            }
+        });
+    }
+    pub(super) fn copy_to_controlled_subtype_until_end_step(
+        &mut self,
+        controller: Player,
+        subtype: &'static str,
+        recipe: CopyRecipe,
+    ) {
+        let recipients = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter_map(|(id, object)| {
+                let id = id as CardId;
+                (object.zone == Zone::Battlefield
+                    && object.controller == controller
+                    && self.has_subtype(id, subtype))
+                .then_some(self.object_ref(id))
+            })
+            .collect();
+        self.apply_temporary_copy_cohort(recipients, recipe, |_| CopyDeadline::NextEndStep);
+    }
+    fn apply_temporary_copy_cohort(
+        &mut self,
+        recipients: Vec<ObjectRef>,
+        recipe: CopyRecipe,
+        deadline: impl Fn(ObjectRef) -> CopyDeadline,
+    ) {
         if recipients.is_empty() {
             return;
         }
@@ -341,11 +371,7 @@ impl Game {
             self.apply_temporary_copy_timestamped(
                 recipient,
                 recipe,
-                if nonlands {
-                    CopyDeadline::WhileSource { source: recipient }
-                } else {
-                    CopyDeadline::EndOfTurn
-                },
+                deadline(recipient),
                 Some((provider_time, hand_time)),
                 false,
             );
@@ -745,9 +771,49 @@ impl Game {
                 changes.push(row.clone());
             }
         }
-        // Restore every definition first; no provider may inspect an empty old
-        // layer or a half-restored simultaneous set of other recipients.
-        for row in &changes {
+        self.restore_copy_layers(&changes);
+        if !changes.is_empty() {
+            self.refresh_controllers();
+        }
+        !changes.is_empty()
+    }
+    pub(super) fn expire_temporary_copies(&mut self, cleanup: bool) -> bool {
+        let turn = self.state.turn;
+        let active = self.state.active;
+        self.expire_copy_layers(|deadline| deadline.expired(turn, active, cleanup), !cleanup)
+    }
+    pub(super) fn expire_next_end_step_copies(&mut self) {
+        self.expire_copy_layers(|deadline| deadline == CopyDeadline::NextEndStep, true);
+    }
+    fn expire_copy_layers(
+        &mut self,
+        expires: impl Fn(CopyDeadline) -> bool,
+        refresh_control: bool,
+    ) -> bool {
+        if self.state.temporary_copies.is_none() {
+            return false;
+        }
+        let control_watch = refresh_control.then(|| self.freeze_control_watch());
+        let rows = self.state.temporary_copies.as_mut().unwrap();
+        let mut changes = Vec::new();
+        for row in rows.iter_mut() {
+            let old_origin = row.active().value.origin;
+            row.layers.last_mut().unwrap().used_abilities =
+                self.state.objects[row.object.card as usize].used_abilities;
+            row.layers.retain(|layer| !expires(layer.value.deadline));
+            if row.layers.last().map(|layer| layer.value.origin) != Some(old_origin) {
+                changes.push(row.clone());
+            }
+        }
+        self.restore_copy_layers(&changes);
+        if refresh_control && !changes.is_empty() {
+            self.refresh_controllers_after(control_watch);
+        }
+        !changes.is_empty()
+    }
+    fn restore_copy_layers(&mut self, changes: &[Row]) {
+        // Restore the whole cohort before refreshing any abilities or providers.
+        for row in changes {
             self.materialize_copy_row(row, false);
         }
         if let Some(rows) = &mut self.state.temporary_copies {
@@ -756,48 +822,14 @@ impl Game {
                 self.state.temporary_copies = None;
             }
         }
-        for row in &changes {
+        for row in changes {
             self.materialize_copy_row(row, true);
+        }
+        for row in changes {
             if !self.is_face_down(row.object) {
                 self.renew_copy_grant_origin(row.object, false);
             }
         }
-        if !changes.is_empty() {
-            self.refresh_controllers();
-        }
-        !changes.is_empty()
-    }
-    pub(super) fn expire_temporary_copies(&mut self, cleanup: bool) -> bool {
-        let Some(rows) = &mut self.state.temporary_copies else {
-            return false;
-        };
-        let mut changes = Vec::new();
-        for row in rows.iter_mut() {
-            let old_origin = row.active().value.origin;
-            row.layers.last_mut().unwrap().used_abilities =
-                self.state.objects[row.object.card as usize].used_abilities;
-            if row.expire(self.state.turn, self.state.active, cleanup)
-                && row.layers.last().map(|layer| layer.value.origin) != Some(old_origin)
-            {
-                changes.push(row.clone());
-            }
-        }
-        for row in &changes {
-            self.materialize_copy_row(row, true);
-            if !self.is_face_down(row.object) {
-                self.renew_copy_grant_origin(row.object, false);
-            }
-        }
-        if let Some(rows) = &mut self.state.temporary_copies {
-            rows.retain(|row| !row.layers.is_empty());
-            if rows.is_empty() {
-                self.state.temporary_copies = None;
-            }
-        }
-        if !cleanup && !changes.is_empty() {
-            self.refresh_controllers();
-        }
-        !changes.is_empty()
     }
     pub(super) fn reset_copy_turn_uses(&mut self) {
         if let Some(rows) = &mut self.state.temporary_copies {

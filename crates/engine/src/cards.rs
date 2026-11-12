@@ -2677,6 +2677,12 @@ pub enum Instruction {
     BlinkGroupTappedUntilEndStep,
     /// Return only cards that actually entered exile, under their owners' control.
     BlinkExiledTargetsUntilEndStep,
+    /// Exile the target and copy its battlefield values onto controlled permanents
+    /// of the named subtype until the next end step. Then return the exact exiled
+    /// object under its owner's control with a delayed trigger.
+    ExileTargetAndCopyToSubtypeUntilEndStep {
+        subtype: &'static str,
+    },
     PreventPlayerDamageUntilNextTurn,
     /// Prevent damage to creatures the resolving effect's controller controls this turn.
     PreventControlledCreatureDamageThisTurn,

@@ -32,6 +32,9 @@ impl Game {
 
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::End {
+            self.expire_next_end_step_copies();
+        }
         self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
