@@ -785,6 +785,31 @@ pub(super) trait CharacteristicWorld {
             keywords
         }
     }
+    fn opposing_creature_hexproof_and_ward_disabled(&self, id: CardId, actor: Player) -> bool {
+        let recipient = self.object(id);
+        if recipient.zone != Zone::Battlefield || recipient.controller == actor {
+            return false;
+        }
+        let disables = |fragment: &StaticAbilityFragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::OpposingCreatureHexproofAndWardDisabled
+            )
+        };
+        self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.controller == actor
+                && provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(disables))
+                && self.kinds(id) & 1 != 0
+                && characteristic_query::CharacteristicQuery::in_world(self)
+                    .continuous_fragment_available(source, disables)
+        })
+    }
     fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
         #[cfg(feature = "test-support")]
         if zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|p| p.get() == Some(object)) {

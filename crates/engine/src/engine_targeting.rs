@@ -2650,6 +2650,7 @@ impl Game {
                             qualification,
                             keywords,
                         ))
+                    && !world.opposing_creature_hexproof_and_ward_disabled(id, controller)
                 {
                     return false;
                 }

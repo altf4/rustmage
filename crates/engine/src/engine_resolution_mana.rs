@@ -233,10 +233,17 @@ impl Game {
         let first_for_controller = *history & bit == 0;
         *history |= bit;
         let source = self.object_view(id);
+        let ward_suppressed = std::cell::OnceCell::new();
+        let ward_triggers = |game: &Game| {
+            source.controller != item.controller
+                && !*ward_suppressed.get_or_init(|| {
+                    game.opposing_creature_hexproof_and_ward_disabled(id, item.controller)
+                })
+        };
         for (index, ability) in source.card.triggers().iter().enumerate() {
             let event = ability.condition.event();
             let matched = match event {
-                TriggerCondition::Ward => source.controller != item.controller,
+                TriggerCondition::Ward => ward_triggers(self),
                 TriggerCondition::FirstTargetedByController => {
                     first_for_controller && source.controller == item.controller
                 }
@@ -272,7 +279,7 @@ impl Game {
                 });
             }
         }
-        if source.controller != item.controller {
+        if ward_triggers(self) {
             // The active layer-one definition is materialized for copied providers.
             // Keep blank providers in this conservative gate: restored abilities
             // must work without reacquiring or rebuilding a derived ward cache.

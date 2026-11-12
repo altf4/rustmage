@@ -6624,6 +6624,11 @@ pub enum CastFilter {
         filter: &'static CastFilter,
         target: CastTarget,
     },
+    /// CR 115.9c compares distinct targets across all occurrences of "target".
+    OnlyTargeted {
+        filter: &'static CastFilter,
+        target: CastTarget,
+    },
     ManaValueMaximum {
         filter: &'static CastFilter,
         maximum: u64,
@@ -6669,6 +6674,7 @@ impl CastFilter {
             | Self::SourceChosenNumberMatchesSpell
             | Self::TargetCount { .. }
             | Self::Targeted { .. }
+            | Self::OnlyTargeted { .. }
             | Self::InstantSorceryOrdinal(_)
             | Self::NonCreatureOrdinal(_)
             | Self::FirstQualifiedCreature(_) => false,

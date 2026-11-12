@@ -1878,6 +1878,14 @@ impl Game {
         self.record_cast(caster, card, Some(self.state.stack.len() - 1));
     }
 
+    /// CR 115.9c compares target identities independently of their target groups.
+    fn only_distinct_target(targets: &[BoundTarget]) -> Option<&BoundTarget> {
+        let (first, rest) = targets.split_first()?;
+        rest.iter()
+            .all(|bound| bound.target == first.target && bound.object == first.object)
+            .then_some(first)
+    }
+
     /// CR115.9b: inspect the current expected zone/incarnation; never use target LKI.
     #[allow(
         clippy::too_many_arguments,
@@ -2021,10 +2029,22 @@ impl Game {
                         spell_subtypes,
                     )
             }
-            CastFilter::Targeted { filter, target } => {
+            CastFilter::Targeted {
+                filter: inner,
+                target,
+            }
+            | CastFilter::OnlyTargeted {
+                filter: inner,
+                target,
+            } => {
+                if matches!(filter, CastFilter::OnlyTargeted { .. })
+                    && Self::only_distinct_target(targets).is_none()
+                {
+                    return false;
+                }
                 self.cast_filter_matches_value(
                     spell_owner,
-                    *filter,
+                    *inner,
                     card,
                     mana_value,
                     caster,
@@ -2100,7 +2120,8 @@ impl Game {
         }
         let mut objects = Vec::new();
         match filter {
-            CastFilter::Targeted { filter: inner, .. } => {
+            CastFilter::Targeted { filter: inner, .. }
+            | CastFilter::OnlyTargeted { filter: inner, .. } => {
                 objects.extend(self.cast_semantic_targets(
                     owner,
                     *inner,
@@ -3676,15 +3697,12 @@ impl Game {
         }
         let was_targeted = !item.targets.is_empty();
         let original_single_spell_card_target = item.kind == StackKind::Spell
-            && item.targets.first().is_some_and(|first| {
+            && Self::only_distinct_target(&item.targets).is_some_and(|first| {
                 matches!(first.target, Target::Card(_))
                     && first.object.is_some()
                     && item
                         .source
                         .is_some_and(|source| source.card.kind_mask() & (4 | 8) != 0)
-                    && item.targets.iter().all(|target| {
-                        target.target == first.target && target.object == first.object
-                    })
             });
         let spec = self.target_spec(&item);
         // Preserve the whole original target set for relational legality. A departed

@@ -393,6 +393,8 @@ pub enum StaticAbilityFragment {
     /// The controller does not lose the state-based action for life at or below zero.
     CantLoseFromNonpositiveLife,
     QualifiedHexproof(SourceCharacteristicFilter),
+    /// Opponents' creatures can be targeted through hexproof and their ward doesn't trigger.
+    OpposingCreatureHexproofAndWardDisabled,
     ControlledSpellsUncounterable(u16),
     /// A rule restriction on explicit counters, independent of stack target legality.
     StackItemsCannotBeCountered,
