@@ -868,17 +868,17 @@ fn worldsouls_rage_deals_x_then_puts_up_to_x_lands_from_hand_and_graveyard_tappe
     pass_pair(&mut game);
     assert_eq!(game.state.players[opponent.index()].life, 18);
     let foreign = game.object_ref(opposing_land);
-    reject(&mut game, Action::ChooseEffectObject { object: foreign });
+    reject(&mut game, Action::SelectLand { object: foreign });
     let mut none = game.clone();
-    act(&mut none, Action::FinishEffectChoice);
+    act(&mut none, Action::FinishLandSelection);
     assert_eq!(none.object_view(grave_land).zone, Zone::Graveyard);
 
     for land in [hand_land, grave_land] {
         let object = game.object_ref(land);
-        act(&mut game, Action::ChooseEffectObject { object });
+        act(&mut game, Action::SelectLand { object });
     }
-    if game.legal_actions().contains(&Action::FinishEffectChoice) {
-        act(&mut game, Action::FinishEffectChoice);
+    if game.legal_actions().contains(&Action::FinishLandSelection) {
+        act(&mut game, Action::FinishLandSelection);
     }
     settle(&mut game);
     for land in [hand_land, grave_land] {
@@ -932,7 +932,6 @@ fn vannifar_cloaks_a_private_hand_card_or_counts_each_live_colorless_creature() 
     reject(&mut cloak, Action::ChooseEffectObject { object: foreign });
     let object = cloak.object_ref(to_cloak);
     act(&mut cloak, Action::ChooseEffectObject { object });
-    assert!(cloak.on_battlefield(to_cloak));
     let face = cloak
         .observe(player)
         .face_down_permanents
@@ -940,7 +939,9 @@ fn vannifar_cloaks_a_private_hand_card_or_counts_each_live_colorless_creature() 
         .find(|row| row.underlying == Card::from_name("Soul-Guide Lantern"))
         .unwrap();
     assert_eq!(face.cause, FaceDownCause::Cloak);
-    assert_eq!(stats(&cloak, to_cloak), (2, 2));
+    assert_ne!(face.object.card, to_cloak);
+    assert!(cloak.on_battlefield(face.object.card));
+    assert_eq!(stats(&cloak, face.object.card), (2, 2));
     assert!(
         cloak
             .observe(opponent)
