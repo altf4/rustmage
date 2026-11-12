@@ -270,6 +270,11 @@ fn artifact_sacrifices_qualify_the_payer_even_when_the_destination_is_exile() {
         assert!(!offers_guard(&indexed));
 
         cast(&mut raw, spell, None);
+        if matches!(raw.state.pending, Pending::ManaLotSpend { .. }) {
+            choose(&mut raw, |action| {
+                matches!(action, Action::ChooseManaLotSpend { .. })
+            });
+        }
         settle(&mut raw);
         activate(&mut raw, observer, 0);
         settle(&mut raw);
@@ -436,6 +441,9 @@ fn meld_graveyard_history_counts_each_physical_front_after_one_permanent_dies() 
     let murder = put(&mut game, player, "Murder", Zone::Hand);
     cast(&mut game, murder, Some(Target::Card(melded.card)));
     pass_pair(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseMeldOrder { .. })
+    });
     assert_eq!(game.object_view(vanille).zone, Zone::Graveyard);
     assert_eq!(game.object_view(fang).zone, Zone::Graveyard);
     assert_eq!(
