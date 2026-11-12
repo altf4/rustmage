@@ -6018,6 +6018,7 @@ impl Game {
                             | EffectChoiceKind::ReturnAttachmentRecipient { .. }
                             | EffectChoiceKind::BlinkControlledCreatures
                             | EffectChoiceKind::CloakFromHand
+                            | EffectChoiceKind::TurnControlledCreatureFaceUp
                             | EffectChoiceKind::ReturnToHandCounting
                             | EffectChoiceKind::ReturnToHandCountingOtherSubtype(_)
                             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }

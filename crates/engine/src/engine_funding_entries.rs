@@ -2202,9 +2202,10 @@ impl FundingState<'_> {
             if m.skipped || m.destination != Zone::Battlefield {
                 continue;
             }
-            let Some(recipient) = m.attach_equipment_to else {
+            let Some(attachment) = m.attach_equipment_to else {
                 continue;
             };
+            let recipient = attachment.recipient();
             let source = next.reference(m.before.id);
             if !equipment::can_attach(&next, source, recipient) {
                 continue;

@@ -193,6 +193,15 @@ impl Game {
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
+        if choice.kind == EffectChoiceKind::TurnControlledCreatureFaceUp {
+            let card = &self.state.objects[object.card as usize];
+            return card.zone == Zone::Battlefield
+                && card.controller == player
+                && self.object_ref(object.card) == object
+                && self.is_face_down(object)
+                && self.is_creature(object.card)
+                && !manifest::face_up_prohibited(self, object, player);
+        }
         if choice.kind == EffectChoiceKind::CloakFromHand {
             let card = &self.state.objects[object.card as usize];
             return card.zone == Zone::Hand
@@ -2068,6 +2077,15 @@ impl Game {
                 return true;
             }
         }
+        if choice.kind == EffectChoiceKind::TurnControlledCreatureFaceUp {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[player.index()].first().copied();
+            self.state.resolving.as_mut().unwrap().choice = None;
+            if let Some(object) = selected {
+                self.turn_manifest_face_up(object, player);
+            }
+            return false;
+        }
         if choice.kind == EffectChoiceKind::CloakFromHand {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = choice.selected[player.index()].first().copied();
@@ -2269,7 +2287,9 @@ impl Game {
                 forced_tapped || tapped_and_attacking,
             );
             movement.controller = player;
-            movement.attach_equipment_to = choice.equipment_recipient;
+            movement.attach_equipment_to = choice
+                .equipment_recipient
+                .map(entries::EquipmentAttachment::AfterEntry);
             movement.attacking = choice.hand_defender;
             movement.life_bonus = choice
                 .entry_life_bonus

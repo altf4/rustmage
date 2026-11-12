@@ -1468,6 +1468,7 @@ pub enum EffectChoiceKind {
     SaddleRider(SaddleRiderEffect),
     BlinkControlledCreatures,
     CloakFromHand,
+    TurnControlledCreatureFaceUp,
     HandCreatures {
         maximum: u16,
     },
@@ -3007,6 +3008,7 @@ pub enum Instruction {
         maximum_casts: u16,
     },
     CastTargetedGraveyardFree,
+    CastOpponentGraveyardFreeThenExile,
     /// Offer one paid cast of a surviving exact graveyard target during resolution.
     CastTargetedGraveyardPaid {
         spend_any_mana: bool,
@@ -3738,6 +3740,7 @@ pub enum Instruction {
     /// Return the actual permanent card that entered a graveyard in this event.
     ReturnDepartedPermanentFaceDown,
     TurnEntryResultFaceUp,
+    MayTurnControlledCreatureFaceUp,
     LookAtOpposingFaceDownCreaturesUntilEndOfTurn,
     /// Place counters on the exact permanent from this trigger's event.
     PutCountersOnEventPermanent {
@@ -4557,6 +4560,8 @@ pub enum Instruction {
         own_end_step: bool,
     },
     ReturnGraveyardWithDelayedSacrifice(SearchFilter),
+    ReturnGraveyardTargetsWithHasteAndDelayedSacrifice,
+    ReturnGraveyardEquipmentAttachedToSource,
     AnimatePermanentGroup {
         filters: &'static [BattlefieldFilter],
         spec: AnimationSpec,

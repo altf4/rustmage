@@ -4,6 +4,21 @@ use super::*;
 use crate::cards::{AnimationSpec, StaticAbilityFragment};
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum EquipmentAttachment {
+    AsEnters(ObjectRef),
+    AfterEntry(ObjectRef),
+}
+
+impl EquipmentAttachment {
+    pub(super) fn recipient(self) -> ObjectRef {
+        match self {
+            Self::AsEnters(recipient) | Self::AfterEntry(recipient) => recipient,
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct EntryMove {
     pub exile_preparation: Option<Box<entry_exiles::Preparation>>,
@@ -53,8 +68,8 @@ pub(super) struct EntryMove {
     pub equipment_after: bool,
     /// Applied after entry observers freeze their facts, only on successful entry.
     pub blank_with_haste_after: Option<ObjectRef>,
-    /// After this successful entry event, attach this Equipment to an exact recipient.
-    pub attach_equipment_to: Option<ObjectRef>,
+    /// Attach only the successful Equipment entrant to the exact recipient.
+    pub attach_equipment_to: Option<EquipmentAttachment>,
     pub return_modification: Option<(ReturnKind, ObjectRef)>,
     pub ghost_vacuum_after: Option<ObjectRef>,
     /// Source-independent type replacement and Food activation as this card enters.
@@ -1177,6 +1192,7 @@ impl Game {
         let mut role_results = Vec::new();
         let mut suspect_results = Vec::new();
         let mut life_results = Vec::new();
+        let mut equipment_on_entry = Vec::new();
         let mut equipment_results = Vec::new();
         let mut keyword_results = Vec::new();
         let mut riot_haste = Vec::new();
@@ -1420,9 +1436,16 @@ impl Game {
                     ability_results.push((event.after, source));
                 }
                 if event.destination == Zone::Battlefield
-                    && let Some(recipient) = movement.attach_equipment_to
+                    && let Some(attachment) = movement.attach_equipment_to
                 {
-                    equipment_results.push((event.after, recipient));
+                    match attachment {
+                        EquipmentAttachment::AsEnters(recipient) => {
+                            equipment_on_entry.push((event.after, recipient));
+                        }
+                        EquipmentAttachment::AfterEntry(recipient) => {
+                            equipment_results.push((event.after, recipient));
+                        }
+                    }
                 }
                 if event.destination == Zone::Battlefield
                     && let Some((controller, subtype, amount)) = movement.life_bonus
@@ -1673,6 +1696,9 @@ impl Game {
                     );
                 }
             }
+        }
+        for (equipment, recipient) in equipment_on_entry {
+            self.attach_equipment_with_event(equipment, recipient, false);
         }
         if let Some(context) = batch.discard_context {
             self.finish_discard_events(&events, context);

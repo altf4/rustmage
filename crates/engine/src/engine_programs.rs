@@ -5784,6 +5784,18 @@ impl Game {
                 Instruction::ReturnDepartedPermanentFaceDown => {
                     self.return_departed_permanent_face_down(&item);
                 }
+                Instruction::MayTurnControlledCreatureFaceUp => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::TurnControlledCreatureFaceUp,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        Some(0),
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::TurnEntryResultFaceUp => {
                     if let Some(object) = self.captured_entry_result() {
                         self.turn_manifest_face_up(object, item.controller);
@@ -7039,6 +7051,11 @@ impl Game {
                 } => {
                     self.offer_paid_graveyard_cast(&item, kinds, exile_instants_sorceries);
                     return;
+                }
+                Instruction::CastOpponentGraveyardFreeThenExile => {
+                    if self.offer_opponent_graveyard_free_cast(item.controller) {
+                        return;
+                    }
                 }
                 Instruction::CastTargetedGraveyardFree => {
                     if self.offer_targeted_graveyard_cast(&item, None, true) {
@@ -9664,6 +9681,12 @@ impl Game {
                 }
                 Instruction::ReturnGraveyardWithDelayedSacrifice(filter) => {
                     self.return_graveyard_with_delayed_sacrifice(&item, filter);
+                }
+                Instruction::ReturnGraveyardTargetsWithHasteAndDelayedSacrifice => {
+                    self.return_targets_with_haste_and_delayed_sacrifice(&item);
+                }
+                Instruction::ReturnGraveyardEquipmentAttachedToSource => {
+                    self.return_equipment_targets_attached_to_source(&item);
                 }
                 Instruction::AnimatePermanentGroup { filters, spec } => {
                     self.animate_permanent_group(&item, filters, spec);

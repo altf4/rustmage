@@ -1061,6 +1061,29 @@ impl Game {
             player: item.controller,
         };
     }
+    pub(super) fn offer_opponent_graveyard_free_cast(&mut self, player: Player) -> bool {
+        let remaining: Vec<_> = self
+            .state
+            .objects
+            .iter()
+            .enumerate()
+            .filter(|(_, object)| {
+                object.owner == player.other() && object.zone == Zone::Graveyard && object.is_card()
+            })
+            .map(|(id, _)| self.object_ref(id as CardId))
+            .collect();
+        if remaining.is_empty() {
+            return false;
+        }
+        self.offer_exact_free_casts(player, remaining, Zone::Graveyard, None, false);
+        self.state
+            .resolution_free_casts
+            .as_mut()
+            .unwrap()
+            .exile_on_graveyard = true;
+        true
+    }
+
     pub(super) fn offer_targeted_graveyard_cast(
         &mut self,
         item: &SpellView,
