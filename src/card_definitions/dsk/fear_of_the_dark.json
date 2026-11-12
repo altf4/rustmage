@@ -3,10 +3,46 @@
   "catalogue_id": 1473,
   "oracle_id": "9285cdf1-ad25-4aee-a865-1bf0cc905183",
   "facts_sha256": "bcf793498206aae390454322e80742b5a456a093c3673c9929cddbb6f0e52689",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "fac3b8e0b4cb18adad8a68c65af92df13c68af4f7455d5c062b8fdad85c3763f"
   },
-  "physical_metadata_sha256": "cf12187fc99795e8a92d62ea75dddfb7cdec461553ae5c1513aa24cb4decab56"
+  "physical_metadata_sha256": "cf12187fc99795e8a92d62ea75dddfb7cdec461553ae5c1513aa24cb4decab56",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfTheDark.java",
+  "java_sha256": "6c674f32718d7cc1ab877e98e11f76288c9de6ec8e03ba84b74536122cc3a17f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/PermanentsOnTheBattlefieldCondition.java",
+      "sha256": "d4bb4e37ded82f75909b5acd27a92ddfad615ff3f1aa70c443e375fd5dd569e4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DeathtouchAbility.java",
+      "sha256": "91bcdfd332027572587c22810e00d6b86f80e5a336abb17687586c3ffedbe902"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/MenaceAbility.java",
+      "sha256": "e9d08dba8430a640c7cf3f2d13bdad8af1f1c877f4b866e9535b797783aaaae2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/DefendingPlayerControlsSourceAttackingPredicate.java",
+      "sha256": "f043e4567f17028e330bb89d2999678709dc498c91a0ad83494bd9f496f059f9"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_combat_and_graveyard.rs"
 }

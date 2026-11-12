@@ -3,10 +3,31 @@
   "catalogue_id": 4677,
   "oracle_id": "4ef07e5a-3dc3-41dd-a3a9-e8812b4d40d3",
   "facts_sha256": "5451d95ba2440dea57a1996c3826b46d494ee42b53bfe15e7c4734642bd5c740",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f2be850aea6485f5fefcfecc160f8b64ecb447451195e45a24acc237372d90f3"
   },
-  "physical_metadata_sha256": "46dbc29d5106e4896769e0a874d0be95b85b27abee8ff5b871d0bb33105f0cbe"
+  "physical_metadata_sha256": "46dbc29d5106e4896769e0a874d0be95b85b27abee8ff5b871d0bb33105f0cbe",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TrialOfAgony.java",
+  "java_sha256": "00fe8c940721685b1b2cc8629bb6c9c6fd9539c5dd67c464f4da97995957ebae",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/PermanentIdPredicate.java",
+      "sha256": "6777c307e24428991b0869703189d56b35a1889c36ebb1e4735f8eb1b5793098"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentSameController.java",
+      "sha256": "7f66296afab56dbbb28d9ca16f45b8945551c2ad20970248e029ec4f8871df25"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_choices_and_modes.rs"
 }

@@ -3,10 +3,51 @@
   "catalogue_id": 4807,
   "oracle_id": "2c49d24a-98a4-43c2-bb59-1ef13d4214c2",
   "facts_sha256": "75f6bb3f725284f9f63dda4f7020ca160c20e5493ae6bd5693a56bba25f3e70a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "46f72bf51ee2b7ffc36530ad94f7b0d5a42e2b8a5d07e1685f8da632219f4353"
   },
-  "physical_metadata_sha256": "92a76f3d6509c9538be5682b10621e8421f3a73c4eceada3854c2f2169542e9a"
+  "physical_metadata_sha256": "92a76f3d6509c9538be5682b10621e8421f3a73c4eceada3854c2f2169542e9a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UntimelyMalfunction.java",
+  "java_sha256": "906eca1b5c0bb2edbbfe2361e441b0e864183f714ce423bf6b6f2113c3e05ea2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ChooseNewTargetsTargetEffect.java",
+      "sha256": "8762550b9eca7d3e2b0c25d47479691b4520397965c98b7f3d8428d3a4438153"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyTargetEffect.java",
+      "sha256": "50e593333c49c56802fa00b28691f01008a2212154c08cc120560dc6a655fe00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBlockTargetEffect.java",
+      "sha256": "a8b1a9a047746f0ea70d42f8847828d3334cfe9c33dfb6af870717e1aec0ae5f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/NumberOfTargetsPredicate.java",
+      "sha256": "2337a03e586eeadad6aa5b0deaecb46ad1e6175b86d758054835a51b872226e0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetStackObject.java",
+      "sha256": "99560fbe32eaeab547ae49a4777fd670f509879b2401942bfa1be73388292e0a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetArtifactPermanent.java",
+      "sha256": "7cbfb4763fc203a4f36b4b779bad8102d058066579a47e323b1ba1dc02153d53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_choices_and_modes.rs"
 }

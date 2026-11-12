@@ -3,10 +3,26 @@
   "catalogue_id": 2174,
   "oracle_id": "114725ef-ac81-4d13-9153-0a303c3ce9c4",
   "facts_sha256": "94ebd747bcdadd6bdf044dff2da6092ccaa6707beaa94221bb795a038fe4e6a4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1abb650be10238cb548d9784316dda95993a30f07d7e52cc05109dcd6cf14f90"
   },
-  "physical_metadata_sha256": "4fe51bcd0d02f28a891f671d5054351d615bf5de31a22dcdd65484db83f9ff2c"
+  "physical_metadata_sha256": "4fe51bcd0d02f28a891f671d5054351d615bf5de31a22dcdd65484db83f9ff2c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InnocuousRat.java",
+  "java_sha256": "fdb705366ed4e01dfe287c1c76cee686ceab2fb4406d8dda5cb67e844b7827b4",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_combat_and_graveyard.rs"
 }

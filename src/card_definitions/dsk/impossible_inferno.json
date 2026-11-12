@@ -3,10 +3,46 @@
   "catalogue_id": 2149,
   "oracle_id": "fa7c8092-94da-4147-aa90-0a951d2a8be8",
   "facts_sha256": "c5b2ad86182e0506f2261401856bc644c2531825a397823a04dfff88ec613e96",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "cb85a6f81036e16025c352bff10b481d0bd59c28de42095d3271fb0511a7c294"
   },
-  "physical_metadata_sha256": "02871c59b87f99427cfa5aaf73ddc00635add62139142d895421ad70a905dc17"
+  "physical_metadata_sha256": "02871c59b87f99427cfa5aaf73ddc00635add62139142d895421ad70a905dc17",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/ImpossibleInferno.java",
+  "java_sha256": "f4fd4e09b25c17beb14fe5d2f71b361055b69c0350cc55165c3e9264bd374205",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_combat_and_graveyard.rs"
 }

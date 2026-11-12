@@ -3,10 +3,41 @@
   "catalogue_id": 3339,
   "oracle_id": "d0732ebf-91ad-4e3c-a09a-f410d20587fc",
   "facts_sha256": "fbc17b58f624427ce33964c8da58d00097e27345c4a9e9862f2f884628249eb5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8e35cc570647a97f05fe713e8869a2835e5cd444e65887b2ed3eca7bcb4ae14"
   },
-  "physical_metadata_sha256": "6d23d9889760644dd87ce94d3e88ba049ae036683b1bc43c21e5ec7490c9f8be"
+  "physical_metadata_sha256": "6d23d9889760644dd87ce94d3e88ba049ae036683b1bc43c21e5ec7490c9f8be",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RaggedPlaymate.java",
+  "java_sha256": "fd701f0a345007dca26e6f34de9b6dc5ae0f513fb0f961e3657ed4a8e07c6a82",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleActivatedAbility.java",
+      "sha256": "db94fb83e343cb87799b0b9f07f487e017d17a8d0b4252abadf57d4cbefbff89"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/TapSourceCost.java",
+      "sha256": "41b33f6e584b5116680537101b6fb839541ff884bab7d029e570f076ba77d93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedTargetEffect.java",
+      "sha256": "da9a306340321c49e565ce8f33756a1a381653588f886780089b31ee236adcee"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_combat_and_graveyard.rs"
 }
