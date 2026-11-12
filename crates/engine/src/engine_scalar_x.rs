@@ -495,9 +495,12 @@ impl Game {
             AmountValue::DelayedExiledCardCount => self.count_delayed_exiled_cards(item) as u128,
             AmountValue::TargetPlayerCreatureCount | AmountValue::TargetPlayersCreatureCount => {
                 let mut chosen = 0u8;
-                for player in self.program_players(PlayerSet::Targeted, item) {
+                for player in item.targets.iter().filter_map(|bound| match bound.target {
+                    Target::Player(player) => Some(player),
+                    _ => None,
+                }) {
                     chosen |= 1 << player.index();
-                    if amount == AmountValue::TargetPlayerCreatureCount {
+                    if value == AmountValue::TargetPlayerCreatureCount {
                         break;
                     }
                 }
