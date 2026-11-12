@@ -79,3 +79,15 @@ fn tokens(game: &Game, player: Player, factory: u16) -> Vec<CardId> {
         .filter(|&id| game.object_view(id).card == Card(factory))
         .collect()
 }
+
+#[path = "tla_cards_multicolor/links.rs"]
+mod links;
+
+#[path = "tla_cards_multicolor/combat.rs"]
+mod combat;
+
+#[path = "tla_cards_multicolor/utility.rs"]
+mod utility;
+
+#[path = "tla_cards_multicolor/ally.rs"]
+mod ally;
