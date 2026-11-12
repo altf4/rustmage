@@ -27,6 +27,16 @@ const WATCHER: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const DESTROY_RETURN: CardRules = CardRules {
+    effect: Effect::Spell(
+        CREATURE,
+        &[
+            Instruction::DestroyTargetsRememberCreatureCards,
+            Instruction::ReturnRememberedCardsForOwnEndStep,
+        ],
+    ),
+    ..CardRules::EMPTY
+};
 
 fn card(name: &str) -> Card {
     Card::from_name(name).unwrap()
@@ -103,10 +113,6 @@ fn a_counterless_death_returns_the_exact_card_tapped_to_its_owner() {
 
 #[test]
 fn destroy_and_return_uses_only_actual_creature_cards_and_sacrifices_exact_entrants() {
-    const DESTROY_RETURN: CardRules = CardRules {
-        effect: Effect::Spell(CREATURE, &[Instruction::DestroyThenReturnForOwnEndStep]),
-        ..CardRules::EMPTY
-    };
     let _scope = fixture_rules::activate(&[(card("Murder"), &DESTROY_RETURN)]);
     let caster = Player::P1;
     let owner = caster.other();
@@ -156,6 +162,77 @@ fn destroy_and_return_uses_only_actual_creature_cards_and_sacrifices_exact_entra
         settle(branch);
         assert_eq!(branch.object_view(creature).zone, destination);
     }
+}
+
+#[test]
+fn destroy_and_return_waits_for_a_linked_entry_choice_without_giving_priority() {
+    let _scope = fixture_rules::activate(&[(card("Murder"), &DESTROY_RETURN)]);
+    let caster = Player::P0;
+    let owner = caster.other();
+    let mut game = scenario(caster);
+    let automaton = put(&mut game, owner, "Adaptive Automaton", Zone::Battlefield);
+    let bodyguard = put(&mut game, owner, "Werefox Bodyguard", Zone::Hand);
+    let removal = put(&mut game, caster, "Murder", Zone::Hand);
+
+    act(&mut game, Action::Pass);
+    cast(&mut game, bodyguard, None);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(automaton),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(automaton).zone, Zone::Exile);
+
+    cast(&mut game, removal, Some(Target::Card(bodyguard)));
+    pass_pair(&mut game);
+    let graveyard = game.object_ref(bodyguard);
+    assert_eq!(game.object_view(bodyguard).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(automaton).zone, Zone::Exile);
+    assert_eq!(game.object_view(removal).zone, Zone::Stack);
+    assert_eq!(game.state.pending, Pending::EntryValue { player: owner });
+    reject(&mut game, Action::Pass);
+
+    let value = EntryChoiceValue::CreatureType(CreatureType::from_name("Bear").unwrap());
+    let choice = Action::ChooseEntryValue { value };
+    let saved = game.snapshot();
+    let revision = game.revision();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == choice)
+        .unwrap();
+    let mut raw = game.clone();
+    act(&mut raw, choice.clone());
+    game.apply_index(owner, revision, index).unwrap();
+    assert_eq!(game.snapshot(), raw.snapshot());
+    assert_eq!(game.object_view(automaton).entry_choice, Some(value));
+    assert_eq!(game.object_view(automaton).controller, owner);
+    assert_eq!(game.object_view(bodyguard).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(bodyguard).controller, caster);
+    assert_eq!(game.object_view(removal).zone, Zone::Graveyard);
+    let delays = game.observe(caster).delayed_sacrifices;
+    assert_eq!(delays.len(), 1);
+    assert_eq!(delays[0].tokens, [game.object_ref(bodyguard)]);
+
+    game.restore(&saved).unwrap();
+    assert_eq!(
+        game.apply_index(owner, revision, index),
+        Err(Error::StaleRevision)
+    );
+    // Exercise a stale receipt with a new graveyard incarnation during the pause.
+    game.move_object(bodyguard, Zone::Exile);
+    game.move_object(bodyguard, Zone::Graveyard);
+    assert_ne!(game.object_ref(bodyguard), graveyard);
+    act(&mut game, choice);
+    assert_eq!(game.object_view(automaton).entry_choice, Some(value));
+    assert_eq!(game.object_view(bodyguard).zone, Zone::Graveyard);
+    assert!(game.observe(caster).delayed_sacrifices.is_empty());
 }
 
 #[test]

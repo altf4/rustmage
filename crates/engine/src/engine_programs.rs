@@ -5685,8 +5685,11 @@ impl Game {
                         .collect::<Vec<_>>();
                     self.destroy_and_create(targets, token, amount);
                 }
-                Instruction::DestroyThenReturnForOwnEndStep => {
-                    self.destroy_then_return_for_own_end_step(&item);
+                Instruction::DestroyTargetsRememberCreatureCards => {
+                    self.destroy_targets_remember_creature_cards(&item);
+                }
+                Instruction::ReturnRememberedCardsForOwnEndStep => {
+                    self.return_remembered_cards_for_own_end_step(&item);
                 }
                 Instruction::CollectEvidence { threshold, skip } => {
                     if self.start_resolution_evidence(threshold, skip, false) {

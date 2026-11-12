@@ -7,17 +7,31 @@ impl Game {
     /// The attempted destruction is prevented before a simultaneous movement.
     /// Redirected destinations remain destruction; prevented moves do not.
     pub(super) fn destroy_targets_outcome(&mut self, targets: &[BoundTarget]) -> Vec<ZoneChange> {
-        self.destroy_objects_outcome(targets.iter().filter_map(|bound| {
+        self.destroy_objects_outcome(Self::destruction_targets(targets))
+    }
+
+    fn destruction_targets(targets: &[BoundTarget]) -> impl Iterator<Item = ObjectRef> + '_ {
+        targets.iter().filter_map(|bound| {
             let (Target::Card(id), Some(object)) = (bound.target, bound.object) else {
                 return None;
             };
             (object.card == id).then_some(object)
-        }))
+        })
     }
+
     pub(super) fn destroy_objects_outcome(
         &mut self,
         objects: impl IntoIterator<Item = ObjectRef>,
     ) -> Vec<ZoneChange> {
+        let (events, observers) = self.destroy_objects_batch(objects);
+        self.finish_zone_events(&events, &observers);
+        events
+    }
+
+    fn destroy_objects_batch(
+        &mut self,
+        objects: impl IntoIterator<Item = ObjectRef>,
+    ) -> (Vec<ZoneChange>, Vec<ObjectView>) {
         let mut ids = Vec::new();
         for object in objects {
             let id = object.card;
@@ -31,22 +45,43 @@ impl Game {
         }
         let observers = self.death_trigger_sources();
         let events = self.move_objects_raw(&ids, Zone::Graveyard);
-        self.finish_zone_events(&events, &observers);
-        events
+        (events, observers)
     }
 
-    pub(super) fn destroy_then_return_for_own_end_step(&mut self, item: &SpellView) {
-        let events = self.destroy_targets_outcome(&item.targets);
-        let moves = events
+    pub(super) fn destroy_targets_remember_creature_cards(&mut self, item: &SpellView) {
+        let (events, observers) =
+            self.destroy_objects_batch(Self::destruction_targets(&item.targets));
+        let cards: Vec<_> = events
             .iter()
             .filter(|event| event.moved && event.destination == Zone::Graveyard && event.was_card)
             .flat_map(ZoneChange::objects_after)
+            .filter(|object| self.current_kinds(object.card) & 1 != 0)
+            .collect();
+        self.state.resolving.as_mut().unwrap().remembered_objects =
+            (!cards.is_empty()).then(|| cards.into());
+        // An exile-until return can pause resolution here for its own entry choices.
+        self.finish_zone_events(&events, &observers);
+    }
+
+    pub(super) fn return_remembered_cards_for_own_end_step(&mut self, item: &SpellView) {
+        let Some(cards) = self
+            .state
+            .resolving
+            .as_mut()
+            .unwrap()
+            .remembered_objects
+            .take()
+        else {
+            return;
+        };
+        let moves = cards
+            .iter()
+            .copied()
             .filter_map(|object| {
                 let card = &self.state.objects[object.card as usize];
                 if card.zone != Zone::Graveyard
                     || self.object_ref(object.card) != object
                     || !card.is_card()
-                    || self.current_kinds(object.card) & 1 == 0
                 {
                     return None;
                 }

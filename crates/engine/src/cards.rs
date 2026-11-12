@@ -3619,8 +3619,10 @@ pub enum Instruction {
         token: Card,
         amount: u16,
     },
-    /// Return creature cards actually destroyed this way. Sacrifice the entrants at your next end step.
-    DestroyThenReturnForOwnEndStep,
+    /// Destroy targets and retain the exact creature cards put into graveyards this way.
+    DestroyTargetsRememberCreatureCards,
+    /// Return those cards under your control and sacrifice them at your next end step.
+    ReturnRememberedCardsForOwnEndStep,
     IfTeamwork {
         skip: usize,
     },
