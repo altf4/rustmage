@@ -5791,7 +5791,7 @@ impl Game {
                             .is_some_and(|object| {
                                 self.reveal_face_down_permanent(object)
                                     .is_some_and(Card::is_creature)
-                                    && !manifest::face_up_prohibited(self, object, item.controller)
+                                    && !manifest::face_up_prohibited(self, object)
                             });
                     if can_turn {
                         self.state.pending = Pending::EffectOptional {

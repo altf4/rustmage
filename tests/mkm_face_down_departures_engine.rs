@@ -110,19 +110,19 @@ const TURN_UP_LOCK: CardRules = CardRules {
 
 #[test]
 fn prohibited_turn_up_still_returns_a_known_unwarded_creature_face_down() {
-    let owner = Player::P0;
-    let player = owner.other();
+    let player = Player::P0;
+    let owner = player.other();
     let watcher = Card::from_name("Hill Giant").unwrap();
     let lock = Card::from_name("Doubling Season").unwrap();
     let _rules = fixture_rules::activate(&[(watcher, &FACE_DOWN_OBSERVER), (lock, &TURN_UP_LOCK)]);
-    let mut game = scenario(owner);
+    let mut game = scenario(player);
     spawn(&mut game, player, watcher, Zone::Battlefield);
-    spawn(&mut game, owner, lock, Zone::Battlefield);
+    spawn(&mut game, player, lock, Zone::Battlefield);
     let bear = put(&mut game, owner, "Grizzly Bears", Zone::Library);
     game.cloak_library_top(player, owner);
     assert!(!game.advance_entries());
 
-    let sweeper = put(&mut game, owner, "Day of Judgment", Zone::Hand);
+    let sweeper = put(&mut game, player, "Day of Judgment", Zone::Hand);
     cast(&mut game, sweeper, None);
     settle(&mut game);
     let object = game.object_ref(bear);
@@ -132,8 +132,11 @@ fn prohibited_turn_up_still_returns_a_known_unwarded_creature_face_down() {
     assert_eq!(public.object, object);
     assert_eq!(public.cause, FaceDownCause::OtherEffect);
     assert_eq!(public.underlying, Card::from_name("Grizzly Bears"));
+    let mut owner_priority = game.clone();
+    owner_priority.state.active = owner;
+    owner_priority.state.priority = owner;
     reject(
-        &mut game,
+        &mut owner_priority,
         Action::BeginFaceUp {
             object,
             cost: ManaCost {

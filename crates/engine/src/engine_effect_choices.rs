@@ -200,7 +200,7 @@ impl Game {
                 && self.object_ref(object.card) == object
                 && self.is_face_down(object)
                 && self.is_creature(object.card)
-                && !manifest::face_up_prohibited(self, object, player);
+                && !manifest::face_up_prohibited(self, object);
         }
         if choice.kind == EffectChoiceKind::CloakFromHand {
             let card = &self.state.objects[object.card as usize];

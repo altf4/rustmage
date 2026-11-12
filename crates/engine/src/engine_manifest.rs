@@ -9,7 +9,6 @@ use crate::cards::{
 pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
     world: &W,
     object: ObjectRef,
-    player: Player,
 ) -> bool {
     let mut query = None;
     let prohibits = |fragment: &StaticAbilityFragment| {
@@ -38,7 +37,7 @@ pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
             StaticAbilityFragment::OpponentFaceUpProhibitedOnOwnTurn
         )
     };
-    player != active
+    world.object(object.card).controller != active
         && world.static_sources().iter().copied().any(|id| {
             let source = world.object(id);
             source.zone == Zone::Battlefield
@@ -700,7 +699,7 @@ impl Game {
     fn turn_manifest_face_up_with_x(&mut self, object: ObjectRef, player: Player, x: u32) -> bool {
         if !self.on_battlefield(object.card)
             || self.object_ref(object.card) != object
-            || face_up_prohibited(self, object, player)
+            || face_up_prohibited(self, object)
         {
             return false;
         }
@@ -1241,7 +1240,7 @@ impl Game {
         if permanent.zone != Zone::Battlefield
             || self.object_ref(object.card) != object
             || permanent.controller != player
-            || face_up_prohibited(self, object, player)
+            || face_up_prohibited(self, object)
             || !(row.underlying.is_supported()
                 || cfg!(feature = "test-support")
                     && (row.underlying

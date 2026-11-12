@@ -184,7 +184,7 @@ const WATCHDOG: CardRules = CardRules {
 };
 
 #[test]
-fn turn_up_prohibition_checks_the_effect_player_across_either_controller() {
+fn turn_up_prohibition_checks_the_turned_permanents_controller() {
     let provider = Card::from_name("Grizzly Bears").unwrap();
     let _rules = fixture_rules::activate(&[(provider, &WATCHDOG)]);
     let player = Player::P0;
@@ -199,9 +199,9 @@ fn turn_up_prohibition_checks_the_effect_player_across_either_controller() {
     assert!(!game.advance_entries());
     let your_face = game.object_ref(owned);
     let their_face = game.object_ref(foreign);
-    assert!(!game.turn_manifest_face_up(your_face, opponent));
     assert!(!game.turn_manifest_face_up(their_face, opponent));
-    assert!(game.turn_manifest_face_up(their_face, player));
-    assert_eq!(game.object_view(foreign).kinds & 2, 2);
-    assert!(game.is_face_down(your_face));
+    assert!(!game.turn_manifest_face_up(their_face, player));
+    assert!(game.turn_manifest_face_up(your_face, opponent));
+    assert_eq!(game.object_view(owned).kinds & 2, 2);
+    assert!(game.is_face_down(their_face));
 }
