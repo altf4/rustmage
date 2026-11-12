@@ -259,10 +259,18 @@ impl Game {
                         })
                 })
             {
-                legends[object.controller.index()]
-                    .entry(crate::card_names::comparison_key(self.object_name(id)))
-                    .or_default()
-                    .push(self.object_ref(id));
+                let reference = self.object_ref(id);
+                for name in characteristic_layers::battlefield_names(self, id)
+                    .into_iter()
+                    .filter(|name| !name.is_empty())
+                {
+                    let group = legends[object.controller.index()]
+                        .entry(crate::card_names::comparison_key(name))
+                        .or_default();
+                    if group.last() != Some(&reference) {
+                        group.push(reference);
+                    }
+                }
             }
             if self.is_creature(id) {
                 let query = characteristics.get_or_init(|| self.characteristic_query());
@@ -281,8 +289,13 @@ impl Game {
         }
         for controller in [self.state.active, self.state.active.other()] {
             let groups = std::mem::take(&mut legends[controller.index()]);
+            let first = batch.groups.len();
             for (name, objects) in groups {
-                if objects.len() > 1 {
+                if objects.len() > 1
+                    && !batch.groups[first..]
+                        .iter()
+                        .any(|group| group.objects == objects)
+                {
                     batch.groups.push(LegendGroup {
                         controller,
                         name,
@@ -464,6 +477,26 @@ impl Game {
                 return;
             }
         }
+    }
+
+    pub(super) fn visit_legend_choices(
+        &self,
+        player: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let batch = self.state.sba_batch.as_ref().unwrap();
+        let mut offered = std::collections::BTreeSet::new();
+        for group in &batch.groups {
+            if group.controller == player && group.keep.is_none() {
+                // A permanent in multiple groups is selected for the first open group.
+                for &object in &group.objects {
+                    if offered.insert(object) && emit(Action::KeepLegend { object }) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     pub(super) fn keep_legend(&mut self, object: ObjectRef) {

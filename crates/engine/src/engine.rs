@@ -6067,14 +6067,8 @@ impl Game {
                 }
             }
             Pending::Legend { player } => {
-                for group in &s.sba_batch.as_ref().unwrap().groups {
-                    if group.controller == player && group.keep.is_none() {
-                        for &object in &group.objects {
-                            if emit(Action::KeepLegend { object }) {
-                                return true;
-                            }
-                        }
-                    }
+                if self.visit_legend_choices(player, &mut emit) {
+                    return true;
                 }
             }
             Pending::AdditionalCost { .. } => {

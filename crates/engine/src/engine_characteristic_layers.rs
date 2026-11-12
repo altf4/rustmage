@@ -527,23 +527,49 @@ pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
 pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
-    let object = world.object(id);
-    if object.zone != Zone::Battlefield
-        || world.roles().is_none_or(|r| {
-            r.characteristic_sources.is_empty()
-                && r.animations.iter().all(|row| row.equipment_name.is_none())
-        })
-    {
-        return if object.zone == Zone::Stack {
-            world.game().effective_spell_card(id).name()
-        } else {
-            rooms::battlefield_name(world, id).unwrap_or_else(|| world.copiable_name(id))
-        };
+    let base = || rooms::battlefield_name(world, id).unwrap_or_else(|| world.copiable_name(id));
+    match world.object(id).zone {
+        Zone::Stack => world.game().effective_spell_card(id).name(),
+        Zone::Battlefield => battlefield_name_change(world, id).unwrap_or_else(base),
+        _ => base(),
     }
-    changed_name(world, id)
 }
+
+/// The names a battlefield object actually has, using separate halves for Rooms.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
+pub(super) fn battlefield_names<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> [&'static str; 2] {
+    let Some(room) = world.definition(id).room() else {
+        return [name(world, id), ""];
+    };
+    if let Some(name) = battlefield_name_change(world, id)
+        .or_else(|| world.recipe(id).overrides.and_then(|value| value.name))
+    {
+        return [name, ""];
+    }
+    let doors = rooms::doors(world, id).expect("battlefield Room");
+    RoomDoor::ALL.map(|door| {
+        if doors.is_open(door) {
+            room.halves[door.index()].name()
+        } else {
+            ""
+        }
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<&'static str> {
+    if world.roles().is_none_or(|r| {
+        r.characteristic_sources.is_empty()
+            && r.animations.iter().all(|row| row.equipment_name.is_none())
+    }) {
+        return None;
+    }
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
@@ -552,10 +578,7 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
                 .filter_map(|row| row.equipment_name.map(|name| (row.timestamp, name))),
         )
         .max_by_key(|e| e.0)
-        .map_or_else(
-            || rooms::battlefield_name(world, id).unwrap_or_else(|| world.copiable_name(id)),
-            |e| e.1,
-        )
+        .map(|(_, name)| name)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]

@@ -393,6 +393,136 @@ fn settle_rooms(game: &mut Game) {
     panic!("Room resolution did not settle");
 }
 
+fn animated_room(game: &mut Game, player: Player, doors: RoomDoors) -> CardId {
+    let room = spawn(game, player, ROOM, Zone::Battlefield);
+    for (open, door, cost) in [
+        (doors.left, RoomDoor::Left, BLUE_COST),
+        (doors.right, RoomDoor::Right, RED_COST),
+    ] {
+        if open {
+            unlock_door(game, room, door, cost);
+            settle_rooms(game);
+        }
+    }
+    let puppet = put(game, player, "Puppet Crafting", Zone::Hand);
+    cast(game, puppet, Some(Target::Card(room)));
+    settle_rooms(game);
+    assert!(game.object_view(room).is_creature());
+    assert_eq!(game.object_view(room).room_doors, Some(doors));
+    room
+}
+
+fn make_room_legendary(game: &mut Game, player: Player, room: CardId) {
+    let serum = put(game, player, "Super-Soldier Serum", Zone::Hand);
+    cast(game, serum, Some(Target::Card(room)));
+    act(game, Action::Pass);
+    act(game, Action::Pass);
+}
+
+#[test]
+fn legendary_rooms_can_coexist_when_they_have_no_name_in_common() {
+    let _rules =
+        fixture_rules::activate(&[(ROOM, &ROOM_RULES), (LEFT, &ROOM_HALF), (RIGHT, &ROOM_HALF)]);
+    let player = Player::P0;
+    for (first_doors, second_doors, first_name, second_name) in [
+        (RoomDoors::default(), RoomDoors::default(), "", ""),
+        (LEFT_ONLY, RIGHT_ONLY, LEFT.name(), RIGHT.name()),
+    ] {
+        let mut game = scenario(player);
+        let first = animated_room(&mut game, player, first_doors);
+        let second = animated_room(&mut game, player, second_doors);
+        make_room_legendary(&mut game, player, first);
+        make_room_legendary(&mut game, player, second);
+        assert_eq!(game.state.pending, Pending::Priority);
+        for (room, name) in [(first, first_name), (second, second_name)] {
+            let object = game.object_view(room);
+            assert_eq!(object.zone, Zone::Battlefield);
+            assert_eq!(object.name, name);
+            assert!(object.is_legendary());
+        }
+    }
+}
+
+#[test]
+fn one_shared_door_or_two_identical_conflict_sets_require_one_legend_choice() {
+    let _rules =
+        fixture_rules::activate(&[(ROOM, &ROOM_RULES), (LEFT, &ROOM_HALF), (RIGHT, &ROOM_HALF)]);
+    let player = Player::P1;
+    for first_doors in [LEFT_ONLY, OPEN] {
+        let mut game = scenario(player);
+        let first = animated_room(&mut game, player, first_doors);
+        let second = animated_room(&mut game, player, OPEN);
+        make_room_legendary(&mut game, player, first);
+        make_room_legendary(&mut game, player, second);
+        let first_ref = game.object_ref(first);
+        let second_ref = game.object_ref(second);
+        assert_eq!(game.state.pending, Pending::Legend { player });
+        let groups = game.observe(player).legend_choices;
+        assert_eq!(groups.len(), 1);
+        assert_eq!(groups[0].name, LEFT.name());
+        assert_eq!(groups[0].objects, [first_ref, second_ref]);
+        reject(&mut game, Action::Pass);
+
+        let saved = game.snapshot();
+        let keep = Action::KeepLegend { object: first_ref };
+        let index = game
+            .legal_actions()
+            .iter()
+            .position(|action| *action == keep)
+            .unwrap();
+        let mut raw = game.clone();
+        act(&mut raw, keep);
+        game.apply_index(player, game.revision(), index).unwrap();
+        assert_eq!(raw.snapshot(), game.snapshot());
+        assert_eq!(game.state.pending, Pending::Priority);
+        assert_eq!(game.object_view(second).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(first).zone, Zone::Battlefield);
+
+        game.restore(&saved).unwrap();
+        act(&mut game, Action::KeepLegend { object: second_ref });
+        assert_eq!(game.state.pending, Pending::Priority);
+        assert_eq!(game.object_view(first).zone, Zone::Graveyard);
+        assert_eq!(game.object_view(second).zone, Zone::Battlefield);
+    }
+}
+
+#[test]
+fn overlapping_names_keep_distinct_ordered_choices_in_one_state_based_event() {
+    let _rules =
+        fixture_rules::activate(&[(ROOM, &ROOM_RULES), (LEFT, &ROOM_HALF), (RIGHT, &ROOM_HALF)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let left = animated_room(&mut game, player, LEFT_ONLY);
+    let right = animated_room(&mut game, player, RIGHT_ONLY);
+    let both = animated_room(&mut game, player, OPEN);
+    for room in [left, right, both] {
+        make_room_legendary(&mut game, player, room);
+    }
+    let [left_ref, right_ref, both_ref] = [left, right, both].map(|room| game.object_ref(room));
+    let groups = game.observe(player).legend_choices;
+    assert_eq!(groups.len(), 2);
+    assert_eq!(groups[0].name, LEFT.name());
+    assert_eq!(groups[0].objects, [left_ref, both_ref]);
+    assert_eq!(groups[1].name, RIGHT.name());
+    assert_eq!(groups[1].objects, [right_ref, both_ref]);
+    let offered = game
+        .legal_actions()
+        .into_iter()
+        .filter_map(|action| match action {
+            Action::KeepLegend { object } => Some(object),
+            _ => None,
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(offered, [left_ref, both_ref, right_ref]);
+
+    act(&mut game, Action::KeepLegend { object: right_ref });
+    assert_eq!(game.state.pending, Pending::Legend { player });
+    assert!(game.on_battlefield(left) && game.on_battlefield(right) && game.on_battlefield(both));
+    act(&mut game, Action::KeepLegend { object: left_ref });
+    assert!(game.on_battlefield(left) && game.on_battlefield(right));
+    assert_eq!(game.object_view(both).zone, Zone::Graveyard);
+}
+
 #[test]
 fn each_half_casts_with_its_cost_and_only_the_second_door_completes_the_room() {
     let _rules = fixture_rules::activate(&[
