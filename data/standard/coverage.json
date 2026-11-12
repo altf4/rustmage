@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "a557938a13a5042be79ba5cbfac52771c1e96ad6732947964fe4d8be05a7394b",
+  "catalogue_version": "8828d9efc063448e5a89b8a45027828e3f1ce3133e28b7d1cdde86fec15ead74",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4766,
-  "implemented_total": 4783,
+  "implemented_standard_cards": 4773,
+  "implemented_total": 4790,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 235,
-      "gated": 29
+      "complete": 242,
+      "gated": 22
     },
     "ecc": {
       "total": 7,
@@ -1604,8 +1604,8 @@
     {
       "name": "Anthropede",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/anthropede.rs",
       "set": "dsk"
     },
@@ -17860,8 +17860,8 @@
     {
       "name": "Intruding Soulrager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/intruding_soulrager.rs",
       "set": "dsk"
     },
@@ -21500,8 +21500,8 @@
     {
       "name": "Marina Vendrell",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/marina_vendrell.rs",
       "set": "dsk"
     },
@@ -22668,8 +22668,8 @@
     {
       "name": "Moldering Gym // Weight Room",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/moldering_gym_weight_room.rs",
       "set": "dsk"
     },
@@ -28692,8 +28692,8 @@
     {
       "name": "Roaring Furnace // Steaming Sauna",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/roaring_furnace_steaming_sauna.rs",
       "set": "dsk"
     },
@@ -31356,8 +31356,8 @@
     {
       "name": "Skullsnap Nuisance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/skullsnap_nuisance.rs",
       "set": "dsk"
     },
@@ -39836,8 +39836,8 @@
     {
       "name": "Walk-In Closet // Forgotten Cellar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/walk_in_closet_forgotten_cellar.rs",
       "set": "dsk"
     },
