@@ -2,6 +2,43 @@
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn exile_graveyard_targets_copy_until_own_end_step(&mut self, item: &SpellView) {
+        let targets: Vec<_> = item
+            .targets
+            .iter()
+            .filter_map(|bound| {
+                let Target::Card(id) = bound.target else {
+                    return None;
+                };
+                (self.same_target_object(*bound)
+                    && self.state.objects[id as usize].zone == Zone::Graveyard)
+                    .then_some(id)
+            })
+            .collect();
+        if targets.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&targets, Zone::Exile);
+        let recipes = events
+            .iter()
+            .filter(|event| event.moved && event.was_card && event.destination == Zone::Exile)
+            .flat_map(ZoneChange::objects_after)
+            .filter(|&object| {
+                let exiled = &self.state.objects[object.card as usize];
+                exiled.zone == Zone::Exile
+                    && self.object_ref(object.card) == object
+                    && exiled.is_card()
+                    && exiled.card.is_creature()
+                    && !self.exiled_face_down(object)
+            })
+            .map(|object| {
+                CopyRecipe::new(self.state.objects[object.card as usize].card.front_face())
+            })
+            .collect();
+        self.finish_zone_events(&events, &[]);
+        self.stage_copy_recipes_until_own_end_step(item, recipes);
+    }
+
     pub(super) fn copy_each_target(&mut self, item: &SpellView, amount: u128) {
         let recipes = item
             .targets

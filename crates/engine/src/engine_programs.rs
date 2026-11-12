@@ -8910,6 +8910,9 @@ impl Game {
                     self.sacrifice_source_reflexive(&item, ability);
                 }
                 Instruction::ExileAndCopyNightmare => self.exile_and_copy_nightmare(&item),
+                Instruction::ExileGraveyardTargetsCopyUntilOwnEndStep => {
+                    self.exile_graveyard_targets_copy_until_own_end_step(&item);
+                }
                 Instruction::ExileAndCopyCreatureAs {
                     base,
                     color,

@@ -352,6 +352,14 @@ impl GrantedSubtypes {
                 self.insert("Human");
                 self.insert("Hero");
             }
+            if recipe.kinds() & CREATURE_OR_KINDRED != 0 {
+                if recipe.exceptions.add_hero_subtype {
+                    self.insert("Hero");
+                }
+                if recipe.exceptions.add_coward_subtype {
+                    self.insert("Coward");
+                }
+            }
             if recipe.exceptions.shapeshifter_rogue {
                 self.insert("Shapeshifter");
                 self.insert("Rogue");

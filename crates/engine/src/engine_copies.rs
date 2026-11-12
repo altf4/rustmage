@@ -174,6 +174,9 @@ impl CopyRecipe {
     /// A later copy exception is applied after the already flattened blueprint.
     /// Keep ordinary preexisting recipes in their original representation.
     pub(super) fn with_exceptions(mut self, exceptions: CopyExceptions) -> Self {
+        if exceptions.remove_legendary {
+            self.overrides.get_or_insert(CopyOverrides::NONE).legendary = Some(false);
+        }
         if let Some(overrides) = &mut self.overrides {
             if let Some(kinds) = &mut overrides.kinds {
                 *kinds |= exceptions.add_card_types;

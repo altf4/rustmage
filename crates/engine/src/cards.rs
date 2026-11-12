@@ -65,6 +65,12 @@ pub struct CopyExceptions {
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub spider_human_hero: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub add_hero_subtype: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub add_coward_subtype: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub remove_legendary: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub shapeshifter_rogue: bool,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub bird: bool,
@@ -115,6 +121,9 @@ impl CopyExceptions {
         retained_activation: None,
         embalm: false,
         spider_human_hero: false,
+        add_hero_subtype: false,
+        add_coward_subtype: false,
+        remove_legendary: false,
         shapeshifter_rogue: false,
         bird: false,
         reflection: false,
@@ -192,6 +201,9 @@ impl CopyExceptions {
             retained_activation: other.retained_activation.or(self.retained_activation),
             embalm: self.embalm || other.embalm,
             spider_human_hero: self.spider_human_hero || other.spider_human_hero,
+            add_hero_subtype: self.add_hero_subtype || other.add_hero_subtype,
+            add_coward_subtype: self.add_coward_subtype || other.add_coward_subtype,
+            remove_legendary: self.remove_legendary || other.remove_legendary,
             shapeshifter_rogue: self.shapeshifter_rogue || other.shapeshifter_rogue,
             bird: self.bird || other.bird,
             reflection: self.reflection || other.reflection,
@@ -3530,6 +3542,9 @@ pub enum Instruction {
         ability: u16,
     },
     ExileAndCopyNightmare,
+    /// Exile surviving graveyard targets, then copy the actual exiled creatures
+    /// in one event and sacrifice that token group at the controller's next end step.
+    ExileGraveyardTargetsCopyUntilOwnEndStep,
     /// Exile the exact creature card, then copy it only if it actually reached exile.
     ExileAndCopyCreatureAs {
         base: (i16, i16),
