@@ -649,9 +649,13 @@ impl FundingState<'_> {
                 let v = self.game.stat_value_in_world(self, value, source, player);
                 minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n)
             }
-            StepGuard::LandEnteredAndPrimeLandCount => {
-                self.game.step_guard_in_world(self, guard, source, player)
-            }
+            StepGuard::LandEnteredAndPrimeLandCount => self.game.step_guard_in_world(
+                self,
+                guard,
+                player,
+                source,
+                self.object(source.card).tapped,
+            ),
             StepGuard::Threshold {
                 value,
                 minimum,
