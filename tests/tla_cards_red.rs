@@ -4,3 +4,6 @@ use rustmage as _;
 
 #[path = "tla_cards_red/cave.rs"]
 mod cave;
+
+#[path = "tla_cards_red/firebending.rs"]
+mod firebending;

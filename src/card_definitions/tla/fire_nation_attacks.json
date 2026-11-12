@@ -3,10 +3,36 @@
   "catalogue_id": 1519,
   "oracle_id": "399fba23-fc13-440b-ab67-192eede6ecab",
   "facts_sha256": "9243763e98c0b1c15ac23f2ed633f0bfe614b4ecbaddee63c83be89724b01766",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f46b5b8c3850debd7a06080f64d3b7d649d66a095593148bdf53182ef222cb98"
   },
-  "physical_metadata_sha256": "b03480fd4530f0a7e0d2d727b12c335f0a85cf94340b08ff9018d32c1df71031"
+  "physical_metadata_sha256": "b03480fd4530f0a7e0d2d727b12c335f0a85cf94340b08ff9018d32c1df71031",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FireNationAttacks.java",
+  "java_sha256": "f6c4fd5a9cf67b9fcb57385d0630724365893a9f27cd88114306fecad90c5abd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/ManaCostsImpl.java",
+      "sha256": "688c76a95c8de7351eda3a0f3aafc95d8d01b0b0db70970a286cd60e537b6154"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashbackAbility.java",
+      "sha256": "6a3cea9f6a49b61f425bf267cc280a991d4d1315322b11059cd0604e0dd76e87"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SoldierFirebendingToken.java",
+      "sha256": "1c3395fcd4d33a9d743e2e19c09ae7ee23c2a4d7ed7eb85468adee42c30be8b6"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_red.rs"
 }
