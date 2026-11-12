@@ -3,10 +3,14 @@
   "catalogue_id": 2565,
   "oracle_id": "3a024389-91a1-460c-b4e8-3f212d2b8400",
   "facts_sha256": "492ff6f5be64037ed2370380114d27969d6762cac2d0375e09f8dc607979ae8f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "75f8474b6f0361244eebda7495199d99264e11efe36292bfecb4526eeb9f79e4"
   },
-  "physical_metadata_sha256": "01343f47440ca404ac4998bac4046390742710d8ae4406880b4e6924f8e15cda"
+  "physical_metadata_sha256": "01343f47440ca404ac4998bac4046390742710d8ae4406880b4e6924f8e15cda",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LostInTheMaze.java",
+  "java_sha256": "eb52fb4b1fb2d87ea339f57c8c58ab4a64990c0be333c6614eba8ca410a3f6a3",
+  "rules_tests": "mkm_white_blue_cards"
 }

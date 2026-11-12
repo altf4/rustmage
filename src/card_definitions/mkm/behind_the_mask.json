@@ -3,10 +3,21 @@
   "catalogue_id": 373,
   "oracle_id": "85ac3efc-5e19-4661-b52f-116f57e39581",
   "facts_sha256": "3ad83c0f39efd4b69ac96c5eb89750b898e066171f2cc70d2261cec72fdfddd1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "211dd8b574432fb8fb89f7097089319e5d2991a71bf6a317ce2581a8c5d8b9ef"
   },
-  "physical_metadata_sha256": "aa3f0532ee37a1a467b8fd9b28ab46411f832cbd2db563447c7072a7a85ade61"
+  "physical_metadata_sha256": "aa3f0532ee37a1a467b8fd9b28ab46411f832cbd2db563447c7072a7a85ade61",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BehindTheMask.java",
+  "java_sha256": "b23e3fcbceb34296264e6853dd745ec1a2825f55a6d6c8c2fdf68505140833d0",
+  "rules_tests": "mkm_white_blue_cards",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    }
+  ]
 }

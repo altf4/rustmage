@@ -3,7 +3,7 @@
   "catalogue_id": 3251,
   "oracle_id": "b749e9e4-0f2a-4157-8cca-facd6b48157f",
   "facts_sha256": "c8b47342c36b0f30f4df33e414b07ca94e768746f45c3e7ebac270230cd9e37b",
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "6c6bf5d0b51866b989c040b17066b8b21102173751961b17d86d17df09385d3f",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/p/ProftsEideticMemory.java",
@@ -11,5 +11,6 @@
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9c44600423862d04cfa6d02152da17f3afd1440f3786d4dfc3b399b27c1d9bf6"
-  }
+  },
+  "rules_tests": "mkm_white_blue_cards"
 }
