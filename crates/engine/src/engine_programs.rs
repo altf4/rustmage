@@ -1348,6 +1348,9 @@ impl Game {
                     TriggerCondition::EnchantmentEntersYou | TriggerCondition::Eerie => {
                         yours && entered.kinds & 32 != 0
                     }
+                    TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou => {
+                        yours && self.is_face_down(event.after)
+                    }
                     TriggerCondition::SelfDoorUnlocked(_) => false,
                     TriggerCondition::CreatureEntersYouIfCast => {
                         yours
@@ -5580,6 +5583,25 @@ impl Game {
                 Instruction::TurnTargetFaceUp => {
                     if let Some(object) = self.first_bound_face_down_permanent(&item) {
                         self.turn_manifest_face_up(object, item.controller);
+                    }
+                }
+                Instruction::PutCountersOnEventPermanent { kind, amount } => {
+                    if let Some(object) = item.event_object.as_ref().map(|event| event.object)
+                        && self.on_battlefield(object.card)
+                        && self.object_ref(object.card) == object
+                    {
+                        self.effect_counters(
+                            vec![(object, Counters::of(kind, amount))],
+                            replacements::ResumeMode::Program,
+                        );
+                    }
+                }
+                Instruction::SkipIfFaceDownEntryOrTurnUp(skip) => {
+                    if self.state.players[item.controller.index()]
+                        .turn_facts
+                        .face_down_entry_or_turn_up
+                    {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
                 Instruction::DestroyAndCreateForController { token, amount } => {

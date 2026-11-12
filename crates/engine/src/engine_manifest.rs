@@ -570,6 +570,9 @@ impl Game {
             return;
         }
         let controller = turned.controller;
+        self.state.players[player.index()]
+            .turn_facts
+            .face_down_entry_or_turn_up = true;
         self.state
             .manifest
             .get_or_insert_with(Default::default)
@@ -589,7 +592,8 @@ impl Game {
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::SelfTurnedFaceUp => source.reference == object,
-                    TriggerCondition::PermanentYouControlTurnedFaceUp => {
+                    TriggerCondition::PermanentYouControlTurnedFaceUp
+                    | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou => {
                         source.controller == controller
                     }
                     TriggerCondition::YouTurnPermanentFaceUp => source.controller == player,

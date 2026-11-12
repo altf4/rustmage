@@ -562,23 +562,33 @@ fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
         ),
         ..CardRules::EMPTY
     };
-    const ACTOR: CardRules = CardRules {
+    const FACE_OBSERVERS: CardRules = CardRules {
         effect: Effect::Creature(2, 2),
-        triggers: &[TriggeredAbility {
-            condition: TriggerCondition::YouTurnPermanentFaceUp,
-            targets: TargetPlan::NONE,
-            program: &[Instruction::PutCounters {
-                subject: Subject::Source,
-                kind: CounterKind::PlusOne,
-                amount: 1,
-            }],
-        }],
+        triggers: &[
+            TriggeredAbility {
+                condition: TriggerCondition::YouTurnPermanentFaceUp,
+                targets: TargetPlan::NONE,
+                program: &[Instruction::PutCountersOnEventPermanent {
+                    kind: CounterKind::PlusOne,
+                    amount: 1,
+                }],
+            },
+            TriggeredAbility {
+                condition: TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou,
+                targets: TargetPlan::NONE,
+                program: &[Instruction::PutCounters {
+                    subject: Subject::Source,
+                    kind: CounterKind::PlusOne,
+                    amount: 1,
+                }],
+            },
+        ],
         ..CardRules::EMPTY
     };
     let _scope = fixture_rules::activate(&[
         (Card::from_name("Syncopate").unwrap(), &REPEATED),
         (Card::from_name("Opt").unwrap(), &REVEAL),
-        (Card::from_name("Bear Cub").unwrap(), &ACTOR),
+        (Card::from_name("Bear Cub").unwrap(), &FACE_OBSERVERS),
     ]);
     let controller = Player::P1;
     let player = controller.other();
@@ -607,18 +617,55 @@ fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
     let mut decline = game.clone();
     act(&mut decline, Action::ChooseOptional { accept: false });
     assert!(decline.is_face_down(facedown));
+    assert!(
+        decline.state.players[controller.index()]
+            .turn_facts
+            .face_down_entry_or_turn_up
+    );
+    assert!(
+        !decline.state.players[player.index()]
+            .turn_facts
+            .face_down_entry_or_turn_up
+    );
     assert_eq!(
-        decline.counter_count(actor_observer, CounterKind::PlusOne),
-        0
+        decline.counter_count(controller_observer, CounterKind::PlusOne),
+        1
+    );
+    assert_eq!(
+        decline.counter_count(facedown.card, CounterKind::PlusOne),
+        1
     );
     act(&mut game, Action::ChooseOptional { accept: true });
     settle(&mut game);
     assert_eq!(game.object_ref(facedown.card), facedown);
     assert_eq!(game.object_view(facedown.card).controller, controller);
     assert_eq!(game.object_view(facedown.card).card, Card::GrizzlyBears);
-    assert_eq!(game.counter_count(actor_observer, CounterKind::PlusOne), 1);
+    assert!(
+        game.state.players[player.index()]
+            .turn_facts
+            .face_down_entry_or_turn_up
+    );
+    assert_eq!(game.counter_count(facedown.card, CounterKind::PlusOne), 2);
+    assert_eq!(game.counter_count(actor_observer, CounterKind::PlusOne), 0);
     assert_eq!(
         game.counter_count(controller_observer, CounterKind::PlusOne),
-        0
+        2
+    );
+
+    let turn = game.state.turn;
+    for _ in 0..32 {
+        if game.state.turn != turn {
+            break;
+        }
+        choose(&mut game, |action| {
+            matches!(action, Action::Pass | Action::FinishAttackers)
+        });
+    }
+    assert_ne!(game.state.turn, turn);
+    assert!(
+        game.state
+            .players
+            .iter()
+            .all(|state| !state.turn_facts.face_down_entry_or_turn_up)
     );
 }

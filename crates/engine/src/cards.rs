@@ -3535,6 +3535,13 @@ pub enum Instruction {
     RevealFaceDownTargetAndMayTurnUp,
     /// Turn the exact face-down target up as an effect, without a special-action payment.
     TurnTargetFaceUp,
+    /// Place counters on the exact permanent from this trigger's event.
+    PutCountersOnEventPermanent {
+        kind: CounterKind,
+        amount: u64,
+    },
+    /// Skip if a face-down permanent entered under your control or you turned one face up this turn.
+    SkipIfFaceDownEntryOrTurnUp(usize),
     /// When this exact target dies this turn, its controller's spell manifests dread.
     ManifestDreadWhenTargetDies,
     DestroyAndCreateForController {
@@ -7324,6 +7331,7 @@ pub enum TriggerCondition {
     #[cfg_attr(not(test), allow(dead_code))]
     PermanentYouControlTurnedFaceUp,
     YouTurnPermanentFaceUp,
+    FaceDownPermanentEntersOrTurnsUpYou,
     YouManifestDread,
     CreatureExploresCardYou {
         land: bool,

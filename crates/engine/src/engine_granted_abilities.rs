@@ -58,6 +58,7 @@ impl Game {
                             | TriggerCondition::SelfTurnedFaceUp
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
                             | TriggerCondition::YouTurnPermanentFaceUp
+                            | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou
                             | TriggerCondition::YouManifestDread
                             | TriggerCondition::Eerie
                     )
