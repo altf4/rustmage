@@ -3,10 +3,31 @@
   "catalogue_id": 4763,
   "oracle_id": "93cb9c7e-d6d3-4b1e-8bcf-2a4a1d95a549",
   "facts_sha256": "ebf1955484fa1145a22b45b10498221cb86869627ecc80db69a246143a47fa8d",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "39be2d095e2aa91996bae72364bd26fc83ee73197e024565af504702e0426696"
   },
-  "physical_metadata_sha256": "c6ea11361043894d5349e0cfee8f469bdb6d0de87126fa0b3c304fd86de8f691"
+  "physical_metadata_sha256": "c6ea11361043894d5349e0cfee8f469bdb6d0de87126fa0b3c304fd86de8f691",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UndercityEliminator.java",
+  "java_sha256": "9fd0f01cfea381c680b76fad13c894c333064df3ea3dfaf81b2d981b0e7ea747",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }

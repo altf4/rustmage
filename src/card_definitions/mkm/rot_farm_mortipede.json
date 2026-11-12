@@ -3,10 +3,21 @@
   "catalogue_id": 3591,
   "oracle_id": "1f4d3a96-bc30-4362-9c1f-40bf79f78e78",
   "facts_sha256": "def7c9749bfb2752579445532939844dfb6930655f5c0128091c649f7ffc8804",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a6c87addf9cf19744f5ecf8e1a1af76a15d75dd2e7a339e6ea73bf59d6e3d16f"
   },
-  "physical_metadata_sha256": "dd453e01e36f231f3d04b82922bfb82d7a33536f01fabb044def1f3714f2bc24"
+  "physical_metadata_sha256": "dd453e01e36f231f3d04b82922bfb82d7a33536f01fabb044def1f3714f2bc24",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RotFarmMortipede.java",
+  "java_sha256": "ae7cdbb7be53ad451f0eca2f6a5f01347502e23a7d798d5103ea320960610ab7",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CardsLeaveGraveyardTriggeredAbility.java",
+      "sha256": "9600c956500170fad83dd5e65083bbeb3aebbef5cbb9ef82d8ca989bdb70905b"
+    }
+  ]
 }

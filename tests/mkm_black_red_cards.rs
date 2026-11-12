@@ -12,6 +12,9 @@ mod exile_and_evidence;
 #[path = "mkm_black_red_cards/disguise.rs"]
 mod disguise;
 
+#[path = "mkm_black_red_cards/black.rs"]
+mod black;
+
 use rustmage_core::{cards::*, engine::*};
 use support::{act, choose, pay};
 
@@ -38,9 +41,13 @@ fn target(game: &mut Game, card: CardId) {
 }
 
 fn activation(card: CardId) -> Action {
+    activation_at(card, 0)
+}
+
+fn activation_at(card: CardId, ability: u16) -> Action {
     Action::AnnounceActivate {
         card,
-        ability: 0,
+        ability,
         counter_payment: Counters::default(),
     }
 }
