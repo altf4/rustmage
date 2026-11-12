@@ -83,7 +83,7 @@ fn exact_top_land_can_enter_or_go_to_hand_and_the_look_stays_private() {
 }
 
 #[test]
-fn a_prevented_entry_puts_the_same_library_incarnation_into_hand() {
+fn a_card_with_both_zone_moves_prevented_stays_the_same_library_incarnation() {
     struct Prevent;
     impl Drop for Prevent {
         fn drop(&mut self) {
@@ -102,7 +102,9 @@ fn a_prevented_entry_puts_the_same_library_incarnation_into_hand() {
     let _prevent = Prevent;
     zone_replacements::TEST_PREVENT_ZONE_MOVE.with(|rule| rule.set(Some(original)));
     act(&mut game, Action::FinishLibrarySelection);
-    assert_eq!(game.object_view(top).zone, Zone::Hand);
+    assert_eq!(game.object_view(top).zone, Zone::Library);
+    assert_eq!(game.object_ref(top), original);
+    assert_eq!(game.state.pending, Pending::Priority);
     assert_eq!(game.state.players[P.index()].lands_entered_this_turn, 0);
     assert_eq!(game.state.players[P.index()].cards_drawn_this_turn, 0);
 }

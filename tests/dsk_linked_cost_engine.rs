@@ -211,6 +211,7 @@ fn an_off_turn_caster_orders_both_cards_exiled_to_pay_the_meld_cost() {
     assert_eq!(game.actor(), Some(P));
     begin_cast(&mut game, spell);
     act(&mut game, Action::ChooseAdditionalCost { object: melded });
+    pay(&mut game);
 
     assert_eq!(game.actor(), Some(P));
     assert_eq!(game.state.pending, Pending::MeldOrdering { player: P });
