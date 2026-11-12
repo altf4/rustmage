@@ -33,6 +33,8 @@ pub enum ManaRestrictionView {
     CreatureSpells,
     SpellSubtypeAny(&'static [&'static str]),
     PlaneswalkerSpell,
+    RoomSpellOrUnlockDoor,
+    EnchantmentSpellOrUnlockDoorOrFaceUp,
     Unrestricted,
     Unavailable,
     SpellSubtype(&'static str),
@@ -231,6 +233,13 @@ impl Quality {
                     ManaRestrictionView::SpellSubtypeAny(subtypes)
                 }
                 ManaRestriction::PlaneswalkerSpell => ManaRestrictionView::PlaneswalkerSpell,
+                ManaRestriction::RoomSpellOrUnlockDoor => {
+                    ManaRestrictionView::RoomSpellOrUnlockDoor
+                }
+                ManaRestriction::EnchantmentSpellOrUnlockDoorOrFaceUp => {
+                    ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp
+                }
+
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
@@ -308,7 +317,7 @@ impl Quality {
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::CreatureActivation => {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
@@ -326,18 +335,18 @@ impl Quality {
             ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
                 Purpose::Spell(facts) => facts.kinds & 16 != 0,
                 Purpose::Activation(_) => true,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::ArtifactSpellOrArtifactActivation => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => facts.kinds & 16 != 0,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }
             ManaRestrictionView::SubtypeSpellOrActivation(subtype) => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => facts.has_subtype(subtype),
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::InstantSorcery => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0)
@@ -354,6 +363,14 @@ impl Quality {
             ManaRestrictionView::PlaneswalkerSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 64 != 0)
             }
+            ManaRestrictionView::RoomSpellOrUnlockDoor => {
+                purpose == Purpose::UnlockDoor
+                    || matches!(purpose, Purpose::Spell(facts) if facts.has_subtype("Room"))
+            }
+            ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp => {
+                matches!(purpose, Purpose::UnlockDoor | Purpose::FaceUp)
+                    || matches!(purpose, Purpose::Spell(facts) if facts.kinds & 32 != 0)
+            }
             ManaRestrictionView::Unrestricted => true,
             ManaRestrictionView::Unavailable => false,
             ManaRestrictionView::SpellSubtype(subtype) => {
@@ -366,7 +383,7 @@ impl Quality {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => {
                     facts.kinds & CREATURE_KIND != 0 && facts.has_subtype(kind.name())
                 }
-                Purpose::Other => false,
+                _ => false,
             },
         }
     }
@@ -380,6 +397,8 @@ impl Quality {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Purpose {
     Other,
+    UnlockDoor,
+    FaceUp,
     Spell(Source),
     Activation(Source),
 }
@@ -1672,6 +1691,7 @@ impl Game {
                 };
                 (*payment, self.purpose_for_item(&a.item))
             }
+            Action::PayRoomUnlock { payment } => (*payment, Purpose::UnlockDoor),
             Action::PayPlot { payment }
             | Action::PayResolutionMana { payment }
             | Action::PayAttackCost { payment }

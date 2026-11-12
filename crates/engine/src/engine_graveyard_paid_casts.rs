@@ -102,12 +102,7 @@ impl Game {
                 .then(|| self.disguise_cast_definition(object.card))
                 .flatten();
         }
-        match face {
-            CastFace::Normal => Some(card),
-            CastFace::Adventure => card.adventure_spell(),
-            CastFace::Omen => card.omen_spell(),
-            CastFace::Back => card.back_face(),
-        }
+        face.definition(card)
     }
 
     pub(super) fn visit_paid_graveyard_casts(
@@ -143,12 +138,7 @@ impl Game {
             ) {
                 return true;
             }
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[card as usize].card) {
                 let Some(permission) =
                     self.paid_graveyard_permission(actor, object, face, CastMethod::Normal, row.id)
                 else {

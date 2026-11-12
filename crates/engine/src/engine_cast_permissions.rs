@@ -397,13 +397,7 @@ impl Game {
         }
         let physical =
             self.state.objects[item.source.expect("cast spell has source").id as usize].card;
-        let definition = match face {
-            CastFace::Adventure => physical.adventure_spell(),
-            CastFace::Omen => physical.omen_spell(),
-            CastFace::Back => physical.back_face(),
-            CastFace::Normal => unreachable!(),
-        }
-        .expect("validated spell face");
+        let definition = face.definition(physical).expect("validated spell face");
         let cast = item.cast.as_mut().unwrap();
         cast.face = face;
         cast.physical_card = Some(physical);
@@ -616,12 +610,7 @@ impl Game {
             }
             self.disguise_cast_definition(card)
         } else {
-            match face {
-                CastFace::Normal => Some(object.card),
-                CastFace::Adventure => object.card.adventure_spell(),
-                CastFace::Omen => object.card.omen_spell(),
-                CastFace::Back => object.card.back_face(),
-            }
+            face.definition(object.card)
         };
         let Some(definition) = definition else {
             return false;

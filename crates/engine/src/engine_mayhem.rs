@@ -54,14 +54,9 @@ impl Game {
             return false;
         }
         let granted = self.grants_mana_cost_mayhem(player);
-        [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ]
-        .into_iter()
-        .any(|face| self.visit_mayhem_face(player, card, face, sorcery, granted, true, &mut emit))
+        CastFace::choices(self.state.objects[card as usize].card).any(|face| {
+            self.visit_mayhem_face(player, card, face, sorcery, granted, true, &mut emit)
+        })
     }
 
     pub(super) fn visit_resolution_mayhem_face(

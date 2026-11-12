@@ -242,6 +242,35 @@ pub enum AsTransformEffect {
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum RoomDoor {
+    Left,
+    Right,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl RoomDoor {
+    pub(crate) const ALL: [Self; 2] = [Self::Left, Self::Right];
+
+    pub(crate) const fn index(self) -> usize {
+        match self {
+            Self::Left => 0,
+            Self::Right => 1,
+        }
+    }
+}
+
+/// The two spell definitions of one permanent split card. The root's printed
+/// trigger slots and static groups remain stable as its doors change.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct RoomSpec {
+    pub halves: [Card; 2],
+    pub triggers: &'static [(u16, RoomDoor)],
+    pub static_groups: &'static [(u16, RoomDoor)],
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Effect {
     Creature(i32, i32),
@@ -898,6 +927,8 @@ pub enum ManaRestriction {
     SpellSubtypeAny(&'static [&'static str]),
     /// Only the cost of casting a planeswalker spell.
     PlaneswalkerSpell,
+    RoomSpellOrUnlockDoor,
+    EnchantmentSpellOrUnlockDoorOrFaceUp,
     Unrestricted,
     SpellSubtype(&'static str),
     ChosenCreatureSpellOrActivation,
@@ -1243,6 +1274,8 @@ pub struct LibrarySelectionEffect {
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum SearchFilter {
     Any,
+    /// Room sharing no effective name with any Room controlled by the searcher.
+    RoomWithoutSharedName,
     NoAbilities,
     Colorless,
     /// Cards containing at least one requested WUBRG color.
@@ -1297,6 +1330,7 @@ impl SearchFilter {
             // Card characteristics in the library; flashback is not flash.
             // Dynamic outside-battlefield ability grants remain gated.
             Self::Keyword(keyword) => card.keywords().contains(keyword),
+            Self::RoomWithoutSharedName => card.has_subtype("Room"),
             Self::BasicLand => card.is_land() && card.is_basic_land(),
             Self::Land => card.is_land(),
             Self::Creature => card.is_creature(),
@@ -3474,6 +3508,11 @@ pub enum Instruction {
     ReturnToBattlefieldThenExplore(AmountValue),
     /// Destroy all other creatures if the exact source's current or last power equals 20.
     DestroyOthersIfSourcePowerTwenty,
+    /// Select a door and perform a lock or unlock instruction during resolution.
+    ChooseRoomDoor {
+        selection: crate::engine::RoomSelection,
+        operation: crate::engine::RoomOperation,
+    },
     /// Look at the top two cards, manifest one and put the rest into the graveyard.
     ManifestDread,
     /// Manifest for the selected target group's controller, using resolution LKI after a move.
@@ -5390,6 +5429,8 @@ pub enum StatValue {
     DeclaredSubtypeAttackersThisTurn(&'static str),
     /// Number of different planeswalker types among planeswalkers controlled by the source controller.
     DistinctControlledPlaneswalkerTypes,
+    UnlockedRoomDoors,
+    DifferentUnlockedRoomNames,
     /// The source has not dealt combat damage in its current incarnation.
     SourceHasNotDealtCombatDamage,
     /// No positive combat or noncombat damage in this exact incarnation.
@@ -7418,6 +7459,9 @@ pub enum TriggerCondition {
     },
     ArtifactEntersYou,
     EnchantmentEntersYou,
+    /// Enchantment entry under your control or completion of a Room you unlock.
+    Eerie,
+    SelfDoorUnlocked(RoomDoor),
     /// Entry under your control of an actual spell cast by you.
     CreatureEntersYouIfCast,
     CreatureEntersYou,
@@ -8204,6 +8248,7 @@ impl Card {
     pub fn has_subtype(self, subtype: &str) -> bool {
         self.keywords().contains(Keywords::CHANGELING) && is_creature_type(subtype)
             || printed_subtype(self.info().type_line, subtype)
+            || subtype == "Room" && (self.room().is_some() || self.room_parent().is_some())
     }
     pub fn from_name(name: &str) -> Option<Self> {
         // Accept the foundation's JSON tokens as aliases for canonical names.
@@ -8317,6 +8362,20 @@ impl Card {
     }
     pub(crate) fn as_transform_effect(self) -> Option<AsTransformEffect> {
         authored::rules(self).and_then(|rules| rules.extras.as_transform)
+    }
+    pub fn room(self) -> Option<&'static RoomSpec> {
+        authored::rules(self).and_then(|rules| rules.extras.room)
+    }
+    pub(crate) fn room_parent(self) -> Option<Card> {
+        authored::rules(self).and_then(|rules| rules.extras.room_parent)
+    }
+    pub(crate) fn room_half(self) -> Option<(Card, RoomDoor)> {
+        let room = self.room_parent()?;
+        let spec = room.room()?;
+        RoomDoor::ALL
+            .into_iter()
+            .find(|door| spec.halves[door.index()] == self)
+            .map(|door| (room, door))
     }
     pub fn back_face(self) -> Option<Card> {
         generated::back_face(self)
@@ -9203,6 +9262,9 @@ impl Card {
     pub fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
         // a cheaper chosen payment never changes the printed mana value.
+        if let Some(room) = self.room() {
+            return room.halves.into_iter().map(Card::fixed_mana_value).sum();
+        }
         let (colored, generic) = self.cost();
         u64::from(generic) + colored.into_iter().map(u64::from).sum::<u64>()
     }

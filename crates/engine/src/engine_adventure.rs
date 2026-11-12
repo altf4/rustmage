@@ -116,6 +116,7 @@ impl Game {
             before.card = source.card;
             before.name = source.card.name();
             before.kinds = source.card.kind_mask();
+            before.colors = source.card.colors();
             before.keywords = item.source_keywords;
             before.power = 0;
             before.toughness = 0;

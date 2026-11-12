@@ -214,10 +214,10 @@ use crate::cards::{
     DamageQualification, DamageSubject, Effect, EffectChoiceKind, EmblemInfo, EntryChoiceKind,
     EntryChoiceValue, EntryCounterAmount, EntryTapped, InitialCounters, Instruction, ManaCost,
     ManaProduction, MillAmount, MilledCount, MilledDestination, MilledFilter, MilledSelectionSpec,
-    NamedCounters, PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, SacrificeFilter,
-    SaddleRiderEffect, SearchSpec, SpellMode, StatExpr, StatValue, Stats, StepGuard, StepValue,
-    Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule, TargetSpec,
-    TargetZone, TriggerCondition, TriggerStep, payments,
+    NamedCounters, PlayerSet, RecoveryFilter, ResolvedStatValue, ReturnKind, RoomDoor,
+    SacrificeFilter, SaddleRiderEffect, SearchSpec, SpellMode, StatExpr, StatValue, Stats,
+    StepGuard, StepValue, Subject, TargetGroupConstraint, TargetPlan, TargetPredicate, TargetRule,
+    TargetSpec, TargetZone, TriggerCondition, TriggerStep, payments,
 };
 #[doc(hidden)]
 #[path = "engine_milled_selection.rs"]
@@ -583,6 +583,12 @@ pub use roles::{RoleGroupView, RoleTimestampView};
 #[doc(hidden)]
 #[path = "engine_faces.rs"]
 pub mod faces;
+#[doc(hidden)]
+#[path = "engine_rooms.rs"]
+pub mod rooms;
+pub use rooms::{
+    RoomChange, RoomChoiceView, RoomDoors, RoomOperation, RoomSelection, RoomUnlockPaymentView,
+};
 #[doc(hidden)]
 #[path = "engine_modal_history.rs"]
 pub mod modal_history;
@@ -1125,6 +1131,11 @@ define_actions! {
         origin: WebSlingingOrigin,
     },
     AnnounceOmen { card: CardId },
+    AnnounceRoom { card: CardId, door: RoomDoor, flash_surcharge: bool },
+    BeginRoomUnlock { object: ObjectRef, door: RoomDoor, cost: ManaCost },
+    PayRoomUnlock { payment: Mana },
+    AbortRoomUnlock,
+    ChooseRoomDoor { object: ObjectRef, door: RoomDoor, change: RoomChange },
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
     AnnounceLibraryTopPlot {
@@ -1607,7 +1618,41 @@ pub enum CastFace {
     Adventure,
     Omen,
     Back,
+    RoomLeft,
+    RoomRight,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl CastFace {
+    pub(super) fn choices(card: Card) -> impl Iterator<Item = Self> {
+        let faces: &[Self] = if card.room().is_some() {
+            &[Self::RoomLeft, Self::RoomRight]
+        } else {
+            &[Self::Normal, Self::Adventure, Self::Omen, Self::Back]
+        };
+        faces.iter().copied()
+    }
+
+    pub(super) fn definition(self, card: Card) -> Option<Card> {
+        match self {
+            Self::Normal => card.room().is_none().then_some(card),
+            Self::Adventure => card.adventure_spell(),
+            Self::Omen => card.omen_spell(),
+            Self::Back => card.back_face(),
+            Self::RoomLeft => Some(card.room()?.halves[RoomDoor::Left.index()]),
+            Self::RoomRight => Some(card.room()?.halves[RoomDoor::Right.index()]),
+        }
+    }
+
+    pub(super) const fn room_door(self) -> Option<RoomDoor> {
+        match self {
+            Self::RoomLeft => Some(RoomDoor::Left),
+            Self::RoomRight => Some(RoomDoor::Right),
+            _ => None,
+        }
+    }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct CastInfo {
@@ -2839,6 +2884,12 @@ enum Pending {
     FaceUpPayment {
         player: Player,
     },
+    RoomUnlockPayment {
+        player: Player,
+    },
+    RoomChoice {
+        player: Player,
+    },
     Improvise {
         player: Player,
     },
@@ -3250,6 +3301,9 @@ struct State {
     delayed_upkeep_tokens: Option<Box<Vec<SpellView>>>,
     modal_history: modal_history::Rows,
     face_changes: faces::Rows,
+    room_openings: rooms::Rows,
+    room_unlock_payment: Option<RoomUnlockPaymentView>,
+    room_choice: Option<RoomChoiceView>,
     ability_resolutions: ability_resolutions::Rows,
     attacked_this_turn: SharedVec<ObjectRef>,
     cards_exiled_this_turn: bool,
@@ -3384,6 +3438,8 @@ pub struct ObjectView {
     /// this exact ability acquisition rather than a dormant raw copy choice.
     #[serde(skip)]
     pub(crate) active_entry_mode: Option<u16>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub room_doors: Option<RoomDoors>,
     // Internal trigger-time witness. Observations are output-only (Serialize,
     // never Deserialize); supported snapshots own State and retain this value.
     #[serde(skip)]
@@ -4167,6 +4223,10 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub face_up_payment: Option<FaceUpPaymentView>,
     #[serde(skip_serializing_if = "Option::is_none")]
+    pub room_unlock_payment: Option<RoomUnlockPaymentView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub room_choice: Option<RoomChoiceView>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub last_manifest_dread: Option<ManifestDreadEvent>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub last_turned_face_up: Option<ObjectRef>,
@@ -4333,6 +4393,7 @@ impl Game {
                 if card.is_token()
                     || card.is_emblem()
                     || card.inset_parent().is_some()
+                    || card.room_parent().is_some()
                     || card.face_parent().is_some()
                     || card.is_meld_face()
                     || !card.is_supported()
@@ -4411,6 +4472,7 @@ impl Game {
                 if card.is_token()
                     || card.is_emblem()
                     || card.inset_parent().is_some()
+                    || card.room_parent().is_some()
                     || card.face_parent().is_some()
                     || card.is_meld_face()
                 {
@@ -4598,6 +4660,9 @@ impl Game {
                 delayed_upkeep_tokens: None,
                 modal_history: None,
                 face_changes: None,
+                room_openings: None,
+                room_unlock_payment: None,
+                room_choice: None,
                 ability_resolutions: None,
                 attacked_this_turn: Vec::new().into(),
                 cards_exiled_this_turn: false,
@@ -4755,6 +4820,8 @@ impl Game {
             | Pending::PlotX { player }
             | Pending::PlotPayment { player }
             | Pending::FaceUpPayment { player }
+            | Pending::RoomUnlockPayment { player }
+            | Pending::RoomChoice { player }
             | Pending::EvidenceIntent { player }
             | Pending::Evidence { player }
             | Pending::Endure { player, .. }
@@ -4955,6 +5022,7 @@ impl Game {
                 || self.miracle_choice_pending()
                 || self.plot_payment().is_some()
                 || self.face_up_payment().is_some()
+                || self.state.room_unlock_payment.is_some()
                 || self.state.combat_payment.is_some()
                 || self.state.announcing.is_some()
                 || self.state.entry_batch.is_some())
@@ -5134,6 +5202,7 @@ impl Game {
                     && self.state.announcing.is_none()
                     && self.plot_payment().is_none()
                     && self.face_up_payment().is_none()
+                    && self.state.room_unlock_payment.is_none()
                     && self.state.combat_payment.is_none()
                 {
                     self.state_based_actions();
@@ -5169,6 +5238,8 @@ impl Game {
                 self.combat_tax_fundable(payment.player, payment.generic)
             } else if self.face_up_payment().is_some() {
                 self.face_up_payment_fundable()
+            } else if let Some(request) = self.state.room_unlock_payment {
+                self.can_fund_room_unlock(request)
             } else {
                 self.current_cast_costs_fundable()
             };
@@ -5189,6 +5260,16 @@ impl Game {
             && self.state.entry_batch.is_none()
             && self.state.replacements.is_none()
             && !self.face_up_payment_fundable()
+        {
+            self.finish_cast_rollback(false);
+        }
+        if matches!(self.state.pending, Pending::RoomUnlockPayment { .. })
+            && self.state.entry_batch.is_none()
+            && self.state.replacements.is_none()
+            && self
+                .state
+                .room_unlock_payment
+                .is_some_and(|request| !self.can_fund_room_unlock(request))
         {
             self.finish_cast_rollback(false);
         }
@@ -5951,6 +6032,16 @@ impl Game {
                     return true;
                 }
             }
+            Pending::RoomUnlockPayment { .. } => {
+                if emit(Action::AbortRoomUnlock) || self.visit_room_unlock_payment(&mut emit) {
+                    return true;
+                }
+            }
+            Pending::RoomChoice { .. } => {
+                if self.visit_room_choices(s.room_choice.expect("Room choice"), &mut emit) {
+                    return true;
+                }
+            }
             Pending::PayCosts { .. } => {
                 if self.visit_cost_payment(&mut emit) {
                     return true;
@@ -6236,6 +6327,9 @@ impl Game {
                     }
                     if obj.zone == Zone::Battlefield && obj.controller == actor {
                         let object = self.object_ref(card);
+                        if sorcery && self.visit_room_unlocks(actor, object, &mut emit) {
+                            return true;
+                        }
                         if self.face_up_payment_available(actor, object) {
                             let row = self
                                 .state
@@ -6392,18 +6486,8 @@ impl Game {
                         && obj.zone == Zone::Hand
                         && (!free_hand_cast || obj.card.is_land())
                     {
-                        for face in [
-                            CastFace::Normal,
-                            CastFace::Adventure,
-                            CastFace::Omen,
-                            CastFace::Back,
-                        ] {
-                            let definition = match face {
-                                CastFace::Normal => Some(obj.card),
-                                CastFace::Adventure => obj.card.adventure_spell(),
-                                CastFace::Omen => obj.card.omen_spell(),
-                                CastFace::Back => obj.card.back_face(),
-                            };
+                        for face in CastFace::choices(obj.card) {
+                            let definition = face.definition(obj.card);
                             let Some(definition) = definition else {
                                 continue;
                             };
@@ -6432,12 +6516,7 @@ impl Game {
                     }
                     if !casting_prohibited && !obj.is_token() && !obj.card.is_land() {
                         if free_hand_cast && obj.zone == Zone::Hand && obj.is_card() {
-                            for face in [
-                                CastFace::Normal,
-                                CastFace::Adventure,
-                                CastFace::Omen,
-                                CastFace::Back,
-                            ] {
+                            for face in CastFace::choices(obj.card) {
                                 for flash_surcharge in [false, true] {
                                     if self.permitted_cast_available(
                                         actor,
@@ -6458,18 +6537,8 @@ impl Game {
                         }
                         if obj.zone == Zone::Hand && obj.is_card() && !limited_hand_casts.is_empty()
                         {
-                            for face in [
-                                CastFace::Normal,
-                                CastFace::Adventure,
-                                CastFace::Omen,
-                                CastFace::Back,
-                            ] {
-                                let definition = match face {
-                                    CastFace::Normal => Some(obj.card),
-                                    CastFace::Adventure => obj.card.adventure_spell(),
-                                    CastFace::Omen => obj.card.omen_spell(),
-                                    CastFace::Back => obj.card.back_face(),
-                                };
+                            for face in CastFace::choices(obj.card) {
+                                let definition = face.definition(obj.card);
                                 if !definition.is_some_and(|d| {
                                     crate::cards::CastFilter::InstantSorcery.matches(d)
                                 }) {
@@ -6547,12 +6616,7 @@ impl Game {
                         && obj.zone == Zone::Graveyard
                         && self.has_graveyard_cast(actor, card, GraveyardCastKind::Harmonize)
                     {
-                        for face in [
-                            CastFace::Normal,
-                            CastFace::Adventure,
-                            CastFace::Omen,
-                            CastFace::Back,
-                        ] {
+                        for face in CastFace::choices(obj.card) {
                             if self.permitted_cast_available(
                                 actor,
                                 card,
@@ -6581,6 +6645,12 @@ impl Game {
                         return true;
                     }
                     if !front_allowed {
+                        continue;
+                    }
+                    if obj.card.room().is_some() {
+                        if self.visit_room_casts(actor, card, sorcery, &mut emit) {
+                            return true;
+                        }
                         continue;
                     }
                     let flashback =
@@ -7543,7 +7613,11 @@ impl Game {
                     {
                         for &card in &s.players[player.index()].library {
                             if s.objects[card as usize].is_card()
-                                && choice.spec.filter.matches(s.objects[card as usize].card)
+                                && self.library_search_filter_matches(
+                                    choice.spec.filter,
+                                    player,
+                                    s.objects[card as usize].card,
+                                )
                                 && !choice.selected.contains(&card)
                                 && choice.colors_allow(self, card)
                                 && (!choice.different_names
@@ -8294,6 +8368,20 @@ impl Game {
                 self.set_cast_face(&mut item, CastFace::Back);
                 self.open_payment_announcement(item, Counters::default(), None);
             }
+            Action::AnnounceRoom {
+                card,
+                door,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, card, [0; 6]);
+                let face = match door {
+                    RoomDoor::Left => CastFace::RoomLeft,
+                    RoomDoor::Right => CastFace::RoomRight,
+                };
+                self.set_cast_face(&mut item, face);
+                item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::AnnounceAdventure { card } | Action::AnnounceOmen { card } => {
                 let omen = matches!(action, Action::AnnounceOmen { .. });
                 let physical = self.state.objects[card as usize].card;
@@ -8441,6 +8529,16 @@ impl Game {
             Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost),
             Action::PayFaceUp { payment } => self.finish_face_up(payment),
             Action::AbortFaceUpPayment => self.finish_cast_rollback(false),
+            Action::BeginRoomUnlock { object, door, cost } => {
+                self.begin_room_unlock(actor, object, door, cost)
+            }
+            Action::PayRoomUnlock { payment } => self.finish_room_unlock(payment),
+            Action::AbortRoomUnlock => self.finish_cast_rollback(false),
+            Action::ChooseRoomDoor {
+                object,
+                door,
+                change,
+            } => self.choose_room_door(object, door, change),
             Action::AnnouncePlotted { card } | Action::AnnouncePlottedFace { card, .. } => {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 if let Action::AnnouncePlottedFace { face, .. } = action {
@@ -10899,6 +10997,7 @@ impl Game {
             self.record_zone_reveal(physical, before.owner, Zone::Battlefield);
         }
         self.clear_battle_protector(before.reference);
+        self.forget_room_doors(before.reference);
         self.forget_granted_exhaust_uses(before.reference);
         self.forget_temporary_copy(before.reference);
         self.forget_copy_grant_origin(before.reference);
@@ -10925,7 +11024,9 @@ impl Game {
         } else if destination == Zone::Battlefield && before.zone == Zone::Stack {
             before.card
         } else if !obj.is_token() && !obj.is_spell_copy() {
-            obj.card.front_face()
+            obj.card
+                .room_parent()
+                .unwrap_or_else(|| obj.card.front_face())
         } else {
             obj.card
         };
@@ -10987,6 +11088,12 @@ impl Game {
                 generation,
             },
         );
+        if destination == Zone::Battlefield
+            && before.zone == Zone::Stack
+            && let Some((_, door)) = before.card.room_half()
+        {
+            self.open_room_on_entry(self.object_ref(id), door);
+        }
         if destination == Zone::Battlefield
             && let Some(recipe) = entering_copy
         {
@@ -12571,6 +12678,8 @@ impl Game {
                 Pending::PlotX { .. } => "plot_x",
                 Pending::PlotPayment { .. } => "plot_payment",
                 Pending::FaceUpPayment { .. } => "face_up_payment",
+                Pending::RoomUnlockPayment { .. } => "room_unlock_payment",
+                Pending::RoomChoice { .. } => "room_choice",
                 Pending::Role { .. } => "role_rule",
                 Pending::Legend { .. } => "legend_rule",
                 Pending::Retarget { .. } => "retarget",
@@ -12881,6 +12990,8 @@ impl Game {
                 .face_up_payment()
                 .filter(|p| self.shares_information(viewer, p.controller))
                 .copied(),
+            room_unlock_payment: s.room_unlock_payment,
+            room_choice: s.room_choice,
             last_manifest_dread: s.manifest.as_ref().and_then(|m| m.last_event.clone()),
             last_turned_face_up: s.manifest.as_ref().and_then(|m| m.last_face_up),
             triggered_this_turn: s.triggered_this_turn.clone(),
@@ -13554,6 +13665,7 @@ impl Game {
             + s.known_hand.len() * std::mem::size_of::<ObjectRef>()
             + s.explore_data.as_ref().map_or(0, |d| d.bytes())
             + s.manifest.as_ref().map_or(0, |d| d.bytes())
+            + rooms::owned_bytes(&s.room_openings)
             + s.evidence_data.as_ref().map_or(0, |d| d.bytes())
             + (s.free_tokens.len()
                 + s.static_sources.len()

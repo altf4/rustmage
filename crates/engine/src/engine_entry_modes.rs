@@ -27,6 +27,9 @@ pub(super) fn group_enabled<W: CharacteristicWorld + ?Sized>(
     source: ObjectRef,
     group: &StaticAbilityGroup,
 ) -> bool {
+    if !rooms::printed_group_available(world, source, group) {
+        return false;
+    }
     if !matches!(
         world.definition(source.card).entry_choice(),
         Some(EntryChoiceKind::NamedModes(_))

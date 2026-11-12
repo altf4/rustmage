@@ -113,12 +113,9 @@ impl Game {
         {
             return false;
         }
-        for (face, definition) in [
-            (CastFace::Normal, Some(object.card)),
-            (CastFace::Adventure, object.card.adventure_spell()),
-            (CastFace::Omen, object.card.omen_spell()),
-            (CastFace::Back, object.card.back_face()),
-        ] {
+        for (face, definition) in
+            CastFace::choices(object.card).map(|face| (face, face.definition(object.card)))
+        {
             let Some(definition) = definition.filter(|d| !d.is_land()) else {
                 continue;
             };

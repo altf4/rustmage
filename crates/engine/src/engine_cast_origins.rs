@@ -379,20 +379,13 @@ impl Game {
             return false;
         }
         let physical = self.state.objects[card as usize].card;
-        [
-            Some(physical),
-            physical.adventure_spell(),
-            physical.omen_spell(),
-            physical
-                .back_face()
-                .filter(|_| !physical.transforming_double_face()),
-            physical.disguise_cost().map(|_| {
+        CastFace::choices(physical)
+            .filter(|&face| face != CastFace::Back || !physical.transforming_double_face())
+            .filter_map(|face| face.definition(physical))
+            .chain(physical.disguise_cost().map(|_| {
                 Card::from_name("@face-down/disguise").expect("pinned catalogue identity")
-            }),
-        ]
-        .into_iter()
-        .flatten()
-        .any(|definition| library_spell_face_permission(self, player, definition))
+            }))
+            .any(|definition| library_spell_face_permission(self, player, definition))
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
         let state = &self.state.players[player.index()];
@@ -1141,22 +1134,12 @@ impl Game {
             }
             let granted_harmonize = paid_graveyard
                 && self.has_graveyard_cast(player, object.card, GraveyardCastKind::Harmonize);
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[object.card as usize].card) {
                 if free.siege_transformed && face != CastFace::Back {
                     continue;
                 }
                 let physical = self.state.objects[object.card as usize].card;
-                let definition = match face {
-                    CastFace::Normal => Some(physical),
-                    CastFace::Adventure => physical.adventure_spell(),
-                    CastFace::Omen => physical.omen_spell(),
-                    CastFace::Back => physical.back_face(),
-                };
+                let definition = face.definition(physical);
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
                         && (!free.permanent_spell_only || CastFilter::Permanent.matches(card))

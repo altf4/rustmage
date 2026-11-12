@@ -343,14 +343,7 @@ impl Game {
         card: CardId,
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
-        [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ]
-        .into_iter()
-        .any(|face| {
+        CastFace::choices(self.state.objects[card as usize].card).any(|face| {
             self.permitted_cast_available(actor, card, CastMethod::Plot, face, true, false)
                 && emit(if face == CastFace::Normal {
                     Action::AnnouncePlotted { card }

@@ -97,12 +97,9 @@ impl Game {
         if !object.is_card() || object.zone == Zone::Battlefield {
             return false;
         }
-        for (face, definition) in [
-            (CastFace::Normal, Some(object.card)),
-            (CastFace::Adventure, object.card.adventure_spell()),
-            (CastFace::Omen, object.card.omen_spell()),
-            (CastFace::Back, object.card.back_face()),
-        ] {
+        for (face, definition) in
+            CastFace::choices(object.card).map(|face| (face, face.definition(object.card)))
+        {
             let Some(definition) = definition.filter(|card| !card.is_land()) else {
                 continue;
             };
@@ -158,12 +155,7 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[card as usize].card;
-        let definition = match face {
-            CastFace::Normal => Some(physical),
-            CastFace::Adventure => physical.adventure_spell(),
-            CastFace::Omen => physical.omen_spell(),
-            CastFace::Back => physical.back_face(),
-        };
+        let definition = face.definition(physical);
         let Some(definition) = definition
             .filter(|card| !card.is_land() && !matches!(card.effect(), Effect::Unsupported))
         else {

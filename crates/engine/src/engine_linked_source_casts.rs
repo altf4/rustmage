@@ -113,12 +113,7 @@ impl Game {
     ) -> Option<u16> {
         let definition = self.linked_source_definition(player, source, card, false)?;
         let exiled = &self.state.objects[card as usize];
-        let spell = match face {
-            CastFace::Normal => Some(exiled.card),
-            CastFace::Adventure => exiled.card.adventure_spell(),
-            CastFace::Omen => exiled.card.omen_spell(),
-            CastFace::Back => exiled.card.back_face(),
-        }?;
+        let spell = face.definition(exiled.card)?;
         if self.state.active != player || exiled.owner != player || !spell.is_creature() {
             return None;
         }
@@ -148,12 +143,7 @@ impl Game {
         if self.object_ref(object.card) != object || exiled.owner != player {
             return None;
         }
-        let spell = match face {
-            CastFace::Normal => Some(exiled.card),
-            CastFace::Adventure => exiled.card.adventure_spell(),
-            CastFace::Omen => exiled.card.omen_spell(),
-            CastFace::Back => exiled.card.back_face(),
-        }?;
+        let spell = face.definition(exiled.card)?;
         if spell.is_land() || matches!(spell.effect(), Effect::Unsupported) {
             return None;
         }
@@ -190,18 +180,8 @@ impl Game {
             let source = self.object_ref(id);
             if let Some(limit) = self.linked_free_cast_limit(player, source, card) {
                 let physical = self.state.objects[card as usize].card;
-                for face in [
-                    CastFace::Normal,
-                    CastFace::Adventure,
-                    CastFace::Omen,
-                    CastFace::Back,
-                ] {
-                    let Some(definition) = (match face {
-                        CastFace::Normal => Some(physical),
-                        CastFace::Adventure => physical.adventure_spell(),
-                        CastFace::Omen => physical.omen_spell(),
-                        CastFace::Back => physical.back_face(),
-                    }) else {
+                for face in CastFace::choices(self.state.objects[card as usize].card) {
+                    let Some(definition) = face.definition(physical) else {
                         continue;
                     };
                     if definition.is_land() || definition.fixed_mana_value() > limit {
@@ -225,12 +205,7 @@ impl Game {
                     }
                 }
             }
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[card as usize].card) {
                 let object = self.object_ref(card);
                 if let Some(permission) = self.linked_paid_permission(player, source, object, face)
                 {

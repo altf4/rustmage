@@ -206,18 +206,8 @@ impl Game {
         if object.is_token() {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let Some(definition) = (match face {
-                CastFace::Normal => Some(object.card),
-                CastFace::Adventure => object.card.adventure_spell(),
-                CastFace::Omen => object.card.omen_spell(),
-                CastFace::Back => object.card.back_face(),
-            }) else {
+        for face in CastFace::choices(object.card) {
+            let Some(definition) = face.definition(object.card) else {
                 continue;
             };
             if !self.turn_free_creature_available(player, definition)

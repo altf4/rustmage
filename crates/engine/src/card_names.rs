@@ -52,9 +52,19 @@ pub(crate) fn comparison_key(name: &str) -> &str {
 /// Nameless objects never share a name, including with each other (CR201.2a).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(crate) fn same_name(left: &str, right: &str) -> bool {
-    !left.is_empty()
-        && !right.is_empty()
-        && (left == right || comparison_key(left) == comparison_key(right))
+    if left.is_empty() || right.is_empty() {
+        return false;
+    }
+    if left == right {
+        return true;
+    }
+    left.split(" // ").any(|left| {
+        !left.is_empty()
+            && right.split(" // ").any(|right| {
+                !right.is_empty()
+                    && (left == right || comparison_key(left) == comparison_key(right))
+            })
+    })
 }
 /// An interned rules name. Public JSON contains its ordinary string, never an ID.
 /// Name choices include cards outside the currently implemented Standard pool.

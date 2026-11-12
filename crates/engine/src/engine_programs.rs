@@ -1342,7 +1342,10 @@ impl Game {
                             )
                     }
                     TriggerCondition::ArtifactEntersYou => yours && entered.kinds & 16 != 0,
-                    TriggerCondition::EnchantmentEntersYou => yours && entered.kinds & 32 != 0,
+                    TriggerCondition::EnchantmentEntersYou | TriggerCondition::Eerie => {
+                        yours && entered.kinds & 32 != 0
+                    }
+                    TriggerCondition::SelfDoorUnlocked(_) => false,
                     TriggerCondition::CreatureEntersYouIfCast => {
                         yours
                             && entered.is_creature()
@@ -1562,7 +1565,8 @@ impl Game {
             |event| event.origin,
         );
         if event.as_ref().is_none_or(|grant| !grant.granted)
-            && !entry_modes::trigger_available(source, definition, index)
+            && (!entry_modes::trigger_available(source, definition, index)
+                || !rooms::printed_trigger_available(source, definition, index))
         {
             return false;
         }
@@ -3760,7 +3764,29 @@ impl Game {
                             self.state.objects[source.id as usize].card = source.card;
                         }
                         self.record_resolved_spell_name(&item);
-                        if item.cast.is_some_and(|c| {
+                        if let Some((room, _)) = source.card.room_half() {
+                            let before = self.chosen_spell_before(&item);
+                            let mut movement =
+                                entries::EntryMove::from_view(before, Zone::Battlefield, false);
+                            movement.project_printed_face(room);
+                            movement.before.name = source.card.name();
+                            movement.before.colors = source.card.colors();
+                            // If a replacement suspends this entry, its public stack
+                            // object still has the selected half until the move.
+                            self.state.objects[source.id as usize].card = source.card;
+                            movement.cast_event = item.actual_cast_event().map(Box::new);
+                            movement.cast_payment =
+                                item.cast.filter(|_| !item.is_copy).map(|c| c.payment);
+                            movement.cast_origin =
+                                item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
+                            movement.warp_controller = item.delayed_warp_controller();
+                            if let Some(mut recipe) = self.copy_recipe(source.object) {
+                                recipe.definition = room;
+                                self.set_copy_recipe(source.object, recipe);
+                                movement.before.copy_recipe = Some(recipe);
+                            }
+                            self.stage_entries(vec![movement], None);
+                        } else if item.cast.is_some_and(|c| {
                             c.offspring == Some(true)
                                 || c.kicker == Some(true)
                                 || c.bargain == Some(true)
@@ -5453,6 +5479,14 @@ impl Game {
                 Instruction::ReturnToBattlefieldThenExplore(amount) => {
                     let amount = self.item_amount(amount, &item);
                     self.return_target_then_explore(&item, amount);
+                }
+                Instruction::ChooseRoomDoor {
+                    selection,
+                    operation,
+                } => {
+                    if self.start_room_choice(&item, selection, operation) {
+                        return;
+                    }
                 }
                 Instruction::ManifestDread | Instruction::ManifestDreadRepeated(_) => {
                     let count = match instruction {

@@ -7035,6 +7035,48 @@ impl Game {
             emit,
         )
     }
+    pub(super) fn can_fund_room_unlock(&self, request: RoomUnlockPaymentView) -> bool {
+        let goal = request.goal();
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(mana_lots::Purpose::UnlockDoor);
+        world.reachable_with_completion(&goal, None, &mut HashSet::new(), &mut |world| {
+            request.source_is_current(world) && world.cost_completion()
+        })
+    }
+
+    pub(super) fn visit_room_unlock_payment(&self, emit: &mut impl FnMut(Action) -> bool) -> bool {
+        let request = self.state.room_unlock_payment.expect("Room unlock payment");
+        if !request.source_is_current(self) {
+            return false;
+        }
+        let goal = request.goal();
+        let mut world = FundingState::from_game(self, &goal);
+        world.set_purpose(mana_lots::Purpose::UnlockDoor);
+        if visit_funding_payments(
+            mana_lots::available(world.mana, &world.lots, world.purpose),
+            goal.required,
+            goal.generic,
+            |payment| {
+                emit(Action::PayRoomUnlock {
+                    payment: concrete_payment(payment),
+                })
+            },
+        ) {
+            return true;
+        }
+        world.visit_distinct_actions(
+            &goal,
+            |step| {
+                world.visit_applied_for(step, Some(&goal), &mut |next| {
+                    next.guided_mana_resume_fundable(&Pending::RoomUnlockPayment {
+                        player: request.controller,
+                    })
+                })
+            },
+            emit,
+        )
+    }
+
     pub(super) fn library_top_plot_fundable(&self, request: PlotPaymentView) -> bool {
         let goal = request.goal();
         let mut state = FundingState::from_game(self, &goal);
@@ -7290,6 +7332,14 @@ impl Game {
                 )
             }
             Pending::PlotPayment { .. } => (self.plot_payment().unwrap().goal(), false, None),
+            Pending::RoomUnlockPayment { .. } => (
+                self.state
+                    .room_unlock_payment
+                    .expect("Room unlock payment")
+                    .goal(),
+                false,
+                None,
+            ),
             Pending::FaceUpPayment { .. } => {
                 let request = self.face_up_payment().unwrap();
                 (
@@ -7902,7 +7952,11 @@ impl FundingState<'_> {
             return true;
         };
         let mut next = self.clone();
-        next.set_purpose(mana_lots::Purpose::Other);
+        next.set_purpose(if matches!(pending, Pending::RoomUnlockPayment { .. }) {
+            mana_lots::Purpose::UnlockDoor
+        } else {
+            mana_lots::Purpose::Other
+        });
         next.set_cost_context(None);
         next.payment_source = None;
         next.cost_group = None;
@@ -7922,6 +7976,11 @@ impl FundingState<'_> {
                     .game
                     .plot_payment()
                     .is_some_and(|request| request.source_is_current(world)),
+                Pending::RoomUnlockPayment { .. } => world
+                    .game
+                    .state
+                    .room_unlock_payment
+                    .is_some_and(|request| request.source_is_current(world)),
                 _ => true,
             };
             valid && world.cost_completion()
@@ -7933,6 +7992,9 @@ impl Game {
     pub(super) fn guided_mana_goal(&self, pending: &Pending) -> Option<FundingGoal> {
         let (actor, required, generic) = match pending {
             Pending::PlotPayment { .. } => return Some(self.plot_payment()?.goal()),
+            Pending::RoomUnlockPayment { .. } => {
+                return Some(self.state.room_unlock_payment?.goal());
+            }
             Pending::FaceUpPayment { .. } => {
                 let r = self.face_up_payment()?;
                 (r.controller, r.cost.colored, r.cost.generic)

@@ -629,12 +629,9 @@ impl Game {
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
-        for (face, definition) in [
-            (CastFace::Normal, Some(physical)),
-            (CastFace::Adventure, physical.adventure_spell()),
-            (CastFace::Omen, physical.omen_spell()),
-            (CastFace::Back, physical.back_face()),
-        ] {
+        for (face, definition) in
+            CastFace::choices(physical).map(|face| (face, face.definition(physical)))
+        {
             let Some(definition) = definition.filter(|card| !card.is_land()) else {
                 continue;
             };
@@ -973,6 +970,9 @@ impl Game {
             })
         };
         self.batch_entry_triggers(events, &sources, entry_suppression);
+        for event in events {
+            self.queue_room_entry_unlock(event);
+        }
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();
@@ -1230,19 +1230,9 @@ impl Game {
         {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
+        for face in CastFace::choices(self.state.objects[card as usize].card) {
             let physical = self.state.objects[card as usize].card;
-            let definition = match face {
-                CastFace::Normal => Some(physical),
-                CastFace::Adventure => physical.adventure_spell(),
-                CastFace::Omen => physical.omen_spell(),
-                CastFace::Back => physical.back_face(),
-            };
+            let definition = face.definition(physical);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }
@@ -1459,18 +1449,8 @@ impl Game {
             return false;
         }
         let physical = self.state.objects[card as usize].card;
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let definition = match face {
-                CastFace::Normal => Some(physical),
-                CastFace::Adventure => physical.adventure_spell(),
-                CastFace::Omen => physical.omen_spell(),
-                CastFace::Back => physical.back_face(),
-            };
+        for face in CastFace::choices(self.state.objects[card as usize].card) {
+            let definition = face.definition(physical);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }

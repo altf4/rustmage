@@ -433,6 +433,9 @@ pub struct CardExtras {
     pub transforming_double_face: bool,
     pub meld_face: bool,
     pub as_transform: Option<AsTransformEffect>,
+    pub room: Option<&'static RoomSpec>,
+    /// A Room half is a spell definition and has no physical deck identity.
+    pub room_parent: Option<Card>,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -592,6 +595,8 @@ impl CardExtras {
         transforming_double_face: false,
         meld_face: false,
         as_transform: None,
+        room: None,
+        room_parent: None,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,

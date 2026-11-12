@@ -626,6 +626,7 @@ pub enum StaticAbilityFragment {
     CostReduction(u16, SpellReduction),
     /// Generic reduction for plotting a card from hand.
     PlotCostReduction(u32),
+    RoomUnlockReduction(u32),
     /// Generic reduction for equip activations targeting this exact permanent.
     EquipTargetReduction(u32),
     /// Optional replacement of the first equip activation's whole cost.

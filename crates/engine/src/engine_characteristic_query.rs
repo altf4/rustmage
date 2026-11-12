@@ -1114,6 +1114,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let evaluation = self.evaluation.as_ref();
         // Existing definitions without entry modes retain the ordinary no-removal fast path.
         if evaluation.is_none()
+            && self.object(source).card.room().is_none()
             && !matches!(
                 self.object(source).card.entry_choice(),
                 Some(EntryChoiceKind::NamedModes(_))
@@ -1323,6 +1324,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             additional_creature_death_triggers:
                 trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
+            room_doors: rooms::doors(self, id),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),

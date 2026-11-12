@@ -551,6 +551,15 @@ pub(super) trait CharacteristicWorld {
                 .map(|card| card.fixed_mana_value())
                 .sum();
         }
+        if object.zone == Zone::Battlefield
+            && let Some(room) = self.definition(id).room()
+            && let Some(doors) = rooms::doors(self, id)
+        {
+            return doors.active_halves(room).map(Card::fixed_mana_value).sum();
+        }
+        if object.zone == Zone::Stack && object.card.room().is_some() {
+            return self.game().effective_spell_card(id).fixed_mana_value();
+        }
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();
         };

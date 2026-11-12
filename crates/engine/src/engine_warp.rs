@@ -162,10 +162,17 @@ impl Game {
         } else {
             object.card.back_face()
         };
-        for (face, definition) in [
-            (CastFace::Normal, Some(object.card)),
-            (CastFace::Back, back),
-        ] {
+        let faces: &[CastFace] = if object.card.room().is_some() {
+            &[CastFace::RoomLeft, CastFace::RoomRight]
+        } else {
+            &[CastFace::Normal, CastFace::Back]
+        };
+        for &face in faces {
+            let definition = if face == CastFace::Back {
+                back
+            } else {
+                face.definition(object.card)
+            };
             let Some(definition) = definition.filter(|d| !d.is_land()) else {
                 continue;
             };

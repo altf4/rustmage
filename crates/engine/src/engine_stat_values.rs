@@ -119,6 +119,11 @@ impl Game {
         W: CharacteristicWorld + ?Sized,
     {
         match value {
+            StatValue::UnlockedRoomDoors => rooms::door_names(world, owner).count() as i128,
+            StatValue::DifferentUnlockedRoomNames => rooms::door_names(world, owner)
+                .map(crate::card_names::comparison_key)
+                .collect::<std::collections::HashSet<_>>()
+                .len() as i128,
             StatValue::CreatureEntriesThisTurn { other } => {
                 self.creature_entries_this_turn(owner, source, other)
             }
@@ -851,7 +856,15 @@ impl Game {
                             .copy_recipe(reference)
                             .is_some_and(|recipe| recipe.exceptions.embalm)
                 })
-                .map(|(_, object)| u128::from(object.card.mana_symbols_of_color(color)))
+                .map(
+                    |(id, object)| match (object.card.room(), rooms::doors(self, id as CardId)) {
+                        (Some(room), Some(doors)) => doors
+                            .active_halves(room)
+                            .map(|half| u128::from(half.mana_symbols_of_color(color)))
+                            .sum(),
+                        _ => u128::from(object.card.mana_symbols_of_color(color)),
+                    },
+                )
                 .sum(),
             AmountValue::GreatestPermanentPower { filter, minimum } => {
                 let query = self.characteristic_query();

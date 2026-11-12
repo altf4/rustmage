@@ -51,18 +51,8 @@ impl Game {
         if object.is_token() {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let definition = match face {
-                CastFace::Normal => Some(object.card),
-                CastFace::Adventure => object.card.adventure_spell(),
-                CastFace::Omen => object.card.omen_spell(),
-                CastFace::Back => object.card.back_face(),
-            };
+        for face in CastFace::choices(object.card) {
+            let definition = face.definition(object.card);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }

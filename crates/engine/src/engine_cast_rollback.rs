@@ -250,6 +250,11 @@ impl Game {
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
         }
+        if matches!(action, Action::BeginRoomUnlock { .. }) {
+            let rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
+            self.state.cast_rollback = Some(Box::new(rollback));
+            return;
+        }
         let card = match *action {
             Action::AnnounceCast { card }
             | Action::AnnounceExile { card }
@@ -269,6 +274,7 @@ impl Game {
             | Action::AnnounceWebSlinging { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
+            | Action::AnnounceRoom { card, .. }
             | Action::AnnounceBack { card }
             | Action::AnnounceGraveyardBack { card, .. }
             | Action::AnnouncePlotted { card }
@@ -406,7 +412,10 @@ impl Game {
                         .iter()
                         .any(|f| f.announcement.item.kind == StackKind::Spell)
                 });
-        if (!casting && self.state.combat_payment.is_none() && self.face_up_payment().is_none())
+        if (!casting
+            && self.state.combat_payment.is_none()
+            && self.face_up_payment().is_none()
+            && self.state.room_unlock_payment.is_none())
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;
