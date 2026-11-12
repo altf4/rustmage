@@ -939,6 +939,8 @@ pub enum ManaRestriction {
     LandActivation,
     /// Only costs of activating abilities, including mana abilities.
     AbilityActivation,
+    /// Only the special action of turning a permanent face up.
+    TurnFaceUp,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

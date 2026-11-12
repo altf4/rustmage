@@ -389,3 +389,93 @@ fn manifest_observer_returns_only_a_card_from_its_own_graveyard_receipt() {
     assert_eq!(game.object_view(forest).zone, Zone::Hand);
     assert_eq!(game.object_view(unrelated).zone, Zone::Graveyard);
 }
+
+#[test]
+fn restricted_mana_funds_the_face_up_special_action() {
+    const TWO_GREEN: Mana = [0, 0, 0, 0, 2, 0];
+    const PRODUCER: CardRules = CardRules {
+        effect: Effect::Creature(1, 1),
+        activated: &[ActivatedAbility {
+            guard: ActivationGuard::Always,
+            origin: ActivationOrigin::Battlefield,
+            exhaust: false,
+            cycling: false,
+            sorcery: false,
+            once_per_turn: false,
+            cost: ActivationCost {
+                tap: true,
+                ..ActivationCost::ZERO
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::AddMana(ManaProduction::Tagged {
+                production: &ManaProduction::Choice {
+                    mask: 31,
+                    amount: 2,
+                },
+                quality: &ManaQuality {
+                    restriction: ManaRestriction::TurnFaceUp,
+                    spell_bonus: ManaSpellBonus::None,
+                    retention: ManaRetention::Step,
+                },
+            })],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Syncopate").unwrap(), &REPEATED),
+        (Card::from_name("Llanowar Elves").unwrap(), &PRODUCER),
+    ]);
+    for player in [Player::P0, Player::P1] {
+        let (mut root, cards) = with_library(player, &["Grizzly Bears"]);
+        let producer = put(&mut root, player, "Llanowar Elves", Zone::Battlefield);
+        let in_hand = put(&mut root, player, "Bear Cub", Zone::Hand);
+        start_repeated_manifest(&mut root, player, 1);
+        settle(&mut root);
+        let object = root.object_ref(cards[0]);
+        root.state.players[player.index()].mana = [0; 6];
+        let begin = Action::BeginFaceUp {
+            object,
+            cost: ManaCost {
+                colored: [0, 0, 0, 0, 1, 0],
+                generic: 1,
+            },
+        };
+        let tap = |game: &mut Game| {
+            choose(game, |action| {
+                matches!(action,
+                    Action::ActivateMana { card, production, .. }
+                        if *card == producer && *production == TWO_GREEN
+                )
+            });
+        };
+        let mut prefunded = root.clone();
+        tap(&mut prefunded);
+        reject(&mut prefunded, Action::AnnounceCast { card: in_hand });
+        act(&mut prefunded, begin.clone());
+        act(&mut prefunded, Action::PayFaceUp { payment: TWO_GREEN });
+
+        act(&mut root, begin);
+        tap(&mut root);
+        reject(
+            &mut root,
+            Action::PayFaceUp {
+                payment: [0, 0, 0, 0, 1, 0],
+            },
+        );
+        let revision = root.revision();
+        let paid = Action::PayFaceUp { payment: TWO_GREEN };
+        let index = root
+            .legal_actions()
+            .iter()
+            .position(|action| *action == paid)
+            .unwrap();
+        root.apply_index(player, revision, index).unwrap();
+        for game in [&root, &prefunded] {
+            assert_eq!(game.object_ref(cards[0]), object);
+            assert_eq!(game.object_view(cards[0]).card, Card::GrizzlyBears);
+            assert!(game.observe(player).face_down_permanents.is_empty());
+            assert_eq!(game.counter_count(cards[0], CounterKind::PlusOne), 1);
+            assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+        }
+    }
+}

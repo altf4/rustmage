@@ -409,7 +409,7 @@ impl Game {
             .payment
             .take()
             .unwrap();
-        self.spend_mana(request.controller, payment);
+        self.spend_mana_for(request.controller, payment, mana_lots::Purpose::FaceUp);
         // The replacement engine captures this as its resume state. Set it
         // before beginning the transition so a suspended choice is never lost.
         self.state.pending = Pending::Priority;

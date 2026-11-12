@@ -44,6 +44,7 @@ pub enum ManaRestrictionView {
     CreatureActivation,
     LandActivation,
     AbilityActivation,
+    TurnFaceUp,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
@@ -212,6 +213,7 @@ impl Quality {
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
                 ManaRestriction::LandActivation => ManaRestrictionView::LandActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
+                ManaRestriction::TurnFaceUp => ManaRestrictionView::TurnFaceUp,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ArtifactActivation => ManaRestrictionView::ArtifactActivation,
                 ManaRestriction::ArtifactSpellOrActivation => {
@@ -326,6 +328,7 @@ impl Quality {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & 2 != 0)
             }
             ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
+            ManaRestrictionView::TurnFaceUp => matches!(purpose, Purpose::FaceUp),
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
@@ -401,6 +404,16 @@ pub(super) enum Purpose {
     FaceUp,
     Spell(Source),
     Activation(Source),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Purpose {
+    pub(super) fn guided_payment(pending: &Pending) -> Self {
+        match pending {
+            Pending::FaceUpPayment { .. } => Self::FaceUp,
+            Pending::RoomUnlockPayment { .. } => Self::UnlockDoor,
+            _ => Self::Other,
+        }
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -1692,6 +1705,7 @@ impl Game {
                 (*payment, self.purpose_for_item(&a.item))
             }
             Action::PayRoomUnlock { payment } => (*payment, Purpose::UnlockDoor),
+            Action::PayFaceUp { payment } => (*payment, Purpose::FaceUp),
             Action::PayPlot { payment }
             | Action::PayResolutionMana { payment }
             | Action::PayAttackCost { payment }
@@ -1900,7 +1914,10 @@ impl Game {
             .announcing
             .as_ref()
             .filter(|a| a.item.controller == goal.actor)
-            .map_or(Purpose::Other, |a| self.purpose_for_item(&a.item))
+            .map_or_else(
+                || Purpose::guided_payment(&self.state.pending),
+                |a| self.purpose_for_item(&a.item),
+            )
     }
 }
 

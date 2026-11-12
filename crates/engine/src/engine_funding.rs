@@ -5275,7 +5275,7 @@ impl Game {
     }
     pub(super) fn can_fund_face_up(&self, goal: FundingGoal, object: ObjectRef) -> bool {
         let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(mana_lots::Purpose::Other);
+        state.set_purpose(mana_lots::Purpose::FaceUp);
         state.required_face_up = Some(object);
         state.reachable(&goal, &mut HashSet::new())
     }
@@ -7012,7 +7012,7 @@ impl Game {
             source: None,
         };
         let mut state = FundingState::from_game(self, &goal);
-        state.set_purpose(mana_lots::Purpose::Other);
+        state.set_purpose(mana_lots::Purpose::FaceUp);
         if visit_funding_payments(
             mana_lots::available(state.mana, &state.lots, state.purpose),
             goal.required,
@@ -7952,11 +7952,7 @@ impl FundingState<'_> {
             return true;
         };
         let mut next = self.clone();
-        next.set_purpose(if matches!(pending, Pending::RoomUnlockPayment { .. }) {
-            mana_lots::Purpose::UnlockDoor
-        } else {
-            mana_lots::Purpose::Other
-        });
+        next.set_purpose(mana_lots::Purpose::guided_payment(pending));
         next.set_cost_context(None);
         next.payment_source = None;
         next.cost_group = None;
@@ -8039,10 +8035,8 @@ impl Game {
             );
             world
         } else {
-            let goal = a
-                .mana_output
-                .as_ref()
-                .and_then(|o| o.resume.as_deref())
+            let resume = a.mana_output.as_ref().and_then(|o| o.resume.as_deref());
+            let goal = resume
                 .and_then(|pending| self.guided_mana_goal(pending))
                 .unwrap_or(FundingGoal {
                     actor: a.item.controller,
@@ -8052,7 +8046,10 @@ impl Game {
                     source: None,
                 });
             let mut world = FundingState::from_game(self, &goal);
-            world.set_purpose(mana_lots::Purpose::Other);
+            world.set_purpose(resume.map_or(
+                mana_lots::Purpose::Other,
+                mana_lots::Purpose::guided_payment,
+            ));
             world.set_cost_context(None);
             world.payment_source = None;
             world.cost_group = None;
