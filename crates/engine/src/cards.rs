@@ -1265,6 +1265,7 @@ pub enum LibraryPickDestination {
     MayEnterBattlefieldOnOwnTurn,
     BattlefieldTapped,
     BattlefieldTappedAttacking,
+    Cloak,
     LandsTappedRestHand,
     Graveyard,
     Hideaway,
@@ -1463,6 +1464,7 @@ pub enum EffectChoiceKind {
     PowerDifferenceBoost,
     SaddleRider(SaddleRiderEffect),
     BlinkControlledCreatures,
+    CloakFromHand,
     HandCreatures {
         maximum: u16,
     },
@@ -3675,6 +3677,8 @@ pub enum Instruction {
     ManifestDreadWhenTargetDies,
     /// Cloak the top card of the selected player's library under your control.
     CloakLibraryTop(PlayerSet),
+    /// The resolving player chooses a card from their own hand to cloak.
+    CloakFromHand,
     /// Attach this Equipment to the exact captured entry, if it succeeded.
     AttachSourceToEntryResult,
     DestroyAndCreateForController {

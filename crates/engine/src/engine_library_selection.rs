@@ -985,6 +985,11 @@ impl Game {
                 Zone::Library
             );
         }
+        if f.destination == LibraryPickDestination::Cloak {
+            f.selected.reverse();
+            self.advance_library_cloak(f);
+            return;
+        }
         if f.destination == LibraryPickDestination::LandsTappedRestHand {
             // The unchosen cards move first. During any ensuing entry choices,
             // only the selected, revealed cards remain in the public frame.
@@ -1320,6 +1325,24 @@ impl Game {
             }
         })
     }
+    fn advance_library_cloak(&mut self, mut frame: Box<LibrarySelection>) -> bool {
+        let controller = self.state.resolving.as_ref().unwrap().item.controller;
+        // CR 701.58e: each card from the same library is cloaked separately.
+        // Keep the selected order across entry and replacement continuations.
+        while let Some(object) = frame.selected.pop() {
+            if let Some(entry) =
+                self.face_down_entry(object, controller, FaceDownCause::Cloak, false)
+            {
+                frame.entering = true;
+                self.state.resolving.as_mut().unwrap().selection = Some(frame);
+                self.stage_entries(vec![entry], None);
+                return true;
+            }
+        }
+        self.commit_library_remainder(frame.owner, *frame);
+        false
+    }
+
     pub(super) fn finish_entered_library_selection(&mut self) -> bool {
         let resolution = self.state.resolving.as_ref().unwrap();
         let Some(frame) = resolution.selection.as_ref().filter(|frame| frame.entering) else {
@@ -1343,6 +1366,9 @@ impl Game {
         }
         let resolution = self.state.resolving.as_mut().unwrap();
         let mut frame = resolution.selection.take().unwrap();
+        if frame.destination == LibraryPickDestination::Cloak {
+            return self.advance_library_cloak(frame);
+        }
         if frame.destination == LibraryPickDestination::LandsTappedRestHand {
             self.library_selected_to_hand(&frame);
         } else {
@@ -1456,6 +1482,7 @@ impl Game {
                 LibraryPickDestination::Graveyard => "graveyard",
                 LibraryPickDestination::Battlefield => "battlefield",
                 LibraryPickDestination::BattlefieldTapped => "battlefield_tapped",
+                LibraryPickDestination::Cloak => "cloak",
                 LibraryPickDestination::BattlefieldTappedAttacking => {
                     "battlefield_tapped_attacking"
                 }

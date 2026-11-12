@@ -193,6 +193,14 @@ impl Game {
         if choice.kind == EffectChoiceKind::KeepSharedCreatureTypes {
             return self.keep_shared_type_candidate(choice, object);
         }
+        if choice.kind == EffectChoiceKind::CloakFromHand {
+            let card = &self.state.objects[object.card as usize];
+            return card.zone == Zone::Hand
+                && card.owner == player
+                && card.is_card()
+                && self.object_ref(object.card) == object
+                && choice.selected[player.index()].is_empty();
+        }
         if let EffectChoiceKind::SaddleRider(effect) = choice.kind {
             return !choice.selected[player.index()].contains(&object)
                 && self.saddle_rider_candidate(choice.source, player, object, effect);
@@ -2027,6 +2035,16 @@ impl Game {
                 return true;
             }
         }
+        if choice.kind == EffectChoiceKind::CloakFromHand {
+            let player = self.state.resolving.as_ref().unwrap().item.controller;
+            let selected = choice.selected[player.index()].first().copied();
+            self.state.resolving.as_mut().unwrap().choice = None;
+            if selected.is_some() {
+                self.obscure_private_hand_selection(player);
+            }
+            self.cloak_one(selected, player, false);
+            return false;
+        }
         if let EffectChoiceKind::DeployFromHandOrGraveyard { counter, .. } = choice.kind {
             let player = self.state.resolving.as_ref().unwrap().item.controller;
             let object = choice.selected[player.index()][0];
@@ -3229,6 +3247,7 @@ impl Game {
                 | EffectChoiceKind::HandPermanent { .. }
                 | EffectChoiceKind::HandLand { .. }
                 | EffectChoiceKind::HandCreatures { .. }
+                | EffectChoiceKind::CloakFromHand
         ) && !self.shares_information(viewer, actor)
         {
             return None;

@@ -5666,6 +5666,18 @@ impl Game {
                         self.cloak_library_top(item.controller, owner);
                     }
                 }
+                Instruction::CloakFromHand => {
+                    if self.start_effect_choice(
+                        &item,
+                        EffectChoiceKind::CloakFromHand,
+                        PlayerSet::Controller,
+                        evidence::cost(0).filter,
+                        1,
+                        None,
+                    ) {
+                        return;
+                    }
+                }
                 Instruction::AttachSourceToEntryResult => {
                     if let (Some(source), Some(recipient)) =
                         (item.source, self.captured_entry_result())

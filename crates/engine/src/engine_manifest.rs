@@ -1060,18 +1060,30 @@ impl Game {
         object: ObjectRef,
         controller: Player,
     ) -> Option<entries::EntryMove> {
-        self.library_face_down_entry(object, controller, FaceDownCause::Manifest)
+        let current = self.state.objects.get(object.card as usize)?;
+        if current.zone != Zone::Library {
+            return None;
+        }
+        self.face_down_entry(
+            object,
+            controller,
+            FaceDownCause::Manifest,
+            self.public_library_top(current.owner) == Some(object),
+        )
     }
 
-    fn library_face_down_entry(
+    pub(super) fn face_down_entry(
         &self,
         object: ObjectRef,
         controller: Player,
         cause: FaceDownCause,
+        known: bool,
     ) -> Option<entries::EntryMove> {
         let current = self.state.objects.get(object.card as usize)?;
-        if current.zone != Zone::Library
-            || self.object_ref(object.card) != object
+        if !matches!(
+            current.zone,
+            Zone::Library | Zone::Hand | Zone::Graveyard | Zone::Exile
+        ) || self.object_ref(object.card) != object
             || !current.is_card()
         {
             return None;
@@ -1100,16 +1112,21 @@ impl Game {
         movement.face_down = Some(FaceDownEntry {
             physical: current.card,
             cause,
-            known: self.public_library_top(current.owner) == Some(object),
+            known,
         });
         Some(movement)
     }
 
     pub(super) fn cloak_library_top(&mut self, player: Player, owner: Player) {
-        let movement = self.top_library_card(owner).and_then(|id| {
-            self.library_face_down_entry(self.object_ref(id), player, FaceDownCause::Cloak)
-        });
-        if let Some(movement) = movement {
+        let object = self.top_library_card(owner).map(|id| self.object_ref(id));
+        let known = object.is_some() && object == self.public_library_top(owner);
+        self.cloak_one(object, player, known);
+    }
+
+    pub(super) fn cloak_one(&mut self, object: Option<ObjectRef>, player: Player, known: bool) {
+        if let Some(movement) = object
+            .and_then(|object| self.face_down_entry(object, player, FaceDownCause::Cloak, known))
+        {
             self.stage_entries(vec![movement], None);
         } else if let Some(frame) = self
             .state
