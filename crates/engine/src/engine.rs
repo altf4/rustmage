@@ -9970,6 +9970,23 @@ impl Game {
         event
     }
 
+    fn move_object_as_exile_cost(&mut self, id: CardId, payer: Player) -> ZoneChange {
+        self.refresh_enduring_stories();
+        let before = self.object_view(id);
+        let control_watch = self.freeze_control_watch();
+        let event = self.transition_object_configured(
+            before,
+            Zone::Exile,
+            false,
+            Counters::default(),
+            None,
+            |rules| rules.meld_exiler = Some(payer),
+        );
+        self.refresh_controllers_after(Some(control_watch));
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
+        event
+    }
+
     /// Sacrifices are an explicit action, including costs paid for mana abilities.
     /// Freeze every observer and departing object before the simultaneous batch.
     fn sacrifice_batch(&mut self, sacrifices: &[(Player, CardId)]) {

@@ -184,6 +184,78 @@ fn cost_and_entry_links_follow_the_same_permanent_and_return_to_both_owners() {
 }
 
 #[test]
+fn an_off_turn_caster_orders_both_cards_exiled_to_pay_the_meld_cost() {
+    let fixture = card("Serra Angel");
+    let _rules = fixture_rules::activate(&[(fixture, &LINKED_CAST)]);
+    let mut game = scenario(P);
+    let vanille = put(&mut game, P, "Vanille, Cheerful l'Cie", Zone::Battlefield);
+    let fang = put(&mut game, P, "Fang, Fearless l'Cie", Zone::Battlefield);
+    game.begin_step(Step::Main1);
+    game.prepare_triggers();
+    pass_pair(&mut game);
+    choose(&mut game, |action| {
+        matches!(action, Action::PayResolutionMana { .. })
+    });
+    let companion = game.object_ref(fang);
+    act(&mut game, Action::ChooseEffectObject { object: companion });
+    settle(&mut game);
+    let melded = game.object_ref(vanille);
+    assert_eq!(game.observe(P).melded_permanents[0].object, melded);
+
+    put(&mut game, P, "High Fae Trickster", Zone::Battlefield);
+    let victim = put(&mut game, P.other(), "Hill Giant", Zone::Battlefield);
+    let spell = spawn(&mut game, P, fixture, Zone::Hand);
+    game.state.active = P.other();
+    game.state.priority = P.other();
+    act(&mut game, Action::Pass);
+    assert_eq!(game.actor(), Some(P));
+    begin_cast(&mut game, spell);
+    act(&mut game, Action::ChooseAdditionalCost { object: melded });
+
+    assert_eq!(game.actor(), Some(P));
+    assert_eq!(game.state.pending, Pending::MeldOrdering { player: P });
+    assert!(game.observe(P.other()).meld_ordering_choice.is_none());
+    let choice = game.observe(P).meld_ordering_choice.unwrap();
+    assert_eq!(
+        (choice.permanent, choice.destination),
+        (melded, Zone::Exile)
+    );
+    let order = Action::ChooseMeldOrder {
+        first: choice.components[1],
+    };
+    let checkpoint = game.snapshot();
+    assert_eq!(game.apply(P.other(), order.clone()), Err(Error::WrongActor));
+    assert_eq!(game.snapshot(), checkpoint);
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == order)
+        .unwrap();
+    let mut indexed = game.clone();
+    indexed.apply_index(P, indexed.revision(), index).unwrap();
+    act(&mut game, order);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    let paid = [game.object_ref(fang), game.object_ref(vanille)];
+    assert_eq!(game.observe(P).meld_departure_orders[0].cards, paid);
+    assert!(
+        paid.iter()
+            .all(|object| game.object_view(object.card).zone == Zone::Exile)
+    );
+    finish_cast(&mut game);
+    enter_with_target(&mut game, victim);
+    assert_eq!(links(&game, game.object_ref(spell)), paid);
+    settle(&mut game);
+    game.move_object(spell, Zone::Graveyard);
+    game.prepare_triggers();
+    settle(&mut game);
+    assert!(
+        paid.iter()
+            .all(|object| game.object_view(object.card).zone == Zone::Hand)
+    );
+    assert_eq!(game.object_view(victim).zone, Zone::Hand);
+}
+
+#[test]
 fn a_spell_copy_and_stale_exile_cannot_create_links_to_the_original_cost() {
     let fixture = card("Serra Angel");
     let _rules = fixture_rules::activate(&[(fixture, &LINKED_CAST)]);

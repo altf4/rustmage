@@ -194,6 +194,8 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Default)]
 pub(super) struct FrozenRules {
+    /// An explicit cost payer chooses the order of a melded permanent's exile.
+    pub meld_exiler: Option<Player>,
     pub dream: Option<DreamExileView>,
     pub rebound: Option<Player>,
     pub plot: bool,
@@ -633,6 +635,7 @@ impl Game {
             });
         }
         FrozenRules {
+            meld_exiler: None,
             dream: self.dream_resolution_mark(before.reference),
             rebound: None,
             plot: false,
@@ -717,6 +720,7 @@ impl Game {
         if let Some(plan) = self.replay_frozen_mana_zone_plan(before.reference, requested) {
             return plan;
         }
+        let meld_exiler = rules.meld_exiler;
         let mut plan = self.plan_zone_move_unrecorded(before, requested, rules);
         if !plan.prevented
             && plan.shuffle.is_none()
@@ -726,7 +730,8 @@ impl Game {
             )
             && let Some(meld) = self.melded_permanent(before.reference)
         {
-            plan.meld_companion_first = self.order_meld_departure(before, meld, plan.destination);
+            plan.meld_companion_first =
+                self.order_meld_departure(before, meld, plan.destination, meld_exiler);
         }
         self.record_cast_mana_zone_plan(before, &plan);
         plan
@@ -736,12 +741,15 @@ impl Game {
         before: &ObjectView,
         meld: meld::MeldEntry,
         destination: Zone,
+        meld_exiler: Option<Player>,
     ) -> bool {
         let player = if destination == Zone::Exile {
-            self.state
-                .resolving
-                .as_ref()
-                .map_or(self.state.active, |resolution| resolution.item.controller)
+            meld_exiler.unwrap_or_else(|| {
+                self.state
+                    .resolving
+                    .as_ref()
+                    .map_or(self.state.active, |resolution| resolution.item.controller)
+            })
         } else {
             before.owner
         };

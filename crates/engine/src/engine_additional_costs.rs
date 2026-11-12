@@ -1548,7 +1548,7 @@ impl Game {
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
-                let event = self.move_object(object.card, Zone::Exile);
+                let event = self.move_object_as_exile_cost(object.card, a.item.controller);
                 if spec.kind == EffectChoiceKind::ExileControlledForLinkedReturn
                     && event.was_card
                     && event.moved
