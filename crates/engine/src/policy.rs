@@ -407,6 +407,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceDisguiseGraveyard { .. }
             | Action::AnnounceSneak { .. }
             | Action::AnnounceWebSlinging { .. }
+            | Action::AnnounceForetold { .. }
             | Action::AnnouncePlotted { .. }
             | Action::AnnouncePlottedFace { .. }
             | Action::AnnounceExile { .. }
@@ -430,6 +431,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRoom { .. }
             | Action::AnnounceSplit { .. } => 79,
             Action::AnnouncePlot { .. }
+            | Action::AnnounceForetell { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }
             | Action::BeginFaceUpX { .. }
@@ -454,6 +456,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
+            | Action::PayForetell { .. }
             | Action::PayFaceUp { .. }
             | Action::PayRoomUnlock { .. }
             | Action::PayAttackCost { .. }

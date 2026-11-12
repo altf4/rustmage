@@ -701,6 +701,11 @@ impl Game {
         if method == CastMethod::Plot && definition.is_land() {
             return false;
         }
+        if method == CastMethod::Foretell
+            && (definition.is_land() || definition.foretell_cost().is_none())
+        {
+            return false;
+        }
         if method.is_mayhem()
             && (definition.is_land()
                 || object.owner != actor
@@ -787,6 +792,9 @@ impl Game {
         if method == CastMethod::Airbend {
             Self::configure_airbend_cast(&mut item, flash_surcharge);
         }
+        if method == CastMethod::Foretell {
+            Self::configure_foretold_cast(&mut item, flash_surcharge);
+        }
         if method == CastMethod::LinkedExileWaterbend {
             Self::configure_linked_waterbend_cast(&mut item, flash_surcharge);
         }
@@ -803,6 +811,7 @@ impl Game {
                     | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::Foretell
                     | CastMethod::Flashback
                     | CastMethod::GrantedZeroFlashback
                     | CastMethod::Harmonize
@@ -849,6 +858,7 @@ impl Game {
                             | CastMethod::LinkedExileWaterbend
                             | CastMethod::Free
                             | CastMethod::Plot
+                            | CastMethod::Foretell
                             | CastMethod::Flashback
                             | CastMethod::GrantedZeroFlashback
                             | CastMethod::Harmonize

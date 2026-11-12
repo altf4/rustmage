@@ -251,7 +251,10 @@ impl Game {
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
         }
-        if matches!(action, Action::BeginRoomUnlock { .. }) {
+        if matches!(
+            action,
+            Action::BeginRoomUnlock { .. } | Action::AnnounceForetell { .. }
+        ) {
             let rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
@@ -299,7 +302,8 @@ impl Game {
             | Action::AnnounceGraveyardFinality { card, .. }
             | Action::Cast { card, .. }
             | Action::BeginCast { card, .. } => card,
-            Action::CastExiledDuringResolution { object, .. }
+            Action::AnnounceForetold { object, .. }
+            | Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceExileForZero { object, .. }
@@ -422,7 +426,8 @@ impl Game {
         if (!casting
             && self.state.combat_payment.is_none()
             && self.face_up_payment().is_none()
-            && self.state.room_unlock_payment().is_none())
+            && self.state.room_unlock_payment().is_none()
+            && !self.plot_payment().is_some_and(|request| request.foretell))
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;

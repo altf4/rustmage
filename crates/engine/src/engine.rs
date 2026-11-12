@@ -321,7 +321,7 @@ pub mod warp;
 pub use cast_payments::{CastPaymentEvent, ManaPaymentDomain};
 pub use earthbend::EarthbendReturnView;
 pub use mobilize::{DelayedSacrificeView, MobilizeChoiceView, OwnTurnDeadline};
-pub use plot::{PlotPaymentView, PlottedCard};
+pub use plot::{ForetoldCardView, PlotPaymentView, PlottedCard};
 pub use return_links::{DelayedReturnView, ReturnCardView, ReturnLinkView};
 pub use warp::{DelayedWarpExileView, WarpedCard};
 
@@ -1186,6 +1186,9 @@ define_actions! {
     ChooseRoomDoor { object: ObjectRef, door: RoomDoor, change: RoomChange },
     AnnounceBack { card: CardId },
     AnnouncePlot { card: CardId },
+    AnnounceForetell { object: ObjectRef },
+    PayForetell { payment: Mana },
+    AnnounceForetold { object: ObjectRef, face: CastFace, flash_surcharge: bool },
     AnnounceLibraryTopPlot {
         object: ObjectRef,
         cost: ManaCost,
@@ -1640,6 +1643,7 @@ pub enum CastMethod {
     Mayhem,
     Miracle,
     Plot,
+    Foretell,
     Warp,
     Disguise,
     Sneak,
@@ -4355,6 +4359,8 @@ pub struct Observation {
     pub adventures: Vec<AdventurePermission>,
     pub spell_characteristics: Vec<SpellCharacteristicsView>,
     pub plotted_cards: Vec<PlottedCard>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub foretold_cards: Vec<ForetoldCardView>,
     pub crew_choice: Option<CrewChoiceView>,
     pub crewed_vehicles: Vec<CrewHistory>,
     /// Public exact permanents that will skip the indicated player's next untap.
@@ -5395,6 +5401,8 @@ impl Game {
                 self.combat_tax_fundable(payment.player, payment.generic)
             } else if self.face_up_payment().is_some() {
                 self.face_up_payment_fundable()
+            } else if let Some(request) = self.plot_payment().filter(|request| request.foretell) {
+                self.plot_payment_fundable(*request)
             } else if let Some(request) = self.state.room_unlock_payment() {
                 self.can_fund_room_unlock(request)
             } else {
@@ -5417,6 +5425,15 @@ impl Game {
             && self.state.entry_batch.is_none()
             && self.state.replacements.is_none()
             && !self.face_up_payment_fundable()
+        {
+            self.finish_cast_rollback(false);
+        }
+        if matches!(self.state.pending, Pending::PlotPayment { .. })
+            && self.state.entry_batch.is_none()
+            && self.state.replacements.is_none()
+            && self
+                .plot_payment()
+                .is_some_and(|request| request.foretell && !self.plot_payment_fundable(*request))
         {
             self.finish_cast_rollback(false);
         }
@@ -6411,6 +6428,11 @@ impl Game {
                         return true;
                     }
                     if obj.zone == Zone::Exile {
+                        if !exile_casting_prohibited
+                            && self.visit_foretold_casts(actor, card, sorcery, &mut emit)
+                        {
+                            return true;
+                        }
                         let providers = if exile_casting_prohibited {
                             &[][..]
                         } else {
@@ -6536,6 +6558,9 @@ impl Game {
                     if matches!(obj.zone, Zone::Battlefield | Zone::Hand | Zone::Graveyard)
                         && self.visit_activations(card, actor, sorcery, &mut emit)
                     {
+                        return true;
+                    }
+                    if obj.zone == Zone::Hand && self.visit_foretell(actor, card, &mut emit) {
                         return true;
                     }
                     if sorcery
@@ -8860,7 +8885,20 @@ impl Game {
             } => {
                 self.begin_library_top_plot(actor, object, cost, x_symbols);
             }
-            Action::PayPlot { payment } => self.finish_plot(payment),
+            Action::AnnounceForetell { object } => self.begin_foretell(actor, object),
+            Action::PayPlot { payment } | Action::PayForetell { payment } => {
+                self.finish_plot(payment)
+            }
+            Action::AnnounceForetold {
+                object,
+                face,
+                flash_surcharge,
+            } => {
+                let mut item = self.cast_item(actor, object.card, [0; 6]);
+                self.set_cast_face(&mut item, face);
+                Self::configure_foretold_cast(&mut item, flash_surcharge);
+                self.open_payment_announcement(item, Counters::default(), None);
+            }
             Action::BeginFaceUp { object, cost } => self.begin_face_up(actor, object, cost, None),
             Action::BeginFaceUpX {
                 object,
@@ -11257,7 +11295,7 @@ impl Game {
             library.remove(position);
         }
         if before.zone == Zone::Exile {
-            self.remove_plotted(before.reference);
+            self.remove_plot_and_foretell(before.reference);
             self.remove_warped(before.reference);
             self.state
                 .exile_permissions
@@ -13148,6 +13186,11 @@ impl Game {
                 Pending::Bottom { .. } => "bottom",
                 Pending::Priority => "priority",
                 Pending::PlotX { .. } => "plot_x",
+                Pending::PlotPayment { .. }
+                    if self.plot_payment().is_some_and(|request| request.foretell) =>
+                {
+                    "foretell_payment"
+                }
                 Pending::PlotPayment { .. } => "plot_payment",
                 Pending::FaceUpPayment { .. } => "face_up_payment",
                 Pending::RoomUnlockPayment { .. } => "room_unlock_payment",
@@ -13450,6 +13493,7 @@ impl Game {
                 .map(|a| a.permissions.clone())
                 .unwrap_or_default(),
             plotted_cards: s.plot.as_ref().map_or_else(Vec::new, |p| p.cards.clone()),
+            foretold_cards: self.foretold_cards(viewer),
             crew_choice: self.crew_choice(viewer),
             exertions: s
                 .exertions

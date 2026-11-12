@@ -1563,13 +1563,14 @@ impl Game {
             .and_then(|a| a.item.cast.map(|cast| cast.origin))
             .unwrap_or(self.state.objects[card as usize].zone)
             == Zone::Exile;
-        let airbend_announcement = self.state.announcing.as_ref().is_some_and(|a| {
+        let independent_exile_announcement = self.state.announcing.as_ref().is_some_and(|a| {
             a.item.source.is_some_and(|source| source.id == card)
-                && a.item
-                    .cast
-                    .is_some_and(|cast| cast.method == CastMethod::Airbend)
+                && a.item.cast.is_some_and(|cast| {
+                    matches!(cast.method, CastMethod::Airbend | CastMethod::Foretell)
+                })
         });
-        source.spend_any_mana = (!airbend_announcement && self.exile_cast_modifiers(actor, card).0)
+        source.spend_any_mana = (!independent_exile_announcement
+            && self.exile_cast_modifiers(actor, card).0)
             || self.resolution_offer_spends_any_mana(actor, card)
             || self.state.announcing.as_ref().is_some_and(|a| {
                 a.item
@@ -1810,6 +1811,7 @@ impl Game {
                 self.guided_payment_mana_purpose(&self.state.pending),
             ),
             Action::PayPlot { payment }
+            | Action::PayForetell { payment }
             | Action::PayResolutionMana { payment }
             | Action::PayAttackCost { payment }
             | Action::PayBlockCost { payment } => (*payment, Purpose::Other),

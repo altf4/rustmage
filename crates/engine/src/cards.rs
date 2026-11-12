@@ -9197,6 +9197,9 @@ impl Card {
     pub fn plot_cost(self) -> Option<ManaCost> {
         generated::plot_cost(self)
     }
+    pub fn foretell_cost(self) -> Option<ManaCost> {
+        authored::rules(self).and_then(|rules| rules.extras.foretell_cost)
+    }
     pub(crate) fn mana_additional_alternative(self) -> Option<ManaCost> {
         let r = authored::rules(self)?;
         if let Some(extra) = r.extras.additional_mana_alternative {

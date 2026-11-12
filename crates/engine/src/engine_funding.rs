@@ -6058,7 +6058,11 @@ impl Game {
             }
             return self.behold_announcement_fundable(&proposal, cost);
         }
-        if a.has_ordered_life_cost() || a.item.cast.is_some_and(|cast| cast.method.is_mayhem()) {
+        if a.has_ordered_life_cost()
+            || a.item
+                .cast
+                .is_some_and(|cast| cast.method.is_mayhem() || cast.method == CastMethod::Foretell)
+        {
             // These routes must preflight the actual alternative and its
             // additional costs instead of inferring them from the printed cost.
             return self.behold_announcement_fundable(a, cost);
@@ -7316,7 +7320,7 @@ impl Game {
         )
     }
 
-    pub(super) fn library_top_plot_fundable(&self, request: PlotPaymentView) -> bool {
+    pub(super) fn plot_payment_fundable(&self, request: PlotPaymentView) -> bool {
         let goal = request.goal();
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(mana_lots::Purpose::Other);
@@ -7337,8 +7341,11 @@ impl Game {
             goal.required,
             goal.generic,
             |payment| {
-                emit(Action::PayPlot {
-                    payment: concrete_payment(payment),
+                let payment = concrete_payment(payment);
+                emit(if request.foretell {
+                    Action::PayForetell { payment }
+                } else {
+                    Action::PayPlot { payment }
                 })
             },
         ) {

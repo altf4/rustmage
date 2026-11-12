@@ -178,6 +178,7 @@ impl Announcement {
                     .copied()
             }
             CastMethod::Miracle => self.origin_alternative_cost,
+            CastMethod::Foretell => self.item.source?.card.foretell_cost(),
             CastMethod::WebSlinging => self.origin_alternative_cost,
             CastMethod::LinkedExileWaterbend => self.origin_alternative_cost,
             CastMethod::Warp => Some(self.warp_spec().mana),
@@ -301,6 +302,7 @@ impl Announcement {
                     | CastMethod::LinkedExileWaterbend
                     | CastMethod::Free
                     | CastMethod::Plot
+                    | CastMethod::Foretell
                     | CastMethod::GrantedZeroFlashback
                     | CastMethod::Miracle
                     | CastMethod::WebSlinging => {
@@ -575,16 +577,12 @@ impl Announcement {
                     .flashback_cost_options()
             }
             StackKind::Spell
-                if self
-                    .item
-                    .cast
-                    .is_some_and(|c| c.method == CastMethod::Airbend) =>
+                if self.item.cast.is_some_and(|cast| {
+                    matches!(cast.method, CastMethod::Airbend | CastMethod::Foretell)
+                }) =>
             {
-                std::iter::once(ManaCost {
-                    colored: [0; 6],
-                    generic: 2,
-                })
-                .chain([].iter().copied())
+                std::iter::once(self.fixed_alternative_cost().expect("exile cast cost"))
+                    .chain([].iter().copied())
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| {

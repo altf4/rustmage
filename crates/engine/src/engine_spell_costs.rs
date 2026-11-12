@@ -282,11 +282,10 @@ impl Game {
             if a.item.cast.is_some_and(|c| c.method == CastMethod::Warp) {
                 return a.warp_spec().mana;
             }
-            if a.item.cast.is_some_and(|c| c.method == CastMethod::Airbend) {
-                return ManaCost {
-                    colored: [0; 6],
-                    generic: 2,
-                };
+            if a.item.cast.is_some_and(|cast| {
+                matches!(cast.method, CastMethod::Airbend | CastMethod::Foretell)
+            }) {
+                return a.fixed_alternative_cost().expect("exile cast cost");
             }
             if a.item.cast.is_some_and(|c| {
                 matches!(

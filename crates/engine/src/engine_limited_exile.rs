@@ -117,6 +117,7 @@ impl Game {
                         | CastMethod::LinkedExileWaterbend
                         | CastMethod::ExileLife
                         | CastMethod::Plot
+                        | CastMethod::Foretell
                         | CastMethod::Warp
                 )
         }) {

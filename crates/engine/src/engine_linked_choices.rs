@@ -530,6 +530,9 @@ impl Game {
             .is_some_and(|data| data.hidden.contains_key(&object))
     }
     pub(super) fn can_view_hideaway(&self, viewer: Player, object: ObjectRef) -> bool {
+        if self.outcome().is_some() && self.is_foretold(object) {
+            return true;
+        }
         self.state
             .linked_choices
             .as_ref()
