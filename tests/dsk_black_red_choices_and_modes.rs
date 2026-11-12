@@ -196,10 +196,9 @@ fn untimely_malfunction_resolves_each_of_its_three_printed_modes() {
 
     let damage = put(&mut game, player, "Shock", Zone::Hand);
     cast(&mut game, damage, Some(Target::Player(opponent)));
-    let damaged_spell = game.state.stack.last().unwrap().id;
     let change_mode = put(&mut game, player, "Untimely Malfunction", Zone::Hand);
     mode(&mut game, change_mode, 1);
-    target(&mut game, Target::Stack(damaged_spell));
+    target(&mut game, Target::Spell(damage));
     pay(&mut game);
     pass_pair(&mut game);
     reject(&mut game, Action::FinishStackTargets);
@@ -273,7 +272,8 @@ fn vile_mutilator_pays_a_creature_cost_and_requires_two_sequential_nontoken_sacr
     let owned_artifact = put(&mut game, player, "Candy Trail", Zone::Battlefield);
     game.create_tokens(player, Card::from_catalogue_id(5258), 1, false);
     let owned_token = game.controlled_token_ids(player).next().unwrap();
-    let enchantment = put(&mut game, opponent, "Balemurk Leech", Zone::Battlefield);
+    let enchantment = put(&mut game, opponent, "Fear of the Dark", Zone::Battlefield);
+    assert_eq!(game.object_view(enchantment).kinds, 1 | 32);
     let creature = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
     game.create_tokens(opponent, Card::from_catalogue_id(5258), 1, false);
     let token = game.controlled_token_ids(opponent).next().unwrap();
