@@ -156,9 +156,9 @@ impl Game {
     pub(super) fn expire_next_turn_callbacks(&mut self) {
         if let Some(rules) = &mut self.state.combat_rules {
             let expiry = Some(TurnCallbackExpiry::EndOfTurn(self.state.turn));
-            rules
-                .turn_callbacks
-                .retain(|row| row.expiry.is_some() && row.expiry != expiry);
+            // This-turn delayed abilities can still see cleanup's state-based
+            // actions. The actual turn change removes rows without an expiry.
+            rules.turn_callbacks.retain(|row| row.expiry != expiry);
         }
     }
 

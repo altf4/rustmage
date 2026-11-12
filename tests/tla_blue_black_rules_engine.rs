@@ -387,14 +387,39 @@ fn paid_waterbend_observes_each_actual_death_until_cleanup() {
         assert_eq!(game.object_view(opposing).zone, Zone::Graveyard);
         assert_eq!(game.state.players[active.index()].life, life + 3);
         let mut died_this_turn = game.clone();
-        died_this_turn.move_object(survivor, Zone::Graveyard);
-        died_this_turn.give_priority();
+        let removal = put(&mut died_this_turn, active, "Murder", Zone::Hand);
+        cast(&mut died_this_turn, removal, Some(Target::Card(survivor)));
         settle(&mut died_this_turn);
         assert_eq!(died_this_turn.state.players[active.index()].life, life + 4);
 
+        let mut died_during_cleanup = game.clone();
+        let fragile = put(
+            &mut died_during_cleanup,
+            active,
+            "Goblin Piker",
+            Zone::Battlefield,
+        );
+        died_during_cleanup.state.objects[fragile as usize].growth = Stats {
+            power: 1,
+            toughness: 1,
+        };
+        died_during_cleanup.add_counter(fragile, CounterKind::MinusOne, 1);
+        died_during_cleanup.state.step = Step::Cleanup;
+        died_during_cleanup.finish_cleanup();
+        assert_eq!(
+            died_during_cleanup.object_view(fragile).zone,
+            Zone::Graveyard
+        );
+        died_during_cleanup.prepare_triggers();
+        settle(&mut died_during_cleanup);
+        assert_eq!(
+            died_during_cleanup.state.players[active.index()].life,
+            life + 4
+        );
+
         game.finish_cleanup();
         game.move_object(survivor, Zone::Graveyard);
-        game.give_priority();
+        game.prepare_triggers();
         settle(&mut game);
         assert_eq!(game.state.players[active.index()].life, life + 3);
     }
