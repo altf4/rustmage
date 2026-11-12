@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "catalogue_version": "1ab1144dbc90f160ebbedb012d5dda45dacf8f21ae1e52c3cd1631f40b9e096b",
+  "catalogue_version": "3ff841b1e17287b07dde36b2f48e01f5a6e6db3e3314620b6dd2357df420f646",
   "standard_legal_cards": 5163,
   "implemented_standard_cards": 4795,
   "implemented_total": 4812,
-  "token_definitions": 208,
+  "token_definitions": 215,
   "emblem_definitions": 12,
-  "adventure_definitions": 74,
+  "adventure_definitions": 75,
   "omen_definitions": 13,
   "definition_ownership": {
     "afr": {
@@ -26197,8 +26197,8 @@
       "standard_legal": false,
       "implemented": false,
       "implementation": null,
-      "definition": "src/card_definitions/legacy/proft_s_eidetic_memory.rs",
-      "set": "legacy"
+      "definition": "src/card_definitions/mkm/proft_s_eidetic_memory.rs",
+      "set": "mkm"
     },
     {
       "name": "Proft, Consulting Detective",

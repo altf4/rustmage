@@ -1,0 +1,16 @@
+{
+  "name": "Jetsam",
+  "catalogue_id": 5690,
+  "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+  "facts_sha256": "7d0a870a9f2f3c7afd5eedebf8465ef991da90561161f6ee12224d0acb064069",
+  "complete": false,
+  "physical_metadata_sha256": "ce3a2042176cca81a147c362e79277376a4f8a18e9ec09d9faddf3c44d2daa85",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FlotsamJetsam.java",
+  "java_sha256": "fca7a318669c19b5c9649a52a0425084f07cecee71c5a7b73e0c58c0394b193f",
+  "oracle_face": {
+    "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+    "index": 1,
+    "sha256": "431e6dbc5c1a3ca2c6bc125222cfd673fee7be66f90534b680ab89d967386c9a"
+  }
+}

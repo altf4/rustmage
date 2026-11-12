@@ -1,0 +1,11 @@
+{
+  "name": "@token/mkm-spider",
+  "catalogue_id": 5685,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "c6d3ac46bbefdb110494216d323d0a38368fd32676789e1ebb11730931bb4b6c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/IzoniSpiderToken.java",
+  "java_sha256": "421235fcf78fd3e7f784fbfefbf7fb8cc1500ff92ea923a26694d7a0e0828079"
+}

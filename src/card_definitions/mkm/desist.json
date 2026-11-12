@@ -1,0 +1,16 @@
+{
+  "name": "Desist",
+  "catalogue_id": 5688,
+  "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+  "facts_sha256": "b16267d1626b3f5bc0a29060bd1a625c8f898c1195dd960de471145408641483",
+  "complete": false,
+  "physical_metadata_sha256": "50a0ee34ad78fc41cfd8cefa6a83593fa68fc27e675e39312dc54daebb0c223a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CeaseDesist.java",
+  "java_sha256": "e735f759aa6f0b49b7daf9f317e73385980ccd40341c1ca2c7e86c02892eb236",
+  "oracle_face": {
+    "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+    "index": 1,
+    "sha256": "1ed87e06940a4dde0785120e6b8af8869f11453419ec3bd53e10e983747bba43"
+  }
+}

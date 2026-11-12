@@ -1,0 +1,16 @@
+{
+  "name": "Tail the Suspect",
+  "catalogue_id": 5697,
+  "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+  "facts_sha256": "39c9895b3a8da6820a7a2f9b0d1a36ada350979efd6ed95bdaa2837e45210aae",
+  "complete": false,
+  "physical_metadata_sha256": "5b5b6f942a380efb81a57d1f43f110a308262f34fb824b4bd214025cd5a2b345",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KellanInquisitiveProdigy.java",
+  "java_sha256": "4c4db9f98ee637afbc9fe610e34867363987b7ed5dfe39ef4c9af1504585a494",
+  "oracle_face": {
+    "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+    "index": 1,
+    "sha256": "59799bd32f1eee981eeba1168009878e13277ca68ceb77fd0f53d2f8267fe430"
+  }
+}

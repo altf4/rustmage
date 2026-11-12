@@ -1333,6 +1333,13 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/private_eye.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_3251 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/proft_s_eidetic_memory.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 pub(super) mod card_3256 {
 use crate::cards::*;
 use crate::cards::InitialCounters as Counters;
@@ -1858,9 +1865,135 @@ use super::{CardRules, CardExtras, generic, one, object};
 include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/yarus_roar_of_the_old_gods.rs"));
 const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
 }
+pub(super) mod card_5680 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_thopter_zero.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5681 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_skeleton.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5682 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_plant.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5683 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_ooze.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5684 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_imp.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5685 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_spider.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5686 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/token_voja_fenstalker.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5687 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/cease.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5688 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/desist.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5689 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/flotsam.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5690 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/jetsam.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5691 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/fuss.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5692 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/bother.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5693 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/hustle.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5694 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/bustle.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5695 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/push.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5696 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/pull.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
+pub(super) mod card_5697 {
+use crate::cards::*;
+use crate::cards::InitialCounters as Counters;
+use super::{CardRules, CardExtras, generic, one, object};
+include!(concat!(env!("CARGO_MANIFEST_DIR"), "/../../../src/card_definitions/mkm/tail_the_suspect.rs"));
+const _: () = assert!(!matches!(RULES.extras.has_rules_abilities, Some(false)), "authored ability-presence fact differs from provenance");
+}
 }
 #[rustfmt::skip]
-pub static ENTRIES: [CatalogueEntry; 264] = [
+pub static ENTRIES: [CatalogueEntry; 283] = [
 CatalogueEntry { definition: Definition { info: CardInfo { name: "A Killer Among Us", oracle_id: Some("79d577a8-53c0-4220-bc0e-70764d72d5fd"), mana_cost: "{4}{G}", type_line: "Enchantment", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0014::RULES.keywords, deck_limit: authored::card_0014::RULES.deck_limit }, effect: authored::card_0014::RULES.effect, triggers: authored::card_0014::RULES.triggers, activated: authored::card_0014::RULES.activated, enters: authored::card_0014::RULES.enters, entry: authored::card_0014::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 4 }, rules: &authored::card_0014::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Absolving Lammasu", oracle_id: Some("dbedd45e-f76c-4be7-ad89-ff57bed6626f"), mana_cost: "{4}{W}", type_line: "Creature — Lammasu", oracle_keywords: &["Flying", "Suspect"], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_0037::RULES.keywords, deck_limit: authored::card_0037::RULES.deck_limit }, effect: authored::card_0037::RULES.checked_effect(), triggers: authored::card_0037::RULES.triggers, activated: authored::card_0037::RULES.activated, enters: authored::card_0037::RULES.enters, entry: authored::card_0037::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_0037::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Agency Coroner", oracle_id: Some("3686fd97-49ff-4a92-9cb2-7d8e9438d945"), mana_cost: "{4}{B}", type_line: "Creature — Ogre Cleric", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_0085::RULES.keywords, deck_limit: authored::card_0085::RULES.deck_limit }, effect: authored::card_0085::RULES.effect, triggers: authored::card_0085::RULES.triggers, activated: authored::card_0085::RULES.activated, enters: authored::card_0085::RULES.enters, entry: authored::card_0085::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 4 }, rules: &authored::card_0085::RULES },
@@ -1999,7 +2132,7 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Jaded Analyst"
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Judith, Carnage Connoisseur", oracle_id: Some("e86c965b-ac10-4fff-b682-dddd6d9747c6"), mana_cost: "{3}{B}{R}", type_line: "Legendary Creature — Human Shaman", oracle_keywords: &[], standard_legal: true, legendary: true, implemented: false, keywords: authored::card_2294::RULES.keywords, deck_limit: authored::card_2294::RULES.deck_limit }, effect: authored::card_2294::RULES.effect, triggers: authored::card_2294::RULES.triggers, activated: authored::card_2294::RULES.activated, enters: authored::card_2294::RULES.enters, entry: authored::card_2294::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 1, 1, 0, 0], generic: 3 }, rules: &authored::card_2294::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Karlov Watchdog", oracle_id: Some("73f44500-fe83-40fa-b6f2-ed5673d0edcc"), mana_cost: "{3}{W}", type_line: "Creature — Dog", oracle_keywords: &["Vigilance"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_2318::RULES.keywords, deck_limit: authored::card_2318::RULES.deck_limit }, effect: authored::card_2318::RULES.effect, triggers: authored::card_2318::RULES.triggers, activated: authored::card_2318::RULES.activated, enters: authored::card_2318::RULES.enters, entry: authored::card_2318::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 3 }, rules: &authored::card_2318::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Kaya, Spirits' Justice", oracle_id: Some("0a094c5f-cefb-4ba1-90c8-dd78ae8efe95"), mana_cost: "{2}{W}{B}", type_line: "Legendary Planeswalker — Kaya", oracle_keywords: &["Surveil"], standard_legal: true, legendary: true, implemented: true, keywords: authored::card_2331::RULES.keywords, deck_limit: authored::card_2331::RULES.deck_limit }, effect: authored::card_2331::RULES.checked_effect(), triggers: authored::card_2331::RULES.triggers, activated: authored::card_2331::RULES.activated, enters: authored::card_2331::RULES.enters, entry: authored::card_2331::RULES.entry, kind: 64, basic: false, mana_color: None, colored: [1, 0, 1, 0, 0, 0], generic: 2 }, rules: &authored::card_2331::RULES },
-CatalogueEntry { definition: Definition { info: CardInfo { name: "Kellan, Inquisitive Prodigy // Tail the Suspect", oracle_id: Some("2f2d75a0-d751-4c74-b357-8f92a992447f"), mana_cost: "{2}{G}{U} // {G}{U}", type_line: "Legendary Creature — Human Faerie Detective // Sorcery — Adventure", oracle_keywords: &["Flying", "Investigate", "Vigilance"], standard_legal: true, legendary: true, implemented: false, keywords: authored::card_2340::RULES.keywords, deck_limit: authored::card_2340::RULES.deck_limit }, effect: authored::card_2340::RULES.effect, triggers: authored::card_2340::RULES.triggers, activated: authored::card_2340::RULES.activated, enters: authored::card_2340::RULES.enters, entry: authored::card_2340::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_2340::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Kellan, Inquisitive Prodigy", oracle_id: Some("2f2d75a0-d751-4c74-b357-8f92a992447f"), mana_cost: "{2}{G}{U}", type_line: "Legendary Creature — Human Faerie Detective", oracle_keywords: &["Flying", "Investigate", "Vigilance"], standard_legal: true, legendary: true, implemented: false, keywords: authored::card_2340::RULES.keywords, deck_limit: authored::card_2340::RULES.deck_limit }, effect: authored::card_2340::RULES.effect, triggers: authored::card_2340::RULES.triggers, activated: authored::card_2340::RULES.activated, enters: authored::card_2340::RULES.enters, entry: authored::card_2340::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 1, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_2340::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Knife", oracle_id: Some("7627163a-1689-446f-b5aa-a6c56aefb532"), mana_cost: "{R}", type_line: "Artifact — Clue Equipment", oracle_keywords: &["Equip"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_2382::RULES.keywords, deck_limit: authored::card_2382::RULES.deck_limit }, effect: authored::card_2382::RULES.effect, triggers: authored::card_2382::RULES.triggers, activated: authored::card_2382::RULES.activated, enters: authored::card_2382::RULES.enters, entry: authored::card_2382::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 0 }, rules: &authored::card_2382::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Kraul Whipcracker", oracle_id: Some("b563ae31-338e-4bcc-a05f-d7ed7c3fe46e"), mana_cost: "{B}{G}", type_line: "Creature — Insect Assassin", oracle_keywords: &["Reach"], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_2406::RULES.keywords, deck_limit: authored::card_2406::RULES.deck_limit }, effect: authored::card_2406::RULES.checked_effect(), triggers: authored::card_2406::RULES.triggers, activated: authored::card_2406::RULES.activated, enters: authored::card_2406::RULES.enters, entry: authored::card_2406::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 1, 0, 1, 0], generic: 0 }, rules: &authored::card_2406::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Krenko's Buzzcrusher", oracle_id: Some("79a63064-f25b-4c34-867e-a9d32da97b14"), mana_cost: "{2}{R}{R}", type_line: "Artifact Creature — Insect Thopter", oracle_keywords: &["Flying", "Trample"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_2414::RULES.keywords, deck_limit: authored::card_2414::RULES.deck_limit }, effect: authored::card_2414::RULES.effect, triggers: authored::card_2414::RULES.triggers, activated: authored::card_2414::RULES.activated, enters: authored::card_2414::RULES.enters, entry: authored::card_2414::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 2, 0, 0], generic: 2 }, rules: &authored::card_2414::RULES },
@@ -2050,6 +2183,7 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Polygraph Orb"
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Pompous Gadabout", oracle_id: Some("0361b9b7-9097-4aae-aa06-c63a5fb47a76"), mana_cost: "{2}{G}", type_line: "Creature — Human Citizen", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3202::RULES.keywords, deck_limit: authored::card_3202::RULES.deck_limit }, effect: authored::card_3202::RULES.effect, triggers: authored::card_3202::RULES.triggers, activated: authored::card_3202::RULES.activated, enters: authored::card_3202::RULES.enters, entry: authored::card_3202::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 2 }, rules: &authored::card_3202::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Presumed Dead", oracle_id: Some("a2d3e3f0-7399-4eb9-a0cf-831710c3d431"), mana_cost: "{1}{B}", type_line: "Instant", oracle_keywords: &["Suspect"], standard_legal: true, legendary: false, implemented: true, keywords: authored::card_3224::RULES.keywords, deck_limit: authored::card_3224::RULES.deck_limit }, effect: authored::card_3224::RULES.checked_effect(), triggers: authored::card_3224::RULES.triggers, activated: authored::card_3224::RULES.activated, enters: authored::card_3224::RULES.enters, entry: authored::card_3224::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_3224::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Private Eye", oracle_id: Some("20750317-061b-4b65-9fc8-43477fcd7a21"), mana_cost: "{1}{W}{U}", type_line: "Creature — Homunculus Detective", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3244::RULES.keywords, deck_limit: authored::card_3244::RULES.deck_limit }, effect: authored::card_3244::RULES.effect, triggers: authored::card_3244::RULES.triggers, activated: authored::card_3244::RULES.activated, enters: authored::card_3244::RULES.enters, entry: authored::card_3244::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 1, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_3244::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Proft's Eidetic Memory", oracle_id: Some("b749e9e4-0f2a-4157-8cca-facd6b48157f"), mana_cost: "{1}{U}", type_line: "Legendary Enchantment", oracle_keywords: &[], standard_legal: false, legendary: true, implemented: false, keywords: authored::card_3251::RULES.keywords, deck_limit: authored::card_3251::RULES.deck_limit }, effect: authored::card_3251::RULES.effect, triggers: authored::card_3251::RULES.triggers, activated: authored::card_3251::RULES.activated, enters: authored::card_3251::RULES.enters, entry: authored::card_3251::RULES.entry, kind: 32, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_3251::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Projektor Inspector", oracle_id: Some("58b27a79-ba63-45d4-84ee-423ce0d91f6b"), mana_cost: "{2}{U}", type_line: "Creature — Human Detective", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3256::RULES.keywords, deck_limit: authored::card_3256::RULES.deck_limit }, effect: authored::card_3256::RULES.effect, triggers: authored::card_3256::RULES.triggers, activated: authored::card_3256::RULES.activated, enters: authored::card_3256::RULES.enters, entry: authored::card_3256::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_3256::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Public Thoroughfare", oracle_id: Some("de5b995c-9691-4555-9070-66bcbc29f955"), mana_cost: "", type_line: "Land", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3272::RULES.keywords, deck_limit: authored::card_3272::RULES.deck_limit }, effect: authored::card_3272::RULES.effect, triggers: authored::card_3272::RULES.triggers, activated: authored::card_3272::RULES.activated, enters: authored::card_3272::RULES.enters, entry: authored::card_3272::RULES.entry, kind: 2, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_3272::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Push // Pull", oracle_id: Some("7e050495-bed7-43b9-abce-866c61beb1da"), mana_cost: "{1}{W/B} // {4}{B/R}{B/R}", type_line: "Sorcery // Sorcery", oracle_keywords: &[], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_3287::RULES.keywords, deck_limit: authored::card_3287::RULES.deck_limit }, effect: authored::card_3287::RULES.effect, triggers: authored::card_3287::RULES.triggers, activated: authored::card_3287::RULES.activated, enters: authored::card_3287::RULES.enters, entry: authored::card_3287::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_3287::RULES },
@@ -2125,6 +2259,24 @@ CatalogueEntry { definition: Definition { info: CardInfo { name: "Wispdrinker Va
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Wojek Investigator", oracle_id: Some("ab41243d-b178-4ebe-a7ac-bea37427be99"), mana_cost: "{2}{W}", type_line: "Creature — Angel Detective", oracle_keywords: &["Flying", "Investigate", "Vigilance"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_5104::RULES.keywords, deck_limit: authored::card_5104::RULES.deck_limit }, effect: authored::card_5104::RULES.effect, triggers: authored::card_5104::RULES.triggers, activated: authored::card_5104::RULES.activated, enters: authored::card_5104::RULES.enters, entry: authored::card_5104::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 2 }, rules: &authored::card_5104::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Wrench", oracle_id: Some("fdbac0a7-18c0-48a5-a174-0d4d1473fd9c"), mana_cost: "{W}", type_line: "Artifact — Clue Equipment", oracle_keywords: &["Equip"], standard_legal: true, legendary: false, implemented: false, keywords: authored::card_5124::RULES.keywords, deck_limit: authored::card_5124::RULES.deck_limit }, effect: authored::card_5124::RULES.effect, triggers: authored::card_5124::RULES.triggers, activated: authored::card_5124::RULES.activated, enters: authored::card_5124::RULES.enters, entry: authored::card_5124::RULES.entry, kind: 16, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5124::RULES },
 CatalogueEntry { definition: Definition { info: CardInfo { name: "Yarus, Roar of the Old Gods", oracle_id: Some("30fd6171-3e57-4c05-a86b-e1c0479ba236"), mana_cost: "{2}{R}{G}", type_line: "Legendary Creature — Centaur Druid", oracle_keywords: &[], standard_legal: true, legendary: true, implemented: false, keywords: authored::card_5133::RULES.keywords, deck_limit: authored::card_5133::RULES.deck_limit }, effect: authored::card_5133::RULES.effect, triggers: authored::card_5133::RULES.triggers, activated: authored::card_5133::RULES.activated, enters: authored::card_5133::RULES.enters, entry: authored::card_5133::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 1, 1, 0], generic: 2 }, rules: &authored::card_5133::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-thopter-zero", oracle_id: None, mana_cost: "", type_line: "Artifact Creature — Thopter", oracle_keywords: &["Flying"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5680::RULES.keywords, deck_limit: authored::card_5680::RULES.deck_limit }, effect: authored::card_5680::RULES.effect, triggers: authored::card_5680::RULES.triggers, activated: authored::card_5680::RULES.activated, enters: authored::card_5680::RULES.enters, entry: authored::card_5680::RULES.entry, kind: 17, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5680::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-skeleton", oracle_id: None, mana_cost: "", type_line: "Creature — Skeleton", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5681::RULES.keywords, deck_limit: authored::card_5681::RULES.deck_limit }, effect: authored::card_5681::RULES.effect, triggers: authored::card_5681::RULES.triggers, activated: authored::card_5681::RULES.activated, enters: authored::card_5681::RULES.enters, entry: authored::card_5681::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5681::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-plant", oracle_id: None, mana_cost: "", type_line: "Creature — Plant", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5682::RULES.keywords, deck_limit: authored::card_5682::RULES.deck_limit }, effect: authored::card_5682::RULES.effect, triggers: authored::card_5682::RULES.triggers, activated: authored::card_5682::RULES.activated, enters: authored::card_5682::RULES.enters, entry: authored::card_5682::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5682::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-ooze", oracle_id: None, mana_cost: "", type_line: "Creature — Ooze", oracle_keywords: &["Trample"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5683::RULES.keywords, deck_limit: authored::card_5683::RULES.deck_limit }, effect: authored::card_5683::RULES.effect, triggers: authored::card_5683::RULES.triggers, activated: authored::card_5683::RULES.activated, enters: authored::card_5683::RULES.enters, entry: authored::card_5683::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5683::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-imp", oracle_id: None, mana_cost: "", type_line: "Creature — Imp", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5684::RULES.keywords, deck_limit: authored::card_5684::RULES.deck_limit }, effect: authored::card_5684::RULES.effect, triggers: authored::card_5684::RULES.triggers, activated: authored::card_5684::RULES.activated, enters: authored::card_5684::RULES.enters, entry: authored::card_5684::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5684::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-spider", oracle_id: None, mana_cost: "", type_line: "Creature — Spider", oracle_keywords: &["Menace", "Reach"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5685::RULES.keywords, deck_limit: authored::card_5685::RULES.deck_limit }, effect: authored::card_5685::RULES.effect, triggers: authored::card_5685::RULES.triggers, activated: authored::card_5685::RULES.activated, enters: authored::card_5685::RULES.enters, entry: authored::card_5685::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5685::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "@token/mkm-voja-fenstalker", oracle_id: None, mana_cost: "", type_line: "Legendary Creature — Wolf", oracle_keywords: &["Trample"], standard_legal: false, legendary: true, implemented: false, keywords: authored::card_5686::RULES.keywords, deck_limit: authored::card_5686::RULES.deck_limit }, effect: authored::card_5686::RULES.effect, triggers: authored::card_5686::RULES.triggers, activated: authored::card_5686::RULES.activated, enters: authored::card_5686::RULES.enters, entry: authored::card_5686::RULES.entry, kind: 1, basic: false, mana_color: None, colored: [0, 0, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5686::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Cease", oracle_id: Some("ba4d644f-1931-4fc4-aed5-681a476a5a58"), mana_cost: "{1}{B/G}", type_line: "Instant", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5687::RULES.keywords, deck_limit: authored::card_5687::RULES.deck_limit }, effect: authored::card_5687::RULES.effect, triggers: authored::card_5687::RULES.triggers, activated: authored::card_5687::RULES.activated, enters: authored::card_5687::RULES.enters, entry: authored::card_5687::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 1, 0, 0, 0], generic: 1 }, rules: &authored::card_5687::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Desist", oracle_id: Some("ba4d644f-1931-4fc4-aed5-681a476a5a58"), mana_cost: "{4}{G/W}{G/W}", type_line: "Sorcery", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5688::RULES.keywords, deck_limit: authored::card_5688::RULES.deck_limit }, effect: authored::card_5688::RULES.effect, triggers: authored::card_5688::RULES.triggers, activated: authored::card_5688::RULES.activated, enters: authored::card_5688::RULES.enters, entry: authored::card_5688::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 0, 2, 0], generic: 4 }, rules: &authored::card_5688::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Flotsam", oracle_id: Some("b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784"), mana_cost: "{1}{G/U}", type_line: "Instant", oracle_keywords: &["Investigate", "Mill"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5689::RULES.keywords, deck_limit: authored::card_5689::RULES.deck_limit }, effect: authored::card_5689::RULES.effect, triggers: authored::card_5689::RULES.triggers, activated: authored::card_5689::RULES.activated, enters: authored::card_5689::RULES.enters, entry: authored::card_5689::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 0, 1, 0], generic: 1 }, rules: &authored::card_5689::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Jetsam", oracle_id: Some("b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784"), mana_cost: "{4}{U/B}{U/B}", type_line: "Sorcery", oracle_keywords: &["Mill"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5690::RULES.keywords, deck_limit: authored::card_5690::RULES.deck_limit }, effect: authored::card_5690::RULES.effect, triggers: authored::card_5690::RULES.triggers, activated: authored::card_5690::RULES.activated, enters: authored::card_5690::RULES.enters, entry: authored::card_5690::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 2, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_5690::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Fuss", oracle_id: Some("88e9006a-cfdf-40f3-80d5-23465f3dceca"), mana_cost: "{2}{R/W}", type_line: "Instant", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5691::RULES.keywords, deck_limit: authored::card_5691::RULES.deck_limit }, effect: authored::card_5691::RULES.effect, triggers: authored::card_5691::RULES.triggers, activated: authored::card_5691::RULES.activated, enters: authored::card_5691::RULES.enters, entry: authored::card_5691::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 0, 0, 1, 0, 0], generic: 2 }, rules: &authored::card_5691::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Bother", oracle_id: Some("88e9006a-cfdf-40f3-80d5-23465f3dceca"), mana_cost: "{4}{W/U}{W/U}", type_line: "Sorcery", oracle_keywords: &["Surveil"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5692::RULES.keywords, deck_limit: authored::card_5692::RULES.deck_limit }, effect: authored::card_5692::RULES.effect, triggers: authored::card_5692::RULES.triggers, activated: authored::card_5692::RULES.activated, enters: authored::card_5692::RULES.enters, entry: authored::card_5692::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [2, 0, 0, 0, 0, 0], generic: 4 }, rules: &authored::card_5692::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Hustle", oracle_id: Some("e294d85f-caf2-4939-99d3-7ca5bba2b8d1"), mana_cost: "{U/R}", type_line: "Instant", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5693::RULES.keywords, deck_limit: authored::card_5693::RULES.deck_limit }, effect: authored::card_5693::RULES.effect, triggers: authored::card_5693::RULES.triggers, activated: authored::card_5693::RULES.activated, enters: authored::card_5693::RULES.enters, entry: authored::card_5693::RULES.entry, kind: 8, basic: false, mana_color: None, colored: [0, 1, 0, 0, 0, 0], generic: 0 }, rules: &authored::card_5693::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Bustle", oracle_id: Some("e294d85f-caf2-4939-99d3-7ca5bba2b8d1"), mana_cost: "{4}{R/G}{R/G}", type_line: "Sorcery", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5694::RULES.keywords, deck_limit: authored::card_5694::RULES.deck_limit }, effect: authored::card_5694::RULES.effect, triggers: authored::card_5694::RULES.triggers, activated: authored::card_5694::RULES.activated, enters: authored::card_5694::RULES.enters, entry: authored::card_5694::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 0, 2, 0, 0], generic: 4 }, rules: &authored::card_5694::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Push", oracle_id: Some("7e050495-bed7-43b9-abce-866c61beb1da"), mana_cost: "{1}{W/B}", type_line: "Sorcery", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5695::RULES.keywords, deck_limit: authored::card_5695::RULES.deck_limit }, effect: authored::card_5695::RULES.effect, triggers: authored::card_5695::RULES.triggers, activated: authored::card_5695::RULES.activated, enters: authored::card_5695::RULES.enters, entry: authored::card_5695::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [1, 0, 0, 0, 0, 0], generic: 1 }, rules: &authored::card_5695::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Pull", oracle_id: Some("7e050495-bed7-43b9-abce-866c61beb1da"), mana_cost: "{4}{B/R}{B/R}", type_line: "Sorcery", oracle_keywords: &[], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5696::RULES.keywords, deck_limit: authored::card_5696::RULES.deck_limit }, effect: authored::card_5696::RULES.effect, triggers: authored::card_5696::RULES.triggers, activated: authored::card_5696::RULES.activated, enters: authored::card_5696::RULES.enters, entry: authored::card_5696::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 0, 2, 0, 0, 0], generic: 4 }, rules: &authored::card_5696::RULES },
+CatalogueEntry { definition: Definition { info: CardInfo { name: "Tail the Suspect", oracle_id: Some("2f2d75a0-d751-4c74-b357-8f92a992447f"), mana_cost: "{G}{U}", type_line: "Sorcery — Adventure", oracle_keywords: &["Investigate"], standard_legal: false, legendary: false, implemented: false, keywords: authored::card_5697::RULES.keywords, deck_limit: authored::card_5697::RULES.deck_limit }, effect: authored::card_5697::RULES.effect, triggers: authored::card_5697::RULES.triggers, activated: authored::card_5697::RULES.activated, enters: authored::card_5697::RULES.enters, entry: authored::card_5697::RULES.entry, kind: 4, basic: false, mana_color: None, colored: [0, 1, 0, 0, 1, 0], generic: 0 }, rules: &authored::card_5697::RULES },
 ];
 }
 pub use cards::ENTRIES;

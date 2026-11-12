@@ -1,0 +1,11 @@
+{
+  "name": "@token/mkm-skeleton",
+  "catalogue_id": 5681,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": false,
+  "physical_metadata_sha256": "1529c39747dd19159fb43488b2a3a947e6317e21730e2fc9c58d0dbc32ac3607",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Skeleton21Token.java",
+  "java_sha256": "f6ebe98425b53d9b0a4a669a5d4bf4124ab6060bddc98e5f368e4635a7d5c1fe"
+}

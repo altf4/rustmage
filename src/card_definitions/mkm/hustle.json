@@ -1,0 +1,16 @@
+{
+  "name": "Hustle",
+  "catalogue_id": 5693,
+  "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+  "facts_sha256": "b6167320798313cad2b3360e4f9d92f4744d6173f2ebf28881bb5aeeba86e046",
+  "complete": false,
+  "physical_metadata_sha256": "eda04a3920ad2906cbe0a66f159f976dd2a339159794a9f975afc7dc7c7d208e",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HustleBustle.java",
+  "java_sha256": "9d6d5fa54b6d782cfe897beeb58b05153230297bfc4522cffec95efcdf313745",
+  "oracle_face": {
+    "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+    "index": 0,
+    "sha256": "693a0c54641254c69dcd92eb5d6cc1a6e5cf2b970c58e61018a988a85c1f7601"
+  }
+}

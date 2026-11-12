@@ -3257,7 +3257,7 @@
     16,
     20,
     10,
-    0,
+    2,
     2,
     4,
     31,
@@ -5685,6 +5685,24 @@
     0,
     0,
     16,
+    18,
+    0,
+    4,
+    16,
+    16,
+    8,
+    20,
+    17,
+    20,
+    17,
+    18,
+    6,
+    9,
+    3,
+    10,
+    24,
+    5,
+    12,
     18
   ],
   "aliases": [
@@ -6793,8 +6811,36 @@
       5501
     ],
     [
+      "@token/mkm-imp",
+      5684
+    ],
+    [
       "@token/mkm-kaya-spirit",
       5477
+    ],
+    [
+      "@token/mkm-ooze",
+      5683
+    ],
+    [
+      "@token/mkm-plant",
+      5682
+    ],
+    [
+      "@token/mkm-skeleton",
+      5681
+    ],
+    [
+      "@token/mkm-spider",
+      5685
+    ],
+    [
+      "@token/mkm-thopter-zero",
+      5680
+    ],
+    [
+      "@token/mkm-voja-fenstalker",
+      5686
     ],
     [
       "@token/mowu",
@@ -9161,6 +9207,10 @@
       510
     ],
     [
+      "Bother",
+      5692
+    ],
+    [
       "Bothersome Noisemaker",
       511
     ],
@@ -9585,6 +9635,10 @@
       603
     ],
     [
+      "Bustle",
+      5694
+    ],
+    [
       "Buzz Bots",
       604
     ],
@@ -9959,6 +10013,10 @@
     [
       "Cavernous Maw",
       691
+    ],
+    [
+      "Cease",
+      5687
     ],
     [
       "Cease // Desist",
@@ -11547,6 +11605,10 @@
     [
       "Deserter's Disciple",
       1054
+    ],
+    [
+      "Desist",
+      5688
     ],
     [
       "Desolation Prowler",
@@ -13773,6 +13835,10 @@
       1565
     ],
     [
+      "Flotsam",
+      5689
+    ],
+    [
       "Flotsam // Jetsam",
       1566
     ],
@@ -14155,6 +14221,10 @@
     [
       "Furtive Courier",
       1653
+    ],
+    [
+      "Fuss",
+      5691
     ],
     [
       "Fuss // Bother",
@@ -16185,6 +16255,10 @@
       2109
     ],
     [
+      "Hustle",
+      5693
+    ],
+    [
       "Hustle // Bustle",
       2110
     ],
@@ -16925,6 +16999,10 @@
       2276
     ],
     [
+      "Jetsam",
+      5690
+    ],
+    [
       "Jiang Yanggu, Alone",
       2277
     ],
@@ -17219,6 +17297,10 @@
     [
       "Kellan, Daring Traveler // Journey On",
       2339
+    ],
+    [
+      "Kellan, Inquisitive Prodigy",
+      2340
     ],
     [
       "Kellan, Inquisitive Prodigy // Tail the Suspect",
@@ -21257,6 +21339,10 @@
       3274
     ],
     [
+      "Pull",
+      5696
+    ],
+    [
       "Pull Through the Weft",
       3275
     ],
@@ -21311,6 +21397,10 @@
     [
       "Pursue the Past",
       3286
+    ],
+    [
+      "Push",
+      5695
     ],
     [
       "Push // Pull",
@@ -25779,6 +25869,10 @@
     [
       "Taii Wakeen, Perfect Shot",
       4317
+    ],
+    [
+      "Tail the Suspect",
+      5697
     ],
     [
       "Tainted Treats",
@@ -30817,6 +30911,48 @@
       "name": "Primo, the Indivisible",
       "subtypes": "Fractal",
       "colors": 18
+    },
+    {
+      "factory_identity": "@token/mkm-thopter-zero",
+      "name": "Thopter Token",
+      "subtypes": "Thopter",
+      "colors": 0
+    },
+    {
+      "factory_identity": "@token/mkm-skeleton",
+      "name": "Skeleton Token",
+      "subtypes": "Skeleton",
+      "colors": 4
+    },
+    {
+      "factory_identity": "@token/mkm-plant",
+      "name": "Plant Token",
+      "subtypes": "Plant",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/mkm-ooze",
+      "name": "Ooze Token",
+      "subtypes": "Ooze",
+      "colors": 16
+    },
+    {
+      "factory_identity": "@token/mkm-imp",
+      "name": "Imp Token",
+      "subtypes": "Imp",
+      "colors": 8
+    },
+    {
+      "factory_identity": "@token/mkm-spider",
+      "name": "Spider Token",
+      "subtypes": "Spider",
+      "colors": 20
+    },
+    {
+      "factory_identity": "@token/mkm-voja-fenstalker",
+      "name": "Voja Fenstalker",
+      "subtypes": "Wolf",
+      "colors": 17
     }
   ],
   "emblems": [
@@ -98898,13 +99034,18 @@
       "mana_color": null,
       "colored": [
         0,
+        1,
         0,
         0,
-        0,
-        0,
+        1,
         0
       ],
-      "generic": 0
+      "generic": 2,
+      "front_face": {
+        "name": "Kellan, Inquisitive Prodigy",
+        "mana_cost": "{2}{G}{U}",
+        "type_line": "Legendary Creature — Human Faerie Detective"
+      }
     },
     {
       "index": 2341,
@@ -125210,29 +125351,29 @@
     {
       "index": 3251,
       "module": "card_3251",
-      "path": "legacy/proft_s_eidetic_memory.rs",
-      "set": "legacy",
+      "path": "mkm/proft_s_eidetic_memory.rs",
+      "set": "mkm",
       "category": "physical",
       "name": "Proft's Eidetic Memory",
-      "oracle_id": null,
-      "facts_sha256": null,
-      "mana_cost": "",
-      "type_line": "",
+      "oracle_id": "b749e9e4-0f2a-4157-8cca-facd6b48157f",
+      "facts_sha256": "c8b47342c36b0f30f4df33e414b07ca94e768746f45c3e7ebac270230cd9e37b",
+      "mana_cost": "{1}{U}",
+      "type_line": "Legendary Enchantment",
       "oracle_keywords": [],
       "standard_legal": false,
-      "legendary": false,
-      "kind": 0,
+      "legendary": true,
+      "kind": 32,
       "basic": false,
       "mana_color": null,
       "colored": [
         0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
-      "generic": 0
+      "generic": 1
     },
     {
       "index": 3252,
@@ -194871,6 +195012,510 @@
         0,
         0,
         0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5680,
+      "module": "card_5680",
+      "path": "mkm/token_thopter_zero.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-thopter-zero",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Artifact Creature — Thopter",
+      "oracle_keywords": [
+        "Flying"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 17,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5681,
+      "module": "card_5681",
+      "path": "mkm/token_skeleton.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-skeleton",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Skeleton",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5682,
+      "module": "card_5682",
+      "path": "mkm/token_plant.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-plant",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Plant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5683,
+      "module": "card_5683",
+      "path": "mkm/token_ooze.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-ooze",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Ooze",
+      "oracle_keywords": [
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5684,
+      "module": "card_5684",
+      "path": "mkm/token_imp.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-imp",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Imp",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5685,
+      "module": "card_5685",
+      "path": "mkm/token_spider.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-spider",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Creature — Spider",
+      "oracle_keywords": [
+        "Menace",
+        "Reach"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5686,
+      "module": "card_5686",
+      "path": "mkm/token_voja_fenstalker.rs",
+      "set": "mkm",
+      "category": "token",
+      "name": "@token/mkm-voja-fenstalker",
+      "oracle_id": null,
+      "facts_sha256": null,
+      "mana_cost": "",
+      "type_line": "Legendary Creature — Wolf",
+      "oracle_keywords": [
+        "Trample"
+      ],
+      "standard_legal": false,
+      "legendary": true,
+      "kind": 1,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5687,
+      "module": "card_5687",
+      "path": "mkm/cease.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Cease",
+      "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+      "facts_sha256": "b16267d1626b3f5bc0a29060bd1a625c8f898c1195dd960de471145408641483",
+      "mana_cost": "{1}{B/G}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5688,
+      "module": "card_5688",
+      "path": "mkm/desist.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Desist",
+      "oracle_id": "ba4d644f-1931-4fc4-aed5-681a476a5a58",
+      "facts_sha256": "b16267d1626b3f5bc0a29060bd1a625c8f898c1195dd960de471145408641483",
+      "mana_cost": "{4}{G/W}{G/W}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        2,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5689,
+      "module": "card_5689",
+      "path": "mkm/flotsam.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Flotsam",
+      "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+      "facts_sha256": "7d0a870a9f2f3c7afd5eedebf8465ef991da90561161f6ee12224d0acb064069",
+      "mana_cost": "{1}{G/U}",
+      "type_line": "Instant",
+      "oracle_keywords": [
+        "Investigate",
+        "Mill"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5690,
+      "module": "card_5690",
+      "path": "mkm/jetsam.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Jetsam",
+      "oracle_id": "b0c28b2b-a2dd-4b76-bb1c-cec55a0a6784",
+      "facts_sha256": "7d0a870a9f2f3c7afd5eedebf8465ef991da90561161f6ee12224d0acb064069",
+      "mana_cost": "{4}{U/B}{U/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [
+        "Mill"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5691,
+      "module": "card_5691",
+      "path": "mkm/fuss.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Fuss",
+      "oracle_id": "88e9006a-cfdf-40f3-80d5-23465f3dceca",
+      "facts_sha256": "6402fad22ec89a8de7ca0754c3899a837195fb1ddb309c7b6451e69582ed2af6",
+      "mana_cost": "{2}{R/W}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "generic": 2
+    },
+    {
+      "index": 5692,
+      "module": "card_5692",
+      "path": "mkm/bother.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Bother",
+      "oracle_id": "88e9006a-cfdf-40f3-80d5-23465f3dceca",
+      "facts_sha256": "6402fad22ec89a8de7ca0754c3899a837195fb1ddb309c7b6451e69582ed2af6",
+      "mana_cost": "{4}{W/U}{W/U}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [
+        "Surveil"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5693,
+      "module": "card_5693",
+      "path": "mkm/hustle.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Hustle",
+      "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+      "facts_sha256": "b6167320798313cad2b3360e4f9d92f4744d6173f2ebf28881bb5aeeba86e046",
+      "mana_cost": "{U/R}",
+      "type_line": "Instant",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 8,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 0
+    },
+    {
+      "index": 5694,
+      "module": "card_5694",
+      "path": "mkm/bustle.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Bustle",
+      "oracle_id": "e294d85f-caf2-4939-99d3-7ca5bba2b8d1",
+      "facts_sha256": "b6167320798313cad2b3360e4f9d92f4744d6173f2ebf28881bb5aeeba86e046",
+      "mana_cost": "{4}{R/G}{R/G}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5695,
+      "module": "card_5695",
+      "path": "mkm/push.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Push",
+      "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
+      "facts_sha256": "cb61219aad82757f8655447c9072db6da9371dbd2d0be15be8d3a2397485b89c",
+      "mana_cost": "{1}{W/B}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "generic": 1
+    },
+    {
+      "index": 5696,
+      "module": "card_5696",
+      "path": "mkm/pull.rs",
+      "set": "mkm",
+      "category": "split_face",
+      "name": "Pull",
+      "oracle_id": "7e050495-bed7-43b9-abce-866c61beb1da",
+      "facts_sha256": "cb61219aad82757f8655447c9072db6da9371dbd2d0be15be8d3a2397485b89c",
+      "mana_cost": "{4}{B/R}{B/R}",
+      "type_line": "Sorcery",
+      "oracle_keywords": [],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      "generic": 4
+    },
+    {
+      "index": 5697,
+      "module": "card_5697",
+      "path": "mkm/tail_the_suspect.rs",
+      "set": "mkm",
+      "category": "adventure",
+      "name": "Tail the Suspect",
+      "oracle_id": "2f2d75a0-d751-4c74-b357-8f92a992447f",
+      "facts_sha256": "39c9895b3a8da6820a7a2f9b0d1a36ada350979efd6ed95bdaa2837e45210aae",
+      "mana_cost": "{G}{U}",
+      "type_line": "Sorcery — Adventure",
+      "oracle_keywords": [
+        "Investigate"
+      ],
+      "standard_legal": false,
+      "legendary": false,
+      "kind": 4,
+      "basic": false,
+      "mana_color": null,
+      "colored": [
+        0,
+        1,
+        0,
+        0,
+        1,
         0
       ],
       "generic": 0
