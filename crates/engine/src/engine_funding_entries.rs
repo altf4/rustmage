@@ -500,6 +500,12 @@ impl FundingState<'_> {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 !self.game.case_solved(source) && state.life_gained_this_turn >= n
             }
+            StepGuard::SourceUnsolved(condition) => {
+                case::is_live(self, source)
+                    && !case::is_solved(self, source)
+                    && self.entry_guard(*condition, movement)
+            }
+            StepGuard::SourceSolved => case::is_solved(self, source),
             StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
                 self.game.any_player_combat_damage_at_least(minimum)
             }

@@ -1856,7 +1856,7 @@ impl<'g> FundingState<'g> {
             ActivationGuard::OpponentWasDealtLegendaryCombatDamageThisTurn => self
                 .game
                 .player_was_dealt_legendary_combat_damage(actor.other()),
-            ActivationGuard::SourceSolved => self.game.case_solved(self.reference(source)),
+            ActivationGuard::SourceSolved => case::is_solved(self, self.reference(source)),
             ActivationGuard::SourceAttackedThisTurn => self
                 .game
                 .state

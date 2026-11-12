@@ -44,6 +44,7 @@ impl Game {
                             | TriggerCondition::CardDrawn { .. }
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
+                            | TriggerCondition::CaseSolved(_)
                             | TriggerCondition::PlayerDamaged { .. }
                             | TriggerCondition::AttachedPlayerDamaged
                             | TriggerCondition::CombatDamageToController

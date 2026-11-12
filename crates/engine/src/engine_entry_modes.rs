@@ -27,13 +27,16 @@ pub(super) fn group_enabled<W: CharacteristicWorld + ?Sized>(
     source: ObjectRef,
     group: &StaticAbilityGroup,
 ) -> bool {
-    if !rooms::printed_group_available(world, source, group) {
+    let Some(rules) = crate::cards::authored::rules(world.definition(source.card)) else {
+        return true;
+    };
+    let extras = rules.extras;
+    if (extras.room.is_some() && !rooms::printed_group_available(world, source, group))
+        || (extras.solved_static_groups.contains(&group.line) && !case::is_solved(world, source))
+    {
         return false;
     }
-    if !matches!(
-        world.definition(source.card).entry_choice(),
-        Some(EntryChoiceKind::NamedModes(_))
-    ) {
+    if !matches!(extras.entry_choice, Some(EntryChoiceKind::NamedModes(_))) {
         return true;
     }
     group.fragments.iter().all(|fragment| match *fragment {

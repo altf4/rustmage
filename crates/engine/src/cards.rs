@@ -6955,6 +6955,10 @@ pub enum StepGuard {
     SecondMainPhase,
     SourceSneakedThisTurn,
     UnsolvedLifeGainedAtLeast(u128),
+    /// The exact battlefield source is unsolved and the enclosed condition holds.
+    SourceUnsolved(&'static StepGuard),
+    /// The exact battlefield source has the solved designation.
+    SourceSolved,
     AnyPlayerCombatDamageAtLeast(u128),
     /// Trigger-time attachment relation; wrap the step event in When.
     AttachedControllerTurn,
@@ -7322,6 +7326,8 @@ pub enum TriggerCondition {
     },
     /// The controller completed a discovery, even if no card qualified.
     DiscoveredYou,
+    /// The related player caused an exact battlefield permanent to become solved.
+    CaseSolved(CastRelation),
     /// Completion of a library search, including a search that finds no card.
     LibrarySearched {
         relation: CastRelation,
@@ -8652,6 +8658,14 @@ impl Card {
     }
     pub fn room(self) -> Option<&'static RoomSpec> {
         authored::rules(self).and_then(|rules| rules.extras.room)
+    }
+    pub(crate) fn has_conditional_static_groups(self) -> bool {
+        authored::rules(self).is_some_and(|rules| {
+            let extras = rules.extras;
+            extras.room.is_some()
+                || matches!(extras.entry_choice, Some(EntryChoiceKind::NamedModes(_)))
+                || !extras.solved_static_groups.is_empty()
+        })
     }
     pub(crate) fn room_parent(self) -> Option<Card> {
         authored::rules(self).and_then(|rules| rules.extras.room_parent)

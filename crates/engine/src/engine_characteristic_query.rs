@@ -1135,14 +1135,8 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             return true;
         }
         let evaluation = self.evaluation.as_ref();
-        // Existing definitions without entry modes retain the ordinary no-removal fast path.
-        if evaluation.is_none()
-            && self.object(source).card.room().is_none()
-            && !matches!(
-                self.object(source).card.entry_choice(),
-                Some(EntryChoiceKind::NamedModes(_))
-            )
-        {
+        // Ordinary static groups retain the no-removal fast path.
+        if evaluation.is_none() && !self.object(source).card.has_conditional_static_groups() {
             return true;
         }
         let reference = self.object_ref(source);

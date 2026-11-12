@@ -1172,6 +1172,7 @@ impl Game {
                     | TriggerCondition::SelfTargeted { .. }
                     | TriggerCondition::FirstTargetedByController
                     | TriggerCondition::CardDrawn { .. }
+                    | TriggerCondition::CaseSolved(_)
                     | TriggerCondition::LibrarySearched { .. }
                     | TriggerCondition::SpellCastUsingSourceMana(_)
                     | TriggerCondition::FirstSpellKindOrOtherCreatureType { .. }
@@ -6805,6 +6806,7 @@ impl Game {
                     item.source
                         .expect("instruction requires an object source")
                         .object,
+                    item.controller,
                 ),
                 Instruction::ReduceArtifactSpellCostsThisTurn(amount) => {
                     self.grant_artifact_spell_reduction(item.controller, amount)

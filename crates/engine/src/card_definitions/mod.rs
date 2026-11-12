@@ -434,6 +434,8 @@ pub struct CardExtras {
     pub meld_face: bool,
     pub as_transform: Option<AsTransformEffect>,
     pub room: Option<&'static RoomSpec>,
+    /// Static ability lines that apply only while this exact source is solved.
+    pub solved_static_groups: &'static [u16],
     /// A Room half is a spell definition and has no physical deck identity.
     pub room_parent: Option<Card>,
     pub targets_up_to_x: bool,
@@ -598,6 +600,7 @@ impl CardExtras {
         meld_face: false,
         as_transform: None,
         room: None,
+        solved_static_groups: &[],
         room_parent: None,
         targets_up_to_x: false,
         life_x_cost: false,

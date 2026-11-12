@@ -452,6 +452,12 @@ impl Game {
             StepGuard::UnsolvedLifeGainedAtLeast(n) => {
                 return !self.case_solved(source) && p.life_gained_this_turn >= n;
             }
+            StepGuard::SourceUnsolved(condition) => {
+                return case::is_live(world, source)
+                    && !case::is_solved(world, source)
+                    && self.step_guard_in_world(world, *condition, player, source, source_tapped);
+            }
+            StepGuard::SourceSolved => return case::is_solved(world, source),
             StepGuard::AnyPlayerCombatDamageAtLeast(minimum) => {
                 return self.any_player_combat_damage_at_least(minimum);
             }
