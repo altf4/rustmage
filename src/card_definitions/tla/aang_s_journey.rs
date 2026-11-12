@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::IfKicked { skip: 2 },
+            Instruction::SearchTwoQualitiesToHand(&[
+                SearchFilter::BasicLand,
+                SearchFilter::Subtype("Shrine"),
+            ]),
+            Instruction::Skip(1),
+            Instruction::Search(SearchSpec {
+                filter: SearchFilter::BasicLand,
+                maximum: 1,
+                destination: SearchDestination::Hand,
+                tapped: false,
+                reveal: true,
+            }),
+            Instruction::GainLife(PlayerSet::Controller, 2),
+        ],
+    ),
+    extras: &CardExtras {
+        kicker_cost: Some(generic(2)),
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

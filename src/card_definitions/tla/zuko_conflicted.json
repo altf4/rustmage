@@ -3,10 +3,66 @@
   "catalogue_id": 5177,
   "oracle_id": "b5fd82b9-77de-4358-9ce7-915cc809a889",
   "facts_sha256": "95c665e706c7fda790cab1a1979b250d2b928ae9aa7071680c7b590626efef2c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0d0c34143876e7082ca8b383b7a561832eda51036440be2eddec29b331639626"
   },
-  "physical_metadata_sha256": "4e3c58c50b21829a83651e7fa945833d01e404e14251d93f2de7b94ee047ec8c"
+  "physical_metadata_sha256": "4e3c58c50b21829a83651e7fa945833d01e404e14251d93f2de7b94ee047ec8c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZukoConflicted.java",
+  "java_sha256": "8d8357c8f5918dfc2fd44c01ffcef6f3d41e93500086c1255017053f48126e8b",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Ability.java",
+      "sha256": "013065404a9a86318329e698299b6fe0f9abc8aac86759382c56abf274cb3a6b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Mode.java",
+      "sha256": "cc76afebfd09b423d561e7d4b02efc38e7cd2f90ee24aee1d450075b961853cc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/OneShotEffect.java",
+      "sha256": "9a6cf80e7a4e1469175b851daa10548a861b53cf7bb3b6d4658c983b82d63863"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeSourceControllerEffect.java",
+      "sha256": "d384378167b3ab4285c39d5bfba2281fa4481005d6a5e11f6ba81aa2c49c07be"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/BasicManaEffect.java",
+      "sha256": "2056afcf1bd1b06dc7417604d0eb3f8b7b6fc31f4c467f6bd00b7bc706353f62"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/choices.rs"
 }

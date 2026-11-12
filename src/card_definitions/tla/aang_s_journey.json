@@ -3,10 +3,51 @@
   "catalogue_id": 21,
   "oracle_id": "ddf461b9-a205-4dc7-a9c3-c047b1ff709f",
   "facts_sha256": "0d5dab99b64659a66c9fd632b577f1f05779ab05bae7df703205702a72262186",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98ba1cad9ffa474581895d0a881baaaed119da2bb9cc6c955aa55a13b4455b23"
   },
-  "physical_metadata_sha256": "13f1cc8516233093cbec78487b10e03f5ac7120096acbf2cbecf01e0056ec9cb"
+  "physical_metadata_sha256": "13f1cc8516233093cbec78487b10e03f5ac7120096acbf2cbecf01e0056ec9cb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AangsJourney.java",
+  "java_sha256": "5c6abfa7fd23fa40c23227bf443779d5388106c024e8a2cfee0ddfa8c9a6de69",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/KickedCondition.java",
+      "sha256": "6c4e759d58e4d9a85bcf6d6262fcae06b43a04d08ffbf3c71d7d850dbfba5a04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/KickerAbility.java",
+      "sha256": "fa52c368056b1e9798f37a5af5bb70a0fe935aaf23a71dcf592a67eae3e13650"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardAndOrCardInLibrary.java",
+      "sha256": "b5b251352260d77bf27867a2ce924d35a6fcc86557600a4136e2e7de957dc21b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInLibrary.java",
+      "sha256": "aa232149829b5411c2a88ce033c7317b0043920accd12409aea42a1e3d5d71c4"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/choices.rs"
 }

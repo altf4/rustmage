@@ -3,10 +3,66 @@
   "catalogue_id": 4466,
   "oracle_id": "521a63cf-5e83-4649-9800-c62b2fc474d6",
   "facts_sha256": "d33422e21ff33f274a8d03fc636049fdfec3c9069ecf9ac14d53577de1b43590",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b8f402d6ad9f5606d08e4f0ce03d4c3a4de1a95e13f75d06a4a9319007d803c6"
   },
-  "physical_metadata_sha256": "a5030f03ea12a005862aecdce6cc23effcdb384243b77b84ba67aa1321cc0671"
+  "physical_metadata_sha256": "a5030f03ea12a005862aecdce6cc23effcdb384243b77b84ba67aa1321cc0671",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheLegendOfYangchen.java",
+  "java_sha256": "aa1b035ec7d58fe5f4f3df336aa331cf85f8bd1cb0157f178dcdedb943e5c7dd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/CastSecondSpellTriggeredAbility.java",
+      "sha256": "a4e91db65304a2f0a017d34eb680d683186071207b0002b036e94fcdc773ddce"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SagaAbility.java",
+      "sha256": "d907d96e4141a58d82f32fdb512e6426ed2cbd669544ade67f94b062dc7a8c80"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/Effects.java",
+      "sha256": "8fe29daf6aaa7ac8e44b6745caf6a32893c150100ea63f8a512b7185506f2dcc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardTargetEffect.java",
+      "sha256": "1d131bf3ff4ac75e46660190098938610581d961ad6d8f39e553c9c200f7a467"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileSagaAndReturnTransformedEffect.java",
+      "sha256": "2a316c0d7ef0af0a6ae2230c10529f9539a26c14fca4a499cff0493242e1e5da"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/AirbendTargetEffect.java",
+      "sha256": "debe8f731f2374241dda2d23cbcc2a5feba816ebbf4e1d7b48845faa983cdcec"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/choices.rs"
 }
