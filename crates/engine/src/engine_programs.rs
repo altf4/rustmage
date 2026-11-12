@@ -8867,6 +8867,16 @@ impl Game {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
+                Instruction::IfPaidDiscardWasNonland { skip } => {
+                    let nonland = item
+                        .paid_additional_cost
+                        .as_ref()
+                        .and_then(|paid| paid.discarded_kinds)
+                        .is_some_and(|kinds| kinds & 2 == 0);
+                    if !nonland {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
                 Instruction::AddManaChosenScaled { players, amount } => {
                     let amount = u32::try_from(self.item_amount(amount, &item))
                         .capacity("chosen mana amount exhausted");

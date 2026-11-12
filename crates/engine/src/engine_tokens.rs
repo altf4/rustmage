@@ -315,6 +315,7 @@ impl Game {
                     linked_exile_life: None,
                     melded_after: None,
                     shuffled_in_place: false,
+                    revealed_by_move: false,
                     cast_event: None,
                     entry_counter_player: Some(controller),
                     graveyard_observers: None,

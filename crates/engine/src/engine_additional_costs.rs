@@ -1569,7 +1569,17 @@ impl Game {
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => self.discard_batch(&[object.card], None),
+            | EffectChoiceKind::DiscardLegendary => {
+                if a.item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|instruction| {
+                        matches!(instruction, Instruction::IfPaidDiscardWasNonland { .. })
+                    })
+                }) {
+                    a.item.paid_additional_cost = self.discard_card_cost(object).map(Box::new);
+                } else {
+                    self.discard_batch(&[object.card], None);
+                }
+            }
             EffectChoiceKind::ReturnUnblockedAttacker => {
                 let defender = self
                     .state

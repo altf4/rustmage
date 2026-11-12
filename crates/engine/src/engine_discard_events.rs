@@ -124,6 +124,34 @@ impl Game {
     ) {
         self.discard_batch_with_cycle_x(cards, cycled, cause, after, None);
     }
+    pub(super) fn discard_card_cost(&mut self, card: ObjectRef) -> Option<PaidAdditionalCostView> {
+        assert_eq!(self.object_ref(card.card), card);
+        let event = self
+            .discard_batch_with_cycle_x(&[card.card], None, None, None, None)
+            .into_iter()
+            .find(|event| event.moved && event.before.reference == card)?;
+        Some(PaidAdditionalCostView {
+            count: 1,
+            selected: 1,
+            total_mana_value: None,
+            sacrificed_vehicle: false,
+            sacrificed_outlaw: false,
+            discarded_kinds: self.discarded_card_kinds(&event),
+        })
+    }
+
+    pub(super) fn discarded_card_kinds(&self, event: &ZoneChange) -> Option<u16> {
+        // CR 701.9c: characteristics are undefined when a discard replacement
+        // moves the card to a hidden zone without revealing it.
+        let known = event.revealed_by_move
+            || match event.destination {
+                Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
+                Zone::Exile => !self.exiled_face_down(event.after),
+                Zone::Library | Zone::Hand | Zone::Outside => false,
+            };
+        (event.moved && known).then_some(event.before.kinds)
+    }
+
     pub(super) fn discard_cycling(&mut self, card: ObjectRef, x: Option<u32>) {
         self.discard_batch_with_cycle_x(&[card.card], Some(card), None, None, x);
     }
@@ -134,7 +162,7 @@ impl Game {
         cause: Option<Player>,
         after: Option<DiscardAfter>,
         cycling_x: Option<u32>,
-    ) {
+    ) -> Vec<ZoneChange> {
         // Discard moves cards from hand; transient copies in the hand are not
         // eligible even when an effect supplies a broad object list.
         let cards: Vec<_> = cards
@@ -144,7 +172,7 @@ impl Game {
             .collect();
         if cards.is_empty() {
             self.finish_discard_after(after, [0; 2], &[]);
-            return;
+            return Vec::new();
         }
         assert!(
             cards
@@ -194,10 +222,11 @@ impl Game {
                 moves.push(movement);
             }
             self.stage_discard_entries(moves, context);
-            return;
+            return Vec::new();
         }
         let events = self.move_objects_raw(&cards, Zone::Graveyard);
         self.finish_discard_events(&events, context);
+        events
     }
     pub(super) fn finish_discard_events(&mut self, events: &[ZoneChange], context: DiscardContext) {
         let DiscardContext {

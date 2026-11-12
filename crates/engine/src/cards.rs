@@ -4208,6 +4208,10 @@ pub enum Instruction {
     IfSacrificedOutlaw {
         skip: usize,
     },
+    /// Continue only if the actual card discarded to pay this spell's cost was nonland.
+    IfPaidDiscardWasNonland {
+        skip: usize,
+    },
     /// A resolving effect divides this quantity between two distinct colors.
     AddManaSplitScaled {
         first: ChoiceColor,

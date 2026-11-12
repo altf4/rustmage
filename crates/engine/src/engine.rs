@@ -3631,6 +3631,8 @@ pub struct ZoneChange {
     /// An attempted library departure was replaced by revealing and shuffling
     /// the same card into that library; no zone change occurred.
     pub(super) shuffled_in_place: bool,
+    /// The replacement that moved this object also revealed its identity.
+    pub(super) revealed_by_move: bool,
     pub(super) cast_event: Option<Box<CastPaymentEvent>>,
     /// CR122.6a: intrinsic entry counters are put on by the incoming controller.
     pub(super) entry_counter_player: Option<Player>,
@@ -10202,6 +10204,7 @@ impl Game {
             sacrificed_vehicle: events
                 .iter()
                 .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
+            discarded_kinds: None,
             sacrificed_outlaw: events.iter().any(|event| {
                 event.sacrificed_by.is_some()
                     && crate::cards::OUTLAW_SUBTYPES
@@ -10714,6 +10717,7 @@ impl Game {
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: false,
+                revealed_by_move: false,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -10771,6 +10775,7 @@ impl Game {
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: false,
+                revealed_by_move: false,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -10803,6 +10808,7 @@ impl Game {
                 linked_exile_life: None,
                 melded_after: None,
                 shuffled_in_place: true,
+                revealed_by_move: shuffle == zone_replacements::ZoneShuffle::Reveal,
                 cast_event: None,
                 entry_counter_player: None,
                 graveyard_observers: None,
@@ -11385,6 +11391,7 @@ impl Game {
             linked_exile_life,
             melded_after,
             shuffled_in_place: false,
+            revealed_by_move: plan.shuffle == Some(zone_replacements::ZoneShuffle::Reveal),
             cast_event: None,
             entry_counter_player: (destination == Zone::Battlefield).then_some(entry_identity.0),
             graveyard_observers,
