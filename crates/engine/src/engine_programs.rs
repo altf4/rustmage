@@ -9414,6 +9414,10 @@ impl Game {
                     self.start_hand_library_search(item.controller, filter, include_graveyard);
                     return;
                 }
+                Instruction::SearchGraveyardHandLibraryForNames(names) => {
+                    self.start_named_hand_library_search(item.controller, names);
+                    return;
+                }
                 Instruction::SearchCreatureManaValue {
                     maximum,
                     destination,

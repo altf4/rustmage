@@ -4552,6 +4552,9 @@ pub enum Instruction {
     SearchHandAndOrLibrary(SearchFilter),
     /// Choose one or more of your graveyard, hand, and library for one battlefield result.
     SearchGraveyardHandAndOrLibrary(SearchFilter),
+    /// Optionally search any of your graveyard, hand and library for one of each name.
+    /// Put the chosen cards onto the battlefield together, then shuffle if you searched the library.
+    SearchGraveyardHandLibraryForNames([&'static str; 2]),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
     /// May immediately cast one spell from the exact exiled search result.

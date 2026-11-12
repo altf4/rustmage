@@ -1,4 +1,4 @@
-//! Qualified search of selected zones, with one exact battlefield result.
+//! Qualified search of selected zones, with exact battlefield results.
 use super::*;
 use crate::SearchFilter;
 
@@ -7,14 +7,26 @@ const LIBRARY: u8 = 2;
 const GRAVEYARD: u8 = 4;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Selection {
+    One {
+        filter: SearchFilter,
+        object: Option<ObjectRef>,
+    },
+    Names {
+        names: [&'static str; 2],
+        objects: [Option<ObjectRef>; 2],
+    },
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct HandLibrarySearch {
     player: Player,
-    filter: SearchFilter,
     /// The zones actually searched. The three-zone route can add to this set.
     zones: u8,
     include_graveyard: bool,
-    selected: Option<ObjectRef>,
+    selection: Selection,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -32,7 +44,18 @@ pub struct HandLibrarySearchView {
     pub cards: Option<Vec<ObjectView>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub selected: Option<ObjectRef>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub names: Option<[&'static str; 2]>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub named_selections: Option<[Option<ObjectRef>; 2]>,
 }
+
+fn name_slot(names: [&str; 2], card: Card) -> Option<usize> {
+    names
+        .iter()
+        .position(|name| crate::card_names::same_name(name, card.name()))
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn start_hand_library_search(
@@ -41,15 +64,44 @@ impl Game {
         filter: SearchFilter,
         include_graveyard: bool,
     ) {
+        self.begin_hand_library_search(
+            player,
+            include_graveyard,
+            Selection::One {
+                filter,
+                object: None,
+            },
+        );
+    }
+    pub(super) fn start_named_hand_library_search(
+        &mut self,
+        player: Player,
+        names: [&'static str; 2],
+    ) {
+        assert!(!crate::card_names::same_name(names[0], names[1]));
+        self.begin_hand_library_search(
+            player,
+            true,
+            Selection::Names {
+                names,
+                objects: [None; 2],
+            },
+        );
+    }
+    fn begin_hand_library_search(
+        &mut self,
+        player: Player,
+        include_graveyard: bool,
+        selection: Selection,
+    ) {
         self.state
             .linked_choices
             .get_or_insert_default()
             .hand_library_search = Some(Box::new(HandLibrarySearch {
             player,
-            filter,
             zones: 0,
             include_graveyard,
-            selected: None,
+            selection,
         }));
         self.state.pending = Pending::HandLibrarySearch { player };
     }
@@ -77,16 +129,31 @@ impl Game {
             }
     }
     fn hand_library_candidate(&self, s: &HandLibrarySearch, id: CardId) -> bool {
-        self.hand_library_zone(s, id) && self.card_search_filter_matches(s.filter, s.player, id)
+        self.hand_library_zone(s, id)
+            && match s.selection {
+                Selection::One { filter, .. } => {
+                    self.card_search_filter_matches(filter, s.player, id)
+                }
+                Selection::Names { names, .. } => {
+                    name_slot(names, self.state.objects[id as usize].card).is_some()
+                }
+            }
     }
-    fn hand_library_selected(&self, s: &HandLibrarySearch) -> Option<ObjectRef> {
-        s.selected
-            .filter(|r| self.hand_library_candidate(s, r.card) && self.object_ref(r.card) == *r)
+    fn hand_library_selected(&self, s: &HandLibrarySearch) -> [Option<ObjectRef>; 2] {
+        let selections = match s.selection {
+            Selection::One { object, .. } => [object, None],
+            Selection::Names { objects, .. } => objects,
+        };
+        selections.map(|object| {
+            object
+                .filter(|r| self.hand_library_candidate(s, r.card) && self.object_ref(r.card) == *r)
+        })
     }
     fn hand_library_minimum(&self, s: &HandLibrarySearch) -> u16 {
         // CR701.23b allows failure to find in qualified hidden-zone searches.
         u16::from(
-            s.zones & GRAVEYARD != 0
+            matches!(s.selection, Selection::One { .. })
+                && s.zones & GRAVEYARD != 0
                 && self.state.objects.iter().enumerate().any(|(id, object)| {
                     object.zone == Zone::Graveyard && self.hand_library_candidate(s, id as CardId)
                 }),
@@ -115,19 +182,32 @@ impl Game {
             }
         }
         if s.zones == 0 {
-            return false;
+            return matches!(s.selection, Selection::Names { .. }) && emit(Action::FinishSearch);
         }
-        if (self.hand_library_selected(s).is_some() || self.hand_library_minimum(s) == 0)
+        if (self
+            .hand_library_selected(s)
+            .into_iter()
+            .any(|object| object.is_some())
+            || self.hand_library_minimum(s) == 0)
             && emit(Action::FinishSearch)
         {
             return true;
         }
-        for (id, _) in self.state.objects.iter().enumerate() {
+        for (id, card) in self.state.objects.iter().enumerate() {
             let id = id as CardId;
-            if self.hand_library_candidate(s, id)
-                && s.selected != Some(self.object_ref(id))
-                && emit(Action::ChooseSearch { card: id })
-            {
+            if !self.hand_library_zone(s, id) {
+                continue;
+            }
+            let selectable = match s.selection {
+                Selection::One { filter, object } => {
+                    object != Some(self.object_ref(id))
+                        && self.card_search_filter_matches(filter, s.player, id)
+                }
+                Selection::Names { names, objects } => {
+                    name_slot(names, card.card).is_some_and(|slot| objects[slot].is_none())
+                }
+            };
+            if selectable && emit(Action::ChooseSearch { card: id }) {
                 return true;
             }
         }
@@ -147,14 +227,24 @@ impl Game {
     }
     pub(super) fn choose_hand_library_card(&mut self, id: CardId) {
         let object = self.object_ref(id);
-        self.state
+        let card = self.state.objects[id as usize].card;
+        let search = self
+            .state
             .linked_choices
             .as_mut()
             .unwrap()
             .hand_library_search
             .as_mut()
-            .unwrap()
-            .selected = Some(object);
+            .unwrap();
+        match &mut search.selection {
+            Selection::One {
+                object: selected, ..
+            } => *selected = Some(object),
+            Selection::Names { names, objects } => {
+                let slot = name_slot(*names, card).expect("legal named search candidate");
+                objects[slot] = Some(object);
+            }
+        }
     }
     pub(super) fn finish_hand_library_search(&mut self) {
         let selected = self.hand_library_selected(self.hand_library_search().unwrap());
@@ -172,6 +262,7 @@ impl Game {
         }
         let moves = selected
             .into_iter()
+            .flatten()
             // CR304.4/307.4: a found instant/sorcery cannot enter; it stays hidden.
             .filter(|r| {
                 self.state.objects[r.card as usize].card.kind_mask() & (1 | 2 | 16 | 32 | 64 | 256)
@@ -185,9 +276,14 @@ impl Game {
     pub(super) fn hand_library_search_view(&self, viewer: Player) -> Option<HandLibrarySearchView> {
         let s = self.hand_library_search()?;
         let entitled = self.shares_information(viewer, s.player);
+        let (filter, names) = match s.selection {
+            Selection::One { filter, .. } => (filter, None),
+            Selection::Names { names, .. } => (SearchFilter::Any, Some(names)),
+        };
+        let selections = entitled.then(|| self.hand_library_selected(s));
         Some(HandLibrarySearchView {
             player: s.player,
-            filter: s.filter,
+            filter,
             choosing_zones: s.zones == 0,
             hand: s.zones & HAND != 0,
             library: s.zones & LIBRARY != 0,
@@ -202,7 +298,11 @@ impl Game {
                     .map(|(id, _)| self.object_view(id as CardId))
                     .collect()
             }),
-            selected: entitled.then(|| self.hand_library_selected(s)).flatten(),
+            selected: selections
+                .filter(|_| names.is_none())
+                .and_then(|objects| objects[0]),
+            names,
+            named_selections: selections.filter(|_| names.is_some()),
         })
     }
 }
