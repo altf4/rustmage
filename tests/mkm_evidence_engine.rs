@@ -17,7 +17,7 @@ const NO_FILTER: SacrificeFilter = SacrificeFilter {
     artifact_enchantment_or_token: false,
     subtype: None,
 };
-const fn up_to_one(kinds: u16) -> TargetSpec {
+const fn up_to_one(kinds: u8) -> TargetSpec {
     TargetSpec {
         rule: TargetRule::Object {
             zone: TargetZone::Battlefield,
