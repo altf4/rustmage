@@ -4570,6 +4570,10 @@ impl Game {
                         controller: PlayerSet::Targeted,
                         ..
                     }
+                    | Instruction::GainControlRememberCount {
+                        controller: PlayerSet::Targeted,
+                        ..
+                    }
             ) {
                 item.targets
                     .retain(|bound| bound.group == resolution.target_group);
@@ -6766,8 +6770,15 @@ impl Game {
                 Instruction::GainControl {
                     subject,
                     controller,
+                }
+                | Instruction::GainControlRememberCount {
+                    subject,
+                    controller,
                 } => {
-                    self.gain_control(&item, subject, controller);
+                    let gained = self.gain_control(&item, subject, controller);
+                    if matches!(instruction, Instruction::GainControlRememberCount { .. }) {
+                        self.state.resolving.as_mut().unwrap().moved_count = Some(gained);
+                    }
                 }
                 Instruction::IfSubjectControlledBy {
                     subject,

@@ -3823,6 +3823,11 @@ pub enum Instruction {
         subject: Subject,
         controller: PlayerSet,
     },
+    /// Grant control as one batch and save the number of actual gains as MovedCount.
+    GainControlRememberCount {
+        subject: Subject,
+        controller: PlayerSet,
+    },
     /// Skip unless the named player controls an exact live permanent in this subject.
     IfSubjectControlledBy {
         subject: Subject,
