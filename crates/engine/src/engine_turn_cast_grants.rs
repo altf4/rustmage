@@ -10,6 +10,8 @@ pub struct PlayerCastGrantsView {
     pub next_spell_uncounterable: bool,
     #[serde(skip_serializing_if = "is_zero_u64")]
     pub next_noncreature_artifact_affinity: u64,
+    #[serde(skip_serializing_if = "is_false")]
+    pub graveyard_spells_and_exile_cards: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -66,6 +68,19 @@ impl Game {
         self.player_turn_cast_grants_mut(player)
             .ordinary
             .next_spell_uncounterable = true;
+    }
+    pub(super) fn grant_graveyard_spells_and_exile_cards(&mut self, player: Player) {
+        self.player_turn_cast_grants_mut(player)
+            .ordinary
+            .graveyard_spells_and_exile_cards = true;
+        self.state.zone_rules.get_or_insert_default();
+    }
+    pub(super) fn turn_graveyard_spells_and_exile_cards(&self, player: Player) -> bool {
+        self.player_cast_grants_view(player.index())
+            .is_some_and(|grants| grants.graveyard_spells_and_exile_cards)
+    }
+    pub(super) fn turn_exiles_graveyard_card(&self, object: &Object) -> bool {
+        object.is_card() && self.turn_graveyard_spells_and_exile_cards(object.owner)
     }
     pub(super) fn consume_next_spell_uncounterable(
         &mut self,
@@ -206,18 +221,8 @@ impl Game {
         if object.is_token() {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let Some(definition) = (match face {
-                CastFace::Normal => Some(object.card),
-                CastFace::Adventure => object.card.adventure_spell(),
-                CastFace::Omen => object.card.omen_spell(),
-                CastFace::Back => object.card.back_face(),
-            }) else {
+        for face in CastFace::choices(object.card) {
+            let Some(definition) = face.definition(object.card) else {
                 continue;
             };
             if !self.turn_free_creature_available(player, definition)

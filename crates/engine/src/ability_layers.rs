@@ -46,6 +46,8 @@ pub enum ActivationReductionAmount {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum AdditionalTriggerScope {
+    /// A triggered ability of a permanent this provider's controller controls.
+    ControlledPermanent,
     ControlledSubtype(&'static str),
     ControlledCreatureSubtype(&'static str),
     ControlledLegendaryCreature,
@@ -83,6 +85,12 @@ pub enum StaticAbilityFragment {
     },
     /// Cast the exact card exiled by this source's linked hand-reveal ability at threshold.
     CastLinkedExileAtThreshold,
+    /// Play cards exiled by this source during your turn, using life to cast spells.
+    PlayLinkedExileOnOwnTurnForLife,
+    /// An optional {0} alternative for a spell independently authorized from exile.
+    ExileCastForZeroOncePerTurn,
+    /// Optional fixed mana base for spells the controller can already cast.
+    SpellAlternativeManaCost(ManaCost),
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
@@ -131,6 +139,10 @@ pub enum StaticAbilityFragment {
     ActivatedPermanentKindsProhibited(u16),
     /// The exact attached permanent's activated abilities cannot be activated.
     AttachedActivationsProhibited,
+    /// The exact attached permanent cannot be turned face up.
+    AttachedFaceUpProhibited,
+    /// This source's controller may look at opposing face-down creatures.
+    LookAtOpponentFaceDownCreatures,
     /// Cards in graveyards cannot be exiled by any player.
     GraveyardCardsCannotBeExiled,
     /// Replace a controlled permanent's move to a graveyard with no move.
@@ -146,6 +158,13 @@ pub enum StaticAbilityFragment {
     /// This grants neither land plays nor flashback's alternative cost/destination.
     SelfGraveyardCastIf(StatValue),
 
+    /// A separate permission to cast this card from its owner's graveyard.
+    /// Only a spell cast using this permission enters with the counter.
+    SelfGraveyardCastIfWithCounter {
+        condition: StatValue,
+        counter: CounterKind,
+    },
+
     /// This exact owned graveyard card has a separate ordinary-mana casting route.
     SelfGraveyardCastWithAdditionalCosts {
         life: u32,
@@ -156,6 +175,8 @@ pub enum StaticAbilityFragment {
     Storied,
     /// This source continuously acquires activations from matching cards in its controller graveyard.
     BorrowGraveyardActivations(&'static str),
+    /// Gain the activated abilities of controlled creatures with no name in common.
+    InheritControlledCreatureActivations,
     /// Controlled creatures with this counter gain activated abilities from linked exiled creatures.
     GrantLinkedExileCreatureActivationsWithCounter(CounterKind),
     /// This creature can attack despite defender after its controller scries or surveils.
@@ -288,6 +309,8 @@ pub enum StaticAbilityFragment {
         grant: CreatureSubtypeGrant,
         required_subtype: Option<&'static str>,
     },
+    /// Add the source's chosen type to controlled creatures and creature spells, and owned creature cards.
+    ChosenCreatureSubtypeAcrossZones,
     /// Add this subtype to controlled creatures owned by another player.
     ControlledForeignOwnedCreatureSubtype(&'static str),
     /// This source adds artifact and creature during another player’s turn.
@@ -326,11 +349,12 @@ pub enum StaticAbilityFragment {
         value: StatValue,
         stats: Stats,
     },
-    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     /// Any creature attacking an opponent player of this source controller.
     OpponentPlayerAttackerKeywords(Keywords),
+    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     ControlledPermanentKeywords {
         kinds: u16,
+        other: bool,
         keywords: Keywords,
     },
     /// Live grant to equipped creatures, independent of the Equipment controller.
@@ -378,7 +402,11 @@ pub enum StaticAbilityFragment {
     /// Real immutable trigger template, present only on the harnessed source.
     HarnessedTrigger(u16),
     CantLoseGameAndOpponentsCantWin,
+    /// The controller does not lose the state-based action for life at or below zero.
+    CantLoseFromNonpositiveLife,
     QualifiedHexproof(SourceCharacteristicFilter),
+    /// Opponents' creatures can be targeted through hexproof and their ward doesn't trigger.
+    OpposingCreatureHexproofAndWardDisabled,
     ControlledSpellsUncounterable(u16),
     /// A rule restriction on explicit counters, independent of stack target legality.
     StackItemsCannotBeCountered,
@@ -399,6 +427,7 @@ pub enum StaticAbilityFragment {
     /// The controller's first positive batch of coin flips comes up heads and is won.
     FirstCoinFlipsHeads,
     CantGainLife,
+    EnchantedPlayerCantGainLife,
     DamageCantBePrevented,
     /// Combat damage from any source ignores prevention.
     CombatDamageCantBePrevented,
@@ -408,6 +437,12 @@ pub enum StaticAbilityFragment {
     RetainManaColor(ChoiceColor),
     NoMaximumHandSize,
     MaximumHandSize(u16),
+    /// While the controller has at least this many card types in their graveyard,
+    /// the opponent's maximum is the base minus the live count, floored at zero.
+    OpponentMaximumHandSizeByGraveyardTypes {
+        base: u16,
+        minimum: u16,
+    },
     AdditionalLandPlays(u16),
     /// A live earlier-layer condition; allowance consumption stays turn-wide.
     ConditionalAdditionalLandPlays {
@@ -433,6 +468,8 @@ pub enum StaticAbilityFragment {
     SelfUntap(UntapRestriction),
     /// Include this permanent in the turn-based action on another player's turn.
     UntapDuringOtherUntapSteps,
+    /// Include creatures this source's controller controls in other players' untap steps.
+    UntapControlledCreaturesDuringOtherUntapSteps,
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
     /// Source-only ability grant whose earlier-layer condition remains live.
@@ -492,6 +529,7 @@ pub enum StaticAbilityFragment {
     AttachmentStatsPerAttachment(Stats),
     AttachmentTurnStats(Stats),
     AttachmentKeywords(Keywords),
+    AttachmentEntryTurnKeywords(Keywords),
     AttachmentAttackingKeywords(Keywords),
     AttachedAttackerMustBeBlocked,
     AttachmentRule(Keywords),
@@ -626,6 +664,7 @@ pub enum StaticAbilityFragment {
     CostReduction(u16, SpellReduction),
     /// Generic reduction for plotting a card from hand.
     PlotCostReduction(u32),
+    RoomUnlockReduction(u32),
     /// Generic reduction for equip activations targeting this exact permanent.
     EquipTargetReduction(u32),
     /// Optional replacement of the first equip activation's whole cost.
@@ -634,6 +673,8 @@ pub enum StaticAbilityFragment {
     },
     TargetCostReduction(u16, TargetSpellReduction),
     CombatRestriction(u16, CombatRestriction),
+    /// The source cannot be the sole declared attacker or blocker.
+    CantAttackOrBlockAlone,
     /// Source attacks every combat when independently able to attack.
     AttacksEachCombat,
     /// Flying creatures cannot attack this controller or block their creatures.
@@ -694,6 +735,8 @@ pub enum PermanentForm {
     AddCreature,
     /// Add creature subtypes without changing card types or colors.
     AddCreatureSubtypes,
+    /// Add the given card types and the named creature subtypes.
+    AddCardTypes(u16),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug)]
@@ -725,6 +768,15 @@ pub enum LandManaRecipients {
 pub enum AnimationDuration {
     EndOfTurn,
     Permanent,
+}
+/// Layer-four and layer-five additions to the same exact permanent.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct CharacteristicAddition {
+    pub card_types: u16,
+    pub creature_types: &'static [&'static str],
+    pub colors: u8,
+    pub duration: AnimationDuration,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

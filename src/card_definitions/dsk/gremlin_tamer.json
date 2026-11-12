@@ -3,10 +3,27 @@
   "catalogue_id": 1875,
   "oracle_id": "a4e34165-4e53-4c31-bf61-eb772bc3c054",
   "facts_sha256": "f05f282ffe086a47609610e8afe3b682c650101631e01f5e39a91d06758b5b06",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "bb4f841e05f56f2ed1596e86fe08045e5ced6975e2b3d7b4b4c76e76282c4a78"
-  },
-  "physical_metadata_sha256": "cbef65711ac66ce651b780302cccef96edb5ea2f160c4b992b3ccbb05b535b2b"
+  "complete": true,
+  "physical_metadata_sha256": "cbef65711ac66ce651b780302cccef96edb5ea2f160c4b992b3ccbb05b535b2b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GremlinTamer.java",
+  "java_sha256": "c76be7097def3f06191e6bc2d50780076e52ecda97509b95d8385c217c029e05",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Gremlin11Token.java",
+      "sha256": "08530631c03cdf1254fce51d7cf882a3c05e167c3b6e809eb9ceebffc0a79ff3"
+    }
+  ]
 }

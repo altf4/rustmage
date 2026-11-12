@@ -126,6 +126,7 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
+            | Instruction::DamageRememberPlayersScaled(value)
             | Instruction::DamageWithControllerScaled {
                 controller_damage: value,
                 ..

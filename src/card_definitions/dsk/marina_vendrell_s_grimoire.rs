@@ -1,16 +1,55 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
+const GRIMOIRE_RULES: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+    line: 1,
+    first_layer: AbilityLayer::Rule,
+    fragments: &[
+        StaticAbilityFragment::NoMaximumHandSize,
+        StaticAbilityFragment::CantLoseFromNonpositiveLife,
+    ],
+}];
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEntersIfCastByController,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 5)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::LifeGained {
+                first_only: false,
+                own_turn: false,
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::DrawScaled(
+                PlayerSet::Controller,
+                AmountValue::LifeEventAmount,
+            )],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::LifeLost {
+                relation: CastRelation::You,
+            },
+            targets: TargetPlan::NONE,
+            program: &[
+                Instruction::DiscardScaled(PlayerSet::Controller, AmountValue::LifeEventAmount),
+                Instruction::If {
+                    guard: StepGuard::Threshold {
+                        value: StepValue::Hand,
+                        minimum: None,
+                        maximum: Some(0),
+                    },
+                    skip: 1,
+                },
+                Instruction::LoseGame(PlayerSet::Controller),
+            ],
+        },
+    ],
+    static_groups: GRIMOIRE_RULES,
+    extras: &CardExtras {
+        static_ability_groups: GRIMOIRE_RULES,
+        ..CardExtras::EMPTY
     },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
     ..CardRules::EMPTY
 };

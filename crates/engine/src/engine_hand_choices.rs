@@ -4,6 +4,7 @@ use super::*;
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub enum HandChoiceKind {
     LookDiscardDraw,
+    LookDiscardNonland,
     DiscardRevealedNonlandOrMoveExile,
     LookMayExileUntilSourceLeaves,
     ExileOwn,
@@ -33,12 +34,33 @@ pub enum HandChoiceKind {
     DiscardNonlandReflexive {
         ability: u16,
     },
+    DiscardAnyReflexive {
+        ability: u16,
+    },
     /// Choose a controlled permanent of the requested subtype or reveal a hand card.
     Behold,
     /// Optional resolution cost; decline skips the instruction's following block.
     BeholdOptional {
         subtype: &'static str,
     },
+}
+impl HandChoiceKind {
+    fn optional(self) -> bool {
+        matches!(
+            self,
+            Self::ExileRevealedOrCreature
+                | Self::ExileRevealedLinkedOptional
+                | Self::DiscardNonlandReflexive { .. }
+                | Self::DiscardAnyReflexive { .. }
+                | Self::Behold
+                | Self::BeholdOptional { .. }
+                | Self::LookDiscardDraw
+                | Self::LookDiscardNonland
+                | Self::DiscardRevealedNonlandOrMoveExile
+                | Self::LookMayExileUntilSourceLeaves
+                | Self::RevealOptional { .. }
+        )
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
@@ -108,7 +130,9 @@ pub(super) fn visit_behold_candidates<W: ability_world::CharacteristicWorld + ?S
                 object.controller == actor && world.subtypes(id).has(world.definition(id), subtype)
             }
             Zone::Hand => {
-                object.owner == actor && object.is_card() && object.card.has_subtype(subtype)
+                object.owner == actor
+                    && object.is_card()
+                    && world.subtypes(id).has(world.definition(id), subtype)
             }
             _ => false,
         };
@@ -184,12 +208,20 @@ impl Game {
         self.state.linked_choices.get_or_insert_default().hand = Some(Box::new(interaction));
         self.state.pending = Pending::HandCardChoice { player: actor };
     }
-    pub(super) fn start_private_hand_discard_draw(&mut self, item: &SpellView) -> bool {
+    pub(super) fn start_private_hand_discard(
+        &mut self,
+        item: &SpellView,
+        nonland_only: bool,
+    ) -> bool {
         let Some(victim) = self.program_players(PlayerSet::Targeted, item).next() else {
             return false;
         };
         self.set_hand_interaction(HandInteraction {
-            kind: HandChoiceKind::LookDiscardDraw,
+            kind: if nonland_only {
+                HandChoiceKind::LookDiscardNonland
+            } else {
+                HandChoiceKind::LookDiscardDraw
+            },
             actor: item.controller,
             controller: item.controller,
             victim: Some(victim),
@@ -377,13 +409,18 @@ impl Game {
         });
         true
     }
-    pub(super) fn start_optional_nonland_reflexive_discard(
+    pub(super) fn start_optional_reflexive_discard(
         &mut self,
         item: &SpellView,
         ability: u16,
+        any_number: bool,
     ) {
         self.set_hand_interaction(HandInteraction {
-            kind: HandChoiceKind::DiscardNonlandReflexive { ability },
+            kind: if any_number {
+                HandChoiceKind::DiscardAnyReflexive { ability }
+            } else {
+                HandChoiceKind::DiscardNonlandReflexive { ability }
+            },
             actor: item.controller,
             controller: item.controller,
             victim: Some(item.controller),
@@ -519,11 +556,17 @@ impl Game {
                     && self.on_battlefield(interaction.source.card)
                     && self.object_ref(interaction.source.card) == interaction.source
             }
-            HandChoiceKind::RevealOptional { subtype } => in_hand && o.card.has_subtype(subtype),
+            HandChoiceKind::RevealOptional { subtype } => {
+                in_hand && self.has_subtype(reference.card, subtype)
+            }
             HandChoiceKind::DeployCreatures | HandChoiceKind::DeployPermanents => unreachable!(),
+            HandChoiceKind::LookDiscardNonland => {
+                in_hand && self.current_kinds(reference.card) & 2 == 0
+            }
             HandChoiceKind::LookDiscardDraw
             | HandChoiceKind::ExileOwn
             | HandChoiceKind::DiscardNonlandReflexive { .. }
+            | HandChoiceKind::DiscardAnyReflexive { .. }
             | HandChoiceKind::RevealSubset
             | HandChoiceKind::RevealSubsetForControlledCast
             | HandChoiceKind::ExileRevealedForControlledCast
@@ -568,7 +611,7 @@ impl Game {
                     || (o.zone == Zone::Hand
                         && o.owner == interaction.controller
                         && o.is_card()
-                        && o.card.has_subtype(subtype))
+                        && self.has_subtype(reference.card, subtype))
             }
         }
     }
@@ -584,19 +627,7 @@ impl Game {
             .hand
             .as_ref()
             .unwrap();
-        if matches!(
-            interaction.kind,
-            HandChoiceKind::ExileRevealedOrCreature
-                | HandChoiceKind::ExileRevealedLinkedOptional
-                | HandChoiceKind::DiscardNonlandReflexive { .. }
-                | HandChoiceKind::Behold
-                | HandChoiceKind::BeholdOptional { .. }
-                | HandChoiceKind::LookDiscardDraw
-                | HandChoiceKind::DiscardRevealedNonlandOrMoveExile
-                | HandChoiceKind::LookMayExileUntilSourceLeaves
-                | HandChoiceKind::RevealOptional { .. }
-        ) && emit(Action::ChooseHandCard { object: None })
-        {
+        if interaction.kind.optional() && emit(Action::ChooseHandCard { object: None }) {
             return true;
         }
         interaction
@@ -623,6 +654,37 @@ impl Game {
             .hand
             .take()
             .unwrap();
+        if let HandChoiceKind::DiscardAnyReflexive { ability } = interaction.kind {
+            if let Some(object) = object {
+                interaction.selected.push(object);
+                self.set_hand_interaction(*interaction);
+                return;
+            }
+            let cards = interaction
+                .selected
+                .iter()
+                .filter_map(|&reference| {
+                    let card = &self.state.objects[reference.card as usize];
+                    (self.object_ref(reference.card) == reference
+                        && card.zone == Zone::Hand
+                        && card.owner == interaction.controller
+                        && card.is_card())
+                    .then_some(reference.card)
+                })
+                .collect::<Vec<_>>();
+            self.discard_batch_with_after(
+                &cards,
+                None,
+                Some(interaction.controller),
+                Some(discard_events::DiscardAfter::ReflexiveCount {
+                    controller: interaction.controller,
+                    ability,
+                    nonland_only: false,
+                }),
+            );
+            self.run_program();
+            return;
+        }
         if matches!(
             interaction.kind,
             HandChoiceKind::RevealSubset | HandChoiceKind::RevealSubsetForControlledCast
@@ -660,9 +722,10 @@ impl Game {
                         &[object.card],
                         None,
                         Some(interaction.controller),
-                        Some(discard_events::DiscardAfter::NonlandReflexive {
+                        Some(discard_events::DiscardAfter::ReflexiveCount {
                             controller: interaction.controller,
                             ability,
+                            nonland_only: true,
                         }),
                     );
                 }
@@ -677,7 +740,8 @@ impl Game {
                         )),
                     );
                 }
-                HandChoiceKind::DiscardRevealed
+                HandChoiceKind::LookDiscardNonland
+                | HandChoiceKind::DiscardRevealed
                 | HandChoiceKind::DiscardRevealedKinds { .. }
                 | HandChoiceKind::DiscardRevealedNonlandOrMoveExile => {
                     self.discard_batch_caused(&[object.card], None, Some(interaction.controller))
@@ -740,13 +804,9 @@ impl Game {
                 HandChoiceKind::ExileRevealedLinkedOptional => {
                     let event = self.move_object(object.card, Zone::Exile);
                     if event.moved && event.destination == Zone::Exile {
-                        let ability_origin = self
-                            .state
-                            .resolving
-                            .as_ref()
-                            .unwrap()
-                            .item
-                            .source_ability_origin;
+                        let item = &self.state.resolving.as_ref().unwrap().item;
+                        let ability_origin = item.source_ability_origin;
+                        let acquired_link_cohort = item.linked_activation_cohort();
                         self.state
                             .linked_choices
                             .get_or_insert_default()
@@ -756,6 +816,7 @@ impl Game {
                                 source: interaction.source,
                                 exiled: event.after,
                                 ability_origin,
+                                acquired_link_cohort,
                             });
                     }
                 }
@@ -785,6 +846,7 @@ impl Game {
                 }
                 HandChoiceKind::RevealSubset
                 | HandChoiceKind::RevealSubsetForControlledCast
+                | HandChoiceKind::DiscardAnyReflexive { .. }
                 | HandChoiceKind::DeployCreatures
                 | HandChoiceKind::DeployPermanents => unreachable!(),
             }
@@ -847,7 +909,9 @@ impl Game {
                 .collect(),
             inspected_cards: matches!(
                 interaction.kind,
-                HandChoiceKind::LookDiscardDraw | HandChoiceKind::LookMayExileUntilSourceLeaves
+                HandChoiceKind::LookDiscardDraw
+                    | HandChoiceKind::LookDiscardNonland
+                    | HandChoiceKind::LookMayExileUntilSourceLeaves
             )
             .then(|| {
                 interaction
@@ -860,18 +924,7 @@ impl Game {
                     .map(|reference| self.object_view(reference.card))
                     .collect()
             }),
-            optional: matches!(
-                interaction.kind,
-                HandChoiceKind::ExileRevealedOrCreature
-                    | HandChoiceKind::ExileRevealedLinkedOptional
-                    | HandChoiceKind::DiscardNonlandReflexive { .. }
-                    | HandChoiceKind::Behold
-                    | HandChoiceKind::BeholdOptional { .. }
-                    | HandChoiceKind::LookDiscardDraw
-                    | HandChoiceKind::DiscardRevealedNonlandOrMoveExile
-                    | HandChoiceKind::LookMayExileUntilSourceLeaves
-                    | HandChoiceKind::RevealOptional { .. }
-            ),
+            optional: interaction.kind.optional(),
         })
     }
 }

@@ -3,10 +3,49 @@
   "catalogue_id": 1845,
   "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
   "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a9b39c2f623d55d8d732a8703b170b2615b4d49307a4becd97267ec4117dfaa7"
   },
-  "physical_metadata_sha256": "223f915099f85388803cde6cdce2eb7cfe0b62d3f02ac5f422022e3ba1878ecb"
+  "physical_metadata_sha256": "223f915099f85388803cde6cdce2eb7cfe0b62d3f02ac5f422022e3ba1878ecb",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrandEntrywayElegantRotunda.java",
+  "java_sha256": "a2e6163976ae08ea4f65f3d44377e4d824b072e53830485d1f2124edec2fe612",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GlimmerToken.java",
+      "sha256": "7759fc473e464b718289c1d0a8424a1e4ab8c454bdff989fadd9e61ad083fd00"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR709.5 and CR608.2b govern each door trigger and the surviving legal targets. The exact Glimmer is a white 1/1 enchantment creature."
+  }
 }

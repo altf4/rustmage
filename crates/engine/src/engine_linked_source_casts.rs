@@ -24,6 +24,14 @@ pub(super) struct LinkedExilePaidCast {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    fn live_linked_source(&self, player: Player, source: ObjectRef) -> Option<(Card, Option<u64>)> {
+        let provider = self.state.objects.get(source.card as usize)?;
+        (provider.zone == Zone::Battlefield
+            && provider.controller == player
+            && self.object_ref(source.card) == source)
+            .then(|| (provider.card, self.copy_ability_origin(source)))
+    }
+
     fn linked_source_definition(
         &self,
         player: Player,
@@ -31,17 +39,11 @@ impl Game {
         card: CardId,
         this_turn: bool,
     ) -> Option<Card> {
-        let provider = self.state.objects.get(source.card as usize)?;
+        let (definition, origin) = self.live_linked_source(player, source)?;
         let exiled = self.state.objects.get(card as usize)?;
-        if self.object_ref(source.card) != source
-            || provider.zone != Zone::Battlefield
-            || provider.controller != player
-            || exiled.zone != Zone::Exile
-            || !exiled.is_card()
-        {
+        if exiled.zone != Zone::Exile || !exiled.is_card() {
             return None;
         }
-        let origin = self.copy_ability_origin(source);
         self.state
             .linked_choices
             .as_ref()?
@@ -53,8 +55,35 @@ impl Game {
                     && link.exiled == self.object_ref(card)
                     && (!this_turn || link.exiled_turn == self.state.turn)
             })
-            .then_some(provider.card)
+            .then_some(definition)
     }
+    pub(super) fn has_linked_life_play_permission(&self, player: Player, card: CardId) -> bool {
+        if self.state.active != player
+            || !self
+                .state
+                .objects
+                .get(card as usize)
+                .is_some_and(|object| object.zone == Zone::Exile && object.is_card())
+        {
+            return false;
+        }
+        let exact = self.object_ref(card);
+        self.state.linked_choices.as_ref().is_some_and(|state| {
+            state.links.iter().any(|link| {
+                link.exiled == exact
+                    && self
+                        .live_linked_source(player, link.source)
+                        .is_some_and(|(_, origin)| origin == link.ability_origin)
+                    && self.active_rule_fragment(link.source.card, |fragment| {
+                        matches!(
+                            fragment,
+                            StaticAbilityFragment::PlayLinkedExileOnOwnTurnForLife
+                        )
+                    })
+            })
+        })
+    }
+
     fn linked_free_cast_limit(
         &self,
         player: Player,
@@ -113,12 +142,7 @@ impl Game {
     ) -> Option<u16> {
         let definition = self.linked_source_definition(player, source, card, false)?;
         let exiled = &self.state.objects[card as usize];
-        let spell = match face {
-            CastFace::Normal => Some(exiled.card),
-            CastFace::Adventure => exiled.card.adventure_spell(),
-            CastFace::Omen => exiled.card.omen_spell(),
-            CastFace::Back => exiled.card.back_face(),
-        }?;
+        let spell = face.definition(exiled.card)?;
         if self.state.active != player || exiled.owner != player || !spell.is_creature() {
             return None;
         }
@@ -148,12 +172,7 @@ impl Game {
         if self.object_ref(object.card) != object || exiled.owner != player {
             return None;
         }
-        let spell = match face {
-            CastFace::Normal => Some(exiled.card),
-            CastFace::Adventure => exiled.card.adventure_spell(),
-            CastFace::Omen => exiled.card.omen_spell(),
-            CastFace::Back => exiled.card.back_face(),
-        }?;
+        let spell = face.definition(exiled.card)?;
         if spell.is_land() || matches!(spell.effect(), Effect::Unsupported) {
             return None;
         }
@@ -184,24 +203,16 @@ impl Game {
         player: Player,
         card: CardId,
         sorcery: bool,
+        exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         for &id in &self.state.static_sources {
             let source = self.object_ref(id);
             if let Some(limit) = self.linked_free_cast_limit(player, source, card) {
                 let physical = self.state.objects[card as usize].card;
-                for face in [
-                    CastFace::Normal,
-                    CastFace::Adventure,
-                    CastFace::Omen,
-                    CastFace::Back,
-                ] {
-                    let Some(definition) = (match face {
-                        CastFace::Normal => Some(physical),
-                        CastFace::Adventure => physical.adventure_spell(),
-                        CastFace::Omen => physical.omen_spell(),
-                        CastFace::Back => physical.back_face(),
-                    }) else {
+                for face in CastFace::choices(self.state.objects[card as usize].card) {
+                    let Some(definition) = face.definition(physical) else {
                         continue;
                     };
                     if definition.is_land() || definition.fixed_mana_value() > limit {
@@ -225,21 +236,25 @@ impl Game {
                     }
                 }
             }
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[card as usize].card) {
                 let object = self.object_ref(card);
                 if let Some(permission) = self.linked_paid_permission(player, source, object, face)
                 {
-                    if self.visit_web_slinging_face(
+                    if self.visit_exile_zero_face(
+                        player,
+                        object,
+                        face,
+                        sorcery,
+                        ExileZeroOrigin::LinkedPaid { source },
+                        exile_zero,
+                        emit,
+                    ) || self.visit_paid_cast_alternative_face(
                         player,
                         card,
                         face,
                         sorcery,
-                        WebSlingingOrigin::LinkedExilePaid { object, source },
+                        PaidCastOrigin::LinkedExilePaid { object, source },
+                        mana_alternatives,
                         emit,
                     ) {
                         return true;
@@ -274,12 +289,21 @@ impl Game {
                 else {
                     continue;
                 };
-                if self.visit_web_slinging_face(
+                if self.visit_exile_zero_face(
+                    player,
+                    object,
+                    face,
+                    sorcery,
+                    ExileZeroOrigin::LinkedCounters { source },
+                    exile_zero,
+                    emit,
+                ) || self.visit_paid_cast_alternative_face(
                     player,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::LinkedExileCounters { source },
+                    PaidCastOrigin::LinkedExileCounters { source },
+                    mana_alternatives,
                     emit,
                 ) {
                     return true;

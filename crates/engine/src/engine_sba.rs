@@ -175,12 +175,7 @@ impl Game {
             pairs: Vec::new(),
             groups: Vec::new(),
             roles: Vec::new(),
-            lost: self.allowed_game_losses(
-                self.state
-                    .players
-                    .each_ref()
-                    .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
-            ),
+            lost: self.state_based_game_losses(),
         };
         // A batch observes one immutable battlefield. Reuse its layer evaluation
         // across creatures, but rebuild it after any batch changes the world.
@@ -223,22 +218,29 @@ impl Game {
                 }) {
                 batch.deaths.push(id);
             }
-            if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0
-                && object.attached_to.is_some()
-            {
+            if self.current_kinds(id) & crate::cards::BATTLE_KIND != 0 && object.is_attached() {
                 batch.detached.push(self.object_ref(id));
             } else if ability_world::CharacteristicWorld::is_aura(self, id) {
                 // CR303.4d/704.5p: a creature Aura first becomes unattached;
                 // the next SBA sees the unattached Aura and puts it away.
-                if self.is_creature(id) && object.attached_to.is_some() {
+                if self.is_creature(id) && object.is_attached() {
                     batch.detached.push(self.object_ref(id));
                 } else if !self.printed_abilities_available(id)
-                    || !object
-                        .attached_to
-                        .is_some_and(|target| self.battlefield_aura_can_enchant(id, target))
+                    || !match (object.attached_to, object.attached_to_player) {
+                        (Some(target), None) => self.battlefield_aura_can_enchant(id, target),
+                        (None, Some(player)) => ability_world::player_aura_can_enchant(
+                            self,
+                            object.card,
+                            object.controller,
+                            player,
+                        ),
+                        _ => false,
+                    }
                 {
                     batch.deaths.push(id);
                 }
+            } else if object.attached_to_player.is_some() {
+                batch.detached.push(self.object_ref(id));
             } else if let Some(target) = object.attached_to
                 && !equipment::can_attach(self, self.object_ref(id), target)
             {
@@ -257,10 +259,18 @@ impl Game {
                         })
                 })
             {
-                legends[object.controller.index()]
-                    .entry(crate::card_names::comparison_key(self.object_name(id)))
-                    .or_default()
-                    .push(self.object_ref(id));
+                let reference = self.object_ref(id);
+                for name in characteristic_layers::battlefield_names(self, id)
+                    .into_iter()
+                    .filter(|name| !name.is_empty())
+                {
+                    let group = legends[object.controller.index()]
+                        .entry(crate::card_names::comparison_key(name))
+                        .or_default();
+                    if group.last() != Some(&reference) {
+                        group.push(reference);
+                    }
+                }
             }
             if self.is_creature(id) {
                 let query = characteristics.get_or_init(|| self.characteristic_query());
@@ -279,8 +289,13 @@ impl Game {
         }
         for controller in [self.state.active, self.state.active.other()] {
             let groups = std::mem::take(&mut legends[controller.index()]);
+            let first = batch.groups.len();
             for (name, objects) in groups {
-                if objects.len() > 1 {
+                if objects.len() > 1
+                    && !batch.groups[first..]
+                        .iter()
+                        .any(|group| group.objects == objects)
+                {
                     batch.groups.push(LegendGroup {
                         controller,
                         name,
@@ -462,6 +477,26 @@ impl Game {
                 return;
             }
         }
+    }
+
+    pub(super) fn visit_legend_choices(
+        &self,
+        player: Player,
+        emit: &mut impl FnMut(Action) -> bool,
+    ) -> bool {
+        let batch = self.state.sba_batch.as_ref().unwrap();
+        let mut offered = std::collections::BTreeSet::new();
+        for group in &batch.groups {
+            if group.controller == player && group.keep.is_none() {
+                // A permanent in multiple groups is selected for the first open group.
+                for &object in &group.objects {
+                    if offered.insert(object) && emit(Action::KeepLegend { object }) {
+                        return true;
+                    }
+                }
+            }
+        }
+        false
     }
 
     pub(super) fn keep_legend(&mut self, object: ObjectRef) {

@@ -56,6 +56,13 @@ fn attack_tax(fragment: &crate::cards::StaticAbilityFragment) -> Option<(u32, St
 /// Total requirement weight of a capacity-one defender assignment.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn maximum_attack_matching(edges: &mut [(usize, Vec<usize>)], slots: usize) -> usize {
+    attack_matching_score_and_count(edges, slots).0
+}
+
+fn attack_matching_score_and_count(
+    edges: &mut [(usize, Vec<usize>)],
+    slots: usize,
+) -> (usize, usize) {
     fn augment(
         i: usize,
         edges: &[(usize, Vec<usize>)],
@@ -75,7 +82,7 @@ pub(super) fn maximum_attack_matching(edges: &mut [(usize, Vec<usize>)], slots: 
         false
     }
     if edges.is_empty() {
-        return 0;
+        return (0, 0);
     }
     // Matchable attackers form a transversal matroid. Each augmentation
     // retains the previously matched attackers, so greedy weight order is exact.
@@ -83,13 +90,15 @@ pub(super) fn maximum_attack_matching(edges: &mut [(usize, Vec<usize>)], slots: 
     let mut owners = vec![None; slots];
     let mut seen = vec![false; slots];
     let mut total = 0;
+    let mut count = 0;
     for (i, (weight, _)) in edges.iter().enumerate() {
         seen.fill(false);
         if augment(i, edges, &mut seen, &mut owners) {
             total += weight;
+            count += 1;
         }
     }
-    total
+    (total, count)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -256,8 +265,11 @@ impl Game {
                     .any(|fragment| attack_tax(fragment).is_some())
         })
     }
-    pub(super) fn after_attacker_taps<T>(&self, f: impl FnOnce(&Game) -> T) -> T {
+    fn after_attacker_taps<T>(&self, attackers: &[Attacker], f: impl FnOnce(&Game) -> T) -> T {
         let mut preview = self.clone();
+        if attackers != preview.state.selected_attackers.as_slice() {
+            preview.state.selected_attackers = attackers.to_vec();
+        }
         preview.tap_selected_attackers();
         preview.refresh_enduring_stories();
         f(&preview)
@@ -266,13 +278,16 @@ impl Game {
         if !self.has_attack_tax_provider() {
             return 0;
         }
-        self.after_attacker_taps(|preview| preview.selected_attack_tax())
+        self.after_attacker_taps(&self.state.selected_attackers, |preview| {
+            preview.selected_attack_tax()
+        })
     }
     pub(super) fn attack_declaration_fundable(&self, actor: Player) -> bool {
-        if !self.has_attack_tax_provider() {
-            return true;
-        }
-        self.after_attacker_taps(|preview| {
+        !self.has_attack_tax_provider()
+            || self.attackers_fundable(actor, &self.state.selected_attackers)
+    }
+    fn attackers_fundable(&self, actor: Player, attackers: &[Attacker]) -> bool {
+        self.after_attacker_taps(attackers, |preview| {
             preview.combat_tax_fundable(actor, preview.selected_attack_tax())
         })
     }
@@ -483,11 +498,50 @@ impl Game {
                     .map(|row| row.card),
             )
     }
-    /// Maximum number of simultaneously satisfiable attack requirements. Unlimited
-    /// defenders need no matching; limited planeswalkers are capacity-one slots.
-    fn maximum_attack_requirements(&self, actor: Player) -> usize {
+    pub(super) fn combat_requires_company(&self, id: CardId) -> bool {
+        self.active_rule_fragment(id, |fragment| {
+            matches!(
+                fragment,
+                crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
+            )
+        })
+    }
+    pub(super) fn has_combat_company_rule(&self, player: Player) -> bool {
+        self.state.static_sources.iter().copied().any(|id| {
+            self.state.objects[id as usize].controller == player && self.combat_requires_company(id)
+        })
+    }
+    fn attack_declaration_has_company(&self, attacks: &[Attacker]) -> bool {
+        !matches!(attacks, [sole] if self.combat_requires_company(sole.card))
+    }
+    fn attack_requirement_score(&self, actor: Player, attacks: &[Attacker]) -> usize {
+        let player_preference = self.global_attack_requirements()[actor.index()];
+        attacks
+            .iter()
+            .map(|attack| {
+                self.attack_requirement_count::<{ usize::MAX }>(attack.card)
+                    + if attack.defender == Some(CombatDefender::Player(actor.other())) {
+                        player_preference
+                    } else {
+                        0
+                    }
+            })
+            .sum()
+    }
+
+    /// Maximize requirements with capacity-one planeswalker slots. When
+    /// extending a partial declaration, its attackers and defenders stay fixed.
+    /// Taxed routes only participate once that exact route has been chosen.
+    fn maximum_attack_requirements(
+        &self,
+        actor: Player,
+        chosen: &[Attacker],
+        extending: bool,
+        company: bool,
+    ) -> Option<usize> {
+        let fixed = if extending { chosen } else { &[] };
         let global = self.global_attack_requirements();
-        let require_all = global != [0; 2];
+        let require_all = global != [0; 2] || company;
         let all_controlled = require_all
             .then_some(&self.state.objects)
             .into_iter()
@@ -501,11 +555,17 @@ impl Game {
             .chain(all_controlled)
             .filter_map(|id| {
                 let count = self.attack_requirement_count::<{ usize::MAX }>(id);
-                (count > 0 && self.can_declare_attacker(actor, id)).then_some((id, count))
+                ((count > 0 || company)
+                    && !fixed.iter().any(|attack| attack.card == id)
+                    && self.can_declare_attacker(actor, id))
+                .then_some((id, count))
             })
             .peekable();
+        let fixed_score = self.attack_requirement_score(actor, fixed);
         if eligible.peek().is_none() {
-            return 0;
+            return self
+                .attack_declaration_has_company(fixed)
+                .then_some(fixed_score);
         }
         let walkers: Vec<_> = self
             .state
@@ -524,16 +584,17 @@ impl Game {
             })
             .collect();
         let (player_cost, walker_cost) = self.attack_controller_taxes(actor.other());
-        let mut free = 0;
+        let mut free = fixed_score;
+        let mut free_count = fixed.len();
+        let mut best_single = 0;
         let mut edges = Vec::new();
         for (id, requirements) in eligible {
+            let allowed_alone = company && fixed.is_empty() && !self.combat_requires_company(id);
             // A voluntarily selected taxable attack is already paid for purposes
             // of maximizing the remaining requirements; no unchosen attacker is
             // compelled to pay the tax.
             let player = CombatDefender::Player(actor.other());
-            let selected_defender = self
-                .state
-                .selected_attackers
+            let selected_defender = chosen
                 .iter()
                 .find(|attack| attack.card == id)
                 .and_then(|attack| attack.defender);
@@ -542,7 +603,12 @@ impl Game {
             if player_free {
                 // In a two-player game, only creatures of the effect's
                 // controller can attack another player besides that controller.
-                free += requirements + global[actor.index()];
+                let score = requirements + global[actor.index()];
+                free += score;
+                free_count += 1;
+                if allowed_alone {
+                    best_single = best_single.max(score);
+                }
                 continue;
             }
             let battle_free = self.state.objects.iter().enumerate().any(|(n, _)| {
@@ -558,6 +624,10 @@ impl Game {
             });
             if battle_free || walker_free {
                 free += requirements;
+                free_count += 1;
+                if allowed_alone {
+                    best_single = best_single.max(requirements);
+                }
                 continue;
             }
             let slots: Vec<_> = walkers
@@ -566,21 +636,146 @@ impl Game {
                 .filter_map(|(n, &(r, limited))| {
                     let defender = CombatDefender::Planeswalker(r);
                     (limited
+                        && !fixed.iter().any(|attack| attack.defender == Some(defender))
                         && (walker_cost == 0 || selected_defender == Some(defender))
                         && self.can_attack_defender(id, defender))
                     .then_some(n)
                 })
                 .collect();
             if !slots.is_empty() {
+                if allowed_alone {
+                    best_single = best_single.max(requirements);
+                }
                 edges.push((requirements, slots));
             }
         }
-        free + maximum_attack_matching(&mut edges, walkers.len())
+        if !company {
+            return Some(free + maximum_attack_matching(&mut edges, walkers.len()));
+        }
+        // Extend the maximum-weight assignment with zero-weight attackers too.
+        // Matchable attacker sets form a matroid, so a weight-optimal matching
+        // can also reach maximum cardinality without giving up any requirement.
+        let (score, count) = attack_matching_score_and_count(&mut edges, walkers.len());
+        if free_count + count >= 2 {
+            Some(free + score)
+        } else if fixed.is_empty() {
+            Some(best_single)
+        } else {
+            self.attack_declaration_has_company(fixed)
+                .then_some(fixed_score)
+        }
+    }
+
+    /// A pending choice needs a legal completion that keeps every chosen route.
+    pub(super) fn attack_choice_extendable(
+        &self,
+        actor: Player,
+        card: CardId,
+        defender: CombatDefender,
+    ) -> bool {
+        let mut chosen = self.state.selected_attackers.clone();
+        chosen.push(Attacker {
+            card,
+            defender: Some(defender),
+            blocked: false,
+        });
+        if !self.has_attack_tax_provider() {
+            // An ordinary proposal with no requirements only needs company for
+            // its first restricted attacker. Most choices need no matching.
+            if self.attack_declaration_has_company(&chosen)
+                && self.global_attack_requirements() == [0; 2]
+                && self.attack_requirement_sources().all(|id| {
+                    self.state.objects[id as usize].controller != actor
+                        || !self.attacks_each_combat(id)
+                })
+            {
+                return true;
+            }
+            return self.maximum_attack_requirements(actor, &chosen, true, true)
+                == self.maximum_attack_requirements(actor, &chosen, false, true);
+        }
+        let candidates: Vec<_> = (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                !chosen.iter().any(|attack| attack.card == id)
+                    && self.can_declare_attacker(actor, id)
+            })
+            .collect();
+        let mut defenders = vec![(CombatDefender::Player(actor.other()), false)];
+        for (id, object) in self.state.objects.iter().enumerate() {
+            let id = id as CardId;
+            let reference = self.object_ref(id);
+            if self.battle_can_be_attacked_by(reference, actor) {
+                defenders.push((CombatDefender::Battle(reference), false));
+            }
+            if object.zone == Zone::Battlefield
+                && object.controller == actor.other()
+                && self.current_kinds(id) & 64 != 0
+            {
+                defenders.push((
+                    CombatDefender::Planeswalker(reference),
+                    self.planeswalker_attack_limited(reference),
+                ));
+            }
+        }
+        self.fundable_attack_completion(actor, &mut chosen, &candidates, &defenders)
+    }
+
+    fn fundable_attack_completion(
+        &self,
+        actor: Player,
+        chosen: &mut Vec<Attacker>,
+        candidates: &[CardId],
+        defenders: &[(CombatDefender, bool)],
+    ) -> bool {
+        let has_company = self.attack_declaration_has_company(chosen);
+        if has_company
+            && self.attack_requirement_score(actor, chosen)
+                >= self
+                    .maximum_attack_requirements(actor, chosen, false, true)
+                    .expect("the empty declaration is always structurally possible")
+        {
+            return self.attackers_fundable(actor, chosen);
+        }
+        for (index, &card) in candidates.iter().enumerate() {
+            if has_company && !self.attacks_each_combat(card) {
+                continue;
+            }
+            for &(defender, limited) in defenders {
+                if (limited
+                    && chosen
+                        .iter()
+                        .any(|attack| attack.defender == Some(defender)))
+                    || !self.can_attack_defender(card, defender)
+                {
+                    continue;
+                }
+                chosen.push(Attacker {
+                    card,
+                    defender: Some(defender),
+                    blocked: false,
+                });
+                let possible = self.fundable_attack_completion(
+                    actor,
+                    chosen,
+                    &candidates[index + 1..],
+                    defenders,
+                );
+                chosen.pop();
+                if possible {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     /// Satisfy as many attack requirements as possible under defender and tax rules.
     pub(super) fn attack_declaration_complete(&self, actor: Player) -> bool {
         let chosen = &self.state.selected_attackers;
+        if !self.attack_declaration_has_company(chosen) {
+            return false;
+        }
         for (index, attacker) in chosen.iter().enumerate() {
             if !self.can_declare_attacker(actor, attacker.card)
                 || chosen[..index]
@@ -612,7 +807,8 @@ impl Game {
             }
         }
         let global = self.global_attack_requirements();
-        if global == [0; 2] && !self.has_planeswalker_attack_limit_provider() {
+        let company = self.has_combat_company_rule(actor);
+        if !company && global == [0; 2] && !self.has_planeswalker_attack_limit_provider() {
             let taxes = std::cell::OnceCell::new();
             return self.attack_requirement_sources().all(|id| {
                 !self.attacks_each_combat(id)
@@ -630,18 +826,10 @@ impl Game {
                     }
             });
         }
-        let fulfilled = chosen
-            .iter()
-            .map(|attack| {
-                let preference = if attack.defender == Some(CombatDefender::Player(actor.other())) {
-                    global[actor.index()]
-                } else {
-                    0
-                };
-                self.attack_requirement_count::<{ usize::MAX }>(attack.card) + preference
-            })
-            .sum::<usize>();
-        fulfilled >= self.maximum_attack_requirements(actor)
+        self.attack_requirement_score(actor, chosen)
+            >= self
+                .maximum_attack_requirements(actor, chosen, false, company)
+                .expect("the empty declaration is always structurally possible")
     }
 
     fn combat_restriction_from(&self, source: CardId, subject: CardId, attack: bool) -> bool {

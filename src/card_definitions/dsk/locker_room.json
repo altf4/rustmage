@@ -1,0 +1,16 @@
+{
+  "name": "Locker Room",
+  "catalogue_id": 5624,
+  "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+  "facts_sha256": "42cad1866abe5f42ec9995788a6e7e4ad9a0c2a99c2dc06fa6ec953a07773228",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+    "index": 1,
+    "sha256": "5bbdcea29885bec7d568a58d57532a7fd9b340bec2fa37bf3594ef1dc87d39ad"
+  },
+  "physical_metadata_sha256": "ba92f0c2a36149f5d233eee33c8c0554b5d4c34160b366051fd04f134186d0b9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BottomlessPoolLockerRoom.java",
+  "java_sha256": "a55d078139b3bbb67d6c2cf1ed1a2265f77e9d64ca072acbb12d8ba126415466"
+}

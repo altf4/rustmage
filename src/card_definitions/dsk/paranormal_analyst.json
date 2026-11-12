@@ -3,10 +3,39 @@
   "catalogue_id": 3101,
   "oracle_id": "8cbe71d3-b77b-49a7-9c51-ed308011b8b0",
   "facts_sha256": "6e1680c729a3c2e88481bc7639cd750aee1f97dda6effedc7c6a10847cf605f7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "50e45e65407587e2bb3180e8947a9798213e818748723e2533279bf0a36965cf"
   },
-  "physical_metadata_sha256": "2974cb75b5629956c788ce88c8ab128c7c9e83cc31e2ce79d842ce07ae7f2d93"
+  "physical_metadata_sha256": "2974cb75b5629956c788ce88c8ab128c7c9e83cc31e2ce79d842ce07ae7f2d93",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/ParanormalAnalyst.java",
+  "java_sha256": "c2be5c10b69f37dfdf2c0cc3fb8dc61eb7769990d3f20415b4ff02f72c99ef01",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ManifestedDreadEvent.java",
+      "sha256": "8127aa461acab64c3f6c9d81e5bbf8c216bcb19814353ce6e6c90c46077d1a65"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetpointer/FixedTargets.java",
+      "sha256": "1ffbb110325506c82af6ea216f5e20af0b4c2adda443654e7b9107d06af94655"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInYourGraveyard.java",
+      "sha256": "374eeaa08611b6b2db2fa3693325c8b50dad9b3b71dcbefd18e059c4403258f4"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR701.62. The trigger's non-targeted choice is limited to its controller's exact cards put in the graveyard by the specific manifest dread event and still there."
+  }
 }

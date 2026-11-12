@@ -3,10 +3,22 @@
   "catalogue_id": 343,
   "oracle_id": "e7aeabd9-a72c-47ee-b275-b025d7142766",
   "facts_sha256": "aa9a205824d361adf886c8477fbf0e3afb32019f210f89281ddd939cb979c284",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "23240a0f876f500d3b8b88777fc4dfc5e35d3ea6aaac12fed8fb75f96cfc7ea5"
-  },
-  "physical_metadata_sha256": "50205d54291eeb1c0b79c87d0395ab4e7c546a5922417ee23adeb5c3c1cb86cc"
+  "complete": true,
+  "physical_metadata_sha256": "50205d54291eeb1c0b79c87d0395ab4e7c546a5922417ee23adeb5c3c1cb86cc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BashfulBeastie.java",
+  "java_sha256": "acdb59137aa6560c3e4de946a416507d48cece1dc117f4a724cbd7b530aedacc",
+  "rules_tests": "tests/dsk_gold_manifest_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    }
+  ]
 }

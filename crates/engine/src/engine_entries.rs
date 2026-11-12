@@ -34,6 +34,7 @@ pub(super) struct EntryMove {
     pub destination: Zone,
     pub tapped: bool,
     pub attachment: Option<ObjectRef>,
+    pub player_attachment: Option<Player>,
     /// Owned completion tied to this move's actual successful public result.
     pub role_after: Option<(Card, Player)>,
     pub suspect_after: bool,
@@ -79,7 +80,8 @@ pub(super) struct EntryMove {
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
     pub evoked: bool,
-    pub behold_exiled: Option<ObjectRef>,
+    pub cast_for_impending: bool,
+    pub linked_cast_exile: [Option<ObjectRef>; 2],
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Additive type effect following the exact spell into the prospective entry.
     pub cast_added_creature_types: &'static [&'static str],
@@ -186,6 +188,23 @@ impl EntryMove {
             .is_none()
             .then_some(self.before.card)
     }
+    pub(super) fn apply_impending_cost(&mut self, cast: Option<CastInfo>) {
+        if cast.is_some_and(|cast| cast.impending) {
+            let spec = self
+                .before
+                .card
+                .impending_spec()
+                .expect("paid impending cost");
+            self.cast_for_impending = true;
+            self.effect_counter = Some((CounterKind::Time, spec.time_counters));
+        }
+    }
+    pub(super) fn needs_aura_attachment(&self) -> bool {
+        !self.artifact_return
+            && !self.enchantment_return
+            && (self.before.card.aura().is_some() && self.attachment.is_none()
+                || self.before.card.enchants_player() && self.player_attachment.is_none())
+    }
     pub(super) fn intrinsic_entry_tapped(&self) -> EntryTapped {
         self.intrinsic_entry_card()
             .map_or(EntryTapped::Never, Card::entry_tapped)
@@ -215,7 +234,8 @@ impl EntryMove {
         &self,
         world: &W,
     ) -> bool {
-        self.ghost_vacuum_after.is_some()
+        self.cast_for_impending
+            || self.ghost_vacuum_after.is_some()
             || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
             || self.as_entry_treasure_source().is_some()
@@ -309,6 +329,7 @@ impl EntryMove {
             destination,
             tapped,
             attachment: None,
+            player_attachment: None,
             role_after: None,
             suspect_after: false,
             life_bonus: None,
@@ -339,7 +360,8 @@ impl EntryMove {
             offspring_paid: false,
             cast_payment: None,
             evoked: false,
-            behold_exiled: None,
+            cast_for_impending: false,
+            linked_cast_exile: [None; 2],
             cast_event: None,
             cast_added_creature_types: &[],
             cast_origin: None,
@@ -429,11 +451,22 @@ pub struct AuraAttachmentView {
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, Serialize)]
+pub struct AuraPlayerAttachmentView {
+    pub aura: ObjectRef,
+    pub card: Card,
+    pub player: Player,
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, Serialize)]
 pub struct AuraEntryView {
     pub aura: ObjectRef,
     pub card: Card,
     pub candidates: Vec<ObjectRef>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub player_candidates: Vec<Player>,
     pub selected: Vec<AuraAttachmentView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub selected_player_attachments: Vec<AuraPlayerAttachmentView>,
     pub selected_life: Vec<EntryLifeSelection>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -454,6 +487,8 @@ pub struct EntryLifeView {
     pub already_tapped: bool,
     pub selected: Vec<EntryLifeSelection>,
     pub selected_attachments: Vec<AuraAttachmentView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub selected_player_attachments: Vec<AuraPlayerAttachmentView>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn visible(m: &EntryMove, viewer: Player, known_hand: &[ObjectRef]) -> bool {
@@ -481,6 +516,23 @@ impl EntryBatch {
                     card: m.before.card,
                     cost,
                     paid: m.life_paid?,
+                })
+            })
+            .collect()
+    }
+    fn selected_player_attachments(
+        &self,
+        viewers: u8,
+        known_hand: &[ObjectRef],
+    ) -> Vec<AuraPlayerAttachmentView> {
+        self.moves
+            .iter()
+            .filter(|movement| visible_mask(movement, viewers, known_hand))
+            .filter_map(|movement| {
+                Some(AuraPlayerAttachmentView {
+                    aura: movement.before.reference,
+                    card: movement.before.card,
+                    player: movement.player_attachment?,
                 })
             })
             .collect()
@@ -745,10 +797,7 @@ impl Game {
                 m.destination == Zone::Battlefield
                     && (m.choose_attacking_defender
                         || m.intrinsic_entry_choice().is_some()
-                        || !m.artifact_return
-                            && !m.enchantment_return
-                            && m.before.card.aura().is_some()
-                            && m.attachment.is_none()
+                        || m.needs_aura_attachment()
                         || matches!(m.intrinsic_entry_tapped(), EntryTapped::PayLife(_))
                             && m.life_paid.is_none()
                             && !tap_events.iter().any(|event| event.index == *i))
@@ -1158,6 +1207,9 @@ impl Game {
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {
+                let object = &mut self.state.objects[event.after.card as usize];
+                object.cast_for_impending = movement.cast_for_impending;
+                object.attached_to_player = movement.player_attachment;
                 if movement
                     .copy_preparation
                     .as_ref()
@@ -1184,6 +1236,7 @@ impl Game {
                                 source: event.after,
                                 exiled,
                                 ability_origin,
+                                acquired_link_cohort: None,
                             });
                     }
                 }
@@ -1214,16 +1267,20 @@ impl Game {
                 && let Some(original) = movement.manifest_original
             {
                 let known_to = self.face_down_knowledge_mask(movement.controller);
-                self.state
-                    .manifest
-                    .get_or_insert_with(Default::default)
-                    .permanents
-                    .push(manifest::FaceDownPermanent {
-                        object: event.after,
-                        underlying: original,
-                        known: movement.manifest_known,
-                        known_to,
-                    });
+                let state = self.state.manifest.get_or_insert_with(Default::default);
+                state.permanents.push(manifest::FaceDownPermanent {
+                    object: event.after,
+                    underlying: original,
+                    known: movement.manifest_known,
+                    known_to,
+                });
+                if let Some(choice) = state
+                    .choices
+                    .iter_mut()
+                    .find(|choice| choice.selected == Some(event.before.reference))
+                {
+                    choice.result = Some(event.after);
+                }
             }
             if event.moved
                 && event.destination == Zone::Battlefield
@@ -1276,20 +1333,18 @@ impl Game {
             event.evoked = movement.evoked;
             if event.moved
                 && event.destination == Zone::Battlefield
-                && let Some(exiled) = movement.behold_exiled
-                && self.object_ref(exiled.card) == exiled
-                && self.state.objects[exiled.card as usize].zone == Zone::Exile
+                && movement.linked_cast_exile[0].is_some()
+                && self.state.objects[event.after.card as usize].card == event.before.card
             {
-                self.state
-                    .linked_choices
-                    .get_or_insert_default()
-                    .links
-                    .push(LinkedExileView {
-                        exiled_turn: self.state.turn,
-                        source: event.after,
-                        exiled,
-                        ability_origin: None,
-                    });
+                // CR 607.2q links only the actual spell's paid exile to this entry.
+                let origin = self.copy_ability_origin(event.after);
+                for exiled in movement.linked_cast_exile.into_iter().flatten() {
+                    if self.object_ref(exiled.card) == exiled
+                        && self.state.objects[exiled.card as usize].zone == Zone::Exile
+                    {
+                        self.link_exile_to_ability(event.after, origin, exiled);
+                    }
+                }
             }
             event.offspring_paid = movement.offspring_paid;
             event.kicked = movement.kicked;
@@ -1771,16 +1826,21 @@ impl Game {
                     self.choose_entry_life(false);
                     continue;
                 }
-                if movement.before.card.aura().is_none() || movement.attachment.is_some() {
+                if !movement.needs_aura_attachment() {
                     self.state.entry_batch.as_mut().unwrap().next += 1;
                     continue;
                 }
-                let eligible = self
-                    .state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .any(|(id, _)| self.entry_candidate(self.object_ref(id as CardId)));
+                let eligible = if movement.before.card.enchants_player() {
+                    [Player::P0, Player::P1]
+                        .into_iter()
+                        .any(|player| self.entry_player_candidate(player))
+                } else {
+                    self.state
+                        .objects
+                        .iter()
+                        .enumerate()
+                        .any(|(id, _)| self.entry_candidate(self.object_ref(id as CardId)))
+                };
                 if eligible {
                     self.state.pending = Pending::AuraEntry { player: owner };
                     return true;
@@ -1893,14 +1953,14 @@ impl Game {
             self.state.pending = batch.resume.clone().unwrap();
             let replacement_resume = batch.replacement_resume.take();
             let resume_entry = batch.resume_entry.take();
-            let selected = self
-                .state
-                .manifest
-                .as_ref()
-                .and_then(|state| state.choice.as_ref())
-                .and_then(|choice| choice.selected);
-            let completes_manifest = batch.moves.iter().any(|movement| {
-                movement.manifest_original.is_some() && Some(movement.before.reference) == selected
+            let completes_manifest = self.state.manifest.as_ref().is_some_and(|state| {
+                batch.moves.iter().any(|movement| {
+                    movement.manifest_original.is_some()
+                        && state
+                            .choices
+                            .iter()
+                            .any(|choice| choice.selected == Some(movement.before.reference))
+                })
             });
             self.commit_entries(batch);
             if completes_manifest {
@@ -1940,6 +2000,16 @@ impl Game {
             target,
         ) && batch.moves.iter().all(|m| m.before.id != target.card)
     }
+    pub(super) fn entry_player_candidate(&self, player: Player) -> bool {
+        let batch = self.state.entry_batch.as_ref().unwrap();
+        let movement = &batch.moves[batch.choices[batch.next]];
+        ability_world::player_aura_can_enchant(
+            self,
+            movement.before.card,
+            movement.controller,
+            player,
+        )
+    }
     pub(super) fn visit_entry_attacking_defenders(
         &self,
         player: Player,
@@ -1967,6 +2037,11 @@ impl Game {
         let batch = self.state.entry_batch.as_mut().unwrap();
         let index = batch.choices[batch.next];
         batch.moves[index].attachment = Some(target);
+        batch.next += 1;
+    }
+    pub(super) fn choose_aura_player_attachment(&mut self, player: Player) {
+        let batch = self.state.entry_batch.as_mut().unwrap();
+        batch.moves[batch.choices[batch.next]].player_attachment = Some(player);
         batch.next += 1;
     }
     pub(super) fn current_entry_value_index(&self) -> Option<usize> {
@@ -2038,6 +2113,8 @@ impl Game {
             selected: batch.selected_life(self.information_mask(viewer), &self.state.known_hand),
             selected_attachments: batch
                 .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
+            selected_player_attachments: batch
+                .selected_player_attachments(self.information_mask(viewer), &self.state.known_hand),
         })
     }
     pub(super) fn aura_entry_view(&self, viewer: Player) -> Option<AuraEntryView> {
@@ -2068,8 +2145,14 @@ impl Game {
                 .map(|(i, _)| self.object_ref(i as CardId))
                 .filter(|&r| self.entry_candidate(r))
                 .collect(),
+            player_candidates: [Player::P0, Player::P1]
+                .into_iter()
+                .filter(|&player| self.entry_player_candidate(player))
+                .collect(),
             selected: batch
                 .selected_attachments(self.information_mask(viewer), &self.state.known_hand),
+            selected_player_attachments: batch
+                .selected_player_attachments(self.information_mask(viewer), &self.state.known_hand),
             selected_life: batch
                 .selected_life(self.information_mask(viewer), &self.state.known_hand),
         })
@@ -2132,7 +2215,7 @@ impl Game {
             .filter_map(|(i, m)| {
                 (Self::entry_has_timestamp(m)
                     || (batch.moves.iter().any(|m| {
-                        Self::hand_entry(m) && m.before.card.hand_size_setting().flatten().is_some()
+                        Self::hand_entry(m) && m.before.card.has_finite_hand_size_setting()
                     }) && Self::hand_entry(m)))
                 .then_some(i)
             })

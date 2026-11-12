@@ -9,6 +9,24 @@ pub(super) struct ActivationCostChoice {
     pub reduction: ManaCost,
     pub route: ActivationCostRoute,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SpellAlternative {
+    None,
+    Evoke,
+    Impending,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct AnnouncementCostChoice {
+    cost: ManaCost,
+    base: ManaCost,
+    activation_route: ActivationCostRoute,
+    activation_choice: Option<ActivationCostChoice>,
+    spell_alternative: SpellAlternative,
+    additional_cost_route: Option<AdditionalCostRoute>,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LimitedCastPermission {
@@ -34,7 +52,7 @@ impl LimitedCastPermission {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
-    /// Captured alternate cost from Miracle, granted Sneak or granted Warp.
+    /// Fixed alternative mana base selected when the cast was announced.
     pub origin_alternative_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
@@ -112,7 +130,7 @@ impl Announcement {
                 matches!(
                     c.method,
                     CastMethod::LinkedExileCounterCost | CastMethod::WebSlinging
-                )
+                ) || c.method == CastMethod::Free && c.origin == Zone::Exile
             })
             .and(self.origin_counter_cost)
     }
@@ -140,6 +158,16 @@ impl Announcement {
             .filter(|cost| !card.sneak_cost_options().any(|printed| printed == *cost));
         card.sneak_cost_options().chain(grant)
     }
+    pub(super) fn source_mana_alternative(&self) -> Option<ManaCost> {
+        self.item
+            .cast
+            .filter(|cast| cast.method.allows_printed_alternative())?;
+        self.origin_alternative_cost
+    }
+    pub(super) fn independent_additional_mana(&self) -> Option<ManaCost> {
+        self.item.cast?;
+        self.item.source?.card.explicit_additional_mana()
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
@@ -165,7 +193,7 @@ impl Announcement {
             | CastMethod::Free
             | CastMethod::Plot
             | CastMethod::GrantedZeroFlashback => Some(ManaCost::ZERO),
-            _ => None,
+            _ => self.source_mana_alternative(),
         })
     }
     pub(super) fn counter_cost_spec(&self) -> Option<AdditionalCost> {
@@ -240,6 +268,17 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| match c.method {
+                    _ if self.independent_additional_mana().is_some() => false,
+                    _ if self.source_mana_alternative().is_some() => {
+                        let base = self.source_mana_alternative().unwrap();
+                        let card = self.item.source.expect("object-backed announcement").card;
+                        self.cost
+                            .zip(card.mana_additional_alternative())
+                            .is_some_and(|(chosen, fee)| {
+                                self.apply_cost_declarations(Card::add_mana_cost(base, fee))
+                                    == Some(chosen)
+                            })
+                    }
                     CastMethod::Normal | CastMethod::LinkedExileCounterCost => {
                         self.cost.is_some_and(|cost| {
                             self.item
@@ -292,7 +331,11 @@ impl Announcement {
                     .cast
                     .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
-                    .or_else(|| card.additional_cost())
+                    .or_else(|| {
+                        (self.item.cast?.additional_cost_route != Some(AdditionalCostRoute::Mana))
+                            .then(|| card.additional_cost())
+                            .flatten()
+                    })
                     .and_then(|mut cost| {
                         if let EffectChoiceKind::OptionalBeholdType(amount) = cost.kind {
                             let kind = self.item.cast?.beheld_type?;
@@ -437,17 +480,12 @@ impl Announcement {
         }
     }
 
-    fn cost_route_options(
-        &self,
-    ) -> impl Iterator<
-        Item = (
-            ManaCost,
-            ActivationCostRoute,
-            Option<ActivationCostChoice>,
-            bool,
-        ),
-    > + '_ {
+    fn cost_route_options(&self) -> impl Iterator<Item = AnnouncementCostChoice> + '_ {
+        let source_mana_alternative = self.source_mana_alternative();
         let options = match self.item.kind {
+            StackKind::Spell if source_mana_alternative.is_some() => {
+                std::iter::once(source_mana_alternative.unwrap()).chain([].iter().copied())
+            }
             StackKind::Spell
                 if self
                     .item
@@ -614,71 +652,94 @@ impl Announcement {
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
         };
+        let independent_fee = self.independent_additional_mana();
         let fixed_alternative = self.fixed_alternative_cost();
-        let fee = fixed_alternative.and_then(|_| {
-            self.item
-                .source
-                .expect("object-backed announcement")
-                .card
-                .mana_additional_alternative()
-        });
-        let fee_bases = if self
+        let warp = self
             .item
             .cast
-            .is_some_and(|cast| cast.method == CastMethod::Warp)
-        {
+            .is_some_and(|cast| cast.method == CastMethod::Warp);
+        // Keep Warp's bare colored alternatives before their fee variants.
+        let inline_fee = independent_fee.filter(|_| !warp);
+        let fixed_fee = fixed_alternative
+            .filter(|_| warp || independent_fee.is_none())
+            .and_then(|_| {
+                self.item
+                    .source
+                    .expect("object-backed announcement")
+                    .card
+                    .mana_additional_alternative()
+            });
+        let fee_bases = if warp {
             self.warp_cost_options()
         } else {
             std::iter::once(fixed_alternative.unwrap_or(ManaCost::ZERO)).chain([].iter().copied())
         };
+        let impending = self.item.cast.and_then(|cast| {
+            if source_mana_alternative.is_some() || !cast.method.allows_printed_alternative() {
+                return None;
+            }
+            self.item
+                .source
+                .and_then(|source| source.card.impending_spec())
+                .map(|spec| {
+                    (
+                        spec.cost,
+                        ActivationCostRoute::Printed,
+                        SpellAlternative::Impending,
+                    )
+                })
+        });
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
-            .map(|cost| {
-                let evoked = self.item.cast.is_some_and(|c| {
-                    matches!(
-                        c.method,
-                        CastMethod::Normal | CastMethod::LinkedExileCounterCost
-                    )
-                }) && self
-                    .item
-                    .source
-                    .is_some_and(|s| s.card.evoke_costs().contains(&cost));
-                (cost, ActivationCostRoute::Printed, evoked)
+            .map(move |cost| {
+                let evoked = source_mana_alternative.is_none()
+                    && self.item.cast.is_some_and(|c| {
+                        matches!(
+                            c.method,
+                            CastMethod::Normal | CastMethod::LinkedExileCounterCost
+                        )
+                    })
+                    && self
+                        .item
+                        .source
+                        .is_some_and(|s| s.card.evoke_costs().contains(&cost));
+                let alternative = if evoked {
+                    SpellAlternative::Evoke
+                } else {
+                    SpellAlternative::None
+                };
+                (cost, ActivationCostRoute::Printed, alternative)
             })
+            .chain(impending)
             .chain(self.equip_zero_available.then_some((
                 ManaCost {
                     colored: [0; 6],
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
-                false,
+                SpellAlternative::None,
             )))
             .chain(self.has_equip_discard_alternative().then_some((
                 ManaCost::ZERO,
                 ActivationCostRoute::DiscardCard,
-                false,
+                SpellAlternative::None,
             )))
-            .flat_map(move |(cost, route, evoked)| {
-                std::iter::once((cost, route, evoked)).chain(
-                    (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
+            .flat_map(move |(cost, route, alternative)| {
+                std::iter::once((cost, route, alternative)).chain(
+                    (mayhem && independent_fee.is_none() && fixed_alternative.is_none())
                         .then(|| {
-                            let card = self
-                                .item
+                            self.item
                                 .source
                                 .expect("announcement has object source")
-                                .card;
-                            if mayhem {
-                                card.mana_additional_alternative()
-                            } else {
-                                card.explicit_additional_mana()
-                            }
+                                .card
+                                .mana_additional_alternative()
                         })
                         .flatten()
-                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, alternative)),
                 )
             })
-            .flat_map(move |(cost, route, evoked)| {
+            .flat_map(move |(cost, route, alternative)| {
                 let discounts = self
                     .activation_discounts()
                     .with_ordinary(match self.item.kind {
@@ -709,7 +770,7 @@ impl Announcement {
                                 route,
                                 matches!(self.item.kind, StackKind::ActivatedAbility { .. })
                                     .then_some(choice),
-                                evoked,
+                                alternative,
                             )
                         })
                     })
@@ -749,20 +810,41 @@ impl Announcement {
                                 .1,
                         }
             })
-            .chain(fee_bases.filter_map(move |base| {
-                fee.map(|fee| {
-                    (
-                        Card::add_mana_cost(base, fee),
-                        ActivationCostRoute::Printed,
-                        None,
-                        false,
+            .flat_map(
+                move |(base, activation_route, activation_choice, spell_alternative)| {
+                    let nonmana = independent_fee.map(|_| AdditionalCostRoute::Nonmana);
+                    let fee = inline_fee.map(|fee| {
+                        (
+                            Card::add_mana_cost(base, fee),
+                            Some(AdditionalCostRoute::Mana),
+                        )
+                    });
+                    std::iter::once((base, nonmana)).chain(fee).filter_map(
+                        move |(cost, additional_cost_route)| {
+                            self.apply_cost_declarations(cost)
+                                .map(|cost| AnnouncementCostChoice {
+                                    cost,
+                                    base,
+                                    activation_route,
+                                    activation_choice,
+                                    spell_alternative,
+                                    additional_cost_route,
+                                })
+                        },
                     )
+                },
+            )
+            .chain(fee_bases.filter_map(move |base| {
+                let cost = self.apply_cost_declarations(Card::add_mana_cost(base, fixed_fee?))?;
+                Some(AnnouncementCostChoice {
+                    cost,
+                    base,
+                    activation_route: ActivationCostRoute::Printed,
+                    activation_choice: None,
+                    spell_alternative: SpellAlternative::None,
+                    additional_cost_route: independent_fee.map(|_| AdditionalCostRoute::Mana),
                 })
             }))
-            .filter_map(|(cost, route, choice, evoked)| {
-                self.apply_cost_declarations(cost)
-                    .map(|cost| (cost, route, choice, evoked))
-            })
     }
     pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
         let reductions = self.activation_reductions.as_deref();
@@ -823,24 +905,48 @@ impl Announcement {
         )
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        self.cost_route_options().map(|(cost, _, _, _)| cost)
+        self.cost_route_options().map(|choice| choice.cost)
+    }
+    pub(super) fn cast_base_cost_for_index(&self, index: usize) -> Option<ManaCost> {
+        self.cost_route_options()
+            .nth(index)
+            .map(|choice| choice.base)
+    }
+    pub(super) fn additional_cost_route_for_index(
+        &self,
+        index: usize,
+    ) -> Option<AdditionalCostRoute> {
+        self.independent_additional_mana()?;
+        self.cost_route_options().nth(index)?.additional_cost_route
     }
     pub(super) fn select_cost(&mut self, index: usize) {
-        let (cost, route, choice, evoked) =
-            self.cost_route_options().nth(index).expect("cost option");
+        let choice = self.cost_route_options().nth(index).expect("cost option");
         if let Some(cast) = &mut self.item.cast {
-            cast.evoked = evoked;
+            cast.evoked = choice.spell_alternative == SpellAlternative::Evoke;
+            cast.impending = choice.spell_alternative == SpellAlternative::Impending;
+            cast.additional_cost_route = choice.additional_cost_route;
         }
-        self.cost = Some(cost);
-        self.activation_cost_route = route;
-        self.activation_choice = choice.map(Box::new);
+        self.cost = Some(choice.cost);
+        self.activation_cost_route = choice.activation_route;
+        self.activation_choice = choice.activation_choice.map(Box::new);
     }
     pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
         if self.activation_order_costs().is_some() {
             self.activation_cost_route
         } else {
-            self.cost_route_options().nth(index).expect("cost option").1
+            self.cost_route_options()
+                .nth(index)
+                .expect("cost option")
+                .activation_route
         }
+    }
+    pub(super) fn impending_route_for_index(&self, index: usize) -> bool {
+        self.item.source.is_some_and(|source| {
+            self.item.cast.is_some() && source.card.impending_spec().is_some()
+        }) && self
+            .cost_route_options()
+            .nth(index)
+            .is_some_and(|choice| choice.spell_alternative == SpellAlternative::Impending)
     }
     pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
         self.activation_choice
@@ -850,7 +956,7 @@ impl Announcement {
                 self.cost_route_options()
                     .next()
                     .expect("activation cost")
-                    .2
+                    .activation_choice
                     .expect("activation route")
             })
     }
@@ -989,6 +1095,7 @@ struct TargetSourceCharacteristics<'a> {
     spell: Option<Card>,
     chosen_creature_type: Option<Option<crate::cards::CreatureType>>,
     event_object: Option<&'a EventObjectView>,
+    acquired_link_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'a> TargetSourceCharacteristics<'a> {
@@ -1000,6 +1107,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
             spell: Some(definition),
             chosen_creature_type: None,
             event_object: None,
+            acquired_link_cohort: None,
         }
     }
     fn from_item(item: &'a SpellView) -> Self {
@@ -1017,6 +1125,7 @@ impl<'a> TargetSourceCharacteristics<'a> {
                 .as_ref()
                 .map(|facts| facts.chosen_creature_type),
             event_object: item.event_object.as_deref(),
+            acquired_link_cohort: item.linked_activation_cohort(),
         }
     }
 }
@@ -2154,16 +2263,30 @@ impl Game {
         &self,
         world: &W,
         source: ObjectRef,
+        controller: Player,
         qualification: Option<TargetSourceCharacteristics<'_>>,
     ) -> Option<(Card, GrantedSubtypes)> {
         let qualification = self.target_source_context(source, qualification);
         let source = qualification.map_or(source, |q| q.reference);
         let snapshot = qualification.and_then(|q| q.snapshot);
         if let Some(spell) = qualification.and_then(|q| q.spell) {
-            Some((
-                spell,
-                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes),
-            ))
+            let base =
+                snapshot.map_or_else(GrantedSubtypes::default, |facts| facts.granted_subtypes);
+            let subtypes = if self.state.objects.get(source.card as usize).is_some()
+                && world.reference(source.card) == source
+            {
+                if self.state.objects[source.card as usize].zone == Zone::Stack
+                    && world.object(source.card).zone == Zone::Stack
+                    && self.effective_spell_card(source.card) == spell
+                {
+                    world.subtypes(source.card)
+                } else {
+                    subtypes::spell_subtypes(world, controller, spell, base)
+                }
+            } else {
+                base
+            };
+            Some((spell, subtypes))
         } else if self.state.objects.get(source.card as usize).is_some()
             && world.reference(source.card) == source
         {
@@ -2240,7 +2363,11 @@ impl Game {
             TargetRule::LinkedExileCreature { ability_origin } => {
                 return matches!(target,Target::Card(id) if lookup(id).is_some_and(|o|
                     o.zone==Zone::Exile && o.is_card() && world.kinds(id) & 1 != 0
-                    && self.linked_exile_for_origin(source,ability_origin.unwrap_or_else(||self.copy_ability_origin(source))).contains(&self.object_ref(id))));
+                    && self.linked_exile_for_cohort(
+                        source,
+                        ability_origin.unwrap_or_else(||self.copy_ability_origin(source)),
+                        qualification.and_then(|source| source.acquired_link_cohort),
+                    ).contains(&world.reference(id))));
             }
             TargetRule::FaceUpExiledCard { owner } => {
                 return matches!(target, Target::Card(id) if lookup(id).is_some_and(|object|
@@ -2295,7 +2422,7 @@ impl Game {
                         && object.is_card()
                         && object.owner == controller
                         && object.card.is_creature()
-                        && !object.card.has_subtype(excluded_subtype)
+                        && !has_subtype(id, excluded_subtype)
                         && self.object_ref(id) != source
                         && maximum
                             .is_some_and(|max| i128::from(object.card.fixed_mana_value()) <= max)
@@ -2360,8 +2487,10 @@ impl Game {
                 ) {
                     return false;
                 }
-                if *predicate == TargetPredicate::OtherThanAuraAttachment
-                    && matches!(target, Target::Player(_))
+                if matches!(
+                    predicate,
+                    TargetPredicate::OtherThanAuraAttachment | TargetPredicate::OtherThanSource
+                ) && matches!(target, Target::Player(_))
                 {
                     return true;
                 }
@@ -2475,6 +2604,10 @@ impl Game {
                         self.state.attackers.iter().any(|a| a.card == id)
                             || self.state.blocking.contains(&id)
                     }
+                    TargetPredicate::Untapped => object.zone == Zone::Battlefield && !object.tapped,
+                    TargetPredicate::FaceDown => {
+                        object.zone == Zone::Battlefield && self.is_face_down(world.reference(id))
+                    }
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
                     TargetPredicate::HasCounter(kind) => world.counter_count(id, kind) > 0,
@@ -2486,6 +2619,9 @@ impl Game {
                     }
                     TargetPredicate::ToughnessAtLeast(n) => {
                         characteristics().stats(id).toughness >= i128::from(n)
+                    }
+                    TargetPredicate::ToughnessAtMost(n) => {
+                        characteristics().stats(id).toughness <= i128::from(n)
                     }
                     TargetPredicate::PowerOrToughnessAtLeast(n) => {
                         let stats = characteristics().stats(id);
@@ -2566,7 +2702,12 @@ impl Game {
                     if world.protected_from_subtype(id, |subtype| {
                         source_subtypes
                             .get_or_init(|| {
-                                self.target_source_subtypes(world, source, qualification)
+                                self.target_source_subtypes(
+                                    world,
+                                    source,
+                                    controller,
+                                    qualification,
+                                )
                             })
                             .is_some_and(|(card, types)| types.has(card, subtype))
                     }) {
@@ -2584,6 +2725,7 @@ impl Game {
                             qualification,
                             keywords,
                         ))
+                    && !world.opposing_creature_hexproof_and_ward_disabled(id, controller)
                 {
                     return false;
                 }
@@ -2851,18 +2993,25 @@ impl Game {
         id: u64,
         payment: Mana,
     ) -> SpellView {
+        let mut facts = self.damage_facts(card);
+        if !CharacteristicWorld::entry_values(self).is_empty() {
+            // The packet holds cast receipts. The live grant uses the caster
+            // and selected spell face at the point of each characteristic query.
+            facts.granted_subtypes = subtypes::initial_subtypes(self, card);
+        }
         SpellView {
             source: Some(StackSourceView {
                 id: card,
                 object,
                 card: self.state.objects[card as usize].card,
-                facts: self.damage_facts(card),
+                facts,
             }),
             source_less_rule: None,
             additional_triggers: 0,
             gift: None,
             source_move: None,
             borrowed_slot: None,
+            acquired_link_cohort: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_types_lki: None,
@@ -2905,6 +3054,8 @@ impl Game {
                 granted_warp: false,
                 exile_play_surcharge: 0,
                 evoked: false,
+                impending: false,
+                additional_cost_route: None,
                 beheld_type: None,
                 behold_type_declared: false,
                 behold_exiled: None,
@@ -3684,6 +3835,7 @@ impl Game {
             || self.copy_recipe(self.object_ref(id)).is_some_and(|recipe| {
                 recipe.exceptions.retained_activation.is_some()
                     || recipe.exceptions.equip_generic_reduction != 0
+                    || recipe.exceptions.add_keywords != Keywords::NONE
             })
         {
             return true;
@@ -3721,6 +3873,8 @@ impl Game {
     ) -> bool {
         match filter {
             crate::SearchFilter::NoAbilities => !self.object_has_rules_abilities(id),
+            crate::SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
+            crate::SearchFilter::NonSubtype(subtype) => !self.has_subtype(id, subtype),
             crate::SearchFilter::AllOf(filters) => filters
                 .iter()
                 .all(|filter| self.object_search_filter_matches(*filter, id)),

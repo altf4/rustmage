@@ -3,10 +3,31 @@
   "catalogue_id": 4956,
   "oracle_id": "52e77cc3-f8e9-4a20-811b-fe1e46a96ad7",
   "facts_sha256": "8b0cf7ba90292f126baf164cdb8a4efef9d4a73de5d857f3d167ff2b9fd42340",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3c048bcba13b8855997ec4e06b438a2ea7300c53e89430ca1646a6cf7fe0f8ef"
-  },
-  "physical_metadata_sha256": "c0a5dfd1b9274fd9d9fb0e9763fe30a6c40e5c49b7e6c0bc1dfe4970c477c044"
+  "complete": true,
+  "physical_metadata_sha256": "c0a5dfd1b9274fd9d9fb0e9763fe30a6c40e5c49b7e6c0bc1dfe4970c477c044",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/w/WalkInClosetForgottenCellar.java",
+  "java_sha256": "5f4440eb832d57cf2bd90cad792998871590bf090b79ea8a5868e893bb829169",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ruleModifying/PlayFromGraveyardControllerEffect.java",
+      "sha256": "72cc948dd1f65f347eb25cc2f8b19dab87326c3aa0ae77945c2fd4b6e142c6a4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GraveyardFromAnywhereExileReplacementEffect.java",
+      "sha256": "f2234484cde3a8148ea5ea49244dea8bb74ef2106f5682453a85341448c85a78"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The left door changes land origin only. The right ability permits normal costs and timing, and redirects cards but not tokens for the rest of that turn."
+  }
 }

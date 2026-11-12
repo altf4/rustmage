@@ -3,10 +3,32 @@
   "catalogue_id": 1889,
   "oracle_id": "aa1d8bfa-729a-4e10-8069-57a1d4f4392b",
   "facts_sha256": "fd2d667e53b253b368b412182ce3a3693076279847e32bd39331cb43e9bd081a",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "62b2c37b1d2b79ddcb49e56fc1b3c04e0d24ee71b88198d76c0ef41c533d57c9"
-  },
-  "physical_metadata_sha256": "701be0bbc427214ee294ace3d36df0ce587b73c01b5281b088c93f69d67b8ac0"
+  "complete": true,
+  "physical_metadata_sha256": "701be0bbc427214ee294ace3d36df0ce587b73c01b5281b088c93f69d67b8ac0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrowingDread.java",
+  "java_sha256": "11ad40522aa2a058d1a3eee527d1fb4a73d6e0b4ea73f01d6fe6e683ccec607b",
+  "rules_tests": "tests/dsk_gold_manifest_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ]
 }

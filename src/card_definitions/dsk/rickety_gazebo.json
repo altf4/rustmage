@@ -1,0 +1,29 @@
+{
+  "name": "Rickety Gazebo",
+  "catalogue_id": 5644,
+  "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+  "facts_sha256": "0be0e93fc62fc0abe81e658ce3295368541162b7949b0a921380f494fa69b11a",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "a341eb75-e6a0-468b-8c83-61102249c648",
+    "index": 1,
+    "sha256": "5e8e2cab250e89494adf5026dbf24baeefc583c4b68fba5ca6d88486d494baf4"
+  },
+  "physical_metadata_sha256": "e96fe9e010bfbbacbcafea247eec3f6f9a8ea5c31dd433adc6464111d032f422",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GreenhouseRicketyGazebo.java",
+  "java_sha256": "8045522344c212e2ea3fe7b1c7673168f55bbe567d4bf3e8c214f17315f1e110",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillThenPutInHandEffect.java",
+      "sha256": "15051b0e2d1701dd51f83164acfa0c4dcfc0b17d5bd6646c43209d90553d821d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    }
+  ]
+}

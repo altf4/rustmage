@@ -3,10 +3,36 @@
   "catalogue_id": 177,
   "oracle_id": "452d98ae-0fa2-4cff-9e18-eecd76ddb20b",
   "facts_sha256": "0b34823294b22894476547455766a69cc780b53ba5aac4140eae66a0296474a6",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "cbdd38c6622d71612d15bebe0192272cc326462f92be36a2af813b6c048abdf2"
-  },
-  "physical_metadata_sha256": "27e9432e7517b0a4abe0fd3506bb17935ff5547793b7453bf2c9fa31ef6c75ad"
+  "complete": true,
+  "physical_metadata_sha256": "27e9432e7517b0a4abe0fd3506bb17935ff5547793b7453bf2c9fa31ef6c75ad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/Anthropede.java",
+  "java_sha256": "8b820b37ddc76826abb91ac879935a02804dcd3a68ce00ba1015bf3b693d31ba",
+  "rules_tests": "tests/dsk_gold_room_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoWhenCostPaid.java",
+      "sha256": "542e5c843d26a40b1127f4f284bf4102a63c216395d7dd16443725649a55abac"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The optional resolution cost is committed before a separate targeted reflexive ability is created."
+  }
 }

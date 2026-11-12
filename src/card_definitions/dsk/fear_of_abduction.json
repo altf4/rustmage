@@ -3,10 +3,44 @@
   "catalogue_id": 1460,
   "oracle_id": "8f5495d7-ac44-47cd-aa39-48a35034b390",
   "facts_sha256": "e59f988e08614769b992d9e14765ef6ee813212e2f57836b0411b04011e8554a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0a79196c6aefb8b248837b1a9d1bf465fe859a2da4e929334ba4a6af261ec2fe"
   },
-  "physical_metadata_sha256": "09d8fce1d7036615219fcd34edde49c45b1e91040810a9d81782a530513fc51f"
+  "physical_metadata_sha256": "09d8fce1d7036615219fcd34edde49c45b1e91040810a9d81782a530513fc51f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfAbduction.java",
+  "java_sha256": "06a763ca7ea8e9fd8fe7a796df188deae4d5c5e5d53a216cdeb9597bbf5d6a3c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/LeavesBattlefieldTriggeredAbility.java",
+      "sha256": "c4061b0636d580e727a5f586192bff129fedfe84eaa6e1c1bc051c4981f2e274"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileTargetCost.java",
+      "sha256": "ce2d21fe3a6551409c30e41747741023bbb36e392925927be83b75e2efbe8345"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTargetEffect.java",
+      "sha256": "de16f6773a323217ce61b5af02b0d191ff4f68a53102c88b9297d6096ccfa756"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Exact still-exiled cards paid as the controlled creature cost and exiled by the opposing creature entry trigger share the entered incarnation's link. Departure returns each linked card to its owner. A later-resolving entry trigger can still exile its target."
+  }
 }

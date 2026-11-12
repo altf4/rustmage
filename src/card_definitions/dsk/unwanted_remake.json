@@ -3,10 +3,29 @@
   "catalogue_id": 4808,
   "oracle_id": "90aa9113-5148-486b-a1c6-b4230e6d3e41",
   "facts_sha256": "c700f009eec44172433c9007b7d9fa64cb83ba6a9f10c027e7c8bbce584d53eb",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5dad994d5d7b0816e056215a3f0e8146435e6f91279a3530262ca211de1e501d"
   },
-  "physical_metadata_sha256": "2321ffd5cea8d5353f656524da5d5db006e9405565c24717acdaeaba0fb144bc"
+  "physical_metadata_sha256": "2321ffd5cea8d5353f656524da5d5db006e9405565c24717acdaeaba0fb144bc",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnwantedRemake.java",
+  "java_sha256": "4f709e089b9e2bade1ed8fcba30e2f7e306ff986cd656ee6abcf41d48c699a02",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR608.2b and CR701.62. Its legal target's controller is sampled at resolution before destruction, and still manifests if the destruction fails."
+  }
 }

@@ -3,10 +3,36 @@
   "catalogue_id": 3498,
   "oracle_id": "8b6d37a7-a88e-45dd-b45e-642a44caaf05",
   "facts_sha256": "01915aaad64b66881b5d655e4017d36b5ab283d7eea48a88ff064c3960477885",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f30c939675b150c647602cde5cf26288229b9bde4e3eec2f532af3f278b74093"
   },
-  "physical_metadata_sha256": "b8903f584e70b6334f7e2b5e4c74752da4b9bcaccbb5bb0a25c7d3392cba67ef"
+  "physical_metadata_sha256": "b8903f584e70b6334f7e2b5e4c74752da4b9bcaccbb5bb0a25c7d3392cba67ef",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/ResurrectedCultist.java",
+  "java_sha256": "27989e96679184ee348641ddef44e95544f8621cffc3c2aa25d73aec9ca89f97",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateIfConditionActivatedAbility.java",
+      "sha256": "9f9d45f4e624eaa78c99f720c00a3302f6936e7b5246bf76ae15f9e75ba327b0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnSourceFromGraveyardToBattlefieldWithCounterEffect.java",
+      "sha256": "b2e498c7be8b60c53c88c09ed1e81bf5eb78154ec9f2f0e1af0f48ee8c61ed0d"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_combat_and_graveyard.rs"
 }

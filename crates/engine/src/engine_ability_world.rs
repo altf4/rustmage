@@ -106,6 +106,9 @@ pub(super) trait CharacteristicWorld {
     fn creatures_died(&self) -> u64 {
         self.game().state.creatures_died_this_turn
     }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.game().state.non_zombie_creature_died_this_turn
+    }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.game().state.players[player.index()].controlled_creatures_died_this_turn
     }
@@ -551,6 +554,15 @@ pub(super) trait CharacteristicWorld {
                 .map(|card| card.fixed_mana_value())
                 .sum();
         }
+        if object.zone == Zone::Battlefield
+            && let Some(room) = self.definition(id).room()
+            && let Some(doors) = rooms::doors(self, id)
+        {
+            return doors.active_halves(room).map(Card::fixed_mana_value).sum();
+        }
+        if object.zone == Zone::Stack && object.card.room().is_some() {
+            return self.game().effective_spell_card(id).fixed_mana_value();
+        }
         let Some(front) = object.card.face_parent() else {
             return object.card.fixed_mana_value();
         };
@@ -775,6 +787,31 @@ pub(super) trait CharacteristicWorld {
         } else {
             keywords
         }
+    }
+    fn opposing_creature_hexproof_and_ward_disabled(&self, id: CardId, actor: Player) -> bool {
+        let recipient = self.object(id);
+        if recipient.zone != Zone::Battlefield || recipient.controller == actor {
+            return false;
+        }
+        let disables = |fragment: &StaticAbilityFragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::OpposingCreatureHexproofAndWardDisabled
+            )
+        };
+        self.static_sources().iter().any(|&source| {
+            let provider = self.object(source);
+            provider.zone == Zone::Battlefield
+                && provider.controller == actor
+                && provider
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(disables))
+                && self.kinds(id) & 1 != 0
+                && characteristic_query::CharacteristicQuery::in_world(self)
+                    .continuous_fragment_available(source, disables)
+        })
     }
     fn zone_move_prevented(&self, object: ObjectRef, requested: Zone) -> bool {
         #[cfg(feature = "test-support")]
@@ -1182,6 +1219,7 @@ pub(super) trait CharacteristicWorld {
         }
         let evaluation = ability_evaluation::evaluate_if_needed(self);
         if evaluation.is_none()
+            && self.definition(id).room().is_none()
             && !matches!(
                 self.object(id).card.entry_choice(),
                 Some(EntryChoiceKind::NamedModes(_))
@@ -1275,6 +1313,9 @@ pub(super) trait CharacteristicWorld {
     }
     fn entered_this_turn(&self, source: ObjectRef) -> bool {
         self.entry_controller_this_turn(source).is_some()
+    }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.game().state.players[player.index()].lands_entered_this_turn
     }
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.game().entry_controller_this_turn(source)
@@ -1420,7 +1461,7 @@ pub(super) trait CharacteristicWorld {
             .grants
             .iter()
             .filter_map(|&grant| {
-                let ability_order::GrantedAbilityKind::Template(index) = grant.kind else {
+                let ability_order::GrantedAbilityKind::ActivatedTemplate(index) = grant.kind else {
                     return None;
                 };
                 grant
@@ -1484,7 +1525,7 @@ pub(super) trait CharacteristicWorld {
                     .any(|grant| {
                         grant.source == self.reference(id)
                             && grant.granting_card == object.card
-                            && grant.kind == ability_order::GrantedAbilityKind::Template(index)
+                            && grant.kind == ability_order::GrantedAbilityKind::ActivatedTemplate(index)
                     })
             }
             Zone::Hand | Zone::Graveyard => {
@@ -1560,6 +1601,7 @@ pub(super) trait CharacteristicWorld {
                             source: reference,
                             production,
                             subtype_derived: false,
+                            origin: None,
                             sacrifice: matches!(
                                 *fragment,
                                 crate::cards::StaticAbilityFragment::AttachmentSacrificeMana(_)
@@ -1570,16 +1612,19 @@ pub(super) trait CharacteristicWorld {
             }
         }
         for &source in self.static_sources() {
+            let reference = self.reference(source);
             for group in self.object(source).card.static_ability_groups() {
+                if !entry_modes::group_enabled(self, reference, group) {
+                    continue;
+                }
                 for fragment in group.fragments {
-                    if let Some(production) =
-                        self.static_tap_mana(self.reference(source), id, *fragment)
-                    {
+                    if let Some(production) = self.static_tap_mana(reference, id, *fragment) {
                         result.push(ability_order::GrantedManaAbility {
-                            source: self.reference(source),
+                            source: reference,
                             production,
                             sacrifice: false,
                             subtype_derived: false,
+                            origin: None,
                         });
                     }
                 }
@@ -1613,6 +1658,7 @@ pub(super) trait CharacteristicWorld {
                     production: ManaProduction::Fixed(production),
                     sacrifice: false,
                     subtype_derived: true,
+                    origin: None,
                 });
             }
         }
@@ -1815,6 +1861,18 @@ pub(super) fn player_protection_source<W: CharacteristicWorld + ?Sized>(
             && characteristic_query::CharacteristicQuery::in_world(world)
                 .continuous_fragment_available(id, grants_protection)
     })
+}
+
+/// Hexproof does not affect an Aura that enters attached without targeting.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn player_aura_can_enchant<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    aura: Card,
+    controller: Player,
+    player: Player,
+) -> bool {
+    aura.enchants_player()
+        && (controller == player || player_protection_source(world, player).is_none())
 }
 
 /// Check the prospective Aura and its exact prospective recipient in the same world.
@@ -2146,6 +2204,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     fn creatures_died(&self) -> u64 {
         self.parent.creatures_died()
     }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.parent.non_zombie_creature_died()
+    }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.parent.controlled_creatures_died(player)
     }
@@ -2172,6 +2233,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for SourceTappedWorld<
     }
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.parent.entry_controller_this_turn(source)
+    }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.parent.lands_entered_this_turn(player)
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]

@@ -140,6 +140,18 @@ impl Game {
                     && self.exile_permission_guard(p)
                     && !p.cast_only
             })
+            || self.has_linked_life_play_permission(player, card)
+    }
+    pub(super) fn select_ordinary_paid_exile_cast(&mut self, stack: u64) {
+        if let Some(approval) = self
+            .state
+            .linked_choices
+            .as_mut()
+            .and_then(|data| data.play_approvals.iter_mut().find(|row| row.0 == stack))
+        {
+            // An independent free cast permission cannot replace the chosen paid route.
+            approval.2 = false;
+        }
     }
     pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
         if self.state.objects[card as usize].zone != Zone::Exile {
@@ -567,12 +579,18 @@ impl Game {
         }
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Each optional cost has separate active providers"
+    )]
     pub(super) fn visit_taxed_exile_plays(
         &self,
         actor: Player,
         card: CardId,
         sorcery: bool,
         casting_prohibited: bool,
+        exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let current = &self.state.objects[card as usize];
@@ -612,7 +630,15 @@ impl Game {
             offered.push(surcharge);
             if !casting_prohibited
                 && !self.nonhand_cast_prohibited(actor)
-                && self.visit_taxed_exile_casts(actor, object, sorcery, surcharge, emit)
+                && self.visit_taxed_exile_casts(
+                    actor,
+                    object,
+                    sorcery,
+                    surcharge,
+                    exile_zero,
+                    mana_alternatives,
+                    emit,
+                )
             {
                 return true;
             }
@@ -620,21 +646,24 @@ impl Game {
         false
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Each optional cost has separate active providers"
+    )]
     fn visit_taxed_exile_casts(
         &self,
         actor: Player,
         object: ObjectRef,
         sorcery: bool,
         surcharge: std::num::NonZeroU32,
+        exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
-        for (face, definition) in [
-            (CastFace::Normal, Some(physical)),
-            (CastFace::Adventure, physical.adventure_spell()),
-            (CastFace::Omen, physical.omen_spell()),
-            (CastFace::Back, physical.back_face()),
-        ] {
+        for (face, definition) in
+            CastFace::choices(physical).map(|face| (face, face.definition(physical)))
+        {
             let Some(definition) = definition.filter(|card| !card.is_land()) else {
                 continue;
             };
@@ -644,12 +673,21 @@ impl Game {
                 && self.state.active == actor
                 && self.state.step == Step::Blockers
                 && self.has_sneak_cost(actor, object.card);
-            if self.visit_web_slinging_face(
+            if self.visit_exile_zero_face(
+                actor,
+                object,
+                face,
+                sorcery,
+                ExileZeroOrigin::Taxed { surcharge },
+                exile_zero,
+                emit,
+            ) || self.visit_paid_cast_alternative_face(
                 actor,
                 object.card,
                 face,
                 sorcery,
-                WebSlingingOrigin::TaxedExile { surcharge },
+                PaidCastOrigin::TaxedExile { surcharge },
+                mana_alternatives,
                 emit,
             ) {
                 return true;
@@ -907,6 +945,7 @@ impl Game {
         }
         self.queue_earthbend_returns(events);
         self.record_entry_turn_facts(events);
+        self.remember_opposing_face_down_creatures();
         self.record_creature_entry_history(events);
         self.queue_manifest_deaths(events);
         self.death_batch_triggers(events, death_sources);
@@ -914,6 +953,7 @@ impl Game {
         self.creature_death_turn_callbacks(events);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
+        self.land_cards_enter_graveyard_from_library_triggers(events);
         self.creatures_exiled_batch_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);
@@ -973,6 +1013,9 @@ impl Game {
             })
         };
         self.batch_entry_triggers(events, &sources, entry_suppression);
+        for event in events {
+            self.queue_room_entry_unlock(event);
+        }
         // One trigger per observing source for the entire simultaneous entry event.
         let mut token_entered = [Vec::new(), Vec::new()];
         let mut exile_creatures = Vec::new();
@@ -1230,19 +1273,9 @@ impl Game {
         {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
+        for face in CastFace::choices(self.state.objects[card as usize].card) {
             let physical = self.state.objects[card as usize].card;
-            let definition = match face {
-                CastFace::Normal => Some(physical),
-                CastFace::Adventure => physical.adventure_spell(),
-                CastFace::Omen => physical.omen_spell(),
-                CastFace::Back => physical.back_face(),
-            };
+            let definition = face.definition(physical);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }
@@ -1313,6 +1346,29 @@ impl Game {
         }
         self.finish_zone_events(&events, &[]);
     }
+    pub(super) fn exile_each_library_except_bottom_face_down(&mut self, keep: u16) {
+        // Freeze both selections before planning any replacements.
+        let cards: Vec<_> = [self.state.active, self.state.active.other()]
+            .into_iter()
+            .flat_map(|player| {
+                let count = self
+                    .library_card_count(player)
+                    .saturating_sub(usize::from(keep));
+                top_library_cards(self, player, count as u128)
+            })
+            .collect();
+        if cards.is_empty() {
+            return;
+        }
+        let events = self.move_objects_raw(&cards, Zone::Exile);
+        for event in &events {
+            if event.moved && event.destination == Zone::Exile {
+                self.remember_face_down_exile(event.after, 0, None);
+            }
+        }
+        self.finish_zone_events(&events, &[]);
+    }
+
     pub(super) fn exile_top_face_down_play(
         &mut self,
         item: &SpellView,
@@ -1459,18 +1515,8 @@ impl Game {
             return false;
         }
         let physical = self.state.objects[card as usize].card;
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let definition = match face {
-                CastFace::Normal => Some(physical),
-                CastFace::Adventure => physical.adventure_spell(),
-                CastFace::Omen => physical.omen_spell(),
-                CastFace::Back => physical.back_face(),
-            };
+        for face in CastFace::choices(self.state.objects[card as usize].card) {
+            let definition = face.definition(physical);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }

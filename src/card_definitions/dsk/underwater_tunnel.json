@@ -1,0 +1,16 @@
+{
+  "name": "Underwater Tunnel",
+  "catalogue_id": 5663,
+  "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+  "facts_sha256": "2d5c0ea75a25aca1c191d159c2ebc30aab357d908ef4ceda3374680775c174f8",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "2b46394e-d337-4b1a-88e6-7fdac2ee4ac4",
+    "index": 0,
+    "sha256": "acfad822007a9e093967a72472ed6d5bf7ca13dcfbd1e3ad63cb835e48c3a32c"
+  },
+  "physical_metadata_sha256": "5b466233e37fa7cfc7c68f4c64a2aa7a8221d8a9d900fdf86d065b3d160f853b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnderwaterTunnelSlimyAquarium.java",
+  "java_sha256": "9904cd6ebbab1e4b343961d77649099950dc43fdc0aeb1f289871089f468c1c2"
+}

@@ -3,10 +3,32 @@
   "catalogue_id": 3702,
   "oracle_id": "96fd3ee0-84fb-439b-9e2d-b55afe6850a7",
   "facts_sha256": "60c83418cc77edbc266ea6f6608f7d3a4c8c330104dece25f6f4e03353eb7925",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a33a684c3ed3f33796f92f1ce0e594d2e0b0ebc4d7ff5a09b049610f218634d3"
-  },
-  "physical_metadata_sha256": "954710aa091bb8ab5a6c07e1e1427a940dd6f25f1b90b53d9a056a4a7c0ed922"
+  "complete": true,
+  "physical_metadata_sha256": "954710aa091bb8ab5a6c07e1e1427a940dd6f25f1b90b53d9a056a4a7c0ed922",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SawbladeSkinripper.java",
+  "java_sha256": "a403bb505761d9d37f1dcd211b415efd214a2130b94aa573aeee78e2d9234f3f",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PermanentsSacrificedWatcher.java",
+      "sha256": "4a8bff26cc0f195725d2af3cf298c39d453401205ab0ad5b37928b82f58294dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    }
+  ]
 }

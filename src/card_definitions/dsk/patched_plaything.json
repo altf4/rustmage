@@ -3,10 +3,44 @@
   "catalogue_id": 3107,
   "oracle_id": "0b7e950a-89e1-4ec4-94af-5af2f1252b12",
   "facts_sha256": "978fcbe53a8efffd29e9b081865e7ea938c77153a9d8ba6d833b5418bf85af23",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b89e9856309de8f69b320095df09a799bec0823172eea2070d657efdac688c9a"
   },
-  "physical_metadata_sha256": "9abe7e32ec6a8c49ffb2141d38d96d7c7813a4e6641efae4b9496b4d7a306c5f"
+  "physical_metadata_sha256": "9abe7e32ec6a8c49ffb2141d38d96d7c7813a4e6641efae4b9496b4d7a306c5f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PatchedPlaything.java",
+  "java_sha256": "c76227558db3b1a518ba9ba8079ab169226581f087171c151ef79a804a4eda28",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAbility.java",
+      "sha256": "8f8fd13f114dcff33a7022d97b46aa6af78c44986d66d9e9757c7838ada4d81f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromHandSourcePermanentCondition.java",
+      "sha256": "31d5373dcc771682ad52057b992de924cc708652da4d23f06255a9be879fc713"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CastFromHandWatcher.java",
+      "sha256": "8b7528a43f9ebd6bcbf5621c5554c9384d2b3ad3b1e9f49c8b5d45b71003d856"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The double strike creature gets two -1/-1 counters as it enters only if its actual cast was from its caster's own hand."
+  }
 }

@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "5fef31415b76b56ecb9c9786e7b357b8036b706fe8a490b2cc24d0af7411114d"
   },
-  "physical_metadata_sha256": "3687a0fa060e3af4ba1bdde00683fc34b309038e7a4586f80a113213e32f9281"
+  "physical_metadata_sha256": "3687a0fa060e3af4ba1bdde00683fc34b309038e7a4586f80a113213e32f9281",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ShrewdStoryteller.java",
+  "java_sha256": "5c8af053b941eda6dfc2e00dff9c192c39d451bd75d30fdf11a636274f8ce136",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfSecondMainTriggeredAbility.java",
+      "sha256": "fb8861aeb5942bdb16cc2e9aa85b448d43e8a9680ef37d4f572af0d15979269e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/dsk_inherited_gold_cards.rs"
 }

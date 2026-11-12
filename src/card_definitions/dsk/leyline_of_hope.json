@@ -3,10 +3,44 @@
   "catalogue_id": 2482,
   "oracle_id": "c7ee79c3-a273-45b4-b3a4-548d9b2b883c",
   "facts_sha256": "97324a0a3eaaaddfe09116ebc5f606463f2eb98334af291c7cb36adb49efbcae",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e8768db7d7c3567356d67fa755d288125602694d26e443638ab2904183ec6241"
   },
-  "physical_metadata_sha256": "d2cf6668fe0c94e48053c3e8f4814a18648d5228ada2ba9020006157131278cf"
+  "physical_metadata_sha256": "d2cf6668fe0c94e48053c3e8f4814a18648d5228ada2ba9020006157131278cf",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeylineOfHope.java",
+  "java_sha256": "3e351ff59d96cdd5edd3613388979d0f5984c30d8085a111a12c434e2f700c1f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/MoreThanStartingLifeTotalCondition.java",
+      "sha256": "ab1c23fe9abbc57de0859ca76b80c4e982cb2af4399e8e2eb84270da2de6a0f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalContinuousEffect.java",
+      "sha256": "2de3c487481a015d0c657215a34d675e5c74d6acf25594afa66f92df53d4b578"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GainPlusOneLifeReplacementEffect.java",
+      "sha256": "ff0bbaac35d463283b87343a84134f47042deb996039196b2cc8d49d4446ac91"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "An optional kept-opening-hand placement, one extra life per positive gain event, and a continuous +2/+2 for controlled creatures at exactly seven or more above the player's starting life."
+  }
 }

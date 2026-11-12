@@ -125,6 +125,7 @@ const PROTECTION_PROVIDER: CardRules = CardRules {
         first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::ControlledPermanentKeywords {
             kinds: 1,
+            other: false,
             keywords: Keywords::PROTECTION_GREEN,
         }],
     }],

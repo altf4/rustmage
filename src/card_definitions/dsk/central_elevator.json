@@ -1,0 +1,16 @@
+{
+  "name": "Central Elevator",
+  "catalogue_id": 5625,
+  "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+  "facts_sha256": "6a4759952b4435c679897d2adffe65304a7ba8e889426add635c04b5a9fdf634",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+    "index": 0,
+    "sha256": "4cae58d57ad6d2ef4ea03aada1468d001e10b37adefe4f6d87b9f174b1001b4d"
+  },
+  "physical_metadata_sha256": "f30f60a8d7161c65e07e03bb77bc803d87154a0a8b5d4955ecf4d4c332f40500",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CentralElevatorPromisingStairs.java",
+  "java_sha256": "80c4a91a3f4e2709ddb8cc2413814da4c2589f8d20a1a796c114a58b1fb90570"
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-spider-reach-green",
+  "catalogue_id": 5678,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "1da7c7aeed1bd2164761d0413be491f6958e019f2bb7b72dc40ed62a1ff96ae0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spider22Token.java",
+  "java_sha256": "a08bd034b9c5bd7b8aeab8661b076051e8a8dc82f6d5df7aeb8f9c103c93b131"
+}

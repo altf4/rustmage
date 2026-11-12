@@ -111,6 +111,7 @@ fn read_counter_kinds(program: &[Instruction], kinds: &mut Vec<CounterKind>) {
             | Instruction::DrainLifeScaled(value)
             | Instruction::LoseOpponentGainSame(value)
             | Instruction::DamageScaled(value)
+            | Instruction::DamageRememberPlayersScaled(value)
             | Instruction::DamageWithControllerScaled {
                 controller_damage: value,
                 ..

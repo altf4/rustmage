@@ -1,5 +1,6 @@
 //! Actual committed activations, distinct from resolution, copies and funding.
 use super::*;
+use crate::cards::TriggerLimit;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn register_activation_observer(&mut self, id: CardId) {
@@ -235,17 +236,29 @@ impl Game {
         let Some(identity) = item.source else {
             return;
         };
-        let condition = item.trigger_definition().triggers()[usize::from(ability)].condition;
-        if condition.once_per_turn() {
-            let used = TriggerUse {
-                source: identity.object,
-                ability,
-                origin: item.source_ability_origin,
-                controller: None,
-            };
-            if !self.state.triggered_this_turn.contains(&used) {
-                self.state.triggered_this_turn.push(used);
+        let definition = item.trigger_definition();
+        let condition = definition.triggers()[usize::from(ability)].condition;
+        match condition.trigger_limit() {
+            Some(TriggerLimit::Turn) => {
+                let used = TriggerUse {
+                    source: identity.object,
+                    ability,
+                    origin: item.source_ability_origin,
+                    controller: None,
+                };
+                if !self.state.triggered_this_turn.contains(&used) {
+                    self.state.triggered_this_turn.push(used);
+                }
             }
+            Some(TriggerLimit::Incarnation) => {
+                self.record_incarnation_trigger_use(IncarnationTriggerUse {
+                    source: identity.object,
+                    definition,
+                    ability,
+                    origin: item.source_ability_origin,
+                });
+            }
+            None => {}
         }
     }
 }

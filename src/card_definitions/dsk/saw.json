@@ -3,10 +3,31 @@
   "catalogue_id": 3701,
   "oracle_id": "d88bfa98-6869-4d64-a9d2-07a308a67fe2",
   "facts_sha256": "4352b4cab17bfaf4a9702185e7010b4ad646e1a76f3f48cadc3b0ee0f31a31b1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "39a396f14663a02214f1b0b8e854ee791d760730bdef7dc7d191556372c7afa5"
   },
-  "physical_metadata_sha256": "dd7ac656349232328862994c659e62dff933d65dbbf96015f964b143294f5576"
+  "physical_metadata_sha256": "dd7ac656349232328862994c659e62dff933d65dbbf96015f964b143294f5576",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/Saw.java",
+  "java_sha256": "6ed8b654574f3125cde710ca5d9e14fb7f61fdcc5641064c1c56bb058946997e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAttachedTriggeredAbility.java",
+      "sha256": "227a8e960c16f1e0930b065ad97af82479a4dd1f9b192254c1c785806c897c1b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ],
+  "rules_tests": "tests/dsk_colorless_cards.rs"
 }

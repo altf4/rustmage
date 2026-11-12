@@ -97,6 +97,7 @@ impl Row {
                 production,
                 sacrifice: false,
                 subtype_derived: false,
+                origin: None,
             })
     }
 }

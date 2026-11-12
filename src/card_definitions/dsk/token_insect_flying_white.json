@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-insect-flying-white",
+  "catalogue_id": 5673,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "c91a4b737bfc45609118f814bf67fd679bfbe7cf6ed460aebe9136b2c73408d1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/InsectWhiteToken.java",
+  "java_sha256": "88e9fbbbf51f5d6619ee4bd4ad1850391324eb4289cce66491b96bdba1798c73"
+}

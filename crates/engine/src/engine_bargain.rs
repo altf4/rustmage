@@ -86,6 +86,7 @@ impl Game {
         let source = a.item.source.expect("Bargain source");
         let changes_targets = source.card.bargain_targets().is_some();
         if changes_targets
+            || a.source_mana_alternative().is_some()
             || a.has_ordered_origin_payment()
             || a.has_ordered_life_cost()
             || self.cast_uses_target_life_costs(a.item.controller, source.card)

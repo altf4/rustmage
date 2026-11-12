@@ -3,10 +3,36 @@
   "catalogue_id": 1964,
   "oracle_id": "49f92c0b-16ac-4cf0-8ec3-e3638990ee75",
   "facts_sha256": "4de43f956411bd4d9cd86e47c69452f994c22248d34d27bac15991b7acf9ce81",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8ec2650a8b302f3d70a6b4a42fde89a144aba066bd019741b0b2e9d48cc12479"
   },
-  "physical_metadata_sha256": "722a9c8b6fbe2a4c18c2b2664dd113883fc019f7d854c3c813f420a0ebed6f85"
+  "physical_metadata_sha256": "722a9c8b6fbe2a4c18c2b2664dd113883fc019f7d854c3c813f420a0ebed6f85",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/h/HauntedScreen.java",
+  "java_sha256": "b475e838c45507a8ec06e8f759a085c5df4350ca89bc1089daab66051682e37c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateOncePerGameActivatedAbility.java",
+      "sha256": "21e8d6e6cd120cd699f490a1fdefcc18b988b13931b7c158bfb1a05151c8c9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BecomesCreatureSourceEffect.java",
+      "sha256": "e4f35026b08e3f86b0822d43ed5b03cf2458e1b2ed5829627dd5c617cd5d597a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "rules_tests": "tests/dsk_colorless_cards.rs"
 }

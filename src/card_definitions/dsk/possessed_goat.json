@@ -3,10 +3,39 @@
   "catalogue_id": 3206,
   "oracle_id": "821f4ff3-ebc7-4f47-ac35-d00093b6d35b",
   "facts_sha256": "ed6926c20f129d39bca5c8d4ebc5773c8937a8e69bc1da633a7326b7eff626a5",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3074b70f6d86fe66dccfd214002687222670f672880427c221a1e8116ad13505"
   },
-  "physical_metadata_sha256": "2e8c12de0f313ac888eb753ad9a363760ebf2590f37ff570d2b8eea2ed7f4405"
+  "physical_metadata_sha256": "2e8c12de0f313ac888eb753ad9a363760ebf2590f37ff570d2b8eea2ed7f4405",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PossessedGoat.java",
+  "java_sha256": "a8729560bf4beb6e15b2ad8e2ade34405b260cb078f503226822b323e65f1115",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/ActivateOncePerGameActivatedAbility.java",
+      "sha256": "21e8d6e6cd120cd699f490a1fdefcc18b988b13931b7c158bfb1a05151c8c9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/DiscardCardCost.java",
+      "sha256": "085ef2bd42c1943cba6d91100388647826c8d236f4bacfc79140b806a340d189"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/mana/GenericManaCost.java",
+      "sha256": "aa33b85567960c3a5eba6e72ee50b1ca29b7d26281235e3e1d4d5403f94029b5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://media.wizards.com/2026/downloads/MagicCompRules%2020261106.pdf",
+    "rules": "The activation costs three generic mana and one discard and is spent for the exact incarnation when activated. The resolved counters and additive Demon and black characteristics last on that object."
+  }
 }

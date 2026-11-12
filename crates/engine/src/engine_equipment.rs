@@ -87,15 +87,15 @@ impl Game {
         }
     }
     pub(super) fn unattach(&mut self, object: ObjectRef) -> bool {
-        if !self.on_battlefield(object.card)
-            || self.object_ref(object.card) != object
-            || self.state.objects[object.card as usize]
-                .attached_to
-                .take()
-                .is_none()
-        {
+        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
             return false;
         }
+        let attachment = &mut self.state.objects[object.card as usize];
+        if !attachment.is_attached() {
+            return false;
+        }
+        attachment.attached_to = None;
+        attachment.attached_to_player = None;
         self.forget_control_attachment(object);
         self.forget_attachment_origin(object);
         self.renew_copy_grant_origin(object, false);
@@ -115,7 +115,9 @@ impl Game {
             self.retimestamp_live_static_source(source);
             self.retimestamp_hand_size_source(source);
             self.renew_copy_grant_origin(source, false);
-            self.state.objects[source.card as usize].attached_to = Some(target);
+            let object = &mut self.state.objects[source.card as usize];
+            object.attached_to = Some(target);
+            object.attached_to_player = None;
             self.prune_source_bound_copies();
             self.self_attachment_triggers(source, target);
         }

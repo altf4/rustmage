@@ -3,10 +3,34 @@
   "catalogue_id": 922,
   "oracle_id": "c51da69b-7fd7-43a3-be29-c44fc0c36130",
   "facts_sha256": "cabc4dd3c9a25b48e65d166385443318bb2d60e5e5024cd945ead73a8fb3c4c9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1f622ec73c3e5d4cf41e92a6312fab730a139083befc3f86538d5a04a33ea1b"
   },
-  "physical_metadata_sha256": "2239dccaad5ddab45ebeb67dca83b239ec9911e8636b88d3fbb39d22d0440b3d"
+  "physical_metadata_sha256": "2239dccaad5ddab45ebeb67dca83b239ec9911e8636b88d3fbb39d22d0440b3d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CultHealer.java",
+  "java_sha256": "b270ee421fdaecc5ae70105ef2c81bdf0d4f2337fffd38cf7944755a42665611",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilitySourceEffect.java",
+      "sha256": "c50de3c643777a7006e318469307c6dcf3cf45ea9786e80ac4a67099495f27c9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Either Eerie event grants the exact Cult Healer lifelink through cleanup."
+  }
 }

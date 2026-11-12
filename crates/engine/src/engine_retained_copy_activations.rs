@@ -3,7 +3,14 @@ use super::*;
 use crate::cards::RetainedCopyActivation;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SpellView {
+    pub(super) fn linked_activation_cohort(&self) -> Option<u64> {
+        self.acquired_link_cohort.or(self.borrowed_slot)
+    }
+
     pub(super) fn is_retained_copy_activation(&self) -> bool {
+        if self.borrowed_slot.is_some() {
+            return false;
+        }
         let StackKind::ActivatedAbility { ability } = self.kind else {
             return false;
         };
@@ -26,10 +33,20 @@ impl Game {
                 |origin| origin.ability_origin,
             )
     }
+    #[cfg(feature = "test-support")]
     pub(super) fn linked_exile_for_origin(
         &self,
         source: ObjectRef,
         origin: Option<u64>,
+    ) -> Vec<ObjectRef> {
+        self.linked_exile_for_cohort(source, origin, None)
+    }
+
+    pub(super) fn linked_exile_for_cohort(
+        &self,
+        source: ObjectRef,
+        origin: Option<u64>,
+        cohort: Option<u64>,
     ) -> Vec<ObjectRef> {
         self.state
             .linked_choices
@@ -41,6 +58,7 @@ impl Game {
                     .filter(|link| {
                         link.source == source
                             && link.ability_origin == origin
+                            && link.acquired_link_cohort == cohort
                             && self.object_ref(link.exiled.card) == link.exiled
                             && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
                     })
@@ -146,9 +164,7 @@ impl Game {
         if object.zone != Zone::Exile
             || !object.is_card()
             || !object.card.is_creature()
-            || !self
-                .linked_exile_for_origin(source.object, item.source_ability_origin)
-                .contains(&target)
+            || !self.linked_exile_for_item(item).contains(&target)
         {
             return;
         }

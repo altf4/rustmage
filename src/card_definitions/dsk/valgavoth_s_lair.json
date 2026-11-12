@@ -3,10 +3,31 @@
   "catalogue_id": 4824,
   "oracle_id": "660d44a2-391a-416c-b46c-ddcc3739f527",
   "facts_sha256": "259ce9a1808f19896b9bbd3b977fd7f3ddcc4d0936896765a8818c900e73204e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f36aa169e05f7a53becf6acf39ca54dd3f1dd816c6037c04309a36d0ce0f26dd"
   },
-  "physical_metadata_sha256": "732aa6ad049b869938fee55efe918997d2737ad5dcd1f2a8b22646596ade1cb3"
+  "physical_metadata_sha256": "732aa6ad049b869938fee55efe918997d2737ad5dcd1f2a8b22646596ade1cb3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValgavothsLair.java",
+  "java_sha256": "1351a140b2058c76b5d96a47a8aecc4b5e199cf629954215ef16f0d010cfef41",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTappedAsItEntersChooseColorAbility.java",
+      "sha256": "ae5f335e82c104afe8d7165f2d404c4ad5e1972a28225b7b9af732c30e8b125d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddManaChosenColorEffect.java",
+      "sha256": "e129dbded6a8eeaa978804934e34f9b3c5992ad5c560692e1fa5120b8c3f2e48"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HexproofAbility.java",
+      "sha256": "dd6ceb5e1dac42ece34947ba678be1057bf0f4ecc5e5eb24fc1995763954259a"
+    }
+  ],
+  "rules_tests": "tests/dsk_land_cards.rs"
 }

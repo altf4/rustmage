@@ -3,10 +3,36 @@
   "catalogue_id": 2836,
   "oracle_id": "5542ea4d-34ab-4f89-8894-793a7038f501",
   "facts_sha256": "e56b1ece1300aef5ddcc44c702088c0c0d2d8ebea4bb97daacc8009ff0d7d2da",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "4a4b3ff61b864f65ab599d20b0fff9c216316c616e5161aebda779244b7247e9"
-  },
-  "physical_metadata_sha256": "4e4bad238070abd3d13284c06121413f68cb1e723005abce6690c8c44e13ee91"
+  "complete": true,
+  "physical_metadata_sha256": "4e4bad238070abd3d13284c06121413f68cb1e723005abce6690c8c44e13ee91",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MonstrousEmergence.java",
+  "java_sha256": "df91ff05cd2416a69d9928f0cdfa5070c069524f89b212f373051d12adb19fb1",
+  "rules_tests": "tests/dsk_gold_combat_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetControlledCreaturePermanent.java",
+      "sha256": "7e4049282d7c129ce96024a1b6dc9a5b9eb0c79192307b3f53e791dc90fb719e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCardInHand.java",
+      "sha256": "0b88ed18c6053986dc57c50ac6363da0acacc35899724fae164813085a428f88"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/CostImpl.java",
+      "sha256": "ac24e04444dec48d936fed7a03970a8b7e765ef7f368c7b4024747e6fdd83df7"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Sample live power of the chosen creature or its departure LKI. A revealed hand card uses its power at payment."
+  }
 }

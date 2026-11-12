@@ -1,0 +1,34 @@
+{
+  "name": "Tunnel of Hate",
+  "catalogue_id": 5662,
+  "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+  "facts_sha256": "e65900870765995324c32f4c4355828405237260e341c3d866a07c1b0e6be80e",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "4d01b62b-b924-4da5-8ff5-b2f29d7f19b2",
+    "index": 1,
+    "sha256": "c8231eae94c650a33836d7d7c7d1d80fa773a5e7c3b0cbdf2fc7a964fd76d8a9"
+  },
+  "physical_metadata_sha256": "07c12936977f28b15faf655e2dada5c79ceb71732f3177dd679a6a7d6d8d13fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TicketBoothTunnelOfHate.java",
+  "java_sha256": "4d9363a6f9068fc2d44aca1c83812aeb783324762bcf27453fcf0fea446880df",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
+}

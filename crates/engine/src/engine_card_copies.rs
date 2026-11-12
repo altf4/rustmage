@@ -31,6 +31,7 @@ impl Game {
             summoning_sick: false,
             flashback: false,
             cast_for_warp: false,
+            cast_for_impending: false,
             damage: 0,
             damaged_this_turn: false,
             dealt_damage_this_turn: false,
@@ -45,6 +46,7 @@ impl Game {
             loyalty_activated_this_turn: false,
             class_level: 1,
             attached_to: None,
+            attached_to_player: None,
         };
         if id as usize == self.state.objects.len() {
             self.state

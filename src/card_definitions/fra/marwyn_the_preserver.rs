@@ -6,6 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::ControlledPermanentKeywords {
             kinds: 2,
+            other: false,
             keywords: Keywords::HEXPROOF,
         }],
     }],

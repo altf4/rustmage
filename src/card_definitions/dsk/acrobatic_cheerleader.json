@@ -3,10 +3,29 @@
   "catalogue_id": 50,
   "oracle_id": "d8ce3f18-26fe-47e8-be8b-0d89d7de7038",
   "facts_sha256": "fdcebe74b11f7cafebaaaf53a437f59f7f68bf1f3ecb339efcc6c8b9938409e4",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "417767dd074dfe4fc37c8a865501b9b4b49f32c12b4cd290e83eeff1d2825884"
   },
-  "physical_metadata_sha256": "d76df09fdd163b1ea07f99afc6f9f1ccbb5a740810fd2a5aa08303a3790a3b08"
+  "physical_metadata_sha256": "d76df09fdd163b1ea07f99afc6f9f1ccbb5a740810fd2a5aa08303a3790a3b08",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AcrobaticCheerleader.java",
+  "java_sha256": "02015b37e42a36fec550da00b5f0f23b3bffc7bf2fa17a87ca34ded215da568a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The exact ability triggers only once for this incarnation and checks whether its source is tapped at triggering and resolution. The resolved counter grants flying."
+  }
 }

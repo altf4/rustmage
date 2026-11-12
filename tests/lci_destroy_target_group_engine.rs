@@ -13,6 +13,7 @@ const PROVIDER: CardRules = CardRules {
         first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::ControlledPermanentKeywords {
             kinds: 16,
+            other: false,
             keywords: Keywords::INDESTRUCTIBLE,
         }],
     }],

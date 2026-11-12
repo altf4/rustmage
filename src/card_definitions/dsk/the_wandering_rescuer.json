@@ -3,10 +3,44 @@
   "catalogue_id": 4516,
   "oracle_id": "b8ef65df-f8e7-44e3-9864-9c127232a2b6",
   "facts_sha256": "347536da22182ad5054f67ec48d554f343ac9474df0ed796cbe0eee43f172dc8",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0fa3c86bae1b1bb2929a88be6170654cd0b4aa41ab063c6d4da873c868c17b3c"
   },
-  "physical_metadata_sha256": "5e4c7aad2d663ad98abd3a06a4c2ba1a76f266644a07180513f599c85a6174e3"
+  "physical_metadata_sha256": "5e4c7aad2d663ad98abd3a06a4c2ba1a76f266644a07180513f599c85a6174e3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheWanderingRescuer.java",
+  "java_sha256": "8881ee8b7689f7571d6003a5a43400ed67d75b7e91e45ba0e3fb66f3757b4cd5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ConvokeAbility.java",
+      "sha256": "207ace9818509f0db681504b423fb592693ab197c0e52decbefac3550c73abdf"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DoubleStrikeAbility.java",
+      "sha256": "dabf9a6900a6fb32bb83f222d00b3dfb0b11705fe9029838c50f8500a23afd27"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/permanent/TappedPredicate.java",
+      "sha256": "71eabf46dc3838343404e9d40c88835361370549c67e42e8c694082ecd050436"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Flash and convoke operate during casting. Double strike applies in both combat damage steps. The live grant covers exactly the other tapped creatures its controller controls."
+  }
 }

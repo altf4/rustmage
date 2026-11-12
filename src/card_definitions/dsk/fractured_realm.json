@@ -1,0 +1,16 @@
+{
+  "name": "Fractured Realm",
+  "catalogue_id": 5648,
+  "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+  "facts_sha256": "531854415a3ab6e4f1f399f020da228e832f000f93a90b1b3589d6d60b4dcedd",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "e7a1c21b-5966-4ce0-a925-0b3cb3c3db00",
+    "index": 1,
+    "sha256": "3c00f7cd792a569144577c724d687bf3071e5190cdc16b1d901091baa3e23422"
+  },
+  "physical_metadata_sha256": "2c0e45e110e1439873038ee60d941a57cb64f258e2b808b6d4ecac318cf1b217",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MirrorRoomFracturedRealm.java",
+  "java_sha256": "ed840b253757612646b684e9c76c8e63616482cae1e0df36971d9af3930a8b3d"
+}

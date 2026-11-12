@@ -3,10 +3,59 @@
   "catalogue_id": 4751,
   "oracle_id": "3d240726-5214-4493-8537-29bf65db1e4b",
   "facts_sha256": "54351554cc0e8313f558c26f14a88ad7bb0906827fc70bbe532f4053568fdc05",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3560827b23fb8a1981191d8cbd7aba5a9bd345dd55d6443543ff63d945400b1a"
   },
-  "physical_metadata_sha256": "bc029d3aaf7ade964401f10981e865bb4710a6722ed8502d6ed2bb1ae19d1c7c"
+  "physical_metadata_sha256": "bc029d3aaf7ade964401f10981e865bb4710a6722ed8502d6ed2bb1ae19d1c7c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnableToScream.java",
+  "java_sha256": "3ee039f390917095ba800e6d1093fb21c40881bba8d0c3d510d29a7397cca15f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousRuleModifyingEffectImpl.java",
+      "sha256": "0f9822b6683144489e62ea1fa0e99c8e1e928479c90f8941e3794d57044e5948"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAttachedEffect.java",
+      "sha256": "dbe2d3ace133714b13fce577d8fee1c52736d5cc7d20f1c18ffdd49c82ce781f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardTypeAttachedEffect.java",
+      "sha256": "a6bf04cf1b0457cac84a9c56e1db9cd1a6b5070fcc995aa18c7f7cd5e9e8bffc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LoseAllAbilitiesAttachedEffect.java",
+      "sha256": "945c33113331a9a46b08c1f58aed0a2f0cd8a8e4836c267b912199f9ced014c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAttachedEffect.java",
+      "sha256": "1c0acf946ead98873fc4e57586bf707356771bb257c7138824a1e067770a6831"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR613.1 and CR613.4b retain the enchanted permanent's types and subtypes while adding artifact, creature and Toy, removing abilities and setting its base power and toughness to 0/2. The separate rule prevents the exact attached face-down creature from turning up."
+  }
 }

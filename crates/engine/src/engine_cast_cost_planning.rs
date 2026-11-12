@@ -637,8 +637,13 @@ impl FundingState<'_> {
         r: ObjectRef,
         source: ObjectRef,
     ) -> bool {
-        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
-            return additional_costs::chosen_cost_creature_matches(self, self.actor, r);
+        if spec.kind.chooses_cost_creature() {
+            return additional_costs::chosen_cost_creature_matches(self, self.actor, r, spec.kind);
+        }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
+            return additional_costs::named_graveyard_exile_candidate(
+                self, self.actor, source, r, name,
+            );
         }
         let o = self.object(r.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
@@ -730,25 +735,33 @@ impl FundingState<'_> {
             .iter()
             .map(|r| {
                 let object = self.object(r.card);
+                let kinds = CharacteristicWorld::kinds(self, r.card);
+                let graveyard_move =
+                    object.zone == Zone::Battlefield && requested == Zone::Graveyard;
+                let subtypes = graveyard_move.then(|| self.subtypes(r.card));
+                let has_subtype = |subtype| {
+                    subtypes
+                        .as_ref()
+                        .is_some_and(|types| types.has(self.definition(r.card), subtype))
+                };
                 (
                     object.zone,
                     object.controller,
                     object.owner,
-                    CharacteristicWorld::kinds(self, r.card),
+                    kinds,
                     self.active_melds()
                         .find(|row| row.object == *r)
                         .map(|row| row.entry),
                     object.is_card(),
-                    object.zone == Zone::Battlefield
-                        && requested == Zone::Graveyard
-                        && self.subtypes(r.card).has(self.definition(r.card), "Food"),
+                    has_subtype("Food"),
+                    graveyard_move && kinds & 1 != 0 && !has_subtype("Zombie"),
                 )
             })
             .collect();
         let destinations = objects
             .iter()
             .zip(&before_facts)
-            .map(|(r, &(_, _, _, kinds, _, _, _))| {
+            .map(|(r, &(_, _, _, kinds, _, _, _, _))| {
                 let o = self.object(r.card);
                 let prevented = self.zone_move_prevented(*r, requested);
                 if requested != Zone::Graveyard {
@@ -770,6 +783,12 @@ impl FundingState<'_> {
                             Some(ZoneReplacementRule::ExileControllerGraveyard) => {
                                 (o.is_card() || o.is_token()) && p.controller == o.owner
                             }
+                            Some(
+                                rule @ (ZoneReplacementRule::ExileOpponentGraveyardCards
+                                | ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked),
+                            ) => zone_replacements::opponent_graveyard_card_matches(
+                                rule, p.controller, o.owner, o.controller, o.zone, o.is_card(),
+                            ),
                             Some(
                                 ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                                 | ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
@@ -800,7 +819,7 @@ impl FundingState<'_> {
                 if shuffle {
                     choices.push((Some(Zone::Library), None));
                 }
-                if exile {
+                if exile || self.game.turn_exiles_graveyard_card(o) {
                     choices.push((Some(Zone::Exile), None));
                 }
                 if o.zone == Zone::Battlefield && kinds & 1 != 0 && !o.is_token() {
@@ -839,8 +858,10 @@ impl FundingState<'_> {
             initial.remember_payment_departure(object.card);
         }
         let mut worlds = vec![(initial, Vec::new())];
-        for ((r, choices), &(before_zone, controller, owner, kinds, meld, was_card, food)) in
-            objects.iter().zip(destinations).zip(&before_facts)
+        for (
+            (r, choices),
+            &(before_zone, controller, owner, kinds, meld, was_card, food, non_zombie),
+        ) in objects.iter().zip(destinations).zip(&before_facts)
         {
             let mut next = Vec::new();
             for (w, gains) in worlds {
@@ -874,6 +895,7 @@ impl FundingState<'_> {
                             .creatures_died
                             .checked_add(1)
                             .capacity("virtual death history exhausted");
+                        n.non_zombie_creature_died |= non_zombie;
                     }
                     if before_zone == Zone::Graveyard && zone != Zone::Graveyard && was_card {
                         let count = &mut n.graveyard_left[owner.index()];
@@ -962,6 +984,7 @@ impl FundingState<'_> {
         object.counters = InitialCounters::default();
         object.growth = Stats::default();
         object.attached_to = None;
+        object.attached_to_player = None;
         object.controller = object.owner;
         object.summoning_sick = false;
         object.tapped = false;
@@ -977,6 +1000,7 @@ impl FundingState<'_> {
         object.loyalty_activated_this_turn = false;
         object.flashback = false;
         object.cast_for_warp = false;
+        object.cast_for_impending = false;
         object.class_level = 1;
         resource.attacking = false;
         let after = ObjectRef {
@@ -1528,11 +1552,12 @@ impl FundingState<'_> {
         let Some(cost) = c.mana else {
             return false;
         };
+        let purpose = self.live_mana_purpose();
         convoke::payable_in(
             self,
             c.actor,
-            self.purpose,
-            mana_lots::available(self.mana, &self.lots, self.purpose),
+            purpose,
+            mana_lots::available(self.mana, &self.lots, purpose),
             cost.colored,
             cost.generic,
             &self.convoke_masks(),
@@ -1547,7 +1572,8 @@ impl FundingState<'_> {
         let Some(cost) = c.mana else {
             return false;
         };
-        let pool = mana_lots::available(self.mana, &self.lots, self.purpose);
+        let purpose = self.live_mana_purpose();
+        let pool = mana_lots::available(self.mana, &self.lots, purpose);
         // Fail before assigning individual helpers when the current mana clause
         // cannot be paid at all. If it is last, exact Hall matching is the whole
         // obligation; later nonmana costs still use the original assignment walk.
@@ -1557,13 +1583,8 @@ impl FundingState<'_> {
         if rest.is_empty() {
             return true;
         }
-        let (required, generic) = cast_origins::payment_requirements(
-            self,
-            c.actor,
-            self.purpose,
-            cost.colored,
-            cost.generic,
-        );
+        let (required, generic) =
+            cast_origins::payment_requirements(self, c.actor, purpose, cost.colored, cost.generic);
         if payable(pool, required, generic) && self.complete_cost_rows(later, rest) {
             return true;
         }
@@ -1861,13 +1882,13 @@ impl FundingState<'_> {
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);
-                spec.kind = EffectChoiceKind::ExileGraveyard;
             }
             EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
                 destination = Zone::Hand
             }
             EffectChoiceKind::Behold
             | EffectChoiceKind::ChooseControlledOrWarpedCreature
+            | EffectChoiceKind::ChooseControlledOrRevealCreature
             | EffectChoiceKind::Sacrifice
             | EffectChoiceKind::SacrificeAttachedEquipment
             | EffectChoiceKind::SacrificeAttachedPermanent
@@ -2004,6 +2025,7 @@ impl FundingState<'_> {
                 EffectChoiceKind::Behold
                     | EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                    | EffectChoiceKind::ChooseControlledOrRevealCreature
             ) {
                 self.complete_cost_rows(later, remaining)
             } else if matches!(spec.kind.payment_kind(), EffectChoiceKind::TapPermanents(_)) {
@@ -2013,6 +2035,12 @@ impl FundingState<'_> {
                     next.resources[i].object.tapped = true;
                 }
                 next.complete_cost_rows(later, remaining)
+            } else if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
+                let mut batch = selected.clone();
+                batch.push(c.source);
+                self.cost_departures(&batch, destination, &mut |w| {
+                    w.complete_cost_rows(later, remaining)
+                })
             } else {
                 self.cost_departures(selected, destination, &mut |w| {
                     w.complete_cost_rows(later, remaining)
@@ -2658,6 +2686,7 @@ impl Game {
                 EffectChoiceKind::BeholdMany(_)
                     | EffectChoiceKind::BeholdAndExile
                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                    | EffectChoiceKind::ChooseControlledOrRevealCreature
             )
         }) || delve::potential(self)
             || additional.is_some_and(|a| {
@@ -2775,6 +2804,7 @@ impl Game {
                         EffectChoiceKind::BeholdMany(_)
                             | EffectChoiceKind::BeholdAndExile
                             | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                            | EffectChoiceKind::ChooseControlledOrRevealCreature
                     )
                 }) || convoke::potential(self, spell.card)
                     || improvise::potential(self, spell.card)
@@ -2810,6 +2840,7 @@ impl Game {
                                 EffectChoiceKind::BeholdMany(_)
                                     | EffectChoiceKind::BeholdAndExile
                                     | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                                    | EffectChoiceKind::ChooseControlledOrRevealCreature
                             )
                         })
                         || current.is_some_and(|a| {

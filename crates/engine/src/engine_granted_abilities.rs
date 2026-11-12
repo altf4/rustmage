@@ -35,6 +35,7 @@ impl Game {
                             | TriggerCondition::Proliferated(_)
                             | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
+                            | TriggerCondition::LandCardsEnterYourGraveyardFromLibrary
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed
@@ -44,6 +45,7 @@ impl Game {
                             | TriggerCondition::LibrarySearched { .. }
                             | TriggerCondition::DiscoveredYou
                             | TriggerCondition::PlayerDamaged { .. }
+                            | TriggerCondition::AttachedPlayerDamaged
                             | TriggerCondition::CombatDamageToController
                             | TriggerCondition::CreatureDamaged { .. }
                             | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
@@ -55,7 +57,10 @@ impl Game {
                             | TriggerCondition::OwnUntapStepUntaps
                             | TriggerCondition::SelfTurnedFaceUp
                             | TriggerCondition::PermanentYouControlTurnedFaceUp
+                            | TriggerCondition::YouTurnPermanentFaceUp
+                            | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou
                             | TriggerCondition::YouManifestDread
+                            | TriggerCondition::Eerie
                     )
             }) {
                 out.push((giver.clone(), None));

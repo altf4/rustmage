@@ -105,17 +105,11 @@ impl FundingState<'_> {
                 .or(row.original_provider_time);
             p.register_at(source, definition, time.unwrap_or(0));
             p.hand_size.forget(source);
-            if let Some(maximum) = definition.hand_size_setting()
-                && let Some(timestamp) = active
-                    .as_ref()
-                    .map_or(row.original_hand_time, |l| l.value.hand_timestamp)
+            if let Some(timestamp) = active
+                .as_ref()
+                .map_or(row.original_hand_time, |layer| layer.value.hand_timestamp)
             {
-                p.hand_size.sources.push(hand_size::HandSizeSourceView {
-                    source,
-                    timestamp,
-                    maximum,
-                });
-                p.hand_size.sources.sort_by_key(|r| r.source);
+                p.hand_size.register_at(source, definition, timestamp);
             }
         }
     }

@@ -17,6 +17,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
     // Preserve spare sources for later steps once those declarations are exhausted.
     let tap_for_payment = observation.announcing.is_some()
         || observation.plot_payment.is_some()
+        || observation.room_unlock_payment.is_some()
         || observation.payment_request.is_some()
         || observation.attack_payment.is_some()
         || observation.block_payment.is_some();
@@ -178,6 +179,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseManifest { .. } => 60,
+            Action::ChooseRoomDoor { .. } => 60,
             Action::AnnounceAdventure { .. }
             | Action::AnnounceOmen { .. }
             | Action::AnnounceBack { .. } => 30,
@@ -318,6 +320,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             Action::ChooseConniver { .. } => 60,
             Action::PayResolutionMana { .. } | Action::PayResolutionLife => 100,
             Action::DeclineResolutionMana | Action::DeclineResolutionLife => -1,
+            Action::ChooseAuraPlayerAttachment { player } => {
+                target_score(&[], Target::Player(*player))
+            }
             Action::ChooseAuraAttachment { object } => aura_score(
                 observation.aura_entry.as_ref().unwrap().card,
                 Target::Card(object.card),
@@ -339,6 +344,21 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseSearchZones { .. } | Action::ChooseHandLibrarySearchZones { .. } => 50,
+            Action::ChooseGraveyardHandLibrarySearchZones {
+                graveyard,
+                hand,
+                library,
+            } => {
+                if observation
+                    .hand_library_search
+                    .as_ref()
+                    .is_some_and(|search| search.choosing_zones)
+                {
+                    50 + i128::from(*graveyard) + i128::from(*hand) + i128::from(*library)
+                } else {
+                    -1
+                }
+            }
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } | Action::ChooseMeldOrder { .. } => 50,
             Action::Sacrifice { .. } => 50,
@@ -380,6 +400,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceGraveyardAdditionalCosts { .. }
             | Action::AnnounceGraveyardFinality { .. }
             | Action::AnnounceGraveyardWithLife { .. }
+            | Action::AnnounceSelfGraveyardWithCounter { .. }
             | Action::AnnounceGraveyardPaid { .. }
             | Action::AnnounceCast { .. }
             | Action::AnnounceFlashSurcharge { .. }
@@ -396,6 +417,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceTaxedExile { .. }
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
+            | Action::AnnounceExileForZero { .. }
+            | Action::AnnounceCastWithManaAlternative { .. }
             | Action::AnnounceLibraryLife { .. }
             | Action::AnnounceLibraryTop { .. }
             | Action::AnnounceExileFree { .. }
@@ -405,10 +428,12 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceFlashback { .. }
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. }
-            | Action::AnnounceGrantedMayhem { .. } => 79,
+            | Action::AnnounceGrantedMayhem { .. }
+            | Action::AnnounceRoom { .. } => 79,
             Action::AnnouncePlot { .. }
             | Action::AnnounceLibraryTopPlot { .. }
-            | Action::BeginFaceUp { .. } => 40,
+            | Action::BeginFaceUp { .. }
+            | Action::BeginRoomUnlock { .. } => 40,
             Action::AnnounceActivate { .. }
             | Action::AnnounceAttachedAbility { .. }
             | Action::AnnouncePlaneswalkerGrant { .. }
@@ -418,16 +443,19 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceRetainedCopyAbility { .. }
             | Action::AnnounceEmbalm { .. }
             | Action::AnnounceBorrowedAbility { .. }
+            | Action::AnnounceInheritedAbility { .. }
             | Action::AnnounceGraveyardBorrowedAbility { .. } => 34,
             Action::AnnounceMana { .. }
             | Action::AnnounceGrantedMana { .. }
             | Action::AnnounceGrantedManaTemplate { .. }
             | Action::AnnounceSelfGrantedMana { .. }
             | Action::AnnounceBorrowedMana { .. }
+            | Action::AnnounceInheritedMana { .. }
             | Action::AnnounceGraveyardBorrowedMana { .. } => -2,
             Action::PayCosts { .. }
             | Action::PayPlot { .. }
             | Action::PayFaceUp { .. }
+            | Action::PayRoomUnlock { .. }
             | Action::PayAttackCost { .. }
             | Action::PayBlockCost { .. } => 100,
             Action::ChooseSpellCost { .. } | Action::ChooseActivationCost { .. } => 50,
@@ -462,7 +490,18 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                     0
                 }
             }
-            Action::FinishSearch => 0,
+            Action::FinishSearch => {
+                // This single-result search leaves other candidates available as replacements.
+                if observation
+                    .hand_library_search
+                    .as_ref()
+                    .is_some_and(|search| search.selected.is_some())
+                {
+                    70
+                } else {
+                    0
+                }
+            }
             Action::ChooseCreatureType { creature_type } => observation
                 .objects
                 .iter()
@@ -578,7 +617,9 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 permanent_type: crate::PermanentType::Land,
                 ..
             } => 90,
-            Action::PlayGraveyardPermanent { .. } | Action::AnnounceGraveyardBack { .. } => 79,
+            Action::PlayGraveyardPermanent { .. }
+            | Action::AnnounceGraveyardBack { .. }
+            | Action::AnnounceGraveyardRoom { .. } => 79,
             Action::CastExiledDuringResolution { .. } | Action::CastFreeDuringResolution { .. } => {
                 81
             }
@@ -630,6 +671,11 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 ..
             }
             | Action::ActivateBorrowedMana {
+                production,
+                payment,
+                ..
+            }
+            | Action::ActivateInheritedMana {
                 production,
                 payment,
                 ..
@@ -761,6 +807,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             }
             Action::ChooseToken { .. } => 10,
             Action::ChooseKeyword { .. }
+            | Action::ChooseSourceCounterKind { .. }
             | Action::ChooseResolutionColor { .. }
             | Action::ChoosePermanentType { .. }
             | Action::ChoosePowerThreshold { .. } => 10,
@@ -768,7 +815,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AbortAttackPayment
             | Action::CancelBlockDeclaration
             | Action::AbortBlockPayment
-            | Action::AbortFaceUpPayment => -100,
+            | Action::AbortFaceUpPayment
+            | Action::AbortRoomUnlock => -100,
             Action::Pass
             | Action::FinishAttackers
             | Action::FinishBlockers

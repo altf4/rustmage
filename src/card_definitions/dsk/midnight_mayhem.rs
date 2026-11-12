@@ -1,16 +1,28 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Spell(
+        TargetPlan::NONE,
+        &[
+            Instruction::CreateTokens {
+                token: Card::from_catalogue_id(5316),
+                amount: 3,
+                tapped: false,
+            },
+            Instruction::GrantPermanentGroupKeywords {
+                filters: &[BattlefieldFilter {
+                    kinds: 0,
+                    relation: 0,
+                    nonland: false,
+                    tapped: None,
+                    without: Keywords::NONE,
+                    subtype: Some("Gremlin"),
+                    max_mana: u32::MAX,
+                }],
+                keywords: Keywords::MENACE
+                    .union(Keywords::LIFELINK)
+                    .union(Keywords::HASTE),
+            },
+        ],
+    ),
     ..CardRules::EMPTY
 };

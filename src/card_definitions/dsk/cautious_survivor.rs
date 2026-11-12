@@ -1,12 +1,7 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Creature(4, 4),
     triggers: &[TriggeredAbility {
-        condition: TriggerCondition::AtStep {
-            step: TriggerStep::Main2,
-            relation: CastRelation::You,
-            guard: StepGuard::SourceTapped,
-        },
+        condition: TriggerCondition::SURVIVAL,
         targets: TargetPlan::Single(TargetSpec::NONE),
         program: &[Instruction::GainLife(PlayerSet::Controller, 2)],
     }],

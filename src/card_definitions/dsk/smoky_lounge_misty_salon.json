@@ -3,10 +3,37 @@
   "catalogue_id": 3938,
   "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
   "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "4dd05316e93f9685352a46551fa3e6bc9496776875c9c846cb9c9c24ea5c8c38"
-  },
-  "physical_metadata_sha256": "ac4502b80809babde1fc0763b48ff3786aaed8eaf373b775d361269f8486d29c"
+  "complete": true,
+  "physical_metadata_sha256": "ac4502b80809babde1fc0763b48ff3786aaed8eaf373b775d361269f8486d29c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SmokyLoungeMistySalon.java",
+  "java_sha256": "4e81c20eb9197546f78a357fc670ac54d51ccd669ad8e087567ac7dcd92ee290",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RoomUnlockAbility.java",
+      "sha256": "3f9bc61d4422af6cab250ba6132c071648148a573024af9ec9e28f39c1adf1e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaEffect.java",
+      "sha256": "4690e27d03738e7052453428d8854b1ca8986ce292f25b579b33ab88cb953c23"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SpiritBlueToken.java",
+      "sha256": "9d604d19461ac04d8f403fcce344db49a1fe7b979eb482385069a1ced9965679"
+    }
+  ]
 }

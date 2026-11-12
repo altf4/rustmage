@@ -1,0 +1,29 @@
+{
+  "name": "Warped Space",
+  "catalogue_id": 5628,
+  "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+  "facts_sha256": "3ff5734f37daf29b2c58ab9af5497629c1a53f277994d0818e34a0da227c35bd",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
+    "index": 1,
+    "sha256": "0c7f345b65f63da8b8cd7935e2cd5653a9e86ec712c246a2914ea1d8ff5d2577"
+  },
+  "physical_metadata_sha256": "ecd35b70f7664f724ea112302020c43e4a5dad616133bcddb929f2ded113543c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CharredFoyerWarpedSpace.java",
+  "java_sha256": "512ff54060164a5479f94128a04a34145720ee5be38264447754c73f7d29e00a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
+}

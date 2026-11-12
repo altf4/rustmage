@@ -3,10 +3,34 @@
   "catalogue_id": 4090,
   "oracle_id": "8ec3c334-8a53-46d8-8cfb-c647c3a1ef74",
   "facts_sha256": "3a0db5f8c2382114e8ca4f9ea0973398dc662295fc829c2a422ef6d14d2e753a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e6017388935e07b6b356659f2f31af17cb38ab7d22821aaf01575a6a81044284"
   },
-  "physical_metadata_sha256": "307f35a8d8c683b44014fa131c0cdb0101eeebfc1b5ad1d389341779f05af98a"
+  "physical_metadata_sha256": "307f35a8d8c683b44014fa131c0cdb0101eeebfc1b5ad1d389341779f05af98a",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/StalkedResearcher.java",
+  "java_sha256": "5c604a24131ed173a7270e04b3d6f02b1c0d5d85b0fe439050d843b6b8f7abb6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CanAttackAsThoughItDidntHaveDefenderSourceEffect.java",
+      "sha256": "29941ba238616f0249236b80bfb955d545f965ec9c330299ede506dc60096dd4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The exact source retains defender. Either Eerie event permits it to attack as though it did not have defender through the current turn."
+  }
 }

@@ -79,13 +79,10 @@ impl Game {
         }) {
             return false;
         }
-        let evaluation = self.evaluated_abilities();
+        let query = self.characteristic_query();
         let object = &self.state.objects[id as usize];
         for (index, group) in object.card.static_ability_groups().iter().enumerate() {
-            if evaluation
-                .as_ref()
-                .is_some_and(|evaluation| !evaluation.group_available(recipient, index))
-            {
+            if !query.continuous_group_available(recipient, index, group) {
                 continue;
             }
             for fragment in group.fragments {
@@ -115,9 +112,7 @@ impl Game {
                 continue;
             }
             for (index, group) in object.card.static_ability_groups().iter().enumerate() {
-                if evaluation.as_ref().is_some_and(|evaluation| {
-                    !evaluation.group_available(self.object_ref(source), index)
-                }) {
+                if !query.continuous_group_available(self.object_ref(source), index, group) {
                     continue;
                 }
                 for fragment in group.fragments {
@@ -197,24 +192,57 @@ impl Game {
         let also_untap = |fragment: &StaticAbilityFragment| {
             matches!(fragment, StaticAbilityFragment::UntapDuringOtherUntapSteps)
         };
-        let other: Vec<_> = self
-            .state
-            .static_sources
-            .iter()
-            .copied()
-            .filter(|&id| {
-                let object = &self.state.objects[id as usize];
-                object.zone == Zone::Battlefield
-                    && object.controller != active
-                    && object.tapped
-                    && object
-                        .card
-                        .static_ability_groups()
-                        .iter()
-                        .any(|group| group.fragments.iter().any(also_untap))
-                    && self.continuous_fragment_available(id, also_untap)
-            })
-            .collect();
+        let also_untap_creatures = |fragment: &StaticAbilityFragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::UntapControlledCreaturesDuringOtherUntapSteps
+            )
+        };
+        let mut other = Vec::new();
+        let mut other_creatures = false;
+        for &id in &self.state.static_sources {
+            let object = &self.state.objects[id as usize];
+            if object.zone != Zone::Battlefield || object.controller == active {
+                continue;
+            }
+            let groups = object.card.static_ability_groups();
+            if object.tapped
+                && groups
+                    .iter()
+                    .any(|group| group.fragments.iter().any(also_untap))
+                && self.continuous_fragment_available(id, also_untap)
+            {
+                other.push(id);
+            }
+            if !other_creatures
+                && groups
+                    .iter()
+                    .any(|group| group.fragments.iter().any(also_untap_creatures))
+                && self.continuous_fragment_available(id, also_untap_creatures)
+            {
+                other_creatures = true;
+            }
+        }
+        if other_creatures {
+            other.extend(
+                self.state
+                    .objects
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(id, object)| {
+                        let id = id as CardId;
+                        (object.zone == Zone::Battlefield
+                            && object.controller != active
+                            && object.tapped
+                            && self.is_creature(id))
+                        .then_some(id)
+                    }),
+            );
+            // One simultaneous untap attempt per permanent, even when it has
+            // an individual off-turn untap ability and a controller-wide one.
+            other.sort_unstable();
+            other.dedup();
+        }
         let count = if other.is_empty() && !self.has_untap_rules() {
             let mut count = 0;
             for object in &mut self.state.objects {

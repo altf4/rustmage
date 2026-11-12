@@ -3,10 +3,26 @@
   "catalogue_id": 4825,
   "oracle_id": "663d9559-6619-46fe-8ff4-655f1d5e0e4c",
   "facts_sha256": "869857d1d41ebfdbb409fb83c72823531c37d4e7ce2171703772a9d967d679b2",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "63277c00f68c9ec5e3b5973a305560f71d0098cccd0b3e83b84c1325a62f8b93"
-  },
-  "physical_metadata_sha256": "e6f89a4358ffb60533b2cb6261f205ff7460c22d9c2b15a58ec22572d8a5ee96"
+  "complete": true,
+  "physical_metadata_sha256": "46d0d5e01b3defd50d47449b6ed5ec1a30d7277d5ae10eeb3bbf7778aa0efd64",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValgavothsOnslaught.java",
+  "java_sha256": "89a9c0b8131d69f74a097c84f07923cf79a694023902b07f7a40762f8d4d4502",
+  "rules_tests": "tests/dsk_gold_manifest_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestEffect.java",
+      "sha256": "3e10e9e875387a4e22f4a16410900548e2925071fb537a86a83ec8aef6a5b80e"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Resolve distinct manifest events in sequence before placing counters on the exact resulting creatures."
+  }
 }

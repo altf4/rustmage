@@ -1,0 +1,34 @@
+{
+  "name": "Smoky Lounge",
+  "catalogue_id": 5657,
+  "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+  "facts_sha256": "504e689e58c6b28fb07a487e372260580dbc53e791ae1ef51198e4399ea5992c",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "4f70b0ee-c24c-45fa-b878-9ba69266344f",
+    "index": 0,
+    "sha256": "12896d57625c8d1c0efbcb6a6ca76ede19c5aee687c856db0df50a476afb2aed"
+  },
+  "physical_metadata_sha256": "5572ece3cf946c7bfa85e36bbe52b12c7f9dc7a5d4c5ae1a35e79d98f7a27dfa",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SmokyLoungeMistySalon.java",
+  "java_sha256": "4e81c20eb9197546f78a357fc670ac54d51ccd669ad8e087567ac7dcd92ee290",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfFirstMainTriggeredAbility.java",
+      "sha256": "8ae6196917d9e2e958cd19a7a009d89c0462a680be928b607658ce76526eb93b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RoomUnlockAbility.java",
+      "sha256": "3f9bc61d4422af6cab250ba6132c071648148a573024af9ec9e28f39c1adf1e3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/mana/AddConditionalManaEffect.java",
+      "sha256": "4690e27d03738e7052453428d8854b1ca8986ce292f25b579b33ab88cb953c23"
+    }
+  ]
+}

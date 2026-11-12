@@ -3,10 +3,22 @@
   "catalogue_id": 2394,
   "oracle_id": "76372327-41ec-4516-abff-3b612e073629",
   "facts_sha256": "4072258dc15047844ac6da0b8dbf840fa01d6261ae7f63b7a72c4ab8643ca2db",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "df9c83d6c54e7cf091f9e37ad92dc9a0491b5f0d6199d5b63186bf6e794acba0"
-  },
-  "physical_metadata_sha256": "e0d76a7124fb851d899cbb68401411434ddcfede692211839822b928212ef0f9"
+  "complete": true,
+  "physical_metadata_sha256": "e0d76a7124fb851d899cbb68401411434ddcfede692211839822b928212ef0f9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KonaRescueBeastie.java",
+  "java_sha256": "83c4e935074834a5b6a1f706c70c0b0f0044545e863941f04761a0a4d419301a",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/PutCardFromHandOntoBattlefieldEffect.java",
+      "sha256": "60ead6e7cba07c849019361189b61b541490b8f4ec1bdda1e91b3315a673788a"
+    }
+  ]
 }

@@ -267,9 +267,10 @@ fn island_ability_persists_only_while_the_same_land_retains_its_counters() {
             .subtypes(land)
             .has(projection.definition(land), "Island")
     );
-    assert!(projection.visit_mana_source_counter_cost(
+    assert!(projection.visit_mana_source_counter_placement(
         original,
         Some((CounterKind::Flood, 1)),
+        false,
         &mut |projected| {
             assert!(projected.counter_count(land, CounterKind::Flood) > 0);
             assert!(

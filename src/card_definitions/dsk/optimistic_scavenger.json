@@ -3,10 +3,34 @@
   "catalogue_id": 3028,
   "oracle_id": "0180c67b-c5c8-4a67-9562-d51f9e7ffff5",
   "facts_sha256": "45c17565628b07091f31a5415d2f7bd512e46e01e86146303ab8932b9e3d146c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aeb6e492fec0322566998102f6ab739210b02c9814ed7f3c7168553caaef3763"
   },
-  "physical_metadata_sha256": "6f02462919b51b888e1dd3c67b01a61dbfa6db8220d97e31b64cda639d6acc52"
+  "physical_metadata_sha256": "6f02462919b51b888e1dd3c67b01a61dbfa6db8220d97e31b64cda639d6acc52",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OptimisticScavenger.java",
+  "java_sha256": "b1b5666847f59619f12fa8c8703fd07ebd524266cb4888d14a65af2b92195823",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersTargetEffect.java",
+      "sha256": "18b3e30b6245d685aa6e3915025590aa64647ce760831f93bffaa5129181c8a0"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Each Eerie event makes a distinct mandatory creature target of either controller and puts one +1/+1 counter on it if legal."
+  }
 }

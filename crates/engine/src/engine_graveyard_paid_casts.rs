@@ -102,12 +102,7 @@ impl Game {
                 .then(|| self.disguise_cast_definition(object.card))
                 .flatten();
         }
-        match face {
-            CastFace::Normal => Some(card),
-            CastFace::Adventure => card.adventure_spell(),
-            CastFace::Omen => card.omen_spell(),
-            CastFace::Back => card.back_face(),
-        }
+        face.definition(card)
     }
 
     pub(super) fn visit_paid_graveyard_casts(
@@ -115,6 +110,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let Some(data) = &self.state.linked_choices else {
@@ -143,26 +139,22 @@ impl Game {
             ) {
                 return true;
             }
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[card as usize].card) {
                 let Some(permission) =
                     self.paid_graveyard_permission(actor, object, face, CastMethod::Normal, row.id)
                 else {
                     continue;
                 };
-                if self.visit_web_slinging_face(
+                if self.visit_paid_cast_alternative_face(
                     actor,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::GraveyardPaid {
+                    PaidCastOrigin::GraveyardPaid {
                         object,
                         permission: row.id,
                     },
+                    mana_alternatives,
                     emit,
                 ) {
                     return true;

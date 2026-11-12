@@ -62,6 +62,13 @@ pub enum EventObjectFacts {
     CreatureComparison(CreatureComparisonFacts),
     /// Current or last-known signed power of a creature chosen for a cost.
     ChosenCostCreaturePower(i128),
+    /// Exact revealed hand card and its current or last-known signed power.
+    RevealedCostCreature {
+        card: Card,
+        power: i128,
+    },
+    /// One paid battlefield exile can yield two physical cards if it was melded.
+    LinkedExileCost([Option<ObjectRef>; 2]),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -226,6 +233,29 @@ impl SpellView {
             }
         }
     }
+    pub(super) fn capture_chosen_cost_creature_departure(&mut self, before: &[&ObjectView]) {
+        if let Some(event) = &mut self.event_object
+            && let Some(view) = before.iter().find(|view| view.reference == event.object)
+        {
+            let power = match &mut event.facts {
+                EventObjectFacts::ChosenCostCreaturePower(power)
+                    if matches!(view.zone, Zone::Battlefield | Zone::Exile) =>
+                {
+                    Some(power)
+                }
+                EventObjectFacts::RevealedCostCreature { power, .. } if view.zone == Zone::Hand => {
+                    Some(power)
+                }
+                _ => None,
+            };
+            if let Some(power) = power {
+                *power = if view.is_creature() { view.power } else { 0 };
+            }
+        }
+        if let Some(copy) = &mut self.copy_event {
+            copy.spell.capture_chosen_cost_creature_departure(before);
+        }
+    }
     pub(super) fn set_event_object(&mut self, event: EventObjectView) {
         if let Some(previous) = self.event_object.take() {
             let primary = previous.object;
@@ -275,6 +305,9 @@ impl Game {
     ) {
         let ordinary = self.event_fact_packets().any(|p| {
             p.event_object.is_some()
+                || p.copy_event
+                    .as_ref()
+                    .is_some_and(|event| event.spell.event_object.is_some())
                 || p.source_quantity_lki
                     .as_ref()
                     .is_some_and(|q| q.creature_comparison.is_some())
@@ -291,7 +324,7 @@ impl Game {
             return;
         }
         let before = before.into_iter().collect::<Vec<_>>();
-        self.capture_entry_batch_copy_departures(&before);
+        self.capture_owned_event_object_departures(&before);
         if !ordinary {
             return;
         }
@@ -323,18 +356,16 @@ impl Game {
             .collect();
         let facts: Vec<_> = before
             .into_iter()
-            .filter(|v| matches!(v.zone, Zone::Battlefield | Zone::Stack | Zone::Exile))
+            .filter(|v| matches!(v.zone, Zone::Battlefield | Zone::Stack))
             .filter(|v| {
                 self.event_fact_packets().any(|p| {
-                    p.event_object.as_ref().is_some_and(|e| {
-                        e.object == v.reference
-                            && (v.zone != Zone::Exile
-                                || matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)))
-                    }) || (v.zone != Zone::Exile
-                        && p.source.is_some_and(|source| source.object == v.reference)
-                        && p.source_quantity_lki
-                            .as_ref()
-                            .is_some_and(|q| q.creature_comparison.is_some()))
+                    p.event_object
+                        .as_ref()
+                        .is_some_and(|e| e.object == v.reference)
+                        || (p.source.is_some_and(|source| source.object == v.reference)
+                            && p.source_quantity_lki
+                                .as_ref()
+                                .is_some_and(|q| q.creature_comparison.is_some()))
                 })
             })
             .map(|v| {
@@ -343,7 +374,6 @@ impl Game {
                     CreatureComparisonFacts::from_view(v),
                     actor(v),
                     v.copy_recipe.unwrap_or_else(|| CopyRecipe::new(v.card)),
-                    v.zone,
                     &v.counters,
                     (v.zone == Zone::Battlefield).then(|| self.object_mana_value(v.id)),
                 )
@@ -388,28 +418,16 @@ impl Game {
             }
             if let Some(q) = &mut p.source_quantity_lki
                 && q.creature_comparison.is_some()
-                && let Some((_, stats, _, _, _, _, _)) =
-                    facts.iter().find(|(r, _, _, _, zone, _, _)| {
-                        *zone != Zone::Exile && p.source.is_some_and(|source| *r == source.object)
-                    })
+                && let Some((_, stats, _, _, _, _)) = facts
+                    .iter()
+                    .find(|(r, _, _, _, _, _)| p.source.is_some_and(|source| *r == source.object))
             {
                 q.creature_comparison = Some(*stats);
             }
             if let Some(e) = &mut p.event_object
-                && let Some((_, stats, damage, recipe, zone, counters, mana_value)) =
-                    facts.iter().find(|(r, _, _, _, _, _, _)| *r == e.object)
+                && let Some((_, stats, damage, recipe, counters, mana_value)) =
+                    facts.iter().find(|(r, _, _, _, _, _)| *r == e.object)
             {
-                if matches!(e.facts, EventObjectFacts::ChosenCostCreaturePower(_)) {
-                    e.facts = EventObjectFacts::ChosenCostCreaturePower(if stats.creature {
-                        stats.power
-                    } else {
-                        0
-                    });
-                    continue;
-                }
-                if *zone == Zone::Exile {
-                    continue;
-                }
                 if e.subtype_lki.is_some() {
                     e.subtype_lki = Some(damage.facts);
                 }
@@ -422,7 +440,10 @@ impl Game {
                     | EventObjectFacts::DepartureManaValue(_)
                     | EventObjectFacts::DiscardedManaValue(_)
                     | EventObjectFacts::DiscoverAmount(_)
-                    | EventObjectFacts::CountersPlaced { .. } => {
+                    | EventObjectFacts::CountersPlaced { .. }
+                    | EventObjectFacts::ChosenCostCreaturePower(_)
+                    | EventObjectFacts::LinkedExileCost(_)
+                    | EventObjectFacts::RevealedCostCreature { .. } => {
                         continue;
                     }
                     EventObjectFacts::BattlefieldManaValue(old) => {
@@ -441,7 +462,6 @@ impl Game {
                     EventObjectFacts::CreatureComparison(_) => {
                         EventObjectFacts::CreatureComparison(*stats)
                     }
-                    EventObjectFacts::ChosenCostCreaturePower(_) => unreachable!(),
                 };
             }
         }
@@ -609,10 +629,15 @@ impl Game {
         let Some(event) = item.event_object.as_ref() else {
             return 0;
         };
-        let EventObjectFacts::ChosenCostCreaturePower(saved) = event.facts else {
-            return 0;
+        let zone = self.state.objects[event.object.card as usize].zone;
+        let (saved, still_expected) = match event.facts {
+            EventObjectFacts::ChosenCostCreaturePower(power) => {
+                (power, matches!(zone, Zone::Battlefield | Zone::Exile))
+            }
+            EventObjectFacts::RevealedCostCreature { power, .. } => (power, zone == Zone::Hand),
+            _ => return 0,
         };
-        if self.object_ref(event.object.card) != event.object {
+        if !still_expected || self.object_ref(event.object.card) != event.object {
             return saved;
         }
         let view = self.object_view(event.object.card);

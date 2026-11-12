@@ -588,6 +588,10 @@ impl FundingState<'_> {
                     })
                 })
             }
+            StepGuard::ImpendingHasTimeCounters => {
+                self.game
+                    .step_guard_in_world(self, guard, player, source, movement.before.tapped)
+            }
             StepGuard::SourceTapped => {
                 if self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
@@ -645,31 +649,43 @@ impl FundingState<'_> {
                 let v = self.game.stat_value_in_world(self, value, source, player);
                 minimum.is_none_or(|n| v >= n) && maximum.is_none_or(|n| v <= n)
             }
+            StepGuard::LandEnteredAndPrimeLandCount => self.game.step_guard_in_world(
+                self,
+                guard,
+                player,
+                source,
+                self.object(source.card).tapped,
+            ),
             StepGuard::Threshold {
                 value,
                 minimum,
                 maximum,
             } => {
-                let creatures = self
-                    .resources
-                    .iter()
-                    .filter(|r| {
+                let creatures = || {
+                    self.resources.iter().filter(move |r| {
                         r.object.zone == Zone::Battlefield
                             && r.object.controller == player
                             && CharacteristicWorld::kinds(self, r.id) & 1 != 0
                     })
-                    .collect::<Vec<_>>();
+                };
                 let v = match value {
                     StepValue::Life => Some(self.life(player)),
                     StepValue::Hand => Some(count(Zone::Hand, player) as i128),
                     StepValue::SpellsCast => Some(i128::from(state.spells_cast_this_turn)),
-                    StepValue::Creatures => Some(creatures.len() as i128),
+                    StepValue::Creatures => Some(creatures().count() as i128),
                     StepValue::TappedCreatures => {
-                        Some(creatures.iter().filter(|r| r.object.tapped).count() as i128)
+                        Some(creatures().filter(|r| r.object.tapped).count() as i128)
                     }
+                    StepValue::ControlledCreaturePowerAtMost { maximum, other } => Some(
+                        characteristic_query::CharacteristicQuery::in_world(self)
+                            .controlled_creature_power_count(
+                                player,
+                                other.then_some(source),
+                                ..=i128::from(maximum),
+                            ) as i128,
+                    ),
                     StepValue::EnchantedCreatures => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .filter(|r| {
                                 self.attachment_sources().iter().any(|&id| {
                                     self.object(id).zone == Zone::Battlefield
@@ -689,24 +705,19 @@ impl FundingState<'_> {
                             })
                             .count() as i128,
                     ),
-                    StepValue::GreatestCreaturePower => {
-                        creatures.iter().map(|r| self.power(r.id)).max()
-                    }
-                    StepValue::GreatestOtherCreaturePower => creatures
-                        .iter()
+                    StepValue::GreatestCreaturePower => creatures().map(|r| self.power(r.id)).max(),
+                    StepValue::GreatestOtherCreaturePower => creatures()
                         .filter(|r| self.reference(r.id) != source)
                         .map(|r| self.power(r.id))
                         .max(),
                     StepValue::TotalCreaturePower => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .map(|r| self.power(r.id))
                             .try_fold(0i128, i128::checked_add)
                             .capacity("entry power exhausted"),
                     ),
                     StepValue::TotalCreatureToughness => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .map(|r| {
                                 characteristic_query::CharacteristicQuery::in_world(self)
                                     .stats(r.id)
@@ -1304,20 +1315,34 @@ impl FundingState<'_> {
             }
             return false;
         }
-        if !m.artifact_return
-            && !m.enchantment_return
-            && m.before.card.aura().is_some()
-            && m.attachment.is_none()
-        {
+        if m.needs_aura_attachment() {
             let mut any = false;
-            for r in &self.resources {
-                let target = self.reference(r.id);
-                if self.aura_candidate(m, target) {
-                    any = true;
-                    let mut next = moves.clone();
-                    next[at].attachment = Some(target);
-                    if self.visit_entry_values(next, at + 1, actual, emit) {
-                        return true;
+            if m.before.card.enchants_player() {
+                for player in [Player::P0, Player::P1] {
+                    if ability_world::player_aura_can_enchant(
+                        self,
+                        m.before.card,
+                        m.controller,
+                        player,
+                    ) {
+                        any = true;
+                        let mut next = moves.clone();
+                        next[at].player_attachment = Some(player);
+                        if self.visit_entry_values(next, at + 1, actual, emit) {
+                            return true;
+                        }
+                    }
+                }
+            } else {
+                for r in &self.resources {
+                    let target = self.reference(r.id);
+                    if self.aura_candidate(m, target) {
+                        any = true;
+                        let mut next = moves.clone();
+                        next[at].attachment = Some(target);
+                        if self.visit_entry_values(next, at + 1, actual, emit) {
+                            return true;
+                        }
                     }
                 }
             }
@@ -1621,8 +1646,7 @@ impl FundingState<'_> {
                     && m.destination == Zone::Battlefield
                     && (Self::entry_has_timestamp(m)
                         || (moves.iter().any(|m| {
-                            Game::hand_entry(m)
-                                && m.before.card.hand_size_setting().flatten().is_some()
+                            Game::hand_entry(m) && m.before.card.has_finite_hand_size_setting()
                         }) && Game::hand_entry(m)))
             })
             .map(|(i, _)| i)
@@ -1753,6 +1777,7 @@ impl FundingState<'_> {
             o.cast_for_warp = m.destination == Zone::Battlefield
                 && m.warp_controller.is_some()
                 && m.cast_origin.is_some();
+            o.cast_for_impending = m.destination == Zone::Battlefield && m.cast_for_impending;
             o.gained_keywords = Keywords::NONE;
             o.growth = Stats::default();
             o.counters = m.counters.hot();
@@ -1767,6 +1792,7 @@ impl FundingState<'_> {
             o.dealt_combat_damage_this_incarnation = false;
             o.deathtouch_since_sba = false;
             o.attached_to = m.attachment;
+            o.attached_to_player = m.player_attachment;
             o.tapped = m.tapped;
             row.attacking = false;
             let source = ObjectRef {
@@ -2357,6 +2383,7 @@ impl Game {
                 | Action::ChooseEntryValue { .. }
                 | Action::ChooseEntryLife { .. }
                 | Action::ChooseAuraAttachment { .. }
+                | Action::ChooseAuraPlayerAttachment { .. }
                 | Action::ChooseEntryReplacement { .. }
                 | Action::ChooseEntryTimestamp { .. }
                 | Action::ChooseReplacement { .. }
@@ -2557,6 +2584,9 @@ impl Game {
             Some(Action::ChooseAuraAttachment { object }) => {
                 batch.moves[batch.choices[batch.next]].attachment = Some(*object)
             }
+            Some(Action::ChooseAuraPlayerAttachment { player }) => {
+                batch.moves[batch.choices[batch.next]].player_attachment = Some(*player)
+            }
             Some(Action::ChooseEntryLife { pay }) => {
                 let payment = batch
                     .tap_events
@@ -2633,18 +2663,21 @@ impl Game {
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl<'g> FundingState<'g> {
-    fn visit_mana_source_counter_cost(
+    pub(super) fn visit_mana_source_counter_placement(
         &self,
         object: ObjectRef,
-        cost: Option<(CounterKind, u64)>,
+        placement: Option<(CounterKind, u64)>,
+        effect: bool,
         emit: &mut dyn FnMut(&Self) -> bool,
     ) -> bool {
-        let Some((kind, amount)) = cost.filter(|(_, amount)| *amount != 0) else {
+        let Some((kind, amount)) = placement.filter(|(_, amount)| *amount != 0) else {
             return emit(self);
         };
-        if self.reference(object.card) != object || replacements::counters_prohibited(self, object)
+        if self.reference(object.card) != object
+            || (effect && self.object(object.card).zone != Zone::Battlefield)
+            || replacements::counters_prohibited(self, object)
         {
-            return false;
+            return effect && emit(self);
         }
         let recipient = self.object(object.card);
         let placement = replacements::CounterPlacement {
@@ -2658,7 +2691,7 @@ impl<'g> FundingState<'g> {
             subtypes: self.subtypes(object.card),
             kind: CharacteristicWorld::kinds(self, object.card),
             power: self.power(object.card),
-            effect: false,
+            effect,
             entry_index: None,
             private: false,
         };
@@ -2740,14 +2773,14 @@ impl<'g> FundingState<'g> {
         });
         let source_counter_cost =
             definition.and_then(|(definition, index)| definition.activation_put_counter(index));
-        let time_removal = definition
-            .filter(|(definition, index)| definition.activation(*index).mana_removes_time_counter())
-            .map(|_| {
-                step.output.as_ref().map_or_else(
-                    || self.reference(self.resources[step.resource].id),
-                    |output| output.instance.source,
-                )
-            });
+        let counter_followup = definition.and_then(|(definition, index)| {
+            let followup = definition.activation(index).mana_counter_followup()?;
+            let source = step.output.as_ref().map_or_else(
+                || self.reference(self.resources[step.resource].id),
+                |output| output.instance.source,
+            );
+            Some((source, followup))
+        });
         if source_counter_cost.is_none()
             && step.external.is_none()
             && self.cast_costs.is_none()
@@ -2777,10 +2810,10 @@ impl<'g> FundingState<'g> {
                 && let Some(bonus) = receipt.singleton(production)
                 && next.completed_mana_fits(replaced, bonus.total)
             {
-                next.add_funding_output(step, &bonus, replaced, time_removal);
-                return emit(&next);
+                next.add_funding_output(step, &bonus, replaced);
+                return next.visit_mana_counter_followup(counter_followup, emit);
             }
-            return next.visit_output(step, &receipt, time_removal, goal, emit);
+            return next.visit_output(step, &receipt, counter_followup, goal, emit);
         }
         let external = if let Some(external) = &step.external {
             let source = &self.resources[step.resource];
@@ -2847,17 +2880,22 @@ impl<'g> FundingState<'g> {
         // The executor taps before this source-counter event, then performs
         // departure costs. Retain the captured tap bonus while replacements
         // update the counter world used by subsequent costs and mana output.
-        next.visit_mana_source_counter_cost(reference, source_counter_cost, &mut |world| {
-            world.visit_mana_cost_departures(
-                reference,
-                departed.then_some(destination),
-                external,
-                &mut |world| {
-                    let bonus = bonus.with_event_effects(world, self.actor, tap_source);
-                    world.visit_output(step, &bonus, time_removal, goal, emit)
-                },
-            )
-        })
+        next.visit_mana_source_counter_placement(
+            reference,
+            source_counter_cost,
+            false,
+            &mut |world| {
+                world.visit_mana_cost_departures(
+                    reference,
+                    departed.then_some(destination),
+                    external,
+                    &mut |world| {
+                        let bonus = bonus.with_event_effects(world, self.actor, tap_source);
+                        world.visit_output(step, &bonus, counter_followup, goal, emit)
+                    },
+                )
+            },
+        )
     }
     pub(super) fn visit_mana_cost_departures(
         &self,

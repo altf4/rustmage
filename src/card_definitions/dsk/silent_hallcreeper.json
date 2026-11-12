@@ -3,10 +3,44 @@
   "catalogue_id": 3866,
   "oracle_id": "6aea681e-88d2-48df-a717-3ce0bc95205b",
   "facts_sha256": "9ba4848ffeb7270a0451ec38f5d9b28201625696b1dbbbd8afc8b2eecb1a73e1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7fa47b6ae470e8cb1c1a257b5fe4c60c9cffb26a812a9af3e12283a40b1879d2"
   },
-  "physical_metadata_sha256": "0c0decf586088a783d9fa403da2835e6c80f49ece7e333ed598325569f335956"
+  "physical_metadata_sha256": "0c0decf586088a783d9fa403da2835e6c80f49ece7e333ed598325569f335956",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SilentHallcreeper.java",
+  "java_sha256": "4c2e7eee724895988587af749d03f0b17f50e2928fedc04d76dfd824327ee347",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+      "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/Modes.java",
+      "sha256": "aba1a0699596a6f1db972182990d248cad9f8a59146211b4902ceb0a26c882b1"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Each combat hit to a player can choose an unused mode for the exact incarnation. The mode is spent at announcement. Two counters, one card, or copying another exact controlled creature are independent. The in-place copy preserves the recipient's counters and lasts for that permanent incarnation."
+  }
 }

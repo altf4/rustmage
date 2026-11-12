@@ -433,6 +433,9 @@ pub struct CardExtras {
     pub transforming_double_face: bool,
     pub meld_face: bool,
     pub as_transform: Option<AsTransformEffect>,
+    pub room: Option<&'static RoomSpec>,
+    /// A Room half is a spell definition and has no physical deck identity.
+    pub room_parent: Option<Card>,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -506,6 +509,7 @@ pub struct CardExtras {
     pub omen_parent: Option<Card>,
     pub warp_cost: Option<ManaCost>,
     pub warp: Option<&'static WarpSpec>,
+    pub impending: Option<ImpendingSpec>,
     pub disguise_cost: Option<ManaCost>,
     pub sneak_cost: Option<ManaCost>,
     pub sneak_costs: &'static [ManaCost],
@@ -559,7 +563,7 @@ pub struct CardExtras {
     pub evoke_costs: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
-    /// Independent additional mana route crossed with every printed hybrid base.
+    /// Mandatory alternative to the printed nonmana additional cost, independent of the spell's mana base.
     pub additional_mana_alternative: Option<ManaCost>,
     /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
     pub legacy_subtype_mana_activation: Option<u16>,
@@ -581,6 +585,7 @@ pub struct CardExtras {
     /// Additional live subtype accepted by this Aura’s ordinary kind union.
     pub aura_kind_or_subtype: Option<&'static str>,
     pub enchant_basic: bool,
+    pub enchant_player: bool,
     pub enchanted_modifiers: &'static [EnchantedModifier],
     pub flash_surcharge: Option<ManaCost>,
 }
@@ -591,6 +596,8 @@ impl CardExtras {
         transforming_double_face: false,
         meld_face: false,
         as_transform: None,
+        room: None,
+        room_parent: None,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,
@@ -651,6 +658,7 @@ impl CardExtras {
         omen_parent: None,
         warp_cost: None,
         warp: None,
+        impending: None,
         disguise_cost: None,
         sneak_cost: None,
         sneak_costs: &[],
@@ -715,6 +723,7 @@ impl CardExtras {
         aura_artifact_or_non_aura_enchantment: false,
         aura_kind_or_subtype: None,
         enchant_basic: false,
+        enchant_player: false,
         enchanted_modifiers: &[],
         flash_surcharge: None,
     };

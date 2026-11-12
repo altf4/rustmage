@@ -3,10 +3,31 @@
   "catalogue_id": 5164,
   "oracle_id": "6c044dd1-8938-4d62-a7b2-e2298de08f70",
   "facts_sha256": "d6e54a41de0c78904201ed2e700a55cc71acb5aceeb5987fd6a88d2f83850e84",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "2c334d426d7f369fba6121c8b6e5bebf02eb492b96e6ae3eabef287551369593"
-  },
-  "physical_metadata_sha256": "9c3e271d4d2f783a920cfadb74df36f131ddbe7f5e7147e2da162201502fa8bd"
+  "complete": true,
+  "physical_metadata_sha256": "9c3e271d4d2f783a920cfadb74df36f131ddbe7f5e7147e2da162201502fa8bd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/z/ZimoneAllQuestioning.java",
+  "java_sha256": "4a4c6e636f11d2add90c9d66a3ecb9883993c38a588c212d9a78ad88dc2bd9a6",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/LandfallWatcher.java",
+      "sha256": "3aaafb0fb8b3f3b7517d893185ea0fd03656ee6e43a7f0b5258fe5deffb4dc5c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/PrimoTheIndivisibleToken.java",
+      "sha256": "755507fc8c1d2cc7c56ba188847fb3fea7332204ecfa8a78478d6379785ca1de"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The intervening-if clause checks actual land entry and prime land counts, including primes greater than 31."
+  }
 }

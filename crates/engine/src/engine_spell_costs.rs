@@ -230,6 +230,9 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if let Some(cost) = a.source_mana_alternative() {
+                return cost;
+            }
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
@@ -387,7 +390,8 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
-        if self.cast_uses_target_life_costs(actor, definition)
+        if definition.explicit_additional_mana().is_some()
+            || self.cast_uses_target_life_costs(actor, definition)
             || (self.state.objects[card as usize].zone == Zone::Library
                 && definition.x_symbols() > 0)
         {
@@ -424,7 +428,10 @@ impl Game {
         } else {
             definition.cost_options()
         };
-        costs.into_iter().any(|cost| {
+        let impending_cost = (!flashback)
+            .then(|| definition.impending_spec().map(|spec| spec.cost))
+            .flatten();
+        costs.chain(impending_cost).any(|cost| {
             let cost = Self::with_flash_surcharge(cost, definition, true);
             if definition.has_target_cost_modifier() {
                 self.initial_target_cost_fundable(actor, card, cost)
@@ -491,7 +498,11 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.has_ordered_origin_payment() || a.has_ordered_life_cost() {
+        if a.source_mana_alternative().is_some()
+            || a.independent_additional_mana().is_some()
+            || a.has_ordered_origin_payment()
+            || a.has_ordered_life_cost()
+        {
             let mut proposal = a.clone();
             proposal.item.cast.as_mut().unwrap().offspring = Some(pay);
             return proposal
@@ -633,6 +644,7 @@ impl Game {
         subtypes: GrantedSubtypes,
     ) -> SpellCostReduction {
         let recipient = world.object(id);
+        let subtypes = subtypes::spell_subtypes(world, actor, definition, subtypes);
         let stats = |id| characteristic_query::CharacteristicQuery::in_world(world).stats(id);
         let applies = |rule: &crate::cards::SpellReduction, source: CardId| {
             let object = world.object(source);

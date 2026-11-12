@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-shard",
+  "catalogue_id": 5676,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "7bd50438afe3d425d72dcdb43e48ccb804082c60f9bf92b2e96701e89866e240",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/ShardToken.java",
+  "java_sha256": "f5cf526f18e13d62eb6970c53245204d953fa04654a66ffea34e6c1391563c67"
+}

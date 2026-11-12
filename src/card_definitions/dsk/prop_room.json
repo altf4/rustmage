@@ -1,0 +1,16 @@
+{
+  "name": "Prop Room",
+  "catalogue_id": 5630,
+  "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+  "facts_sha256": "28a84da97fccda9a19930713fea7ede8d0ab383c7832615ca2a8660b96827ee9",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "c46a02db-13d6-477f-9da0-822599470168",
+    "index": 1,
+    "sha256": "da0f9f9e8215aceb9ffe38a2b4f55e543f86d544bc2f58e85e81ebbff0ffce2c"
+  },
+  "physical_metadata_sha256": "199924e98b184725dcb45ac63c80056dcd1ab697500239cff13d56c57a07205b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DazzlingTheaterPropRoom.java",
+  "java_sha256": "eeae369abb70a9dcbe02f333f2ddcd061d5fe83226c6d486e96e047877a509d3"
+}

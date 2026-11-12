@@ -1,0 +1,43 @@
+{
+  "name": "Screaming Nemesis",
+  "catalogue_id": 3739,
+  "oracle_id": "fcb7c93c-46ab-49b5-a6e0-35d73f3be8f0",
+  "facts_sha256": "7415c197781bff787072a6e993b2ec44b60c5f869ac24482a021cd0111023bd1",
+  "complete": true,
+  "typed_lift": {
+    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
+    "definition_sha256": "59494dc0928783ea864d759f5e0c81723481b674dc8e210a97904659f1987b9e"
+  },
+  "physical_metadata_sha256": "502a5946061b11af78a2502ada7b0cbead8a3ef37e04e03fd94e7488a8fab3a2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScreamingNemesis.java",
+  "java_sha256": "f5135cda581ec59233eeb8b139165ed48c8e535812270462175d53740f462ea2",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+      "sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantGainLifeRestOfGameTargetEffect.java",
+      "sha256": "3e8933f97cee1486652cf27163c3ab6684ca6576ce0074967848129a449b3727"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/AnotherPredicate.java",
+      "sha256": "08af228d7593501bbdabbbab0dd9659f100b53611006951ad0c4dea3a70f2742"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetPermanentOrPlayer.java",
+      "sha256": "f43a3bbef4f7d2f923cddf063aa48211aad59848ccefcdace9b08a40b5cd67ab"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
+}

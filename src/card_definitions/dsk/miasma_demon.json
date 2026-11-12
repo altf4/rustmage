@@ -3,10 +3,31 @@
   "catalogue_id": 2736,
   "oracle_id": "b1df6475-e1e8-4ef3-a7b2-919d5f121c57",
   "facts_sha256": "ea43a90b9532b42b3b8623bc22998e156adff4d5f1acf9485508b8ecbafb0181",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2b3696682d0cdc4525d4620c697558a3cf4b80894f269f33c1e2bb897c6efa6d"
   },
-  "physical_metadata_sha256": "1e10c96f92183995c6ef895be44030f56b4f9d0e7b49b40caeaf0e0fa64627d8"
+  "physical_metadata_sha256": "1e10c96f92183995c6ef895be44030f56b4f9d0e7b49b40caeaf0e0fa64627d8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MiasmaDemon.java",
+  "java_sha256": "0a8d4e6447bfc1096893086aeabcb7df21bee45fc2837996cd86e3090054ec45",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/ReflexiveTriggeredAbility.java",
+      "sha256": "87f1ae60e09bed8a3b0582e91775759adc5cd494d69cf1bceaad1671de43266b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/players/PlayerImpl.java",
+      "sha256": "cf703a3906b14381001e910e7213046262224d76fd6c3f1289537f77f1a49ff3"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_discard_costs.rs"
 }

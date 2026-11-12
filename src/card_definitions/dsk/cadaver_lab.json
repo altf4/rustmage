@@ -1,0 +1,34 @@
+{
+  "name": "Cadaver Lab",
+  "catalogue_id": 5632,
+  "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+  "facts_sha256": "10c73b92929d1cbfbd77e8b639d6269bb8e6f6f7f13edb4a24dc0d1a63f67de4",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "f97de425-c7ab-4688-8606-159370d179ee",
+    "index": 1,
+    "sha256": "760e035a060b1553f9c6d9302c5c9c578d133ada6a63db86c519e15ec5cd54cb"
+  },
+  "physical_metadata_sha256": "7a49b07c82a0a0c9362ae2493ef3a35b11c7bdb153b40ed95d5980463d5af3c9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DefiledCryptCadaverLab.java",
+  "java_sha256": "f5edac058f076b7f0576971ecb718b876b82bba2603b8956a2b56d09c3bb35eb",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToHandTargetEffect.java",
+      "sha256": "cf61cc4b2968d71da7451ff35e5f796d948ffa287bd8ef70dd35b00ff0858e63"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
+}

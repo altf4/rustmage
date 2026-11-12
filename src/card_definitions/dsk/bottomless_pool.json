@@ -1,0 +1,16 @@
+{
+  "name": "Bottomless Pool",
+  "catalogue_id": 5623,
+  "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+  "facts_sha256": "42cad1866abe5f42ec9995788a6e7e4ad9a0c2a99c2dc06fa6ec953a07773228",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "b9ac4856-5cdb-479f-b0f5-7fa0b232a5ff",
+    "index": 0,
+    "sha256": "5dc65a49c6f4a46904301c82aa5ca3d149c606cf1479fa0333aa90868ad3a42e"
+  },
+  "physical_metadata_sha256": "f215c317fb99c2b147313b47d5fd508094ae31110a45e95a9fe268af2e70aac0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BottomlessPoolLockerRoom.java",
+  "java_sha256": "a55d078139b3bbb67d6c2cf1ed1a2265f77e9d64ca072acbb12d8ba126415466"
+}

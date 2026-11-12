@@ -114,6 +114,7 @@ fn linked_counter_cost_preserves_evoke_and_records_only_paid_mana() {
                 source,
                 exiled,
                 ability_origin: None,
+                acquired_link_cohort: None,
                 exiled_turn: g.state.turn,
             });
         act(

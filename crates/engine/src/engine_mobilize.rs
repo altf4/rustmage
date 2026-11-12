@@ -379,6 +379,7 @@ impl Game {
                 additional_triggers: 0,
                 source_move: None,
                 borrowed_slot: None,
+                acquired_link_cohort: None,
                 self_granted_activation: None,
                 target_controller_lki: None,
                 target_types_lki: None,

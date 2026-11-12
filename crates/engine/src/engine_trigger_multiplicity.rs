@@ -8,6 +8,7 @@ use ability_world::CharacteristicWorld;
 #[derive(Clone, Debug, Default, PartialEq, Eq)]
 pub(super) struct TriggerMultiplicityState {
     providers: Vec<CardId>,
+    incarnation_uses: Option<SharedVec<IncarnationTriggerUse>>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl TriggerMultiplicityState {
@@ -19,7 +20,12 @@ impl TriggerMultiplicityState {
     }
 
     pub(super) fn bytes(&self) -> usize {
-        std::mem::size_of::<Self>() + self.providers.len() * std::mem::size_of::<CardId>()
+        std::mem::size_of::<Self>()
+            + self.providers.len() * std::mem::size_of::<CardId>()
+            + self.incarnation_uses.as_ref().map_or(0, |uses| {
+                std::mem::size_of::<Vec<IncarnationTriggerUse>>()
+                    + uses.len() * std::mem::size_of::<IncarnationTriggerUse>()
+            })
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -138,7 +144,8 @@ fn additional_triggers_for_event<W: CharacteristicWorld + ?Sized>(
                                     if query.subtypes(id).has(recipient.card, kind.name())
                             )
                     }
-                    AdditionalTriggerScope::ControlledPermanentAttack
+                    AdditionalTriggerScope::ControlledPermanent
+                    | AdditionalTriggerScope::ControlledPermanentAttack
                     | AdditionalTriggerScope::ControlledPermanentEntry => {
                         recipient.controller == object.controller
                     }
@@ -217,11 +224,55 @@ impl Game {
     pub(super) fn forget_trigger_multiplier_source(&mut self, id: CardId) {
         if let Some(state) = &mut self.state.trigger_multiplicity {
             state.providers.retain(|&provider| provider != id);
-            if state.providers.is_empty() {
+            if state.providers.is_empty() && state.incarnation_uses.is_none() {
                 self.state.trigger_multiplicity = None;
             }
         }
     }
+    pub(super) fn record_incarnation_trigger_use(&mut self, used: IncarnationTriggerUse) -> bool {
+        let uses = self
+            .state
+            .trigger_multiplicity
+            .get_or_insert_with(Default::default)
+            .incarnation_uses
+            .get_or_insert_with(SharedVec::default);
+        if uses.contains(&used) {
+            return false;
+        }
+        uses.push(used);
+        true
+    }
+
+    pub(super) fn incarnation_trigger_uses(&self) -> Vec<IncarnationTriggerUse> {
+        self.state
+            .trigger_multiplicity
+            .as_ref()
+            .and_then(|state| state.incarnation_uses.as_ref())
+            .into_iter()
+            .flat_map(|uses| uses.iter().copied())
+            .filter(|used| current_incarnation(&self.state.objects, used.source))
+            .collect()
+    }
+
+    pub(super) fn prune_incarnation_trigger_uses(&mut self) {
+        if let Some(state) = &mut self.state.trigger_multiplicity
+            && let Some(uses) = &mut state.incarnation_uses
+            && uses
+                .iter()
+                .any(|used| !current_incarnation(&self.state.objects, used.source))
+        {
+            // Retain pre-departure uses until all events in the turn have
+            // been dispatched, including triggers using frozen source views.
+            uses.retain(|used| current_incarnation(&self.state.objects, used.source));
+            if uses.is_empty() {
+                state.incarnation_uses = None;
+                if state.providers.is_empty() {
+                    self.state.trigger_multiplicity = None;
+                }
+            }
+        }
+    }
+
     pub(super) fn add_entry_trigger_multiplicity(
         &mut self,
         source: &ObjectView,
@@ -253,7 +304,8 @@ impl Game {
         };
         if packet.trigger_definition().triggers()[usize::from(ability)]
             .condition
-            .once_per_turn()
+            .trigger_limit()
+            .is_some()
         {
             return;
         }
@@ -284,4 +336,10 @@ impl Game {
             self.state.pending_triggers.push(item);
         }
     }
+}
+
+fn current_incarnation(objects: &[Object], source: ObjectRef) -> bool {
+    objects
+        .get(source.card as usize)
+        .is_some_and(|object| object.generation == source.generation)
 }

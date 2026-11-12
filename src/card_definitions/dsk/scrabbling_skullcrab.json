@@ -3,10 +3,34 @@
   "catalogue_id": 3734,
   "oracle_id": "1448489c-dfb8-43aa-ae3d-ed832381c1d9",
   "facts_sha256": "0ea6be2a0171efa2e43b1c8b703c34483b40bf9455500936fdd9788a38d2743a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "153addeeedf65c0151bb0f7d29e70d03c5df3117202a36ebc52a1c7e13971390"
   },
-  "physical_metadata_sha256": "2d51d676d203d4682a184e1b04977b954d7f14e48a4e95d9ab1e9ddaa8271c08"
+  "physical_metadata_sha256": "2d51d676d203d4682a184e1b04977b954d7f14e48a4e95d9ab1e9ddaa8271c08",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/ScrabblingSkullcrab.java",
+  "java_sha256": "8dd0f08ee62cfd9ca9d16c8d376385323450ed67b2808c79defaa4bf43454fe6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsTargetEffect.java",
+      "sha256": "5a01d741ed0a7d1449d5d4591025205bc130e7e5eb5f861d2761b1fd64557365"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPlayer.java",
+      "sha256": "36179d4a02c9e6216c0844db52d312bde0be07181238041064691b98d92a6eba"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Each Eerie event targets a player without controller restriction. That player mills two cards on resolution."
+  }
 }

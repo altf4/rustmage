@@ -661,7 +661,7 @@ impl Announcement {
 // Matching handles all ordinary one-blocker requirements in polynomial time.
 // Only attackers requiring a bundle of two/three blockers need subset branching.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn cover_slots(game: &Game, slots: &[CardId], available: &[CardId]) -> Option<Vec<Option<usize>>> {
+pub(super) fn cover_block_slots(game: &Game, slots: &[CardId], available: &[CardId]) -> bool {
     fn augment(
         game: &Game,
         slots: &[CardId],
@@ -684,20 +684,23 @@ fn cover_slots(game: &Game, slots: &[CardId], available: &[CardId]) -> Option<Ve
         }
         false
     }
+    if slots.is_empty() {
+        return true;
+    }
+    if slots.len() > available.len() {
+        return false;
+    }
     let mut assigned = vec![None; available.len()];
-    for slot in 0..slots.len() {
-        if !augment(
+    (0..slots.len()).all(|slot| {
+        augment(
             game,
             slots,
             available,
             slot,
             &mut assigned,
             &mut vec![false; available.len()],
-        ) {
-            return None;
-        }
-    }
-    Some(assigned)
+        )
+    })
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -729,22 +732,42 @@ impl Game {
                 }
             }
         }
-        cover_slots(self, &slots, &available)?;
+        // A singleton slot can still be filled by a restricted blocker if an
+        // extra legal block is possible. That companion need not satisfy a
+        // requirement itself or block the same attacker.
+        let can_cover = |slots: &[CardId]| match (selected, slots) {
+            ([(blocker, attacker)], []) => {
+                !self.combat_requires_company(*blocker)
+                    || self
+                        .minimum_blocking_company(*blocker, *attacker, &available)
+                        .is_some()
+            }
+            ([], [attacker]) => available.iter().any(|&blocker| {
+                self.can_block_pair(blocker, *attacker)
+                    && (!self.combat_requires_company(blocker)
+                        || self
+                            .minimum_blocking_company(blocker, *attacker, &available)
+                            .is_some())
+            }),
+            _ => cover_block_slots(self, slots, &available),
+        };
+        if !can_cover(&slots) {
+            return None;
+        }
         normal.sort_by_key(|&(_, weight)| std::cmp::Reverse(weight));
         fn search(
-            game: &Game,
-            available: &[CardId],
+            can_cover: &impl Fn(&[CardId]) -> bool,
             slots: &mut Vec<CardId>,
             normal: &[(CardId, usize)],
             bundles: &[(CardId, usize, usize)],
             score: usize,
         ) -> usize {
             if let Some((&(id, minimum, weight), remaining)) = bundles.split_first() {
-                let without = search(game, available, slots, normal, remaining, score);
+                let without = search(can_cover, slots, normal, remaining, score);
                 let length = slots.len();
                 slots.extend(std::iter::repeat_n(id, minimum));
-                let with = if cover_slots(game, slots, available).is_some() {
-                    search(game, available, slots, normal, remaining, score + weight)
+                let with = if can_cover(slots) {
+                    search(can_cover, slots, normal, remaining, score + weight)
                 } else {
                     0
                 };
@@ -755,7 +778,7 @@ impl Game {
                 let mut score = score;
                 for &(id, weight) in normal {
                     slots.push(id);
-                    if cover_slots(game, slots, available).is_some() {
+                    if can_cover(slots) {
                         score += weight;
                     } else {
                         slots.pop();
@@ -765,9 +788,7 @@ impl Game {
                 score
             }
         }
-        Some(search(
-            self, &available, &mut slots, &normal, &bundles, fixed,
-        ))
+        Some(search(&can_cover, &mut slots, &normal, &bundles, fixed))
     }
     pub(super) fn block_requirements_complete(&self) -> bool {
         if !self

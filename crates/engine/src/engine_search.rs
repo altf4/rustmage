@@ -80,6 +80,37 @@ impl Game {
             .map(|fact| fact.controller)
     }
 
+    pub(super) fn card_search_filter_matches(
+        &self,
+        filter: crate::cards::SearchFilter,
+        player: Player,
+        id: CardId,
+    ) -> bool {
+        use crate::cards::SearchFilter;
+        match filter {
+            SearchFilter::RoomWithoutSharedName => {
+                let card = self.state.objects[id as usize].card;
+                card.has_subtype("Room")
+                    && !self.state.objects.iter().enumerate().any(|(id, object)| {
+                        let id = id as CardId;
+                        object.zone == Zone::Battlefield
+                            && object.controller == player
+                            && self.has_subtype(id, "Room")
+                            && crate::card_names::same_name(card.name(), self.object_name(id))
+                    })
+            }
+            SearchFilter::AnyOf(filters) => filters
+                .iter()
+                .any(|&f| self.card_search_filter_matches(f, player, id)),
+            SearchFilter::AllOf(filters) => filters
+                .iter()
+                .all(|&f| self.card_search_filter_matches(f, player, id)),
+            SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
+            SearchFilter::NonSubtype(subtype) => !self.has_subtype(id, subtype),
+            _ => filter.matches(self.state.objects[id as usize].card),
+        }
+    }
+
     pub(super) fn choose_search(&mut self, card: CardId) {
         let choice = self
             .state

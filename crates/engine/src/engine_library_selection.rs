@@ -10,6 +10,7 @@ pub(super) enum TopLandStage {
     Hand,
     Graveyard,
     HandThenLands,
+    BattlefieldOrHand,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -34,6 +35,7 @@ pub(super) enum LibrarySelectionCompletion {
     ReflexiveEquipment(u16),
     RememberExile,
     BattlefieldFallbackToHand,
+    TopLandFallbackToHand,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -110,13 +112,13 @@ impl Game {
         let c = self.state.objects[id as usize].card;
         match filter {
             LibrarySelectionFilter::SourceChosenCreatureType => {
-                chosen_type.is_some_and(|kind| c.has_subtype(kind.name()))
+                chosen_type.is_some_and(|kind| self.has_subtype(id, kind.name()))
             }
             LibrarySelectionFilter::HasX => c.x_symbols() > 0,
             LibrarySelectionFilter::Any => true,
-            LibrarySelectionFilter::Kinds(mask) => c.kind_mask() & mask != 0,
-            LibrarySelectionFilter::ExcludingKinds(mask) => c.kind_mask() & mask == 0,
-            LibrarySelectionFilter::Subtype(subtype) => c.has_subtype(subtype),
+            LibrarySelectionFilter::Kinds(mask) => self.current_kinds(id) & mask != 0,
+            LibrarySelectionFilter::ExcludingKinds(mask) => self.current_kinds(id) & mask == 0,
+            LibrarySelectionFilter::Subtype(subtype) => self.has_subtype(id, subtype),
             LibrarySelectionFilter::AnyOf(filters) => filters
                 .iter()
                 .any(|filter| self.library_selection_matches(*filter, id, chosen_type)),
@@ -128,32 +130,41 @@ impl Game {
             }
         }
     }
-    pub(super) fn start_top_land_then_graveyard(&mut self, item: &SpellView) -> bool {
+    pub(super) fn start_top_land_selection(
+        &mut self,
+        item: &SpellView,
+        stage: TopLandStage,
+    ) -> bool {
         let owner = item.controller;
         let Some(id) = self.top_library_card(owner) else {
             return false;
         };
         let object = self.object_ref(id);
         let land = self.current_kinds(id) & 2 != 0;
+        let battlefield = stage == TopLandStage::BattlefieldOrHand;
         self.remember_private_library_top(owner, owner, object);
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
             // Ineligible hidden cards still take the same first decision. The
             // opponent must not infer landness from public resolution pacing.
             alternating: None,
-            top_land: Some(TopLandStage::Hand),
+            top_land: Some(stage),
             spec: LibrarySelectionSpec {
                 look: 1,
                 count: LibrarySelectionCount::Fixed(1),
                 filter: LibrarySelectionFilter::Any,
                 optional: true,
-                reveal: land,
+                reveal: land && !battlefield,
                 remainder: LibraryRemainder::Keep,
             },
             owner,
             completion: LibrarySelectionCompletion::None,
             entered: Vec::new(),
             transform_pending: false,
-            destination: LibraryPickDestination::Hand,
+            destination: if battlefield {
+                LibraryPickDestination::Battlefield
+            } else {
+                LibraryPickDestination::Hand
+            },
             exclude_selected_from_remainder: true,
             public: false,
             entering: false,
@@ -277,7 +288,8 @@ impl Game {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
         match completion {
             LibrarySelectionCompletion::None => {}
-            LibrarySelectionCompletion::BattlefieldFallbackToHand => {
+            LibrarySelectionCompletion::BattlefieldFallbackToHand
+            | LibrarySelectionCompletion::TopLandFallbackToHand => {
                 unreachable!("assigned after the destination choice")
             }
             LibrarySelectionCompletion::RememberHandCount => {
@@ -446,6 +458,15 @@ impl Game {
             LibrarySelectionCount::DistinctCardTypes(kinds) => {
                 assert!(spec.optional, "type slots are an up-to selection");
                 kinds.count_ones() as usize
+            }
+            LibrarySelectionCount::DistinctPower => {
+                assert!(spec.optional, "distinct powers are an up-to selection");
+                let query = self.characteristic_query();
+                eligible
+                    .iter()
+                    .map(|object| query.stats(object.card).power)
+                    .collect::<std::collections::BTreeSet<_>>()
+                    .len()
             }
             LibrarySelectionCount::Fixed(n) => usize::from(n),
             LibrarySelectionCount::ChosenX => {
@@ -709,6 +730,14 @@ impl Game {
                     .collect();
                 card_type_assignment::distinct_type_assignment(&masks)
             }
+            LibrarySelectionCount::DistinctPower => {
+                let query = self.characteristic_query();
+                let power = query.stats(object.card).power;
+                frame
+                    .selected
+                    .iter()
+                    .all(|selected| query.stats(selected.card).power != power)
+            }
             LibrarySelectionCount::ManaValueBudget { maximum_total, .. } => {
                 frame
                     .selected
@@ -799,6 +828,14 @@ impl Game {
             let owner = f.owner;
             self.continue_top_hand_then_lands(owner);
             return true;
+        }
+        if f.top_land == Some(TopLandStage::BattlefieldOrHand) {
+            if f.selected.is_empty() {
+                f.selected.append(&mut f.remaining);
+                f.destination = LibraryPickDestination::Hand;
+            } else {
+                f.completion = LibrarySelectionCompletion::TopLandFallbackToHand;
+            }
         }
         if f.top_land == Some(TopLandStage::Hand) && f.selected.is_empty() {
             f.top_land = Some(TopLandStage::Graveyard);
@@ -934,9 +971,11 @@ impl Game {
         let owner = f.owner;
         let chooser = self.state.resolving.as_ref().unwrap().item.controller;
         let remembers_hand = f.completion == LibrarySelectionCompletion::RememberHandCount;
-        let keep_private_look =
-            remembers_hand && f.selected.is_empty() && f.spec.remainder == LibraryRemainder::Keep;
-        if !keep_private_look && (f.top_land.is_none() || !f.selected.is_empty()) {
+        let preserve_top = f.top_land == Some(TopLandStage::BattlefieldOrHand)
+            || (remembers_hand
+                && f.selected.is_empty()
+                && f.spec.remainder == LibraryRemainder::Keep);
+        if !preserve_top && (f.top_land.is_none() || !f.selected.is_empty()) {
             self.forget_library_top(owner);
         }
         for reference in f.selected.iter().chain(&f.remaining).chain(&f.bottom) {
@@ -1086,25 +1125,37 @@ impl Game {
     }
     fn library_selected_to_hand(&mut self, frame: &LibrarySelection) {
         let nonlands_only = frame.destination == LibraryPickDestination::LandsTappedRestHand;
+        let follow_redirect = frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand;
         let ids: Vec<_> = frame
             .selected
             .iter()
             .filter(|r| {
-                exact_library_card(&self.state.objects, frame.owner, **r)
+                (exact_library_card(&self.state.objects, frame.owner, **r)
+                    || follow_redirect && self.public_top_land_redirect(**r))
                     && (!nonlands_only || !self.state.objects[r.card as usize].card.is_land())
             })
             .map(|r| r.card)
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Hand);
-        if frame.spec.reveal {
+        if frame.spec.reveal || follow_redirect {
             self.state.known_hand.extend(
                 events
                     .iter()
-                    .filter(|e| e.moved && e.destination == Zone::Hand)
+                    .filter(|e| {
+                        e.moved
+                            && e.destination == Zone::Hand
+                            && (frame.spec.reveal || e.before.zone != Zone::Library)
+                    })
                     .map(|e| e.after),
             );
         }
         self.finish_zone_events(&events, &[]);
+    }
+    fn public_top_land_redirect(&self, object: ObjectRef) -> bool {
+        let card = &self.state.objects[object.card as usize];
+        self.object_ref(object.card) == object
+            && matches!(card.zone, Zone::Exile | Zone::Graveyard | Zone::Command)
+            && !self.exiled_face_down(object)
     }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
         // Entry replacements may move another looked card. The remainder means
@@ -1181,11 +1232,34 @@ impl Game {
                         frame.completion,
                         LibrarySelectionCompletion::MayTransform
                             | LibrarySelectionCompletion::ReflexiveEquipment(_)
+                            | LibrarySelectionCompletion::TopLandFallbackToHand
                     )
             })
         else {
             return;
         };
+        if frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand {
+            let Some(&selected) = frame.selected.first() else {
+                return;
+            };
+            // CR 400.7j: follow a replacement's actual result only in a public zone.
+            if let Some(redirected) = events.iter().find_map(|event| {
+                (event.moved
+                    && event.before.reference == selected
+                    && self.public_top_land_redirect(event.after))
+                .then_some(event.after)
+            }) {
+                self.state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .selection
+                    .as_mut()
+                    .unwrap()
+                    .selected[0] = redirected;
+            }
+            return;
+        }
         let entered: Vec<_> = events
             .iter()
             .filter(|event| {
@@ -1273,7 +1347,11 @@ impl Game {
             self.library_selected_to_hand(&frame);
         } else {
             let completion = frame.completion;
-            if completion == LibrarySelectionCompletion::BattlefieldFallbackToHand {
+            if matches!(
+                completion,
+                LibrarySelectionCompletion::BattlefieldFallbackToHand
+                    | LibrarySelectionCompletion::TopLandFallbackToHand
+            ) {
                 self.library_selected_to_hand(&frame);
             }
             let entered = std::mem::take(&mut frame.entered);
@@ -1290,7 +1368,13 @@ impl Game {
     pub(super) fn library_selection_view(&self, viewer: Player) -> Option<LibrarySelectionView> {
         let resolution = self.state.resolving.as_ref()?;
         let f = resolution.selection.as_ref()?;
-        let can_look = self.shares_information(viewer, resolution.item.controller) || f.public;
+        let chooser = self.shares_information(viewer, resolution.item.controller);
+        let can_look = chooser || f.public;
+        let private_picks = !chooser
+            && f.public
+            && f.spec.count == LibrarySelectionCount::DistinctPower
+            && !f.ordering
+            && matches!(self.state.pending, Pending::EffectLibrarySelection { .. });
         let revealed_pick = f.completion == LibrarySelectionCompletion::BattlefieldFallbackToHand
             || (f.destination == LibraryPickDestination::MayEnterBattlefieldOnOwnTurn
                 && matches!(self.state.pending, Pending::EffectOptional { .. }));
@@ -1302,23 +1386,39 @@ impl Game {
                 && (f.alternating.is_none()
                     || exact_library_card(&self.state.objects, f.owner, **object))
         };
-        Some(LibrarySelectionView {
-            remaining: f
-                .remaining
+        let remaining = if private_picks {
+            // The cards have been revealed, but the player has not committed a pick.
+            // Keep the entire exact cohort in library order for the other viewer.
+            let revealed: std::collections::HashSet<_> =
+                f.remaining.iter().chain(&f.selected).copied().collect();
+            self.state.players[f.owner.index()]
+                .library
+                .iter()
+                .rev()
+                .filter(|&&id| revealed.contains(&self.object_ref(id)))
+                .take(revealed.len())
+                .map(|&id| self.object_view(id))
+                .collect()
+        } else {
+            f.remaining
                 .iter()
                 .filter(visible)
                 .map(|r| self.object_view(r.card))
-                .collect(),
+                .collect()
+        };
+        Some(LibrarySelectionView {
+            remaining,
             candidates: f
                 .remaining
                 .iter()
-                .filter(visible)
+                .filter(|r| !private_picks && visible(r))
                 .copied()
                 .filter(|&r| self.library_selection_candidate(f, r))
                 .collect(),
             selected: f
                 .selected
                 .iter()
+                .filter(|_| !private_picks)
                 .map(|r| self.object_view(r.card))
                 .collect(),
             bottom: f
@@ -1328,7 +1428,11 @@ impl Game {
                 .map(|r| self.object_view(r.card))
                 .collect(),
             minimum: f.minimum,
-            maximum: f.maximum,
+            maximum: if private_picks {
+                f.remaining.len() + f.selected.len()
+            } else {
+                f.maximum
+            },
             ordering: f.ordering,
             random: f.random,
             available_colors: f.available_colors,

@@ -52,6 +52,9 @@ fn replacements<W: CharacteristicWorld + ?Sized>(
     world: &W,
     player: Player,
 ) -> Option<Vec<LifeGainReplacementEffect>> {
+    if world.game().state.players[player.index()].cannot_gain_life_for_game {
+        return None;
+    }
     let query = characteristic_query::CharacteristicQuery::in_world(world);
     let mut effects = Vec::new();
     for &id in world.static_sources() {
@@ -73,6 +76,11 @@ fn replacements<W: CharacteristicWorld + ?Sized>(
             };
             let replacement = match *fragment {
                 StaticAbilityFragment::CantGainLife if available() => return None,
+                StaticAbilityFragment::EnchantedPlayerCantGainLife
+                    if source.attached_to_player == Some(player) && available() =>
+                {
+                    return None;
+                }
                 StaticAbilityFragment::LifeGainAdditional(extra)
                     if source.controller == player && available() =>
                 {

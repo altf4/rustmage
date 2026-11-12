@@ -5,6 +5,7 @@ use super::ability_evaluation::AbilityEvaluation;
 use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{LiveStatValue, LiveStaticEffect, RoleKind, StaticAbilityFragment};
+use std::ops::RangeBounds;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct CharacteristicQuery<'a, W: CharacteristicWorld + ?Sized = Game> {
@@ -121,13 +122,33 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             )
             && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
     }
+    pub(super) fn controlled_creature_power_count(
+        &self,
+        player: Player,
+        exclude: Option<ObjectRef>,
+        power: impl RangeBounds<i128>,
+    ) -> usize {
+        (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = self.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && exclude.is_none_or(|source| self.object_ref(id) != source)
+                    && self.is_creature(id)
+                    && power.contains(&self.stats(id).power)
+            })
+            .count()
+    }
+
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.layered_stats(id).1
     }
     pub(super) fn base_stats(&self, id: CardId) -> Stats {
         let object = self.object(id);
         let mut stats = if let Some((power, toughness)) = object.card.vehicle_stats() {
-            if !self.is_creature(id) {
+            // CR 208.3: a Vehicle card keeps its power and toughness outside the battlefield.
+            if object.zone == Zone::Battlefield && !self.is_creature(id) {
                 return Stats::default();
             }
             Stats { power, toughness }
@@ -181,9 +202,12 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
     pub(super) fn layered_stats(&self, id: CardId) -> (Stats, Stats) {
         let object = self.object(id);
         let base = self.base_stats(id);
-        // A Vehicle has no effective creature stats while it is not a creature.
+        // A noncreature Vehicle permanent has no effective power and toughness.
         // Counters remain on it, ready for a later successful crew.
-        if object.card.vehicle_stats().is_some() && !self.is_creature(id) {
+        if object.zone == Zone::Battlefield
+            && object.card.vehicle_stats().is_some()
+            && !self.is_creature(id)
+        {
             return (base, base);
         }
         let mut stats = base;
@@ -705,6 +729,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
             }
             for group in object.card.static_ability_groups() {
+                if !entry_modes::group_enabled(self, self.object_ref(source), group) {
+                    continue;
+                }
                 for fragment in group.fragments {
                     match *fragment {
                         StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {
@@ -721,8 +748,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         }
                         StaticAbilityFragment::ControlledPermanentKeywords {
                             kinds,
+                            other,
                             keywords: grant,
                         } if target.controller == object.controller
+                            && (!other || id != source)
                             && CharacteristicWorld::kinds(self, id) & kinds != 0 =>
                         {
                             keywords = keywords.union(grant)
@@ -976,6 +1005,20 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         match value {
             LiveStatValue::Fixed(value) => value,
             LiveStatValue::ControllerLife => self.life(self.object(source.card).controller),
+            LiveStatValue::ControllerCreatureCount => self.stat_value(
+                StatValue::Count(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 1,
+                    exclude: 0,
+                    subtype: None,
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                }),
+                source,
+                self.object(source.card).controller,
+            ),
         }
     }
     pub(super) fn apply_live_base_stat_layers(
@@ -1094,6 +1137,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         let evaluation = self.evaluation.as_ref();
         // Existing definitions without entry modes retain the ordinary no-removal fast path.
         if evaluation.is_none()
+            && self.object(source).card.room().is_none()
             && !matches!(
                 self.object(source).card.entry_choice(),
                 Some(EntryChoiceKind::NamedModes(_))
@@ -1262,7 +1306,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                     grantor: grant.source,
                     granting_card: grant.granting_card,
                     ability: match grant.kind {
-                        ability_order::GrantedAbilityKind::Template(index) => Some(index),
+                        ability_order::GrantedAbilityKind::ActivatedTemplate(index)
+                        | ability_order::GrantedAbilityKind::TriggeredTemplate(index) => {
+                            Some(index)
+                        }
                         _ => None,
                     },
                     static_rule: match grant.kind {
@@ -1303,6 +1350,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             additional_creature_death_triggers:
                 trigger_multiplicity::additional_creature_death_triggers(self, id),
             active_entry_mode: entry_modes::active_mode(self, self.object_ref(id)),
+            room_doors: rooms::doors(self, id),
             prepared: self.is_prepared(self.object_ref(id)),
             harnessed: CharacteristicWorld::harnessed(self, id).then_some(true),
             abilities: self.ability_availability(id),
@@ -1331,6 +1379,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             cast_for_warp: obj.cast_for_warp,
+            cast_for_impending: obj.cast_for_impending,
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,
@@ -1349,6 +1398,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 .game()
                 .face_view(self.object_ref(id), self.recipe(id).face_structure()),
             attached_to: obj.attached_to,
+            attached_to_player: obj.attached_to_player,
             modified: kinds & 1 != 0 && self.has_modification(id),
             attacking: CharacteristicWorld::attacking(self, id),
             power: stats.power,
@@ -1440,6 +1490,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     fn creatures_died(&self) -> u64 {
         self.world.creatures_died()
     }
+    fn non_zombie_creature_died(&self) -> bool {
+        self.world.non_zombie_creature_died()
+    }
     fn controlled_creatures_died(&self, player: Player) -> u64 {
         self.world.controlled_creatures_died(player)
     }
@@ -1463,6 +1516,9 @@ impl<W: CharacteristicWorld + ?Sized> CharacteristicWorld for CharacteristicQuer
     }
     fn entry_controller_this_turn(&self, source: ObjectRef) -> Option<Player> {
         self.world.entry_controller_this_turn(source)
+    }
+    fn lands_entered_this_turn(&self, player: Player) -> u64 {
+        self.world.lands_entered_this_turn(player)
     }
     fn plus_one_placed_this_turn(&self, object: ObjectRef, player: Player) -> bool {
         self.world.plus_one_placed_this_turn(object, player)

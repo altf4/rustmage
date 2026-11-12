@@ -363,6 +363,7 @@ fn linked_return_uses_the_departed_ability_acquisition_and_original_owner() {
                 source: object,
                 exiled: g.object_ref(old),
                 ability_origin: None,
+                acquired_link_cohort: None,
                 exiled_turn: g.state.turn,
             };
             g.state
@@ -383,6 +384,7 @@ fn linked_return_uses_the_departed_ability_acquisition_and_original_owner() {
                     source: object,
                     exiled: g.object_ref(fresh),
                     ability_origin: origin,
+                    acquired_link_cohort: None,
                     exiled_turn: g.state.turn,
                 };
                 g.state

@@ -129,7 +129,7 @@ impl Game {
                         player,
                     });
             }
-            zone_replacements::ZoneMoveCompletion::LinkedDeathExile(replacement) => {
+            zone_replacements::ZoneMoveCompletion::LinkedGraveyardExile(replacement) => {
                 if was_card {
                     self.link_exile_to_ability(
                         replacement.source,
@@ -137,7 +137,7 @@ impl Game {
                         object,
                     );
                 }
-                return Some((replacement.controller, replacement.life));
+                return replacement.life_gain;
             }
         }
         None

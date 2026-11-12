@@ -10,6 +10,7 @@ pub(super) enum ResumeMode {
     Pending,
     CastCosts,
     ActivationCosts,
+    ManaEffects,
     Entry,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -140,6 +141,9 @@ pub struct ReplacementChoiceView {
     /// Exact additional effects of applied prevention, performed after damage.
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_counters: Vec<(ObjectRef, Player, u64)>,
+    /// Opponent and amount for each mill scheduled by damage prevention.
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub damage_mills: Vec<(Player, u128)>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub damage_event_order: Vec<DamageEventOrderView>,
 }
@@ -546,6 +550,7 @@ struct DamageBatch {
     remembering: Option<u64>,
     heals: Vec<ObjectRef>,
     damage_counters: Vec<(ObjectRef, Player, u64)>,
+    damage_mills: Vec<(Player, u128)>,
     used_preventions: Vec<(ObjectRef, DamagePreventionKind)>,
     ordered_event: bool,
     next: usize,
@@ -598,6 +603,7 @@ enum Work {
     },
     Damage(DamageBatch),
     DamageCounters(Vec<(ObjectRef, Player, u64)>),
+    DamageMills(Vec<(Player, u128)>),
     /// The rest of a simultaneous damage event waits for wither replacements.
     DamageResults {
         events: Vec<DamageEvent>,
@@ -711,6 +717,7 @@ impl ReplacementState {
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
                             + b.damage_counters.len()
                                 * std::mem::size_of::<(ObjectRef, Player, u64)>()
+                            + b.damage_mills.len() * std::mem::size_of::<(Player, u128)>()
                             + b.used_preventions.len()
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<DamageReplacementId>()
@@ -718,6 +725,7 @@ impl ReplacementState {
                     Work::DamageCounters(rows) => {
                         rows.len() * std::mem::size_of::<(ObjectRef, Player, u64)>()
                     }
+                    Work::DamageMills(rows) => rows.len() * std::mem::size_of::<(Player, u128)>(),
                     Work::DamageResults {
                         events, results, ..
                     } => {
@@ -756,6 +764,7 @@ impl ReplacementState {
                             + b.heals.len() * std::mem::size_of::<ObjectRef>()
                             + b.damage_counters.len()
                                 * std::mem::size_of::<(ObjectRef, Player, u64)>()
+                            + b.damage_mills.len() * std::mem::size_of::<(Player, u128)>()
                             + b.used_preventions.len()
                                 * std::mem::size_of::<(ObjectRef, DamagePreventionKind)>()
                             + b.used.len() * std::mem::size_of::<DamageReplacementId>()
@@ -1480,6 +1489,11 @@ impl Game {
                         event.source.controller == object.controller
                             && self.damage_recipient_controller(event) != object.controller
                     }
+                    ReplacementSpec::ConditionalDoubleControlledNoncombatDamage { condition } => {
+                        !event.combat
+                            && event.source.controller == object.controller
+                            && self.stat_value(condition, source, object.controller) != 0
+                    }
                     ReplacementSpec::ConditionalControlledDamageToOpponentPlus {
                         condition,
                         ..
@@ -1547,6 +1561,10 @@ impl Game {
                         !event.combat
                             && self.damage_prevention_allowed(event)
                             && matches!(event.target, Target::Card(target) if self.on_battlefield(target) && self.is_creature(target) && self.object_ref(target) != source && self.state.objects[target as usize].controller == object.controller)
+                    }
+                    ReplacementSpec::PreventControlledOpponentDamageAndMill => {
+                        event.source.controller == object.controller
+                            && event.target == Target::Player(object.controller.other())
                     }
                     _ => false,
                 };
@@ -1746,19 +1764,15 @@ impl Game {
             .then_some(recipient.card)
     }
 
-    fn modify_damage(
-        &self,
-        choice: ReplacementEffectView,
-        event: &mut DamageEvent,
-        heals: &mut Vec<ObjectRef>,
-        damage_counters: &mut Vec<(ObjectRef, Player, u64)>,
-    ) {
+    fn modify_damage(&self, choice: ReplacementEffectView, batch: &mut DamageBatch) {
+        let event = &mut batch.events[batch.next];
         match choice.source_card.replacement_effects()[usize::from(choice.ability)] {
             ReplacementSpec::DoubleControlledChosenTypeDamage
             | ReplacementSpec::DoubleControlledSubtypeDamage(_)
             | ReplacementSpec::DoubleCreatureDamage
             | ReplacementSpec::DoubleEnteredCreatureDamage
             | ReplacementSpec::DoubleOpponentDamage
+            | ReplacementSpec::ConditionalDoubleControlledNoncombatDamage { .. }
             | ReplacementSpec::DoubleEquippedDamage => Self::double_damage(event),
             ReplacementSpec::NoncombatDamageToOpponentPlus(amount)
             | ReplacementSpec::ControlledSubtypeDamagePlus { amount, .. }
@@ -1781,8 +1795,8 @@ impl Game {
                 event.amount = self.stats(choice.source.card).power;
             }
             ReplacementSpec::HealPreviousDamageToSelf => {
-                if !heals.contains(&choice.source) {
-                    heals.push(choice.source);
+                if !batch.heals.contains(&choice.source) {
+                    batch.heals.push(choice.source);
                 }
             }
             ReplacementSpec::RedirectControlledDamageToSource => {
@@ -1798,8 +1812,20 @@ impl Game {
                 let amount = u64::try_from(event.amount)
                     .capacity("prevented damage counter quantity exhausted");
                 let player = self.state.objects[choice.source.card as usize].controller;
-                damage_counters.push((choice.source, player, amount));
+                batch.damage_counters.push((choice.source, player, amount));
                 // CR 615.12: unpreventable damage still performs the additional effect.
+                if self.damage_prevention_allowed(event) {
+                    event.amount = 0;
+                }
+            }
+            ReplacementSpec::PreventControlledOpponentDamageAndMill => {
+                let Target::Player(opponent) = event.target else {
+                    unreachable!("opponent damage prevention requires a player recipient");
+                };
+                // CR 615.5, 615.12: use the amount at this choice and mill
+                // after damage even when the prevention cannot reduce it.
+                let amount = u128::try_from(event.amount).expect("positive damage");
+                batch.damage_mills.push((opponent, amount));
                 if self.damage_prevention_allowed(event) {
                     event.amount = 0;
                 }
@@ -1816,14 +1842,12 @@ impl Game {
             .capacity("damage replacement quantity exhausted");
     }
     fn apply_damage_replacement(&self, choice: DamageReplacement, batch: &mut DamageBatch) {
-        let event = &mut batch.events[batch.next];
-        let original_target = event.target;
+        let original_target = batch.events[batch.next].target;
         match choice {
-            DamageReplacement::Printed(effect) => {
-                self.modify_damage(effect, event, &mut batch.heals, &mut batch.damage_counters)
-            }
-            DamageReplacement::Resolved(_) => Self::double_damage(event),
+            DamageReplacement::Printed(effect) => self.modify_damage(effect, batch),
+            DamageReplacement::Resolved(_) => Self::double_damage(&mut batch.events[batch.next]),
             DamageReplacement::Increase(effect) => {
+                let event = &mut batch.events[batch.next];
                 event.amount = event
                     .amount
                     .checked_add(i128::from(effect.amount))
@@ -1832,7 +1856,7 @@ impl Game {
         }
         // A redirected packet may now share a recipient with another row.
         // Keep the packet in place with its already-applied replacements.
-        batch.ordered_event |= event.target != original_target;
+        batch.ordered_event |= batch.events[batch.next].target != original_target;
         batch.used.push(choice.id());
     }
     fn apply_chosen_damage_replacement(&self, id: DamageReplacementId, batch: &mut DamageBatch) {
@@ -1902,6 +1926,7 @@ impl Game {
             remembering,
             heals: Vec::new(),
             damage_counters: Vec::new(),
+            damage_mills: Vec::new(),
             used_preventions: Vec::new(),
             ordered_event: false,
             next: 0,
@@ -1920,7 +1945,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion)
+            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
             == Some(p.object)
             && self.is_face_down(p.object)
         {
@@ -1936,15 +1961,17 @@ impl Game {
         player_counters: [[u64; 5]; 2],
         proliferated: Option<Player>,
         completion: Option<Box<CounterCompletion>>,
-        activation_cost: bool,
+        mode: ResumeMode,
     ) {
         for placement in &mut placements {
             if placement_prohibited(self, placement) {
                 placement.amount = Counters::default();
             }
         }
-        if activation_cost {
-            self.record_cast_mana_counter_cost(&placements);
+        match mode {
+            ResumeMode::ActivationCosts => self.record_cast_mana_counter_cost(&placements),
+            ResumeMode::ManaEffects => self.record_cast_mana_counter_effect(&placements),
+            _ => {}
         }
         let completed = completion.as_ref().is_some_and(|c| {
             let CounterCompletion::Reflexive(c) = c.as_ref() else {
@@ -1992,7 +2019,7 @@ impl Game {
             .state
             .manifest
             .as_ref()
-            .and_then(|state| state.face_up_completion)
+            .and_then(|state| state.face_up_completion.map(|(object, _)| object))
             && placements
                 .iter()
                 .any(|placement| placement.object == object && placement.entry_index.is_none())
@@ -2224,7 +2251,7 @@ impl Game {
                 player_counters,
                 proliferated,
                 completion,
-                mode == ResumeMode::ActivationCosts,
+                mode,
             );
             self.finish_face_up_counter_replacement();
             return;
@@ -2317,6 +2344,46 @@ impl Game {
             Vec::new(),
         );
     }
+    pub(super) fn apply_frozen_mana_counter_placements(
+        &mut self,
+        object: ObjectRef,
+        player: Player,
+        placements: &[CounterPlacement],
+    ) -> bool {
+        // Replacement effects can set `effect` even on a cost event.
+        if placements.len() > 1
+            || !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || placements
+                .iter()
+                .any(|p| p.object != object || p.entry_index.is_some() || p.placed_by != player)
+            || placements.iter().any(|p| {
+                CounterKind::ALL.into_iter().any(|kind| {
+                    self.counter_count(object.card, kind)
+                        .checked_add(p.amount.get(kind))
+                        .is_none()
+                })
+            })
+        {
+            return false;
+        }
+        // The receipt owns the original observer packets. Apply the physical
+        // event without redispatching observers in the reconstructed world.
+        for placement in placements {
+            for kind in CounterKind::ALL {
+                self.add_counter(object.card, kind, placement.amount.get(kind));
+            }
+            if placement.amount.has_any() {
+                self.record_counter_placement(
+                    object,
+                    player,
+                    placement.amount.plus_one > 0,
+                    placement.amount.lore > 0,
+                );
+            }
+        }
+        true
+    }
     pub(super) fn activation_cost_counters(
         &mut self,
         object: ObjectRef,
@@ -2325,43 +2392,10 @@ impl Game {
         player: Player,
     ) {
         if let Some(receipt) = self.take_frozen_mana_counter_cost() {
-            if let Some(placements) = receipt {
-                // Replacement effects can set `effect` even on a cost event.
-                if placements.len() > 1
-                    || !self.on_battlefield(object.card)
-                    || self.object_ref(object.card) != object
-                    || placements.iter().any(|p| {
-                        p.object != object || p.entry_index.is_some() || p.placed_by != player
-                    })
-                    || placements.iter().any(|p| {
-                        CounterKind::ALL.into_iter().any(|kind| {
-                            self.counter_count(object.card, kind)
-                                .checked_add(p.amount.get(kind))
-                                .is_none()
-                        })
-                    })
-                {
-                    self.fail_frozen_mana_replay();
-                } else {
-                    // The receipt owns the actual observer packets. Applying
-                    // the physical event must not redispatch observers against
-                    // a different reconstructed world.
-                    for placement in &placements {
-                        for kind in CounterKind::ALL {
-                            self.add_counter(object.card, kind, placement.amount.get(kind));
-                        }
-                    }
-                    for placement in &placements {
-                        if placement.amount.has_any() {
-                            self.record_counter_placement(
-                                object,
-                                player,
-                                placement.amount.plus_one > 0,
-                                placement.amount.lore > 0,
-                            );
-                        }
-                    }
-                }
+            if let Some(placements) = receipt
+                && !self.apply_frozen_mana_counter_placements(object, player, &placements)
+            {
+                self.fail_frozen_mana_replay();
             }
             return;
         }
@@ -2794,7 +2828,8 @@ impl Game {
         if amount == 0 || counters_prohibited(self, self.object_ref(id)) {
             return;
         }
-        if self.state.replacements.is_none()
+        if mode != ResumeMode::ManaEffects
+            && self.state.replacements.is_none()
             && !self.state.static_sources.iter().any(|&id| {
                 self.state.objects[id as usize]
                     .card
@@ -3469,6 +3504,12 @@ impl Game {
                             used: Vec::new(),
                         }));
                     }
+                    Some(Work::DamageMills(rows)) => {
+                        for (opponent, amount) in rows {
+                            self.mill_after_damage(opponent, amount);
+                        }
+                        continue;
+                    }
                     Some(Work::DamageResults {
                         events,
                         remembering,
@@ -3635,6 +3676,9 @@ impl Game {
                             .into_iter()
                             .filter(|event| !self.damage_event_prevented(event))
                             .collect();
+                        if !batch.damage_mills.is_empty() {
+                            state.work.push_front(Work::DamageMills(batch.damage_mills));
+                        }
                         if !batch.damage_counters.is_empty() {
                             state
                                 .work
@@ -3790,7 +3834,7 @@ impl Game {
                             totals,
                             batch.proliferated,
                             batch.completion,
-                            state.mode == ResumeMode::ActivationCosts,
+                            state.mode,
                         );
                         continue;
                     }
@@ -4653,6 +4697,7 @@ impl Game {
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
                 damage_counters: Vec::new(),
+                damage_mills: Vec::new(),
                 damage_event_order: Vec::new(),
             }),
             Event::Damage(batch) => {
@@ -4700,6 +4745,7 @@ impl Game {
                     },
                     heals_before_damage: batch.heals.clone(),
                     damage_counters: batch.damage_counters.clone(),
+                    damage_mills: batch.damage_mills.clone(),
                     damage_event_order,
                 })
             }
@@ -4767,6 +4813,7 @@ impl Game {
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
                     damage_counters: Vec::new(),
+                    damage_mills: Vec::new(),
                     damage_event_order: Vec::new(),
                 })
             }
@@ -4794,6 +4841,7 @@ impl Game {
                     damage_preventions: Vec::new(),
                     heals_before_damage: Vec::new(),
                     damage_counters: Vec::new(),
+                    damage_mills: Vec::new(),
                     damage_event_order: Vec::new(),
                     kind: "Counters",
                     object: Some(p.object),
@@ -4815,6 +4863,7 @@ impl Game {
                 damage_preventions: Vec::new(),
                 heals_before_damage: Vec::new(),
                 damage_counters: Vec::new(),
+                damage_mills: Vec::new(),
                 damage_event_order: Vec::new(),
                 kind: if batch.optional.is_some() {
                     "TokensOptional"

@@ -119,6 +119,11 @@ impl Game {
         W: CharacteristicWorld + ?Sized,
     {
         match value {
+            StatValue::UnlockedRoomDoors => rooms::door_names(world, owner).count() as i128,
+            StatValue::DifferentUnlockedRoomNames => rooms::door_names(world, owner)
+                .map(crate::card_names::comparison_key)
+                .collect::<std::collections::HashSet<_>>()
+                .len() as i128,
             StatValue::CreatureEntriesThisTurn { other } => {
                 self.creature_entries_this_turn(owner, source, other)
             }
@@ -377,6 +382,9 @@ impl Game {
             StatValue::ControlledCreaturesDiedThisTurn => {
                 i128::from(world.controlled_creatures_died(owner))
             }
+            StatValue::NonZombieCreatureDiedThisTurn => {
+                i128::from(world.non_zombie_creature_died())
+            }
             StatValue::CardLeftGraveyardThisTurn => i128::from(graveyard_left),
             StatValue::OpponentLostLifeThisTurn => i128::from(world.lost_life(owner.other())),
             StatValue::CardsLeftGraveyardThisTurn => {
@@ -584,8 +592,13 @@ impl Game {
             .capacity("noncombat damage history representation exhausted"),
             StatValue::LinkedExileCardTypes => {
                 let mut mask = 0u16;
+                let origin = world.ability_origin(source.card);
                 if let Some(links) = &self.state.linked_choices {
-                    for link in links.links.iter().filter(|link| link.source == source) {
+                    for link in links.links.iter().filter(|link| {
+                        link.source == source
+                            && link.ability_origin == origin
+                            && link.acquired_link_cohort.is_none()
+                    }) {
                         if let Some((id, object)) = objects().find(|(id, object)| {
                             *id == link.exiled.card
                                 && object.generation == link.exiled.generation
@@ -596,6 +609,29 @@ impl Game {
                     }
                 }
                 i128::from(mask.count_ones())
+            }
+            StatValue::LinkedExileCardCount => {
+                if world.reference(source.card) != source
+                    || world.object(source.card).zone != Zone::Battlefield
+                {
+                    return 0;
+                }
+                let origin = world.ability_origin(source.card);
+                self.state.linked_choices.as_ref().map_or(0, |choices| {
+                    choices
+                        .links
+                        .iter()
+                        .filter(|link| {
+                            let exiled = world.object(link.exiled.card);
+                            link.source == source
+                                && link.ability_origin == origin
+                                && link.acquired_link_cohort.is_none()
+                                && world.reference(link.exiled.card) == link.exiled
+                                && exiled.zone == Zone::Exile
+                                && exiled.is_card()
+                        })
+                        .count() as i128
+                })
             }
             StatValue::CraftMaterialColorCount => {
                 i128::from(self.craft_colors(world, source).count_ones())
@@ -823,20 +859,16 @@ impl Game {
                 .into_iter()
                 .map(|object| u128::from(self.object_mana_value(object.card)))
                 .sum(),
-            AmountValue::ControlledCreaturePowerCount { minimum } => {
-                let query = self.characteristic_query();
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(|(id, object)| {
-                        let id = *id as CardId;
-                        object.zone == Zone::Battlefield
-                            && object.controller == owner
-                            && ability_world::CharacteristicWorld::kinds(&query, id) & 1 != 0
-                            && query.stats(id).power >= i128::from(minimum)
-                    })
-                    .count() as u128
+            AmountValue::ControlledCreaturePowerCount { minimum } => self
+                .characteristic_query()
+                .controlled_creature_power_count(owner, None, i128::from(minimum)..)
+                as u128,
+            AmountValue::ControlledCreaturePowerAtMost { maximum, other } => {
+                self.characteristic_query().controlled_creature_power_count(
+                    owner,
+                    other.then_some(source),
+                    ..=i128::from(maximum),
+                ) as u128
             }
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::TokensYouControl => self.controlled_token_ids(owner).count() as u128,
@@ -855,7 +887,15 @@ impl Game {
                             .copy_recipe(reference)
                             .is_some_and(|recipe| recipe.exceptions.embalm)
                 })
-                .map(|(_, object)| u128::from(object.card.mana_symbols_of_color(color)))
+                .map(
+                    |(id, object)| match (object.card.room(), rooms::doors(self, id as CardId)) {
+                        (Some(room), Some(doors)) => doors
+                            .active_halves(room)
+                            .map(|half| u128::from(half.mana_symbols_of_color(color)))
+                            .sum(),
+                        _ => u128::from(object.card.mana_symbols_of_color(color)),
+                    },
+                )
                 .sum(),
             AmountValue::GreatestPermanentPower { filter, minimum } => {
                 let query = self.characteristic_query();

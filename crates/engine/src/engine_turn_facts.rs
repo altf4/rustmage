@@ -37,6 +37,9 @@ pub struct TurnFactsView {
     /// Actual stack mana value, including the chosen face and X.
     #[serde(skip_serializing_if = "is_false")]
     pub cast_mana_value_at_least_four: bool,
+    /// A face-down permanent entered under this player's control or they turned one face up.
+    #[serde(skip_serializing_if = "is_false")]
+    pub face_down_entry_or_turn_up: bool,
 }
 
 fn no_qualified_creature_casts(counts: &[u8; 2]) -> bool {
@@ -174,6 +177,7 @@ fn condition_uses_facts(condition: TriggerCondition) -> bool {
         TriggerCondition::InZone { event, .. }
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
+        | TriggerCondition::OncePerIncarnation(event)
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)
@@ -190,6 +194,7 @@ fn trigger_uses_facts(ability: &TriggeredAbility) -> bool {
             matches!(
                 i,
                 Instruction::DrawScaled(_, AmountValue::CastCardTypeCount)
+                    | Instruction::SkipIfFaceDownEntryOrTurnUp(_)
             )
         })
 }
@@ -218,6 +223,7 @@ impl Game {
             let id = event.after.card;
             let object = &self.state.objects[id as usize];
             let controller = object.controller;
+            facts[controller.index()].face_down_entry_or_turn_up |= self.is_face_down(event.after);
             let subtypes = self.granted_subtypes(id);
             let zombie = subtypes.has(object.card, "Zombie");
             facts[controller.index()].hero_entered |= subtypes.has(object.card, "Hero");
@@ -257,6 +263,7 @@ impl Game {
         for (player, event) in self.state.players.iter_mut().zip(facts) {
             player.turn_facts.artifact_entered |= event.artifact_entered;
             player.turn_facts.hero_entered |= event.hero_entered;
+            player.turn_facts.face_down_entry_or_turn_up |= event.face_down_entry_or_turn_up;
         }
     }
     pub(super) fn subtype_entered_under_control(&self, player: Player, types: &[&str]) -> bool {

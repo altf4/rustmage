@@ -51,6 +51,8 @@ pub struct LinkedExileView {
     pub exiled: ObjectRef,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ability_origin: Option<u64>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub acquired_link_cohort: Option<u64>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -84,6 +86,7 @@ pub(super) struct ChoiceState {
     pub craft_links: Vec<LinkedExileView>,
     pub free_cast_uses: Vec<LinkedFreeCastUseView>,
     pub free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
+    pub exile_zero_uses: Option<Box<exile_zero::ExileZeroUses>>,
     pub graveyard_paid_permissions: Vec<PaidGraveyardCastPermission>,
     pub linked_exile_mode: Option<linked_exile_effects::LinkedExileMode>,
     pub linked_exile_selected: Option<ObjectRef>,
@@ -122,6 +125,7 @@ impl ChoiceState {
             + (self.links.len() + self.craft_links.len()) * std::mem::size_of::<LinkedExileView>()
             + self.free_cast_uses.len() * std::mem::size_of::<LinkedFreeCastUseView>()
             + self.free_cast_approvals.len() * std::mem::size_of::<LinkedFreeCastApprovalView>()
+            + self.exile_zero_uses.as_ref().map_or(0, |uses| uses.bytes())
             + self.graveyard_paid_permissions.len()
                 * std::mem::size_of::<PaidGraveyardCastPermission>()
             + self
@@ -536,7 +540,7 @@ impl Game {
         let Some(data) = self.state.linked_choices.as_ref() else {
             return false;
         };
-        let mut remaining = self.linked_exile_for_origin(source.object, item.source_ability_origin);
+        let mut remaining = self.linked_exile_for_item(item);
         remaining.retain(|object| {
             data.hidden
                 .get(object)
@@ -573,10 +577,7 @@ impl Game {
         item: &SpellView,
         token: Card,
     ) {
-        let Some(source) = item.source else {
-            return;
-        };
-        let linked = self.linked_exile_for_origin(source.object, item.source_ability_origin);
+        let linked = self.linked_exile_for_item(item);
         let mut owners = 0u8;
         let mut size = 0u128;
         for object in linked {
@@ -598,61 +599,27 @@ impl Game {
         self.stage_simultaneous_copy_creation(&players, recipe);
     }
     pub(super) fn remember_linked_exile(&mut self, selected: &[CardId]) {
-        let Some(source) = self
-            .state
-            .resolving
-            .as_ref()
-            .and_then(|r| r.item.source)
-            .map(|s| s.object)
-        else {
+        let Some(item) = self.state.resolving.as_ref().map(|r| &r.item) else {
             return;
         };
+        let Some(source) = item.source else { return };
+        let origin = item.source_ability_origin;
+        let cohort = item.linked_activation_cohort();
         for &id in selected {
             if self.state.objects[id as usize].zone == Zone::Exile {
-                self.link_exile_to_ability(source, None, self.object_ref(id));
+                self.link_exile_with_cohort(source.object, origin, cohort, self.object_ref(id));
             }
         }
     }
-    pub(super) fn random_linked_exile_to_battlefield(&mut self, source: ObjectRef, player: Player) {
-        let candidates: Vec<_> = self
-            .state
-            .linked_choices
-            .as_ref()
-            .map_or_else(Vec::new, |data| {
-                data.links
-                    .iter()
-                    .filter(|link| {
-                        link.source == source
-                            && self.object_ref(link.exiled.card) == link.exiled
-                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
-                    })
-                    .map(|link| link.exiled.card)
-                    .collect()
-            });
-        if candidates.is_empty() {
+    pub(super) fn random_linked_exile_to_battlefield(&mut self, item: &SpellView) {
+        let mut shuffled = self.linked_exile_for_item(item);
+        if shuffled.is_empty() {
             return;
         }
-        let mut shuffled = candidates;
         self.state.rng.shuffle(&mut shuffled);
-        let mut movement = self.entry_move(shuffled[0], Zone::Battlefield, true);
-        movement.controller = player;
+        let mut movement = self.entry_move(shuffled[0].card, Zone::Battlefield, true);
+        movement.controller = item.controller;
         self.stage_entries(vec![movement], None);
-    }
-    pub(super) fn linked_exile_candidates(&self, source: ObjectRef) -> Vec<ObjectRef> {
-        self.state
-            .linked_choices
-            .as_ref()
-            .map_or_else(Vec::new, |data| {
-                data.links
-                    .iter()
-                    .filter(|link| {
-                        link.source == source
-                            && self.object_ref(link.exiled.card) == link.exiled
-                            && self.state.objects[link.exiled.card as usize].zone == Zone::Exile
-                    })
-                    .map(|link| link.exiled)
-                    .collect()
-            })
     }
     pub(super) fn choose_linked_exile(&mut self, object: ObjectRef) {
         let Some(source) = self
@@ -683,13 +650,9 @@ impl Game {
         self.run_program();
     }
     pub(super) fn return_linked_exile(&mut self, item: &SpellView, destination: Zone) {
-        let source = item
-            .source
-            .expect("linked return has an object source")
-            .object;
         // A new copy effect acquires a new pair of linked abilities. The queued
         // packet retains its own acquisition identity after source departure.
-        let linked = self.linked_exile_for_origin(source, item.source_ability_origin);
+        let linked = self.linked_exile_for_item(item);
         let moves = linked
             .iter()
             .filter_map(|object| {

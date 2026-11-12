@@ -1,0 +1,34 @@
+{
+  "name": "Glassworks",
+  "catalogue_id": 5639,
+  "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+  "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
+    "index": 0,
+    "sha256": "3ea94f993fe054f66b0edce396abfd67cf4972e2ecca962fe5923575d4d38442"
+  },
+  "physical_metadata_sha256": "b00c95e7dfbd5b877bacdc7acd844b31de32ca0773d6fdb7af8022c880fe29e2",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GlassworksShatteredYard.java",
+  "java_sha256": "68cc160bb2f692300793e537d444a26d6ab9efc8e171086d18e4a66c035b89ae",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
+}

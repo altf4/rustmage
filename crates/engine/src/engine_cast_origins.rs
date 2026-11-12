@@ -134,13 +134,15 @@ pub(super) fn ordinary_library_spell_permission<W: ability_world::Characteristic
     definition: Card,
     mana_value: u64,
 ) -> bool {
+    let subtypes = subtypes::spell_subtypes(world, player, definition, GrantedSubtypes::default());
     !definition.is_land()
         && (world.game().state.players[player.index()].library_top_play
             || has_fragment_from(world, Some(player), |id, fragment| match fragment {
                 StaticAbilityFragment::CastCreatureFromLibraryTop => definition.is_creature(),
-                StaticAbilityFragment::CastFromLibraryTop(filter) => {
-                    filter.matches_mana_value(definition, mana_value)
-                }
+                StaticAbilityFragment::CastFromLibraryTop(filter) => filter
+                    .matches_mana_value_with(definition, mana_value, |subtype| {
+                        subtypes.has(definition, subtype)
+                    }),
                 StaticAbilityFragment::PlayFromLibraryTopAfterAttacking => {
                     source_attacked(world, id)
                 }
@@ -155,10 +157,13 @@ pub(super) fn library_spell_with_counter_permission<
     player: Player,
     definition: Card,
 ) -> bool {
+    let subtypes = subtypes::spell_subtypes(world, player, definition, GrantedSubtypes::default());
     !definition.is_land()
         && has_fragment(world, player, |fragment| match fragment {
             StaticAbilityFragment::CastSubtypesFromLibraryTopWithCounter(types) => {
-                types.iter().any(|subtype| definition.has_subtype(subtype))
+                types
+                    .iter()
+                    .any(|subtype| subtypes.has(definition, subtype))
                     || definition.keywords().contains(Keywords::CHANGELING)
             }
             _ => false,
@@ -347,9 +352,16 @@ impl Game {
         let first_spell = self.state.active == player
             && self.state.players[player.index()].spells_cast_this_turn == 0;
         let only_controller = (!first_spell).then_some(player);
+        let subtypes =
+            subtypes::spell_subtypes(self, player, definition, GrantedSubtypes::default());
         has_fragment_from(self, only_controller, |id, fragment| match *fragment {
             StaticAbilityFragment::FreeSpellCast(filter) => {
-                self.state.objects[id as usize].controller == player && filter.matches(definition)
+                self.state.objects[id as usize].controller == player
+                    && filter.matches_mana_value_with(
+                        definition,
+                        definition.fixed_mana_value(),
+                        |subtype| subtypes.has(definition, subtype),
+                    )
             }
             StaticAbilityFragment::FreeFirstSpellOnOwnTurn => first_spell,
             _ => false,
@@ -379,20 +391,13 @@ impl Game {
             return false;
         }
         let physical = self.state.objects[card as usize].card;
-        [
-            Some(physical),
-            physical.adventure_spell(),
-            physical.omen_spell(),
-            physical
-                .back_face()
-                .filter(|_| !physical.transforming_double_face()),
-            physical.disguise_cost().map(|_| {
+        CastFace::choices(physical)
+            .filter(|&face| face != CastFace::Back || !physical.transforming_double_face())
+            .filter_map(|face| face.definition(physical))
+            .chain(physical.disguise_cost().map(|_| {
                 Card::from_name("@face-down/disguise").expect("pinned catalogue identity")
-            }),
-        ]
-        .into_iter()
-        .flatten()
-        .any(|definition| library_spell_face_permission(self, player, definition))
+            }))
+            .any(|definition| library_spell_face_permission(self, player, definition))
     }
     pub(super) fn can_look_library_top(&self, player: Player) -> bool {
         let state = &self.state.players[player.index()];
@@ -432,6 +437,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
         casting_prohibited: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if actor != self.state.active {
@@ -523,15 +529,16 @@ impl Game {
                     }
                     if permanent_type != PermanentType::Land
                         && !casting_prohibited
-                        && self.visit_web_slinging_face(
+                        && self.visit_paid_cast_alternative_face(
                             actor,
                             card,
                             CastFace::Normal,
                             sorcery,
-                            WebSlingingOrigin::GraveyardType {
+                            PaidCastOrigin::GraveyardType {
                                 permission,
                                 permanent_type,
                             },
+                            mana_alternatives,
                             emit,
                         )
                     {
@@ -547,39 +554,67 @@ impl Game {
                         return true;
                     }
                 }
-                if !casting_prohibited
-                    && let Some(back) = object.card.back_face().filter(|back| !back.is_land())
+                if casting_prohibited {
+                    continue;
+                }
+                for face in CastFace::choices(object.card)
+                    .filter(|&face| face == CastFace::Back || face.room_door().is_some())
                 {
-                    let back_types = back.kind_mask() & !spent_types;
-                    let normal = back_types != 0
-                        && self.permitted_cast_available(
-                            actor,
-                            card,
-                            CastMethod::Normal,
-                            CastFace::Back,
-                            sorcery,
-                            false,
-                        );
+                    let Some(definition) = face.definition(object.card).filter(|d| !d.is_land())
+                    else {
+                        continue;
+                    };
+                    let types = definition.kind_mask() & !spent_types;
+                    if types == 0 {
+                        continue;
+                    }
+                    let door = face.room_door();
+                    let cast_options = [false, true].map(|flash_surcharge| {
+                        let available = (!flash_surcharge || door.is_some())
+                            && self.permitted_cast_available(
+                                actor,
+                                card,
+                                CastMethod::Normal,
+                                face,
+                                sorcery,
+                                flash_surcharge,
+                            );
+                        (flash_surcharge, available)
+                    });
                     for permanent_type in PermanentType::ALL
                         .into_iter()
-                        .filter(|ty| back_types & ty.mask() != 0)
+                        .filter(|ty| types & ty.mask() != 0)
                     {
-                        if self.visit_web_slinging_face(
+                        if self.visit_paid_cast_alternative_face(
                             actor,
                             card,
-                            CastFace::Back,
+                            face,
                             sorcery,
-                            WebSlingingOrigin::GraveyardType {
+                            PaidCastOrigin::GraveyardType {
                                 permission,
                                 permanent_type,
                             },
+                            mana_alternatives,
                             emit,
-                        ) || (normal
-                            && emit(Action::AnnounceGraveyardBack {
-                                card,
-                                permission,
-                                permanent_type,
-                            }))
+                        ) || cast_options
+                            .into_iter()
+                            .any(|(flash_surcharge, available)| {
+                                available
+                                    && emit(match door {
+                                        Some(door) => Action::AnnounceGraveyardRoom {
+                                            card,
+                                            door,
+                                            flash_surcharge,
+                                            permission,
+                                            permanent_type,
+                                        },
+                                        None => Action::AnnounceGraveyardBack {
+                                            card,
+                                            permission,
+                                            permanent_type,
+                                        },
+                                    })
+                            })
                         {
                             return true;
                         }
@@ -810,7 +845,7 @@ impl Game {
         if !event.moved || event.destination != Zone::Exile {
             return false;
         }
-        self.offer_exiled_cards_paid_cast(player, vec![event.after]);
+        self.offer_exiled_cards_paid_cast(player, vec![event.after], Some(1));
         true
     }
 
@@ -818,6 +853,7 @@ impl Game {
         &mut self,
         player: Player,
         remaining: Vec<ObjectRef>,
+        casts_remaining: Option<u16>,
     ) {
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
@@ -830,7 +866,7 @@ impl Game {
                 exile_instants_sorceries: false,
                 spend_any_mana: false,
             }),
-            casts_remaining: Some(1),
+            casts_remaining,
             pending_cast: None,
             remaining_mana_value: None,
             alternative_cost: None,
@@ -1101,6 +1137,26 @@ impl Game {
             return false;
         }
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
+        let mana_alternatives = if !casting_prohibited
+            && free.paid.is_some()
+            && free.alternative_cost.is_none()
+            && !free.discard_instead_of_mana
+        {
+            self.source_mana_alternatives(player)
+        } else {
+            Vec::new()
+        };
+        let exile_zero = if !casting_prohibited
+            && free.paid.is_some()
+            && free.origin == Zone::Exile
+            && free.alternative_cost.is_none()
+            && !free.discard_instead_of_mana
+            && !self.nonhand_cast_prohibited(player)
+        {
+            self.exile_zero_providers(player)
+        } else {
+            Vec::new()
+        };
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != free.origin
@@ -1141,22 +1197,12 @@ impl Game {
             }
             let granted_harmonize = paid_graveyard
                 && self.has_graveyard_cast(player, object.card, GraveyardCastKind::Harmonize);
-            for face in [
-                CastFace::Normal,
-                CastFace::Adventure,
-                CastFace::Omen,
-                CastFace::Back,
-            ] {
+            for face in CastFace::choices(self.state.objects[object.card as usize].card) {
                 if free.siege_transformed && face != CastFace::Back {
                     continue;
                 }
                 let physical = self.state.objects[object.card as usize].card;
-                let definition = match face {
-                    CastFace::Normal => Some(physical),
-                    CastFace::Adventure => physical.adventure_spell(),
-                    CastFace::Omen => physical.omen_spell(),
-                    CastFace::Back => physical.back_face(),
-                };
+                let definition = face.definition(physical);
                 let eligible = definition.is_some_and(|card| {
                     !card.is_land()
                         && (!free.permanent_spell_only || CastFilter::Permanent.matches(card))
@@ -1175,6 +1221,17 @@ impl Game {
                 });
                 if !eligible {
                     continue;
+                }
+                if self.visit_exile_zero_face(
+                    player,
+                    object,
+                    face,
+                    true,
+                    ExileZeroOrigin::PaidResolution,
+                    &exile_zero,
+                    emit,
+                ) {
+                    return true;
                 }
                 if (free.paid.is_none()
                     || definition.is_some_and(|card| !card.info().mana_cost.is_empty()))
@@ -1209,12 +1266,13 @@ impl Game {
                     return true;
                 }
                 if free.paid.is_some()
-                    && self.visit_web_slinging_face(
+                    && self.visit_paid_cast_alternative_face(
                         player,
                         object.card,
                         face,
                         true,
-                        WebSlingingOrigin::PaidResolution,
+                        PaidCastOrigin::PaidResolution,
+                        &mana_alternatives,
                         emit,
                     )
                 {
@@ -1307,7 +1365,28 @@ impl Game {
         face: CastFace,
         method_override: Option<CastMethod>,
     ) {
-        self.cast_during_resolution_configured(player, object, face, method_override, None);
+        self.cast_during_resolution_configured(
+            player,
+            object,
+            face,
+            method_override,
+            None,
+            |_, _| {},
+        );
+    }
+
+    pub(super) fn configure_paid_resolution_offer(&self, item: &mut SpellView) {
+        let offer = self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .expect("resolution cast offer");
+        let paid = offer.paid.expect("paid resolution cast offer");
+        let cast = item.cast.as_mut().expect("spell cast details");
+        cast.spend_any_mana = paid.spend_any_mana;
+        cast.exile_on_graveyard = offer.exile_on_graveyard
+            || (paid.exile_instants_sorceries && item.source.unwrap().card.kind_mask() & 12 != 0);
+        cast.stash_origin = false;
     }
 
     pub(super) fn cast_during_resolution_configured(
@@ -1316,7 +1395,8 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
         method_override: Option<CastMethod>,
-        web_slinging_cost: Option<ManaCost>,
+        alternative_mana: Option<ManaCost>,
+        configure: impl FnOnce(&mut Self, &mut SpellView),
     ) {
         let offer = self.state.resolution_free_casts.as_ref().unwrap();
         let paid = offer.paid;
@@ -1382,8 +1462,11 @@ impl Game {
             self.state.objects[object.card as usize].flashback = true;
         }
         self.remember_suspend_cast(object, item.id);
-        if let Some(cost) = web_slinging_cost {
-            Self::configure_web_slinging(&mut item);
+        configure(self, &mut item);
+        if let Some(cost) = alternative_mana {
+            if method == CastMethod::WebSlinging {
+                Self::configure_web_slinging(&mut item);
+            }
             self.open_payment_announcement_configured(
                 item,
                 Counters::default(),

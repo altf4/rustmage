@@ -33,6 +33,8 @@ pub enum ManaRestrictionView {
     CreatureSpells,
     SpellSubtypeAny(&'static [&'static str]),
     PlaneswalkerSpell,
+    RoomSpellOrUnlockDoor,
+    EnchantmentSpellOrUnlockDoorOrFaceUp,
     Unrestricted,
     Unavailable,
     SpellSubtype(&'static str),
@@ -42,6 +44,7 @@ pub enum ManaRestrictionView {
     CreatureActivation,
     LandActivation,
     AbilityActivation,
+    TurnFaceUp,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize)]
@@ -210,6 +213,7 @@ impl Quality {
                 ManaRestriction::CreatureActivation => ManaRestrictionView::CreatureActivation,
                 ManaRestriction::LandActivation => ManaRestrictionView::LandActivation,
                 ManaRestriction::AbilityActivation => ManaRestrictionView::AbilityActivation,
+                ManaRestriction::TurnFaceUp => ManaRestrictionView::TurnFaceUp,
                 ManaRestriction::ArtifactSpell => ManaRestrictionView::ArtifactSpell,
                 ManaRestriction::ArtifactActivation => ManaRestrictionView::ArtifactActivation,
                 ManaRestriction::ArtifactSpellOrActivation => {
@@ -231,6 +235,13 @@ impl Quality {
                     ManaRestrictionView::SpellSubtypeAny(subtypes)
                 }
                 ManaRestriction::PlaneswalkerSpell => ManaRestrictionView::PlaneswalkerSpell,
+                ManaRestriction::RoomSpellOrUnlockDoor => {
+                    ManaRestrictionView::RoomSpellOrUnlockDoor
+                }
+                ManaRestriction::EnchantmentSpellOrUnlockDoorOrFaceUp => {
+                    ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp
+                }
+
                 ManaRestriction::Unrestricted => ManaRestrictionView::Unrestricted,
                 ManaRestriction::SpellSubtype(subtype) => {
                     ManaRestrictionView::SpellSubtype(subtype)
@@ -308,7 +319,7 @@ impl Quality {
             ManaRestrictionView::EquipmentSpellOrEquip => match purpose {
                 Purpose::Spell(facts) => facts.has_subtype("Equipment"),
                 Purpose::Activation(facts) => facts.equip,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::CreatureActivation => {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & CREATURE_KIND != 0)
@@ -317,6 +328,7 @@ impl Quality {
                 matches!(purpose, Purpose::Activation(facts) if facts.kinds & 2 != 0)
             }
             ManaRestrictionView::AbilityActivation => matches!(purpose, Purpose::Activation(_)),
+            ManaRestrictionView::TurnFaceUp => matches!(purpose, Purpose::FaceUp),
             ManaRestrictionView::ArtifactSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 != 0)
             }
@@ -326,18 +338,18 @@ impl Quality {
             ManaRestrictionView::ArtifactSpellOrActivation => match purpose {
                 Purpose::Spell(facts) => facts.kinds & 16 != 0,
                 Purpose::Activation(_) => true,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::ArtifactSpellOrArtifactActivation => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => facts.kinds & 16 != 0,
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::ExceptNonArtifactSpells => {
                 !matches!(purpose, Purpose::Spell(facts) if facts.kinds & 16 == 0)
             }
             ManaRestrictionView::SubtypeSpellOrActivation(subtype) => match purpose {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => facts.has_subtype(subtype),
-                Purpose::Other => false,
+                _ => false,
             },
             ManaRestrictionView::InstantSorcery => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & (4 | 8) != 0)
@@ -354,6 +366,14 @@ impl Quality {
             ManaRestrictionView::PlaneswalkerSpell => {
                 matches!(purpose, Purpose::Spell(facts) if facts.kinds & 64 != 0)
             }
+            ManaRestrictionView::RoomSpellOrUnlockDoor => {
+                purpose == Purpose::UnlockDoor
+                    || matches!(purpose, Purpose::Spell(facts) if facts.has_subtype("Room"))
+            }
+            ManaRestrictionView::EnchantmentSpellOrUnlockDoorOrFaceUp => {
+                matches!(purpose, Purpose::UnlockDoor | Purpose::FaceUp)
+                    || matches!(purpose, Purpose::Spell(facts) if facts.kinds & 32 != 0)
+            }
             ManaRestrictionView::Unrestricted => true,
             ManaRestrictionView::Unavailable => false,
             ManaRestrictionView::SpellSubtype(subtype) => {
@@ -366,7 +386,7 @@ impl Quality {
                 Purpose::Spell(facts) | Purpose::Activation(facts) => {
                     facts.kinds & CREATURE_KIND != 0 && facts.has_subtype(kind.name())
                 }
-                Purpose::Other => false,
+                _ => false,
             },
         }
     }
@@ -380,8 +400,32 @@ impl Quality {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Purpose {
     Other,
+    UnlockDoor,
+    FaceUp,
     Spell(Source),
     Activation(Source),
+}
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl Purpose {
+    pub(super) fn guided_payment(pending: &Pending) -> Self {
+        match pending {
+            Pending::FaceUpPayment { .. } => Self::FaceUp,
+            Pending::RoomUnlockPayment { .. } => Self::UnlockDoor,
+            _ => Self::Other,
+        }
+    }
+
+    pub(super) fn with_live_spell_types<W: ability_world::CharacteristicWorld + ?Sized>(
+        self,
+        world: &W,
+        caster: Player,
+    ) -> Self {
+        let Self::Spell(mut spell) = self else {
+            return self;
+        };
+        spell.subtypes = subtypes::spell_subtypes(world, caster, spell.card, spell.subtypes);
+        Self::Spell(spell)
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -894,6 +938,7 @@ impl Game {
         if self.state.mana_lots.is_none() {
             return pool;
         }
+        let purpose = purpose.with_live_spell_types(self, actor);
         available(pool.map(u128::from), self.mana_lots(actor), purpose)
             .map(|amount| u32::try_from(amount).expect("subset of concrete mana pool"))
     }
@@ -940,6 +985,10 @@ impl Game {
             ability,
             Card::GRANTED_TAP_MANA | Card::GRANTED_SACRIFICE_MANA
         ) {
+            if let Some(slot) = item.borrowed_slot {
+                return inherited_activations::descriptor(self, source.object, slot)
+                    .and_then(|ability| ability.mana);
+            }
             let origin = item.attachment_trigger.as_ref()?;
             ability_world::CharacteristicWorld::granted_mana(self, source.id)
                 .into_iter()
@@ -1493,6 +1542,7 @@ impl Game {
             return SpendOutcome::default();
         }
         let pool = self.state.players[actor.index()].mana.map(u128::from);
+        let purpose = purpose.with_live_spell_types(self, actor);
         let lots = self.state.mana_lots.as_ref().unwrap().pools[actor.index()].clone();
         let ordinary = ordinary(pool, &lots);
         let available = available(pool, &lots, purpose);
@@ -1666,12 +1716,30 @@ impl Game {
             | Action::ActivateGraveyardBorrowedMana { card, payment, .. } => {
                 (*payment, Purpose::Activation(Source::in_world(self, *card)))
             }
+            Action::ActivateInheritedMana {
+                source,
+                slot,
+                payment,
+                ..
+            } => {
+                let Some(ability) = inherited_activations::descriptor(self, *source, *slot) else {
+                    return false;
+                };
+                (
+                    *payment,
+                    Purpose::Activation(
+                        Source::in_world(self, source.card).with_activation(ability.rules()),
+                    ),
+                )
+            }
             Action::PayCosts { payment } => {
                 let Some(a) = &self.state.announcing else {
                     return false;
                 };
                 (*payment, self.purpose_for_item(&a.item))
             }
+            Action::PayRoomUnlock { payment } => (*payment, Purpose::UnlockDoor),
+            Action::PayFaceUp { payment } => (*payment, Purpose::FaceUp),
             Action::PayPlot { payment }
             | Action::PayResolutionMana { payment }
             | Action::PayAttackCost { payment }
@@ -1880,7 +1948,10 @@ impl Game {
             .announcing
             .as_ref()
             .filter(|a| a.item.controller == goal.actor)
-            .map_or(Purpose::Other, |a| self.purpose_for_item(&a.item))
+            .map_or_else(
+                || Purpose::guided_payment(&self.state.pending),
+                |a| self.purpose_for_item(&a.item),
+            )
     }
 }
 
@@ -1958,16 +2029,25 @@ impl Game {
                         | Action::ActivateGraveyardBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::ActivateInheritedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedMana {
                             counter_payment, ..
                         }
                         | Action::AnnounceGraveyardBorrowedMana {
                             counter_payment, ..
                         }
+                        | Action::AnnounceInheritedMana {
+                            counter_payment, ..
+                        }
                         | Action::AnnounceBorrowedAbility {
                             counter_payment, ..
                         }
                         | Action::AnnounceGraveyardBorrowedAbility {
+                            counter_payment, ..
+                        }
+                        | Action::AnnounceInheritedAbility {
                             counter_payment, ..
                         }
                         | Action::BeginActivate {

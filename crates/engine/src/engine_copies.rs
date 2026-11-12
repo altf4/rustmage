@@ -130,7 +130,10 @@ impl CopyRecipe {
     /// CR707.9d: a replacement subtype set excludes the copied subtype CDA.
     /// Later copied exceptions and external keyword grants are separate effects.
     pub(super) fn intrinsic_keywords(self) -> Keywords {
-        let keywords = self.definition.keywords();
+        let keywords = self
+            .definition
+            .keywords()
+            .union(self.exceptions.add_keywords);
         if self.copy_types().replace {
             keywords.without(Keywords::CHANGELING)
         } else {
@@ -138,7 +141,7 @@ impl CopyRecipe {
         }
     }
     pub(super) fn kinds(self) -> u16 {
-        let mut kinds = self.definition.kind_mask();
+        let mut kinds = self.definition.kind_mask() | self.exceptions.add_card_types;
         if self.exceptions.artifact {
             kinds |= 16;
         }
@@ -173,6 +176,7 @@ impl CopyRecipe {
     pub(super) fn with_exceptions(mut self, exceptions: CopyExceptions) -> Self {
         if let Some(overrides) = &mut self.overrides {
             if let Some(kinds) = &mut overrides.kinds {
+                *kinds |= exceptions.add_card_types;
                 if exceptions.artifact {
                     *kinds |= 16;
                 }
@@ -193,6 +197,9 @@ impl CopyRecipe {
         if exceptions.base.is_some() {
             self.sampled_size = None;
         }
+        if exceptions.embalm {
+            self.exceptions.add_colors = 0;
+        }
         self.exceptions = self.exceptions.union(exceptions);
         self
     }
@@ -202,12 +209,15 @@ impl CopyRecipe {
         self
     }
     pub(super) fn copiable_colors(self) -> u8 {
-        if self.exceptions.embalm {
+        self.copiable_colors_with_printed(self.definition.colors())
+    }
+    pub(super) fn copiable_colors_with_printed(self, printed: u8) -> u8 {
+        let base = if self.exceptions.embalm {
             1
         } else {
-            self.color_override
-                .unwrap_or_else(|| self.definition.colors())
-        }
+            self.color_override.unwrap_or(printed)
+        };
+        base | self.exceptions.add_colors
     }
     pub(super) fn copiable_base(self) -> Option<Stats> {
         self.sampled_size
@@ -410,6 +420,7 @@ impl Game {
                     summoning_sick: false,
                     flashback: false,
                     cast_for_warp: false,
+                    cast_for_impending: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -424,6 +435,7 @@ impl Game {
                     loyalty_activated_this_turn: false,
                     class_level: 1,
                     attached_to: None,
+                    attached_to_player: None,
                 };
                 if id as usize == self.state.objects.len() {
                     self.state.objects.push(object);

@@ -3,10 +3,32 @@
   "catalogue_id": 570,
   "oracle_id": "ad50214c-4d0e-4f95-9098-fd7d64dbf7f4",
   "facts_sha256": "4be30a0615985af682d4b92735ea5dfc07455fc081e0b46706aff978d6fca83e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "9af9655d55bee4172021a6383cdfa115c35a9082500578d22f25648da9861dc2"
-  },
-  "physical_metadata_sha256": "cc75aaa57ec1dea5acf307a821862d2a909f27ddad3c58c596f9ea7cb387eaed"
+  "complete": true,
+  "physical_metadata_sha256": "cc75aaa57ec1dea5acf307a821862d2a909f27ddad3c58c596f9ea7cb387eaed",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/Broodspinner.java",
+  "java_sha256": "05bb74e1cdd3c56b45944af6680250eed7e0916696c9694ee2ddaaf63b94c63c",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/InsectBlackGreenFlyingToken.java",
+      "sha256": "aeb4787683fc6658917471d56e8fc745c5cc900c3d9eb7147ea7832b9a21424e"
+    }
+  ]
 }

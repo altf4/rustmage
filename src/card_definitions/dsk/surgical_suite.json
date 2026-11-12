@@ -1,0 +1,16 @@
+{
+  "name": "Surgical Suite",
+  "catalogue_id": 5659,
+  "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+  "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+    "index": 0,
+    "sha256": "f2a6734781068768dbe0af5b25568efdfdd7e85754af1407271fc18e57754de7"
+  },
+  "physical_metadata_sha256": "4066f0846513f39d17ad0e6c9d1dba2c0c4068b5a4decc498a2a65cc1a26a692",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SurgicalSuiteHospitalRoom.java",
+  "java_sha256": "d137bacebf4413f473ce8f62e97d6d0a5ca13ce957990f171fd1b279cb039af3"
+}

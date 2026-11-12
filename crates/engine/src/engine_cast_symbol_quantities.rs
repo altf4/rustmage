@@ -69,6 +69,7 @@ fn selected_for(program: &[Instruction], cave_only: bool) -> bool {
         | Instruction::DrainLifeScaled(value)
         | Instruction::LoseOpponentGainSame(value)
         | Instruction::DamageScaled(value)
+        | Instruction::DamageRememberPlayersScaled(value)
         | Instruction::DamageWithControllerScaled {
             controller_damage: value,
             ..

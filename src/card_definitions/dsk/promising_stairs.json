@@ -1,0 +1,16 @@
+{
+  "name": "Promising Stairs",
+  "catalogue_id": 5626,
+  "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+  "facts_sha256": "6a4759952b4435c679897d2adffe65304a7ba8e889426add635c04b5a9fdf634",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "927fa223-69a3-4563-80b1-b578f3d031f1",
+    "index": 1,
+    "sha256": "d3c02e652b9cdb76143c29fc296bfafcbd6d80649fb89420348b666416dcb590"
+  },
+  "physical_metadata_sha256": "4332d2712c442d9f9403b66584dffa1c16f6d73c5546ff908d8e9d605439dbee",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CentralElevatorPromisingStairs.java",
+  "java_sha256": "80c4a91a3f4e2709ddb8cc2413814da4c2589f8d20a1a796c114a58b1fb90570"
+}

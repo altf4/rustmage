@@ -288,6 +288,7 @@ impl Game {
         reflexive.id = self.next_stack_id();
         reflexive.kind = StackKind::TriggeredAbility { ability };
         reflexive.is_copy = false;
+        reflexive.additional_triggers = 0;
         reflexive.targets.clear();
         reflexive.target_type_slots = None;
         reflexive.mode = None;

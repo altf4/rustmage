@@ -5,7 +5,7 @@ use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 pub struct PaidAdditionalCostView {
-    /// Actual objects sacrificed or exiled by this paid cost, after replacements.
+    /// Actual objects sacrificed, discarded, or exiled by this paid cost.
     pub count: u64,
     /// Declared cardinality, independent of replacement-modified outcomes.
     pub selected: u64,
@@ -17,6 +17,9 @@ pub struct PaidAdditionalCostView {
     /// An actual sacrificed object's effective subtypes included an outlaw type.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub sacrificed_outlaw: bool,
+    /// Effective card types at the actual discard, when its characteristics are defined.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub discarded_kinds: Option<u16>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -199,6 +202,7 @@ impl Game {
                         total_mana_value,
                         sacrificed_vehicle: false,
                         sacrificed_outlaw: false,
+                        discarded_kinds: None,
                     };
                     self.stage_atomic_zone_cost(plans, checkpoint);
                     paid
@@ -215,6 +219,7 @@ impl Game {
                         total_mana_value,
                         sacrificed_vehicle: false,
                         sacrificed_outlaw: false,
+                        discarded_kinds: None,
                     };
                     self.finish_zone_events(&events, &[]);
                     paid

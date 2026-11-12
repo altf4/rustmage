@@ -3,10 +3,34 @@
   "catalogue_id": 4478,
   "oracle_id": "2e3ec514-fc9e-4964-a493-2a6cc9e63630",
   "facts_sha256": "7b08c17d2230be046a45947ee7d6cf4ffbc1ce9aaf077991a37a70dbdbee02fd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "194856042d589e4fbe2021689a4f231fdd423ebcd61c56bf520e0115daf8b183"
   },
-  "physical_metadata_sha256": "06dda790a04cf1d7aeab7e3fa299fb4f26948e83a0e2a55dc5ccf83c88a3ada5"
+  "physical_metadata_sha256": "06dda790a04cf1d7aeab7e3fa299fb4f26948e83a0e2a55dc5ccf83c88a3ada5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheMindskinner.java",
+  "java_sha256": "160b2c0b552bea8939bda339a83e3440926b8fc86dc0c28236f580130223cf3d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/PreventionEffectImpl.java",
+      "sha256": "35c73be2ddcb40be12bc5a1ca2d11a654436c7b6b0c4ae1e37cb18383a97daf5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/CantBeBlockedSourceAbility.java",
+      "sha256": "db5a7fc24b93fadd2bb8e9fd2e03c5ac39dc413d3e35d1a532fcc53aa08fadcb"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "For each qualifying damage packet, the opponent mills the amount at this prevention effect's ordering point. CR 615.12 preserves that mill even if the damage cannot be prevented."
+  }
 }

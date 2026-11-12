@@ -32,6 +32,9 @@ impl Game {
 
     pub(super) fn begin_step(&mut self, step: Step) {
         self.state.step = step;
+        if step == Step::End {
+            self.expire_next_end_step_copies();
+        }
         self.queue_delayed_steps(step);
         if step == Step::Upkeep {
             self.queue_suspend_upkeep();
@@ -159,6 +162,7 @@ impl Game {
             event_player: None,
             source_move: None,
             borrowed_slot: None,
+            acquired_link_cohort: None,
             self_granted_activation: None,
             target_controller_lki: None,
             target_types_lki: None,
@@ -240,6 +244,7 @@ impl Game {
             TriggerCondition::InZone { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
+            | TriggerCondition::OncePerIncarnation(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpentBelowValue(event)
@@ -262,6 +267,7 @@ impl Game {
             | TriggerCondition::When { event, .. }
             | TriggerCondition::Granted(event)
             | TriggerCondition::OncePerTurn(event)
+            | TriggerCondition::OncePerIncarnation(event)
             | TriggerCondition::DuringOpponentsTurn(event)
             | TriggerCondition::TreasureManaSpent(event)
             | TriggerCondition::ManaSpentBelowValue(event)
@@ -309,6 +315,14 @@ impl Game {
         let Some(source) = item.source else {
             return false;
         };
+        if let TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(subtype) =
+            condition.event()
+            && item
+                .event_player
+                .is_none_or(|player| self.controls_creature_subtype(player, subtype))
+        {
+            return false;
+        }
         if condition.event() == TriggerCondition::SelfEntersIfCastByController
             && !item
                 .cast_event
@@ -347,7 +361,7 @@ impl Game {
                     maximum,
                 },
             event,
-        } = condition
+        } = condition.without_incarnation_limit()
             && !(self.on_battlefield(source.object.card)
                 && self.object_ref(source.object.card) == source.object)
         {
@@ -372,6 +386,17 @@ impl Game {
             source.object,
             item.source_tapped,
         )
+    }
+
+    pub(super) fn controls_creature_subtype(&self, player: Player, subtype: &str) -> bool {
+        let query = self.characteristic_query();
+        self.state.objects.iter().enumerate().any(|(id, object)| {
+            let id = id as CardId;
+            object.zone == Zone::Battlefield
+                && object.controller == player
+                && query.kinds(id) & 1 != 0
+                && query.subtypes(id).has(object.card, subtype)
+        })
     }
 
     pub(super) fn first_combat_phase(&self) -> bool {
@@ -551,6 +576,17 @@ impl Game {
                 return minimum.is_none_or(|min| value >= min)
                     && maximum.is_none_or(|max| value <= max);
             }
+            StepGuard::LandEnteredAndPrimeLandCount => {
+                if world.lands_entered_this_turn(player) == 0 {
+                    return false;
+                }
+                let lands =
+                    self.stat_value_in_world(world, StatValue::CONTROLLER_LANDS, source, player);
+                return lands >= 2
+                    && (2..)
+                        .take_while(|&divisor| divisor <= lands / divisor)
+                        .all(|divisor| lands % divisor != 0);
+            }
             StepGuard::GainedLife => return p.life_gained_this_turn > 0,
             StepGuard::ScriedOrSurveilledThisTurn => return p.scried_or_surveilled_this_turn,
             StepGuard::LoyaltyAbilityActivatedThisTurn => {
@@ -576,6 +612,13 @@ impl Game {
             }
             StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
             StepGuard::SourceSaddled => return self.source_saddled(source),
+            StepGuard::ImpendingHasTimeCounters => {
+                let object = world.object(source.card);
+                return object.zone == Zone::Battlefield
+                    && world.reference(source.card) == source
+                    && object.cast_for_impending
+                    && world.counter_count(source.card, CounterKind::Time) != 0;
+            }
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {
@@ -614,6 +657,14 @@ impl Game {
             StepValue::TappedCreatures => {
                 Some(creatures().filter(|(_, o)| o.tapped).count() as i128)
             }
+            StepValue::ControlledCreaturePowerAtMost { maximum, other } => Some(
+                characteristic_query::CharacteristicQuery::in_world(world)
+                    .controlled_creature_power_count(
+                        player,
+                        other.then_some(source),
+                        ..=i128::from(maximum),
+                    ) as i128,
+            ),
             StepValue::Lands => Some(
                 self.state
                     .objects

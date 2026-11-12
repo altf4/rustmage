@@ -1,5 +1,6 @@
 //! Live terminal restrictions and the existing turn's explicit cleanup boundary.
 use super::*;
+use crate::cards::StaticAbilityFragment;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
     pub(super) fn cant_lose_game(&self, player: Player) -> bool {
@@ -20,6 +21,24 @@ impl Game {
             }
         }
         lost
+    }
+    pub(super) fn state_based_game_losses(&self) -> [bool; 2] {
+        let lost = [Player::P0, Player::P1].map(|player| {
+            let state = &self.state.players[player.index()];
+            state.poison_counters >= 10
+                || state.attempted_empty_draw
+                || (state.life <= 0
+                    && !self.state.static_sources.iter().any(|&id| {
+                        self.state.objects[id as usize].controller == player
+                            && self.active_rule_fragment(id, |fragment| {
+                                matches!(
+                                    fragment,
+                                    StaticAbilityFragment::CantLoseFromNonpositiveLife
+                                )
+                            })
+                    }))
+        });
+        self.allowed_game_losses(lost)
     }
     /// Call with already frozen, permitted losses for one simultaneous event.
     pub(super) fn commit_game_losses(&mut self, lost: [bool; 2]) {

@@ -3,10 +3,31 @@
   "catalogue_id": 943,
   "oracle_id": "9d5ff568-1c55-4757-94d0-5743ca674bab",
   "facts_sha256": "76bb4cee86c4d5edec5854473963abe3006f48d85fb6c776b9f1633c8cc712d3",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b2e5da6dd58735805570ed16a6c2e32796f81ebbdccd1fe1f9faee17530a9025"
   },
-  "physical_metadata_sha256": "319601be4b251a7d3775de4a9394ecb811aa5d885ef0f2bbf4fe05c49ecc2264"
+  "physical_metadata_sha256": "319601be4b251a7d3775de4a9394ecb811aa5d885ef0f2bbf4fe05c49ecc2264",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CynicalLoner.java",
+  "java_sha256": "81ddd16f2b83bfacf81d194f5ae845d29c5636457000228fcb4cca40f03b61de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/combat/CantBeBlockedByCreaturesSourceEffect.java",
+      "sha256": "db532584552c032f8fed7fb9a2cb025e45f58c4710c0d3bb1406f6aab7a338f5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInGraveyardEffect.java",
+      "sha256": "293f025fce90b44b6e97cab08bc41ef455c1b82b444c72b46c4dd958542ae939"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_overlords_eerie.rs"
 }

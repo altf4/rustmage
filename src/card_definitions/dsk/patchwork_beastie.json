@@ -3,10 +3,36 @@
   "catalogue_id": 3109,
   "oracle_id": "6cf995e9-115a-4659-bace-9fbe75898b48",
   "facts_sha256": "a760f229497b14bed26edfebe0bde8de9915e1527a1c47d6c390ba58ef0a9b3e",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "517255898c6925bbccb8f934368f0b13832c235f5aa35fcbc32212345aaf289f"
-  },
-  "physical_metadata_sha256": "5f20bc7014d7583722615aed864bf90b616aa23dd9ae198d1fb978cb4594c352"
+  "complete": true,
+  "physical_metadata_sha256": "5f20bc7014d7583722615aed864bf90b616aa23dd9ae198d1fb978cb4594c352",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/p/PatchworkBeastie.java",
+  "java_sha256": "04a2f638e2c46f8c38132d45f2d169a83bd95ccfeb1e5c4ba1844dfe103e5f70",
+  "rules_tests": "tests/dsk_gold_graveyard_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/RestrictionEffect.java",
+      "sha256": "408c7ac5e439f5c6f0f176525253ccdcf8a3ea563323128e2a167716ebe26a4f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Reducing the count of graveyard types after declaration leaves an attacker or blocker in combat."
+  }
 }

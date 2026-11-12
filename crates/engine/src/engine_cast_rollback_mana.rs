@@ -65,6 +65,8 @@ pub(super) struct ManaEvent {
     pub spent_lots: Vec<(mana_lots::Quality, Mana)>,
     /// Fully replaced, ordered activation-cost placements from the actual event.
     pub counter_costs: Vec<Vec<replacements::CounterPlacement>>,
+    /// The actual source placement after production, including its replacements.
+    pub counter_effect: Option<Box<replacements::CounterPlacement>>,
     pub entries: Vec<entries::EntryBatch>,
     pub life_payments: Vec<LifePaymentReceipt>,
     pub life_gains: Vec<LifeGainReceipt>,
@@ -101,6 +103,9 @@ impl ManaEvent {
                         + batch.iter().map(|p| p.amount.owned_bytes()).sum::<usize>()
                 })
                 .sum::<usize>()
+            + self.counter_effect.as_ref().map_or(0, |p| {
+                std::mem::size_of::<replacements::CounterPlacement>() + p.amount.owned_bytes()
+            })
             + self.moves.len() * std::mem::size_of::<FrozenZoneMove>()
             + self.life_gains.len() * std::mem::size_of::<LifeGainReceipt>()
             + self
@@ -392,6 +397,7 @@ impl Game {
         if payment == [0; 6] {
             return true;
         }
+        let purpose = purpose.with_live_spell_types(self, event.actor);
         let pool = self.state.players[event.actor.index()].mana.map(u128::from);
         let lots = self.mana_lots(event.actor);
         let ordinary = mana_lots::ordinary(pool, lots);
@@ -611,6 +617,15 @@ impl Game {
         if event
             .time_removal
             .is_some_and(|source| !self.remove_mana_time_counter(source))
+        {
+            return false;
+        }
+        if let Some(placement) = event.counter_effect.as_deref()
+            && !self.apply_frozen_mana_counter_placements(
+                source,
+                event.actor,
+                std::slice::from_ref(placement),
+            )
         {
             return false;
         }
@@ -857,6 +872,7 @@ impl Game {
             empty.copy_kind = CopyKind::Card;
             empty.generation = 0;
             empty.attached_to = None;
+            empty.attached_to_player = None;
             empty.counters = InitialCounters::default();
             let slot = self.state.objects.len() as CardId;
             self.state.objects.push(empty);

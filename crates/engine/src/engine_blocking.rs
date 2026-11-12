@@ -170,7 +170,9 @@ impl Game {
     }
 
     pub(super) fn blocks_complete(&self, taxed: bool) -> bool {
-        (taxed || self.block_requirements_complete())
+        !matches!(self.state.selected_blocks.as_slice(), [(sole, _)]
+            if self.combat_requires_company(*sole))
+            && (taxed || self.block_requirements_complete())
             && self.state.attackers.iter().all(|a| {
                 let count = self
                     .state
@@ -182,6 +184,40 @@ impl Game {
                     && (!has_attacker_keyword(self, a.card, Keywords::MAX_ONE_BLOCKER)
                         || count <= 1)
             })
+    }
+
+    /// Additional blockers needed to accompany one already legal block pair.
+    pub(super) fn minimum_blocking_company(
+        &self,
+        blocker: CardId,
+        attacker: CardId,
+        available: &[CardId],
+    ) -> Option<usize> {
+        self.state
+            .attackers
+            .iter()
+            .filter_map(|attack| {
+                let max_one = has_attacker_keyword(self, attack.card, Keywords::MAX_ONE_BLOCKER);
+                let needed = if attack.card == attacker {
+                    if max_one {
+                        return None;
+                    }
+                    1
+                } else {
+                    self.minimum_blockers(attack.card)
+                };
+                if max_one && needed > 1 {
+                    return None;
+                }
+                (available
+                    .iter()
+                    .filter(|&&id| id != blocker && self.can_block_pair(id, attack.card))
+                    .take(needed)
+                    .count()
+                    == needed)
+                    .then_some(needed)
+            })
+            .min()
     }
 
     /// Minimum size of a structurally legal declaration extending this choice.
@@ -218,7 +254,9 @@ impl Game {
             })
             .flat_map(|(id, remaining)| std::iter::repeat_n(id, remaining))
             .collect();
-        if needs.is_empty() {
+        let needs_company =
+            selected == 1 && needs.is_empty() && self.combat_requires_company(blocker);
+        if needs.is_empty() && !needs_company {
             return (taxed || self.block_requirements_preserved(blocker, attacker))
                 .then_some(selected);
         }
@@ -237,56 +275,20 @@ impl Game {
                 let id = id as CardId;
                 (id != blocker
                     && !self.state.selected_blocks.iter().any(|&(b, _)| b == id)
-                    && needs.iter().any(|&a| self.can_block_pair(id, a)))
+                    && (needs_company && self.can_be_blocker(id)
+                        || needs.iter().any(|&a| self.can_block_pair(id, a))))
                 .then_some(id)
             })
             .collect();
-        if available.len() < needs.len() {
-            return None;
-        }
-        // Every outstanding minimum-count obligation needs one distinct unused
-        // blocker. Augmenting paths find an exact covering matching.
-        let edges: Vec<Vec<_>> = needs
-            .iter()
-            .map(|&a| {
-                available
-                    .iter()
-                    .enumerate()
-                    .filter_map(|(i, &b)| self.can_block_pair(b, a).then_some(i))
-                    .collect()
-            })
-            .collect();
-        fn augment(
-            need: usize,
-            edges: &[Vec<usize>],
-            assigned: &mut [Option<usize>],
-            seen: &mut [bool],
-        ) -> bool {
-            for &blocker in &edges[need] {
-                if seen[blocker] {
-                    continue;
-                }
-                seen[blocker] = true;
-                if assigned[blocker].is_none_or(|prior| augment(prior, edges, assigned, seen)) {
-                    assigned[blocker] = Some(need);
-                    return true;
-                }
-            }
-            false
-        }
-        let mut assigned = vec![None; available.len()];
-        for need in 0..needs.len() {
-            if !augment(
-                need,
-                &edges,
-                &mut assigned,
-                &mut vec![false; available.len()],
-            ) {
+        let extra = if needs_company {
+            self.minimum_blocking_company(blocker, attacker, &available)?
+        } else {
+            if !combat_allocations::cover_block_slots(self, &needs, &available) {
                 return None;
             }
-        }
-        (taxed || self.block_requirements_preserved(blocker, attacker))
-            .then_some(selected + needs.len())
+            needs.len()
+        };
+        (taxed || self.block_requirements_preserved(blocker, attacker)).then_some(selected + extra)
     }
 
     pub(super) fn finish_block_declaration(&mut self, actor: Player) {

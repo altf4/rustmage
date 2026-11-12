@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-demon-flying-black",
+  "catalogue_id": 5671,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "f88a44d89abf1ca82a1cd432e860fd9da2afe0688f9975c4f63b1741d88e4538",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Demon66Token.java",
+  "java_sha256": "33b5ac500eff870658a503dbf9ae5c5fae5a8314d01d503c0ec66685302cda9a"
+}

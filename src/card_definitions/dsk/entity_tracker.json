@@ -3,10 +3,34 @@
   "catalogue_id": 1347,
   "oracle_id": "c9db5293-4866-46ec-9ae8-059d27bd50fc",
   "facts_sha256": "4d999e60de6b35ca6da983ca48392140f9e43f3ec0e445444bafdd8b9de64ead",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f54c8245f0f5dd5f8fd61248c960069a2d4c38769bf31577679f1afb61384d59"
   },
-  "physical_metadata_sha256": "603ad813b18fb12c2462f2183421d1b29723764840e9d09e603d10b9985922db"
+  "physical_metadata_sha256": "603ad813b18fb12c2462f2183421d1b29723764840e9d09e603d10b9985922db",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EntityTracker.java",
+  "java_sha256": "6aeb79eed8ae0102ba10af87d659d09afe76ba98ff7f2158936c9568fa21f98a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Flash permits casting whenever an instant could be cast. Each qualifying Eerie event draws one card for the trigger controller."
+  }
 }

@@ -3,7 +3,7 @@ use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{
     AnimationCreatureTypes, AnimationDuration, AnimationSpec, AttachedCharacteristics,
-    PermanentForm, SourceCreatureForm, StaticAbilityFragment,
+    CharacteristicAddition, PermanentForm, SourceCreatureForm, StaticAbilityFragment,
 };
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -33,7 +33,13 @@ pub struct AnimationView {
     /// Set enchantment card type, retaining instant/sorcery types per CR205.1a.
     #[serde(skip_serializing_if = "is_false")]
     pub enchantment_noncreature: bool,
+    /// Card types added at this effect's timestamp.
+    #[serde(skip_serializing_if = "is_zero_u16")]
+    pub additional_card_types: u16,
     pub colors: Option<u8>,
+    /// Colors added to the colors the object has at this effect's timestamp.
+    #[serde(skip_serializing_if = "is_zero_u8")]
+    pub additional_colors: u8,
     pub creature_types: Option<&'static [&'static str]>,
     pub all_creature_types: bool,
     /// This row adds named creature types instead of replacing them.
@@ -46,6 +52,9 @@ pub struct AnimationView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn is_false(value: &bool) -> bool {
     !value
+}
+fn is_zero_u16(value: &u16) -> bool {
+    *value == 0
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy)]
@@ -78,6 +87,9 @@ fn aura_effects<W: CharacteristicWorld + ?Sized>(
             continue;
         }
         for group in object.card.static_ability_groups() {
+            if !entry_modes::group_enabled(world, reference, group) {
+                continue;
+            }
             for fragment in group.fragments {
                 if let StaticAbilityFragment::AttachedCharacteristics(spec) = *fragment {
                     let timestamp = world
@@ -203,6 +215,25 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         subtypes,
     })
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn impending_type_timestamp<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> Option<u64> {
+    let object = world.object(id);
+    if object.zone != Zone::Battlefield
+        || !object.cast_for_impending
+        || object.card.impending_spec().is_none()
+        || world.counter_count(id, CounterKind::Time) == 0
+    {
+        return None;
+    }
+    let source = world.reference(id);
+    world
+        .roles()?
+        .ability_timestamps
+        .iter()
+        .find(|row| row.source == source)
+        .map(|row| row.timestamp)
+}
+
 /// Layer-four changes to the presence of the land card type. Other card-type
 /// additions do not affect existing land types and need no timeline entry.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -217,6 +248,7 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             | PermanentForm::AddCreatureSubtypes
             | PermanentForm::Preserve
             | PermanentForm::PreserveWithColors => None,
+            PermanentForm::AddCardTypes(types) => (types & 2 != 0).then_some((time, true)),
             form => Some((time, matches!(form, PermanentForm::Land))),
         })
         .collect();
@@ -232,7 +264,9 @@ pub(super) fn land_kind_events<W: CharacteristicWorld + ?Sized>(
             || row.creature_only
         {
             Some((row.timestamp, false))
-        } else if row.land && (!row.preserve_card_types || row.artifact) {
+        } else if row.additional_card_types & 2 != 0
+            || row.land && (!row.preserve_card_types || row.artifact)
+        {
             Some((row.timestamp, true))
         } else {
             None
@@ -259,6 +293,7 @@ pub(super) fn kinds<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_conditional_creature(world, id).is_none_or(|change| change.kinds == 0)
+        && impending_type_timestamp(world, id).is_none()
         && source_type_forms(world, id).next().is_none()
     {
         if world
@@ -291,13 +326,31 @@ fn original_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, object
     }
     result
 }
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+enum CardTypeChange {
+    Add(u16),
+    Set(u16),
+    Remove(u16),
+}
+
+impl CardTypeChange {
+    fn apply(self, kinds: u16) -> u16 {
+        match self {
+            Self::Add(mask) => kinds | mask,
+            Self::Set(mask) => mask,
+            Self::Remove(mask) => kinds & !mask,
+        }
+    }
+}
+
 // Keep uncommon projection/sort work out of ordinary type queries.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn kind_timeline<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
     mut result: u16,
-) -> (u16, Vec<(u64, u16, bool)>) {
+) -> (u16, Vec<(u64, CardTypeChange)>) {
     let mut changes: Vec<_> = aura_effects(world, id)
         .into_iter()
         .filter_map(|(time, spec)| {
@@ -305,28 +358,42 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
                 PermanentForm::Creature | PermanentForm::AddCreature => 1,
                 PermanentForm::Land => 2,
                 PermanentForm::FoodArtifact => 16,
+                PermanentForm::AddCardTypes(types) => types,
                 PermanentForm::Preserve
                 | PermanentForm::PreserveWithColors
                 | PermanentForm::AddCreatureSubtypes => return None,
             };
-            Some((time, kinds, matches!(spec.form, PermanentForm::AddCreature)))
+            let change = if matches!(
+                spec.form,
+                PermanentForm::AddCreature | PermanentForm::AddCardTypes(_)
+            ) {
+                CardTypeChange::Add(kinds)
+            } else {
+                CardTypeChange::Set(kinds)
+            };
+            Some((time, change))
         })
         .collect();
+    if let Some(timestamp) = impending_type_timestamp(world, id) {
+        changes.push((timestamp, CardTypeChange::Remove(1)));
+    }
     if let Some(change) = source_conditional_creature(world, id)
         && change.kinds != 0
     {
-        let kinds = if change.additive {
-            change.kinds
+        let effect = if change.additive {
+            CardTypeChange::Add(change.kinds)
         } else {
-            change.kinds | (result & (4 | 8))
+            CardTypeChange::Set(change.kinds | (result & (4 | 8)))
         };
-        changes.push((change.timestamp, kinds, change.additive));
+        changes.push((change.timestamp, effect));
     }
-    changes
-        .extend(source_type_forms(world, id).map(|(row, kinds, _)| (row.timestamp, kinds, false)));
+    changes.extend(
+        source_type_forms(world, id)
+            .map(|(row, kinds, _)| (row.timestamp, CardTypeChange::Set(kinds))),
+    );
     for row in animations(world, id) {
         if row.food_only {
-            changes.push((row.timestamp, 16, false));
+            changes.push((row.timestamp, CardTypeChange::Set(16)));
             continue;
         }
         if row.artifact_noncreature || row.enchantment_noncreature || row.creature_only {
@@ -337,21 +404,23 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
             } else {
                 16
             };
-            changes.push((row.timestamp, kind | (result & (4 | 8)), false));
+            changes.push((
+                row.timestamp,
+                CardTypeChange::Set(kind | (result & (4 | 8))),
+            ));
             continue;
         }
         let added = if row.preserve_card_types {
-            if row.artifact {
-                16
-            } else {
-                continue;
-            }
+            if row.artifact { 16 } else { 0 }
         } else if row.artifact {
             17
         } else {
             1
         };
-        changes.push((row.timestamp, added | if row.land { 2 } else { 0 }, true));
+        let added = added | row.additional_card_types | if row.land { 2 } else { 0 };
+        if added != 0 {
+            changes.push((row.timestamp, CardTypeChange::Add(added)));
+        }
     }
     if world
         .game()
@@ -369,21 +438,16 @@ fn kind_timeline<W: CharacteristicWorld + ?Sized>(
     {
         let timestamp = timestamp.max(creature_since);
         let after = changes.partition_point(|change| change.0 <= timestamp);
-        changes.insert(after, (timestamp, 16, true));
+        changes.insert(after, (timestamp, CardTypeChange::Add(16)));
     }
     (result, changes)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn changed_kinds<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId, result: u16) -> u16 {
-    let (mut result, changes) = kind_timeline(world, id, result);
-    for (_, mask, additive) in changes {
-        if additive {
-            result |= mask;
-        } else {
-            result = mask;
-        }
-    }
-    result
+    let (initial, changes) = kind_timeline(world, id, result);
+    changes
+        .into_iter()
+        .fold(initial, |kinds, (_, change)| change.apply(kinds))
 }
 /// Latest layer-four provider applying to other creatures. Its effect began
 /// before layer six and still applies if the provider subsequently loses abilities.
@@ -437,11 +501,11 @@ pub(super) fn fast_entry_kinds<W: CharacteristicWorld + ?Sized>(
 /// recipient a creature. If the recipient is still a creature, return the
 /// start of that uninterrupted creature scope (zero for intrinsic creatures).
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn creature_scope_timestamp(mut kinds: u16, changes: &[(u64, u16, bool)]) -> Option<u64> {
+fn creature_scope_timestamp(mut kinds: u16, changes: &[(u64, CardTypeChange)]) -> Option<u64> {
     let mut latest = 0;
-    for &(timestamp, mask, additive) in changes {
+    for &(timestamp, change) in changes {
         let was_creature = kinds & 1 != 0;
-        kinds = if additive { kinds | mask } else { mask };
+        kinds = change.apply(kinds);
         if !was_creature && kinds & 1 != 0 {
             latest = timestamp;
         }
@@ -463,23 +527,49 @@ pub(super) fn creature_addition_timestamp<W: CharacteristicWorld + ?Sized>(
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
 pub(super) fn name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
-    let object = world.object(id);
-    if object.zone != Zone::Battlefield
-        || world.roles().is_none_or(|r| {
-            r.characteristic_sources.is_empty()
-                && r.animations.iter().all(|row| row.equipment_name.is_none())
-        })
-    {
-        return if object.zone == Zone::Stack {
-            world.game().effective_spell_card(id).name()
-        } else {
-            world.copiable_name(id)
-        };
+    let base = || rooms::battlefield_name(world, id).unwrap_or_else(|| world.copiable_name(id));
+    match world.object(id).zone {
+        Zone::Stack => world.game().effective_spell_card(id).name(),
+        Zone::Battlefield => battlefield_name_change(world, id).unwrap_or_else(base),
+        _ => base(),
     }
-    changed_name(world, id)
 }
+
+/// The names a battlefield object actually has, using separate halves for Rooms.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
-fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'static str {
+pub(super) fn battlefield_names<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> [&'static str; 2] {
+    let Some(room) = world.definition(id).room() else {
+        return [name(world, id), ""];
+    };
+    if let Some(name) = battlefield_name_change(world, id)
+        .or_else(|| world.recipe(id).overrides.and_then(|value| value.name))
+    {
+        return [name, ""];
+    }
+    let doors = rooms::doors(world, id).expect("battlefield Room");
+    RoomDoor::ALL.map(|door| {
+        if doors.is_open(door) {
+            room.halves[door.index()].name()
+        } else {
+            ""
+        }
+    })
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+fn battlefield_name_change<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    id: CardId,
+) -> Option<&'static str> {
+    if world.roles().is_none_or(|r| {
+        r.characteristic_sources.is_empty()
+            && r.animations.iter().all(|row| row.equipment_name.is_none())
+    }) {
+        return None;
+    }
     aura_effects(world, id)
         .into_iter()
         .filter_map(|(t, s)| s.name.map(|name| (t, name)))
@@ -488,7 +578,7 @@ fn changed_name<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> &'sta
                 .filter_map(|row| row.equipment_name.map(|name| (row.timestamp, name))),
         )
         .max_by_key(|e| e.0)
-        .map_or_else(|| world.copiable_name(id), |e| e.1)
+        .map(|(_, name)| name)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -496,26 +586,33 @@ pub(super) fn colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> 
     let object = world.object(id);
     if object.zone != Zone::Battlefield
         || world.roles().is_none_or(|r| {
-            r.characteristic_sources.is_empty() && r.animations.iter().all(|a| a.colors.is_none())
+            r.characteristic_sources.is_empty()
+                && r.animations
+                    .iter()
+                    .all(|a| a.colors.is_none() && a.additional_colors == 0)
         })
     {
         return if object.zone == Zone::Stack {
             world.game().effective_spell_card(id).colors()
         } else {
-            world.recipe(id).copiable_colors()
+            rooms::battlefield_colors(world, id)
+                .unwrap_or_else(|| world.recipe(id).copiable_colors())
         };
     }
     changed_colors(world, id)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 {
-    aura_effects(world, id)
+    let setter = aura_effects(world, id)
         .into_iter()
         .filter_map(|(timestamp, spec)| {
             if matches!(
                 spec.form,
                 PermanentForm::AddCreature | PermanentForm::AddCreatureSubtypes
-            ) || (matches!(spec.form, PermanentForm::Preserve) && spec.colors.is_empty())
+            ) || (matches!(
+                spec.form,
+                PermanentForm::Preserve | PermanentForm::AddCardTypes(_)
+            ) && spec.colors.is_empty())
             {
                 return None;
             }
@@ -531,8 +628,19 @@ fn changed_colors<W: CharacteristicWorld + ?Sized>(world: &W, id: CardId) -> u8 
             animations(world, id)
                 .filter_map(|row| row.colors.map(|colors| (row.timestamp, colors))),
         )
-        .max_by_key(|row| row.0)
-        .map_or_else(|| world.recipe(id).copiable_colors(), |(_, colors)| colors)
+        .max_by_key(|row| row.0);
+    let colors = setter.map_or_else(
+        || {
+            rooms::battlefield_colors(world, id)
+                .unwrap_or_else(|| world.recipe(id).copiable_colors())
+        },
+        |(_, colors)| colors,
+    );
+    animations(world, id)
+        .filter(|row| {
+            row.additional_colors != 0 && setter.is_none_or(|(time, _)| row.timestamp > time)
+        })
+        .fold(colors, |colors, row| colors | row.additional_colors)
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[inline]
@@ -566,6 +674,7 @@ fn changed_base<W: CharacteristicWorld + ?Sized>(
 pub(super) enum SubtypeChange {
     Named(&'static [&'static str], bool),
     Add(&'static [&'static str]),
+    RemoveCreatureTypes,
     Chosen(crate::cards::CreatureType),
     Granted(crate::cards::CreatureType, Option<&'static str>),
     All,
@@ -589,6 +698,7 @@ pub(super) fn subtype_changes<W: CharacteristicWorld + ?Sized>(
         .is_none_or(|r| r.characteristic_sources.is_empty())
         && world.roles().is_none_or(|r| r.animations.is_empty())
         && source_conditional_creature(world, id).is_none()
+        && impending_type_timestamp(world, id).is_none()
         && source_type_forms(world, id).next().is_none()
     {
         return Vec::new();
@@ -605,20 +715,21 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         // Check the card types at the subtype effect's timestamp and after
         // all card-type changes (CR 205.3d, 613.7).
         let (initial, history) = card_type_history.get_or_insert_with(|| {
-            let (initial, mut history) =
+            let (initial, changes) =
                 kind_timeline(world, id, original_kinds(world, id, world.object(id)));
             let mut kinds = initial;
-            for (_, mask, additive) in &mut history {
-                kinds = if *additive { kinds | *mask } else { *mask };
-                *mask = kinds;
-            }
+            let history: Vec<_> = changes
+                .into_iter()
+                .map(|(time, change)| {
+                    kinds = change.apply(kinds);
+                    (time, kinds)
+                })
+                .collect();
             (initial, history)
         });
-        let at = history.partition_point(|&(time, _, _)| time <= timestamp);
-        let at_form = history[..at]
-            .last()
-            .map_or(*initial, |&(_, kinds, _)| kinds);
-        let final_kinds = history.last().map_or(*initial, |&(_, kinds, _)| kinds);
+        let at = history.partition_point(|&(time, _)| time <= timestamp);
+        let at_form = history[..at].last().map_or(*initial, |&(_, kinds)| kinds);
+        let final_kinds = history.last().map_or(*initial, |&(_, kinds)| kinds);
         at_form & (1 | 128) != 0 && final_kinds & (1 | 128) != 0
     };
     let mut dependent_attachments = Vec::new();
@@ -633,6 +744,12 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
                     SubtypeChange::Named(s.creature_types, false)
                 }
                 PermanentForm::AddCreature => SubtypeChange::Add(s.creature_types),
+                PermanentForm::AddCardTypes(_) => {
+                    if !can_have_creature_subtypes(time) {
+                        return None;
+                    }
+                    SubtypeChange::Add(s.creature_types)
+                }
                 PermanentForm::AddCreatureSubtypes => {
                     // A live attachment grant depends on the effect making its
                     // recipient a creature, even when that effect is newer.
@@ -654,6 +771,11 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
             change.timestamp,
             SubtypeChange::Named(change.subtypes, !change.additive),
         ));
+    }
+    if let Some(timestamp) = impending_type_timestamp(world, id)
+        && !can_have_creature_subtypes(timestamp)
+    {
+        changes.push((timestamp, SubtypeChange::RemoveCreatureTypes));
     }
     changes.extend(source_type_forms(world, id).map(|(row, _, change)| (row.timestamp, change)));
     changes.extend(animations(world, id).filter_map(|row| {
@@ -697,6 +819,58 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn add_characteristics(
+        &mut self,
+        item: &SpellView,
+        subject: Subject,
+        addition: CharacteristicAddition,
+    ) {
+        assert!(
+            addition
+                .creature_types
+                .iter()
+                .all(|name| crate::cards::is_creature_type(name))
+        );
+        let recipients: Vec<_> = self
+            .keyword_subjects(item, subject)
+            .into_iter()
+            .filter(|&id| self.on_battlefield(id))
+            .map(|id| self.object_ref(id))
+            .collect();
+        if recipients.is_empty() {
+            return;
+        }
+        let timestamp = self.next_role_timestamp();
+        let spec = AnimationSpec {
+            artifact: false,
+            creature_types: if addition.creature_types.is_empty() {
+                AnimationCreatureTypes::Unchanged
+            } else {
+                AnimationCreatureTypes::Additional(addition.creature_types)
+            },
+            base: None,
+            keywords: Keywords::NONE,
+            duration: addition.duration,
+        };
+        let turn = self.state.turn;
+        self.state
+            .roles
+            .as_mut()
+            .unwrap()
+            .animations
+            .extend(recipients.into_iter().map(|object| AnimationView {
+                additional_card_types: addition.card_types,
+                additional_colors: addition.colors & 31,
+                ..animation_view(
+                    object,
+                    timestamp,
+                    spec,
+                    AnimationTypeMode::PreserveCardTypes,
+                    None,
+                    turn,
+                )
+            }));
+    }
     pub(super) fn animate_source_if_noncreature(
         &mut self,
         item: &SpellView,
@@ -1016,7 +1190,9 @@ pub(super) fn animation_view(
         artifact_noncreature: false,
         equipment_name: None,
         enchantment_noncreature: false,
+        additional_card_types: 0,
         colors,
+        additional_colors: 0,
         creature_types: match spec.creature_types {
             AnimationCreatureTypes::Named(t) | AnimationCreatureTypes::Additional(t) => Some(t),
             _ => None,
@@ -1050,7 +1226,9 @@ pub(super) fn food_form(object: ObjectRef, timestamp: u64) -> AnimationView {
         artifact_noncreature: false,
         equipment_name: None,
         enchantment_noncreature: false,
+        additional_card_types: 0,
         colors: None,
+        additional_colors: 0,
         creature_types: None,
         all_creature_types: false,
         additional_creature_types: false,
@@ -1162,7 +1340,9 @@ impl AnimationView {
             artifact_noncreature: false,
             equipment_name: None,
             enchantment_noncreature: false,
+            additional_card_types: 0,
             colors: Some(colors & 31),
+            additional_colors: 0,
             creature_types: None,
             all_creature_types: false,
             additional_creature_types: false,

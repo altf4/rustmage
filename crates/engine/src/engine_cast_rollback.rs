@@ -229,6 +229,7 @@ impl Game {
                         | Action::ChooseEntryValue { .. }
                         | Action::ChooseEntryLife { .. }
                         | Action::ChooseAuraAttachment { .. }
+                        | Action::ChooseAuraPlayerAttachment { .. }
                         | Action::ChooseEntryReplacement { .. }
                         | Action::ChooseEntryTimestamp { .. }
                         | Action::ChooseReplacement { .. }
@@ -247,6 +248,11 @@ impl Game {
         if let Action::BeginFaceUp { object, .. } = *action {
             let mut rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             rollback.public_face_down.push(object);
+            self.state.cast_rollback = Some(Box::new(rollback));
+            return;
+        }
+        if matches!(action, Action::BeginRoomUnlock { .. }) {
+            let rollback = CastRollback::new(self.state.clone(), actor, CardId::MAX);
             self.state.cast_rollback = Some(Box::new(rollback));
             return;
         }
@@ -269,6 +275,8 @@ impl Game {
             | Action::AnnounceWebSlinging { card, .. }
             | Action::AnnounceAdventure { card }
             | Action::AnnounceOmen { card }
+            | Action::AnnounceRoom { card, .. }
+            | Action::AnnounceGraveyardRoom { card, .. }
             | Action::AnnounceBack { card }
             | Action::AnnounceGraveyardBack { card, .. }
             | Action::AnnouncePlotted { card }
@@ -293,9 +301,12 @@ impl Game {
             Action::CastExiledDuringResolution { object, .. }
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
+            | Action::AnnounceExileForZero { object, .. }
+            | Action::AnnounceCastWithManaAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }
+            | Action::AnnounceSelfGraveyardWithCounter { object, .. }
             | Action::AnnounceGraveyardWithLife { object, .. } => object.card,
             Action::PlayGraveyardPermanent { card, .. }
                 if !self.state.objects[card as usize].card.is_land() =>
@@ -406,7 +417,10 @@ impl Game {
                         .iter()
                         .any(|f| f.announcement.item.kind == StackKind::Spell)
                 });
-        if (!casting && self.state.combat_payment.is_none() && self.face_up_payment().is_none())
+        if (!casting
+            && self.state.combat_payment.is_none()
+            && self.face_up_payment().is_none()
+            && self.state.room_unlock_payment().is_none())
             || self.outcome().is_some()
         {
             self.state.cast_rollback = None;

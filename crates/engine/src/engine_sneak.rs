@@ -136,6 +136,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -157,12 +158,13 @@ impl Game {
         if stats.power > 1 && stats.toughness > 1 {
             return false;
         }
-        self.visit_web_slinging_face(
+        self.visit_paid_cast_alternative_face(
             actor,
             card,
             CastFace::Normal,
             sorcery,
-            WebSlingingOrigin::GraveyardFinality,
+            PaidCastOrigin::GraveyardFinality,
+            mana_alternatives,
             emit,
         ) || (self.permitted_cast_available(
             actor,

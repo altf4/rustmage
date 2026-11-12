@@ -198,6 +198,7 @@ impl Announcement {
                     EffectChoiceKind::BeholdMany(_)
                         | EffectChoiceKind::BeholdAndExile
                         | EffectChoiceKind::ChooseControlledOrWarpedCreature
+                        | EffectChoiceKind::ChooseControlledOrRevealCreature
                         | EffectChoiceKind::BlightCost(_)
                 )
         }) {

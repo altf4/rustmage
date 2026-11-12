@@ -169,6 +169,7 @@ impl Game {
                     | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
+                    | TriggerCondition::AttackPlayerExcludingSubtype(_)
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
@@ -181,6 +182,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksPlayerAlone
                     | TriggerCondition::OpponentCreatureBlocksSmall
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
+                    | TriggerCondition::ControlledCreatureBecomesBlocked
                     | TriggerCondition::ControlledEquippedCreatureAttacks
             )
         }) {
@@ -225,6 +227,7 @@ impl Game {
             matches!(
                 ability.condition.event(),
                 TriggerCondition::PlayerDamaged { .. }
+                    | TriggerCondition::AttachedPlayerDamaged
                     | TriggerCondition::CombatDamageToController
                     | TriggerCondition::CreatureDamaged { .. }
                     | TriggerCondition::ExcessNoncombatDamageToCreatures { .. }
@@ -258,6 +261,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::LandCardsEnterYourGraveyardFromLibrary
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand
@@ -367,6 +371,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BlockTaxWhileAttacking(_)
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::ExileCastForZeroOncePerTurn
+                            | crate::cards::StaticAbilityFragment::SpellAlternativeManaCost(_)
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
                             | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)
@@ -374,6 +380,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ActivatedPermanentKindsProhibited(_)
                             | crate::cards::StaticAbilityFragment::AttachedActivationsProhibited
                             | crate::cards::StaticAbilityFragment::PlotCostReduction(_)
+                            | crate::cards::StaticAbilityFragment::RoomUnlockReduction(_)
                             | crate::cards::StaticAbilityFragment::PlotFromLibraryTop
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
@@ -396,6 +403,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledCreatureEntryCountersForLandsEntered
                             | crate::cards::StaticAbilityFragment::OtherControlledCreatureEntryCountersByStat { .. }
                             | crate::cards::StaticAbilityFragment::AttacksEachCombat
+                            | crate::cards::StaticAbilityFragment::CantAttackOrBlockAlone
                             | crate::cards::StaticAbilityFragment::FlyingCombatRestriction
                             | crate::cards::StaticAbilityFragment::AuraEnchantedCantAttackController
                             | crate::cards::StaticAbilityFragment::CannotBeBlockedBySubtype(_)
@@ -415,6 +423,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
+                            | crate::cards::StaticAbilityFragment::CantLoseFromNonpositiveLife
+                            | crate::cards::StaticAbilityFragment::OpposingCreatureHexproofAndWardDisabled
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::StackItemsCannotBeCountered
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }
@@ -422,6 +432,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::UntapDuringOtherUntapSteps
+                            | crate::cards::StaticAbilityFragment::UntapControlledCreaturesDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
@@ -438,6 +449,8 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::RetainDamageDuringCleanup
                             | crate::cards::StaticAbilityFragment::RetainManaColor(_)
                             | crate::cards::StaticAbilityFragment::CantGainLife
+                            | crate::cards::StaticAbilityFragment::EnchantedPlayerCantGainLife
+                            | crate::cards::StaticAbilityFragment::LookAtOpponentFaceDownCreatures
                             | crate::cards::StaticAbilityFragment::ChosenModifier(..)
                             | crate::cards::StaticAbilityFragment::ChosenTypeKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureScaling { .. }
@@ -452,6 +465,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::CreatureGroupScaling { .. }
                             | crate::cards::StaticAbilityFragment::ControlledLegendaryCreatureBonus(_)
                             | crate::cards::StaticAbilityFragment::ControlledCreatureSubtype { .. }
+                            | crate::cards::StaticAbilityFragment::ChosenCreatureSubtypeAcrossZones
                             | crate::cards::StaticAbilityFragment::ControlledForeignOwnedCreatureSubtype(_)
                             | crate::cards::StaticAbilityFragment::SourceOffTurnCreature
                             | crate::cards::StaticAbilityFragment::DeathBaronLord
@@ -476,6 +490,8 @@ impl Game {
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
                         | crate::cards::ZoneReplacementRule::ExileControllerGraveyard
+                        | crate::cards::ZoneReplacementRule::ExileOpponentGraveyardCards
+                        | crate::cards::ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
                         | crate::cards::ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { .. }
@@ -530,6 +546,7 @@ impl Game {
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::FirstEquipZeroCost { .. } | crate::cards::StaticAbilityFragment::EquipTargetReduction(_) | crate::cards::StaticAbilityFragment::CantDrawCards | crate::cards::StaticAbilityFragment::LinkedExileFreeCastBySubtypeUnion(_) | crate::cards::StaticAbilityFragment::LinkedExileCreatureCounterCasting(_) | crate::cards::StaticAbilityFragment::LinkedExilePaidCast { .. })))
             || zone_replacements::card_provides_prevention(self.state.objects[id as usize].card)
             || self.state.objects[id as usize].card.graveyard_activation_subtype().is_some()
+            || self.state.objects[id as usize].card.inherits_creature_activations()
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group| group.fragments.iter().any(|fragment| matches!(fragment, crate::cards::StaticAbilityFragment::SourceMaxSpeedActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerActivation(_) | crate::cards::StaticAbilityFragment::ControlledPlaneswalkerAttackLimit)))
             || self.state.objects[id as usize].card.static_ability_groups().iter().any(|group|
                 group.fragments.iter().any(|fragment| matches!(fragment,

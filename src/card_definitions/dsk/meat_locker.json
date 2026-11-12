@@ -1,0 +1,16 @@
+{
+  "name": "Meat Locker",
+  "catalogue_id": 5645,
+  "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+  "facts_sha256": "4fb3381bd2bd0e2f7dfba9aa8fed610ef1f9e276870402e71ae53585879fd063",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "897eef47-3e99-4a5f-8a3e-ddb06bc95e9a",
+    "index": 0,
+    "sha256": "81bfb5e7ad7cf6db9c37db429ca78d004156a85839c1bba7888b5c6efd005cd7"
+  },
+  "physical_metadata_sha256": "5cea504c736b0ee1797fce65ca5a06081656afd3d1c02858c99ea65d83506025",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MeatLockerDrownedDiner.java",
+  "java_sha256": "bfcbd79d8a612cc1da4d182e30b8544bfb1570d3c2a7ffd0e73e2c747c4533c1"
+}

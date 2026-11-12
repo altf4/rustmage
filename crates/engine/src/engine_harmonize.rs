@@ -11,6 +11,9 @@ impl CastMethod {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Announcement {
     pub(super) fn payment_x_symbols(&self) -> u32 {
+        if self.source_mana_alternative().is_some() {
+            return 0;
+        }
         let card = self.item.source.expect("object-backed cost").card;
         match self.item.cast.map(|cast| cast.method) {
             Some(CastMethod::Harmonize) => u32::from(card.harmonize_x_symbols()),

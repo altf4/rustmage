@@ -73,8 +73,11 @@ impl Game {
         self.stage_copy_creation(controller, recipe, 1);
         self.run_program();
     }
-    pub(super) fn capture_entry_batch_copy_departures(&mut self, before: &[&ObjectView]) {
-        let mut capture = |item: &mut SpellView| item.capture_entry_group_departure(before);
+    pub(super) fn capture_owned_event_object_departures(&mut self, before: &[&ObjectView]) {
+        let mut capture = |item: &mut SpellView| {
+            item.capture_entry_group_departure(before);
+            item.capture_chosen_cost_creature_departure(before);
+        };
         self.state.stack.iter_mut().for_each(&mut capture);
         self.state
             .pending_triggers
@@ -215,6 +218,7 @@ impl Game {
                 same || subtypes.iter().any(|typ| entered.has_subtype(typ))
             }
             EntryPredicate::Token => entered.is_token(),
+            EntryPredicate::FaceDown => self.is_face_down(entered.reference),
             EntryPredicate::NontokenArtifact => !entered.is_token() && entered.kinds & 16 != 0,
             EntryPredicate::NontokenEquipment => {
                 !entered.is_token() && entered.kinds & 16 != 0 && entered.has_subtype("Equipment")

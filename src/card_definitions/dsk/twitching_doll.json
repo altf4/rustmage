@@ -3,10 +3,37 @@
   "catalogue_id": 4730,
   "oracle_id": "fd6e1967-237a-41f6-bbf4-2c869f9447c8",
   "facts_sha256": "58449b4b4ebdfa95ac36d0249ca2559af59062f812b4751f28d2e24d8e61de8d",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "c4af61e45000dc126a484da73304261e61d58f9035c450a4a37e667137979a1f"
-  },
-  "physical_metadata_sha256": "87d9b1ebce18b1176dd654bb867ba38fac406015c7626435cb8cfff07a883aa6"
+  "complete": true,
+  "physical_metadata_sha256": "87d9b1ebce18b1176dd654bb867ba38fac406015c7626435cb8cfff07a883aa6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TwitchingDoll.java",
+  "java_sha256": "9ec850cfe49017790323502f1da047a2d5dcc0ba39a88d92d210fc716d79246b",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Spider22Token.java",
+      "sha256": "a08bd034b9c5bd7b8aeab8661b076051e8a8dc82f6d5df7aeb8f9c103c93b131"
+    }
+  ]
 }

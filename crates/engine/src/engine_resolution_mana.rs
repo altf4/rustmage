@@ -1,6 +1,7 @@
 //! Resolution-owned payments and exact stack associations.
 use super::*;
 use crate::cards::{ResolutionCost, ResolutionObjectCost};
+use ability_world::CharacteristicWorld;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct ResolutionPayment {
@@ -233,10 +234,17 @@ impl Game {
         let first_for_controller = *history & bit == 0;
         *history |= bit;
         let source = self.object_view(id);
+        let ward_suppressed = std::cell::OnceCell::new();
+        let ward_triggers = |game: &Game| {
+            source.controller != item.controller
+                && !*ward_suppressed.get_or_init(|| {
+                    game.opposing_creature_hexproof_and_ward_disabled(id, item.controller)
+                })
+        };
         for (index, ability) in source.card.triggers().iter().enumerate() {
             let event = ability.condition.event();
             let matched = match event {
-                TriggerCondition::Ward => source.controller != item.controller,
+                TriggerCondition::Ward => ward_triggers(self),
                 TriggerCondition::FirstTargetedByController => {
                     first_for_controller && source.controller == item.controller
                 }
@@ -272,7 +280,7 @@ impl Game {
                 });
             }
         }
-        if source.controller != item.controller {
+        if ward_triggers(self) {
             // The active layer-one definition is materialized for copied providers.
             // Keep blank providers in this conservative gate: restored abilities
             // must work without reacquiring or rebuilding a derived ward cache.
@@ -508,7 +516,7 @@ impl Game {
     }
     pub(super) fn start_optional_resolution_payment(
         &mut self,
-        item: &SpellView,
+        payer: Player,
         cost: ManaCost,
         skip: usize,
     ) {
@@ -516,7 +524,7 @@ impl Game {
         let unpaid_pc = resolution.pc.checked_add(skip).expect("program offset");
         assert!(unpaid_pc <= resolution.program.len());
         resolution.mana_payment = Some(Box::new(ResolutionPayment {
-            payer: item.controller,
+            payer,
             cost,
             alternatives: &[],
             life: None,
@@ -527,14 +535,29 @@ impl Game {
             unpaid_pc,
             choices: None,
         }));
-        self.state.pending = Pending::ResolutionMana {
-            player: item.controller,
-        };
+        self.state.pending = Pending::ResolutionMana { player: payer };
     }
     pub(super) fn start_resolution_life(&mut self, item: &SpellView, amount: i128) -> bool {
         if !self.start_resolution_payment(item, ManaCost::ZERO, CounterSubject::Related, false, 0) {
             return false;
         }
+        self.set_resolution_life(amount);
+        true
+    }
+    pub(super) fn start_optional_resolution_life(
+        &mut self,
+        payer: Player,
+        amount: i128,
+        unpaid_skip: usize,
+    ) -> bool {
+        if !self.resolution_life_available(payer, Some(amount)) {
+            return false;
+        }
+        self.start_optional_resolution_payment(payer, ManaCost::ZERO, unpaid_skip);
+        self.set_resolution_life(amount);
+        true
+    }
+    fn set_resolution_life(&mut self, amount: i128) {
         let request = self
             .state
             .resolving
@@ -547,7 +570,6 @@ impl Game {
         self.state.pending = Pending::ResolutionLife {
             player: request.payer,
         };
-        true
     }
 
     pub(super) fn start_resolution_costs(
@@ -564,7 +586,7 @@ impl Game {
                 return false;
             }
         } else {
-            self.start_optional_resolution_payment(item, ManaCost::ZERO, unpaid_skip);
+            self.start_optional_resolution_payment(item.controller, ManaCost::ZERO, unpaid_skip);
         }
         let options = costs
             .iter()

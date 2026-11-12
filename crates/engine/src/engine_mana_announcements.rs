@@ -1,6 +1,7 @@
 //! Cold nested mana payment frames. Production and delayed registrations resolve
 //! immediately. Reflexive triggers wait for priority after the enclosing payment.
 use super::*;
+use crate::cards::ManaCounterFollowup;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -92,20 +93,33 @@ impl Game {
             ] => {
                 self.register_delayed_stack_trigger(item, *ability);
             }
-            [
-                Instruction::AddMana(_),
-                Instruction::RemoveSourceCounterIfAny {
-                    kind: CounterKind::Time,
-                    skip: 0,
-                },
-            ] => {
-                if let Some(source) = item.source
-                    && self.remove_mana_time_counter(source.object)
-                {
-                    self.record_cast_mana_time_removal(source.object);
+            _ => {
+                let (Some(source), Some(followup)) =
+                    (item.source, ManaCounterFollowup::from_program(program))
+                else {
+                    return;
+                };
+                match followup {
+                    ManaCounterFollowup::RemoveTime => {
+                        if self.remove_mana_time_counter(source.object) {
+                            self.record_cast_mana_time_removal(source.object);
+                        }
+                    }
+                    ManaCounterFollowup::Place { kind, amount } => {
+                        if self.on_battlefield(source.id)
+                            && self.object_ref(source.id) == source.object
+                        {
+                            self.effect_counter_by(
+                                source.id,
+                                kind,
+                                u64::from(amount),
+                                item.controller,
+                                replacements::ResumeMode::ManaEffects,
+                            );
+                        }
+                    }
                 }
             }
-            _ => {}
         }
     }
     pub(super) fn mana_announcement_views(&self, viewer: Player) -> Vec<ManaAnnouncementView> {

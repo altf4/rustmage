@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-horror-enchantment-black",
+  "catalogue_id": 5670,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "ce609471c9cdbaf9cf239c5d922a83144c45b346f88741ce5048daccd2862115",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/HorrorEnchantmentCreatureToken.java",
+  "java_sha256": "633132827aede2e4f75efe9f023be2689c96a834332921c60a2912408d3e9068"
+}

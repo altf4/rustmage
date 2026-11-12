@@ -3,10 +3,31 @@
   "catalogue_id": 3071,
   "oracle_id": "c2db05e0-879b-43e4-9009-37a95fd848dc",
   "facts_sha256": "ae2127a2ee0d35c9685eeea869442e299695889e9bf537b2025dbb5135a25d2f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "725369509563d227c404ad9ff4c2ec213a00d23116e41cd9b229a1feeb920fa8"
   },
-  "physical_metadata_sha256": "07b94f3a19ada73decea84b6ff6fdef052caf7b0f802efb05a6ebd629814e70b"
+  "physical_metadata_sha256": "07b94f3a19ada73decea84b6ff6fdef052caf7b0f802efb05a6ebd629814e70b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OverlordOfTheBoilerbilges.java",
+  "java_sha256": "ea4fb27bad858d996ef70b373673b946a2503b8123b18ab727f588daf7f523d6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ImpendingAbility.java",
+      "sha256": "4dba9114d939df02c12a0cf07e17d732369c4a7d978886742fe3fb404606b2b2"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_overlords_eerie.rs"
 }

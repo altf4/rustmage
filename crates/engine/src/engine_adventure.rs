@@ -116,6 +116,7 @@ impl Game {
             before.card = source.card;
             before.name = source.card.name();
             before.kinds = source.card.kind_mask();
+            before.colors = source.card.colors();
             before.keywords = item.source_keywords;
             before.power = 0;
             before.toughness = 0;
@@ -233,6 +234,16 @@ impl Game {
         let generic_exile = object.zone == Zone::Exile && self.can_cast_exiled_card(actor, id);
         if object.zone != Zone::Hand && !generic_exile {
             return false;
+        }
+        if definition.explicit_additional_mana().is_some() {
+            return self.permitted_cast_available(
+                actor,
+                id,
+                CastMethod::Normal,
+                face,
+                sorcery,
+                false,
+            );
         }
         if !sorcery
             && !definition.is_instant()

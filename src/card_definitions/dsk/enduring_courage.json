@@ -3,10 +3,41 @@
   "catalogue_id": 1333,
   "oracle_id": "b3de29cb-7d7d-4566-b5bf-37e571bd5d78",
   "facts_sha256": "b39419324c00937b1b1ed139b5e7f8fc5c52d5b91d0243d40a8089d0ba6a8d09",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d49ce03c4759cbc200f4a4fa772ae4ee913e92ed44aa5acba17e8308a1997b6b"
   },
-  "physical_metadata_sha256": "a8c16fdaa46586b15b297159d2df2b55ee6991b4c78546f6f1b1724bb49dfa57"
+  "physical_metadata_sha256": "a8c16fdaa46586b15b297159d2df2b55ee6991b4c78546f6f1b1724bb49dfa57",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnduringCourage.java",
+  "java_sha256": "d1a684dff932c36f0e35a18b601452ca59c7bfa84c8844402482378ed257a378",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EnduringGlimmerTriggeredAbility.java",
+      "sha256": "55acb994d0447472327ae37b9b37bcd2411c36ab3a507f133a848fa6ace6d83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/HasteAbility.java",
+      "sha256": "259dc3ba82dbcd795628254f1b6460092901fb27bf66d4de1158b9e979994fc1"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
 }

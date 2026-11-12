@@ -1,0 +1,11 @@
+{
+  "name": "@token/dsk-spirit-flying-white",
+  "catalogue_id": 5672,
+  "oracle_id": null,
+  "facts_sha256": null,
+  "complete": true,
+  "physical_metadata_sha256": "085eb92d947c6f43fd355ca2b2acbdc9550a9283dc560ebf8099e5059d17e935",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage/src/main/java/mage/game/permanent/token/Spirit31Token.java",
+  "java_sha256": "1ee78121061d7a426c396efa44d3d8ae163c81010d6733f84e59684538f6a5ad"
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Elegant Rotunda",
+  "catalogue_id": 5642,
+  "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+  "facts_sha256": "12e79dcc2a3c09e021391e28c2fafe72c828643837afdf4ff8df54872417d444",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "f7574379-d10e-4bbf-b0b1-13feee753d8b",
+    "index": 1,
+    "sha256": "e7ba0d10321e29dcf24910f9a63d7c294f061cdb07ad4637c4a6d55efbb1fba1"
+  },
+  "physical_metadata_sha256": "a4223e49af6cd9a72de258eda7723af826ff40b1c0e8041d97b027937397aa84",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrandEntrywayElegantRotunda.java",
+  "java_sha256": "a2e6163976ae08ea4f65f3d44377e4d824b072e53830485d1f2124edec2fe612"
+}

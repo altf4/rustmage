@@ -1,4 +1,4 @@
-//! CR 702.188: a paid casting alternative, independent of permission and timing.
+//! Alternate mana bases for independently authorized paid casting routes.
 use super::*;
 use crate::cards::StaticAbilityFragment;
 
@@ -20,7 +20,7 @@ pub(super) const RETURN_COST: AdditionalCost = AdditionalCost {
 /// Exact permission when a casting route has an independent cost or consequence.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub enum WebSlingingOrigin {
+pub enum PaidCastOrigin {
     Ordinary,
     LibraryTop {
         permission: LibraryTopCastPermission,
@@ -36,6 +36,9 @@ pub enum WebSlingingOrigin {
         life: u32,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         entry_counter: Option<CounterKind>,
+    },
+    SelfGraveyardWithCounter {
+        object: ObjectRef,
     },
     LinkedExileCounters {
         source: ObjectRef,
@@ -54,8 +57,76 @@ pub enum WebSlingingOrigin {
     PaidResolution,
 }
 
+/// The existing Web-slinging action uses the same independent paid origins.
+pub type WebSlingingOrigin = PaidCastOrigin;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy)]
+pub(super) enum PaidCastAlternative {
+    WebSlinging(ManaCost),
+    Source { provider: ObjectRef, cost: ManaCost },
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl PaidCastAlternative {
+    fn mana_base(self) -> ManaCost {
+        match self {
+            Self::WebSlinging(cost) | Self::Source { cost, .. } => cost,
+        }
+    }
+
+    fn method(self, origin: PaidCastOrigin) -> CastMethod {
+        match self {
+            Self::WebSlinging(_) => CastMethod::WebSlinging,
+            Self::Source { .. } => match origin {
+                PaidCastOrigin::LinkedExileCounters { .. } => CastMethod::LinkedExileCounterCost,
+                PaidCastOrigin::GraveyardAdditional => CastMethod::GraveyardAdditionalCosts,
+                PaidCastOrigin::GraveyardCounters => CastMethod::GraveyardCounterCost,
+                _ => CastMethod::Normal,
+            },
+        }
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Default)]
+pub(super) struct PaidCastTerms {
+    pub counters: Option<u16>,
+    additional: Option<Card>,
+    life: Option<u32>,
+    entry_counter: Option<CounterKind>,
+    pub alternative: cast_permissions::OriginAlternative,
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
+    pub(super) fn source_mana_alternatives(&self, actor: Player) -> Vec<(ObjectRef, ManaCost)> {
+        let mut alternatives = Vec::new();
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            if source.zone != Zone::Battlefield || source.controller != actor {
+                continue;
+            }
+            for fragment in source
+                .card
+                .static_ability_groups()
+                .iter()
+                .flat_map(|group| group.fragments)
+            {
+                let StaticAbilityFragment::SpellAlternativeManaCost(cost) = *fragment else {
+                    continue;
+                };
+                let row = (self.object_ref(id), cost);
+                if !alternatives.contains(&row)
+                    && self.continuous_fragment_available(id, |found| std::ptr::eq(found, fragment))
+                {
+                    alternatives.push(row);
+                }
+            }
+        }
+        alternatives
+    }
+
     fn web_slinging_bases(&self, actor: Player, definition: Card) -> Vec<ManaCost> {
         let mut costs: Vec<_> = definition.web_slinging_cost().into_iter().collect();
         if definition.is_legendary() && definition.colors() != 0 {
@@ -86,23 +157,21 @@ impl Game {
         costs
     }
 
-    pub(super) fn visit_web_slinging(
+    pub(super) fn visit_paid_cast_alternatives(
         &self,
         actor: Player,
         card: CardId,
         sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
         if !object.is_card() || object.zone == Zone::Battlefield {
             return false;
         }
-        for (face, definition) in [
-            (CastFace::Normal, Some(object.card)),
-            (CastFace::Adventure, object.card.adventure_spell()),
-            (CastFace::Omen, object.card.omen_spell()),
-            (CastFace::Back, object.card.back_face()),
-        ] {
+        for (face, definition) in
+            CastFace::choices(object.card).map(|face| (face, face.definition(object.card)))
+        {
             let Some(definition) = definition.filter(|card| !card.is_land()) else {
                 continue;
             };
@@ -115,12 +184,13 @@ impl Game {
                 _ => false,
             };
             if ordinary
-                && self.visit_web_slinging_face(
+                && self.visit_paid_cast_alternative_face(
                     actor,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::Ordinary,
+                    PaidCastOrigin::Ordinary,
+                    mana_alternatives,
                     emit,
                 )
             {
@@ -130,15 +200,23 @@ impl Game {
                 for (eligible, origin) in [
                     (
                         object.card.self_graveyard_cast_cost().is_some(),
-                        WebSlingingOrigin::GraveyardAdditional,
+                        PaidCastOrigin::GraveyardAdditional,
                     ),
                     (
                         object.card.graveyard_counter_cost().is_some(),
-                        WebSlingingOrigin::GraveyardCounters,
+                        PaidCastOrigin::GraveyardCounters,
                     ),
                 ] {
                     if eligible
-                        && self.visit_web_slinging_face(actor, card, face, sorcery, origin, emit)
+                        && self.visit_paid_cast_alternative_face(
+                            actor,
+                            card,
+                            face,
+                            sorcery,
+                            origin,
+                            mana_alternatives,
+                            emit,
+                        )
                     {
                         return true;
                     }
@@ -148,75 +226,103 @@ impl Game {
         false
     }
 
-    pub(super) fn visit_web_slinging_face(
+    pub(super) fn paid_cast_terms(
+        &self,
+        actor: Player,
+        card: CardId,
+        face: CastFace,
+        origin: PaidCastOrigin,
+    ) -> Option<PaidCastTerms> {
+        let physical = self.state.objects[card as usize].card;
+        let mut terms = PaidCastTerms::default();
+        match origin {
+            PaidCastOrigin::Ordinary | PaidCastOrigin::GraveyardType { .. } => {}
+            PaidCastOrigin::PaidResolution => terms.alternative.exact_paid_resolution_offer = true,
+            PaidCastOrigin::LibraryTop { permission } => {
+                terms.alternative.library_top = Some(permission);
+            }
+            PaidCastOrigin::GraveyardFinality => terms.entry_counter = Some(CounterKind::Finality),
+            PaidCastOrigin::GraveyardAdditional => terms.additional = Some(physical),
+            PaidCastOrigin::GraveyardCounters => terms.counters = physical.graveyard_counter_cost(),
+            PaidCastOrigin::GraveyardLife {
+                life,
+                entry_counter,
+            } => {
+                terms.life = Some(life);
+                terms.entry_counter = entry_counter;
+            }
+            PaidCastOrigin::SelfGraveyardWithCounter { object }
+                if object.card == card && face == CastFace::Normal =>
+            {
+                terms.entry_counter = Some(self.self_graveyard_cast_entry_counter(actor, object)?);
+            }
+            PaidCastOrigin::LinkedExileCounters { source } => {
+                terms.counters = Some(self.linked_counter_permission(actor, source, card, face)?);
+            }
+            PaidCastOrigin::LinkedExilePaid { object, source } if object.card == card => {
+                terms.alternative.linked_exile_paid =
+                    Some(self.linked_paid_permission(actor, source, object, face)?);
+            }
+            PaidCastOrigin::GraveyardPaid { object, permission } if object.card == card => {
+                terms.alternative.paid_graveyard = Some(self.paid_graveyard_permission(
+                    actor,
+                    object,
+                    face,
+                    CastMethod::Normal,
+                    permission,
+                )?);
+            }
+            PaidCastOrigin::LinkedExilePaid { .. }
+            | PaidCastOrigin::GraveyardPaid { .. }
+            | PaidCastOrigin::SelfGraveyardWithCounter { .. } => {
+                return None;
+            }
+            PaidCastOrigin::TaxedExile { surcharge } => {
+                terms.alternative.exile_play_surcharge = surcharge.get();
+            }
+        }
+        Some(terms)
+    }
+
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Origin permission and mana alternatives are independent"
+    )]
+    pub(super) fn visit_paid_cast_alternative_face(
         &self,
         actor: Player,
         card: CardId,
         face: CastFace,
         sorcery: bool,
-        origin: WebSlingingOrigin,
+        origin: PaidCastOrigin,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[card as usize].card;
-        let definition = match face {
-            CastFace::Normal => Some(physical),
-            CastFace::Adventure => physical.adventure_spell(),
-            CastFace::Omen => physical.omen_spell(),
-            CastFace::Back => physical.back_face(),
-        };
-        let Some(definition) = definition
+        let Some(definition) = face
+            .definition(physical)
             .filter(|card| !card.is_land() && !matches!(card.effect(), Effect::Unsupported))
         else {
             return false;
         };
-        let linked_exile_paid = match origin {
-            WebSlingingOrigin::LinkedExilePaid { object, source } if object.card == card => {
-                let Some(permission) = self.linked_paid_permission(actor, source, object, face)
-                else {
-                    return false;
-                };
-                Some(permission)
-            }
-            WebSlingingOrigin::LinkedExilePaid { .. } => return false,
-            _ => None,
+        let web = self.web_slinging_bases(actor, definition);
+        if web.is_empty() && mana_alternatives.is_empty() {
+            return false;
+        }
+        let Some(terms) = self.paid_cast_terms(actor, card, face, origin) else {
+            return false;
         };
-        let paid_graveyard = match origin {
-            WebSlingingOrigin::GraveyardPaid { object, permission } if object.card == card => {
-                let Some(row) = self.paid_graveyard_permission(
-                    actor,
-                    object,
-                    face,
-                    CastMethod::WebSlinging,
-                    permission,
-                ) else {
-                    return false;
-                };
-                Some(row)
-            }
-            WebSlingingOrigin::GraveyardPaid { .. } => return false,
-            _ => None,
-        };
-        let origin_counter_cost = match origin {
-            WebSlingingOrigin::LinkedExileCounters { source } => {
-                self.linked_counter_permission(actor, source, card, face)
-            }
-            WebSlingingOrigin::GraveyardCounters => physical.graveyard_counter_cost(),
-            _ => None,
-        };
-        let origin_additional_cost =
-            (origin == WebSlingingOrigin::GraveyardAdditional).then_some(physical);
-        let origin_life_cost = match origin {
-            WebSlingingOrigin::GraveyardLife { life, .. } => Some(life),
-            _ => None,
-        };
-        let exile_play_surcharge = match origin {
-            WebSlingingOrigin::TaxedExile { surcharge } => surcharge.get(),
-            _ => 0,
-        };
-        for cost in self.web_slinging_bases(actor, definition) {
+        let choices = web.into_iter().map(PaidCastAlternative::WebSlinging).chain(
+            mana_alternatives
+                .iter()
+                .map(|&(provider, cost)| PaidCastAlternative::Source { provider, cost }),
+        );
+        for choice in choices {
+            let method = choice.method(origin);
+            let cost = choice.mana_base();
             for flash_surcharge in [false, true] {
                 if flash_surcharge
-                    && (origin == WebSlingingOrigin::PaidResolution
+                    && (origin == PaidCastOrigin::PaidResolution
                         || definition.flash_surcharge().is_none())
                 {
                     continue;
@@ -224,31 +330,38 @@ impl Game {
                 if self.permitted_cast_with_alternative(
                     actor,
                     card,
-                    CastMethod::WebSlinging,
+                    method,
                     face,
                     sorcery,
                     flash_surcharge,
-                    origin_counter_cost,
-                    origin_additional_cost,
-                    origin_life_cost,
+                    terms.counters,
+                    terms.additional,
+                    terms.life,
                     false,
                     cast_permissions::OriginAlternative {
-                        exile_play_surcharge,
-                        web_slinging: Some(cost),
-                        linked_exile_paid,
-                        paid_graveyard,
-                        library_top: match origin {
-                            WebSlingingOrigin::LibraryTop { permission } => Some(permission),
-                            _ => None,
-                        },
-                        ..Default::default()
+                        mana_base: Some(cost),
+                        exact_paid_resolution_offer: terms.alternative.exact_paid_resolution_offer
+                            && method != CastMethod::WebSlinging,
+                        ..terms.alternative
                     },
-                ) && emit(Action::AnnounceWebSlinging {
-                    card,
-                    face,
-                    cost,
-                    flash_surcharge,
-                    origin,
+                ) && emit(match choice {
+                    PaidCastAlternative::WebSlinging(_) => Action::AnnounceWebSlinging {
+                        card,
+                        face,
+                        cost,
+                        flash_surcharge,
+                        origin,
+                    },
+                    PaidCastAlternative::Source { provider, .. } => {
+                        Action::AnnounceCastWithManaAlternative {
+                            object: self.object_ref(card),
+                            provider,
+                            face,
+                            cost,
+                            flash_surcharge,
+                            origin,
+                        }
+                    }
                 }) {
                     return true;
                 }
@@ -257,129 +370,109 @@ impl Game {
         false
     }
 
-    pub(super) fn start_web_slinging(
+    pub(super) fn start_paid_cast_alternative(
         &mut self,
         actor: Player,
         card: CardId,
         face: CastFace,
-        cost: ManaCost,
+        choice: PaidCastAlternative,
         flash_surcharge: bool,
-        origin: WebSlingingOrigin,
+        origin: PaidCastOrigin,
     ) {
-        let mut entry_counter = None;
-        let mut origin_additional_cost = None;
-        let mut origin_counter_cost = None;
-        let mut origin_life_cost = None;
-        let mut exile_play_surcharge = None;
-        let mut linked_exile_paid = None;
-        let mut paid_graveyard = None;
-        match origin {
-            WebSlingingOrigin::Ordinary | WebSlingingOrigin::LibraryTop { .. } => {}
-            WebSlingingOrigin::GraveyardType {
-                permission,
-                permanent_type,
-            } => self.consume_graveyard_type(permission, permanent_type),
-            WebSlingingOrigin::GraveyardFinality => entry_counter = Some(CounterKind::Finality),
-            WebSlingingOrigin::GraveyardAdditional => {
-                origin_additional_cost = Some(self.state.objects[card as usize].card);
-            }
-            WebSlingingOrigin::GraveyardCounters => {
-                origin_counter_cost = self.state.objects[card as usize]
-                    .card
-                    .graveyard_counter_cost();
-            }
-            WebSlingingOrigin::GraveyardLife {
-                life,
-                entry_counter: kind,
-            } => {
-                entry_counter = kind;
-                origin_life_cost = Some(life);
-            }
-            WebSlingingOrigin::LinkedExileCounters { source } => {
-                origin_counter_cost = self.linked_counter_permission(actor, source, card, face);
-            }
-            WebSlingingOrigin::LinkedExilePaid { object, source } => {
-                linked_exile_paid = Some(
-                    self.linked_paid_permission(actor, source, object, face)
-                        .expect("approved exact linked Web-slinging permission"),
-                );
-            }
-            WebSlingingOrigin::GraveyardPaid { object, permission } => {
-                paid_graveyard = Some(
-                    self.paid_graveyard_permission(
-                        actor,
-                        object,
-                        face,
-                        CastMethod::WebSlinging,
-                        permission,
-                    )
-                    .expect("approved exact graveyard Web-slinging permission"),
-                );
-            }
-            WebSlingingOrigin::TaxedExile { surcharge } => exile_play_surcharge = Some(surcharge),
-            WebSlingingOrigin::PaidResolution => {
-                self.cast_during_resolution_configured(
-                    actor,
-                    self.object_ref(card),
-                    face,
-                    Some(CastMethod::WebSlinging),
-                    Some(cost),
-                );
-                return;
-            }
+        let method = choice.method(origin);
+        let cost = choice.mana_base();
+        if origin == PaidCastOrigin::PaidResolution {
+            self.cast_during_resolution_configured(
+                actor,
+                self.object_ref(card),
+                face,
+                Some(method),
+                Some(cost),
+                |game, item| {
+                    if method != CastMethod::WebSlinging {
+                        game.configure_paid_resolution_offer(item);
+                        Self::set_fixed_alternative_x(item);
+                    }
+                },
+            );
+            return;
+        }
+
+        let terms = self
+            .paid_cast_terms(actor, card, face, origin)
+            .expect("selected independent casting permission");
+        if let PaidCastOrigin::GraveyardType {
+            permission,
+            permanent_type,
+        } = origin
+        {
+            self.consume_graveyard_type(permission, permanent_type);
         }
         let mut item = self.cast_item(actor, card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        Self::configure_web_slinging(&mut item);
-        if linked_exile_paid.is_some() {
+        item.cast.as_mut().unwrap().method = method;
+        item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
+        Self::set_fixed_alternative_x(&mut item);
+        if terms.alternative.linked_exile_paid.is_some()
+            || method == CastMethod::LinkedExileCounterCost
+        {
             self.select_linked_paid_cast(&mut item);
         }
-        if let Some(permission) = paid_graveyard {
+        if let Some(permission) = terms.alternative.paid_graveyard {
             self.apply_paid_graveyard_spell_types(&mut item, permission);
         }
-        item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
-        if let Some(surcharge) = exile_play_surcharge {
-            Self::configure_taxed_exile_cast(&mut item, surcharge.get());
+        if terms.alternative.exile_play_surcharge != 0 {
+            Self::configure_taxed_exile_cast(&mut item, terms.alternative.exile_play_surcharge);
         }
-        if (origin_counter_cost.is_some() || exile_play_surcharge.is_some())
+        if (terms.counters.is_some() || terms.alternative.exile_play_surcharge != 0)
             && let Some(data) = &mut self.state.linked_choices
         {
             data.play_approvals.retain(|row| row.0 != item.id);
         }
-        if let Some(kind) = entry_counter {
+        if origin == PaidCastOrigin::Ordinary
+            && matches!(choice, PaidCastAlternative::Source { .. })
+            && item.cast.unwrap().origin == Zone::Exile
+        {
+            self.select_ordinary_paid_exile_cast(item.id);
+        }
+        if let Some(kind) = terms.entry_counter {
             self.record_cast_entry_counters(item.source.unwrap().object, kind, 1);
         }
         self.open_payment_announcement_configured(
             item,
             Counters::default(),
             None,
-            origin_counter_cost,
+            terms.counters,
             |announcement| {
                 announcement.origin_alternative_cost = Some(cost);
-                if let WebSlingingOrigin::LibraryTop { permission } = origin {
+                if let Some(permission) = terms.alternative.library_top {
                     announcement.limited_cast_permission =
                         Some(Box::new(LimitedCastPermission::LibraryTop(permission)));
                 }
-                if let Some(permission) = linked_exile_paid {
+                if let Some(permission) = terms.alternative.linked_exile_paid {
                     announcement.limited_cast_permission =
                         Some(Box::new(LimitedCastPermission::LinkedExilePaid(permission)));
                 }
-                if let Some(permission) = paid_graveyard {
+                if let Some(permission) = terms.alternative.paid_graveyard {
                     announcement.set_paid_graveyard_cast_permission(permission);
                 }
-                announcement.origin_additional_cost = origin_additional_cost;
-                if let Some(life) = origin_life_cost {
+                announcement.origin_additional_cost = terms.additional;
+                if let Some(life) = terms.life {
                     announcement.add_origin_life_cost(life);
                 }
             },
         );
     }
 
-    pub(super) fn configure_web_slinging(item: &mut SpellView) {
-        item.cast.as_mut().unwrap().method = CastMethod::WebSlinging;
+    pub(super) fn set_fixed_alternative_x(item: &mut SpellView) {
         if item.source.unwrap().card.x_symbols() > 0 {
             item.x = Some(0);
         }
+    }
+
+    pub(super) fn configure_web_slinging(item: &mut SpellView) {
+        item.cast.as_mut().unwrap().method = CastMethod::WebSlinging;
+        Self::set_fixed_alternative_x(item);
     }
 
     pub(super) fn pay_web_slinging_return(&mut self, object: ObjectRef) {

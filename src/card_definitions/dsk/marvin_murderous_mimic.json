@@ -3,10 +3,26 @@
   "catalogue_id": 2671,
   "oracle_id": "22f0dbbb-9d8d-42bc-8903-fc0b65e00952",
   "facts_sha256": "9e056c2d244a2429f13dd59ffa5e46825753317584adcc432f1b8e1a8fa3606a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "db6aac7be75ede972755c2130924bcb9a050f947c020726cb3270a769de5ea33"
   },
-  "physical_metadata_sha256": "cc33cebeacf2e782a0f5127cd5b5fdaf8679b56b3670d197b668ab981c9f83fd"
+  "physical_metadata_sha256": "cc33cebeacf2e782a0f5127cd5b5fdaf8679b56b3670d197b668ab981c9f83fd",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MarvinMurderousMimic.java",
+  "java_sha256": "87cb5cc4809dfbfe5e2b43bf28ecacb46e4263b447a7d0391934593c1a52db64",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/ContinuousEffectImpl.java",
+      "sha256": "fc5f4d8be136383f99f2d09b0ac9f8bb640058097b862f7479afb701439b5f47"
+    }
+  ],
+  "rules_tests": "tests/dsk_colorless_cards.rs"
 }

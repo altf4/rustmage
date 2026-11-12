@@ -3,10 +3,37 @@
   "catalogue_id": 4563,
   "oracle_id": "5c104ac8-738a-4a9d-a68b-5706018d2061",
   "facts_sha256": "a0ee5059675088dc7667505cdd1040bb90cff830624af201dc7d42a39fd117b6",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "a475cc012b70a2ef8f1bc468fe7f10f85f05da0b1832d82c4f2ce86799673862"
-  },
-  "physical_metadata_sha256": "f7b6ef6cf03edb3ab80f871b3f184209d0992ce1521871f13b3a140a8db0b2e4"
+  "complete": true,
+  "physical_metadata_sha256": "f7b6ef6cf03edb3ab80f871b3f184209d0992ce1521871f13b3a140a8db0b2e4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/ThreatsAroundEveryCorner.java",
+  "java_sha256": "23728bdae39724377bd2c4b864a067826b829dbc2a87a34bb53ee776c4b5e562",
+  "rules_tests": "tests/dsk_gold_manifest_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInPlayEffect.java",
+      "sha256": "0bb9a67ad4f01956cd50eb190b2086d6d070c993cccbecece569b37726129394"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/card/FaceDownPredicate.java",
+      "sha256": "1ed4d75b04c70e1f92cdb846ebc0f61c59fc7d37eea5ac919e3de5afb0ede588"
+    }
+  ]
 }

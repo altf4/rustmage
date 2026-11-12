@@ -43,6 +43,7 @@ pub(super) fn filter_matches<W: ability_world::CharacteristicWorld + ?Sized>(
     match filter {
         SearchFilter::AnyOf(filters) => filters.iter().any(|&f| filter_matches(world, f, id)),
         SearchFilter::AllOf(filters) => filters.iter().all(|&f| filter_matches(world, f, id)),
+        SearchFilter::NonSubtype(subtype) => !world.subtypes(id).has(world.definition(id), subtype),
         SearchFilter::NoAbilities if world.reference(id) == world.game().object_ref(id) => {
             !world.game().object_has_rules_abilities(id)
         }

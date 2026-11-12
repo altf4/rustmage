@@ -302,6 +302,12 @@ fn hybrid_warp_keeps_the_additional_cost_for_each_colored_equivalent() {
     let object = sacrifice.object_ref(donor);
     act(&mut sacrifice, Action::ChooseAdditionalCost { object });
     pay(&mut sacrifice);
+    let cast = sacrifice.state.stack.last().unwrap().cast.unwrap();
+    assert_eq!(cast.payment, RED.colored);
+    assert_eq!(
+        cast.additional_cost_route,
+        Some(AdditionalCostRoute::Nonmana)
+    );
     settle(&mut sacrifice);
     assert_eq!(sacrifice.object_view(donor).zone, Zone::Graveyard);
     assert!(sacrifice.object_view(card).cast_for_warp);
@@ -311,10 +317,9 @@ fn hybrid_warp_keeps_the_additional_cost_for_each_colored_equivalent() {
     reject(&mut game, Action::ChooseSpellCost { cost: 1 });
     act(&mut game, Action::ChooseSpellCost { cost: 3 });
     pay(&mut game);
-    assert_eq!(
-        game.state.stack.last().unwrap().cast.unwrap().payment,
-        [0, 0, 0, 1, 0, 2]
-    );
+    let cast = game.state.stack.last().unwrap().cast.unwrap();
+    assert_eq!(cast.payment, [0, 0, 0, 1, 0, 2]);
+    assert_eq!(cast.additional_cost_route, Some(AdditionalCostRoute::Mana));
     settle(&mut game);
     assert!(game.object_view(card).cast_for_warp);
 }

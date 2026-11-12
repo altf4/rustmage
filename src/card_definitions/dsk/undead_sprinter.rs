@@ -1,16 +1,23 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Directly authored from the paired Oracle and pinned XMage sources.
+const ABILITIES: Keywords = Keywords::TRAMPLE.union(Keywords::HASTE);
+
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::HASTE.union(Keywords::TRAMPLE),
+    effect: Effect::Creature(2, 2),
+    keywords: ABILITIES,
+    static_groups: &[
+        StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::IntrinsicKeywords(ABILITIES)],
+        },
+        StaticAbilityGroup {
+            line: 1,
+            first_layer: AbilityLayer::Rule,
+            fragments: &[StaticAbilityFragment::SelfGraveyardCastIfWithCounter {
+                condition: StatValue::NonZombieCreatureDiedThisTurn,
+                counter: CounterKind::PlusOne,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

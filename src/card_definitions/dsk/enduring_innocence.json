@@ -3,10 +3,44 @@
   "catalogue_id": 1335,
   "oracle_id": "98a389f4-2905-47f3-b60e-3d4afb3e5cb0",
   "facts_sha256": "54cbf575a2d1473a5ce2331ac0c5387124ba5607f0b9d775c619f8c3f0cfa376",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "98f46fb9f87da8b92c1ed92deb8cb9c706630f39ea0ad64a2359b1668cfb6ed3"
   },
-  "physical_metadata_sha256": "1265439da6ad785154a3ff3d730df39efd876802ce2ba775f3c2db0d008c9dd9"
+  "physical_metadata_sha256": "1265439da6ad785154a3ff3d730df39efd876802ce2ba775f3c2db0d008c9dd9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnduringInnocence.java",
+  "java_sha256": "83f3d440263ff8a0cf9d6d0cff1abd8b1fad5e22893ddbac2791d4e6a837e45a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EnduringGlimmerTriggeredAbility.java",
+      "sha256": "55acb994d0447472327ae37b9b37bcd2411c36ab3a507f133a848fa6ace6d83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/mageobject/PowerPredicate.java",
+      "sha256": "909b9038e02c0653920408059e987b6ee3cfad717900e62e78c597285f137dde"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "One trigger per qualifying simultaneous batch of other controlled creatures with live power at most 2, limited to once each actual turn. Its creature death returns the exact card under its owner's control as an enchantment."
+  }
 }

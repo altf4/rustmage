@@ -1,0 +1,16 @@
+{
+  "name": "Hospital Room",
+  "catalogue_id": 5660,
+  "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+  "facts_sha256": "200817abaec3db1af9c252ae7312fc32177c73b066cd6908d425a68c8fbfc402",
+  "complete": true,
+  "oracle_face": {
+    "oracle_id": "68bb76af-f933-430a-a66a-fe4a7d6be4e0",
+    "index": 1,
+    "sha256": "f806700ae52008e7fbd10be7c4de118322e29d0c91831f3763992312ec81fb47"
+  },
+  "physical_metadata_sha256": "a0fca956223ee69c84b13bb3cc37f14c605cc42c7a3054c46d3da4fca8c3a464",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SurgicalSuiteHospitalRoom.java",
+  "java_sha256": "d137bacebf4413f473ce8f62e97d6d0a5ca13ce957990f171fd1b279cb039af3"
+}

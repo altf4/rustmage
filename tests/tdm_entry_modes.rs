@@ -688,6 +688,7 @@ fn a_mode_gated_keyword_group_without_activated_templates_has_no_fast_path_leak(
                 StaticAbilityFragment::EntryMode(1),
                 StaticAbilityFragment::ControlledPermanentKeywords {
                     kinds: 1,
+                    other: false,
                     keywords: Keywords::VIGILANCE,
                 },
             ],

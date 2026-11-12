@@ -3,10 +3,37 @@
   "catalogue_id": 4506,
   "oracle_id": "50120e90-2fdf-43c1-93e2-2230ee4e63fc",
   "facts_sha256": "c0169b4c86913b7d29138e595a8faf0ab06755d7e2ed1253171e42238146339c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "7674cae471f05c1e0db9deb08b80eb6a30377be2b139d10703d15497301bfd62"
-  },
-  "physical_metadata_sha256": "8daed0983349f7ddc7108368b944f3319e47c9d0414db1af15fa9bc932487b40"
+  "complete": true,
+  "physical_metadata_sha256": "8daed0983349f7ddc7108368b944f3319e47c9d0414db1af15fa9bc932487b40",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheSwarmweaver.java",
+  "java_sha256": "d04680ea1d953a71ecb9b8d85f9c4530c8bc07411808f1433ef0b92bfbe93848",
+  "rules_tests": "tests/dsk_gold_tokens_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CardTypesInGraveyardCount.java",
+      "sha256": "29360fc664a939754d4d37ea832891ff1bdb86d52b5ce6297fee0e00b7b9a795"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/InsectBlackGreenFlyingToken.java",
+      "sha256": "aeb4787683fc6658917471d56e8fc745c5cc900c3d9eb7147ea7832b9a21424e"
+    }
+  ]
 }

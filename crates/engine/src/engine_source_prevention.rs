@@ -71,6 +71,7 @@ pub(super) fn condition_refers_to_attachment(condition: TriggerCondition) -> boo
         TriggerCondition::InZone { event, .. }
         | TriggerCondition::Granted(event)
         | TriggerCondition::OncePerTurn(event)
+        | TriggerCondition::OncePerIncarnation(event)
         | TriggerCondition::DuringOpponentsTurn(event)
         | TriggerCondition::CastFromHand(event)
         | TriggerCondition::CastFromExile(event)
@@ -100,6 +101,7 @@ fn attached_instruction(instruction: &Instruction) -> bool {
         | Instruction::Connive { subject, .. }
         | Instruction::PutCountersScaled { subject, .. }
         | Instruction::AnimateSubject { subject, .. }
+        | Instruction::AddCharacteristics { subject, .. }
         | Instruction::SetBaseStats { subject, .. }
         | Instruction::SetBaseStatsFromSource { subject }
         | Instruction::SetResolvedBaseStats { subject, .. }

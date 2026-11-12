@@ -3,10 +3,39 @@
   "catalogue_id": 1467,
   "oracle_id": "628ae0e4-5d54-48a1-a24c-b9c1d862df9d",
   "facts_sha256": "9e228f3bedac8a714de2355706434a16c200feacf2fca81dc950dec2581222a9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "853228d63d3cfa2b2cb0ea1376b4727322b7295497297dbff496243f4379ee69"
   },
-  "physical_metadata_sha256": "9537efc995f1ef2318e0619ef3c9d916922d1ab4b5c90c8e3c04b66508b59a57"
+  "physical_metadata_sha256": "9537efc995f1ef2318e0619ef3c9d916922d1ab4b5c90c8e3c04b66508b59a57",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfImpostors.java",
+  "java_sha256": "558bd6ca11112ca104bc02e6588cee30fd501ef7349cdb3e0eeaa3e70d2b6599",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetSpell.java",
+      "sha256": "349d67f29235bc2e3ad846c3b177f18dc1097e87e80327a77c852667289f94cc"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "CR608.2b and CR701.62. An illegal spell target prevents the whole ability. Its controller still manifests after a legal counter attempt when the spell cannot be countered."
+  }
 }

@@ -1,7 +1,33 @@
 //! Owned face-down bookkeeping for the manifest-dread foundation.
 //!
 //! Tracks face-down identity, private knowledge, and manifest-dread choices.
+use super::ability_world::CharacteristicWorld;
 use super::*;
+use crate::cards::StaticAbilityFragment;
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn face_up_prohibited<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    object: ObjectRef,
+) -> bool {
+    let mut query = None;
+    let prohibits = |fragment: &StaticAbilityFragment| {
+        matches!(fragment, StaticAbilityFragment::AttachedFaceUpProhibited)
+    };
+    world.attachment_sources().iter().copied().any(|id| {
+        let source = world.object(id);
+        source.zone == Zone::Battlefield
+            && source.attached_to == Some(object)
+            && world
+                .definition(id)
+                .static_ability_groups()
+                .iter()
+                .any(|group| group.fragments.iter().any(prohibits))
+            && query
+                .get_or_insert_with(|| characteristic_query::CharacteristicQuery::in_world(world))
+                .continuous_fragment_available(id, prohibits)
+    })
+}
 
 /// The public exact incarnation and any underlying card the viewer may know.
 /// The current controller can look; a card revealed during a face-up special
@@ -52,6 +78,22 @@ pub(super) struct ManifestChoice {
     pub player: Player,
     pub candidates: Vec<ObjectRef>,
     pub selected: Option<ObjectRef>,
+    pub result: Option<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) struct ManifestSequence {
+    player: Player,
+    remaining: u128,
+    pub results: Vec<ObjectRef>,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManifestSequence {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>() + std::mem::size_of_val(self.results.as_slice())
+    }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -66,16 +108,22 @@ pub(super) struct ManifestState {
     pub permanents: Vec<FaceDownPermanent>,
     /// Exact physical identities for spells cast face down; never exposed to opponents.
     pub spells: Vec<FaceDownPermanent>,
-    pub choice: Option<ManifestChoice>,
+    /// One choice per participant, in APNAP order. Selected cards remain in
+    /// their libraries until the entire round is ready to commit.
+    pub choices: Vec<ManifestChoice>,
     pub payment: Option<FaceUpPaymentView>,
     pub deaths: Vec<ManifestDeath>,
     pub last_event: Option<ManifestDreadEvent>,
     pub last_face_up: Option<ObjectRef>,
     /// A face-up event whose counter replacements have not finished yet.
-    pub face_up_completion: Option<ObjectRef>,
+    pub face_up_completion: Option<(ObjectRef, Player)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl ManifestState {
+    pub(super) fn pending_choice(&self) -> Option<&ManifestChoice> {
+        self.choices.iter().find(|choice| choice.needs_selection())
+    }
+
     pub(super) fn bytes(&self) -> usize {
         std::mem::size_of::<Self>()
             + (self.permanents.len() + self.spells.len()) * std::mem::size_of::<FaceDownPermanent>()
@@ -88,10 +136,21 @@ impl ManifestState {
                 .iter()
                 .map(|death| std::mem::size_of::<ManifestDeath>() + death.source.owned_bytes())
                 .sum::<usize>()
-            + self.choice.as_ref().map_or(0, |c| {
-                std::mem::size_of::<ManifestChoice>()
-                    + c.candidates.len() * std::mem::size_of::<ObjectRef>()
-            })
+            + self
+                .choices
+                .iter()
+                .map(|choice| {
+                    std::mem::size_of::<ManifestChoice>()
+                        + std::mem::size_of_val(choice.candidates.as_slice())
+                })
+                .sum::<usize>()
+    }
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl ManifestChoice {
+    fn needs_selection(&self) -> bool {
+        self.selected.is_none() && self.candidates.len() > 1
     }
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -122,6 +181,66 @@ impl Game {
                     row.known_to |= 1 << viewer.index();
                 }
             }
+        }
+    }
+
+    /// Looking is always available while the rule applies. Record each view
+    /// at the event boundary so that later loss of the rule cannot erase it.
+    pub(super) fn remember_opposing_face_down_creatures(&mut self) {
+        let Some(state) = &self.state.manifest else {
+            return;
+        };
+        let hidden = |row: &FaceDownPermanent| !row.known && row.known_to != 0b11;
+        if !state.permanents.iter().any(hidden) {
+            return;
+        }
+
+        let look_rule = |fragment: &StaticAbilityFragment| {
+            matches!(
+                fragment,
+                StaticAbilityFragment::LookAtOpponentFaceDownCreatures
+            )
+        };
+        let mut query = None;
+        let mut viewers = [0; 2];
+        for &id in self.state.static_sources.iter() {
+            let source = &self.state.objects[id as usize];
+            if source.zone == Zone::Battlefield
+                && source
+                    .card
+                    .static_ability_groups()
+                    .iter()
+                    .any(|group| group.fragments.iter().any(look_rule))
+                && query
+                    .get_or_insert_with(|| self.characteristic_query())
+                    .continuous_fragment_available(id, look_rule)
+            {
+                viewers[source.controller.other().index()] |=
+                    self.face_down_knowledge_mask(source.controller);
+            }
+        }
+        if viewers == [0; 2] {
+            return;
+        }
+
+        let learned: Vec<_> = state
+            .permanents
+            .iter()
+            .enumerate()
+            .filter(|(_, row)| hidden(row))
+            .filter_map(|(index, row)| {
+                let id = row.object.card;
+                let object = &self.state.objects[id as usize];
+                let mask = viewers[object.controller.index()];
+                (row.known_to & mask != mask
+                    && object.zone == Zone::Battlefield
+                    && self.object_ref(id) == row.object
+                    && self.current_kinds(id) & 1 != 0)
+                    .then_some((index, mask))
+            })
+            .collect();
+        for (index, mask) in learned {
+            self.state.manifest.as_mut().unwrap().permanents[index].known_to |= mask;
         }
     }
     pub(super) fn restore_public_face_down(
@@ -360,22 +479,8 @@ impl Game {
         self.state.manifest.as_ref()?.payment.as_ref()
     }
     pub(super) fn begin_face_up(&mut self, player: Player, object: ObjectRef, cost: ManaCost) {
-        let row = self
-            .state
-            .manifest
-            .as_mut()
-            .unwrap()
-            .permanents
-            .iter_mut()
-            .find(|row| row.object == object)
-            .unwrap();
-        row.known = true;
-        let physical = row.underlying;
-        self.record_zone_reveal(
-            physical,
-            self.state.objects[object.card as usize].owner,
-            Zone::Battlefield,
-        );
+        self.reveal_face_down_permanent(object)
+            .expect("face-up payment reveals the exact permanent");
         self.state.manifest.as_mut().unwrap().payment = Some(FaceUpPaymentView {
             object,
             controller: player,
@@ -393,13 +498,13 @@ impl Game {
             .payment
             .take()
             .unwrap();
-        self.spend_mana(request.controller, payment);
+        self.spend_mana_for(request.controller, payment, mana_lots::Purpose::FaceUp);
         // The replacement engine captures this as its resume state. Set it
         // before beginning the transition so a suspended choice is never lost.
         self.state.pending = Pending::Priority;
         self.state.priority = request.controller;
         self.state.passes = 0;
-        assert!(self.turn_manifest_face_up(request.object));
+        assert!(self.turn_manifest_face_up(request.object, request.controller));
     }
     pub(super) fn face_down_physical(&self, object: ObjectRef) -> Option<Card> {
         self.state
@@ -418,39 +523,52 @@ impl Game {
             .is_some_and(|state| state.permanents.iter().any(|row| row.object == object))
     }
 
-    /// Complete the status change after a caller has paid and verified the
-    /// special action. This is not a zone change or an enters-the-battlefield event.
-    pub(super) fn turn_manifest_face_up(&mut self, object: ObjectRef) -> bool {
-        if !self.on_battlefield(object.card) || self.object_ref(object.card) != object {
-            return false;
-        }
-        // CR701.40g: an effect cannot turn an instant or sorcery card face up;
-        // reveal it and leave the same permanent face down instead.
-        let Some(row) = self
+    pub(super) fn first_bound_face_down_permanent(&self, item: &SpellView) -> Option<ObjectRef> {
+        item.targets
+            .iter()
+            .filter_map(|bound| bound.object)
+            .find(|&object| {
+                self.on_battlefield(object.card)
+                    && self.object_ref(object.card) == object
+                    && self.is_face_down(object)
+            })
+    }
+
+    pub(super) fn reveal_face_down_permanent(&mut self, object: ObjectRef) -> Option<Card> {
+        let row = self
             .state
             .manifest
-            .as_mut()
-            .and_then(|state| state.permanents.iter_mut().find(|row| row.object == object))
-        else {
-            return false;
-        };
-        if row.underlying.kind_mask() & (4 | 8) != 0 {
-            row.known = true;
-            let physical = row.underlying;
-            self.record_zone_reveal(
-                physical,
-                self.state.objects[object.card as usize].owner,
-                Zone::Battlefield,
-            );
-            return false;
-        }
-        let physical = row.underlying;
+            .as_mut()?
+            .permanents
+            .iter_mut()
+            .find(|row| row.object == object)?;
         row.known = true;
+        let physical = row.underlying;
         self.record_zone_reveal(
             physical,
             self.state.objects[object.card as usize].owner,
             Zone::Battlefield,
         );
+        Some(physical)
+    }
+
+    /// Complete a status change caused by a special action or by a resolving effect.
+    /// The object keeps its battlefield incarnation.
+    pub(super) fn turn_manifest_face_up(&mut self, object: ObjectRef, player: Player) -> bool {
+        if !self.on_battlefield(object.card)
+            || self.object_ref(object.card) != object
+            || face_up_prohibited(self, object)
+        {
+            return false;
+        }
+        // CR701.40g: an effect cannot turn an instant or sorcery card face up;
+        // reveal it and leave the same permanent face down instead.
+        let Some(physical) = self.reveal_face_down_permanent(object) else {
+            return false;
+        };
+        if physical.kind_mask() & (4 | 8) != 0 {
+            return false;
+        }
         // Evaluate the resulting copy and layer state without exposing a half
         // completed face-up transition to an affected player's choice.
         let mut prospective = self.clone();
@@ -478,7 +596,7 @@ impl Game {
                 entry_index: None,
                 private: false,
             };
-            self.state.manifest.as_mut().unwrap().face_up_completion = Some(object);
+            self.state.manifest.as_mut().unwrap().face_up_completion = Some((object, player));
             let mode = if self.state.resolving.is_some() {
                 replacements::ResumeMode::Program
             } else {
@@ -487,7 +605,7 @@ impl Game {
             self.stage_counter_placements(vec![placement], mode);
         } else {
             self.materialize_face_up(object);
-            self.queue_face_up_triggers(object);
+            self.queue_face_up_triggers(object, player);
         }
         true
     }
@@ -511,7 +629,7 @@ impl Game {
     }
 
     pub(super) fn finish_face_up_counter_replacement(&mut self) {
-        let Some(object) = self
+        let Some((object, player)) = self
             .state
             .manifest
             .as_mut()
@@ -519,9 +637,9 @@ impl Game {
         else {
             return;
         };
-        self.queue_face_up_triggers(object);
+        self.queue_face_up_triggers(object, player);
     }
-    pub(super) fn queue_face_up_triggers(&mut self, object: ObjectRef) {
+    pub(super) fn queue_face_up_triggers(&mut self, object: ObjectRef, player: Player) {
         let Some(turned) = self.state.objects.get(object.card as usize) else {
             return;
         };
@@ -529,6 +647,9 @@ impl Game {
             return;
         }
         let controller = turned.controller;
+        self.state.players[player.index()]
+            .turn_facts
+            .face_down_entry_or_turn_up = true;
         self.state
             .manifest
             .get_or_insert_with(Default::default)
@@ -548,23 +669,23 @@ impl Game {
             for (index, ability) in definition.triggers().iter().enumerate() {
                 let matched = match ability.condition.event() {
                     TriggerCondition::SelfTurnedFaceUp => source.reference == object,
-                    TriggerCondition::PermanentYouControlTurnedFaceUp => {
+                    TriggerCondition::PermanentYouControlTurnedFaceUp
+                    | TriggerCondition::FaceDownPermanentEntersOrTurnsUpYou => {
                         source.controller == controller
                     }
+                    TriggerCondition::YouTurnPermanentFaceUp => source.controller == player,
                     _ => false,
                 };
                 if matched && self.queue_trigger_from(&source, index, grant.map(Box::new)) {
-                    self.state
-                        .pending_triggers
-                        .last_mut()
-                        .unwrap()
-                        .set_event_object(EventObjectView {
-                            object,
-                            facts: EventObjectFacts::Controller(controller),
-                            semantic_objects: None,
-                            conniver_creature: None,
-                            subtype_lki: None,
-                        });
+                    let packet = self.state.pending_triggers.last_mut().unwrap();
+                    packet.event_player = Some(player);
+                    packet.set_event_object(EventObjectView {
+                        object,
+                        facts: EventObjectFacts::Controller(controller),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
                 }
             }
         }
@@ -600,41 +721,88 @@ impl Game {
             }
         }
     }
-    /// Start CR701.62a. Looking is private, and selecting the sole card is
-    /// mandatory. Entry replacements may suspend before the rest is milled.
-    pub(super) fn start_manifest_dread(&mut self, player: Player) -> bool {
-        let candidates: Vec<_> = self.state.players[player.index()]
-            .library
-            .iter()
-            .rev()
-            .filter(|&&id| self.state.objects[id as usize].is_card())
-            .take(2)
-            .map(|&id| self.object_ref(id))
-            .collect();
-        if candidates.is_empty() {
-            // CR701.62b: completing the action triggers observers even when
-            // all of its component actions are impossible.
-            self.queue_manifest_dread_triggers(ManifestDreadEvent {
+    pub(super) fn begin_manifest_dread(&mut self, player: Player, count: u128) {
+        self.state.resolving.as_mut().unwrap().manifest_sequence = (count != 0).then(|| {
+            Box::new(ManifestSequence {
                 player,
-                manifested: None,
-                graveyard_cards: Vec::new(),
-            });
-            return false;
+                remaining: count,
+                results: Vec::new(),
+            })
+        });
+    }
+
+    pub(super) fn manifest_dread_for_linked_exile_owners(&mut self, item: &SpellView) {
+        let owners = self
+            .linked_exile_for_item(item)
+            .iter()
+            .map(|object| &self.state.objects[object.card as usize])
+            .filter(|object| object.is_card())
+            .fold(0, |mask, object| mask | (1 << object.owner.index()));
+        if owners != 0 {
+            self.state.resolving.as_mut().unwrap().manifest_sequence = None;
+            self.start_manifest_round(
+                [self.state.active, self.state.active.other()]
+                    .into_iter()
+                    .filter(|player| owners & (1 << player.index()) != 0),
+            );
         }
+    }
+
+    pub(super) fn advance_manifest_dread(&mut self) -> bool {
+        if self
+            .state
+            .manifest
+            .as_ref()
+            .is_some_and(|state| !state.choices.is_empty())
+        {
+            return true;
+        }
+        while let Some(sequence) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.manifest_sequence.as_mut())
+        {
+            if sequence.remaining == 0 {
+                break;
+            }
+            sequence.remaining -= 1;
+            let player = sequence.player;
+            if self.start_manifest_round([player]) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// CR 101.4 and 701.62. Each player looks privately and chooses in APNAP
+    /// order. The selected cards enter together before the remaining moves.
+    fn start_manifest_round(&mut self, players: impl IntoIterator<Item = Player>) -> bool {
+        let choices = players
+            .into_iter()
+            .map(|player| {
+                let candidates: Vec<_> = self.state.players[player.index()]
+                    .library
+                    .iter()
+                    .rev()
+                    .filter(|&&id| self.state.objects[id as usize].is_card())
+                    .take(2)
+                    .map(|&id| self.object_ref(id))
+                    .collect();
+                let selected = (candidates.len() == 1).then(|| candidates[0]);
+                ManifestChoice {
+                    player,
+                    candidates,
+                    selected,
+                    result: None,
+                }
+            })
+            .collect();
         self.state
             .manifest
             .get_or_insert_with(Default::default)
-            .choice = Some(ManifestChoice {
-            player,
-            candidates: candidates.clone(),
-            selected: None,
-        });
-        if candidates.len() == 1 {
-            self.choose_manifest(candidates[0]);
-        } else {
-            self.state.pending = Pending::Manifest { player };
-        }
-        true
+            .choices = choices;
+        self.stage_manifest_round()
     }
 
     pub(super) fn choose_manifest(&mut self, selected: ObjectRef) {
@@ -643,38 +811,54 @@ impl Game {
             .manifest
             .as_mut()
             .unwrap()
-            .choice
-            .as_mut()
+            .choices
+            .iter_mut()
+            .find(|choice| choice.needs_selection())
             .unwrap();
         assert!(choice.candidates.contains(&selected));
         choice.selected = Some(selected);
-        let player = choice.player;
+        self.stage_manifest_round();
+    }
+
+    fn stage_manifest_round(&mut self) -> bool {
+        let state = self.state.manifest.as_ref().unwrap();
+        if let Some(choice) = state.pending_choice() {
+            self.state.pending = Pending::Manifest {
+                player: choice.player,
+            };
+            return true;
+        }
         // The consumed choice must not be restored as an entry continuation.
         if matches!(self.state.pending, Pending::Manifest { .. }) {
             self.state.pending = Pending::Priority;
         }
-        let movement = self
-            .manifest_entry(selected, player)
-            .expect("selected manifest card remains in library");
-        self.stage_entries(vec![movement], None);
+        let moves: Vec<_> = state
+            .choices
+            .iter()
+            .filter_map(|choice| {
+                let selected = choice.selected?;
+                Some(
+                    self.manifest_entry(selected, choice.player)
+                        .expect("selected manifest card remains in library"),
+                )
+            })
+            .collect();
+        if moves.is_empty() {
+            self.finish_manifest_entry();
+            false
+        } else {
+            self.stage_entries(moves, None);
+            true
+        }
     }
 
     /// Called after the staged entry commits. Cards that weren't manifested,
     /// including a card whose entry was prevented, are moved simultaneously.
     pub(super) fn finish_manifest_entry(&mut self) {
-        let ready = self
-            .state
-            .manifest
-            .as_ref()
-            .and_then(|s| s.choice.as_ref())
-            .is_some_and(|choice| choice.selected.is_some());
-        if !ready {
-            return;
-        }
-        let choice = self.state.manifest.as_mut().unwrap().choice.take().unwrap();
-        let remaining: Vec<_> = choice
-            .candidates
-            .into_iter()
+        let choices = std::mem::take(&mut self.state.manifest.as_mut().unwrap().choices);
+        let remaining: Vec<_> = choices
+            .iter()
+            .flat_map(|choice| choice.candidates.iter().copied())
             .filter(|&object| {
                 self.state
                     .objects
@@ -685,27 +869,40 @@ impl Game {
             })
             .map(|object| object.card)
             .collect();
-        let manifested = choice.selected.and_then(|selected| {
-            self.state
-                .manifest
-                .as_ref()?
-                .permanents
+        if let Some(sequence) = self
+            .state
+            .resolving
+            .as_mut()
+            .and_then(|resolution| resolution.manifest_sequence.as_mut())
+        {
+            sequence
+                .results
+                .extend(choices.iter().filter_map(|choice| choice.result));
+        }
+        let events = if remaining.is_empty() {
+            Vec::new()
+        } else {
+            let events = self.move_objects_raw(&remaining, Zone::Graveyard);
+            self.finish_zone_events(&events, &[]);
+            events
+        };
+        for choice in choices {
+            let graveyard_cards = events
                 .iter()
-                .find(|row| row.object.card == selected.card)
-                .map(|row| row.object)
-        });
-        let events = self.move_objects_raw(&remaining, Zone::Graveyard);
-        let graveyard_cards = events
-            .iter()
-            .filter(|event| event.moved && event.destination == Zone::Graveyard)
-            .map(|event| event.after)
-            .collect();
-        self.finish_zone_events(&events, &[]);
-        self.queue_manifest_dread_triggers(ManifestDreadEvent {
-            player: choice.player,
-            manifested,
-            graveyard_cards,
-        });
+                .filter(|event| {
+                    event.moved
+                        && event.destination == Zone::Graveyard
+                        && choice.candidates.contains(&event.before.reference)
+                })
+                .map(|event| event.after)
+                .collect();
+            // CR 701.62b: completion is an event even with no cards to move.
+            self.queue_manifest_dread_triggers(ManifestDreadEvent {
+                player: choice.player,
+                manifested: choice.result,
+                graveyard_cards,
+            });
+        }
     }
     pub(super) fn take_face_down_physical(&mut self, reference: ObjectRef) -> Option<Card> {
         if let Some(rollback) = &mut self.state.cast_rollback
@@ -784,6 +981,7 @@ impl Game {
         if permanent.zone != Zone::Battlefield
             || self.object_ref(object.card) != object
             || permanent.controller != player
+            || face_up_prohibited(self, object)
             || !(row.underlying.is_supported()
                 || cfg!(feature = "test-support")
                     && (row.underlying
@@ -812,10 +1010,12 @@ impl Game {
             })
     }
     pub(super) fn manifest_choice_view(&self, viewer: Player) -> Option<ManifestChoiceView> {
-        let choice = self.state.manifest.as_ref()?.choice.as_ref()?;
-        if !self.shares_information(viewer, choice.player) {
-            return None;
-        }
+        let state = self.state.manifest.as_ref()?;
+        let visible = |choice: &&ManifestChoice| self.shares_information(viewer, choice.player);
+        let choice = state
+            .pending_choice()
+            .filter(visible)
+            .or_else(|| state.choices.iter().find(visible))?;
         let candidates = choice
             .candidates
             .iter()

@@ -22,12 +22,12 @@ impl Game {
     }
     pub(super) fn has_exile_life_permission(&self, player: Player, card: CardId) -> bool {
         self.state.objects[card as usize].zone == Zone::Exile
-            && self.state.exile_permissions.iter().any(|row| {
+            && (self.state.exile_permissions.iter().any(|row| {
                 row.life_instead_of_mana
                     && row.player == player
                     && row.object == self.object_ref(card)
                     && row.expiry.active(self.state.turn)
-            })
+            }) || self.has_linked_life_play_permission(player, card))
     }
     pub(super) fn visit_exile_life_casts(
         &self,
@@ -51,18 +51,8 @@ impl Game {
         if object.is_token() {
             return false;
         }
-        for face in [
-            CastFace::Normal,
-            CastFace::Adventure,
-            CastFace::Omen,
-            CastFace::Back,
-        ] {
-            let definition = match face {
-                CastFace::Normal => Some(object.card),
-                CastFace::Adventure => object.card.adventure_spell(),
-                CastFace::Omen => object.card.omen_spell(),
-                CastFace::Back => object.card.back_face(),
-            };
+        for face in CastFace::choices(object.card) {
+            let definition = face.definition(object.card);
             if !definition.is_some_and(|d| !d.is_land()) {
                 continue;
             }

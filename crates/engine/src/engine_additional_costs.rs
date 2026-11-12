@@ -5,13 +5,17 @@ pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld
     world: &W,
     actor: Player,
     reference: ObjectRef,
+    choice: EffectChoiceKind,
 ) -> bool {
     let object = world.object(reference.card);
     world.reference(reference.card) == reference
         && world.kinds(reference.card) & 1 != 0
         && match object.zone {
             Zone::Battlefield => object.controller == actor,
-            Zone::Exile => {
+            Zone::Hand if choice == EffectChoiceKind::ChooseControlledOrRevealCreature => {
+                object.owner == actor && object.is_card()
+            }
+            Zone::Exile if choice == EffectChoiceKind::ChooseControlledOrWarpedCreature => {
                 object.owner == actor
                     && world
                         .game()
@@ -20,6 +24,33 @@ pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld
             }
             _ => false,
         }
+}
+
+pub(super) fn graveyard_exile_card_matches<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    reference: ObjectRef,
+    name: Option<&str>,
+) -> bool {
+    let object = world.object(reference.card);
+    object.zone == Zone::Graveyard
+        && object.owner == actor
+        && object.is_card()
+        && world.reference(reference.card) == reference
+        && name.is_none_or(|name| crate::card_names::same_name(world.name(reference.card), name))
+        && !world.graveyard_exile_prohibited(reference.card)
+}
+
+pub(super) fn named_graveyard_exile_candidate<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    source: ObjectRef,
+    object: ObjectRef,
+    name: &str,
+) -> bool {
+    source != object
+        && graveyard_exile_card_matches(world, actor, source, None)
+        && graveyard_exile_card_matches(world, actor, object, Some(name))
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -49,11 +80,11 @@ pub(super) fn has_craft_activated_ability<W: ability_world::CharacteristicWorld 
     let layered_grant = object.zone == Zone::Battlefield
         && ability_evaluation::evaluate_if_needed(world).is_some_and(|evaluation| {
             let current = &evaluation.result.objects[id as usize];
-            current.grants.iter().any(|grant| match grant.kind {
-                ability_order::GrantedAbilityKind::Template(index) => {
-                    grant.granting_card.grants_activation(index)
-                }
-                _ => false,
+            current.grants.iter().any(|grant| {
+                matches!(
+                    grant.kind,
+                    ability_order::GrantedAbilityKind::ActivatedTemplate(_)
+                )
             }) || world
                 .game()
                 .state
@@ -194,8 +225,11 @@ impl Game {
         if object.card as usize >= self.state.objects.len() {
             return false;
         }
-        if spec.kind == EffectChoiceKind::ChooseControlledOrWarpedCreature {
-            return chosen_cost_creature_matches(world, actor, object);
+        if spec.kind.chooses_cost_creature() {
+            return chosen_cost_creature_matches(world, actor, object, spec.kind);
+        }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
+            return named_graveyard_exile_candidate(world, actor, source, object, name);
         }
         let o = world.object(object.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
@@ -1264,22 +1298,18 @@ impl Game {
                 .additional_group
                 .as_ref()
                 .expect("selected graveyard group");
+            let source = a.item.source.expect("cost has an object source").object;
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| {
-                self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    r,
-                )
+            assert!(group.iter().enumerate().all(|(index, &r)| {
+                !group[..index].contains(&r)
+                    && self.additional_candidate(spec, a.item.controller, source, r)
             }));
-            let events = self.move_objects_raw(
-                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
-                Zone::Exile,
-            );
+            let mut cards = group.iter().map(|r| r.card).collect::<Vec<_>>();
+            if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
+                self.refresh_local_source_quantities(&mut a.item);
+                cards.insert(0, source.card);
+            }
+            let events = self.move_objects_raw(&cards, Zone::Exile);
             self.finish_zone_events(&events, &[]);
             a.additional_paid = true;
             return;
@@ -1378,11 +1408,20 @@ impl Game {
         }
         let spec = spec.in_zone(self.state.objects[object.card as usize].zone);
         match spec.kind.payment_kind() {
-            EffectChoiceKind::ChooseControlledOrWarpedCreature => {
+            EffectChoiceKind::ChooseControlledOrWarpedCreature
+            | EffectChoiceKind::ChooseControlledOrRevealCreature => {
                 let view = self.object_view(object.card);
+                let facts = if view.zone == Zone::Hand {
+                    EventObjectFacts::RevealedCostCreature {
+                        card: view.card,
+                        power: view.power,
+                    }
+                } else {
+                    EventObjectFacts::ChosenCostCreaturePower(view.power)
+                };
                 a.item.set_event_object(EventObjectView {
                     object,
-                    facts: EventObjectFacts::ChosenCostCreaturePower(view.power),
+                    facts,
                     semantic_objects: None,
                     conniver_creature: None,
                     subtype_lki: None,
@@ -1424,6 +1463,8 @@ impl Game {
             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
             | EffectChoiceKind::LinkedCreature { .. }
             | EffectChoiceKind::SacrificeSelection
+            | EffectChoiceKind::SacrificeExceptAttackingAttachment
+            | EffectChoiceKind::SacrificeExceptSourceAttachment
             | EffectChoiceKind::MeldPartner(_)
             | EffectChoiceKind::PowerDifferenceBoost
             | EffectChoiceKind::OptionalBeholdType(_)
@@ -1438,6 +1479,7 @@ impl Game {
             | EffectChoiceKind::ExileCardFromAnyGraveyard
             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
             | EffectChoiceKind::ExileCreatureAndGraveyard
+            | EffectChoiceKind::ExileControlledForLinkedReturn
             | EffectChoiceKind::ExileControlledLinked
             | EffectChoiceKind::ExileGrantingAttachment
             | EffectChoiceKind::ReturnRememberedCreature
@@ -1464,6 +1506,7 @@ impl Game {
             | EffectChoiceKind::RemovePermanentCounters { .. }
             | EffectChoiceKind::BeholdMany(_)
             | EffectChoiceKind::TapPermanents(_)
+            | EffectChoiceKind::TapAnyUntappedPermanents
             | EffectChoiceKind::TapXPermanents
             | EffectChoiceKind::UntapLands { .. }
             | EffectChoiceKind::HandExileCopy
@@ -1486,7 +1529,10 @@ impl Game {
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
+            | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
+            | EffectChoiceKind::DamageAmongTargetGroup { .. }
             | EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
+            | EffectChoiceKind::ReturnManifestGraveyardToHand
             | EffectChoiceKind::LandCards { .. }
             | EffectChoiceKind::DiscardedLand { .. }
             | EffectChoiceKind::CollectEvidence(_)
@@ -1502,12 +1548,38 @@ impl Game {
             | EffectChoiceKind::SacrificeAttachedPermanent
             | EffectChoiceKind::ReturnTappedCreature => unreachable!(),
             EffectChoiceKind::ExileGraveyard | EffectChoiceKind::ExileControlled => {
-                self.move_object(object.card, Zone::Exile);
+                let event = self.move_object_as_exile_cost(object.card, a.item.controller);
+                if spec.kind == EffectChoiceKind::ExileControlledForLinkedReturn
+                    && event.was_card
+                    && event.moved
+                    && event.destination == Zone::Exile
+                {
+                    let cards = event
+                        .melded_after
+                        .map_or([Some(event.after), None], |cards| cards.map(Some));
+                    a.item.set_event_object(EventObjectView {
+                        object,
+                        facts: EventObjectFacts::LinkedExileCost(cards),
+                        semantic_objects: None,
+                        conniver_creature: None,
+                        subtype_lki: None,
+                    });
+                }
             }
             EffectChoiceKind::Discard
             | EffectChoiceKind::DiscardNamed(_)
             | EffectChoiceKind::DiscardMatchingLegendary
-            | EffectChoiceKind::DiscardLegendary => self.discard_batch(&[object.card], None),
+            | EffectChoiceKind::DiscardLegendary => {
+                if a.item.program().is_some_and(|(_, program)| {
+                    program.iter().any(|instruction| {
+                        matches!(instruction, Instruction::IfPaidDiscardWasNonland { .. })
+                    })
+                }) {
+                    a.item.paid_additional_cost = self.discard_card_cost(object).map(Box::new);
+                } else {
+                    self.discard_batch(&[object.card], None);
+                }
+            }
             EffectChoiceKind::ReturnUnblockedAttacker => {
                 let defender = self
                     .state
