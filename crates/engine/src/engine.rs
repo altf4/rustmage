@@ -10034,7 +10034,9 @@ impl Game {
                 }
             }
             None => {
-                self.state.players[p.index()].attempted_empty_draw = true;
+                if !self.skips_empty_library_draws(p) {
+                    self.state.players[p.index()].attempted_empty_draw = true;
+                }
                 false
             }
         }

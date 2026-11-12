@@ -11883,13 +11883,17 @@ impl Game {
                         keywords,
                     );
                 }
-                Instruction::RemoveKeywordsUntilNextTurn { subject, keywords } => {
+                Instruction::RemoveKeywords { subject, keywords }
+                | Instruction::RemoveKeywordsUntilNextTurn { subject, keywords } => {
                     let recipients = self.keyword_subjects(&item, subject);
+                    let next_turn =
+                        matches!(instruction, Instruction::RemoveKeywordsUntilNextTurn { .. })
+                            .then_some(item.controller);
                     self.remove_group_keywords(
                         item.source.expect("keyword removal has a source").object,
                         recipients,
                         keywords,
-                        Some(item.controller),
+                        next_turn,
                     );
                 }
                 Instruction::GrantControlledTokenKeywordsUntilNextTurn(keywords) => {

@@ -65,6 +65,18 @@ impl Game {
             })
     }
 
+    pub(super) fn skips_empty_library_draws(&self, player: Player) -> bool {
+        self.state.static_sources.iter().any(|&id| {
+            self.state.objects[id as usize].controller == player
+                && self.active_rule_fragment(id, |fragment| {
+                    matches!(
+                        fragment,
+                        crate::cards::StaticAbilityFragment::SkipEmptyLibraryDraws
+                    )
+                })
+        })
+    }
+
     pub(super) fn card_drawn(&mut self, player: Player, object: ObjectRef) {
         if self.state.step == Step::Draw && self.state.active == player {
             self.state.players[player.index()].drew_in_own_draw_step = true;

@@ -462,6 +462,14 @@ impl Game {
             StatValue::CardsDrawnThisTurn => {
                 i128::from(self.state.players[owner.index()].cards_drawn_this_turn)
             }
+            StatValue::CardsDrawnAfterFirstThisTurn => i128::from(
+                self.state.players[owner.index()]
+                    .cards_drawn_this_turn
+                    .saturating_sub(1),
+            ),
+            StatValue::ControllerLibraryEmpty => i128::from(!objects().any(|(_, object)| {
+                object.owner == owner && object.zone == Zone::Library && object.is_card()
+            })),
             StatValue::AttackingCreatures => objects()
                 .filter(|(id, o)| {
                     o.controller == owner

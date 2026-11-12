@@ -99,6 +99,8 @@ pub enum StaticAbilityFragment {
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.
     CantDrawCards,
+    /// Skip a draw for this source's controller if their library is empty.
+    SkipEmptyLibraryDraws,
     LinkedExileFreeCastBySubtypeUnion(&'static [&'static str]),
     LinkedExileCreatureCounterCasting(u16),
     /// Cast owned cards linked to this permanent using ordinary mana costs.

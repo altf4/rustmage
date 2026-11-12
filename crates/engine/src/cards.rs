@@ -4829,6 +4829,11 @@ pub enum Instruction {
         subject: Subject,
         keywords: Keywords,
     },
+    /// Remove the listed abilities from the exact subject through cleanup.
+    RemoveKeywords {
+        subject: Subject,
+        keywords: Keywords,
+    },
     RemoveKeywordsUntilNextTurn {
         subject: Subject,
         keywords: Keywords,
@@ -5732,6 +5737,10 @@ pub enum StatValue {
     UntappedCount(CountFilter),
     Not(&'static StatValue),
     CardsDrawnThisTurn,
+    /// Completed draws this turn excluding the first, floored at zero.
+    CardsDrawnAfterFirstThisTurn,
+    /// The controller has no physical cards in their library.
+    ControllerLibraryEmpty,
     PermanentsSacrificedThisTurn,
     /// Actual permanent card arrivals in this player's graveyard this turn.
     DescendedThisTurn,
