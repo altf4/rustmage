@@ -3,10 +3,21 @@
   "catalogue_id": 1135,
   "oracle_id": "d04c6375-25dd-4882-b8b3-a3b0d3081f32",
   "facts_sha256": "e78d64e79e370ec0060a0b9f57586923ce6bdd5acaddc6d429f36d9f5b3d1e78",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "23cc1d2a68466253541f356f213b3477e2576aa60a3ba72bc5688e6d668941b3"
   },
-  "physical_metadata_sha256": "c6658babcb8597d7ba526258fa9c4c1de5712608c6784a73b06d5cd8ae21b9d9"
+  "physical_metadata_sha256": "c6658babcb8597d7ba526258fa9c4c1de5712608c6784a73b06d5cd8ae21b9d9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/Doppelgang.java",
+  "java_sha256": "dc38b06a5f4c72d6905f51aa9a6509e240d9e67a55c971b86e460c4132c3b705",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenCopyTargetEffect.java",
+      "sha256": "d04e58fdcda406a60d92c760243fca54440f13ec1fc94517c97eb9b360b9a158"
+    }
+  ]
 }

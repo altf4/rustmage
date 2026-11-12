@@ -8,5 +8,16 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "91955d0434ea28e94dbdff4ddd6d2b82e7b661f6b79d5bdf92213fdc99cd4ed0"
   },
-  "physical_metadata_sha256": "5117425f31f49d5a4f7efc1ffa1cf5fb13dcbe99329bcf0a2b09033321546342"
+  "physical_metadata_sha256": "5117425f31f49d5a4f7efc1ffa1cf5fb13dcbe99329bcf0a2b09033321546342",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TopiaryPanther.java",
+  "java_sha256": "7c2bcfce3f7177642ab4a5b57abcf2f0416fa243f468022793a09d52cae21dc8",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/BasicLandcyclingAbility.java",
+      "sha256": "cdead6dec40f9d3f99eaaf7f84279bc1f8140885c5ec48dae0c092aa18f622aa"
+    }
+  ]
 }

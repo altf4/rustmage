@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "b0c3ebaed18d0d8441fdc315a05d38bd01e253652062eb3073b57a7e4b839190"
   },
-  "physical_metadata_sha256": "021fbaee4efa0a16a83cc89af0a871fdb21d5f370270182b006022da4b8e473b"
+  "physical_metadata_sha256": "021fbaee4efa0a16a83cc89af0a871fdb21d5f370270182b006022da4b8e473b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LightningHelix.java",
+  "java_sha256": "841368954836f8cedbe6a869ff7f4ddb860566510214676c2b560ecf32efaf09",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    }
+  ]
 }

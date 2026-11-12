@@ -8,5 +8,21 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "8609f000247fb791086217dec572708f21f9339732d5aedaf71f4dd5249c40ab"
   },
-  "physical_metadata_sha256": "3d561bb5f5827afb8bdd86ef66d3678c1e0f47a3434a356af70a638e9e2a3514"
+  "physical_metadata_sha256": "3d561bb5f5827afb8bdd86ef66d3678c1e0f47a3434a356af70a638e9e2a3514",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RubblebeltMaverick.java",
+  "java_sha256": "668bdb969178827f3a3391b3db0ccf12a96946bb439f30fc6126d28e550f319d",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceFromGraveCost.java",
+      "sha256": "d7a1ca35cc0ab176e1c1550439750c8cb01d983da9e8223ec70c64a87db1160d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ]
 }

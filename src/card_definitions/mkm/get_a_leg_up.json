@@ -3,10 +3,26 @@
   "catalogue_id": 1720,
   "oracle_id": "a80519c4-f778-4b8e-9920-64013e98c95b",
   "facts_sha256": "af27d92eff7be8b07f6faa5c4dc8cc8bc75a59003f72c1600f31df809fca390b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e3ca882a4139d1ca795a6be7e2b73176b2422ca1a490ab899e0eab01d4466aa2"
   },
-  "physical_metadata_sha256": "427853e4ad2195986f958ed844538634a3ada52dc57d771f38383473b5bb293f"
+  "physical_metadata_sha256": "427853e4ad2195986f958ed844538634a3ada52dc57d771f38383473b5bb293f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GetALegUp.java",
+  "java_sha256": "3ba387fac04641f68dbf72c88506a29471e7e440df42a8d70b83f573baffaf6e",
+  "rules_tests": "tests/mkm_cards_green_gold/spells.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CreaturesYouControlCount.java",
+      "sha256": "17e5433bd06fd2d48cf22a5c5d105fb9081c3678b21ddad78dc78bac60281acd"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    }
+  ]
 }

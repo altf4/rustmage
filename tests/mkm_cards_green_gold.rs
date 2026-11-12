@@ -54,3 +54,6 @@ mod combat;
 
 #[path = "mkm_cards_green_gold/links.rs"]
 mod links;
+
+#[path = "mkm_cards_green_gold/spells.rs"]
+mod spells;
