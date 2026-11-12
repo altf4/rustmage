@@ -35,6 +35,7 @@ impl Game {
                             | TriggerCondition::Proliferated(_)
                             | TriggerCondition::PermanentCardsEnterYourGraveyard
                             | TriggerCondition::CreatureCardsEnterYourGraveyard
+                            | TriggerCondition::LandCardsEnterYourGraveyardFromLibrary
                             | TriggerCondition::SpellCast { .. }
                             | TriggerCondition::SpellCastUsingSourceMana(_)
                             | TriggerCondition::SpellCastOrLandPlayed

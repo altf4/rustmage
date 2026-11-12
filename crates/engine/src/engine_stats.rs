@@ -258,6 +258,7 @@ impl Game {
                 ability.condition.event(),
                 TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::LandCardsEnterYourGraveyardFromLibrary
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::CardsExiledFromBattlefieldOrGraveyard
                     | TriggerCondition::OtherControlledNonlandReturnedToOwnersHand

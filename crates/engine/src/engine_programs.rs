@@ -1140,6 +1140,7 @@ impl Game {
                     | TriggerCondition::CreatureCardLeavesYourGraveyard
                     | TriggerCondition::PermanentCardsEnterYourGraveyard
                     | TriggerCondition::CreatureCardsEnterYourGraveyard
+                    | TriggerCondition::LandCardsEnterYourGraveyardFromLibrary
                     | TriggerCondition::ControlledCreaturesOrGraveyardCardsExiled
                     | TriggerCondition::SelfExiledWhileCrafting
                     | TriggerCondition::CreatureExploresYou
@@ -4402,6 +4403,7 @@ impl Game {
                     | Instruction::CreateCopyTokenForPlayer { .. }
                     | Instruction::BecomeCopy(..)
                     | Instruction::ShuffleGraveyardTargetsIntoPlayerLibrary { .. }
+                    | Instruction::ShuffleGraveyardTargetsIntoControllerLibrary { .. }
                     | Instruction::GainControl {
                         controller: PlayerSet::Targeted,
                         ..
@@ -5190,6 +5192,13 @@ impl Game {
                     self.shuffle_graveyard_targets_into_player_library(
                         &item,
                         player_group,
+                        cards_group,
+                    );
+                }
+                Instruction::ShuffleGraveyardTargetsIntoControllerLibrary { cards_group } => {
+                    self.shuffle_graveyard_targets_into_library(
+                        &item,
+                        item.controller,
                         cards_group,
                     );
                 }
@@ -6542,6 +6551,9 @@ impl Game {
                 }
                 Instruction::ReturnOwnedGraveyardLandsTapped => {
                     self.return_owned_graveyard_permanents(&item, 2, 0, true);
+                }
+                Instruction::ReturnGraveyardArrivalBatch { tapped } => {
+                    self.return_graveyard_arrival_batch(&item, tapped);
                 }
                 Instruction::ChooseOwnGraveyardLandReturn { tapped } => {
                     if self.start_graveyard_land_return(&item, tapped) {

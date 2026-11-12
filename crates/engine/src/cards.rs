@@ -3641,6 +3641,10 @@ pub enum Instruction {
     ReturnOwnedGraveyardNonlandPermanents,
     /// Simultaneously return every land card in the controller's graveyard tapped.
     ReturnOwnedGraveyardLandsTapped,
+    /// Put the still-present graveyard arrivals recorded by this trigger onto the battlefield.
+    ReturnGraveyardArrivalBatch {
+        tapped: bool,
+    },
     /// Return exactly one land from the controller's graveyard if possible.
     ChooseOwnGraveyardLandReturn {
         tapped: bool,
@@ -4787,6 +4791,10 @@ pub enum Instruction {
     /// Shuffle the selected player even when the selected card group is empty.
     ShuffleGraveyardTargetsIntoPlayerLibrary {
         player_group: u16,
+        cards_group: u16,
+    },
+    /// Shuffle the controller's library even when the selected group is empty.
+    ShuffleGraveyardTargetsIntoControllerLibrary {
         cards_group: u16,
     },
     DoubleTargetPower,
@@ -7002,6 +7010,8 @@ pub enum TriggerCondition {
     CreatureCardsEnterYourGraveyard,
     /// A whole event batch put one or more owned permanent cards into a graveyard.
     PermanentCardsEnterYourGraveyard,
+    /// One occurrence for a simultaneous batch of land cards from your library.
+    LandCardsEnterYourGraveyardFromLibrary,
     /// One trigger for a batch exiling controlled creatures or cards from your graveyard.
     ControlledCreaturesOrGraveyardCardsExiled,
     /// This permanent was exiled from the battlefield while its controller

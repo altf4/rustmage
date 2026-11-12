@@ -1,4 +1,4 @@
-//! Graveyard departure observes one owner batch and the pre-event battlefield (CR603.10).
+//! Graveyard arrivals use committed objects. Departures observe the pre-event battlefield.
 use super::*;
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -231,6 +231,7 @@ impl Game {
             events,
             1,
             TriggerCondition::CreatureCardsEnterYourGraveyard,
+            None,
         );
     }
 
@@ -239,6 +240,19 @@ impl Game {
             events,
             crate::cards::PERMANENT_KINDS,
             TriggerCondition::PermanentCardsEnterYourGraveyard,
+            None,
+        );
+    }
+
+    pub(super) fn land_cards_enter_graveyard_from_library_triggers(
+        &mut self,
+        events: &[ZoneChange],
+    ) {
+        self.card_arrivals_in_graveyard(
+            events,
+            2,
+            TriggerCondition::LandCardsEnterYourGraveyardFromLibrary,
+            Some(Zone::Library),
         );
     }
 
@@ -247,9 +261,10 @@ impl Game {
         events: &[ZoneChange],
         kinds: u16,
         condition: TriggerCondition,
+        from: Option<Zone>,
     ) {
         let entered: [bool; 2] = [Player::P0, Player::P1].map(|owner| {
-            self.graveyard_arrivals(events, owner, kinds)
+            self.graveyard_arrivals(events, owner, kinds, from)
                 .next()
                 .is_some()
         });
@@ -267,7 +282,7 @@ impl Game {
                     continue;
                 }
                 let matching = self
-                    .graveyard_arrivals(events, source.controller, kinds)
+                    .graveyard_arrivals(events, source.controller, kinds, from)
                     .collect::<Vec<_>>();
                 if self.queue_trigger_from(&source, index, grant.map(Box::new)) {
                     if source.additional_creature_death_triggers != 0
@@ -296,6 +311,7 @@ impl Game {
         events: &'a [ZoneChange],
         owner: Player,
         kinds: u16,
+        from: Option<Zone>,
     ) -> impl Iterator<Item = ObjectRef> + 'a {
         events
             .iter()
@@ -303,6 +319,7 @@ impl Game {
                 event.moved
                     && event.destination == Zone::Graveyard
                     && event.before.zone != Zone::Graveyard
+                    && from.is_none_or(|zone| event.before.zone == zone)
                     && event.before.owner == owner
                     && event.was_card
             })
@@ -312,5 +329,31 @@ impl Game {
                     && self.state.objects[object.card as usize].zone == Zone::Graveyard
                     && self.current_kinds(object.card) & kinds != 0
             })
+    }
+
+    pub(super) fn return_graveyard_arrival_batch(&mut self, item: &SpellView, tapped: bool) {
+        let Some(event) = &item.event_object else {
+            return;
+        };
+        let arrivals = std::iter::once(event.object).chain(event.semantic_objects.iter().flat_map(
+            |objects| {
+                objects.iter().filter_map(|source| match source {
+                    DamageSourceRef::Object(object) => Some(*object),
+                    DamageSourceRef::StackObject { .. } => None,
+                })
+            },
+        ));
+        let moves = arrivals
+            .filter_map(|reference| {
+                let object = self.state.objects.get(reference.card as usize)?;
+                (object.zone == Zone::Graveyard
+                    && object.owner == item.controller
+                    && object.is_card()
+                    && self.object_ref(reference.card) == reference
+                    && self.current_kinds(reference.card) & crate::cards::PERMANENT_KINDS != 0)
+                    .then(|| self.entry_move(reference.card, Zone::Battlefield, tapped))
+            })
+            .collect();
+        self.stage_entries(moves, None);
     }
 }

@@ -911,6 +911,7 @@ impl Game {
         self.creature_death_turn_callbacks(events);
         self.creature_cards_enter_graveyard_triggers(events);
         self.permanent_cards_enter_graveyard_triggers(events);
+        self.land_cards_enter_graveyard_from_library_triggers(events);
         self.creatures_exiled_batch_triggers(events);
         self.graveyard_departure_triggers(events, death_sources);
         self.returned_hand_triggers(events);

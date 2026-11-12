@@ -190,6 +190,15 @@ impl Game {
         }) else {
             return;
         };
+        self.shuffle_graveyard_targets_into_library(item, player, cards_group);
+    }
+
+    pub(super) fn shuffle_graveyard_targets_into_library(
+        &mut self,
+        item: &SpellView,
+        player: Player,
+        cards_group: u16,
+    ) {
         let mut ids = Vec::new();
         for bound in item
             .targets
