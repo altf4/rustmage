@@ -3,10 +3,31 @@
   "catalogue_id": 4278,
   "oracle_id": "91f7672c-3090-48f4-8586-0426341c3159",
   "facts_sha256": "8acbf5a250d48b533eff85b5b1c811d8a4d1054d628a401fafcc3dd502a890bd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "7c32b71365e7f9495286d21fa5a28011e534728d9109fd052c8fa67a3acf8858"
   },
-  "physical_metadata_sha256": "7769bb57c815b687b0bc322fd4edf040b9cd2729217f81cc1077baaf43beaa0d"
+  "physical_metadata_sha256": "7769bb57c815b687b0bc322fd4edf040b9cd2729217f81cc1077baaf43beaa0d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SuspiciousDetonation.java",
+  "java_sha256": "bd1a32e7e0058da5c6eee1347dfeab6ef7c40166671cbbcfa24bc1fe09b337e0",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/SacrificedArtifactThisTurnCondition.java",
+      "sha256": "adbb1905102eb77ab8d950bf6b84c8c199ac67e00dc68ad7795f6a49adfd16f7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/PermanentsSacrificedWatcher.java",
+      "sha256": "4a8bff26cc0f195725d2af3cf298c39d453401205ab0ad5b37928b82f58294dc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ]
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 1701,
   "oracle_id": "1f3e7420-86aa-4847-bc2d-21f6bae470c8",
   "facts_sha256": "7df81c6e46951e89cf02ebc4b87d34fd57342f23a2fff39792dd5d983aff6b3a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "33c3a7dd46b5d344dc7318d1eecf8edaced92413c7de19564432343b98790c55"
   },
-  "physical_metadata_sha256": "67a9b0af89567277c96cdcda91ded55b2d7261bea1964488fe3fc850f36bb3b5"
+  "physical_metadata_sha256": "67a9b0af89567277c96cdcda91ded55b2d7261bea1964488fe3fc850f36bb3b5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GearbaneOrangutan.java",
+  "java_sha256": "2342c852f5ec4d1c6a48cc725defad3f8f6f35eece2bed7d60a21d9baacf6345",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DoIfCostPaid.java",
+      "sha256": "c84b08da6727b909e6d8e955c3e36558bb29f8b0985f95e13c2e8d9d382def3a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    }
+  ]
 }

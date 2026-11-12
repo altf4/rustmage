@@ -3,10 +3,31 @@
   "catalogue_id": 2602,
   "oracle_id": "04633ecd-eac0-426a-83a5-8e88262fca30",
   "facts_sha256": "8edbf5a300365873b6efafb0e8a462868fceeb2fb8c3675aa87ad7ed0199d55b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c9eec14cd4afcdd11bda48ed52e5cc7dd2fe48784de19a41308bb28cc2544e09"
   },
-  "physical_metadata_sha256": "dacbd07f68d63444a4bf5ab3df61dcf77f137ad9bbe7d2fcd2eac590699ad2ca"
+  "physical_metadata_sha256": "dacbd07f68d63444a4bf5ab3df61dcf77f137ad9bbe7d2fcd2eac590699ad2ca",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MacabreReconstruction.java",
+  "java_sha256": "b3c159f9e7b320586878f4a0d96e50fa6fc7e3a4d515e75009404508fffd4f03",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CreaturePutInYourGraveyardCondition.java",
+      "sha256": "f11ff0a1d724d65ea5b3d66ecff04f1701c1eeb53472b11ec77b401ce7ff6e47"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/watchers/common/CreaturePutIntoGraveyardWatcher.java",
+      "sha256": "1d92f287cf2d095191fa446e1ae7908f1d04823ca8fa72d523c821b44d2409a3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellCostReductionSourceEffect.java",
+      "sha256": "c877e6d5d339d0c8a602f1c16190e62f1dd0a5e1c11ba333a698b6dfee367304"
+    }
+  ]
 }
