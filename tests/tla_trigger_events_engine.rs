@@ -41,7 +41,7 @@ const DEATH_OBSERVER: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 const FLYING_ATTACKS: CardRules = CardRules {
-    effect: Effect::Enchantment,
+    effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::ControlledCreatureWithKeywordAttackDeclaration(
             Keywords::FLYING,
@@ -52,7 +52,7 @@ const FLYING_ATTACKS: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 const POWER_ATTACKS: CardRules = CardRules {
-    effect: Effect::Enchantment,
+    effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
         condition: TriggerCondition::AttackPlayerWithPowerAtLeast(4),
         targets: TargetPlan::NONE,
@@ -97,12 +97,11 @@ const OPTIONAL_FRONT: CardRules = CardRules {
 const DELAYED_FRONT: CardRules = CardRules {
     triggers: &[
         TriggeredAbility {
-            condition: TriggerCondition::BattlefieldDeparture(DepartureFilter {
+            condition: TriggerCondition::BattlefieldDeparture(DepartureRule {
                 kinds: 1,
                 relation: CastRelation::You,
-                other: true,
-                graveyard_only: false,
-                counters: DepartureCounters::Unrestricted,
+                subject: DepartureSubject::Other,
+                ..DepartureRule::ANY
             }),
             targets: TargetPlan::NONE,
             program: &[Instruction::ScheduleStep {

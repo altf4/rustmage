@@ -58,6 +58,7 @@ impl Game {
             | TriggerCondition::SelfAttacksUnlessDefenderControlsCreatureSubtype(_)
             | TriggerCondition::SelfAttacksPlayerWithMostLife
             | TriggerCondition::SelfAttacksAlone
+            | TriggerCondition::SelfAttacksWithOthers
             | TriggerCondition::SelfAttacksWhileSaddled
             | TriggerCondition::SelfEntersOrAttacksWhileSaddled
             | TriggerCondition::GrantedAttacks => true,
@@ -71,6 +72,7 @@ impl Game {
             | TriggerCondition::CreatureAttacksYou { .. }
             | TriggerCondition::ControlledCreatureAttacksOrBlocks
             | TriggerCondition::ControlledCreatureAttacksWithKeyword(_)
+            | TriggerCondition::ControlledCreatureWithKeywordAttackDeclaration(_)
             | TriggerCondition::ControlledCreatureAttacksWithCounter(_)
             | TriggerCondition::ControlledSubtypeAttacks { .. }
             | TriggerCondition::ControlledSubtypeAttacksAny(_)
@@ -83,6 +85,7 @@ impl Game {
             | TriggerCondition::CreaturesAttackDeclared { .. }
             | TriggerCondition::AttackPlayer(_)
             | TriggerCondition::AttackPlayerExcludingSubtype(_)
+            | TriggerCondition::AttackPlayerWithPowerAtLeast(_)
             | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
             | TriggerCondition::PlayerAttacksWithAtLeast(_)
             | TriggerCondition::CrewedVehicleAttacks => item.names_declared_attacker(source),
