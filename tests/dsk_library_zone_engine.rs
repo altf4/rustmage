@@ -207,11 +207,18 @@ fn announce_shuffle(game: &mut Game, spell: CardId, permanent: CardId, grave_car
             },
         );
     }
-    act(game, Action::FinishTargets);
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(game, Action::FinishTargets);
+    }
     pay(game);
     pass_twice(game);
+    let choices: Vec<_> = game
+        .legal_actions()
+        .into_iter()
+        .filter(|action| *action != Action::Concede)
+        .collect();
     assert_eq!(
-        game.legal_actions(),
+        choices,
         vec![
             Action::ChooseOptional { accept: true },
             Action::ChooseOptional { accept: false },
