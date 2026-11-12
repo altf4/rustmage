@@ -31,11 +31,15 @@ const KILLER: CardRules = CardRules {
         },
         targets: TargetPlan::Single(TargetSpec::one(ATTACKING_TOKEN)),
         program: &[
-            Instruction::IfTargetHasRevealedCreatureType { skip: 1 },
+            Instruction::IfTargetHasRevealedCreatureType { skip: 2 },
             Instruction::PutCounters {
                 subject: Subject::Targets,
                 kind: CounterKind::PlusOne,
                 amount: 3,
+            },
+            Instruction::GrantKeywords {
+                subject: Subject::Targets,
+                keywords: Keywords::DEATHTOUCH,
             },
         ],
         sorcery: false,
@@ -59,8 +63,13 @@ fn the_choice_stays_private_and_only_its_chooser_can_pay_the_reveal_cost() {
     let mut game = scenario(player);
     let source = spawn(&mut game, player, source_card, Zone::Hand);
     cast(&mut game, source, None);
-    act(&mut game, Action::Pass);
-    act(&mut game, Action::Pass);
+    for _ in 0..4 {
+        act(&mut game, Action::Pass);
+    }
+    assert!(matches!(
+        game.state.pending,
+        Pending::CreatureTypeChoice { .. }
+    ));
     reject(&mut game, choose_type("Human"));
 
     let mut alternate = game.clone();
@@ -125,4 +134,6 @@ fn the_choice_stays_private_and_only_its_chooser_can_pay_the_reveal_cost() {
     let token = game.state.objects.len() as CardId - 1;
     assert_eq!(game.counter_count(token, CounterKind::PlusOne), 3);
     assert_eq!(alternate.counter_count(token, CounterKind::PlusOne), 0);
+    assert!(game.keywords(token).contains(Keywords::DEATHTOUCH));
+    assert!(!alternate.keywords(token).contains(Keywords::DEATHTOUCH));
 }
