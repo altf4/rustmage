@@ -361,6 +361,35 @@
           "released_at": "2024-09-27"
         }
       }
+    },
+    {
+      "facts_sha256": "c8b47342c36b0f30f4df33e414b07ca94e768746f45c3e7ebac270230cd9e37b",
+      "standard_legal": false,
+      "standard_status": "banned",
+      "source": "https://api.scryfall.com/cards/mkm/67",
+      "source_response_sha256": "79d63b93735a7e92e8596e4534683744d821c66f57f4ffab703dd49d5d585482",
+      "facts": {
+        "oracle_id": "b749e9e4-0f2a-4157-8cca-facd6b48157f",
+        "name": "Proft's Eidetic Memory",
+        "layout": "normal",
+        "mana_cost": "{1}{U}",
+        "cmc": 2.0,
+        "type_line": "Legendary Enchantment",
+        "oracle_text": "When Proft's Eidetic Memory enters, draw a card.\nYou have no maximum hand size.\nAt the beginning of combat on your turn, if you've drawn more than one card this turn, put X +1/+1 counters on target creature you control, where X is the number of cards you've drawn this turn minus one.",
+        "colors": [
+          "U"
+        ],
+        "color_identity": [
+          "U"
+        ],
+        "keywords": [],
+        "reference_printing": {
+          "id": "af5b29b3-974c-4200-8df8-b072c11e1600",
+          "set": "mkm",
+          "collector_number": "67",
+          "released_at": "2024-02-09"
+        }
+      }
     }
   ]
 }
