@@ -1237,6 +1237,7 @@ impl Game {
                     | TriggerCondition::CreaturesAttackDeclared { .. }
                     | TriggerCondition::FirstAttackWithTotalPowerAtLeast(_)
                     | TriggerCondition::AttackPlayer(_)
+                    | TriggerCondition::AttackPlayerExcludingSubtype(_)
                     | TriggerCondition::SelfAttacks
                     | TriggerCondition::SelfAttacksDefendingPlayer
                     | TriggerCondition::SelfAttacksPlayerWithMostLife
@@ -3022,7 +3023,11 @@ impl Game {
                         }
                     }
                 }
-                if let TriggerCondition::AttackPlayer(filter) = ability.condition.event() {
+                if matches!(
+                    condition,
+                    TriggerCondition::AttackPlayer(_)
+                        | TriggerCondition::AttackPlayerExcludingSubtype(_)
+                ) {
                     // Qualification belongs to this declaration, not all live attackers.
                     // A creature put onto the battlefield attacking did not attack.
                     for player in [Player::P0, Player::P1] {
@@ -3030,12 +3035,19 @@ impl Game {
                             .iter()
                             .filter(|attack| {
                                 attack.defender == Some(CombatDefender::Player(player))
-                                    && self.creature_matches(
-                                        filter,
-                                        actor,
-                                        source.reference,
-                                        attack.card,
-                                    )
+                                    && match condition {
+                                        TriggerCondition::AttackPlayer(filter) => self
+                                            .creature_matches(
+                                                filter,
+                                                actor,
+                                                source.reference,
+                                                attack.card,
+                                            ),
+                                        TriggerCondition::AttackPlayerExcludingSubtype(subtype) => {
+                                            !self.has_subtype(attack.card, subtype)
+                                        }
+                                        _ => unreachable!(),
+                                    }
                             })
                             .map(|attack| self.object_ref(attack.card))
                             .collect();

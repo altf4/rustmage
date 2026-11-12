@@ -7453,6 +7453,8 @@ pub enum TriggerCondition {
     EquippedAttacksAlone,
     /// One event per player attacked by at least one declared matching creature.
     AttackPlayer(CreatureFilter),
+    /// One trigger for each player attacked by one or more creatures without this subtype.
+    AttackPlayerExcludingSubtype(&'static str),
     GrantedAttacks,
     AttachedAttacks,
     AttachedAttacksOrBlocks,

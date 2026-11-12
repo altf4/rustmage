@@ -1289,3 +1289,80 @@ fn reduced_unlock_funding_owns_restricted_mana_and_branches_transactionally() {
         Some(RoomDoors::default())
     );
 }
+
+#[test]
+fn an_open_attack_door_groups_only_qualifying_attackers_against_a_player() {
+    const SHOP: CardRules = CardRules {
+        effect: Effect::Permanent,
+        triggers: &[TriggeredAbility {
+            condition: TriggerCondition::AttackPlayerExcludingSubtype("Toy"),
+            targets: TargetPlan::NONE,
+            program: &[Instruction::Draw(PlayerSet::Controller, 1)],
+        }],
+        extras: &CardExtras {
+            room: Some(&RoomSpec {
+                halves: [LEFT, RIGHT],
+                triggers: &[(0, RoomDoor::Left)],
+                static_groups: &[],
+            }),
+            ..CardExtras::EMPTY
+        },
+        ..CardRules::EMPTY
+    };
+    const TOY: CardRules = CardRules {
+        effect: Effect::Creature(2, 1),
+        ..CardRules::EMPTY
+    };
+    let toy = card("Splitskin Doll");
+    let _scope = fixture_rules::activate(&[
+        (ROOM, &SHOP),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (toy, &TOY),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    let first = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let toy = spawn(&mut game, player, toy, Zone::Battlefield);
+    assert!(game.has_subtype(toy, "Toy"));
+    let walker = put(
+        &mut game,
+        player.other(),
+        "Oko, the Ringleader",
+        Zone::Battlefield,
+    );
+    game.add_counter(walker, CounterKind::Loyalty, 6);
+    let defender = game.object_ref(walker);
+    let before = game.state.players[player.index()].library.len();
+    for (doors, attack_player, attack_walker, draws) in [
+        (OPEN, vec![first, second, toy], None, 1),
+        (OPEN, vec![toy], Some(first), 0),
+        (RIGHT_ONLY, vec![first], None, 0),
+    ] {
+        let mut branch = game.clone();
+        branch.set_room_doors(branch.object_ref(room), doors);
+        branch.begin_step(Step::BeginCombat);
+        act(&mut branch, Action::Pass);
+        act(&mut branch, Action::Pass);
+        for attacker in attack_player {
+            act(&mut branch, Action::Attack { card: attacker });
+        }
+        if let Some(attacker) = attack_walker {
+            act(
+                &mut branch,
+                Action::AttackPlaneswalker {
+                    card: attacker,
+                    defender,
+                },
+            );
+        }
+        act(&mut branch, Action::FinishAttackers);
+        settle_rooms(&mut branch);
+        assert_eq!(
+            branch.state.players[player.index()].library.len(),
+            before - draws
+        );
+    }
+}
