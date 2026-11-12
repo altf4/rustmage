@@ -3,10 +3,41 @@
   "catalogue_id": 1877,
   "oracle_id": "4d97b9d1-1138-40da-b593-8065ea6ed7b3",
   "facts_sha256": "a5b51e666c68d5c9dd6ec37373e000fc36ad3e4f3bb60d8ba279322630a14ed2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "793635e8a94c935f3e1aeb8a8356d896d57517b1588a9d17d072a64358f7edb7"
   },
-  "physical_metadata_sha256": "70fbd82f0b0734b56172b6080a305d8ffbd4933fb0488386e99f37b59804a768"
+  "physical_metadata_sha256": "70fbd82f0b0734b56172b6080a305d8ffbd4933fb0488386e99f37b59804a768",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GrievousWound.java",
+  "java_sha256": "51906da747334afb134e247b5d36aeb3a48772fbea06d2221ad8d2d99dd6978e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/AttachEffect.java",
+      "sha256": "c200654822a4b7d2513fdb9ee599db5ce6d6a74cbe382a0a3d3a355acb883c8d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseHalfLifeTargetEffect.java",
+      "sha256": "f40b9977dd7a0c411bb2cb7de86717277837ffa688f000b4f13402a5a07a4644"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/CantGainLifeAllEffect.java",
+      "sha256": "61c61069573641bc716ee655e0f81b7df63bb33e8978dae13f44279fe76ef822"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EnchantAbility.java",
+      "sha256": "fe03844cf5cbe656f14eb9982418fd985fed4432daad6d12fe7eb969e84eb7fe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/DamagedPlayerEvent.java",
+      "sha256": "0ef043e09ff684adaf81a7c878459926656cda84ddecc453c9d05710aac1b911"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
 }

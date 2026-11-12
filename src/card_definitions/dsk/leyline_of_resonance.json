@@ -3,10 +3,36 @@
   "catalogue_id": 2484,
   "oracle_id": "f69574dd-097f-4908-9cab-344b0eb39c62",
   "facts_sha256": "97444cc42ec2a9dde8e1ba05a5d887cc1b5a108e8bb524284b8e1767aeea3164",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e32bbdb5ac544cc91f2650054406d7a45b9ecc179bd129dd465882e7ad37ae93"
   },
-  "physical_metadata_sha256": "a94c43e0a4160f43b96c82ccdb01af5b0c9585b331a06fe145058fec3487f3ad"
+  "physical_metadata_sha256": "a94c43e0a4160f43b96c82ccdb01af5b0c9585b331a06fe145058fec3487f3ad",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeylineOfResonance.java",
+  "java_sha256": "07c853e2d91628ea6c72b3a28dcedf3189df3b062cd509107d2eb60e5936dfff",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CopyTargetStackObjectEffect.java",
+      "sha256": "b2e6312cd63002c83d7f2a3ac9d7240f1d5691bcd77156af2c0752cb28dc1172"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/predicate/other/HasOnlySingleTargetPermanentPredicate.java",
+      "sha256": "c92250f4b15995c22381da62f3f321e21f18bc832c043d9448bad6b2916c958f"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_exile_and_equipment.rs"
 }

@@ -3,10 +3,41 @@
   "catalogue_id": 1336,
   "oracle_id": "98e698ae-1a69-469c-9cfb-0e3fedeb71d4",
   "facts_sha256": "35af5267096d920a6154065ca03ee8337916227b94bfe5a8cf67f6408a6d40ec",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "c16e72b83d1b4726c0b75704193038f1b1769c519958aa4672c91b65b3283abf"
   },
-  "physical_metadata_sha256": "76cfb25437b918fe4194d8499b2214ce10d1da84923140b884fdde3aeffc1564"
+  "physical_metadata_sha256": "76cfb25437b918fe4194d8499b2214ce10d1da84923140b884fdde3aeffc1564",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/EnduringTenacity.java",
+  "java_sha256": "527fcc77fccc3f2fbfd11eba8f8fc64f96e18dc80c19d2e8c60b95740019942d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EnduringGlimmerTriggeredAbility.java",
+      "sha256": "55acb994d0447472327ae37b9b37bcd2411c36ab3a507f133a848fa6ace6d83f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/GainLifeControllerTriggeredAbility.java",
+      "sha256": "368075cdc13fc2b881bea0dfadfa1135166c6c412c0602260aa8f0597a927d58"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedGainedLifeValue.java",
+      "sha256": "0debc20ff35f4da6bdca2b99270dd881823230107b21bf4a0ed53b62069d714e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeTargetEffect.java",
+      "sha256": "cb540577a835c69b5b4bd5182c58715215e03ee165d349a7d19d388c03224e37"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetOpponent.java",
+      "sha256": "7adc313a31365110b54db2054eba79059f3af8a5145f34591bb0272d9f1e304a"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 2487,
   "oracle_id": "f4e32fc1-1b8d-441e-8e76-71f19f98e925",
   "facts_sha256": "4ad5049c91ba4ade0408783835b9b44a13ca1763db746b226fa16223148f141f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d1254dc31c26d30c2df0ea64a02536683060a3085995fb46202ffa5214fb7361"
   },
-  "physical_metadata_sha256": "f72a60b2c2ea7117fcacf87a678bc4807e4725588509856797fc9b9a15d868d3"
+  "physical_metadata_sha256": "f72a60b2c2ea7117fcacf87a678bc4807e4725588509856797fc9b9a15d868d3",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LeylineOfTheVoid.java",
+  "java_sha256": "2efc8273d3481911697030df5eb5efea0ab3cb2c36ec9257d060f5115fd17699",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LeylineAbility.java",
+      "sha256": "48b322b6ac483a9ca62225f3a3400c10a9dc0231cd04ed15fa684fa0238f4e7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/events/ZoneChangeEvent.java",
+      "sha256": "eba0b01196de4b4ee1c99ca60b2734755800c5eedbc724f5573216d38b77df1e"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_exile_and_equipment.rs"
 }

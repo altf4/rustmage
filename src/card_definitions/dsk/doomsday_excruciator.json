@@ -3,10 +3,41 @@
   "catalogue_id": 1133,
   "oracle_id": "ad0db433-a406-4ef0-8ffa-416af610c4e7",
   "facts_sha256": "8c9c1868b653ea687aa8118cce72591c435bf2f06d3cb7883698e2093276e41f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a9a0c6d125ce63f2aca2bb7b174c6890d8e83ad53e2424fd72b76cc2234dce26"
   },
-  "physical_metadata_sha256": "4ce596ba7854fd34d3176d4c2ff6246fa82735213a53827f781547864ecec77f"
+  "physical_metadata_sha256": "4ce596ba7854fd34d3176d4c2ff6246fa82735213a53827f781547864ecec77f",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DoomsdayExcruciator.java",
+  "java_sha256": "94c566f71b0f2a0b60cb62f7e4efba68ea8ac16a79b6c610a77bcb95a160a380",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/CastFromEverywhereSourceCondition.java",
+      "sha256": "2d091ae95c227de0b227151a9b315cf5370e50f5e0f5177f5e50d8ab3825c4ba"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_exile_and_equipment.rs"
 }

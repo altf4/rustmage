@@ -3,10 +3,46 @@
   "catalogue_id": 4826,
   "oracle_id": "cae3ec72-436d-4086-9dcb-17b3d92ad5c4",
   "facts_sha256": "b863ef921f110b0dbe34391b6031d877d7d0ca502b73f386cb9dbe9e31fbac03",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a52ee698cddde110090c80833e64e9899acf4efa19b7782e02073a1fdea3dda4"
   },
-  "physical_metadata_sha256": "0fb60ea28916b6ee25be6204863de1ea9a1a62eaa9eea85a56c2a14e6853cba6"
+  "physical_metadata_sha256": "0fb60ea28916b6ee25be6204863de1ea9a1a62eaa9eea85a56c2a14e6853cba6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/v/ValgavothTerrorEater.java",
+  "java_sha256": "17adc37d1c97532dae52a1057516e677f32f130c2af64aa8fc1b2c07eb48e904",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/PayLifeCost.java",
+      "sha256": "c8f22864cdcf8fec2928294b6d19e9cc92ca303cdeee82d00f422c9ebe8350c4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/replacement/GraveyardFromAnywhereExileReplacementEffect.java",
+      "sha256": "f2234484cde3a8148ea5ea49244dea8bb74ef2106f5682453a85341448c85a78"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/LifelinkAbility.java",
+      "sha256": "69092b45fa1ae21ecaadabdb5bc28e6ae306ed510a894839155a5ec9dc9ada81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/WardAbility.java",
+      "sha256": "0faa4983a1bca62b83046bb50132641059988b79ddac19b918a72fd46312d09c"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_exile_and_equipment.rs"
 }

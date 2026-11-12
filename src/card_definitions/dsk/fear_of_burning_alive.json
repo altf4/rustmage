@@ -3,10 +3,51 @@
   "catalogue_id": 1462,
   "oracle_id": "0ae74149-60fc-407a-8782-8865458606b5",
   "facts_sha256": "eb130abdb73ac0aac770170a378bbf865e2f52a8f5082d619d209f81fe1db36f",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2aa525e6f2972fa8c7ebb8ba775b271d82f3b0f538e4811f12086f0ebde975ab"
   },
-  "physical_metadata_sha256": "0e9717f531ab0238bc89fac26da503974c13aa59f5afa9e9ffea36f17b39da82"
+  "physical_metadata_sha256": "0e9717f531ab0238bc89fac26da503974c13aa59f5afa9e9ffea36f17b39da82",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FearOfBurningAlive.java",
+  "java_sha256": "6933fda693e1b6c11705693579d2d168ce96eacf8e0a6a3e2f221af748ebbd93",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SourceDealsNoncombatDamageToOpponentTriggeredAbility.java",
+      "sha256": "8dc471db3b8122ed908c233d118f7f85ef8a5899408d15ab5364f4691f9099b9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/targetadjustment/ThatPlayerControlsTargetAdjuster.java",
+      "sha256": "d04b005aee7176ae56ce53f839e2610cb8fc6050f9a223c20a7805e579eb6621"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
 }

@@ -3,10 +3,51 @@
   "catalogue_id": 703,
   "oracle_id": "3db40361-5f55-417e-a7cd-7e360cc91b4d",
   "facts_sha256": "b220728d479ab6b6e90c10be4153120793ed07d0bc5e5c3c56b9df1ad0d7c022",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3b3e41d00b1659364004b920b6abda1fe615ca1ee8cb985550fa68d7f5ccfe1d"
   },
-  "physical_metadata_sha256": "03c0d97a5c6e470808e279ba89a20a3766ce3f65be177d9454e21826c17b1716"
+  "physical_metadata_sha256": "03c0d97a5c6e470808e279ba89a20a3766ce3f65be177d9454e21826c17b1716",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/Chainsaw.java",
+  "java_sha256": "21aad948034ee454817473adc7db477ebc65a476a7087423a3f350f49c218c7a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesOneOrMoreTriggeredAbility.java",
+      "sha256": "b49e5371dbfe352ecc94d8a04316431327dc5a33ab4fd0c3dd08685b922bbfb3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/CountersSourceCount.java",
+      "sha256": "00add2937bf1f70a9877114d432b9f87f6e65d18e106d7366319e2fcc80233d4"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamageTargetEffect.java",
+      "sha256": "92a79e273683635fa00ad89fa36b3792b6ac1c6b050d879025d0b0dc97f20f25"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostEquippedEffect.java",
+      "sha256": "20c07e3a993cdfc71d3734aeffe2b4f3e1f96d05f72a09aef27511bbcc19a74b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/EquipAbility.java",
+      "sha256": "2110082abdb67e85629505ea5379fbf4205caf8df551d0cdf953a876e9eb051d"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_damage_artifacts.rs"
 }
