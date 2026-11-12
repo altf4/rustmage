@@ -347,12 +347,12 @@ impl Game {
                 .iter()
                 .enumerate()
                 .filter(|(_, object)| {
-                    object.zone == Zone::Battlefield
-                        && object
-                            .card
-                            .triggers()
-                            .iter()
-                            .any(|ability| ability.condition.event() == TriggerCondition::Eerie)
+                    matches!(object.zone, Zone::Battlefield | Zone::Graveyard)
+                        && object.card.triggers().iter().any(|ability| {
+                            ability.condition.event() == TriggerCondition::Eerie
+                                && (object.zone == Zone::Battlefield
+                                    || ability.condition.origin() == Some(TargetZone::Graveyard))
+                        })
                 })
                 .map(|(id, _)| id as CardId)
                 .collect();

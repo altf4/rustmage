@@ -5261,6 +5261,11 @@ pub enum Instruction {
     MayIfSourceOnBattlefield {
         skip: usize,
     },
+    /// Offer this block only while the ability's exact source remains in this zone.
+    MayIfSourceInZone {
+        zone: TargetZone,
+        skip: usize,
+    },
     MayIfEventPermanentOnBattlefield {
         skip: usize,
     },

@@ -776,6 +776,17 @@ impl Game {
             .collect()
     }
 
+    fn exact_source_in_zone(&self, item: &SpellView, zone: TargetZone) -> Option<CardId> {
+        let source = item.source?;
+        let zone = match zone {
+            TargetZone::Battlefield => Zone::Battlefield,
+            TargetZone::Graveyard => Zone::Graveyard,
+        };
+        (self.object_ref(source.id) == source.object
+            && self.state.objects[source.id as usize].zone == zone)
+            .then_some(source.id)
+    }
+
     pub(super) fn zone_triggers(
         &mut self,
         event: &ZoneChange,
@@ -6242,31 +6253,8 @@ impl Game {
                     self.return_source_from_first_public_zone_to_hand(&item);
                 }
                 Instruction::ReturnSourceToHand(origin) => {
-                    let zone = match origin {
-                        TargetZone::Battlefield => Zone::Battlefield,
-                        TargetZone::Graveyard => Zone::Graveyard,
-                    };
-                    if self.object_ref(
-                        item.source
-                            .expect("instruction requires an object source")
-                            .id,
-                    ) == item
-                        .source
-                        .expect("instruction requires an object source")
-                        .object
-                        && self.state.objects[item
-                            .source
-                            .expect("instruction requires an object source")
-                            .id as usize]
-                            .zone
-                            == zone
-                    {
-                        self.move_object(
-                            item.source
-                                .expect("instruction requires an object source")
-                                .id,
-                            Zone::Hand,
-                        );
+                    if let Some(source) = self.exact_source_in_zone(&item, origin) {
+                        self.move_object(source, Zone::Hand);
                     }
                 }
                 Instruction::PutSourceOnLibraryTop { origin } => {
@@ -10416,6 +10404,7 @@ impl Game {
                 }
                 Instruction::May { skip }
                 | Instruction::MayIfSourceOnBattlefield { skip }
+                | Instruction::MayIfSourceInZone { skip, .. }
                 | Instruction::MayIfEventPermanentOnBattlefield { skip }
                 | Instruction::MayIfCombatDamageDealerOnBattlefield { skip }
                 | Instruction::MayIfRememberedExiledCreature { skip }
@@ -10424,11 +10413,11 @@ impl Game {
                     let skip_to = resolution.pc.checked_add(skip).expect("program offset");
                     assert!(skip_to <= resolution.program.len());
                     let available = match instruction {
-                        Instruction::MayIfSourceOnBattlefield { .. } => {
-                            item.source.is_some_and(|source| {
-                                self.on_battlefield(source.id)
-                                    && self.object_ref(source.id) == source.object
-                            })
+                        Instruction::MayIfSourceOnBattlefield { .. } => self
+                            .exact_source_in_zone(&item, TargetZone::Battlefield)
+                            .is_some(),
+                        Instruction::MayIfSourceInZone { zone, .. } => {
+                            self.exact_source_in_zone(&item, zone).is_some()
                         }
                         Instruction::MayIfEventPermanentOnBattlefield { .. } => {
                             self.entering_subject(&item).is_some()
