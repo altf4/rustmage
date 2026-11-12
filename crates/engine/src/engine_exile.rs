@@ -574,6 +574,7 @@ impl Game {
         card: CardId,
         sorcery: bool,
         casting_prohibited: bool,
+        exile_zero: &[ObjectRef],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let current = &self.state.objects[card as usize];
@@ -613,7 +614,7 @@ impl Game {
             offered.push(surcharge);
             if !casting_prohibited
                 && !self.nonhand_cast_prohibited(actor)
-                && self.visit_taxed_exile_casts(actor, object, sorcery, surcharge, emit)
+                && self.visit_taxed_exile_casts(actor, object, sorcery, surcharge, exile_zero, emit)
             {
                 return true;
             }
@@ -627,6 +628,7 @@ impl Game {
         object: ObjectRef,
         sorcery: bool,
         surcharge: std::num::NonZeroU32,
+        exile_zero: &[ObjectRef],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
@@ -642,7 +644,15 @@ impl Game {
                 && self.state.active == actor
                 && self.state.step == Step::Blockers
                 && self.has_sneak_cost(actor, object.card);
-            if self.visit_web_slinging_face(
+            if self.visit_exile_zero_face(
+                actor,
+                object,
+                face,
+                sorcery,
+                ExileZeroOrigin::Taxed { surcharge },
+                exile_zero,
+                emit,
+            ) || self.visit_web_slinging_face(
                 actor,
                 object.card,
                 face,

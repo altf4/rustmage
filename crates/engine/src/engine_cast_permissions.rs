@@ -12,6 +12,7 @@ pub(super) struct OriginAlternative {
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
     pub library_top: Option<LibraryTopCastPermission>,
     pub resolution_discard: bool,
+    pub exact_paid_exile_offer: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -579,6 +580,7 @@ impl Game {
             paid_graveyard,
             library_top,
             resolution_discard,
+            exact_paid_exile_offer,
         } = alternative;
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
@@ -691,6 +693,9 @@ impl Game {
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
+        }
+        if exact_paid_exile_offer {
+            self.configure_paid_exile_offer(&mut item);
         }
         if linked_exile_paid.is_some() {
             Self::configure_linked_paid_cast(&mut item);
@@ -859,7 +864,10 @@ impl Game {
             CastMethod::GraveyardAdditionalCosts
                 | CastMethod::LinkedExileCounterCost
                 | CastMethod::WebSlinging
-        ) || origin_additional_cost.is_some()
+        ) || origin_counter_cost.is_some()
+            && method == CastMethod::Free
+            && object.zone == Zone::Exile
+            || origin_additional_cost.is_some()
             || life.is_some() && warp.is_none()
             || resolution_discard
         {

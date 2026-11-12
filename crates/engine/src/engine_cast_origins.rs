@@ -1121,6 +1121,17 @@ impl Game {
             return false;
         }
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
+        let exile_zero = if !casting_prohibited
+            && free.paid.is_some()
+            && free.origin == Zone::Exile
+            && free.alternative_cost.is_none()
+            && !free.discard_instead_of_mana
+            && !self.nonhand_cast_prohibited(player)
+        {
+            self.exile_zero_providers(player)
+        } else {
+            Vec::new()
+        };
         for &object in &free.remaining {
             if self.object_ref(object.card) != object
                 || self.state.objects[object.card as usize].zone != free.origin
@@ -1185,6 +1196,17 @@ impl Game {
                 });
                 if !eligible {
                     continue;
+                }
+                if self.visit_exile_zero_face(
+                    player,
+                    object,
+                    face,
+                    true,
+                    ExileZeroOrigin::PaidResolution,
+                    &exile_zero,
+                    emit,
+                ) {
+                    return true;
                 }
                 if (free.paid.is_none()
                     || definition.is_some_and(|card| !card.info().mana_cost.is_empty()))
@@ -1317,7 +1339,28 @@ impl Game {
         face: CastFace,
         method_override: Option<CastMethod>,
     ) {
-        self.cast_during_resolution_configured(player, object, face, method_override, None);
+        self.cast_during_resolution_configured(
+            player,
+            object,
+            face,
+            method_override,
+            None,
+            |_, _| {},
+        );
+    }
+
+    pub(super) fn configure_paid_exile_offer(&self, item: &mut SpellView) {
+        let offer = self
+            .state
+            .resolution_free_casts
+            .as_ref()
+            .expect("resolution cast offer");
+        let paid = offer.paid.expect("paid resolution cast offer");
+        let cast = item.cast.as_mut().expect("spell cast details");
+        cast.spend_any_mana = paid.spend_any_mana;
+        cast.exile_on_graveyard = offer.exile_on_graveyard
+            || (paid.exile_instants_sorceries && item.source.unwrap().card.kind_mask() & 12 != 0);
+        cast.stash_origin = false;
     }
 
     pub(super) fn cast_during_resolution_configured(
@@ -1327,6 +1370,7 @@ impl Game {
         face: CastFace,
         method_override: Option<CastMethod>,
         web_slinging_cost: Option<ManaCost>,
+        configure: impl FnOnce(&mut Self, &mut SpellView),
     ) {
         let offer = self.state.resolution_free_casts.as_ref().unwrap();
         let paid = offer.paid;
@@ -1392,6 +1436,7 @@ impl Game {
             self.state.objects[object.card as usize].flashback = true;
         }
         self.remember_suspend_cast(object, item.id);
+        configure(self, &mut item);
         if let Some(cost) = web_slinging_cost {
             Self::configure_web_slinging(&mut item);
             self.open_payment_announcement_configured(

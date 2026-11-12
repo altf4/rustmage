@@ -550,6 +550,10 @@ pub mod exile;
 #[path = "engine_exile_life.rs"]
 pub mod exile_life;
 #[doc(hidden)]
+#[path = "engine_exile_zero.rs"]
+pub mod exile_zero;
+pub use exile_zero::{ExileZeroOrigin, ExileZeroUseView};
+#[doc(hidden)]
 #[path = "engine_outcome_effects.rs"]
 pub mod outcome_effects;
 #[doc(hidden)]
@@ -1101,6 +1105,7 @@ define_actions! {
     },
     PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
+    AnnounceExileForZero { object: ObjectRef, provider: ObjectRef, face: CastFace, flash_surcharge: bool, origin: ExileZeroOrigin },
     AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceLibraryTop {
         object: ObjectRef,
@@ -4062,6 +4067,8 @@ pub struct Observation {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub plot_on_resolution: Vec<ObjectRef>,
     pub linked_free_cast_uses: Vec<LinkedFreeCastUseView>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub exile_zero_uses: Vec<ExileZeroUseView>,
     pub linked_free_cast_approvals: Vec<LinkedFreeCastApprovalView>,
     pub mana_lots: Vec<ManaLotView>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -6178,6 +6185,9 @@ impl Game {
                 }
                 let casting_prohibited =
                     s.casting_prohibited || self.static_casting_prohibited(actor);
+                let exile_casting_prohibited =
+                    casting_prohibited || self.nonhand_cast_prohibited(actor);
+                let mut exile_zero = None;
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
                 let controlled_activation_grantors = self.controlled_activation_grantors(actor);
@@ -6231,29 +6241,37 @@ impl Game {
                     {
                         return true;
                     }
-                    if obj.zone == Zone::Exile
-                        && !casting_prohibited
-                        && !self.nonhand_cast_prohibited(actor)
-                        && self.visit_linked_source_casts(actor, card, sorcery, &mut emit)
-                    {
-                        return true;
+                    if obj.zone == Zone::Exile {
+                        let providers = if exile_casting_prohibited {
+                            &[][..]
+                        } else {
+                            exile_zero
+                                .get_or_insert_with(|| self.exile_zero_providers(actor))
+                                .as_slice()
+                        };
+                        if (!exile_casting_prohibited
+                            && (self.visit_linked_source_casts(
+                                actor, card, sorcery, providers, &mut emit,
+                            ) || self.visit_ordinary_exile_zero_casts(
+                                actor, card, sorcery, providers, &mut emit,
+                            )))
+                            || self.visit_taxed_exile_plays(
+                                actor,
+                                card,
+                                sorcery,
+                                casting_prohibited,
+                                providers,
+                                &mut emit,
+                            )
+                        {
+                            return true;
+                        }
                     }
                     if obj.zone == Zone::Graveyard
                         && obj.owner == actor
                         && !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
                         && self.visit_paid_graveyard_casts(actor, card, sorcery, &mut emit)
-                    {
-                        return true;
-                    }
-                    if obj.zone == Zone::Exile
-                        && self.visit_taxed_exile_plays(
-                            actor,
-                            card,
-                            sorcery,
-                            casting_prohibited,
-                            &mut emit,
-                        )
                     {
                         return true;
                     }
@@ -8008,6 +8026,13 @@ impl Game {
                 face,
                 flash_surcharge,
             } => self.start_linked_free_cast(actor, card, source, face, flash_surcharge),
+            Action::AnnounceExileForZero {
+                object,
+                provider,
+                face,
+                flash_surcharge,
+                origin,
+            } => self.start_exile_zero_cast(actor, object, provider, face, flash_surcharge, origin),
             Action::AnnounceLinkedPaid {
                 object,
                 source,
@@ -11392,6 +11417,7 @@ impl Game {
         if let Some(data) = &mut self.state.linked_choices {
             data.free_cast_uses.clear();
             data.free_cast_approvals.clear();
+            data.exile_zero_uses = None;
             data.delayed_steps
                 .retain(|row| row.expires_turn.is_none_or(|turn| turn == self.state.turn));
         }
@@ -12336,6 +12362,7 @@ impl Game {
                 .zone_rules
                 .as_ref()
                 .map_or_else(Vec::new, |rules| rules.plot_spells.to_vec()),
+            exile_zero_uses: self.exile_zero_uses(),
             linked_free_cast_uses: s
                 .linked_choices
                 .as_ref()

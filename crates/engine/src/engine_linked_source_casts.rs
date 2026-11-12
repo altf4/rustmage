@@ -203,6 +203,7 @@ impl Game {
         player: Player,
         card: CardId,
         sorcery: bool,
+        exile_zero: &[ObjectRef],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         for &id in &self.state.static_sources {
@@ -238,7 +239,15 @@ impl Game {
                 let object = self.object_ref(card);
                 if let Some(permission) = self.linked_paid_permission(player, source, object, face)
                 {
-                    if self.visit_web_slinging_face(
+                    if self.visit_exile_zero_face(
+                        player,
+                        object,
+                        face,
+                        sorcery,
+                        ExileZeroOrigin::LinkedPaid { source },
+                        exile_zero,
+                        emit,
+                    ) || self.visit_web_slinging_face(
                         player,
                         card,
                         face,
@@ -278,7 +287,15 @@ impl Game {
                 else {
                     continue;
                 };
-                if self.visit_web_slinging_face(
+                if self.visit_exile_zero_face(
+                    player,
+                    object,
+                    face,
+                    sorcery,
+                    ExileZeroOrigin::LinkedCounters { source },
+                    exile_zero,
+                    emit,
+                ) || self.visit_web_slinging_face(
                     player,
                     card,
                     face,

@@ -120,7 +120,7 @@ impl Announcement {
                 matches!(
                     c.method,
                     CastMethod::LinkedExileCounterCost | CastMethod::WebSlinging
-                )
+                ) || c.method == CastMethod::Free && c.origin == Zone::Exile
             })
             .and(self.origin_counter_cost)
     }

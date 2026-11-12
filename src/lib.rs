@@ -87,6 +87,7 @@ pub use rustmage_core::engine::{
     ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
 pub use rustmage_core::engine::AuraPlayerAttachmentView;
+pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView};
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,

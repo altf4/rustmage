@@ -87,6 +87,8 @@ pub enum StaticAbilityFragment {
     CastLinkedExileAtThreshold,
     /// Play cards exiled by this source during your turn, using life to cast spells.
     PlayLinkedExileOnOwnTurnForLife,
+    /// An optional {0} alternative for a spell independently authorized from exile.
+    ExileCastForZeroOncePerTurn,
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.

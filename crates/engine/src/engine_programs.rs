@@ -2237,6 +2237,7 @@ impl Game {
             self.expire_land_mana_on_exile_cast(&item);
             self.commit_linked_exile_cast(&item);
             self.commit_linked_free_cast(&item);
+            self.commit_exile_zero_cast(item.id);
             self.commit_library_entry_counter(&item);
         }
         self.commit_suspend_cast(stack);

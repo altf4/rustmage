@@ -370,6 +370,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::BlockTaxWhileAttacking(_)
                             | crate::cards::StaticAbilityFragment::OpponentNoncreatureSpellTax(_)
                             | crate::cards::StaticAbilityFragment::OpponentGraveyardOrExileSpellTax(_)
+                            | crate::cards::StaticAbilityFragment::ExileCastForZeroOncePerTurn
                             | crate::cards::StaticAbilityFragment::SpellCastLimit(_)
                             | crate::cards::StaticAbilityFragment::OpponentSpellsTargetingSourceLifeCost(_)
                             | crate::cards::StaticAbilityFragment::ChosenCardTypeSpellTax(_)

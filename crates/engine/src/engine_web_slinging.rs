@@ -316,6 +316,7 @@ impl Game {
                     face,
                     Some(CastMethod::WebSlinging),
                     Some(cost),
+                    |_, _| {},
                 );
                 return;
             }

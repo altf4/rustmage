@@ -401,6 +401,7 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceTaxedExile { .. }
             | Action::AnnounceAirbend { .. }
             | Action::AnnounceExileLife { .. }
+            | Action::AnnounceExileForZero { .. }
             | Action::AnnounceLibraryLife { .. }
             | Action::AnnounceLibraryTop { .. }
             | Action::AnnounceExileFree { .. }
