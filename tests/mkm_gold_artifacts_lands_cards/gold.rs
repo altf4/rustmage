@@ -887,3 +887,74 @@ fn worldsouls_rage_deals_x_then_puts_up_to_x_lands_from_hand_and_graveyard_tappe
     }
     assert_eq!(game.object_view(third_land).zone, Zone::Hand);
 }
+
+#[test]
+fn vannifar_cloaks_a_private_hand_card_or_counts_each_live_colorless_creature() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let source = put(
+        &mut game,
+        player,
+        "Vannifar, Evolved Enigma",
+        Zone::Battlefield,
+    );
+    let to_cloak = put(&mut game, player, "Soul-Guide Lantern", Zone::Hand);
+    put(&mut game, player, "Forest", Zone::Hand);
+    let hostile_hand = put(&mut game, opponent, "Shock", Zone::Hand);
+    let colored = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let noncreature = put(&mut game, player, "Soul-Guide Lantern", Zone::Battlefield);
+    let thopter = Card::from_catalogue_id(5266);
+    game.create_tokens(player, thopter, 1, false);
+    assert!(!game.advance_entries());
+    let friendly_token = game.controlled_token_ids(player).next().unwrap();
+    game.create_tokens(opponent, thopter, 1, false);
+    assert!(!game.advance_entries());
+    let hostile_token = game.controlled_token_ids(opponent).next().unwrap();
+    let hidden = put(&mut game, player, "Bear Cub", Zone::Library);
+    game.cloak_library_top(player, player);
+    assert!(!game.advance_entries());
+
+    let mut other_turn = game.clone();
+    other_turn.state.active = opponent;
+    other_turn.state.priority = opponent;
+    pass_pair(&mut other_turn);
+    assert!(other_turn.state.stack.is_empty());
+    assert_eq!(other_turn.state.pending, Pending::Priority);
+
+    pass_pair(&mut game);
+    let mut cloak = game.clone();
+    act(&mut cloak, Action::ChooseMode { mode: 0 });
+    pass_pair(&mut cloak);
+    assert!(cloak.observe(player).effect_choice.is_some());
+    assert!(cloak.observe(opponent).effect_choice.is_none());
+    let foreign = cloak.object_ref(hostile_hand);
+    reject(&mut cloak, Action::ChooseEffectObject { object: foreign });
+    let object = cloak.object_ref(to_cloak);
+    act(&mut cloak, Action::ChooseEffectObject { object });
+    assert!(cloak.on_battlefield(to_cloak));
+    let face = cloak
+        .observe(player)
+        .face_down_permanents
+        .into_iter()
+        .find(|row| row.underlying == Card::from_name("Soul-Guide Lantern"))
+        .unwrap();
+    assert_eq!(face.cause, FaceDownCause::Cloak);
+    assert_eq!(stats(&cloak, to_cloak), (2, 2));
+    assert!(
+        cloak
+            .observe(opponent)
+            .face_down_permanents
+            .iter()
+            .all(|row| row.underlying.is_none())
+    );
+
+    act(&mut game, Action::ChooseMode { mode: 1 });
+    settle(&mut game);
+    for card in [friendly_token, hidden] {
+        assert_eq!(game.counter_count(card, CounterKind::PlusOne), 1);
+    }
+    for card in [source, hostile_token, colored, noncreature] {
+        assert_eq!(game.counter_count(card, CounterKind::PlusOne), 0);
+    }
+}
