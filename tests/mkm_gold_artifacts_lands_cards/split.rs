@@ -202,14 +202,7 @@ fn fuss_counts_attackers_and_bother_makes_flying_thopters_before_surveil() {
         (mill, LibraryDestination::Graveyard),
         (keep, LibraryDestination::Top),
     ] {
-        let object = game.object_ref(card);
-        act(
-            &mut game,
-            Action::ChooseLibraryDestination {
-                object,
-                destination,
-            },
-        );
+        act(&mut game, Action::ArrangeLibrary { card, destination });
     }
     assert_eq!(game.object_view(mill).zone, Zone::Graveyard);
     assert_eq!(game.top_library_card(player), Some(keep));
