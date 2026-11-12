@@ -12,10 +12,10 @@ fn target(game: &mut Game, target: Target) {
 }
 
 fn disguise(game: &mut Game, id: CardId) -> ObjectRef {
-    act(game, Action::AnnounceDisguise { card: id });
+    let source = announce_hand_disguise(game, id);
     pay(game);
     settle(game);
-    let object = game.object_ref(id);
+    let object = game.object_ref(source.card);
     assert!(game.is_face_down(object));
     object
 }
@@ -69,6 +69,7 @@ fn rakish_scoundrel_protects_on_both_entry_and_turn_up() {
 
     let second = put(&mut game, player, "Rakish Scoundrel", Zone::Hand);
     let face = disguise(&mut game, second);
+    let second = face.card;
     turn_up(&mut game, face, [0, 0, 1, 0, 1, 0], 4);
     target(&mut game, Target::Card(second));
     settle(&mut game);
@@ -81,6 +82,7 @@ fn riftburst_hellion_and_sanguine_savior_pay_their_mixed_disguise_costs() {
     let mut game = scenario(player);
     let hellion = put(&mut game, player, "Riftburst Hellion", Zone::Hand);
     let face = disguise(&mut game, hellion);
+    let hellion = face.card;
     turn_up(&mut game, face, [0, 0, 0, 1, 1, 0], 4);
     assert_eq!(game.stats(hellion).power, 6);
     assert_eq!(game.stats(hellion).toughness, 7);
@@ -94,6 +96,7 @@ fn riftburst_hellion_and_sanguine_savior_pay_their_mixed_disguise_costs() {
     );
     let savior = put(&mut game, player, "Sanguine Savior", Zone::Hand);
     let face = disguise(&mut game, savior);
+    let savior = face.card;
     turn_up(&mut game, face, [1, 0, 1, 0, 0, 0], 0);
     reject(
         &mut game,
@@ -123,6 +126,7 @@ fn shady_informant_only_deals_death_damage_face_up() {
     let mut game = scenario(player);
     let informant = put(&mut game, player, "Shady Informant", Zone::Hand);
     let face = disguise(&mut game, informant);
+    let informant = face.card;
     let mut hidden = game.clone();
     turn_up(&mut game, face, [0, 0, 1, 1, 0, 0], 2);
     for (branch, is_hidden) in [(&mut game, false), (&mut hidden, true)] {
@@ -152,6 +156,7 @@ fn undercover_crocodelf_investigates_only_after_its_combat_damage() {
     let mut game = scenario(player);
     let croc = put(&mut game, player, "Undercover Crocodelf", Zone::Hand);
     let face = disguise(&mut game, croc);
+    let croc = face.card;
     turn_up(&mut game, face, [0, 1, 0, 0, 1, 0], 3);
     assert_eq!(game.stats(croc).power, 5);
     game.state.objects[croc as usize].summoning_sick = false;
@@ -193,7 +198,7 @@ fn tin_street_gossip_produces_two_restricted_mana_and_keeps_vigilance() {
     let shock = put(&mut game, player, "Shock", Zone::Hand);
     game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 1];
     reject(&mut game, Action::AnnounceCast { card: shock });
-    act(&mut game, Action::AnnounceDisguise { card: hellion });
+    let hellion = announce_hand_disguise(&mut game, hellion).card;
     act(
         &mut game,
         Action::ActivateMana {

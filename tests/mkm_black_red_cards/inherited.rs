@@ -330,7 +330,7 @@ fn long_goodbye_destroys_a_three_mana_walker_or_a_disguised_creature_despite_war
         Zone::Battlefield,
     );
     game.add_counter(walker, CounterKind::Loyalty, 3);
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     settle(&mut game);
     act(&mut game, Action::Pass);
@@ -528,9 +528,10 @@ fn snarling_gorehound_counts_each_small_entrant_by_effective_power() {
     cast(&mut game, large, None);
     settle(&mut game);
 
-    act(&mut game, Action::AnnounceDisguise { card: hidden });
+    let hidden = announce_hand_disguise(&mut game, hidden).card;
     pay(&mut game);
     pass_pair(&mut game);
+    assert!(game.is_face_down(game.object_ref(hidden)));
     pass_pair(&mut game);
     assert!(game.observe(player).library_choice.unwrap().surveil);
     let card = game.top_library_card(player).unwrap();

@@ -3,12 +3,12 @@ use crate::support::*;
 use rustmage_core::{cards::*, engine::*};
 
 fn cast_down(game: &mut Game, card: CardId) -> ObjectRef {
-    act(game, Action::AnnounceDisguise { card });
+    let source = announce_hand_disguise(game, card);
     pay(game);
     settle(game);
-    let exact = game.object_ref(card);
+    let exact = game.object_ref(source.card);
     assert!(game.is_face_down(exact));
-    assert_eq!(stats(game, card), (2, 2));
+    assert_eq!(stats(game, exact.card), (2, 2));
     exact
 }
 
@@ -60,6 +60,7 @@ fn alley_assailant_enters_tapped_only_face_up_and_drains_a_target_opponent_when_
     assert_eq!(life(&normal, player), 20);
 
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     assert!(!game.object_view(card).tapped);
     reject(
         &mut game,
@@ -90,6 +91,7 @@ fn basilica_stalker_only_triggers_after_combat_damage_while_face_up() {
     let card = put(&mut game, player, "Basilica Stalker", Zone::Hand);
     let top = put(&mut game, player, "Shock", Zone::Library);
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     assert!(!game.keywords(card).contains(Keywords::FLYING));
     game.state.objects[card as usize].summoning_sick = false;
     let mut hidden = game.clone();
@@ -145,6 +147,7 @@ fn hunted_bonebrute_gives_the_opponent_dogs_and_only_drains_after_a_face_up_deat
     }
 
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     assert!(tokens(&game, opponent, DOG).is_empty());
     let mut hidden = game.clone();
     cast(&mut hidden, shock, Some(Target::Card(card)));
@@ -172,6 +175,7 @@ fn nightdrinker_moroii_loses_life_for_normal_entry_only() {
     assert_eq!(life(&normal, player), 17);
 
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     assert!(!game.keywords(card).contains(Keywords::FLYING));
     assert_eq!(life(&game, player), 20);
     turn_up(&mut game, exact, black(0, 2));
@@ -189,6 +193,7 @@ fn bolrac_clan_basher_tramples_in_each_of_its_two_combat_damage_steps() {
     let card = put(&mut game, player, "Bolrac-Clan Basher", Zone::Hand);
     let blocker = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     let keywords = Keywords::DOUBLE_STRIKE.union(Keywords::TRAMPLE);
     assert!(!game.keywords(card).contains(keywords));
     turn_up(&mut game, exact, red(3, 2));
@@ -257,6 +262,7 @@ fn concealed_weapon_equips_normally_or_attaches_from_its_turn_up_trigger() {
     assert_eq!(stats(&normal, ally), (5, 2));
 
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 2];
     turn_up(&mut game, exact, red(2, 1));
     reject(
@@ -292,6 +298,7 @@ fn expose_the_culprit_resolves_both_modes_in_order_and_rekeys_the_cloaked_pile()
     );
     let ordinary = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let hidden_ref = cast_down(&mut game, hidden);
+    let hidden = hidden_ref.card;
     let revealed_ref = game.object_ref(revealed);
 
     act(&mut game, Action::AnnounceCast { card: spell });
@@ -409,6 +416,7 @@ fn fugitive_codebreaker_reduces_the_turn_up_cost_only_and_draws_after_discarding
     reject(&mut game, Action::AnnounceDisguise { card });
     game.state.players[player.index()].mana[5] = 3;
     let exact = cast_down(&mut game, card);
+    let card = exact.card;
     game.state.players[player.index()].mana = [0, 0, 0, 1, 0, 3];
     turn_up(&mut game, exact, red(3, 1));
     assert!(game.keywords(card).contains(Keywords::HASTE));
@@ -507,6 +515,7 @@ fn pyrotechnic_performer_uses_the_turned_creature_as_damage_source() {
     settle(&mut game);
     assert_eq!(life(&game, opponent), 17);
     let exact = cast_down(&mut game, basher);
+    let basher = exact.card;
     cast(&mut game, power, Some(Target::Card(basher)));
     settle(&mut game);
     act(&mut game, Action::Pass);

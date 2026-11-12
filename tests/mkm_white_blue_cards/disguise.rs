@@ -13,10 +13,10 @@ fn target(card: CardId) -> Action {
 }
 
 fn disguise(game: &mut Game, card: CardId) -> ObjectRef {
-    act(game, Action::AnnounceDisguise { card });
+    let source = announce_hand_disguise(game, card);
     pay(game);
     settle(game);
-    game.object_ref(card)
+    game.object_ref(source.card)
 }
 
 fn turn_up(game: &mut Game, object: ObjectRef) {
@@ -155,6 +155,7 @@ fn vindicators_paid_x_combines_zones_and_links_return_to_the_exact_source() {
     let third = put(&mut game, opponent, "Healer's Hawk", Zone::Graveyard);
     let angel = put(&mut game, player, "Aurelia's Vindicator", Zone::Hand);
     let object = disguise(&mut game, angel);
+    let angel = object.card;
     choose(
         &mut game,
         |action| matches!(action, Action::BeginFaceUpX { object: candidate, .. } if *candidate == object),
@@ -235,7 +236,7 @@ fn essence_untaps_its_creatures_and_grants_hexproof_in_response() {
             .keywords
             .contains(Keywords::HEXPROOF)
     );
-    assert_eq!(stats(&game, card), (1, 10));
+    assert_eq!(stats(&game, source.card), (1, 10));
 }
 
 #[test]
@@ -248,6 +249,7 @@ fn forum_familiar_bounces_the_controlled_land_to_its_owner_and_rechecks_the_targ
     let enemy = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
     game.record_control(game.object_ref(stolen), player, None);
     let object = disguise(&mut game, cat);
+    let cat = object.card;
     turn_up(&mut game, object);
     reject(&mut game, target(cat));
     reject(&mut game, target(enemy));
@@ -293,7 +295,7 @@ fn karlov_watchdog_bars_opposing_turn_up_on_its_turn_and_rewards_three_attackers
     settle(&mut game);
     assert_eq!(stats(&game, watchdog), (4, 3));
     assert_eq!(stats(&game, first), (3, 3));
-    assert_eq!(stats(&game, hidden), (2, 2));
+    assert_eq!(stats(&game, object.card), (2, 2));
     assert!(
         game.object_view(watchdog)
             .keywords
@@ -307,14 +309,14 @@ fn museum_nightwatch_death_creates_a_detective_only_for_the_face_up_copy() {
     let mut game = scenario(player);
     let down = put(&mut game, player, "Museum Nightwatch", Zone::Hand);
     let up = put(&mut game, player, "Museum Nightwatch", Zone::Hand);
-    disguise(&mut game, down);
-    let object = disguise(&mut game, up);
-    turn_up(&mut game, object);
+    let down = disguise(&mut game, down);
+    let up = disguise(&mut game, up);
+    turn_up(&mut game, up);
     let wrath = put(&mut game, player, "Day of Judgment", Zone::Hand);
     cast(&mut game, wrath, None);
     settle(&mut game);
-    assert_eq!(game.object_view(down).zone, Zone::Graveyard);
-    assert_eq!(game.object_view(up).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(down.card).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(up.card).zone, Zone::Graveyard);
     let detectives = tokens(&game, player, Card::from_catalogue_id(5329));
     assert_eq!(detectives.len(), 1);
     let detective = game.object_view(detectives[0]);
@@ -366,6 +368,7 @@ fn coveted_falcon_gives_away_actual_targets_then_reclaims_an_owned_permanent_on_
     let stale = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let enemy = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
     let object = disguise(&mut game, falcon);
+    let falcon = object.card;
     turn_up(&mut game, object);
     act(
         &mut game,
@@ -487,6 +490,7 @@ fn exit_specialist_bounces_another_creature_and_uses_live_blocker_power() {
     let large = put(&mut game, opponent, "Gigantosaurus", Zone::Battlefield);
     let small = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
     let object = disguise(&mut game, specialist);
+    let specialist = object.card;
     turn_up(&mut game, object);
     reject(&mut game, target(specialist));
     act(&mut game, target(bounced));
@@ -519,6 +523,7 @@ fn mistway_spys_delayed_clues_outlive_the_spy_and_count_each_combat_source() {
     let first = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
     let second = put(&mut game, player, "Bear Cub", Zone::Battlefield);
     let object = disguise(&mut game, spy);
+    let spy = object.card;
     turn_up(&mut game, object);
     settle(&mut game);
     let bounce = put(&mut game, player, "Unsummon", Zone::Hand);

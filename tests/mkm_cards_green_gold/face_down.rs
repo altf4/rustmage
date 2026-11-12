@@ -7,8 +7,8 @@ const fn cost(colored: Mana, generic: u32) -> ManaCost {
 const GREEN: Mana = [0, 0, 0, 0, 1, 0];
 
 fn disguise(game: &mut Game, player: Player, name: &str) -> CardId {
-    let card = put(game, player, name, Zone::Hand);
-    act(game, Action::AnnounceDisguise { card });
+    let hand = put(game, player, name, Zone::Hand);
+    let card = announce_hand_disguise(game, hand).card;
     pay(game);
     settle(game);
     assert_eq!(stats(game, card), (2, 2));
@@ -202,18 +202,32 @@ fn hide_in_plain_sight_privately_cloaks_two_and_bottoms_the_rest() {
         reject(&mut game, Action::SelectLibrary { card: outside });
         act(&mut game, Action::SelectLibrary { card: first });
         reject(&mut game, Action::FinishLibrarySelection);
-        act(&mut game, Action::SelectLibrary { card: second });
-        act(&mut game, Action::FinishLibrarySelection);
-        for card in [first, second] {
-            assert!(game.on_battlefield(card));
-            assert_eq!(stats(&game, card), (2, 2));
+        let mut alternate = game.clone();
+        for (branch, selected) in [(&mut game, second), (&mut alternate, third)] {
+            act(branch, Action::SelectLibrary { card: selected });
+            act(branch, Action::FinishLibrarySelection);
         }
-        assert!(
-            game.observe(player.other())
-                .face_down_permanents
-                .iter()
-                .all(|object| object.underlying.is_none())
-        );
+        let private = game.observe(player).face_down_permanents;
+        let public = game.observe(player.other()).face_down_permanents;
+        let alternate_public = alternate.observe(player.other()).face_down_permanents;
+        assert_eq!(private.len(), 2);
+        assert_eq!(public, alternate_public);
+        assert_eq!(public.len(), 2);
+        for name in ["Hill Giant", "Shock"] {
+            assert!(
+                private
+                    .iter()
+                    .any(|row| row.underlying == Card::from_name(name))
+            );
+        }
+        let old_slots = [outside, first, second, third, fourth, fifth];
+        for row in public {
+            assert!(row.underlying.is_none());
+            assert!(!old_slots.contains(&row.object.card));
+            assert!(private.iter().any(|own| own.object == row.object));
+            assert!(game.on_battlefield(row.object.card));
+            assert_eq!(stats(&game, row.object.card), (2, 2));
+        }
         let library = &game.state.players[player.index()].library;
         assert_eq!(library.last(), Some(&outside));
         let mut bottom = library[..3].to_vec();

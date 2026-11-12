@@ -116,7 +116,7 @@ fn lumbering_laundry_turns_up_and_its_paid_look_applies_through_cleanup() {
     let opponent = player.other();
     let mut game = scenario(player);
     let laundry = put(&mut game, player, "Lumbering Laundry", Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: laundry });
+    let laundry = announce_hand_disguise(&mut game, laundry).card;
     pay(&mut game);
     settle(&mut game);
     let object = game.object_ref(laundry);
@@ -237,7 +237,7 @@ fn branch_can_disguise_as_a_spell_and_retains_exactly_its_turn_up_mana() {
     let player = Player::P0;
     let mut game = scenario(player);
     let branch = put(&mut game, player, "Branch of Vitu-Ghazi", Zone::Hand);
-    act(&mut game, Action::AnnounceDisguise { card: branch });
+    let branch = announce_hand_disguise(&mut game, branch).card;
     pay(&mut game);
     settle(&mut game);
     let object = game.object_ref(branch);
