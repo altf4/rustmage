@@ -1077,6 +1077,7 @@ impl Game {
             | AmountValue::TargetPlayersCreatureCount
             | AmountValue::DelayedExiledCardCount
             | AmountValue::MilledCreatures
+            | AmountValue::MilledSubtypeCount(_)
             | AmountValue::MovedCount
             | AmountValue::RememberedCount
             | AmountValue::PaidAdditionalCostCount

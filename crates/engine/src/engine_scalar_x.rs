@@ -833,6 +833,20 @@ impl Game {
                         && object.card.is_creature()
                 })
                 .count() as u128,
+            AmountValue::MilledSubtypeCount(subtype) => self
+                .state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .milled
+                .iter()
+                .copied()
+                .filter(|&reference| {
+                    self.public_milled_object(reference)
+                        && !self.exiled_face_down(reference)
+                        && self.has_subtype(reference.card, subtype)
+                })
+                .count() as u128,
             AmountValue::Divided { value, divisor } => {
                 self.item_amount(*value, item) / u128::from(divisor.get())
             }

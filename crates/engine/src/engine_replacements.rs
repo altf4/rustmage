@@ -1503,6 +1503,11 @@ impl Game {
                             && self.damage_recipient_controller(event) != object.controller
                             && self.stat_value(condition, source, object.controller) != 0
                     }
+                    ReplacementSpec::ControlledDamageToOpponentPlusSourceCounters(kind) => {
+                        event.source.controller == object.controller
+                            && self.damage_recipient_controller(event) != object.controller
+                            && self.counter_count(id, kind) != 0
+                    }
                     ReplacementSpec::ConditionalNoncombatDamageToOpponentPlus {
                         condition, ..
                     } => {
@@ -1782,6 +1787,12 @@ impl Game {
                 event.amount = event
                     .amount
                     .checked_add(i128::from(amount))
+                    .capacity("damage replacement quantity exhausted");
+            }
+            ReplacementSpec::ControlledDamageToOpponentPlusSourceCounters(kind) => {
+                event.amount = event
+                    .amount
+                    .checked_add(i128::from(self.counter_count(choice.source.card, kind)))
                     .capacity("damage replacement quantity exhausted");
             }
             ReplacementSpec::NoncombatDamagePlusSourcePower => {

@@ -1197,6 +1197,7 @@ impl Game {
                     | TriggerCondition::FoodsSacrificed
                     | TriggerCondition::Reflexive
                     | TriggerCondition::DelayedSpellCastAny
+                    | TriggerCondition::DelayedSpellCastSubtype(_)
                     | TriggerCondition::DelayedSpellCastCreature
                     | TriggerCondition::DelayedInstantSorceryCastManaValueAtMost { .. }
                     | TriggerCondition::DelayedSpellCastSourcePower
@@ -5617,6 +5618,7 @@ impl Game {
                 }
                 Instruction::OwnerLibraryNthFromTop(n) => self.put_targets_nth_from_top(&item, n),
                 Instruction::PutSourceThirdFromTop => self.put_source_third_from_top(&item),
+                Instruction::PutSourceOnLibraryBottom => self.put_source_on_library_bottom(&item),
                 Instruction::TakeCreaturesUntilEndTurn => self.take_creatures(&item),
                 Instruction::ChooseManaValueParityDestroyOthers
                 | Instruction::ChooseManaValueParityDestroyCreatures => {
@@ -7812,7 +7814,16 @@ impl Game {
                     }
                 }
                 Instruction::ExileUntilNonlandCastOrHand { maximum_mana_value } => {
-                    if self.start_exile_until_nonland_cast_or_hand(&item, maximum_mana_value) {
+                    if self.start_exile_until_nonland_cast_or_hand(&item, |_| {
+                        maximum_mana_value.checked_add(1)
+                    }) {
+                        return;
+                    }
+                }
+                Instruction::ExileUntilNonlandCastBelowOrHand(value) => {
+                    if self.start_exile_until_nonland_cast_or_hand(&item, |game| {
+                        u64::try_from(game.item_amount(value, &item)).ok()
+                    }) {
                         return;
                     }
                 }

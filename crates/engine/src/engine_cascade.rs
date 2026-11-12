@@ -228,19 +228,18 @@ impl Game {
     pub(super) fn start_exile_until_nonland_cast_or_hand(
         &mut self,
         item: &SpellView,
-        maximum_mana_value: u64,
+        maximum_mana_value: impl FnOnce(&Self) -> Option<u64>,
     ) -> bool {
         let mut exiled = Vec::new();
         let mut found = None;
         while let Some(card) = self.top_library_card(item.controller) {
-            let nonland = !self.state.objects[card as usize].card.is_land();
             let events = self.move_objects_raw(&[card], Zone::Exile);
             let moved = events
                 .iter()
                 .find(|e| e.moved && e.destination == Zone::Exile)
-                .map(|event| event.after);
+                .map(|event| (event.after, event.before.kinds & 2 == 0));
             self.finish_zone_events(&events, &[]);
-            if let Some(object) = moved {
+            if let Some((object, nonland)) = moved {
                 exiled.push(object);
                 if nonland {
                     found = Some(object);
@@ -253,16 +252,22 @@ impl Game {
         let Some(object) = found else {
             return false;
         };
+        let maximum_mana_value = maximum_mana_value(self);
         self.state.resolving.as_mut().unwrap().cascade = Some(Box::new(CascadeState::Active {
             view: CascadeView {
                 controller: item.controller,
-                maximum_mana_value,
+                maximum_mana_value: maximum_mana_value
+                    .map_or(u64::MAX, |limit| limit.saturating_sub(1)),
                 exiled,
                 discovered: Some(object),
                 keep_exiled: true,
             },
             discover: None,
         }));
+        if maximum_mana_value == Some(0) {
+            self.finish_cascade();
+            return false;
+        }
         self.state.resolution_free_casts = Some(Box::new(ResolutionFreeCasts {
             discard_instead_of_mana: false,
             permanent_type: None,
@@ -275,7 +280,7 @@ impl Game {
             pending_cast: None,
             remaining_mana_value: None,
             alternative_cost: None,
-            maximum_mana_value: maximum_mana_value.checked_add(1),
+            maximum_mana_value,
             origin: Zone::Exile,
             exile_on_graveyard: false,
             allow_lands: false,

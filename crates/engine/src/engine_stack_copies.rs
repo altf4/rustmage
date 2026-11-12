@@ -521,6 +521,9 @@ impl Game {
                         && cast_event.is_some_and(|event| event.mana_value <= maximum)
                 }
                 TriggerCondition::DelayedSpellCastAny => true,
+                TriggerCondition::DelayedSpellCastSubtype(subtype) => {
+                    cast_event.is_some_and(|event| self.has_subtype(event.object.card, subtype))
+                }
                 _ => instant_or_sorcery,
             };
             if delayed_copy_all_spells(&trigger) || delayed_copy_exhaust(&trigger) || !matching_type

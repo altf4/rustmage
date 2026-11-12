@@ -2983,7 +2983,7 @@ pub enum Instruction {
         relation: CastRelation,
         ability: u16,
     },
-    /// Register a one-shot, any-type next-spell callback this turn.
+    /// Register a one-shot callback for the next matching spell this turn.
     CopyNextSpell {
         ability: u16,
     },
@@ -4311,6 +4311,8 @@ pub enum Instruction {
     ExileUntilNonlandCastOrHand {
         maximum_mana_value: u64,
     },
+    /// Offer the exiled nonland only below the resolving ceiling for its chosen spell face.
+    ExileUntilNonlandCastBelowOrHand(AmountValue),
     /// Optional one-card discard; actual nonland discard queues this template.
     MayDiscardNonlandReflexive(u16),
     /// Select any number of cards privately and discard them as one batch.
@@ -5293,6 +5295,8 @@ pub enum Instruction {
     OwnerLibraryNthFromTop(u16),
     /// Put the exact live source in its owner’s library below its top two cards.
     PutSourceThirdFromTop,
+    /// Put the exact live source on the bottom of its owner's library.
+    PutSourceOnLibraryBottom,
     ChooseManaValueParityDestroyOthers,
     ChooseManaValueParityDestroyCreatures,
     TakeCreaturesUntilEndTurn,
@@ -5953,6 +5957,8 @@ pub enum AmountValue {
     /// Explicit immutable parameter of the resolving spell or its exact ETB packet.
     ChosenX,
     MilledCreatures,
+    /// Cards of this subtype still identifiable from the preceding actual mill.
+    MilledSubtypeCount(&'static str),
     Stat(StatValue),
     LifeGainedThisTurn,
     /// Gross life actually lost by the controller this turn, including life payments.
@@ -6491,6 +6497,8 @@ pub enum ReplacementSpec {
         condition: StatValue,
         amount: u16,
     },
+    /// Add the provider's live counter count to controlled-source damage to opponents and their permanents.
+    ControlledDamageToOpponentPlusSourceCounters(CounterKind),
     DoubleEquippedDamage,
     /// Redirect damage to the provider's controller or their other permanents to the provider.
     RedirectControlledDamageToSource,
@@ -7980,6 +7988,8 @@ pub enum TriggerCondition {
     DelayedSpellCastSourcePower,
     /// Source-independent one-shot callback for the next spell of any type.
     DelayedSpellCastAny,
+    /// Source-independent one-shot callback for the next spell with this effective subtype.
+    DelayedSpellCastSubtype(&'static str),
     /// Source-independent one-shot callback for the next creature spell.
     DelayedSpellCastCreature,
     /// One-shot callback for a committed instant or sorcery cast at or below this value.
