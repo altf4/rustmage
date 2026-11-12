@@ -553,7 +553,7 @@ fn the_effect_player_can_turn_an_opponents_permanent_face_up() {
         effect: Effect::Spell(
             TargetPlan::Single(TargetSpec::one(TargetRule::Filtered {
                 base: &object(0),
-                predicate: TargetPredicate::FaceDown,
+                predicate: &TargetPredicate::FaceDown,
             })),
             &[
                 Instruction::RevealFaceDownTargetAndMayTurnUp,
