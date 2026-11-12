@@ -364,3 +364,100 @@ fn ghostly_keybearer_unlocks_an_exact_controlled_room_after_player_combat_damage
     assert_eq!(game.object_ref(room), object);
     assert_eq!(game.object_view(room).room_doors, Some(LEFT_ONLY));
 }
+
+#[test]
+fn ghostly_dancers_chooses_only_possible_untargeted_alternatives_and_creates_flying_spirits() {
+    let mut base = scenario(PLAYER);
+    let dancers = put(&mut base, PLAYER, "Ghostly Dancers", Zone::Hand);
+    let room = put(&mut base, PLAYER, POOL, Zone::Battlefield);
+    let room_ref = base.object_ref(room);
+    base.set_room_doors(room_ref, LEFT_ONLY);
+    let foreign_room = put(&mut base, OPPONENT, POOL, Zone::Battlefield);
+    let grave = put(&mut base, PLAYER, "Omniscience", Zone::Graveyard);
+    let foreign_grave = put(&mut base, OPPONENT, "Omniscience", Zone::Graveyard);
+    let nonenchantment = put(&mut base, PLAYER, "Bear Cub", Zone::Graveyard);
+    let surveyor = put(&mut base, PLAYER, "Tunnel Surveyor", Zone::Hand);
+    let recover = Action::SelectGraveyardReturn {
+        object: base.object_ref(grave),
+    };
+    let decline_return = Action::ChooseOptional { accept: false };
+    let unlock = Action::ChooseRoomDoor {
+        object: room_ref,
+        door: RoomDoor::Right,
+        change: RoomChange::Unlock,
+    };
+    let cast_dancers = |game: &mut Game| {
+        cast(game, dancers, None);
+        resolve_to_choice(game);
+        assert_eq!(stats(game, dancers), (2, 5));
+        assert!(
+            game.object_view(dancers)
+                .keywords
+                .contains(Keywords::FLYING)
+        );
+        assert!(
+            game.state
+                .resolving
+                .as_ref()
+                .unwrap()
+                .item
+                .targets
+                .is_empty()
+        );
+    };
+
+    let mut return_only = base.clone();
+    return_only.set_room_doors(room_ref, OPEN);
+    cast_dancers(&mut return_only);
+    reject(&mut return_only, decline_return.clone());
+    for card in [foreign_grave, nonenchantment] {
+        let object = return_only.object_ref(card);
+        reject(&mut return_only, Action::SelectGraveyardReturn { object });
+    }
+    act(&mut return_only, recover.clone());
+    assert_eq!(return_only.object_view(grave).zone, Zone::Hand);
+
+    let mut door_only = base.clone();
+    door_only.move_object(grave, Zone::Exile);
+    cast_dancers(&mut door_only);
+    assert_eq!(
+        door_only.state.pending,
+        Pending::RoomChoice { player: PLAYER }
+    );
+    act(&mut door_only, unlock.clone());
+    settle(&mut door_only);
+    assert_eq!(door_only.object_view(room).room_doors, Some(OPEN));
+
+    cast_dancers(&mut base);
+    let mut recover_branch = base.clone();
+    act(&mut recover_branch, recover);
+    assert_eq!(recover_branch.object_view(grave).zone, Zone::Hand);
+    assert_eq!(recover_branch.object_view(room).room_doors, Some(LEFT_ONLY));
+    act(&mut base, decline_return);
+    let foreign = base.object_ref(foreign_room);
+    reject(
+        &mut base,
+        Action::ChooseRoomDoor {
+            object: foreign,
+            door: RoomDoor::Right,
+            change: RoomChange::Unlock,
+        },
+    );
+    act(&mut base, unlock);
+    settle(&mut base);
+    assert_eq!(base.object_view(room).room_doors, Some(OPEN));
+    assert_eq!(base.object_view(grave).zone, Zone::Graveyard);
+    assert_eq!(creatures_with_subtype(&base, "Spirit").len(), 1);
+    cast(&mut base, surveyor, None);
+    settle(&mut base);
+    let spirits = creatures_with_subtype(&base, "Spirit");
+    assert_eq!(spirits.len(), 2);
+    for spirit in spirits {
+        assert_eq!(
+            (spirit.name, spirit.kinds, spirit.colors),
+            ("Spirit Token", 1, 1)
+        );
+        assert_eq!((spirit.power, spirit.toughness), (3, 1));
+        assert!(spirit.keywords.contains(Keywords::FLYING));
+    }
+}

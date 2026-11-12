@@ -512,3 +512,84 @@ fn savior_of_the_small_returns_its_own_creature_card_at_the_mana_value_boundary(
     assert_eq!(game.object_view(legal).zone, Zone::Hand);
     assert_eq!(game.object_view(expensive).zone, Zone::Graveyard);
 }
+
+#[test]
+fn role_model_chooses_its_survival_counter_and_recreates_each_qualifying_death_set() {
+    let mut game = scenario(PLAYER);
+    let model = put(&mut game, PLAYER, "Reluctant Role Model", Zone::Battlefield);
+    let other = put(&mut game, PLAYER, "Bear Cub", Zone::Battlefield);
+    let counterless = put(&mut game, PLAYER, "Grizzly Bears", Zone::Battlefield);
+    let opponent = put(&mut game, OPPONENT, "Hill Giant", Zone::Battlefield);
+    let recipient = put(&mut game, OPPONENT, "Darksteel Colossus", Zone::Battlefield);
+    let day = put(&mut game, PLAYER, "Day of Judgment", Zone::Hand);
+    assert!(
+        !game
+            .object_view(model)
+            .keywords
+            .contains(Keywords::LIFELINK)
+    );
+    game.state.objects[model as usize].tapped = true;
+    second_main(&mut game);
+    assert!(
+        !game
+            .legal_actions()
+            .iter()
+            .any(|action| { matches!(action, Action::ChooseSourceCounterKind { .. }) })
+    );
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::ChooseSourceCounterKind {
+            counter: CounterKind::Stun,
+        },
+    );
+    for counter in [
+        CounterKind::Flying,
+        CounterKind::Lifelink,
+        CounterKind::PlusOne,
+    ] {
+        let mut branch = game.clone();
+        act(&mut branch, Action::ChooseSourceCounterKind { counter });
+        assert_eq!(branch.counter_count(model, counter), 1);
+    }
+    act(
+        &mut game,
+        Action::ChooseSourceCounterKind {
+            counter: CounterKind::PlusOne,
+        },
+    );
+    game.add_counter(other, CounterKind::Flying, 1);
+    game.add_counter(other, CounterKind::Stun, 2);
+    game.add_counter(opponent, CounterKind::PlusOne, 2);
+    cast(&mut game, day, None);
+    pass_pair(&mut game);
+    for card in [model, other, counterless, opponent] {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
+    assert_eq!(
+        game.state.pending,
+        Pending::OrderTriggers { player: PLAYER }
+    );
+    assert_eq!(game.state.ordering_triggers.len(), 2);
+    let mut decline = game.clone();
+    choose(&mut decline, |action| {
+        matches!(action, Action::PutTrigger { .. })
+    });
+    act(&mut decline, Action::FinishTargets);
+    act(&mut decline, Action::FinishTargets);
+    settle(&mut decline);
+    assert_eq!(decline.counter_count(recipient, CounterKind::PlusOne), 0);
+    assert_eq!(decline.counter_count(recipient, CounterKind::Flying), 0);
+    assert_eq!(decline.counter_count(recipient, CounterKind::Stun), 0);
+
+    choose(&mut game, |action| {
+        matches!(action, Action::PutTrigger { .. })
+    });
+    select_target(&mut game, recipient);
+    select_target(&mut game, recipient);
+    assert_eq!(game.state.stack.len(), 2);
+    settle(&mut game);
+    assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 1);
+    assert_eq!(game.counter_count(recipient, CounterKind::Flying), 1);
+    assert_eq!(game.counter_count(recipient, CounterKind::Stun), 2);
+}
