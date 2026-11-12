@@ -57,6 +57,15 @@ fn exact_top_land_can_enter_or_go_to_hand_and_the_look_stays_private() {
                 .known_hand
                 .contains(&declined.object_ref(top))
         );
+        let mut previously_revealed = game.clone();
+        previously_revealed.remember_library_top(P, previously_revealed.object_ref(top));
+        act(&mut previously_revealed, Action::FinishLibrarySelection);
+        assert!(
+            previously_revealed
+                .observe(P.other())
+                .known_hand
+                .contains(&previously_revealed.object_ref(top))
+        );
         if land {
             let checkpoint = game.snapshot();
             let mut indexed = game.clone();
@@ -105,6 +114,11 @@ fn a_card_with_both_zone_moves_prevented_stays_the_same_library_incarnation() {
     assert_eq!(game.object_view(top).zone, Zone::Library);
     assert_eq!(game.object_ref(top), original);
     assert_eq!(game.state.pending, Pending::Priority);
+    assert_eq!(
+        game.observe(P).known_library_top[P.index()].unwrap().object,
+        original
+    );
+    assert!(game.observe(P.other()).known_library_top[P.index()].is_none());
     assert_eq!(game.state.players[P.index()].lands_entered_this_turn, 0);
     assert_eq!(game.state.players[P.index()].cards_drawn_this_turn, 0);
 }

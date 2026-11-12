@@ -971,9 +971,11 @@ impl Game {
         let owner = f.owner;
         let chooser = self.state.resolving.as_ref().unwrap().item.controller;
         let remembers_hand = f.completion == LibrarySelectionCompletion::RememberHandCount;
-        let keep_private_look =
-            remembers_hand && f.selected.is_empty() && f.spec.remainder == LibraryRemainder::Keep;
-        if !keep_private_look && (f.top_land.is_none() || !f.selected.is_empty()) {
+        let preserve_top = f.top_land == Some(TopLandStage::BattlefieldOrHand)
+            || (remembers_hand
+                && f.selected.is_empty()
+                && f.spec.remainder == LibraryRemainder::Keep);
+        if !preserve_top && (f.top_land.is_none() || !f.selected.is_empty()) {
             self.forget_library_top(owner);
         }
         for reference in f.selected.iter().chain(&f.remaining).chain(&f.bottom) {
@@ -1135,14 +1137,16 @@ impl Game {
             .map(|r| r.card)
             .collect();
         let events = self.move_objects_raw(&ids, Zone::Hand);
-        if frame.spec.reveal {
-            self.state.known_hand.extend(
-                events
-                    .iter()
-                    .filter(|e| e.moved && e.destination == Zone::Hand)
-                    .map(|e| e.after),
-            );
-        }
+        self.state.known_hand.extend(
+            events
+                .iter()
+                .filter(|e| {
+                    e.moved
+                        && e.destination == Zone::Hand
+                        && (frame.spec.reveal || follow_redirect && e.before.zone != Zone::Library)
+                })
+                .map(|e| e.after),
+        );
         self.finish_zone_events(&events, &[]);
     }
     fn public_top_land_redirect(&self, object: ObjectRef) -> bool {

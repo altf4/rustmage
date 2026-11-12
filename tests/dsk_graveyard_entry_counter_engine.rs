@@ -162,7 +162,7 @@ fn an_independent_permission_and_spell_copies_do_not_inherit_the_entry_counter()
     act(&mut raw, Action::Pass);
     let spell_copy = raw.state.stack.last().unwrap();
     assert!(spell_copy.is_copy);
-    let copy_id = spell_copy.id;
+    let copy_id = spell_copy.source.unwrap().id;
     settle(&mut raw);
     assert_eq!(raw.object_view(copy_id).zone, Zone::Battlefield);
     assert_eq!(raw.counter_count(copy_id, CounterKind::PlusOne), 0);
