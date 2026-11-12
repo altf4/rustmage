@@ -3,10 +3,26 @@
   "catalogue_id": 2294,
   "oracle_id": "e86c965b-ac10-4fff-b682-dddd6d9747c6",
   "facts_sha256": "cb496ff340ffee777c4ee39b68af7bcd6e7ffdb8698547efa852dac360ab9525",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3e32dbd258e3b311fdd0eebfe741452f728864aeb56282b937a25bfd453a0e52"
   },
-  "physical_metadata_sha256": "39e735cf0687aa08aa3f594e43b28cffb9f4cbc063db3e5ca9af13b37aa569f5"
+  "physical_metadata_sha256": "39e735cf0687aa08aa3f594e43b28cffb9f4cbc063db3e5ca9af13b37aa569f5",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/j/JudithCarnageConnoisseur.java",
+  "java_sha256": "a7b6556973dc1f1a84c5bdc2bace2c7e15146f68ca25851c16448e11dbff16f7",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SpellCastControllerTriggeredAbility.java",
+      "sha256": "ce0e43dcafae177c0b5ad79437bfd9ed8bd3f63c57557dda4bbe27ed77ac94a2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/ImpToken.java",
+      "sha256": "dbb780df0a0081555dbb37d7c63be0611154f681c0758982e02e591991ec55fb"
+    }
+  ]
 }

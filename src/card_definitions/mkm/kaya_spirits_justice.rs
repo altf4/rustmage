@@ -103,11 +103,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
                     max: 1,
                 },
             ]),
-            program: &[
-                Instruction::Exile,
-                Instruction::SelectGroup(1),
-                Instruction::Exile,
-            ],
+            program: &[Instruction::ExileAllTargets],
             sorcery: true,
             once_per_turn: false,
         },

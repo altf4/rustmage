@@ -3,10 +3,31 @@
   "catalogue_id": 789,
   "oracle_id": "3a007dbd-18fd-44d1-a305-7cc8dd6231eb",
   "facts_sha256": "faf3d45d4ac94061aea937fa544225e946d54c6e0352e2034d87d562c504660b",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "73d732ee877c3119998ad39e75a5410405743df0aed00af9fd32803fb4f505b7"
   },
-  "physical_metadata_sha256": "92634b68aacba4c42cc45764743c53e3b643b2d9e876fe7b16148f3729f36752"
+  "physical_metadata_sha256": "92634b68aacba4c42cc45764743c53e3b643b2d9e876fe7b16148f3729f36752",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CoercedToKill.java",
+  "java_sha256": "43bf34b981e66a87131b00e35fc85acdf76c04bc2a8d9e90e037eb9d9d0a475a",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/ControlEnchantedEffect.java",
+      "sha256": "84e8b3f040dcdbb7be851fb8b5fcfab3620c38514f3b80d811577f9cce34a9b8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/SetBasePowerToughnessAttachedEffect.java",
+      "sha256": "1c0acf946ead98873fc4e57586bf707356771bb257c7138824a1e067770a6831"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/AddCardSubtypeAttachedEffect.java",
+      "sha256": "dbe2d3ace133714b13fce577d8fee1c52736d5cc7d20f1c18ffdd49c82ce781f"
+    }
+  ]
 }

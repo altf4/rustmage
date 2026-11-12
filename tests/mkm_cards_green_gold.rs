@@ -51,3 +51,6 @@ mod events;
 
 #[path = "mkm_cards_green_gold/combat.rs"]
 mod combat;
+
+#[path = "mkm_cards_green_gold/links.rs"]
+mod links;

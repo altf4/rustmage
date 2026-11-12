@@ -3,9 +3,10 @@
   "catalogue_id": 5684,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "e8904c11a75da891c99fced04422133438b9dee4d12f60287b70ac6dd5117926",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/ImpToken.java",
-  "java_sha256": "dbb780df0a0081555dbb37d7c63be0611154f681c0758982e02e591991ec55fb"
+  "java_sha256": "dbb780df0a0081555dbb37d7c63be0611154f681c0758982e02e591991ec55fb",
+  "rules_tests": "tests/mkm_cards_green_gold/links.rs"
 }
