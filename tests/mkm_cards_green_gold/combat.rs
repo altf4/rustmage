@@ -303,7 +303,12 @@ fn rope_equips_reach_and_a_single_blocker_limit_then_can_be_sacrificed_as_a_clue
     assert!(!sacrificed.keywords(wearer).contains(Keywords::REACH));
 
     let mut menace = game.clone();
-    menace.state.objects[wearer as usize].gained_keywords = Keywords::MENACE;
+    assert!(set_suspected(&mut menace, wearer, true));
+    assert!(
+        menace
+            .keywords(wearer)
+            .contains(Keywords::MENACE.union(Keywords::MAX_ONE_BLOCKER))
+    );
     attack(&mut menace, &[wearer]);
     pass_pair(&mut menace);
     reject(
