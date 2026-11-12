@@ -1331,6 +1331,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             tapped: obj.tapped,
             summoning_sick: obj.summoning_sick,
             cast_for_warp: obj.cast_for_warp,
+            cast_for_impending: obj.cast_for_impending,
             damage: obj.damage,
             damaged_this_turn: obj.damaged_this_turn,
             dealt_damage_this_turn: obj.dealt_damage_this_turn,

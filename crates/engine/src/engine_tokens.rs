@@ -263,6 +263,7 @@ impl Game {
                     summoning_sick: false,
                     flashback: false,
                     cast_for_warp: false,
+                    cast_for_impending: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,

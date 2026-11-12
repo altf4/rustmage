@@ -2000,6 +2000,29 @@ impl WarpSpec {
     }
 }
 
+/// The alternative mana cost and entry counters of a printed impending ability.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ImpendingSpec {
+    pub cost: ManaCost,
+    pub time_counters: u64,
+}
+
+impl ImpendingSpec {
+    pub const END_STEP: TriggeredAbility = TriggeredAbility {
+        condition: TriggerCondition::AtStep {
+            step: TriggerStep::End,
+            relation: CastRelation::You,
+            guard: StepGuard::ImpendingHasTimeCounters,
+        },
+        targets: TargetPlan::NONE,
+        program: &[Instruction::RemoveSourceCounterIfAny {
+            kind: CounterKind::Time,
+            skip: 0,
+        }],
+    };
+}
+
 /// A fixed number of distinct objects, selected by the player paying a cost.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -6681,6 +6704,8 @@ pub enum StepGuard {
     GainedOrLostLife,
     GainedAndLostLife,
     SourceTapped,
+    /// The exact permanent's impending cost was paid and it has a time counter.
+    ImpendingHasTimeCounters,
     Expression {
         value: StatValue,
         minimum: Option<i128>,
@@ -8366,6 +8391,9 @@ impl Card {
     }
     pub fn warp_cost(self) -> Option<ManaCost> {
         self.warp_spec().map(|spec| spec.mana)
+    }
+    pub(crate) fn impending_spec(self) -> Option<ImpendingSpec> {
+        authored::rules(self).and_then(|rules| rules.extras.impending)
     }
     pub(crate) fn warp_spec(self) -> Option<WarpSpec> {
         authored::rules(self)

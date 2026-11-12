@@ -1012,6 +1012,10 @@ pub(super) fn in_world<W: super::ability_world::CharacteristicWorld + ?Sized>(
                     }
                 }
             }
+            characteristic_layers::SubtypeChange::RemoveCreatureTypes => {
+                mask.replace_creature_types(&[]);
+                mask.set_flag(ALL_CREATURE_TYPES, false);
+            }
             characteristic_layers::SubtypeChange::Chosen(typ) => {
                 mask.chosen = Some(typ);
             }

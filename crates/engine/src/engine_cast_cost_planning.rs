@@ -977,6 +977,7 @@ impl FundingState<'_> {
         object.loyalty_activated_this_turn = false;
         object.flashback = false;
         object.cast_for_warp = false;
+        object.cast_for_impending = false;
         object.class_level = 1;
         resource.attacking = false;
         let after = ObjectRef {

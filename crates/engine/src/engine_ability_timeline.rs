@@ -67,6 +67,7 @@ impl roles::RoleState {
 impl Card {
     pub(super) fn has_layer6_provider(self) -> bool {
         self.role().is_some()
+            || self.impending_spec().is_some()
             || self.static_ability_groups().iter().any(|group| {
                 group.fragments.iter().any(|fragment| {
                     matches!(

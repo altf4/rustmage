@@ -2981,6 +2981,7 @@ impl<'g> FundingState<'g> {
                 object.controller = object.owner;
                 object.flashback = false;
                 object.cast_for_warp = false;
+                object.cast_for_impending = false;
                 object.tapped = false;
                 object.summoning_sick = false;
                 object.damage = 0;

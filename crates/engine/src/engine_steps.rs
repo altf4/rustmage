@@ -578,6 +578,13 @@ impl Game {
             }
             StepGuard::CommittedCrimeThisTurn => return p.committed_crime_this_turn,
             StepGuard::SourceSaddled => return self.source_saddled(source),
+            StepGuard::ImpendingHasTimeCounters => {
+                let object = world.object(source.card);
+                return object.zone == Zone::Battlefield
+                    && world.reference(source.card) == source
+                    && object.cast_for_impending
+                    && world.counter_count(source.card, CounterKind::Time) != 0;
+            }
             StepGuard::SourceTapped => {
                 return if self.on_battlefield(source.card) && self.object_ref(source.card) == source
                 {

@@ -3746,6 +3746,7 @@ impl Game {
                             item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                         movement.gift = item.gift_context().map(Box::new);
                         movement.warp_controller = item.delayed_warp_controller();
+                        movement.apply_impending_cost(item.cast);
                         self.stage_entries(vec![movement], None);
                         self.give_priority();
                         return;
@@ -3760,6 +3761,7 @@ impl Game {
                                 || c.kicker == Some(true)
                                 || c.bargain == Some(true)
                                 || c.evidence == Some(true)
+                                || c.impending
                                 || matches!(c.gift, Some(GiftDeclaration::Promised { .. }))
                                 || matches!(
                                     c.method,
@@ -3804,6 +3806,7 @@ impl Game {
                             movement.cast_origin =
                                 item.cast.filter(|_| !item.is_copy).map(|c| c.origin);
                             movement.evoked = item.cast.is_some_and(|c| c.evoked);
+                            movement.apply_impending_cost(item.cast);
                             movement.behold_exiled = item.cast.and_then(|cast| cast.behold_exiled);
                             movement.offspring_paid =
                                 item.cast.is_some_and(|c| c.offspring == Some(true));

@@ -79,6 +79,7 @@ pub(super) struct EntryMove {
     pub offspring_paid: bool,
     pub cast_payment: Option<Mana>,
     pub evoked: bool,
+    pub cast_for_impending: bool,
     pub behold_exiled: Option<ObjectRef>,
     pub cast_event: Option<Box<CastPaymentEvent>>,
     /// Additive type effect following the exact spell into the prospective entry.
@@ -186,6 +187,17 @@ impl EntryMove {
             .is_none()
             .then_some(self.before.card)
     }
+    pub(super) fn apply_impending_cost(&mut self, cast: Option<CastInfo>) {
+        if cast.is_some_and(|cast| cast.impending) {
+            let spec = self
+                .before
+                .card
+                .impending_spec()
+                .expect("paid impending cost");
+            self.cast_for_impending = true;
+            self.effect_counter = Some((CounterKind::Time, spec.time_counters));
+        }
+    }
     pub(super) fn intrinsic_entry_tapped(&self) -> EntryTapped {
         self.intrinsic_entry_card()
             .map_or(EntryTapped::Never, Card::entry_tapped)
@@ -215,7 +227,8 @@ impl EntryMove {
         &self,
         world: &W,
     ) -> bool {
-        self.ghost_vacuum_after.is_some()
+        self.cast_for_impending
+            || self.ghost_vacuum_after.is_some()
             || self.animation.is_some()
             || self.as_entry_skeleton_source().is_some()
             || self.as_entry_treasure_source().is_some()
@@ -339,6 +352,7 @@ impl EntryMove {
             offspring_paid: false,
             cast_payment: None,
             evoked: false,
+            cast_for_impending: false,
             behold_exiled: None,
             cast_event: None,
             cast_added_creature_types: &[],
@@ -1158,6 +1172,8 @@ impl Game {
                 },
             );
             if event.moved && event.destination == Zone::Battlefield {
+                self.state.objects[event.after.card as usize].cast_for_impending =
+                    movement.cast_for_impending;
                 if movement
                     .copy_preparation
                     .as_ref()

@@ -1402,6 +1402,7 @@ struct Object {
     // Exact current stack incarnation was cast using flashback (CR702.34a).
     flashback: bool,
     cast_for_warp: bool,
+    cast_for_impending: bool,
     damage: i128,
     damaged_this_turn: bool,
     dealt_damage_this_turn: bool,
@@ -1584,6 +1585,16 @@ impl CastMethod {
         )
     }
 
+    fn allows_printed_alternative(self) -> bool {
+        matches!(
+            self,
+            Self::Normal
+                | Self::GraveyardCounterCost
+                | Self::LinkedExileCounterCost
+                | Self::GraveyardAdditionalCosts
+        )
+    }
+
     fn pays_life_for_mana_value(self) -> bool {
         matches!(self, Self::ExileLife | Self::LibraryLife)
     }
@@ -1632,6 +1643,9 @@ pub struct CastInfo {
     /// The paid alternative-cost declaration; spell copies retain this fact.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub evoked: bool,
+    /// A spell copy retains the alternative-cost decision of its original.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub impending: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub beheld_type: Option<crate::cards::CreatureType>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
@@ -3404,6 +3418,8 @@ pub struct ObjectView {
     pub tapped: bool,
     pub summoning_sick: bool,
     pub cast_for_warp: bool,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub cast_for_impending: bool,
     pub damage: i128,
     pub damaged_this_turn: bool,
     pub dealt_damage_this_turn: bool,
@@ -3688,6 +3704,8 @@ pub struct SpellCostChoiceView {
     pub cost: ManaCost,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub activation_route: Option<ActivationCostRoute>,
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub impending: bool,
 }
 
 /// Legal modes of the currently announced modal spell.
@@ -4494,6 +4512,7 @@ impl Game {
                     summoning_sick: false,
                     flashback: false,
                     cast_for_warp: false,
+                    cast_for_impending: false,
                     damage: 0,
                     damaged_this_turn: false,
                     dealt_damage_this_turn: false,
@@ -6721,6 +6740,10 @@ impl Game {
                     } else {
                         obj.card.cost_options()
                     };
+                    let impending_cost = (!flashback)
+                        .then(|| obj.card.impending_spec().map(|spec| spec.cost))
+                        .flatten();
+                    let costs = costs.chain(impending_cost);
                     let reduction = if completable {
                         let has_generic = costs
                             .clone()
@@ -6820,7 +6843,9 @@ impl Game {
                             return true;
                         }
                     }
-                    if self.cave_payment_requires_announcement(actor, obj.card) {
+                    if self.cave_payment_requires_announcement(actor, obj.card)
+                        || impending_cost.is_some()
+                    {
                         continue;
                     }
                     if target_cost
@@ -10909,6 +10934,7 @@ impl Game {
         };
         obj.flashback = false;
         obj.cast_for_warp = false;
+        obj.cast_for_impending = false;
         obj.generation = generation;
         obj.tapped = tapped;
         obj.summoning_sick = destination == Zone::Battlefield;
@@ -13046,6 +13072,7 @@ impl Game {
                         activation_route: (a.equip_zero_available
                             || a.has_equip_discard_alternative())
                         .then(|| a.activation_route_for_index(index)),
+                        impending: a.impending_route_for_index(index),
                     })
                     .collect()
             } else {

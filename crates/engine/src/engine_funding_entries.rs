@@ -588,6 +588,10 @@ impl FundingState<'_> {
                     })
                 })
             }
+            StepGuard::ImpendingHasTimeCounters => {
+                self.game
+                    .step_guard_in_world(self, guard, player, source, movement.before.tapped)
+            }
             StepGuard::SourceTapped => {
                 if self.reference(source.card) == source
                     && self.object(source.card).zone == Zone::Battlefield
@@ -1753,6 +1757,7 @@ impl FundingState<'_> {
             o.cast_for_warp = m.destination == Zone::Battlefield
                 && m.warp_controller.is_some()
                 && m.cast_origin.is_some();
+            o.cast_for_impending = m.destination == Zone::Battlefield && m.cast_for_impending;
             o.gained_keywords = Keywords::NONE;
             o.growth = Stats::default();
             o.counters = m.counters.hot();

@@ -9,6 +9,13 @@ pub(super) struct ActivationCostChoice {
     pub reduction: ManaCost,
     pub route: ActivationCostRoute,
 }
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SpellAlternative {
+    None,
+    Evoke,
+    Impending,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LimitedCastPermission {
@@ -444,7 +451,7 @@ impl Announcement {
             ManaCost,
             ActivationCostRoute,
             Option<ActivationCostChoice>,
-            bool,
+            SpellAlternative,
         ),
     > + '_ {
         let options = match self.item.kind {
@@ -631,6 +638,21 @@ impl Announcement {
         } else {
             std::iter::once(fixed_alternative.unwrap_or(ManaCost::ZERO)).chain([].iter().copied())
         };
+        let impending = self.item.cast.and_then(|cast| {
+            if !cast.method.allows_printed_alternative() {
+                return None;
+            }
+            self.item
+                .source
+                .and_then(|source| source.card.impending_spec())
+                .map(|spec| {
+                    (
+                        spec.cost,
+                        ActivationCostRoute::Printed,
+                        SpellAlternative::Impending,
+                    )
+                })
+        });
         // Choose the printed base or its replacement before applying the
         // shared cost modifiers. A route identity survives equal mana totals.
         options
@@ -644,23 +666,29 @@ impl Announcement {
                     .item
                     .source
                     .is_some_and(|s| s.card.evoke_costs().contains(&cost));
-                (cost, ActivationCostRoute::Printed, evoked)
+                let alternative = if evoked {
+                    SpellAlternative::Evoke
+                } else {
+                    SpellAlternative::None
+                };
+                (cost, ActivationCostRoute::Printed, alternative)
             })
+            .chain(impending)
             .chain(self.equip_zero_available.then_some((
                 ManaCost {
                     colored: [0; 6],
                     generic: 0,
                 },
                 ActivationCostRoute::FirstEquipZero,
-                false,
+                SpellAlternative::None,
             )))
             .chain(self.has_equip_discard_alternative().then_some((
                 ManaCost::ZERO,
                 ActivationCostRoute::DiscardCard,
-                false,
+                SpellAlternative::None,
             )))
-            .flat_map(move |(cost, route, evoked)| {
-                std::iter::once((cost, route, evoked)).chain(
+            .flat_map(move |(cost, route, alternative)| {
+                std::iter::once((cost, route, alternative)).chain(
                     (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
                         .then(|| {
                             let card = self
@@ -675,10 +703,10 @@ impl Announcement {
                             }
                         })
                         .flatten()
-                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, evoked)),
+                        .map(move |extra| (Card::add_mana_cost(cost, extra), route, alternative)),
                 )
             })
-            .flat_map(move |(cost, route, evoked)| {
+            .flat_map(move |(cost, route, alternative)| {
                 let discounts = self
                     .activation_discounts()
                     .with_ordinary(match self.item.kind {
@@ -709,7 +737,7 @@ impl Announcement {
                                 route,
                                 matches!(self.item.kind, StackKind::ActivatedAbility { .. })
                                     .then_some(choice),
-                                evoked,
+                                alternative,
                             )
                         })
                     })
@@ -755,13 +783,13 @@ impl Announcement {
                         Card::add_mana_cost(base, fee),
                         ActivationCostRoute::Printed,
                         None,
-                        false,
+                        SpellAlternative::None,
                     )
                 })
             }))
-            .filter_map(|(cost, route, choice, evoked)| {
+            .filter_map(|(cost, route, choice, alternative)| {
                 self.apply_cost_declarations(cost)
-                    .map(|cost| (cost, route, choice, evoked))
+                    .map(|cost| (cost, route, choice, alternative))
             })
     }
     pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
@@ -826,10 +854,11 @@ impl Announcement {
         self.cost_route_options().map(|(cost, _, _, _)| cost)
     }
     pub(super) fn select_cost(&mut self, index: usize) {
-        let (cost, route, choice, evoked) =
+        let (cost, route, choice, alternative) =
             self.cost_route_options().nth(index).expect("cost option");
         if let Some(cast) = &mut self.item.cast {
-            cast.evoked = evoked;
+            cast.evoked = alternative == SpellAlternative::Evoke;
+            cast.impending = alternative == SpellAlternative::Impending;
         }
         self.cost = Some(cost);
         self.activation_cost_route = route;
@@ -841,6 +870,14 @@ impl Announcement {
         } else {
             self.cost_route_options().nth(index).expect("cost option").1
         }
+    }
+    pub(super) fn impending_route_for_index(&self, index: usize) -> bool {
+        self.item.source.is_some_and(|source| {
+            self.item.cast.is_some() && source.card.impending_spec().is_some()
+        }) && self
+            .cost_route_options()
+            .nth(index)
+            .is_some_and(|(_, _, _, alternative)| alternative == SpellAlternative::Impending)
     }
     pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
         self.activation_choice
@@ -2905,6 +2942,7 @@ impl Game {
                 granted_warp: false,
                 exile_play_surcharge: 0,
                 evoked: false,
+                impending: false,
                 beheld_type: None,
                 behold_type_declared: false,
                 behold_exiled: None,

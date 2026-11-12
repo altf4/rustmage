@@ -424,7 +424,10 @@ impl Game {
         } else {
             definition.cost_options()
         };
-        costs.into_iter().any(|cost| {
+        let impending_cost = (!flashback)
+            .then(|| definition.impending_spec().map(|spec| spec.cost))
+            .flatten();
+        costs.chain(impending_cost).any(|cost| {
             let cost = Self::with_flash_surcharge(cost, definition, true);
             if definition.has_target_cost_modifier() {
                 self.initial_target_cost_fundable(actor, card, cost)
