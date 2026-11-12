@@ -9,9 +9,9 @@ use support::*;
 const ATTACKING_TOKEN: TargetRule = TargetRule::Filtered {
     base: &TargetRule::Filtered {
         base: &TargetRule::Creature,
-        predicate: TargetPredicate::Token,
+        predicate: &TargetPredicate::Token,
     },
-    predicate: TargetPredicate::Attacking,
+    predicate: &TargetPredicate::Attacking,
 };
 const KILLER: CardRules = CardRules {
     effect: Effect::Permanent,
