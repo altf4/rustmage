@@ -358,14 +358,7 @@ fn izoni_uses_both_evidence_triggers_and_four_tokens_pay_one_activation() {
         (milled, LibraryDestination::Graveyard),
         (card_drawn_first, LibraryDestination::Top),
     ] {
-        let object = game.object_ref(card);
-        act(
-            &mut game,
-            Action::ChooseLibraryDestination {
-                object,
-                destination,
-            },
-        );
+        act(&mut game, Action::ArrangeLibrary { card, destination });
     }
     settle(&mut game);
     assert_eq!(tokens(&game, player, SPIDER), [spiders[3]]);
