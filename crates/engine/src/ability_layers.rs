@@ -612,6 +612,11 @@ pub enum StaticAbilityFragment {
         kinds: u16,
         production: ManaProduction,
     },
+    /// Grant a tap mana ability to controlled tokens of the indicated live card types.
+    ControlledTokenTapMana {
+        kinds: u16,
+        production: ManaProduction,
+    },
     /// Grant a tap mana ability to controlled permanents with this effective subtype.
     ControlledSubtypeTapMana {
         subtype: &'static str,

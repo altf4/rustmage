@@ -870,6 +870,9 @@ impl<'g> FundingState<'g> {
                     production,
                     ..
                 }
+                | crate::cards::StaticAbilityFragment::ControlledTokenTapMana {
+                    production, ..
+                }
                 | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana {
                     production,
                     ..
@@ -1210,6 +1213,7 @@ impl<'g> FundingState<'g> {
                             matches!(
                                 fragment,
                                 StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                    | StaticAbilityFragment::ControlledTokenTapMana { .. }
                                     | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                                     | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                                     | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
@@ -1277,6 +1281,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledLandsAllBasicTypes
                                         | StaticAbilityFragment::ControlledNonlandAllColors
+                                        | StaticAbilityFragment::ControlledTokenTapMana { .. }
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
                                         | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
@@ -4240,6 +4245,10 @@ impl<'g> FundingState<'g> {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
                             }
+                            | StaticAbilityFragment::ControlledTokenTapMana {
+                                production: ManaProduction::Tagged { quality, .. },
+                                ..
+                            }
                             | StaticAbilityFragment::ControlledSubtypeTapMana {
                                 production: ManaProduction::Tagged { quality, .. },
                                 ..
@@ -4487,6 +4496,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::AttachmentSacrificeMana(_)
                                         | StaticAbilityFragment::LandMana { .. }
                                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                        | StaticAbilityFragment::ControlledTokenTapMana { .. }
                                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)

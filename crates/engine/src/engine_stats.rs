@@ -389,6 +389,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlotFromLibraryTop
                             | crate::cards::StaticAbilityFragment::LandMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                             | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                             | crate::cards::StaticAbilityFragment::ControlledArtifactFood(_)

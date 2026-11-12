@@ -1405,6 +1405,7 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::LandMana { production, .. }
             | StaticAbilityFragment::OtherControlledPermanentTapMana(production)
             | StaticAbilityFragment::ControlledPermanentTapMana { production, .. }
+            | StaticAbilityFragment::ControlledTokenTapMana { production, .. }
             | StaticAbilityFragment::ControlledSubtypeTapMana { production, .. } => production,
             _ => return None,
         };
@@ -1430,6 +1431,9 @@ pub(super) trait CharacteristicWorld {
             StaticAbilityFragment::OtherControlledPermanentTapMana(_) => own && id != source.card,
             StaticAbilityFragment::ControlledPermanentTapMana { kinds, .. } => {
                 own && self.kinds(id) & kinds != 0
+            }
+            StaticAbilityFragment::ControlledTokenTapMana { kinds, .. } => {
+                own && target.is_token() && self.kinds(id) & kinds != 0
             }
             StaticAbilityFragment::ControlledSubtypeTapMana { subtype, .. } => {
                 own && self.subtypes(id).has(target.card, subtype)

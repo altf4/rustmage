@@ -142,6 +142,7 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
         }
         StaticAbilityFragment::LandMana { .. }
         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+        | StaticAbilityFragment::ControlledTokenTapMana { .. }
         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
         | StaticAbilityFragment::OtherControlledPermanentTapMana(_) => {
             let production = world.static_tap_mana(source, id, *fragment)?;
@@ -899,6 +900,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::AttachmentSacrificeMana(..)
                         | StaticAbilityFragment::LandMana { .. }
                         | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                        | StaticAbilityFragment::ControlledTokenTapMana { .. }
                         | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                         | StaticAbilityFragment::OtherControlledPermanentTapMana(_)

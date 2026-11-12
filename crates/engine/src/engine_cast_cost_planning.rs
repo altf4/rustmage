@@ -1602,6 +1602,7 @@ impl FundingState<'_> {
                                 | crate::cards::StaticAbilityFragment::SpellImprovise(_)
                                 | crate::cards::StaticAbilityFragment::LandMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                                | crate::cards::StaticAbilityFragment::ControlledTokenTapMana { .. }
                                 | crate::cards::StaticAbilityFragment::ControlledSubtypeTapMana { .. }
                         | crate::cards::StaticAbilityFragment::OtherControlledPermanentTapMana(_)
                                 | crate::cards::StaticAbilityFragment::NoMaximumHandSize
