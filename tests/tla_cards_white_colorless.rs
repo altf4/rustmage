@@ -1,4 +1,6 @@
 //! Printed Avatar rules exercised through the registered card definitions.
+#[path = "tla_cards_white_colorless/admitted.rs"]
+mod admitted;
 #[path = "tla_cards_white_colorless/choices.rs"]
 mod choices;
 #[path = "tla_cards_white_colorless/combat.rs"]

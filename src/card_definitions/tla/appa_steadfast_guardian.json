@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AppaSteadfastGuardian.java",
   "java_sha256": "dd863db80c37dfa3d80b343115d17c0ce939bc5e007624353860bcb478916f59",
-  "rules_tests": "src/assurance/requested_airbend_core.rs",
+  "rules_tests": "tests/tla_cards_white_colorless/admitted.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

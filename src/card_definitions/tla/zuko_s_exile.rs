@@ -3,7 +3,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
     effect: Effect::Spell(
         one(TargetRule::Object {
             zone: TargetZone::Battlefield,
-            kinds: 1 | 16 | 64,
+            kinds: 1 | 16 | 32,
             relation: -1,
             other: false,
             nonland: false,

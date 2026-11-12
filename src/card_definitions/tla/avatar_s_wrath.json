@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/a/AvatarsWrath.java",
   "java_sha256": "601b00761e55a398916c4876d77567942925b2d343e6760a4dde8b19c9989dc3",
-  "rules_tests": "src/assurance/requested_airbend_core.rs",
+  "rules_tests": "tests/tla_cards_white_colorless/admitted.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "232249683efd78b307dd51c24ab77e1e7e8b7d2972711ca489792055b83fd147"
   },
-  "physical_metadata_sha256": "513335a9c53698eff185ede884e9e996424458e8e4fd12ed10583ba8aeed6d59"
+  "physical_metadata_sha256": "513335a9c53698eff185ede884e9e996424458e8e4fd12ed10583ba8aeed6d59",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FancyFootwork.java",
+  "java_sha256": "e8c99b9b62f0c08f61d19d779428b7e947f1ce778a3e3aab743836db740dd354",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/UntapTargetEffect.java",
+      "sha256": "69bec57593db2620ef750768e381badf6843aefaf7584c796037dcdf87f1b973"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/common/TargetCreaturePermanent.java",
+      "sha256": "be43af93538e7f5e57ca39f418aa0888d40b8b4d2692ba1db84daed07ea9574f"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/admitted.rs"
 }

@@ -6,7 +6,7 @@ pub(in crate::cards) const RULES: CardRules = CardRules {
         targets: TargetPlan::Single(TargetSpec {
             rule: TargetRule::Object {
                 zone: TargetZone::Battlefield,
-                kinds: 1 | 16 | 64,
+                kinds: 1 | 16 | 32,
                 relation: 1,
                 other: false,
                 nonland: false,

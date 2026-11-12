@@ -8,5 +8,31 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "a29188acfa6efac1fca024171359cd866dbb2ce3b1636060634bf1ee0cb79551"
   },
-  "physical_metadata_sha256": "31b52b523c5e7d26c61b892cf50e8dc8fe24a9386bc49b63f4da6893957729ec"
+  "physical_metadata_sha256": "31b52b523c5e7d26c61b892cf50e8dc8fe24a9386bc49b63f4da6893957729ec",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InvasionReinforcements.java",
+  "java_sha256": "134b9c0af29247bfac8ae488d870fffb2946b60615d9f9e1a91c985b37e0e2fe",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlashAbility.java",
+      "sha256": "f5bbe5b3d23af9bc03709718cf2fc47ca00dd9413b5d19a68adbd0fe48a53549"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/AllyToken.java",
+      "sha256": "f923612258b7cffbdcb17f3d99f23d7519c956c0a499542f060ffef00ef99b1c"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/admitted.rs"
 }

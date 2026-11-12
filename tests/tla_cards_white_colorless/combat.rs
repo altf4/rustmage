@@ -144,9 +144,17 @@ fn earth_kingdom_jailer_checks_control_and_mana_value_and_returns_its_prisoner()
     let creature = put(&mut game, other, "Hill Giant", Zone::Battlefield);
     let small = put(&mut game, other, "Bear Cub", Zone::Battlefield);
     let own = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let enchantment = put(&mut game, other, "Doubling Season", Zone::Battlefield);
+    let planeswalker = put(
+        &mut game,
+        other,
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    game.add_counter(planeswalker, CounterKind::Loyalty, 4);
     cast(&mut game, jailer, None);
     pass_pair(&mut game);
-    for card in [small, own] {
+    for card in [small, own, planeswalker] {
         reject(
             &mut game,
             Action::ChooseTarget {
@@ -154,6 +162,15 @@ fn earth_kingdom_jailer_checks_control_and_mana_value_and_returns_its_prisoner()
             },
         );
     }
+    let mut enchantment_branch = game.clone();
+    target(&mut enchantment_branch, Target::Card(enchantment));
+    finish_targets(&mut enchantment_branch);
+    drain(&mut enchantment_branch);
+    assert_eq!(
+        enchantment_branch.object_view(enchantment).zone,
+        Zone::Exile
+    );
+
     let old = game.object_ref(creature);
     target(&mut game, Target::Card(creature));
     finish_targets(&mut game);
@@ -402,8 +419,33 @@ fn zukos_exile_gives_the_clue_to_the_targets_controller() {
     let mut game = scenario(player);
     let spell = put(&mut game, player, "Zuko's Exile", Zone::Hand);
     let permanent = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let enchantment = put(&mut game, other, "Impact Tremors", Zone::Battlefield);
+    let planeswalker = put(
+        &mut game,
+        other,
+        "Ajani, Caller of the Pride",
+        Zone::Battlefield,
+    );
+    game.add_counter(planeswalker, CounterKind::Loyalty, 4);
     game.record_control(game.object_ref(permanent), other, None);
-    cast(&mut game, spell, Some(Target::Card(permanent)));
+    act(&mut game, Action::AnnounceCast { card: spell });
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(planeswalker),
+        },
+    );
+    let mut enchantment_branch = game.clone();
+    target(&mut enchantment_branch, Target::Card(enchantment));
+    pay(&mut enchantment_branch);
+    drain(&mut enchantment_branch);
+    assert_eq!(
+        enchantment_branch.object_view(enchantment).zone,
+        Zone::Exile
+    );
+
+    target(&mut game, Target::Card(permanent));
+    pay(&mut game);
     drain(&mut game);
     assert_eq!(game.object_view(permanent).zone, Zone::Exile);
     assert_eq!(game.object_view(permanent).owner, player);
