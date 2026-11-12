@@ -155,7 +155,7 @@ struct SourceCreatureChange {
     timestamp: u64,
     kinds: u16,
     additive: bool,
-    subtypes: &'static [&'static str],
+    subtypes: Option<SubtypeChange>,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -168,45 +168,61 @@ fn source_conditional_creature<W: CharacteristicWorld + ?Sized>(
         return None;
     }
     let roles = world.roles()?;
-    let (kinds, additive, subtypes) = object
-        .card
-        .static_ability_groups()
-        .iter()
-        .flat_map(|g| g.fragments)
-        .find_map(|fragment| match *fragment {
-            StaticAbilityFragment::SourceCounterCreature {
-                own_turn,
-                kind,
-                minimum,
-                form,
-                subtypes,
-                ..
-            } if (!own_turn || object.controller == world.game().state.active)
-                && world.counter_count(id, kind) >= minimum =>
-            {
-                let (kinds, additive) = match form {
-                    SourceCreatureForm::Creature => (1, false),
-                    SourceCreatureForm::ArtifactCreature => (17, true),
-                    SourceCreatureForm::AddCreature => (1, true),
-                };
-                Some((kinds, additive, subtypes))
-            }
-            StaticAbilityFragment::SourceCelebrationCreatureForm { subtypes, .. }
-                if world.celebrating(object.controller) =>
-            {
-                Some((0, true, subtypes))
-            }
-            StaticAbilityFragment::SourceOffTurnCreature
-                if object.controller != world.game().state.active =>
-            {
-                Some((17, true, &[]))
-            }
-            _ => None,
-        })?;
+    let source = world.reference(id);
+    let (kinds, additive, subtypes) =
+        object
+            .card
+            .static_ability_groups()
+            .iter()
+            .find_map(|group| {
+                group
+                    .fragments
+                    .iter()
+                    .find_map(|fragment| match *fragment {
+                        StaticAbilityFragment::SourceAdditionalCreature { subtypes, .. } => {
+                            let change =
+                                (!subtypes.is_empty()).then_some(SubtypeChange::Add(subtypes));
+                            Some((1, true, change))
+                        }
+                        StaticAbilityFragment::SourceCounterCreature {
+                            own_turn,
+                            kind,
+                            minimum,
+                            form,
+                            subtypes,
+                            ..
+                        } if (!own_turn || object.controller == world.game().state.active)
+                            && world.counter_count(id, kind) >= minimum =>
+                        {
+                            let (kinds, additive) = match form {
+                                SourceCreatureForm::Creature => (1, false),
+                                SourceCreatureForm::ArtifactCreature => (17, true),
+                                SourceCreatureForm::AddCreature => (1, true),
+                            };
+                            let change = (!additive || !subtypes.is_empty())
+                                .then_some(SubtypeChange::Named(subtypes, !additive));
+                            Some((kinds, additive, change))
+                        }
+                        StaticAbilityFragment::SourceCelebrationCreatureForm {
+                            subtypes, ..
+                        } if world.celebrating(object.controller) => {
+                            let change = (!subtypes.is_empty())
+                                .then_some(SubtypeChange::Named(subtypes, false));
+                            Some((0, true, change))
+                        }
+                        StaticAbilityFragment::SourceOffTurnCreature
+                            if object.controller != world.game().state.active =>
+                        {
+                            Some((17, true, None))
+                        }
+                        _ => None,
+                    })
+                    .filter(|_| entry_modes::group_enabled(world, source, group))
+            })?;
     let timestamp = roles
         .ability_timestamps
         .iter()
-        .find(|row| row.source == world.reference(id))?
+        .find(|row| row.source == source)?
         .timestamp;
     Some(SourceCreatureChange {
         timestamp,
@@ -764,13 +780,10 @@ fn changed_subtypes<W: CharacteristicWorld + ?Sized>(
         })
         .collect();
     if let Some(change) = source_conditional_creature(world, id)
-        && (!change.additive || !change.subtypes.is_empty())
+        && let Some(subtypes) = change.subtypes
         && (change.kinds != 0 || can_have_creature_subtypes(change.timestamp))
     {
-        changes.push((
-            change.timestamp,
-            SubtypeChange::Named(change.subtypes, !change.additive),
-        ));
+        changes.push((change.timestamp, subtypes));
     }
     if let Some(timestamp) = impending_type_timestamp(world, id)
         && !can_have_creature_subtypes(timestamp)

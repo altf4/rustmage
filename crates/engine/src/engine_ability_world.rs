@@ -1058,23 +1058,27 @@ pub(super) trait CharacteristicWorld {
         if object.zone != Zone::Battlefield {
             return Keywords::NONE;
         }
-        object
-            .card
-            .static_ability_groups()
-            .iter()
-            .flat_map(|group| group.fragments)
-            .fold(Keywords::NONE, |result, fragment| {
-                if let crate::cards::StaticAbilityFragment::SourceConditionalKeywords {
-                    condition,
-                    keywords,
-                } = *fragment
-                    && self.value(condition, id) != 0
+        let mut result = Keywords::NONE;
+        for group in object.card.static_ability_groups() {
+            for fragment in group.fragments {
+                let (condition, keywords) = match *fragment {
+                    StaticAbilityFragment::SourceConditionalKeywords {
+                        condition,
+                        keywords,
+                    } => (Some(condition), keywords),
+                    StaticAbilityFragment::SourceAdditionalCreature { keywords, .. } => {
+                        (None, keywords)
+                    }
+                    _ => continue,
+                };
+                if entry_modes::group_enabled(self, self.reference(id), group)
+                    && condition.is_none_or(|value| self.value(value, id) != 0)
                 {
-                    result.union(keywords)
-                } else {
-                    result
+                    result = result.union(keywords);
                 }
-            })
+            }
+        }
+        result
     }
 
     fn counter_subtype_keywords(&self, id: CardId) -> Keywords {

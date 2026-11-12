@@ -7,6 +7,7 @@ use rustmage_core::{cards::*, engine::*};
 use support::*;
 
 const CASE: Card = Card::from_catalogue_id(667); // Case of the Pilfered Proof
+const GORGON: Card = Card::from_catalogue_id(665); // Case of the Gorgon's Kiss
 const HOTHOUSE: Card = Card::from_catalogue_id(666); // Case of the Locked Hothouse
 const AUDITOR: Card = Card::from_catalogue_id(660); // Case File Auditor
 const CLUE: Card = Card::from_catalogue_id(5296);
@@ -84,6 +85,56 @@ const CASE_RULES: CardRules = CardRules {
     },
     ..CardRules::EMPTY
 };
+const GORGON_BASE: BaseStatSetter = BaseStatSetter {
+    power: Some(4),
+    toughness: Some(4),
+    own_turn: false,
+    condition: None,
+};
+const GORGON_KEYWORDS: Keywords = Keywords::DEATHTOUCH.union(Keywords::LIFELINK);
+const GORGON_RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::SelfEnters,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::GainLife(PlayerSet::Controller, 1)],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::InterveningIf {
+                guard: StepGuard::SourceUnsolved(&StepGuard::Threshold {
+                    value: StepValue::Creatures,
+                    minimum: Some(1),
+                    maximum: None,
+                }),
+                event: &TriggerCondition::AtStep {
+                    step: TriggerStep::End,
+                    relation: CastRelation::You,
+                    guard: StepGuard::Always,
+                },
+            },
+            targets: TargetPlan::NONE,
+            program: &[Instruction::SolveSource],
+        },
+    ],
+    static_groups: &[StaticAbilityGroup {
+        line: 2,
+        first_layer: AbilityLayer::Type,
+        fragments: &[
+            StaticAbilityFragment::SourceAdditionalCreature {
+                subtypes: &["Gorgon"],
+                keywords: GORGON_KEYWORDS,
+            },
+            StaticAbilityFragment::BaseStatSetter(0, GORGON_BASE),
+        ],
+    }],
+    extras: &CardExtras {
+        base_stat_setter: Some(GORGON_BASE),
+        solved_static_groups: &[2],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
 const HOTHOUSE_RULES: CardRules = CardRules {
     effect: Effect::Permanent,
     triggers: &[TriggeredAbility {
@@ -144,6 +195,16 @@ const BLINK_RULES: CardRules = CardRules {
         &[Instruction::BlinkImmediately {
             counter: None,
             tapped: false,
+        }],
+    ),
+    ..CardRules::EMPTY
+};
+const COPY_TARGET_RULES: CardRules = CardRules {
+    effect: Effect::Spell(
+        one(object(0)),
+        &[Instruction::CreateCopyToken {
+            subject: Subject::Targets,
+            amount: 1,
         }],
     ),
     ..CardRules::EMPTY
@@ -453,4 +514,104 @@ fn solved_library_permissions_keep_the_top_private_and_use_normal_play_timing() 
     settle(&mut game);
     assert_eq!(game.object_view(spell).zone, Zone::Battlefield);
     assert_eq!(top_for(&game, opponent), None);
+}
+
+#[test]
+fn solved_type_group_uses_one_incarnation_and_earlier_layers_survive_ability_removal() {
+    let blank = Card::from_name("Get Lost").unwrap();
+    let copy_spell = Card::from_name("Quick Study").unwrap();
+    let blink = Card::from_name("Opt").unwrap();
+    let _rules = fixture_rules::activate(&[
+        (GORGON, &GORGON_RULES),
+        (blank, &BLANK_RULES),
+        (copy_spell, &COPY_TARGET_RULES),
+        (blink, &BLINK_RULES),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let gorgon = spawn(&mut game, player, GORGON, Zone::Battlefield);
+    let original = game.object_ref(gorgon);
+    put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let blank = spawn(&mut game, player.other(), blank, Zone::Hand);
+    let copy_spell = spawn(&mut game, player, copy_spell, Zone::Hand);
+    let blink = spawn(&mut game, player, blink, Zone::Hand);
+
+    let unsolved = game.object_view(gorgon);
+    assert_eq!(unsolved.kinds, 32);
+    assert!(unsolved.has_subtype("Case"));
+    assert!(!unsolved.has_subtype("Gorgon"));
+    assert!(!unsolved.keywords.intersects(GORGON_KEYWORDS));
+    end_step(&mut game);
+    assert_eq!(game.state.stack.len(), 1);
+
+    let mut blanked = game.clone();
+    act(&mut blanked, Action::Pass);
+    cast(&mut blanked, blank, Some(Target::Card(gorgon)));
+    settle(&mut blanked);
+    let still_creature = blanked.object_view(gorgon);
+    assert_eq!(solved(&blanked, player), [original]);
+    assert_eq!(still_creature.kinds, 1 | 32);
+    assert!(still_creature.has_subtype("Case") && still_creature.has_subtype("Gorgon"));
+    assert_eq!(stats(&blanked, gorgon), (4, 4));
+    assert!(!still_creature.keywords.intersects(GORGON_KEYWORDS));
+    assert_eq!(life(&blanked, player), 20);
+
+    settle(&mut game);
+    let solved_view = game.object_view(gorgon);
+    assert_eq!(solved_view.reference, original);
+    assert_eq!(solved_view.card, GORGON);
+    assert_eq!(solved_view.kinds, 1 | 32);
+    assert!(solved_view.has_subtype("Case") && solved_view.has_subtype("Gorgon"));
+    assert!(solved_view.keywords.contains(GORGON_KEYWORDS));
+    assert_eq!(stats(&game, gorgon), (4, 4));
+    assert_eq!(life(&game, player), 20);
+
+    game.add_counter(gorgon, CounterKind::PlusOne, 1);
+    assert_eq!(stats(&game, gorgon), (5, 5));
+    cast(&mut game, copy_spell, Some(Target::Card(gorgon)));
+    settle(&mut game);
+    let copy = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| {
+            object.zone == Zone::Battlefield && object.card == GORGON && object.id != gorgon
+        })
+        .expect("copy of the Case");
+    assert!(copy.is_token());
+    assert_eq!(copy.kinds, 32);
+    assert!(copy.has_subtype("Case"));
+    assert!(!copy.has_subtype("Gorgon"));
+    assert!(!copy.keywords.intersects(GORGON_KEYWORDS));
+    assert_eq!(life(&game, player), 21);
+    assert_eq!(solved(&game, player), [original]);
+
+    game.apply_temporary_copy(
+        original,
+        CopyRecipe::new(Card::GrizzlyBears),
+        CopyDeadline::EndOfTurn,
+    );
+    let bear = game.object_view(gorgon);
+    assert_eq!(bear.reference, original);
+    assert_eq!(bear.card, Card::GrizzlyBears);
+    assert!(!bear.has_subtype("Gorgon"));
+    assert_eq!(stats(&game, gorgon), (3, 3));
+    assert_eq!(solved(&game, player), [original]);
+    game.expire_temporary_copies(true);
+    let restored = game.object_view(gorgon);
+    assert_eq!(restored.reference, original);
+    assert!(restored.has_subtype("Case") && restored.has_subtype("Gorgon"));
+    assert!(restored.keywords.contains(GORGON_KEYWORDS));
+    assert_eq!(stats(&game, gorgon), (5, 5));
+
+    cast(&mut game, blink, Some(Target::Card(gorgon)));
+    settle(&mut game);
+    let returned = game.object_view(gorgon);
+    assert_ne!(returned.reference, original);
+    assert_eq!(returned.kinds, 32);
+    assert!(returned.has_subtype("Case"));
+    assert!(!returned.has_subtype("Gorgon"));
+    assert!(!returned.keywords.intersects(GORGON_KEYWORDS));
+    assert!(solved(&game, player).is_empty());
+    assert_eq!(life(&game, player), 22);
 }

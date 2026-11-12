@@ -910,7 +910,7 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         continue;
                     };
                     if !self.continuous_fragment_available(effect.source.card, |fragment| {
-                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(..))
+                        matches!(fragment, StaticAbilityFragment::BaseStatSetter(_, setter) if *setter == spec)
                     }) {
                         continue;
                     }

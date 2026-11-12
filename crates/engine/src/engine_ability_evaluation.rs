@@ -488,6 +488,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
+        StaticAbilityFragment::SourceAdditionalCreature { keywords, .. } if id == source.card => {
+            keywords
+        }
         StaticAbilityFragment::SourceCounterCreature {
             own_turn,
             kind,
@@ -862,6 +865,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::SourceCounterKeywords { .. }
                         | StaticAbilityFragment::SourceCounterSubtype { .. }
                         | StaticAbilityFragment::SourceCounterCreature { .. }
+                        | StaticAbilityFragment::SourceAdditionalCreature { .. }
                         | StaticAbilityFragment::SourceCelebrationCreatureForm { .. }
                         | StaticAbilityFragment::AttachmentKeywords(..)
                         | StaticAbilityFragment::AttachmentEntryTurnKeywords(..)

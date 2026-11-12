@@ -503,6 +503,12 @@ pub enum StaticAbilityFragment {
         subtype: &'static str,
         keywords: Keywords,
     },
+    /// Add the creature card type and these creature subtypes to the source,
+    /// retaining its other types. Pair a base setter in the same type-layer group.
+    SourceAdditionalCreature {
+        subtypes: &'static [&'static str],
+        keywords: Keywords,
+    },
     /// This source becomes a creature with these subtypes and keywords while it
     /// has the required counters, optionally only on its controller's turn. Its type change
     /// starts in layer four; the same ability's base stats are a separate
