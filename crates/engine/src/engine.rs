@@ -2468,7 +2468,8 @@ impl SpellView {
                     Instruction::Modal(modes)
                     | Instruction::ModalOnce(modes)
                     | Instruction::ModalOncePerTurn(modes)
-                    | Instruction::ModalUpToX { modes, .. },
+                    | Instruction::ModalUpToX { modes, .. }
+                    | Instruction::ModalUpToStat { modes, .. },
                 ) => Some(modes),
                 _ => None,
             },
@@ -2502,7 +2503,9 @@ impl SpellView {
             .program
             .first()
         {
-            Some(Instruction::ModalUpToX { counts, .. }) => Some(counts[mode]),
+            Some(
+                Instruction::ModalUpToX { counts, .. } | Instruction::ModalUpToStat { counts, .. },
+            ) => Some(counts[mode]),
             _ => None,
         }
     }

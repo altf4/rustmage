@@ -1757,6 +1757,16 @@ impl Game {
             }
             None => {}
         }
+        let modal_x = match definition.triggers()[index].program.first() {
+            Some(Instruction::ModalUpToStat { maximum, .. }) => Some(
+                u32::try_from(
+                    self.stat_value(*maximum, source.reference, source.controller)
+                        .max(0),
+                )
+                .unwrap_or(u32::MAX),
+            ),
+            _ => None,
+        };
         let id = self.next_stack_id();
         self.state.pending_triggers.push(SpellView {
             source: Some(StackSourceView {
@@ -1804,7 +1814,7 @@ impl Game {
             delayed_sacrifice: None,
             delayed_warp_exile: None,
             return_link: None,
-            x: None,
+            x: modal_x,
             loyalty_x: None,
             reflexive_target_limit: None,
             attachment_trigger: event,
@@ -5758,7 +5768,8 @@ impl Game {
                 Instruction::Modal(_)
                 | Instruction::ModalOnce(_)
                 | Instruction::ModalOncePerTurn(_)
-                | Instruction::ModalUpToX { .. } => {
+                | Instruction::ModalUpToX { .. }
+                | Instruction::ModalUpToStat { .. } => {
                     unreachable!("unselected modal ability executed")
                 }
                 Instruction::DestroyOthersIfSourcePowerTwenty => {
@@ -10504,6 +10515,13 @@ impl Game {
                 }
                 Instruction::SelectLibrary(spec) => {
                     if self.start_library_selection(&item, spec) {
+                        return;
+                    }
+                }
+                Instruction::ScryTargetPlayer(amount) => {
+                    if let Some(player) = self.program_players(PlayerSet::Targeted, &item).next()
+                        && self.start_library_arrangement(player, usize::from(amount), false)
+                    {
                         return;
                     }
                 }

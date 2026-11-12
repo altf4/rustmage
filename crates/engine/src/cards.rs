@@ -3796,6 +3796,12 @@ pub enum Instruction {
         modes: &'static [SpellMode],
         counts: &'static [u8],
     },
+    /// Nonrepeating modal combinations bounded by a stat captured when this ability triggers.
+    ModalUpToStat {
+        modes: &'static [SpellMode],
+        counts: &'static [u8],
+        maximum: StatValue,
+    },
     /// Triggered modes each available once during the current actual turn.
     ModalOncePerTurn(&'static [SpellMode]),
     /// Immediately lose the game, independently of life total or state-based actions.
@@ -4570,6 +4576,8 @@ pub enum Instruction {
         retention: ManaRetention,
     },
     Scry(u16),
+    /// The single legal player target in this instruction's target group scries.
+    ScryTargetPlayer(u16),
     Surveil(u16),
     SurveilScaled(AmountValue),
     /// Surveil and remember how many of the looked cards were put back on top.

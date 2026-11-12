@@ -57,7 +57,8 @@ fn selected(program: &[Instruction]) -> SelectedQuantities {
             Instruction::Modal(modes)
             | Instruction::ModalOnce(modes)
             | Instruction::ModalOncePerTurn(modes)
-            | Instruction::ModalUpToX { modes, .. } => {
+            | Instruction::ModalUpToX { modes, .. }
+            | Instruction::ModalUpToStat { modes, .. } => {
                 for mode in modes {
                     let nested = selected(mode.program);
                     result.power |= nested.power;
@@ -505,7 +506,8 @@ fn reads_chosen_type(program: &[Instruction]) -> bool {
         Instruction::Modal(modes)
         | Instruction::ModalOnce(modes)
         | Instruction::ModalOncePerTurn(modes)
-        | Instruction::ModalUpToX { modes, .. } => modes.iter().any(|mode| {
+        | Instruction::ModalUpToX { modes, .. }
+        | Instruction::ModalUpToStat { modes, .. } => modes.iter().any(|mode| {
             mode.targets.reads_source_creature_type() || reads_chosen_type(mode.program)
         }),
         _ => false,
