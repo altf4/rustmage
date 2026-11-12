@@ -302,6 +302,7 @@ impl Game {
             | Action::CastFreeDuringResolution { object, .. }
             | Action::AnnounceTaxedExile { object, .. }
             | Action::AnnounceExileForZero { object, .. }
+            | Action::AnnounceCastWithManaAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }

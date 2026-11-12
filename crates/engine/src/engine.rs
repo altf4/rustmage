@@ -633,7 +633,8 @@ pub mod sneak;
 #[path = "engine_web_slinging.rs"]
 pub mod web_slinging;
 pub use source_linked_effects::{SourceLinkedEffectKind, SourceLinkedEffectView};
-pub use web_slinging::WebSlingingOrigin;
+use web_slinging::PaidCastAlternative;
+pub use web_slinging::{PaidCastOrigin, WebSlingingOrigin};
 #[doc(hidden)]
 #[path = "engine_source_prevention.rs"]
 pub mod source_prevention;
@@ -1107,6 +1108,14 @@ define_actions! {
     PlayTaxedExileLand { object: ObjectRef },
     AnnounceExileLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceExileForZero { object: ObjectRef, provider: ObjectRef, face: CastFace, flash_surcharge: bool, origin: ExileZeroOrigin },
+    AnnounceCastWithManaAlternative {
+        object: ObjectRef,
+        provider: ObjectRef,
+        face: CastFace,
+        cost: ManaCost,
+        flash_surcharge: bool,
+        origin: PaidCastOrigin,
+    },
     AnnounceLibraryLife { card: CardId, face: CastFace, flash_surcharge: bool },
     AnnounceLibraryTop {
         object: ObjectRef,
@@ -6204,6 +6213,11 @@ impl Game {
                 let exile_casting_prohibited =
                     casting_prohibited || self.nonhand_cast_prohibited(actor);
                 let mut exile_zero = None;
+                let mana_alternatives = if casting_prohibited {
+                    Vec::new()
+                } else {
+                    self.source_mana_alternatives(actor)
+                };
                 let free_hand_cast = self.free_hand_cast_available(actor);
                 let limited_hand_casts = self.limited_free_hand_permissions(actor);
                 let controlled_activation_grantors = self.controlled_activation_grantors(actor);
@@ -6222,13 +6236,19 @@ impl Game {
                     actor,
                     sorcery,
                     casting_prohibited || self.nonhand_cast_prohibited(actor),
+                    &mana_alternatives,
                     &mut emit,
                 ) {
                     return true;
                 }
                 if !casting_prohibited
                     && !self.nonhand_cast_prohibited(actor)
-                    && self.visit_limited_library_top_casts(actor, sorcery, &mut emit)
+                    && self.visit_limited_library_top_casts(
+                        actor,
+                        sorcery,
+                        &mana_alternatives,
+                        &mut emit,
+                    )
                 {
                     return true;
                 }
@@ -6267,7 +6287,12 @@ impl Game {
                         };
                         if (!exile_casting_prohibited
                             && (self.visit_linked_source_casts(
-                                actor, card, sorcery, providers, &mut emit,
+                                actor,
+                                card,
+                                sorcery,
+                                providers,
+                                &mana_alternatives,
+                                &mut emit,
                             ) || self.visit_ordinary_exile_zero_casts(
                                 actor, card, sorcery, providers, &mut emit,
                             )))
@@ -6277,6 +6302,7 @@ impl Game {
                                 sorcery,
                                 casting_prohibited,
                                 providers,
+                                &mana_alternatives,
                                 &mut emit,
                             )
                         {
@@ -6287,7 +6313,13 @@ impl Game {
                         && obj.owner == actor
                         && !casting_prohibited
                         && !self.nonhand_cast_prohibited(actor)
-                        && self.visit_paid_graveyard_casts(actor, card, sorcery, &mut emit)
+                        && self.visit_paid_graveyard_casts(
+                            actor,
+                            card,
+                            sorcery,
+                            &mana_alternatives,
+                            &mut emit,
+                        )
                     {
                         return true;
                     }
@@ -6471,6 +6503,7 @@ impl Game {
                         card,
                         sorcery,
                         &graveyard_life_casts,
+                        &mana_alternatives,
                         &mut emit,
                     ) {
                         return true;
@@ -6482,7 +6515,13 @@ impl Game {
                     {
                         return true;
                     }
-                    if self.visit_web_slinging(actor, card, sorcery, &mut emit) {
+                    if self.visit_paid_cast_alternatives(
+                        actor,
+                        card,
+                        sorcery,
+                        &mana_alternatives,
+                        &mut emit,
+                    ) {
                         return true;
                     }
                     // This check follows face-down disguise: the face-down spell
@@ -6505,7 +6544,13 @@ impl Game {
                     if self.visit_exile_life_casts(actor, card, sorcery, &mut emit) {
                         return true;
                     }
-                    if self.visit_graveyard_finality_cast(actor, card, sorcery, &mut emit) {
+                    if self.visit_graveyard_finality_cast(
+                        actor,
+                        card,
+                        sorcery,
+                        &mana_alternatives,
+                        &mut emit,
+                    ) {
                         return true;
                     }
                     if self.sneak_cast_available(actor, card)
@@ -8050,6 +8095,21 @@ impl Game {
                 flash_surcharge,
                 origin,
             } => self.start_exile_zero_cast(actor, object, provider, face, flash_surcharge, origin),
+            Action::AnnounceCastWithManaAlternative {
+                object,
+                provider,
+                face,
+                cost,
+                flash_surcharge,
+                origin,
+            } => self.start_paid_cast_alternative(
+                actor,
+                object.card,
+                face,
+                PaidCastAlternative::Source { provider, cost },
+                flash_surcharge,
+                origin,
+            ),
             Action::AnnounceLinkedPaid {
                 object,
                 source,
@@ -8551,7 +8611,14 @@ impl Game {
                 cost,
                 flash_surcharge,
                 origin,
-            } => self.start_web_slinging(actor, card, face, cost, flash_surcharge, origin),
+            } => self.start_paid_cast_alternative(
+                actor,
+                card,
+                face,
+                PaidCastAlternative::WebSlinging(cost),
+                flash_surcharge,
+                origin,
+            ),
             Action::AnnounceSneak { card, permission } => {
                 if let Some((source, kind)) = permission {
                     self.consume_graveyard_type(source, kind);

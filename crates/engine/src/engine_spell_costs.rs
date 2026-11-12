@@ -230,6 +230,9 @@ impl Game {
     }
     pub(super) fn announcement_base_cost(a: &Announcement) -> ManaCost {
         let mut base = a.cost.unwrap_or_else(|| {
+            if let Some(cost) = a.source_mana_alternative() {
+                return cost;
+            }
             if a.item
                 .cast
                 .is_some_and(|cast| cast.method == CastMethod::GrantedHarmonize)
@@ -494,7 +497,10 @@ impl Game {
         base
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
-        if a.has_ordered_origin_payment() || a.has_ordered_life_cost() {
+        if a.source_mana_alternative().is_some()
+            || a.has_ordered_origin_payment()
+            || a.has_ordered_life_cost()
+        {
             let mut proposal = a.clone();
             proposal.item.cast.as_mut().unwrap().offspring = Some(pay);
             return proposal

@@ -55,6 +55,7 @@ impl Game {
         &self,
         actor: Player,
         sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if self.state.static_sources.is_empty() {
@@ -163,12 +164,13 @@ impl Game {
                             }
                         }
                     }
-                    if self.visit_web_slinging_face(
+                    if self.visit_paid_cast_alternative_face(
                         actor,
                         card,
                         face,
                         sorcery,
-                        WebSlingingOrigin::LibraryTop { permission },
+                        PaidCastOrigin::LibraryTop { permission },
+                        mana_alternatives,
                         emit,
                     ) {
                         return true;

@@ -103,6 +103,7 @@ impl Game {
         card: CardId,
         sorcery: bool,
         rules: &[(CastFilter, u32, Option<CounterKind>)],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let object = &self.state.objects[card as usize];
@@ -125,15 +126,16 @@ impl Game {
                     continue;
                 }
                 offered.push((life, entry_counter));
-                if self.visit_web_slinging_face(
+                if self.visit_paid_cast_alternative_face(
                     actor,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::GraveyardLife {
+                    PaidCastOrigin::GraveyardLife {
                         life,
                         entry_counter,
                     },
+                    mana_alternatives,
                     emit,
                 ) {
                     return true;

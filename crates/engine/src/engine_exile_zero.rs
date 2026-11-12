@@ -90,22 +90,19 @@ impl Game {
         face: CastFace,
         origin: ExileZeroOrigin,
     ) -> Option<(Option<u16>, cast_permissions::OriginAlternative)> {
-        let mut terms = cast_permissions::OriginAlternative::default();
-        let mut counters = None;
-        match origin {
-            ExileZeroOrigin::Ordinary => {}
-            ExileZeroOrigin::PaidResolution => terms.exact_paid_exile_offer = true,
-            ExileZeroOrigin::Taxed { surcharge } => terms.exile_play_surcharge = surcharge.get(),
+        let origin = match origin {
+            ExileZeroOrigin::Ordinary => PaidCastOrigin::Ordinary,
+            ExileZeroOrigin::PaidResolution => PaidCastOrigin::PaidResolution,
+            ExileZeroOrigin::Taxed { surcharge } => PaidCastOrigin::TaxedExile { surcharge },
             ExileZeroOrigin::LinkedPaid { source } => {
-                terms.linked_exile_paid =
-                    Some(self.linked_paid_permission(player, source, object, face)?);
+                PaidCastOrigin::LinkedExilePaid { object, source }
             }
             ExileZeroOrigin::LinkedCounters { source } => {
-                counters =
-                    Some(self.linked_counter_permission(player, source, object.card, face)?);
+                PaidCastOrigin::LinkedExileCounters { source }
             }
-        }
-        Some((counters, terms))
+        };
+        let terms = self.paid_cast_terms(player, object.card, face, origin)?;
+        Some((terms.counters, terms.alternative))
     }
 
     pub(super) fn visit_ordinary_exile_zero_casts(
@@ -227,7 +224,7 @@ impl Game {
                 Some(CastMethod::Free),
                 None,
                 |game, item| {
-                    game.configure_paid_exile_offer(item);
+                    game.configure_paid_resolution_offer(item);
                     game.approve_exile_zero_cast(item.id, usage, false);
                 },
             );
@@ -268,14 +265,11 @@ impl Game {
     }
 
     fn approve_exile_zero_cast(&mut self, stack: u64, usage: ExileZeroUseView, ordinary: bool) {
-        let data = self.state.linked_choices.get_or_insert_default();
         if ordinary {
-            // Using this alternative still consumes the selected ordinary
-            // allowance, even if a separate free permission was available.
-            if let Some(approval) = data.play_approvals.iter_mut().find(|row| row.0 == stack) {
-                approval.2 = false;
-            }
-        } else {
+            self.select_ordinary_paid_exile_cast(stack);
+        }
+        let data = self.state.linked_choices.get_or_insert_default();
+        if !ordinary {
             data.play_approvals.retain(|row| row.0 != stack);
         }
         data.exile_zero_uses

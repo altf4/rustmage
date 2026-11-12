@@ -7,12 +7,12 @@ use crate::cards::StaticAbilityFragment;
 pub(super) struct OriginAlternative {
     pub granted_warp: Option<ManaCost>,
     pub exile_play_surcharge: u32,
-    pub web_slinging: Option<ManaCost>,
+    pub mana_base: Option<ManaCost>,
     pub linked_exile_paid: Option<linked_source_casts::LinkedExilePaidCast>,
     pub paid_graveyard: Option<PaidGraveyardCastPermission>,
     pub library_top: Option<LibraryTopCastPermission>,
     pub resolution_discard: bool,
-    pub exact_paid_exile_offer: bool,
+    pub exact_paid_resolution_offer: bool,
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -575,13 +575,14 @@ impl Game {
         let OriginAlternative {
             granted_warp,
             exile_play_surcharge,
-            web_slinging,
+            mana_base,
             linked_exile_paid,
             paid_graveyard,
             library_top,
             resolution_discard,
-            exact_paid_exile_offer,
+            exact_paid_resolution_offer,
         } = alternative;
+        let source_alternative = method.allows_printed_alternative() && mana_base.is_some();
         let object = &self.state.objects[card as usize];
         if method == CastMethod::GraveyardAdditionalCosts
             && (object.zone != Zone::Graveyard
@@ -694,10 +695,12 @@ impl Game {
         if independent_free {
             Self::configure_exile_free_cast(&mut item, flash_surcharge);
         }
-        if exact_paid_exile_offer {
-            self.configure_paid_exile_offer(&mut item);
+        if exact_paid_resolution_offer {
+            self.configure_paid_resolution_offer(&mut item);
         }
-        if linked_exile_paid.is_some() {
+        if linked_exile_paid.is_some()
+            || source_alternative && method == CastMethod::LinkedExileCounterCost
+        {
             Self::configure_linked_paid_cast(&mut item);
         }
         if let Some(permission) = paid_graveyard {
@@ -712,18 +715,21 @@ impl Game {
         if exile_play_surcharge > 0 {
             Self::configure_taxed_exile_cast(&mut item, exile_play_surcharge);
         }
-        if matches!(
-            method,
-            CastMethod::Airbend
-                | CastMethod::Free
-                | CastMethod::Plot
-                | CastMethod::Flashback
-                | CastMethod::GrantedZeroFlashback
-                | CastMethod::Harmonize
-                | CastMethod::Mayhem
-                | CastMethod::WebSlinging
-                | CastMethod::Miracle
-        ) && definition.x_symbols() > 0
+        let fixed_x = source_alternative
+            || matches!(
+                method,
+                CastMethod::Airbend
+                    | CastMethod::Free
+                    | CastMethod::Plot
+                    | CastMethod::Flashback
+                    | CastMethod::GrantedZeroFlashback
+                    | CastMethod::Harmonize
+                    | CastMethod::Mayhem
+                    | CastMethod::WebSlinging
+                    | CastMethod::Miracle
+            );
+        if fixed_x
+            && definition.x_symbols() > 0
             && (method != CastMethod::Harmonize || definition.harmonize_x_symbols() == 0)
         {
             item.x = Some(0);
@@ -773,6 +779,7 @@ impl Game {
             },
             |spec| spec.x_symbols > 0,
         );
+        let scalar_x = !source_alternative && scalar_x;
         if object.zone == Zone::Library
             && library_top.is_none()
             && method != CastMethod::LibraryLife
@@ -818,7 +825,7 @@ impl Game {
             origin_counter_cost,
             origin_additional_cost,
             origin_alternative_cost: granted_warp
-                .or(web_slinging)
+                .or(mana_base)
                 .or_else(|| self.origin_alternative_cost_for(&item)),
             item,
             spec: TargetSpec::NONE,
@@ -874,7 +881,8 @@ impl Game {
             a.initialize_cast_costs(convoke::cost_potential(self, definition));
         }
         if scalar_x
-            || (definition.x_symbols() > 0
+            || (!source_alternative
+                && definition.x_symbols() > 0
                 && matches!(
                     method,
                     CastMethod::LinkedExileCounterCost | CastMethod::GrantedMayhem

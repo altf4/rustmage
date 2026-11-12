@@ -204,6 +204,7 @@ impl Game {
         card: CardId,
         sorcery: bool,
         exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         for &id in &self.state.static_sources {
@@ -247,12 +248,13 @@ impl Game {
                         ExileZeroOrigin::LinkedPaid { source },
                         exile_zero,
                         emit,
-                    ) || self.visit_web_slinging_face(
+                    ) || self.visit_paid_cast_alternative_face(
                         player,
                         card,
                         face,
                         sorcery,
-                        WebSlingingOrigin::LinkedExilePaid { object, source },
+                        PaidCastOrigin::LinkedExilePaid { object, source },
+                        mana_alternatives,
                         emit,
                     ) {
                         return true;
@@ -295,12 +297,13 @@ impl Game {
                     ExileZeroOrigin::LinkedCounters { source },
                     exile_zero,
                     emit,
-                ) || self.visit_web_slinging_face(
+                ) || self.visit_paid_cast_alternative_face(
                     player,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::LinkedExileCounters { source },
+                    PaidCastOrigin::LinkedExileCounters { source },
+                    mana_alternatives,
                     emit,
                 ) {
                     return true;

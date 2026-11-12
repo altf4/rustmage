@@ -110,6 +110,7 @@ impl Game {
         actor: Player,
         card: CardId,
         sorcery: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let Some(data) = &self.state.linked_choices else {
@@ -144,15 +145,16 @@ impl Game {
                 else {
                     continue;
                 };
-                if self.visit_web_slinging_face(
+                if self.visit_paid_cast_alternative_face(
                     actor,
                     card,
                     face,
                     sorcery,
-                    WebSlingingOrigin::GraveyardPaid {
+                    PaidCastOrigin::GraveyardPaid {
                         object,
                         permission: row.id,
                     },
+                    mana_alternatives,
                     emit,
                 ) {
                     return true;

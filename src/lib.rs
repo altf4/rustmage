@@ -13,6 +13,7 @@ pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
 pub use rustmage_core::cards::{RetainedCopyActivation, RoomDoor};
 pub use rustmage_core::engine::ActivationTapPaymentView;
+pub use rustmage_core::engine::AuraPlayerAttachmentView;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
 pub use rustmage_core::engine::IncarnationTriggerUse;
 pub use rustmage_core::engine::combat_allocations::{
@@ -86,13 +87,12 @@ pub use rustmage_core::engine::{
     XChoiceView, XInterval, Zone, ZoneChange, ZoneReplacementChoiceView, ZoneReplacementKind,
     ZoneReplacementPickView, ZoneRevealView, ZoneSearchView,
 };
-pub use rustmage_core::engine::AuraPlayerAttachmentView;
-pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView};
 pub use rustmage_core::engine::{
     CopiedSagaLoreView, DamageDoublerView, LifeGainReplacement, LifeGainReplacementChoice,
     LifeGainReplacementEffect, ManaSplitChoiceView, MeldDepartureOrder, MeldOrderingChoice,
     MeldedPermanentView, NoncombatDamageIncreaseView,
 };
+pub use rustmage_core::engine::{ExileZeroOrigin, ExileZeroUseView, PaidCastOrigin};
 pub use rustmage_core::policy;
 pub use rustmage_core::protocol;
 pub use rustmage_core::{CapacityExceeded, CardName, PermanentType};

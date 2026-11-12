@@ -142,6 +142,17 @@ impl Game {
             })
             || self.has_linked_life_play_permission(player, card)
     }
+    pub(super) fn select_ordinary_paid_exile_cast(&mut self, stack: u64) {
+        if let Some(approval) = self
+            .state
+            .linked_choices
+            .as_mut()
+            .and_then(|data| data.play_approvals.iter_mut().find(|row| row.0 == stack))
+        {
+            // An independent free cast permission cannot replace the chosen paid route.
+            approval.2 = false;
+        }
+    }
     pub(super) fn exile_cast_modifiers(&self, player: Player, card: CardId) -> (bool, bool) {
         if self.state.objects[card as usize].zone != Zone::Exile {
             return (false, false);
@@ -568,6 +579,10 @@ impl Game {
         }
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Each optional cost has separate active providers"
+    )]
     pub(super) fn visit_taxed_exile_plays(
         &self,
         actor: Player,
@@ -575,6 +590,7 @@ impl Game {
         sorcery: bool,
         casting_prohibited: bool,
         exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let current = &self.state.objects[card as usize];
@@ -614,7 +630,15 @@ impl Game {
             offered.push(surcharge);
             if !casting_prohibited
                 && !self.nonhand_cast_prohibited(actor)
-                && self.visit_taxed_exile_casts(actor, object, sorcery, surcharge, exile_zero, emit)
+                && self.visit_taxed_exile_casts(
+                    actor,
+                    object,
+                    sorcery,
+                    surcharge,
+                    exile_zero,
+                    mana_alternatives,
+                    emit,
+                )
             {
                 return true;
             }
@@ -622,6 +646,10 @@ impl Game {
         false
     }
 
+    #[allow(
+        clippy::too_many_arguments,
+        reason = "Each optional cost has separate active providers"
+    )]
     fn visit_taxed_exile_casts(
         &self,
         actor: Player,
@@ -629,6 +657,7 @@ impl Game {
         sorcery: bool,
         surcharge: std::num::NonZeroU32,
         exile_zero: &[ObjectRef],
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         let physical = self.state.objects[object.card as usize].card;
@@ -652,12 +681,13 @@ impl Game {
                 ExileZeroOrigin::Taxed { surcharge },
                 exile_zero,
                 emit,
-            ) || self.visit_web_slinging_face(
+            ) || self.visit_paid_cast_alternative_face(
                 actor,
                 object.card,
                 face,
                 sorcery,
-                WebSlingingOrigin::TaxedExile { surcharge },
+                PaidCastOrigin::TaxedExile { surcharge },
+                mana_alternatives,
                 emit,
             ) {
                 return true;

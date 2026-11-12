@@ -89,6 +89,8 @@ pub enum StaticAbilityFragment {
     PlayLinkedExileOnOwnTurnForLife,
     /// An optional {0} alternative for a spell independently authorized from exile.
     ExileCastForZeroOncePerTurn,
+    /// Optional fixed mana base for spells the controller can already cast.
+    SpellAlternativeManaCost(ManaCost),
     /// Initiates its controller's persistent speed designation as a state-based action.
     StartYourEngines,
     /// No player can draw cards while this rule ability is active.

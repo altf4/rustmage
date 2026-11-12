@@ -437,6 +437,7 @@ impl Game {
         actor: Player,
         sorcery: bool,
         casting_prohibited: bool,
+        mana_alternatives: &[(ObjectRef, ManaCost)],
         emit: &mut impl FnMut(Action) -> bool,
     ) -> bool {
         if actor != self.state.active {
@@ -528,15 +529,16 @@ impl Game {
                     }
                     if permanent_type != PermanentType::Land
                         && !casting_prohibited
-                        && self.visit_web_slinging_face(
+                        && self.visit_paid_cast_alternative_face(
                             actor,
                             card,
                             CastFace::Normal,
                             sorcery,
-                            WebSlingingOrigin::GraveyardType {
+                            PaidCastOrigin::GraveyardType {
                                 permission,
                                 permanent_type,
                             },
+                            mana_alternatives,
                             emit,
                         )
                     {
@@ -583,15 +585,16 @@ impl Game {
                         .into_iter()
                         .filter(|ty| types & ty.mask() != 0)
                     {
-                        if self.visit_web_slinging_face(
+                        if self.visit_paid_cast_alternative_face(
                             actor,
                             card,
                             face,
                             sorcery,
-                            WebSlingingOrigin::GraveyardType {
+                            PaidCastOrigin::GraveyardType {
                                 permission,
                                 permanent_type,
                             },
+                            mana_alternatives,
                             emit,
                         ) || cast_options
                             .into_iter()
@@ -1133,6 +1136,15 @@ impl Game {
             return false;
         }
         let paid_graveyard = free.paid.is_some() && free.origin == Zone::Graveyard;
+        let mana_alternatives = if !casting_prohibited
+            && free.paid.is_some()
+            && free.alternative_cost.is_none()
+            && !free.discard_instead_of_mana
+        {
+            self.source_mana_alternatives(player)
+        } else {
+            Vec::new()
+        };
         let exile_zero = if !casting_prohibited
             && free.paid.is_some()
             && free.origin == Zone::Exile
@@ -1253,12 +1265,13 @@ impl Game {
                     return true;
                 }
                 if free.paid.is_some()
-                    && self.visit_web_slinging_face(
+                    && self.visit_paid_cast_alternative_face(
                         player,
                         object.card,
                         face,
                         true,
-                        WebSlingingOrigin::PaidResolution,
+                        PaidCastOrigin::PaidResolution,
+                        &mana_alternatives,
                         emit,
                     )
                 {
@@ -1361,7 +1374,7 @@ impl Game {
         );
     }
 
-    pub(super) fn configure_paid_exile_offer(&self, item: &mut SpellView) {
+    pub(super) fn configure_paid_resolution_offer(&self, item: &mut SpellView) {
         let offer = self
             .state
             .resolution_free_casts
@@ -1381,7 +1394,7 @@ impl Game {
         object: ObjectRef,
         face: CastFace,
         method_override: Option<CastMethod>,
-        web_slinging_cost: Option<ManaCost>,
+        alternative_mana: Option<ManaCost>,
         configure: impl FnOnce(&mut Self, &mut SpellView),
     ) {
         let offer = self.state.resolution_free_casts.as_ref().unwrap();
@@ -1449,8 +1462,10 @@ impl Game {
         }
         self.remember_suspend_cast(object, item.id);
         configure(self, &mut item);
-        if let Some(cost) = web_slinging_cost {
-            Self::configure_web_slinging(&mut item);
+        if let Some(cost) = alternative_mana {
+            if method == CastMethod::WebSlinging {
+                Self::configure_web_slinging(&mut item);
+            }
             self.open_payment_announcement_configured(
                 item,
                 Counters::default(),

@@ -42,7 +42,7 @@ impl LimitedCastPermission {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) struct Announcement {
     pub behold_required: bool,
-    /// Captured alternate cost from Miracle, granted Sneak or granted Warp.
+    /// Fixed alternative mana base selected when the cast was announced.
     pub origin_alternative_cost: Option<ManaCost>,
     pub item: SpellView,
     pub spec: TargetSpec,
@@ -148,6 +148,12 @@ impl Announcement {
             .filter(|cost| !card.sneak_cost_options().any(|printed| printed == *cost));
         card.sneak_cost_options().chain(grant)
     }
+    pub(super) fn source_mana_alternative(&self) -> Option<ManaCost> {
+        self.item
+            .cast
+            .filter(|cast| cast.method.allows_printed_alternative())?;
+        self.origin_alternative_cost
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
@@ -173,7 +179,7 @@ impl Announcement {
             | CastMethod::Free
             | CastMethod::Plot
             | CastMethod::GrantedZeroFlashback => Some(ManaCost::ZERO),
-            _ => None,
+            _ => self.source_mana_alternative(),
         })
     }
     pub(super) fn counter_cost_spec(&self) -> Option<AdditionalCost> {
@@ -248,6 +254,16 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| match c.method {
+                    _ if self.source_mana_alternative().is_some() => {
+                        let base = self.source_mana_alternative().unwrap();
+                        let card = self.item.source.expect("object-backed announcement").card;
+                        self.cost
+                            .zip(card.mana_additional_alternative())
+                            .is_some_and(|(chosen, fee)| {
+                                self.apply_cost_declarations(Card::add_mana_cost(base, fee))
+                                    == Some(chosen)
+                            })
+                    }
                     CastMethod::Normal | CastMethod::LinkedExileCounterCost => {
                         self.cost.is_some_and(|cost| {
                             self.item
@@ -455,7 +471,11 @@ impl Announcement {
             SpellAlternative,
         ),
     > + '_ {
+        let source_mana_alternative = self.source_mana_alternative();
         let options = match self.item.kind {
+            StackKind::Spell if source_mana_alternative.is_some() => {
+                std::iter::once(source_mana_alternative.unwrap()).chain([].iter().copied())
+            }
             StackKind::Spell
                 if self
                     .item
@@ -640,7 +660,7 @@ impl Announcement {
             std::iter::once(fixed_alternative.unwrap_or(ManaCost::ZERO)).chain([].iter().copied())
         };
         let impending = self.item.cast.and_then(|cast| {
-            if !cast.method.allows_printed_alternative() {
+            if source_mana_alternative.is_some() || !cast.method.allows_printed_alternative() {
                 return None;
             }
             self.item
@@ -658,15 +678,17 @@ impl Announcement {
         // shared cost modifiers. A route identity survives equal mana totals.
         options
             .map(|cost| {
-                let evoked = self.item.cast.is_some_and(|c| {
-                    matches!(
-                        c.method,
-                        CastMethod::Normal | CastMethod::LinkedExileCounterCost
-                    )
-                }) && self
-                    .item
-                    .source
-                    .is_some_and(|s| s.card.evoke_costs().contains(&cost));
+                let evoked = source_mana_alternative.is_none()
+                    && self.item.cast.is_some_and(|c| {
+                        matches!(
+                            c.method,
+                            CastMethod::Normal | CastMethod::LinkedExileCounterCost
+                        )
+                    })
+                    && self
+                        .item
+                        .source
+                        .is_some_and(|s| s.card.evoke_costs().contains(&cost));
                 let alternative = if evoked {
                     SpellAlternative::Evoke
                 } else {

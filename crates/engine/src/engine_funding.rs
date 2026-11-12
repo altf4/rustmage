@@ -5818,6 +5818,9 @@ impl Game {
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }
+        if a.source_mana_alternative().is_some() {
+            return self.behold_announcement_fundable(a, cost);
+        }
         if a.blight_x_cost() {
             return self.blight_x_cost_fundable(a, cost, a.item.x.unwrap_or(0));
         }

@@ -264,6 +264,7 @@ impl Game {
         }
         let cast = a.item.cast.expect("spell cast choices");
         if cast.method == CastMethod::Normal
+            && a.source_mana_alternative().is_none()
             && !cast.flash_surcharge
             && !self.spell_cost_option_available_for_definition(
                 a.item.controller,
