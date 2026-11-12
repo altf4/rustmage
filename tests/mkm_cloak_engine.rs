@@ -189,8 +189,9 @@ fn private_cloak_choices_cannot_be_matched_to_a_previously_revealed_library_card
     let revealed = put(&mut game, player, "Shock", Zone::Library);
     let scout = put(&mut game, player, "Cenote Scout", Zone::Hand);
     cast(&mut game, scout, None);
-    act(&mut game, Action::Pass);
-    act(&mut game, Action::Pass);
+    for _ in 0..4 {
+        act(&mut game, Action::Pass);
+    }
     let revealed = game.object_ref(revealed);
     act(
         &mut game,
