@@ -3,10 +3,36 @@
   "catalogue_id": 1607,
   "oracle_id": "ad37551c-9d20-4902-8190-6a0aa32a7947",
   "facts_sha256": "516628c2776f0f578a32299f151aa96600e7c11d638a28712849a9920fe9c1cc",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "112b32ac24991732c1346aa9629cc064ce59c397643bbde79bfc7563cbf66461"
   },
-  "physical_metadata_sha256": "6e02bd2b50b220c5cb89b424fca7d2fd142b883c9063a0fc55567c65f7a5b02c"
+  "physical_metadata_sha256": "6e02bd2b50b220c5cb89b424fca7d2fd142b883c9063a0fc55567c65f7a5b02c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FoundFootage.java",
+  "java_sha256": "0ca267fbc9dbfa24b7196c723585382f470cc88c3944ead9b23a62f01f31a7cd",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeSourceCost.java",
+      "sha256": "effd2c0ad148ea22cda788052b2ca818482712dcc76837fe5f204ceec591cae8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/LookAtOpponentFaceDownCreaturesAnyTimeEffect.java",
+      "sha256": "c18352142e1fbf74edb47fef12a884a44c9c4ede2e8c16b559c3ea9e4614a5c5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/SurveilEffect.java",
+      "sha256": "9c03dc52b3cdc9493a32c2ecf56f4ecf48e1a6299bac040305e5277d60cdd7d1"
+    }
+  ],
+  "rules_tests": "tests/dsk_colorless_cards.rs"
 }

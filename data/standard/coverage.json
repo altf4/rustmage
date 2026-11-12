@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "8b138ed1a227433ffc952c78034f906c72048626b3474b5ebe07b6ba5bb9daf0",
+  "catalogue_version": "76e59db1aac06ada5e9ce2f7d1992f85827c3a1719eb906b2ac336d89a6340ec",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4639,
-  "implemented_total": 4655,
+  "implemented_standard_cards": 4660,
+  "implemented_total": 4676,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 110,
-      "gated": 154
+      "complete": 131,
+      "gated": 133
     },
     "ecc": {
       "total": 7,
@@ -429,8 +429,8 @@
     {
       "name": "Abhorrent Oculus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/abhorrent_oculus.rs",
       "set": "dsk"
     },
@@ -2245,8 +2245,8 @@
     {
       "name": "Attack-in-the-Box",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/attack_in_the_box.rs",
       "set": "dsk"
     },
@@ -6797,8 +6797,8 @@
     {
       "name": "Conductive Machete",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/conductive_machete.rs",
       "set": "dsk"
     },
@@ -7269,8 +7269,8 @@
     {
       "name": "Creeping Peeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/creeping_peeper.rs",
       "set": "dsk"
     },
@@ -7701,8 +7701,8 @@
     {
       "name": "Cursed Windbreaker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/cursed_windbreaker.rs",
       "set": "dsk"
     },
@@ -8989,8 +8989,8 @@
     {
       "name": "Dissection Tools",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/dissection_tools.rs",
       "set": "dsk"
     },
@@ -11925,8 +11925,8 @@
     {
       "name": "Fear of Impostors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_impostors.rs",
       "set": "dsk"
     },
@@ -13045,8 +13045,8 @@
     {
       "name": "Found Footage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/found_footage.rs",
       "set": "dsk"
     },
@@ -15901,8 +15901,8 @@
     {
       "name": "Haunted Screen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/haunted_screen.rs",
       "set": "dsk"
     },
@@ -18957,8 +18957,8 @@
     {
       "name": "Keys to the House",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/keys_to_the_house.rs",
       "set": "dsk"
     },
@@ -21557,8 +21557,8 @@
     {
       "name": "Marvin, Murderous Mimic",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/marvin_murderous_mimic.rs",
       "set": "dsk"
     },
@@ -24997,8 +24997,8 @@
     {
       "name": "Paranormal Analyst",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/paranormal_analyst.rs",
       "set": "dsk"
     },
@@ -29797,8 +29797,8 @@
     {
       "name": "Saw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/saw.rs",
       "set": "dsk"
     },
@@ -33165,8 +33165,8 @@
     {
       "name": "Stay Hidden, Stay Silent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/stay_hidden_stay_silent.rs",
       "set": "dsk"
     },
@@ -37989,8 +37989,8 @@
     {
       "name": "Twist Reality",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/twist_reality.rs",
       "set": "dsk"
     },
@@ -38197,8 +38197,8 @@
     {
       "name": "Unable to Scream",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unable_to_scream.rs",
       "set": "dsk"
     },
@@ -38461,8 +38461,8 @@
     {
       "name": "Unidentified Hovership",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unidentified_hovership.rs",
       "set": "dsk"
     },
@@ -38517,8 +38517,8 @@
     {
       "name": "Unnerving Grasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unnerving_grasp.rs",
       "set": "dsk"
     },
@@ -38565,8 +38565,8 @@
     {
       "name": "Unsettling Twins",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unsettling_twins.rs",
       "set": "dsk"
     },
@@ -38653,8 +38653,8 @@
     {
       "name": "Unwanted Remake",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/unwanted_remake.rs",
       "set": "dsk"
     },
@@ -38781,8 +38781,8 @@
     {
       "name": "Valgavoth's Lair",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/valgavoth_s_lair.rs",
       "set": "dsk"
     },
