@@ -3,10 +3,36 @@
   "catalogue_id": 4514,
   "oracle_id": "af7d7da5-aff5-48e1-901a-f81257a85f71",
   "facts_sha256": "0dd5cbfe3915e482bb167ec378b6705e6dc48325049b58c47096c9e4b9fde202",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ccd441995b5d5d9eb3d37ae28fa95158e6af12822c0b073fa15179fb3bbb1ec1"
   },
-  "physical_metadata_sha256": "4ec209840b40cb5ced1f31a77f903c27c60ff77aa1ade76ff9bb5c0d4bc47a94"
+  "physical_metadata_sha256": "4ec209840b40cb5ced1f31a77f903c27c60ff77aa1ade76ff9bb5c0d4bc47a94",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheWallsOfBaSingSe.java",
+  "java_sha256": "2e22a35239d4d414b79685271741a6c87aeeae99cb66cdb5709aa2e25e988897",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityControlledEffect.java",
+      "sha256": "4d0179305bf4650cd782fa4f3c2df12c5966416ecebe5a9fd239a9e32e649e59"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/DefenderAbility.java",
+      "sha256": "ad5269c8613d7ef2e18e64fb3ea53099a4649870fae2cc0a54ad80a50ca0755e"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/IndestructibleAbility.java",
+      "sha256": "a15d29ac3de3ff567bc597760c30e431b7f039f605ce7e462ede4e9f55790400"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

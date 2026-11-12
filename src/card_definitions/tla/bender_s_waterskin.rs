@@ -1,16 +1,27 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
+// Direct typed behavior from the pinned Oracle and XMage sources.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::UntapDuringOtherUntapSteps],
+    }],
+    activated: &[ActivatedAbility {
+        cost: ActivationCost {
+            tap: true,
+            ..ActivationCost::ZERO
+        },
+        guard: ActivationGuard::Always,
+        origin: ActivationOrigin::Battlefield,
+        cycling: false,
+        exhaust: false,
+        sorcery: false,
+        once_per_turn: false,
+        targets: TargetPlan::NONE,
+        program: &[Instruction::AddMana(ManaProduction::Choice {
+            mask: 31,
+            amount: 1,
+        })],
+    }],
     ..CardRules::EMPTY
 };

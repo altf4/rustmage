@@ -3,10 +3,36 @@
   "catalogue_id": 3984,
   "oracle_id": "c5173332-68ad-456e-ad85-dd7475464d94",
   "facts_sha256": "121fb99673d86675709fd9baeb38466ff3a679928002cd0e5d250706138d0165",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ab1f3e863da425fbfed17c5471be23e47531b6a39be391281112d8487ed6ac4b"
   },
-  "physical_metadata_sha256": "ac0fa6b55e3c16b690be1f0359f67b1808ff32dc565129498ae9b6c6a0e34139"
+  "physical_metadata_sha256": "ac0fa6b55e3c16b690be1f0359f67b1808ff32dc565129498ae9b6c6a0e34139",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SouthPoleVoyager.java",
+  "java_sha256": "c17fcf5e56529291d0add4c26adc125cba862bab8d8c364618cbb32438db78c5",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldThisOrAnotherTriggeredAbility.java",
+      "sha256": "2f5818fd959ec418604af2da920faa13d4eab583848e899591ef1a473a3b126f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/IfAbilityHasResolvedXTimesEffect.java",
+      "sha256": "e4ba0c85e674f7ed051face45fc0140a7abcbb76f92754cb65cfccaa4a5da2d2"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

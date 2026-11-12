@@ -3,10 +3,31 @@
   "catalogue_id": 384,
   "oracle_id": "3bc46467-323f-4cbf-9d0a-f3d2ae3c3a34",
   "facts_sha256": "d5a6cac6f3ce7b94a6f81f8f6778f40e32118f678e424ef53977ad0cbea0687e",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "065cc8b81177d86d70aa754d29bb928eeb1f99685c53b583321099d72af5652c"
   },
-  "physical_metadata_sha256": "38815687b9018379a0b0f7e536818d93d46c41021fad90459a36f35b4fea1fb0"
+  "physical_metadata_sha256": "38815687b9018379a0b0f7e536818d93d46c41021fad90459a36f35b4fea1fb0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BendersWaterskin.java",
+  "java_sha256": "9c40bd883728386423c3f5926c7733540b25111c01314c1a8a65b1f9af7cde7f",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/SimpleStaticAbility.java",
+      "sha256": "1c9a66a2159199adcaae9d4286a63b525791d4974175c39bba959fb1599fb789"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/UntapSourceDuringEachOtherPlayersUntapStepEffect.java",
+      "sha256": "f85665d6cc41dbdc06fa72230409488cc3748f72f0c719d409f5ee494b4f904f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/mana/AnyColorManaAbility.java",
+      "sha256": "00c9d147d7ae5aea30cf0213451ea9b3e4e78819226fe14ed5569c25549a8a11"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_white_colorless/permanents.rs"
 }

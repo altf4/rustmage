@@ -3,6 +3,8 @@
 mod choices;
 #[path = "tla_cards_white_colorless/combat.rs"]
 mod combat;
+#[path = "tla_cards_white_colorless/permanents.rs"]
+mod permanents;
 mod support;
 
 use rustmage as _;
