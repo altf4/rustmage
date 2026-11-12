@@ -2050,7 +2050,7 @@ impl Game {
             if selected.is_some() {
                 self.obscure_private_hand_selection(player);
             }
-            self.cloak_one(selected, player, false);
+            self.stage_hidden_cloaks(player, selected);
             return false;
         }
         if let EffectChoiceKind::DeployFromHandOrGraveyard { counter, .. } = choice.kind {

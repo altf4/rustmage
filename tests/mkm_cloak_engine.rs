@@ -59,6 +59,9 @@ fn hand_cloak_accepts_noncreature_cards_and_keeps_the_choice_private() {
     let aura = put(&mut game, player, "Unable to Scream", Zone::Hand);
     let land = put(&mut game, player, "Forest", Zone::Hand);
     let opposing = put(&mut game, player.other(), "Shock", Zone::Hand);
+    let aura_ref = game.object_ref(aura);
+    let land_ref = game.object_ref(land);
+    game.state.known_hand.extend([aura_ref, land_ref]);
     start(&mut game, player, spell);
     assert_eq!(game.actor(), Some(player));
     assert!(game.observe(player).effect_choice.is_some());
@@ -82,17 +85,28 @@ fn hand_cloak_accepts_noncreature_cards_and_keeps_the_choice_private() {
         .unwrap();
     assert_eq!(game.snapshot(), branch.snapshot());
     assert_eq!(game.object_view(land).zone, Zone::Hand);
-    assert_eq!(game.object_view(aura).zone, Zone::Battlefield);
-    assert_eq!(stats(&game, aura), (2, 2));
     let public = &game.observe(player.other()).face_down_permanents[0];
+    assert_ne!(public.object.card, aura);
+    assert_ne!(public.object.card, land);
+    assert_eq!(stats(&game, public.object.card), (2, 2));
     assert_eq!(public.cause, FaceDownCause::Cloak);
     assert_eq!(public.underlying, None);
+    assert_eq!(
+        game.observe(player).face_down_permanents[0].underlying,
+        Card::from_name("Unable to Scream")
+    );
 
     branch.restore(&saved).unwrap();
-    let land_ref = branch.object_ref(land);
     act(&mut branch, Action::ChooseEffectObject { object: land_ref });
-    assert_eq!(branch.object_view(land).zone, Zone::Battlefield);
     assert_eq!(branch.object_view(aura).zone, Zone::Hand);
+    assert_eq!(
+        branch.observe(player).face_down_permanents[0].underlying,
+        Some(Card::Forest)
+    );
+    assert_eq!(
+        serde_json::to_value(branch.observe(player.other())).unwrap(),
+        serde_json::to_value(game.observe(player.other())).unwrap(),
+    );
 }
 
 #[test]
