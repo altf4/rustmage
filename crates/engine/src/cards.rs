@@ -2370,6 +2370,7 @@ pub enum Instruction {
         minimum: u16,
         maximum: u16,
     },
+    DestroyCreaturesWithPowerAtLeast(u16),
     SetColors {
         subject: Subject,
         colors: ColorValue,
@@ -3921,6 +3922,7 @@ pub enum Instruction {
     /// Privately look at top one; optionally reveal a land to hand, otherwise
     /// optionally put that same exact card into the graveyard.
     LookTopLandThenMayGraveyard,
+    LookTopMayPutLandOntoBattlefieldElseHand,
     /// Privately look, optionally take a card, then put any remaining lands in tapped and put the rest in the graveyard.
     LookTopOneToHandThenLandsTapped(AmountValue),
     CastLibraryTopUpToAttackingPower(u16),

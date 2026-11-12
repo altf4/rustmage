@@ -10,6 +10,7 @@ pub(super) enum TopLandStage {
     Hand,
     Graveyard,
     HandThenLands,
+    BattlefieldOrHand,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -34,6 +35,7 @@ pub(super) enum LibrarySelectionCompletion {
     ReflexiveEquipment(u16),
     RememberExile,
     BattlefieldFallbackToHand,
+    TopLandFallbackToHand,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -128,32 +130,41 @@ impl Game {
             }
         }
     }
-    pub(super) fn start_top_land_then_graveyard(&mut self, item: &SpellView) -> bool {
+    pub(super) fn start_top_land_selection(
+        &mut self,
+        item: &SpellView,
+        stage: TopLandStage,
+    ) -> bool {
         let owner = item.controller;
         let Some(id) = self.top_library_card(owner) else {
             return false;
         };
         let object = self.object_ref(id);
         let land = self.current_kinds(id) & 2 != 0;
+        let battlefield = stage == TopLandStage::BattlefieldOrHand;
         self.remember_private_library_top(owner, owner, object);
         self.state.resolving.as_mut().unwrap().selection = Some(Box::new(LibrarySelection {
             // Ineligible hidden cards still take the same first decision. The
             // opponent must not infer landness from public resolution pacing.
             alternating: None,
-            top_land: Some(TopLandStage::Hand),
+            top_land: Some(stage),
             spec: LibrarySelectionSpec {
                 look: 1,
                 count: LibrarySelectionCount::Fixed(1),
                 filter: LibrarySelectionFilter::Any,
                 optional: true,
-                reveal: land,
+                reveal: land && !battlefield,
                 remainder: LibraryRemainder::Keep,
             },
             owner,
             completion: LibrarySelectionCompletion::None,
             entered: Vec::new(),
             transform_pending: false,
-            destination: LibraryPickDestination::Hand,
+            destination: if battlefield {
+                LibraryPickDestination::Battlefield
+            } else {
+                LibraryPickDestination::Hand
+            },
             exclude_selected_from_remainder: true,
             public: false,
             entering: false,
@@ -277,7 +288,8 @@ impl Game {
         let remembers_hand = completion == LibrarySelectionCompletion::RememberHandCount;
         match completion {
             LibrarySelectionCompletion::None => {}
-            LibrarySelectionCompletion::BattlefieldFallbackToHand => {
+            LibrarySelectionCompletion::BattlefieldFallbackToHand
+            | LibrarySelectionCompletion::TopLandFallbackToHand => {
                 unreachable!("assigned after the destination choice")
             }
             LibrarySelectionCompletion::RememberHandCount => {
@@ -800,6 +812,14 @@ impl Game {
             self.continue_top_hand_then_lands(owner);
             return true;
         }
+        if f.top_land == Some(TopLandStage::BattlefieldOrHand) {
+            if f.selected.is_empty() {
+                f.selected.append(&mut f.remaining);
+                f.destination = LibraryPickDestination::Hand;
+            } else {
+                f.completion = LibrarySelectionCompletion::TopLandFallbackToHand;
+            }
+        }
         if f.top_land == Some(TopLandStage::Hand) && f.selected.is_empty() {
             f.top_land = Some(TopLandStage::Graveyard);
             f.destination = LibraryPickDestination::Graveyard;
@@ -1086,11 +1106,13 @@ impl Game {
     }
     fn library_selected_to_hand(&mut self, frame: &LibrarySelection) {
         let nonlands_only = frame.destination == LibraryPickDestination::LandsTappedRestHand;
+        let follow_redirect = frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand;
         let ids: Vec<_> = frame
             .selected
             .iter()
             .filter(|r| {
-                exact_library_card(&self.state.objects, frame.owner, **r)
+                (exact_library_card(&self.state.objects, frame.owner, **r)
+                    || follow_redirect && self.public_top_land_redirect(**r))
                     && (!nonlands_only || !self.state.objects[r.card as usize].card.is_land())
             })
             .map(|r| r.card)
@@ -1105,6 +1127,12 @@ impl Game {
             );
         }
         self.finish_zone_events(&events, &[]);
+    }
+    fn public_top_land_redirect(&self, object: ObjectRef) -> bool {
+        let card = &self.state.objects[object.card as usize];
+        self.object_ref(object.card) == object
+            && matches!(card.zone, Zone::Exile | Zone::Graveyard | Zone::Command)
+            && !self.exiled_face_down(object)
     }
     fn commit_library_remainder(&mut self, owner: Player, mut f: LibrarySelection) {
         // Entry replacements may move another looked card. The remainder means
@@ -1181,11 +1209,34 @@ impl Game {
                         frame.completion,
                         LibrarySelectionCompletion::MayTransform
                             | LibrarySelectionCompletion::ReflexiveEquipment(_)
+                            | LibrarySelectionCompletion::TopLandFallbackToHand
                     )
             })
         else {
             return;
         };
+        if frame.completion == LibrarySelectionCompletion::TopLandFallbackToHand {
+            let Some(&selected) = frame.selected.first() else {
+                return;
+            };
+            // CR 400.7j: follow a replacement's actual result only in a public zone.
+            if let Some(redirected) = events.iter().find_map(|event| {
+                (event.moved
+                    && event.before.reference == selected
+                    && self.public_top_land_redirect(event.after))
+                .then_some(event.after)
+            }) {
+                self.state
+                    .resolving
+                    .as_mut()
+                    .unwrap()
+                    .selection
+                    .as_mut()
+                    .unwrap()
+                    .selected[0] = redirected;
+            }
+            return;
+        }
         let entered: Vec<_> = events
             .iter()
             .filter(|event| {
@@ -1273,7 +1324,11 @@ impl Game {
             self.library_selected_to_hand(&frame);
         } else {
             let completion = frame.completion;
-            if completion == LibrarySelectionCompletion::BattlefieldFallbackToHand {
+            if matches!(
+                completion,
+                LibrarySelectionCompletion::BattlefieldFallbackToHand
+                    | LibrarySelectionCompletion::TopLandFallbackToHand
+            ) {
                 self.library_selected_to_hand(&frame);
             }
             let entered = std::mem::take(&mut frame.entered);

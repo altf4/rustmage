@@ -7192,7 +7192,15 @@ impl Game {
                     }
                 }
                 Instruction::LookTopLandThenMayGraveyard => {
-                    if self.start_top_land_then_graveyard(&item) {
+                    if self.start_top_land_selection(&item, library_selection::TopLandStage::Hand) {
+                        return;
+                    }
+                }
+                Instruction::LookTopMayPutLandOntoBattlefieldElseHand => {
+                    if self.start_top_land_selection(
+                        &item,
+                        library_selection::TopLandStage::BattlefieldOrHand,
+                    ) {
                         return;
                     }
                 }
@@ -7750,6 +7758,9 @@ impl Game {
                         maximum,
                     };
                     return;
+                }
+                Instruction::DestroyCreaturesWithPowerAtLeast(minimum) => {
+                    self.destroy_creatures_by_power(minimum);
                 }
                 Instruction::ChooseColor => {
                     self.state.resolving.as_mut().unwrap().chosen_color = None;
