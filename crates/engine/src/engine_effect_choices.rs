@@ -422,19 +422,13 @@ impl Game {
                 && self.current_kinds(object.card) & 2 != 0
                 && choice.selected[player.index()].is_empty();
         }
-        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind.payment_kind() {
-            let o = &self.state.objects[object.card as usize];
-            return o.zone == Zone::Graveyard
-                && o.owner == player
-                && self.object_ref(object.card) == object
-                && !o.is_token()
-                && !o.is_spell_copy()
-                && !ability_world::CharacteristicWorld::graveyard_exile_prohibited(
-                    self,
-                    object.card,
-                )
-                && crate::card_names::same_name(o.card.name(), name)
-                && !choice.selected[player.index()].contains(&object);
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = choice.kind {
+            return additional_costs::graveyard_exile_card_matches(
+                self,
+                player,
+                object,
+                Some(name),
+            ) && !choice.selected[player.index()].contains(&object);
         }
         if matches!(
             choice.kind,
@@ -2472,9 +2466,7 @@ impl Game {
                 });
                 self.apply_temporary_copy(recipient, recipe, CopyDeadline::EndOfTurn);
             }
-        } else if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } =
-            choice.kind.payment_kind()
-        {
+        } else if let EffectChoiceKind::ExileSourceAndNamed { amount, .. } = choice.kind {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
             let selected = &choice.selected[item.controller.index()];
             // Validate every component before committing any movement. An

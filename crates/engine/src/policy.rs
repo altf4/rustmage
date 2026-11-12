@@ -344,6 +344,21 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
                 }
             }
             Action::ChooseSearchZones { .. } | Action::ChooseHandLibrarySearchZones { .. } => 50,
+            Action::ChooseGraveyardHandLibrarySearchZones {
+                graveyard,
+                hand,
+                library,
+            } => {
+                if observation
+                    .hand_library_search
+                    .as_ref()
+                    .is_some_and(|search| search.choosing_zones)
+                {
+                    50 + i128::from(*graveyard) + i128::from(*hand) + i128::from(*library)
+                } else {
+                    -1
+                }
+            }
             Action::Concede => -1000,
             Action::ChooseZoneReplacement { .. } | Action::ChooseMeldOrder { .. } => 50,
             Action::Sacrifice { .. } => 50,

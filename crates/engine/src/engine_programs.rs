@@ -8977,8 +8977,11 @@ impl Game {
                     self.start_zone_hand_search(&item, filter, may_decline);
                     return;
                 }
-                Instruction::SearchHandAndOrLibrary(filter) => {
-                    self.start_hand_library_search(item.controller, filter);
+                Instruction::SearchHandAndOrLibrary(filter)
+                | Instruction::SearchGraveyardHandAndOrLibrary(filter) => {
+                    let include_graveyard =
+                        matches!(instruction, Instruction::SearchGraveyardHandAndOrLibrary(_));
+                    self.start_hand_library_search(item.controller, filter, include_graveyard);
                     return;
                 }
                 Instruction::SearchCreatureManaValue {

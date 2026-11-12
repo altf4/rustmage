@@ -1485,6 +1485,15 @@ impl<'g> FundingState<'g> {
             .and_then(|(r, _)| self.resources.iter().find(|s| s.id == r.card));
         (self.cast_costs.is_some()
             || self.cost_group.as_ref().is_none_or(|(spec, group)| {
+                if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
+                    return goal.source.as_ref().is_some_and(|(source, ..)| {
+                        group.iter().all(|&object| {
+                            additional_costs::named_graveyard_exile_candidate(
+                                self, goal.actor, *source, object, name,
+                            )
+                        })
+                    });
+                }
                 group.iter().all(|r| {
                     let o = ability_world::CharacteristicWorld::object(self, r.card);
                     o.generation == r.generation

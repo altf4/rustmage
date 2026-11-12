@@ -1273,6 +1273,7 @@ define_actions! {
     },
     ChooseSearchZones { library:bool, graveyard:bool },
     ChooseHandLibrarySearchZones { hand: bool, library: bool },
+    ChooseGraveyardHandLibrarySearchZones { graveyard: bool, hand: bool, library: bool },
     FinishSearch,
     ChooseSearchBattlefield { card: CardId },
     ChooseSearchDestination { destination: crate::SearchDestination },
@@ -5956,7 +5957,7 @@ impl Game {
                             | EffectChoiceKind::ExileGraveyard
                             | EffectChoiceKind::TapPermanents(_)
                             | EffectChoiceKind::HandToTop => Action::Sacrifice { object },
-                            EffectChoiceKind::ExileSourceAndNamed { .. }
+                            EffectChoiceKind::ExileGraveyardCards(_)
                             | EffectChoiceKind::ExileCardFromAnyGraveyard
                             | EffectChoiceKind::ExileCreatureAndGraveyard
                             | EffectChoiceKind::ExileControlled
@@ -9558,8 +9559,13 @@ impl Game {
             }
             Action::RecoverMilled { object } => self.recover_milled(object),
             Action::ChooseHandLibrarySearchZones { hand, library } => {
-                self.choose_hand_library_zones(hand, library)
+                self.choose_hand_library_zones(hand, library, false)
             }
+            Action::ChooseGraveyardHandLibrarySearchZones {
+                graveyard,
+                hand,
+                library,
+            } => self.choose_hand_library_zones(hand, library, graveyard),
             Action::ChooseSearchZones { library, graveyard } => {
                 self.choose_search_zones(library, graveyard)
             }

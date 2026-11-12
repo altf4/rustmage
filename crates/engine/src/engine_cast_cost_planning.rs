@@ -640,6 +640,11 @@ impl FundingState<'_> {
         if spec.kind.chooses_cost_creature() {
             return additional_costs::chosen_cost_creature_matches(self, self.actor, r, spec.kind);
         }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
+            return additional_costs::named_graveyard_exile_candidate(
+                self, self.actor, source, r, name,
+            );
+        }
         let o = self.object(r.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
             return false;
@@ -1866,7 +1871,6 @@ impl FundingState<'_> {
             EffectChoiceKind::ExileGraveyardCards(n) => {
                 destination = Zone::Exile;
                 amount = usize::from(n);
-                spec.kind = EffectChoiceKind::ExileGraveyard;
             }
             EffectChoiceKind::ReturnUnblockedAttacker | EffectChoiceKind::ReturnToHand => {
                 destination = Zone::Hand
@@ -2020,6 +2024,12 @@ impl FundingState<'_> {
                     next.resources[i].object.tapped = true;
                 }
                 next.complete_cost_rows(later, remaining)
+            } else if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
+                let mut batch = selected.clone();
+                batch.push(c.source);
+                self.cost_departures(&batch, destination, &mut |w| {
+                    w.complete_cost_rows(later, remaining)
+                })
             } else {
                 self.cost_departures(selected, destination, &mut |w| {
                     w.complete_cost_rows(later, remaining)

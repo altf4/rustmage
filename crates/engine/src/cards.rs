@@ -1574,7 +1574,8 @@ pub enum EffectChoiceKind {
     /// Declare X, then choose exactly X distinct untapped permanents to tap.
     TapXPermanents,
     ExileGraveyardCards(u16),
-    /// Resolution cost: exile this resolving spell and named graveyard cards.
+    /// Exile the ability's graveyard source or the resolving spell and the
+    /// indicated number of other cards with this name from your graveyard.
     ExileSourceAndNamed {
         name: &'static str,
         amount: u16,
@@ -1802,6 +1803,7 @@ impl EffectChoiceKind {
         match self {
             Self::BlightXCost => Self::BlightCost(0),
             Self::ExileFromHandWithPlaySurcharge(_) => Self::ExileFromHand,
+            Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileCardFromAnyGraveyardRemember => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeSelection
             | Self::SacrificeExceptAttackingAttachment
@@ -4290,6 +4292,8 @@ pub enum Instruction {
     SearchDamageReceived(SearchSpec),
     /// Choose hidden hand/library search zones, then find up to one card.
     SearchHandAndOrLibrary(SearchFilter),
+    /// Choose one or more of your graveyard, hand, and library for one battlefield result.
+    SearchGraveyardHandAndOrLibrary(SearchFilter),
     /// Remember the exact result of the immediately following library search.
     CaptureSearchResult,
     /// May immediately cast one spell from the exact exiled search result.

@@ -26,6 +26,33 @@ pub(super) fn chosen_cost_creature_matches<W: ability_world::CharacteristicWorld
         }
 }
 
+pub(super) fn graveyard_exile_card_matches<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    reference: ObjectRef,
+    name: Option<&str>,
+) -> bool {
+    let object = world.object(reference.card);
+    object.zone == Zone::Graveyard
+        && object.owner == actor
+        && object.is_card()
+        && world.reference(reference.card) == reference
+        && name.is_none_or(|name| crate::card_names::same_name(world.name(reference.card), name))
+        && !world.graveyard_exile_prohibited(reference.card)
+}
+
+pub(super) fn named_graveyard_exile_candidate<W: ability_world::CharacteristicWorld + ?Sized>(
+    world: &W,
+    actor: Player,
+    source: ObjectRef,
+    object: ObjectRef,
+    name: &str,
+) -> bool {
+    source != object
+        && graveyard_exile_card_matches(world, actor, source, None)
+        && graveyard_exile_card_matches(world, actor, object, Some(name))
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn counter_cost_bearer<W: ability_world::CharacteristicWorld + ?Sized>(
     world: &W,
@@ -200,6 +227,9 @@ impl Game {
         }
         if spec.kind.chooses_cost_creature() {
             return chosen_cost_creature_matches(world, actor, object, spec.kind);
+        }
+        if let EffectChoiceKind::ExileSourceAndNamed { name, .. } = spec.kind {
+            return named_graveyard_exile_candidate(world, actor, source, object, name);
         }
         let o = world.object(object.card);
         if spec.kind.is_attached_sacrifice() && o.attached_to != Some(source) {
@@ -1268,22 +1298,18 @@ impl Game {
                 .additional_group
                 .as_ref()
                 .expect("selected graveyard group");
+            let source = a.item.source.expect("cost has an object source").object;
             assert_eq!(group.len(), usize::from(amount));
-            assert!(group.iter().all(|&r| {
-                self.additional_candidate(
-                    spec,
-                    a.item.controller,
-                    a.item
-                        .source
-                        .expect("cost announcement has object source")
-                        .object,
-                    r,
-                )
+            assert!(group.iter().enumerate().all(|(index, &r)| {
+                !group[..index].contains(&r)
+                    && self.additional_candidate(spec, a.item.controller, source, r)
             }));
-            let events = self.move_objects_raw(
-                &group.iter().map(|r| r.card).collect::<Vec<_>>(),
-                Zone::Exile,
-            );
+            let mut cards = group.iter().map(|r| r.card).collect::<Vec<_>>();
+            if matches!(spec.kind, EffectChoiceKind::ExileSourceAndNamed { .. }) {
+                self.refresh_local_source_quantities(&mut a.item);
+                cards.insert(0, source.card);
+            }
+            let events = self.move_objects_raw(&cards, Zone::Exile);
             self.finish_zone_events(&events, &[]);
             a.additional_paid = true;
             return;
