@@ -349,11 +349,12 @@ pub enum StaticAbilityFragment {
         value: StatValue,
         stats: Stats,
     },
-    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     /// Any creature attacking an opponent player of this source controller.
     OpponentPlayerAttackerKeywords(Keywords),
+    /// Grant keywords to controlled battlefield permanents matching a live kind mask.
     ControlledPermanentKeywords {
         kinds: u16,
+        other: bool,
         keywords: Keywords,
     },
     /// Live grant to equipped creatures, independent of the Equipment controller.

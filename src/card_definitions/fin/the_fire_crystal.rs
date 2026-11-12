@@ -19,6 +19,7 @@ const GROUPS: &[StaticAbilityGroup] = &[
         first_layer: AbilityLayer::Ability,
         fragments: &[StaticAbilityFragment::ControlledPermanentKeywords {
             kinds: 1,
+            other: false,
             keywords: Keywords::HASTE,
         }],
     },

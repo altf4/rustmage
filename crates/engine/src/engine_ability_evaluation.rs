@@ -383,8 +383,12 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
-        StaticAbilityFragment::ControlledPermanentKeywords { kinds, keywords } => {
-            if !own || world.kinds(id) & kinds == 0 {
+        StaticAbilityFragment::ControlledPermanentKeywords {
+            kinds,
+            other,
+            keywords,
+        } => {
+            if !own || (other && id == source.card) || world.kinds(id) & kinds == 0 {
                 return None;
             }
             keywords

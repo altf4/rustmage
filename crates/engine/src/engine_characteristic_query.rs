@@ -745,8 +745,10 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         }
                         StaticAbilityFragment::ControlledPermanentKeywords {
                             kinds,
+                            other,
                             keywords: grant,
                         } if target.controller == object.controller
+                            && (!other || id != source)
                             && CharacteristicWorld::kinds(self, id) & kinds != 0 =>
                         {
                             keywords = keywords.union(grant)

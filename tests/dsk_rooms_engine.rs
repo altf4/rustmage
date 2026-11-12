@@ -4,6 +4,7 @@ mod support;
 use rustmage::{PermanentType, RoomDoor};
 use rustmage_core::cards::authored::{CardExtras, CardRules};
 use rustmage_core::engine::ability_world::CharacteristicWorld;
+use rustmage_core::engine::characteristic_query::CharacteristicQuery;
 use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::{cards::*, engine::*};
 use support::*;
@@ -81,6 +82,45 @@ const EERIE: CardRules = CardRules {
         targets: TargetPlan::NONE,
         program: &[Instruction::Draw(PlayerSet::Controller, 1)],
     }],
+    ..CardRules::EMPTY
+};
+
+const OTHER_PERMANENT_HEXPROOF_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::ControlledPermanentKeywords {
+            kinds: u16::MAX,
+            other: true,
+            keywords: Keywords::HEXPROOF,
+        }],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[(0, RoomDoor::Right)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const ANY_PERMANENT_REMOVAL: CardRules = CardRules {
+    effect: Effect::Spell(
+        TargetPlan::Single(TargetSpec::one(TargetRule::Object {
+            zone: TargetZone::Battlefield,
+            kinds: 0,
+            relation: -1,
+            other: false,
+            nonland: false,
+            tapped: false,
+            min_mana: 0,
+            max_mana: u32::MAX,
+        })),
+        &[Instruction::Destroy],
+    ),
     ..CardRules::EMPTY
 };
 
@@ -1464,6 +1504,87 @@ fn a_nontargeted_room_alternative_is_available_only_while_a_controlled_door_is_l
     resolve(&mut neither);
     settle_rooms(&mut neither);
     assert_eq!(neither.object_view(room).room_doors, Some(LEFT_ONLY));
+}
+
+#[test]
+fn an_open_keyword_door_protects_other_controlled_permanents_in_live_and_projected_worlds() {
+    let remove = card("Opt");
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &OTHER_PERMANENT_HEXPROOF_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (remove, &ANY_PERMANENT_REMOVAL),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let artifact = put(&mut game, player, "Bear Trap", Zone::Battlefield);
+    let foreign = put(&mut game, player.other(), "Forest", Zone::Battlefield);
+    let removal = spawn(&mut game, player.other(), remove, Zone::Hand);
+    let hexproof = |game: &Game, id| game.keywords(id).contains(Keywords::HEXPROOF);
+    for id in [room, land, artifact, foreign] {
+        assert!(!hexproof(&game, id));
+    }
+
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    settle_rooms(&mut game);
+    assert!(hexproof(&game, land) && hexproof(&game, artifact));
+    assert!(!hexproof(&game, room) && !hexproof(&game, foreign));
+
+    let mut targeting = game.clone();
+    act(&mut targeting, Action::Pass);
+    act(&mut targeting, Action::AnnounceCast { card: removal });
+    let target = |id| Action::ChooseTarget {
+        target: Target::Card(id),
+    };
+    reject(&mut targeting, target(land));
+    reject(&mut targeting, target(artifact));
+    act(&mut targeting, target(room));
+    pay(&mut targeting);
+    settle_rooms(&mut targeting);
+    assert_eq!(targeting.object_view(room).zone, Zone::Graveyard);
+    assert!(!hexproof(&targeting, land));
+
+    let goal = FundingGoal {
+        actor: player,
+        required: [0; 6],
+        generic: 0,
+        reserve: None,
+        source: None,
+    };
+    let projected = FundingState::from_game(&game, &goal);
+    let projected_keywords = CharacteristicQuery::in_world(&projected);
+    assert!(
+        projected_keywords
+            .keywords(land)
+            .contains(Keywords::HEXPROOF)
+    );
+    assert!(
+        !projected_keywords
+            .keywords(room)
+            .contains(Keywords::HEXPROOF)
+    );
+    let exact = game.object_ref(room);
+    assert!(
+        projected.cost_departures(&[exact], Zone::Graveyard, &mut |world| {
+            assert!(
+                !CharacteristicQuery::in_world(world)
+                    .keywords(land)
+                    .contains(Keywords::HEXPROOF)
+            );
+            true
+        })
+    );
+
+    let second = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    unlock_door(&mut game, second, RoomDoor::Right, RED_COST);
+    settle_rooms(&mut game);
+    assert!(hexproof(&game, room) && hexproof(&game, second));
+    game.set_room_doors(game.object_ref(second), RoomDoors::default());
+    assert!(!hexproof(&game, room) && hexproof(&game, second));
+    game.change_controller(game.object_ref(land), player.other());
+    assert!(!hexproof(&game, land));
 }
 
 #[test]

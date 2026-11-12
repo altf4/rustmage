@@ -1678,8 +1678,10 @@ impl<'g> FundingState<'g> {
                         match *fragment {
                             crate::cards::StaticAbilityFragment::ControlledPermanentKeywords {
                                 kinds,
+                                other,
                                 keywords: grant,
                             } if target.object.controller == source.object.controller
+                                && (!other || target.id != source.id)
                                 && self.kinds(target) & kinds != 0 =>
                             {
                                 keywords = keywords.union(grant)
