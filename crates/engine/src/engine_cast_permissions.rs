@@ -797,6 +797,7 @@ impl Game {
             return false;
         }
         let normal_timing = sorcery
+            || linked_exile_paid.is_some_and(|grant| grant.grants_flash)
             || definition.is_instant()
             || definition.info().keywords.contains(Keywords::FLASH)
             || self.cast_timing_granted_with_types(
@@ -846,7 +847,7 @@ impl Game {
         if linked_exile_paid.is_some()
             || source_alternative && method == CastMethod::LinkedExileCounterCost
         {
-            Self::configure_linked_paid_cast(&mut item);
+            Self::configure_linked_paid_cast(&mut item, linked_exile_paid);
         }
         if let Some(permission) = paid_graveyard {
             item.add_cast_creature_types(permission.additional_types);

@@ -38,6 +38,7 @@ impl Card {
                         | StaticAbilityFragment::PlayFromGraveyardDuringOwnTurn
                         | StaticAbilityFragment::OwnTurnGraveyardFlashbackExceptSubtype(_)
                         | StaticAbilityFragment::OwnTurnGraveyardSubtypeFlashback { .. }
+                        | StaticAbilityFragment::LinkedExilePaidCastOnOwnTurnWithFlash
                         | StaticAbilityFragment::GrantManaCostMayhem
                         | StaticAbilityFragment::CastFromGraveyardWithLife { .. }
                         | StaticAbilityFragment::CastFromGraveyardWithLifeDuringOwnTurn { .. }

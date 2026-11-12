@@ -1582,6 +1582,7 @@ pub enum EffectChoiceKind {
     },
     /// Non-targeted selection of controlled permanents for the resolving source's linked exile.
     ExileControlledLinked,
+    ExileGraveyardLinked,
     /// Internal reservation for the exact permanent that granted an ability.
     ExileGrantingAttachment,
     /// During resolution, choose a card from either graveyard without targeting.
@@ -1882,6 +1883,7 @@ impl EffectChoiceKind {
             Self::DiscardOneMatchingOr { .. } => Self::Discard,
             Self::ExileSourceAndNamed { amount, .. } => Self::ExileGraveyardCards(amount),
             Self::ExileControlledForLinkedReturn => Self::ExileControlled,
+            Self::ExileGraveyardLinked => Self::ExileGraveyard,
             Self::ExileCardFromAnyGraveyardRemember
             | Self::ExileNoncreatureNonlandFromGraveyard { .. } => Self::ExileCardFromAnyGraveyard,
             Self::SacrificeAsCost

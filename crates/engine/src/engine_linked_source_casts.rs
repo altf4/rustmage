@@ -21,6 +21,8 @@ pub struct LinkedFreeCastApprovalView {
 pub(super) struct LinkedExilePaidCast {
     pub source: ObjectRef,
     pub entry_counter: Option<CounterKind>,
+    pub grants_flash: bool,
+    pub spend_any_mana: bool,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl Game {
@@ -169,7 +171,7 @@ impl Game {
     ) -> Option<LinkedExilePaidCast> {
         let provider = self.linked_source_definition(player, source, object.card, false)?;
         let exiled = &self.state.objects[object.card as usize];
-        if self.object_ref(object.card) != object || exiled.owner != player {
+        if self.object_ref(object.card) != object {
             return None;
         }
         let spell = face.definition(exiled.card)?;
@@ -181,21 +183,32 @@ impl Game {
             .iter()
             .flat_map(|group| group.fragments)
             .find_map(|fragment| {
-                let StaticAbilityFragment::LinkedExilePaidCast {
-                    filter,
-                    entry_counter,
-                } = *fragment
-                else {
-                    return None;
+                let permission = match *fragment {
+                    StaticAbilityFragment::LinkedExilePaidCast {
+                        filter,
+                        entry_counter,
+                    } if exiled.owner == player && filter.matches(spell) => LinkedExilePaidCast {
+                        source,
+                        entry_counter,
+                        grants_flash: false,
+                        spend_any_mana: false,
+                    },
+                    StaticAbilityFragment::LinkedExilePaidCastOnOwnTurnWithFlash
+                        if self.state.active == player =>
+                    {
+                        LinkedExilePaidCast {
+                            source,
+                            entry_counter: None,
+                            grants_flash: true,
+                            spend_any_mana: true,
+                        }
+                    }
+                    _ => return None,
                 };
-                (filter.matches(spell)
-                    && self.continuous_fragment_available(source.card, |found| {
-                        std::ptr::eq(found, fragment)
-                    }))
-                .then_some(LinkedExilePaidCast {
-                    source,
-                    entry_counter,
+                self.continuous_fragment_available(source.card, |found| {
+                    std::ptr::eq(found, fragment)
                 })
+                .then_some(permission)
             })
     }
     pub(super) fn visit_linked_source_casts(
@@ -330,15 +343,22 @@ impl Game {
         }
         false
     }
-    pub(super) fn configure_linked_paid_cast(item: &mut SpellView) {
+    pub(super) fn configure_linked_paid_cast(
+        item: &mut SpellView,
+        permission: Option<LinkedExilePaidCast>,
+    ) {
         let cast = item.cast.as_mut().expect("paid spell");
-        cast.spend_any_mana = false;
+        cast.spend_any_mana = permission.is_some_and(|grant| grant.spend_any_mana);
         cast.exile_on_graveyard = false;
         cast.stash_origin = false;
     }
 
-    pub(super) fn select_linked_paid_cast(&mut self, item: &mut SpellView) {
-        Self::configure_linked_paid_cast(item);
+    pub(super) fn select_linked_paid_cast(
+        &mut self,
+        item: &mut SpellView,
+        permission: Option<LinkedExilePaidCast>,
+    ) {
+        Self::configure_linked_paid_cast(item, permission);
         if let Some(data) = &mut self.state.linked_choices {
             data.play_approvals.retain(|row| row.0 != item.id);
         }
@@ -357,7 +377,7 @@ impl Game {
             .expect("approved exact linked permission");
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        self.select_linked_paid_cast(&mut item);
+        self.select_linked_paid_cast(&mut item, Some(permission));
         item.cast.as_mut().unwrap().flash_surcharge = flash_surcharge;
         self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
             a.limited_cast_permission =

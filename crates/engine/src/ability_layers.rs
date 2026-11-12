@@ -114,6 +114,8 @@ pub enum StaticAbilityFragment {
         filter: CastFilter,
         entry_counter: Option<CounterKind>,
     },
+    /// Cast linked cards on your turn as though they had flash, spending mana of any type.
+    LinkedExilePaidCastOnOwnTurnWithFlash,
     /// Use live toughness rather than power when paying Crew or Saddle costs.
     CrewSaddleWithToughness,
     /// A layer-six activated-ability template granted to this source at max speed.

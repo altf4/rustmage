@@ -6059,6 +6059,10 @@ impl Game {
             return self.behold_announcement_fundable(&proposal, cost);
         }
         if a.has_ordered_life_cost()
+            || matches!(
+                a.limited_cast_permission.as_deref(),
+                Some(LimitedCastPermission::LinkedExilePaid(grant)) if grant.spend_any_mana
+            )
             || a.item.cast.is_some_and(|cast| {
                 cast.method.is_mayhem()
                     || matches!(

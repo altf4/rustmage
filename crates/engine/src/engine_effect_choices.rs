@@ -2418,14 +2418,23 @@ impl Game {
             }
             return false;
         }
-        if choice.kind == EffectChoiceKind::ExileControlledLinked {
+        if matches!(
+            choice.kind,
+            EffectChoiceKind::ExileControlledLinked | EffectChoiceKind::ExileGraveyardLinked
+        ) {
             let item = self.state.resolving.as_ref().unwrap().item.clone();
+            let origin = if choice.kind == EffectChoiceKind::ExileControlledLinked {
+                Zone::Battlefield
+            } else {
+                Zone::Graveyard
+            };
             let ids = choice
                 .selected
                 .into_iter()
                 .flatten()
                 .filter(|&object| {
-                    self.on_battlefield(object.card) && self.object_ref(object.card) == object
+                    self.state.objects[object.card as usize].zone == origin
+                        && self.object_ref(object.card) == object
                 })
                 .map(|object| object.card)
                 .collect::<Vec<_>>();

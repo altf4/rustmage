@@ -1536,7 +1536,7 @@ impl Game {
         let cast = item.cast.as_mut().expect("cast information");
         cast.method = CastMethod::LinkedExileWaterbend;
         cast.flash_surcharge = flash_surcharge;
-        Self::configure_linked_paid_cast(item);
+        Self::configure_linked_paid_cast(item, None);
         if item.source.expect("cast source").card.x_symbols() > 0 {
             item.x = Some(0);
         }
@@ -1610,7 +1610,7 @@ impl Game {
             .expect("approved linked waterbend permission");
         let mut item = self.cast_item(player, object.card, [0; 6]);
         self.set_cast_face(&mut item, face);
-        self.select_linked_paid_cast(&mut item);
+        self.select_linked_paid_cast(&mut item, None);
         Self::configure_linked_waterbend_cast(&mut item, flash_surcharge);
         self.open_payment_announcement_configured(item, Counters::default(), None, None, |a| {
             a.origin_alternative_cost = Some(base);

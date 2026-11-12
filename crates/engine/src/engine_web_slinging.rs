@@ -451,7 +451,7 @@ impl Game {
         if terms.alternative.linked_exile_paid.is_some()
             || method == CastMethod::LinkedExileCounterCost
         {
-            self.select_linked_paid_cast(&mut item);
+            self.select_linked_paid_cast(&mut item, terms.alternative.linked_exile_paid);
         }
         if let Some(permission) = terms.alternative.paid_graveyard {
             self.apply_paid_graveyard_spell_types(&mut item, permission);
