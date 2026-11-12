@@ -12627,9 +12627,10 @@ impl Game {
                 None
             },
             immediate_blink_return: self.state.resolving.as_ref().and_then(|r| {
-                r.immediate_blink_return
-                    .as_ref()
-                    .map(|blink| blink.rows.clone())
+                match r.exile_continuation.as_deref()? {
+                    return_links::ExileContinuation::Blink(blink) => Some(blink.rows.clone()),
+                    return_links::ExileContinuation::CopyToSubtype { .. } => None,
+                }
             }),
             earthbend_returns: self.earthbend_views(),
             delayed_returns: self
@@ -13950,12 +13951,9 @@ impl Game {
                             .as_ref()
                             .map_or(0, |sequence| sequence.owned_bytes())
                         + resolution
-                            .immediate_blink_return
-                            .as_ref()
-                            .map_or(0, |blink| {
-                                std::mem::size_of::<return_links::ImmediateBlink>()
-                                    + blink.rows.len() * std::mem::size_of::<ReturnLinkView>()
-                            })
+                            .exile_continuation
+                            .as_deref()
+                            .map_or(0, return_links::ExileContinuation::owned_bytes)
                         + resolution
                             .milled_selection
                             .as_ref()

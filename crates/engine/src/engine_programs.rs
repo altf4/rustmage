@@ -41,7 +41,7 @@ pub(super) struct Resolution {
     pub cascade: Option<Box<cascade::CascadeState>>,
     #[allow(clippy::box_collection)]
     pub target_card_facts: Option<Box<Vec<TargetCardFacts>>>,
-    pub immediate_blink_return: Option<Box<return_links::ImmediateBlink>>,
+    pub exile_continuation: Option<Box<return_links::ExileContinuation>>,
     pub repeat_blink_remaining: Option<u32>,
     pub connive: Option<Box<super::connive::ConniveSequence>>,
     pub proliferate: Option<Box<super::proliferate::ProliferateSequence>>,
@@ -4061,7 +4061,7 @@ impl Game {
             target_card_facts,
             sacrificed_power: None,
             sacrificed_mana_value: None,
-            immediate_blink_return: None,
+            exile_continuation: None,
             repeat_blink_remaining: None,
             explore: None,
             manifest_sequence: None,
@@ -4357,7 +4357,7 @@ impl Game {
             if self.advance_optional_wheel() {
                 continue;
             }
-            if self.resume_immediate_blink() {
+            if self.resume_exile_continuation() {
                 continue;
             }
             if self.advance_legendary_split_search() {

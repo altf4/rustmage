@@ -132,6 +132,35 @@ pub(super) struct ImmediateBlink {
     pub attacking: bool,
     pub capture_entry: bool,
 }
+
+/// A suspended instruction's follow-up after all effects of a departure finish.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(super) enum ExileContinuation {
+    Blink(ImmediateBlink),
+    CopyToSubtype {
+        subtype: &'static str,
+        recipe: CopyRecipe,
+        returning: ReturnLinkView,
+    },
+}
+
+impl ExileContinuation {
+    pub(super) fn owned_bytes(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + match self {
+                Self::Blink(blink) => {
+                    std::mem::size_of_val(blink.rows.as_slice())
+                        + blink
+                            .rows
+                            .iter()
+                            .map(ReturnLinkView::companions_bytes)
+                            .sum::<usize>()
+                }
+                Self::CopyToSubtype { returning, .. } => returning.companions_bytes(),
+            }
+    }
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) fn modification(kind: ReturnKind) -> Option<(&'static [&'static str], Keywords)> {
     match kind {
@@ -356,15 +385,12 @@ impl Game {
             })
             .map(|event| ReturnLinkView::from_event(event, item.controller, None, true, true))
             .collect();
-        self.state
-            .resolving
-            .as_mut()
-            .unwrap()
-            .immediate_blink_return = Some(Box::new(ImmediateBlink {
-            rows: returning,
-            attacking: false,
-            capture_entry,
-        }));
+        self.state.resolving.as_mut().unwrap().exile_continuation =
+            Some(Box::new(ExileContinuation::Blink(ImmediateBlink {
+                rows: returning,
+                attacking: false,
+                capture_entry,
+            })));
         self.finish_zone_events(&events, &[]);
     }
     /// Register only an actually successful return, after its replacement choices.
@@ -461,11 +487,11 @@ impl Game {
         // Departure events can themselves stage a choice-bearing linked return.
         // Keep our exact exiled incarnations owned until that entry batch finishes.
         let resolution = self.state.resolving.as_mut().unwrap();
-        resolution.immediate_blink_return = Some(Box::new(ImmediateBlink {
+        resolution.exile_continuation = Some(Box::new(ExileContinuation::Blink(ImmediateBlink {
             rows: returning,
             attacking: attacking_controller.is_some(),
             capture_entry,
-        }));
+        })));
         self.finish_zone_events(&events, &[]);
     }
     fn take_blink_entry_capture(&mut self) -> bool {
@@ -476,11 +502,27 @@ impl Game {
             .is_some_and(|frame| std::mem::take(&mut frame.capture_next_entry))
     }
 
-    pub(super) fn resume_immediate_blink(&mut self) -> bool {
+    pub(super) fn resume_exile_continuation(&mut self) -> bool {
         let resolution = self.state.resolving.as_mut().unwrap();
-        let Some(blink) = resolution.immediate_blink_return.take() else {
+        let Some(continuation) = resolution.exile_continuation.take() else {
             return false;
         };
+        match *continuation {
+            ExileContinuation::Blink(blink) => self.resume_immediate_blink(blink),
+            ExileContinuation::CopyToSubtype {
+                subtype,
+                recipe,
+                returning,
+            } => {
+                let item = resolution.item.clone();
+                self.copy_to_controlled_subtype_until_end_step(item.controller, subtype, recipe);
+                self.register_delayed_return(&item, returning);
+            }
+        }
+        true
+    }
+
+    fn resume_immediate_blink(&mut self, blink: ImmediateBlink) {
         let attacking = blink.attacking;
         let moves: Vec<_> = blink
             .rows
@@ -521,8 +563,8 @@ impl Game {
                 .collect();
         }
         self.stage_entries(moves, None);
-        true
     }
+
     pub(super) fn exile_target_and_copy_to_subtype_until_end_step(
         &mut self,
         item: &SpellView,
@@ -537,7 +579,7 @@ impl Game {
         };
 
         let before = self.copiable_recipe(blueprint);
-        let event = self.move_object(blueprint.card, Zone::Exile);
+        let event = self.move_object_raw(blueprint.card, Zone::Exile);
         // The copy instruction uses battlefield LKI on departure, or the
         // creature's current copiable values if the move was prevented.
         let recipe = if event.moved {
@@ -545,8 +587,6 @@ impl Game {
         } else {
             self.copiable_recipe(blueprint)
         };
-        self.copy_to_controlled_subtype_until_end_step(item.controller, subtype, recipe);
-
         let mut returning =
             ReturnLinkView::from_event(&event, event.before.owner, None, false, false);
         if !event.moved || event.destination != Zone::Exile {
@@ -555,7 +595,15 @@ impl Game {
             returning.zone = Zone::Exile;
             returning.additional_returning = None;
         }
-        self.register_delayed_return(item, returning);
+        // A linked return can suspend in an as-enters choice before the next
+        // instruction. Retain the departing creature's exact copy and return data.
+        self.state.resolving.as_mut().unwrap().exile_continuation =
+            Some(Box::new(ExileContinuation::CopyToSubtype {
+                subtype,
+                recipe,
+                returning,
+            }));
+        self.finish_zone_events(std::slice::from_ref(&event), &[]);
     }
 
     pub(super) fn blink_group_until_end_step(

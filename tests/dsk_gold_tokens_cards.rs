@@ -499,6 +499,77 @@ fn niko_creates_working_shards_and_temporarily_copies_exiled_creature_values() {
 }
 
 #[test]
+fn niko_waits_for_a_linked_return_to_complete_before_copying_shards() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let bandit = put(&mut game, player, "Visage Bandit", Zone::Battlefield);
+    let donor = put(&mut game, player, "Oaken Siren", Zone::Battlefield);
+    let niko = cast_named(&mut game, player, "Niko, Light of Hope");
+    settle(&mut game);
+    let shards = controlled_tokens(&game, player, SHARD);
+    assert_eq!(shards.len(), 2);
+
+    let bodyguard = cast_named(&mut game, player, "Werefox Bodyguard");
+    let exile = target(bandit);
+    progress_until(&mut game, |game| game.legal_actions().contains(&exile));
+    act(&mut game, exile);
+    finish_targets_and_pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(bandit).zone, Zone::Exile);
+
+    next_main(&mut game, player);
+    game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
+    act(&mut game, activation(niko, 0));
+    act(&mut game, target(bodyguard));
+    finish_targets_and_pay(&mut game);
+    progress_until(&mut game, |game| {
+        matches!(game.state.pending, Pending::EntryCopy { .. })
+    });
+    assert_eq!(game.object_view(bandit).zone, Zone::Exile);
+    assert_eq!(game.object_view(bodyguard).zone, Zone::Exile);
+    for shard in &shards {
+        reject(
+            &mut game,
+            Action::ChooseEntryCopy {
+                object: Some(shard.reference),
+            },
+        );
+        assert_eq!(game.object_view(shard.id).card, SHARD);
+    }
+
+    let choice = Action::ChooseEntryCopy {
+        object: Some(game.object_ref(donor)),
+    };
+    let checkpoint = game.snapshot();
+    let index = game
+        .legal_actions()
+        .iter()
+        .position(|action| *action == choice)
+        .unwrap();
+    let mut indexed = game.clone();
+    act(&mut game, choice);
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.snapshot(), checkpoint);
+    settle(&mut game);
+
+    assert_eq!(game.object_view(bandit).name, "Oaken Siren");
+    for shard in shards {
+        let copied = game.object_view(shard.id);
+        assert_eq!(copied.reference, shard.reference);
+        assert_eq!(copied.name, "Werefox Bodyguard");
+    }
+    assert!(game.observe(player).delayed_returns.iter().any(|entry| {
+        entry.returning.object == game.object_ref(bodyguard)
+            && entry.returning.zone == Zone::Exile
+            && entry.returning.controller == player
+    }));
+}
+
+#[test]
 fn jolly_balloon_man_immediately_makes_a_copiable_balloon_and_sacrifices_it() {
     let player = Player::P1;
     let mut game = scenario(player);

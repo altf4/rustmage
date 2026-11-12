@@ -12,7 +12,7 @@
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/e/EnduringCuriosity.java",
   "java_sha256": "37c9a0d86200b21f3b7a212e6470943681f109f1f53186830c2c362a93cb0cf2",
-  "rules_tests": "src/assurance/hartford_returns.rs",
+  "rules_tests": "tests/dsk_white_blue_survival.rs",
   "xmage_dependencies": [
     {
       "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",

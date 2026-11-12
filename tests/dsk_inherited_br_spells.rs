@@ -223,7 +223,7 @@ fn spectral_snatchers_ward_requires_a_discard_from_its_opposing_targeter() {
     pass_pair(&mut game);
     assert_eq!(game.actor(), Some(PLAYER));
     let mut decline = game.clone();
-    act(&mut decline, Action::DeclineEffectPayment);
+    act(&mut decline, Action::DeclineResolutionMana);
     settle(&mut decline);
     assert_eq!(decline.object_view(snatcher).zone, Zone::Battlefield);
     assert_eq!(decline.object_view(discard).zone, Zone::Hand);
@@ -232,4 +232,51 @@ fn spectral_snatchers_ward_requires_a_discard_from_its_opposing_targeter() {
     settle(&mut game);
     assert_eq!(game.object_view(snatcher).zone, Zone::Graveyard);
     assert_eq!(game.object_view(discard).zone, Zone::Graveyard);
+}
+
+#[test]
+fn spectral_snatchers_copied_ward_keeps_the_original_targeting_player() {
+    let mut game = scenario(PLAYER);
+    let snatcher = put(&mut game, OTHER, "Spectral Snatcher", Zone::Battlefield);
+    let discards = ["Forest", "Swamp"].map(|name| put(&mut game, PLAYER, name, Zone::Hand));
+    let opposing_hand = put(&mut game, OTHER, "Plains", Zone::Hand);
+    let favor = put(&mut game, PLAYER, "Return the Favor", Zone::Hand);
+    cast_target(&mut game, "Murder", snatcher);
+    let ward = game.state.stack.last().unwrap();
+    assert_eq!(ward.controller, OTHER);
+    let target = Target::Stack(ward.id);
+    let victim = ward.related_stack.unwrap();
+    assert_eq!(victim.controller, PLAYER);
+
+    act(&mut game, Action::AnnounceCast { card: favor });
+    act(&mut game, Action::ChooseMode { mode: 0 });
+    act(&mut game, Action::ChooseTarget { target });
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    pay(&mut game);
+    pass_pair(&mut game);
+    let copy = game.state.stack.last().unwrap();
+    assert!(copy.is_copy);
+    assert_eq!(copy.controller, PLAYER);
+    assert_eq!(copy.related_stack, Some(victim));
+
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(PLAYER));
+    reject(
+        &mut game,
+        Action::Discard {
+            card: opposing_hand,
+        },
+    );
+    act(&mut game, Action::Discard { card: discards[0] });
+    pass_pair(&mut game);
+    assert_eq!(game.actor(), Some(PLAYER));
+    act(&mut game, Action::Discard { card: discards[1] });
+    settle(&mut game);
+    assert_eq!(game.object_view(snatcher).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(opposing_hand).zone, Zone::Hand);
+    for card in discards {
+        assert_eq!(game.object_view(card).zone, Zone::Graveyard);
+    }
 }
