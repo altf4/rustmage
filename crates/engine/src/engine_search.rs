@@ -106,6 +106,7 @@ impl Game {
                 .iter()
                 .all(|&f| self.card_search_filter_matches(f, player, id)),
             SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
+            SearchFilter::NonSubtype(subtype) => !self.has_subtype(id, subtype),
             _ => filter.matches(self.state.objects[id as usize].card),
         }
     }

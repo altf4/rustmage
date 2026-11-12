@@ -4460,6 +4460,7 @@ impl Game {
                     | Instruction::CopyTargetSpellOrAbility { .. }
                     | Instruction::CopyTargetAbilityX { .. }
                     | Instruction::DamageByGroup { .. }
+                    | Instruction::GrantKeywordsToUnchosenTargets { .. }
                     | Instruction::LoyaltyDamage { .. }
                     | Instruction::PowerDamage { .. }
                     | Instruction::CreaturePowerDamageAny { .. }
@@ -11286,6 +11287,35 @@ impl Game {
                         })
                         .collect();
                     self.apply_damage_batch(&events);
+                }
+                Instruction::GrantKeywordsToUnchosenTargets { group, keywords } => {
+                    let chosen = self
+                        .state
+                        .resolving
+                        .as_ref()
+                        .unwrap()
+                        .remembered_objects
+                        .as_ref()
+                        .and_then(|objects| objects.first())
+                        .copied();
+                    if let (Some(source), Some(chosen)) = (item.source, chosen) {
+                        let recipients = item
+                            .targets
+                            .iter()
+                            .filter_map(|bound| {
+                                bound
+                                    .object
+                                    .filter(|object| {
+                                        *object != chosen
+                                            && bound.group == group
+                                            && self.on_battlefield(object.card)
+                                            && self.object_ref(object.card) == *object
+                                    })
+                                    .map(|object| object.card)
+                            })
+                            .collect::<Vec<_>>();
+                        self.grant_keyword_effects(&recipients, source.object, keywords);
+                    }
                 }
                 Instruction::Damage(_)
                 | Instruction::DamageRememberPlayers(_)

@@ -6,6 +6,8 @@ use super::*;
 pub(super) struct MilledSelection {
     player: Player,
     spec: MilledSelectionSpec,
+    minimum: u16,
+    maximum: usize,
     selected: Vec<ObjectRef>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -21,7 +23,7 @@ pub struct MilledSelectionView {
     pub filter: MilledFilter,
     pub destination: MilledDestination,
     pub minimum: u16,
-    pub maximum: u16,
+    pub maximum: usize,
     pub milled: Vec<ObjectRef>,
     pub selected: Vec<ObjectRef>,
     pub candidates: Vec<ObjectRef>,
@@ -62,6 +64,11 @@ impl Game {
                 kinds: mask,
                 subtype,
             } => kinds & u16::from(mask) != 0 || self.has_subtype(object.card, subtype),
+            MilledFilter::KindsOrLegendary(mask) => {
+                !self.exiled_face_down(object)
+                    && (kinds & mask != 0
+                        || ability_world::CharacteristicWorld::legendary(self, object.card))
+            }
             MilledFilter::Adventure => card.card.adventure_spell().is_some(),
         }
     }
@@ -72,10 +79,7 @@ impl Game {
         let Some(choice) = self.milled_selection() else {
             return false;
         };
-        let MilledCount::Range { maximum, .. } = choice.spec.count else {
-            return false;
-        };
-        choice.selected.len() < usize::from(maximum)
+        choice.selected.len() < choice.maximum
             && !choice.selected.contains(&object)
             && self
                 .state
@@ -90,10 +94,7 @@ impl Game {
         let Some(choice) = self.milled_selection() else {
             return false;
         };
-        let MilledCount::Range { minimum, .. } = choice.spec.count else {
-            return false;
-        };
-        choice.selected.len() >= usize::from(minimum)
+        choice.selected.len() >= usize::from(choice.minimum)
             || !self
                 .state
                 .resolving
@@ -108,15 +109,12 @@ impl Game {
         if !self.shares_information(viewer, choice.player) {
             return None;
         }
-        let MilledCount::Range { minimum, maximum } = choice.spec.count else {
-            return None;
-        };
         Some(MilledSelectionView {
             player: choice.player,
             filter: choice.spec.filter,
             destination: choice.spec.destination,
-            minimum,
-            maximum,
+            minimum: choice.minimum,
+            maximum: choice.maximum,
             milled: self
                 .state
                 .resolving
@@ -170,13 +168,23 @@ impl Game {
         {
             return false;
         }
-        if spec.count == MilledCount::All || eligible.is_empty() {
+        if eligible.is_empty() {
             self.move_milled_selection(player, &eligible, spec.destination);
             return self.state.entry_batch.is_some();
         }
+        let (minimum, maximum) = match spec.count {
+            MilledCount::Range { minimum, maximum } => (minimum, usize::from(maximum)),
+            MilledCount::AnyNumber => (0, eligible.len()),
+            MilledCount::All => {
+                self.move_milled_selection(player, &eligible, spec.destination);
+                return self.state.entry_batch.is_some();
+            }
+        };
         self.state.resolving.as_mut().unwrap().milled_selection = Some(Box::new(MilledSelection {
             player,
             spec,
+            minimum,
+            maximum,
             selected: Vec::new(),
         }));
         self.state.pending = Pending::MilledSelection { player };
@@ -193,10 +201,7 @@ impl Game {
             .as_mut()
             .unwrap();
         choice.selected.push(object);
-        let MilledCount::Range { maximum, .. } = choice.spec.count else {
-            unreachable!()
-        };
-        if choice.selected.len() == usize::from(maximum) {
+        if choice.selected.len() == choice.maximum {
             self.finish_milled_selection();
         }
     }

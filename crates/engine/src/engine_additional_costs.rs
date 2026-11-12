@@ -1529,6 +1529,8 @@ impl Game {
             | EffectChoiceKind::GraveyardCreatures { .. }
             | EffectChoiceKind::ReturnGraveyardToHand { .. }
             | EffectChoiceKind::ReturnGraveyardToHandOrSubtype { .. }
+            | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
+            | EffectChoiceKind::DamageAmongTargetGroup { .. }
             | EffectChoiceKind::ReturnUpToGraveyardToHand { .. }
             | EffectChoiceKind::ReturnManifestGraveyardToHand
             | EffectChoiceKind::LandCards { .. }

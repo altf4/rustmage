@@ -3818,6 +3818,7 @@ impl Game {
         match filter {
             crate::SearchFilter::NoAbilities => !self.object_has_rules_abilities(id),
             crate::SearchFilter::Subtype(subtype) => self.has_subtype(id, subtype),
+            crate::SearchFilter::NonSubtype(subtype) => !self.has_subtype(id, subtype),
             crate::SearchFilter::AllOf(filters) => filters
                 .iter()
                 .all(|filter| self.object_search_filter_matches(*filter, id)),

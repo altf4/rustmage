@@ -5897,6 +5897,7 @@ impl Game {
                         EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::MoveFaceUpExileToGraveyard { .. }
                             | EffectChoiceKind::ReturnGraveyardToHand { .. }
+                            | EffectChoiceKind::ReturnGraveyardToHandMatching(_)
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::ReflexiveEquipmentRecipient { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
@@ -5927,6 +5928,7 @@ impl Game {
                             EffectChoiceKind::ReturnToHand
                             | EffectChoiceKind::CountersOnTarget { .. }
                             | EffectChoiceKind::KeepCreaturesByPowerForEachPlayer(_)
+                            | EffectChoiceKind::DamageAmongTargetGroup { .. }
                             | EffectChoiceKind::AttachedEquipmentToDestroy { .. }
                             | EffectChoiceKind::RemoveLoreForSourceCounters(_)
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking

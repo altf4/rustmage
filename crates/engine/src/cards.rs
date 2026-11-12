@@ -1305,6 +1305,7 @@ pub enum SearchFilter {
     Artifact,
     Enchantment,
     Subtype(&'static str),
+    NonSubtype(&'static str),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl SearchFilter {
@@ -1341,6 +1342,7 @@ impl SearchFilter {
             Self::Artifact => card.is_artifact(),
             Self::Enchantment => card.kind_mask() & 32 != 0,
             Self::Subtype(subtype) => card.has_subtype(subtype),
+            Self::NonSubtype(subtype) => !card.has_subtype(subtype),
         }
     }
 }
@@ -1692,6 +1694,12 @@ pub enum EffectChoiceKind {
         kinds: u16,
         subtype: &'static str,
     },
+    ReturnGraveyardToHandMatching(SearchFilter),
+    /// The chooser picks one surviving exact target of this group to take the damage.
+    DamageAmongTargetGroup {
+        group: u16,
+        amount: i32,
+    },
     Discard,
     /// Discard the payer's entire current hand as one ordinary activation cost.
     /// Empty hands are payable; no object selection is made.
@@ -1817,6 +1825,7 @@ impl EffectChoiceKind {
             Self::ReturnTappedCreature => Self::ReturnToHand,
             Self::ReturnGraveyardToHandOrSubtype { kinds, .. }
             | Self::ReturnUpToGraveyardToHand { kinds } => Self::ReturnGraveyardToHand { kinds },
+            Self::ReturnGraveyardToHandMatching(_) => Self::ReturnGraveyardToHand { kinds: 0 },
             Self::ReturnManifestGraveyardToHand => Self::ReturnGraveyardToHand { kinds: 0 },
             Self::FilteredCost {
                 action: CostAction::Sacrifice,
@@ -1956,6 +1965,7 @@ pub enum MilledFilter {
     Permanent,
     Kinds(u8),
     KindsOrSubtype { kinds: u8, subtype: &'static str },
+    KindsOrLegendary(u16),
     Adventure,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -1981,6 +1991,7 @@ pub enum MilledDestination {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum MilledCount {
     Range { minimum: u16, maximum: u16 },
+    AnyNumber,
     All,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -4452,6 +4463,11 @@ pub enum Instruction {
     },
     RevealUntilLandToGraveyard(PlayerSet),
     Damage(i32),
+    /// Grant to still-live targets in this group other than the preceding damage choice.
+    GrantKeywordsToUnchosenTargets {
+        group: u16,
+        keywords: Keywords,
+    },
     DamageScaled(AmountValue),
     /// The resolving ability's source deals damage equal to the entrant's current or last power.
     DamageByEnteringPower,

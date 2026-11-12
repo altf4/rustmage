@@ -282,7 +282,9 @@ impl Game {
         if let EffectChoiceKind::ColorCounter { color, subtype } = choice.kind {
             return self.color_counter_candidate(player, color, subtype, object);
         }
-        if let EffectChoiceKind::CountersOnTarget { group, .. } = choice.kind {
+        if let EffectChoiceKind::CountersOnTarget { group, .. }
+        | EffectChoiceKind::DamageAmongTargetGroup { group, .. } = choice.kind
+        {
             // Resolution has already discarded illegal targets. This choice
             // follows those exact permanents through any earlier instructions.
             return o.zone == Zone::Battlefield
@@ -375,6 +377,14 @@ impl Game {
                             event.player == player && event.graveyard_cards.contains(&object)
                         })
                 });
+        }
+        if let EffectChoiceKind::ReturnGraveyardToHandMatching(filter) = choice.kind {
+            return o.zone == Zone::Graveyard
+                && o.owner == player
+                && o.is_card()
+                && self.object_ref(object.card) == object
+                && self.card_search_filter_matches(filter, player, object.card)
+                && !choice.selected[player.index()].contains(&object);
         }
         let graveyard_filter = match choice.kind {
             EffectChoiceKind::ReturnGraveyardToHand { kinds }
@@ -1630,6 +1640,29 @@ impl Game {
             assert_eq!(players, PlayerSet::Controller, "captured return controller");
             assert!(optional_skip.is_none(), "remembered return is mandatory");
         }
+        if let EffectChoiceKind::DamageAmongTargetGroup {
+            group,
+            amount: damage,
+        } = kind
+        {
+            assert_eq!(amount, 1, "choose a single damage recipient");
+            self.state.resolving.as_mut().unwrap().remembered_objects = None;
+            let mut targets = item.targets.iter().filter_map(|bound| {
+                bound.object.filter(|object| {
+                    bound.group == group
+                        && bound.target == Target::Card(object.card)
+                        && self.on_battlefield(object.card)
+                        && self.object_ref(object.card) == *object
+                })
+            });
+            let Some(first) = targets.next() else {
+                return false;
+            };
+            if !targets.any(|object| object != first) {
+                self.damage_chosen_target(first, damage);
+                return false;
+            }
+        }
         let any_number = kind.any_number_selection();
         if any_number {
             assert_eq!(
@@ -2426,6 +2459,12 @@ impl Game {
             self.effect_counters(changes, replacements::ResumeMode::Program);
             return false;
         }
+        if let EffectChoiceKind::DamageAmongTargetGroup { amount, .. } = choice.kind {
+            if let Some(&target) = choice.selected.iter().flatten().next() {
+                self.damage_chosen_target(target, amount);
+            }
+            return false;
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::PowerDifferenceBoost {
             let controller = self.state.resolving.as_ref().unwrap().item.controller;
             let selected = &choice.selected[controller.index()];
@@ -2870,6 +2909,21 @@ impl Game {
                 .sacrifice_cost_batch_outcome(&sacrifices)
                 .expect("validated sacrifice selections");
             self.state.resolving.as_mut().unwrap().moved_count = Some(paid.count);
+        }
+    }
+
+    fn damage_chosen_target(&mut self, object: ObjectRef, amount: i32) {
+        let resolution = self.state.resolving.as_mut().unwrap();
+        resolution.remembered_objects = Some(vec![object].into());
+        let source = self.program_damage_source(&self.state.resolving.as_ref().unwrap().item);
+        if self.on_battlefield(object.card) && self.object_ref(object.card) == object {
+            self.apply_damage_batch(&[DamageEvent {
+                source,
+                target: Target::Card(object.card),
+                amount: i128::from(amount),
+                combat: false,
+                preventable: true,
+            }]);
         }
     }
 
