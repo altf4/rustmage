@@ -4268,6 +4268,12 @@ pub enum Instruction {
         filters: &'static [BattlefieldFilter],
         exclude_source: bool,
     },
+    /// Each matching permanent deals a fixed amount in the same damage batch.
+    PermanentsDealFixedDamage {
+        filters: &'static [BattlefieldFilter],
+        exclude_source: bool,
+        amount: u16,
+    },
     SacrificeTarget {
         group: u16,
     },

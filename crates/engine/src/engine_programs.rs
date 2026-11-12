@@ -8843,7 +8843,12 @@ impl Game {
                 Instruction::PermanentsDealPowerDamage {
                     filters,
                     exclude_source,
-                } => self.permanents_deal_power_damage(&item, filters, exclude_source),
+                } => self.permanents_deal_damage(&item, filters, exclude_source, None),
+                Instruction::PermanentsDealFixedDamage {
+                    filters,
+                    exclude_source,
+                    amount,
+                } => self.permanents_deal_damage(&item, filters, exclude_source, Some(amount)),
                 Instruction::SacrificeTarget { group } => {
                     let id = item.targets.iter().find_map(|bound| {
                         (bound.group == group && self.same_target_object(*bound))
