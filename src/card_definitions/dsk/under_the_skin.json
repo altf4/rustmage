@@ -3,10 +3,22 @@
   "catalogue_id": 4761,
   "oracle_id": "8e121178-e9e3-43a5-a174-ecbe47d759f9",
   "facts_sha256": "27fae7cbe319c1f220d0517d36626c13bb3662bc707bc09378fdfb1745df4b4c",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "3f0b75ab8227240ec15500980bb9a3c65cb1a5407c1339f0251ccff49032e030"
-  },
-  "physical_metadata_sha256": "f594c9bf274f1b9c8c74ac8fdb04ae362a4beeb04f441acac8e34c5a399b1410"
+  "complete": true,
+  "physical_metadata_sha256": "f594c9bf274f1b9c8c74ac8fdb04ae362a4beeb04f441acac8e34c5a399b1410",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnderTheSkin.java",
+  "java_sha256": "a496b39309b060740f06844b358b0c56a19cf57d12f068ee8fd7e389a3df19a1",
+  "rules_tests": "tests/dsk_gold_manifest_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+      "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/keyword/ManifestDreadEffect.java",
+      "sha256": "ca7876db599289446f3ad49f363776ea856dbef9e095c2b2bb0b97b01d2835d6"
+    }
+  ]
 }
