@@ -3,10 +3,36 @@
   "catalogue_id": 2443,
   "oracle_id": "c6f7efad-381c-45ba-9976-159b7e78f7ed",
   "facts_sha256": "b0ab1bdc10d506077a813f9edf29db3666f1b903ee3fd0e54ae60874517880ad",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2bbe6555314d49a5bafb8c6f9e8b43e37255b780b1f9bfd480d9776cf0b8f419"
   },
-  "physical_metadata_sha256": "db42fa15abf3e2bbdc6b84d251010b35ddab789bee29cdac071d4d11a006fa87"
+  "physical_metadata_sha256": "db42fa15abf3e2bbdc6b84d251010b35ddab789bee29cdac071d4d11a006fa87",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/l/LamplightPhoenix.java",
+  "java_sha256": "c129be78ee5b8d9e76f0e2cc89551a118d0802ad011aab57d6b252d58540946b",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/CollectEvidenceCost.java",
+      "sha256": "7de932207f4dacc199b5ca70152f0365b21c9a46bc34e9e3aa45df90b53543d3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/ExileSourceCost.java",
+      "sha256": "1cd064f3443f1a13cffbc141dbc6ddd71762a8a7a6b4c4d2aad6b432bf870d73"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToBattlefieldUnderOwnerControlSourceEffect.java",
+      "sha256": "6ad6ac83bce7ecb77dbb17eb83c3bd2303b8163c38d6185b9692418eaf7ae394"
+    }
+  ]
 }

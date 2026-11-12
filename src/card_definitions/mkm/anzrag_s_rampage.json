@@ -3,10 +3,31 @@
   "catalogue_id": 181,
   "oracle_id": "ce690a21-8117-420e-be00-cd6d9923a812",
   "facts_sha256": "4dbd2cd0d78b95e643cbb7d6766960346404e751ab32251de061acdd419f6fc7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4d3f2613fa69fbd1a507ffc6f9ed690cf7b102e4e04070c86019599bb1a8aefb"
   },
-  "physical_metadata_sha256": "868c380811572bff9d90c494d21cbc128ce24872b76926a169497da4324ab964"
+  "physical_metadata_sha256": "868c380811572bff9d90c494d21cbc128ce24872b76926a169497da4324ab964",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/a/AnzragsRampage.java",
+  "java_sha256": "91fe7b59838d942e4b5001dc5fdf1803a0a1b52080bbe7b6a14fc0e2de8d475b",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DestroyAllEffect.java",
+      "sha256": "ff52578966339bd976dc24cb1505f5862e3ee9b7b1abf41d2d8fac78cb43b48d"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/delayed/AtTheBeginOfNextEndStepDelayedTriggeredAbility.java",
+      "sha256": "9f3272690e0ade9a48526bd13165b3015a71d8bbed9d86a997af960d5f3214a5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnToHandTargetEffect.java",
+      "sha256": "188af7aa10129fa989431310176164a8309fdb40a104dc4f29970b99377879fd"
+    }
+  ]
 }

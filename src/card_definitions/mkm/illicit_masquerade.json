@@ -3,10 +3,31 @@
   "catalogue_id": 2136,
   "oracle_id": "fa2a275a-a28b-45cd-b8ca-a93247ff59bc",
   "facts_sha256": "a40949acd713951a482a206c61cf433b53f5eff9e030279e3fc7eab21eed3603",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "767ba1c4d737815398c80b1629dce3a1df75e4528ae13ab33fad0867531ee355"
   },
-  "physical_metadata_sha256": "194bbb35774870256e53217d03d5896b45c87408090140d7a33eeca54d5d0d32"
+  "physical_metadata_sha256": "194bbb35774870256e53217d03d5896b45c87408090140d7a33eeca54d5d0d32",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/IllicitMasquerade.java",
+  "java_sha256": "87e96dfdcb00ae6635af433f9c082f5d143ce259d0907ae119cc23d4ffc62326",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromGraveyardToBattlefieldTargetEffect.java",
+      "sha256": "abe66ed520da230ceeb0b52a5f89f86e188e49e6606da66ff0f83b2d55747287"
+    }
+  ]
 }

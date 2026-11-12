@@ -3,10 +3,36 @@
   "catalogue_id": 2415,
   "oracle_id": "91b2520e-85b6-4e1f-88cf-a585feeb8e65",
   "facts_sha256": "51f53e8b2c54c89bd73ead88d50619d82e3f5a400f9e608e515bab7ec706ceb7",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "f1b865de90234b5e4061ebdc5f80a0536e2dd8bc5c6d1c01be5d5f063fcee413"
   },
-  "physical_metadata_sha256": "04d8b76dadba0a639902f37bc3a1d8293413c66e8478497d355c8cbe408468e8"
+  "physical_metadata_sha256": "04d8b76dadba0a639902f37bc3a1d8293413c66e8478497d355c8cbe408468e8",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/KrenkoBaronOfTinStreet.java",
+  "java_sha256": "1b5de21e8cec5ac2567c8b15537f15284dc087d011ab167bc7d85ba5dd1d5209",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/PutIntoGraveFromBattlefieldAllTriggeredAbility.java",
+      "sha256": "627dd80120b299b046c28267ddd1a1d5ac2cf8fba1b9546cb6508452e303bbc8"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/common/SacrificeTargetCost.java",
+      "sha256": "4fd1acbd8ec238f778f4d2863fd170e9bba51cf22364caff12efdcd2a7bc0f04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersAllEffect.java",
+      "sha256": "064c925d60c97db41aa0444db30fd482c857b12e3bf8c0635f990dfd4a7094d5"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/GoblinToken.java",
+      "sha256": "16e001f88ad007f0445ce679eea218189f6c226eced65a5144fe17dfe7a72131"
+    }
+  ]
 }

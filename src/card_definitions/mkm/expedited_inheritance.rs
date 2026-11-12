@@ -1,16 +1,21 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
-    keywords: Keywords::NONE,
+    effect: Effect::Permanent,
+    triggers: &[TriggeredAbility {
+        condition: TriggerCondition::CreatureDamaged {
+            relation: CastRelation::Any,
+        },
+        targets: TargetPlan::NONE,
+        program: &[
+            Instruction::MayForPlayer {
+                player: PlayerSet::EventObjectController,
+                skip: 1,
+            },
+            Instruction::ExileTopPlayForPlayer {
+                player: PlayerSet::EventObjectController,
+                amount: AmountValue::DamageReceivedAmount,
+                next_turn: true,
+            },
+        ],
+    }],
     ..CardRules::EMPTY
 };

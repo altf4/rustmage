@@ -3,10 +3,26 @@
   "catalogue_id": 1401,
   "oracle_id": "11e2f581-7c3c-4f2f-877f-e41540ab967e",
   "facts_sha256": "43c0ccd5afd60d4b1f40b5ea388953e522838f51e1c73486d80d4d256a442c6c",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "0ec9a7b06e36e9602aae233ac0aae3facaf7b7bf3edb172cfabf90a65b57c9d7"
   },
-  "physical_metadata_sha256": "282b37fcddd91306737129ac51952e5eb792fa701a76b80208a4487fec9c9ee4"
+  "physical_metadata_sha256": "282b37fcddd91306737129ac51952e5eb792fa701a76b80208a4487fec9c9ee4",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ExpeditedInheritance.java",
+  "java_sha256": "c6561db6387c6883e56155f91506f251857b50f4e26c49a1b011744150d79342",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageAnyTriggeredAbility.java",
+      "sha256": "91c526354d4ec86fd47102afec069cf71ea4fb4ea7a3176da639e8368cc91a95"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/SavedDamageValue.java",
+      "sha256": "2198ea2d400af0d1b03071469d9f85f92660dbe5101725ecb428a059d4264d26"
+    }
+  ]
 }
