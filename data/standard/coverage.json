@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "0ee0c9f9a4fac87deca9c3868dea1c3eeb38cc36782ded11886074947f069e0d",
+  "catalogue_version": "a557938a13a5042be79ba5cbfac52771c1e96ad6732947964fe4d8be05a7394b",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4753,
-  "implemented_total": 4770,
+  "implemented_standard_cards": 4766,
+  "implemented_total": 4783,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 222,
-      "gated": 42
+      "complete": 235,
+      "gated": 29
     },
     "ecc": {
       "total": 7,
@@ -4036,8 +4036,8 @@
     {
       "name": "Boilerbilges Ripper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/boilerbilges_ripper.rs",
       "set": "dsk"
     },
@@ -11972,8 +11972,8 @@
     {
       "name": "Fear of the Dark",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_the_dark.rs",
       "set": "dsk"
     },
@@ -17380,8 +17380,8 @@
     {
       "name": "Impossible Inferno",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/impossible_inferno.rs",
       "set": "dsk"
     },
@@ -17580,8 +17580,8 @@
     {
       "name": "Innocuous Rat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/innocuous_rat.rs",
       "set": "dsk"
     },
@@ -20028,8 +20028,8 @@
     {
       "name": "Let's Play a Game",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/let_s_play_a_game.rs",
       "set": "dsk"
     },
@@ -26900,8 +26900,8 @@
     {
       "name": "Ragged Playmate",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/ragged_playmate.rs",
       "set": "dsk"
     },
@@ -27444,8 +27444,8 @@
     {
       "name": "Razorkin Needlehead",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/razorkin_needlehead.rs",
       "set": "dsk"
     },
@@ -28172,8 +28172,8 @@
     {
       "name": "Resurrected Cultist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/resurrected_cultist.rs",
       "set": "dsk"
     },
@@ -37604,8 +37604,8 @@
     {
       "name": "Trial of Agony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/trial_of_agony.rs",
       "set": "dsk"
     },
@@ -38644,8 +38644,8 @@
     {
       "name": "Untimely Malfunction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/untimely_malfunction.rs",
       "set": "dsk"
     },
@@ -39100,8 +39100,8 @@
     {
       "name": "Vengeful Possession",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/vengeful_possession.rs",
       "set": "dsk"
     },
@@ -39332,8 +39332,8 @@
     {
       "name": "Vile Mutilator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/vile_mutilator.rs",
       "set": "dsk"
     },
@@ -39868,8 +39868,8 @@
     {
       "name": "Waltz of Rage",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/waltz_of_rage.rs",
       "set": "dsk"
     },
