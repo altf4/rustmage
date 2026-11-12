@@ -1674,6 +1674,9 @@ impl<'g> FundingState<'g> {
                     }
                 }
                 for group in source.object.card.static_ability_groups() {
+                    if !entry_modes::group_enabled(self, self.reference(source.id), group) {
+                        continue;
+                    }
                     for fragment in group.fragments {
                         match *fragment {
                             crate::cards::StaticAbilityFragment::ControlledPermanentKeywords {

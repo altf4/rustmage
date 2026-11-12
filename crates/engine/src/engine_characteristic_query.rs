@@ -729,6 +729,9 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                 }
             }
             for group in object.card.static_ability_groups() {
+                if !entry_modes::group_enabled(self, self.object_ref(source), group) {
+                    continue;
+                }
                 for fragment in group.fragments {
                     match *fragment {
                         StaticAbilityFragment::OwnTurnSourceAndKindCreatureWard {

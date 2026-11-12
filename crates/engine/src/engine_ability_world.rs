@@ -1612,13 +1612,15 @@ pub(super) trait CharacteristicWorld {
             }
         }
         for &source in self.static_sources() {
+            let reference = self.reference(source);
             for group in self.object(source).card.static_ability_groups() {
+                if !entry_modes::group_enabled(self, reference, group) {
+                    continue;
+                }
                 for fragment in group.fragments {
-                    if let Some(production) =
-                        self.static_tap_mana(self.reference(source), id, *fragment)
-                    {
+                    if let Some(production) = self.static_tap_mana(reference, id, *fragment) {
                         result.push(ability_order::GrantedManaAbility {
-                            source: self.reference(source),
+                            source: reference,
                             production,
                             sacrifice: false,
                             subtype_derived: false,

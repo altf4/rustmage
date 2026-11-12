@@ -107,6 +107,30 @@ const OTHER_PERMANENT_HEXPROOF_ROOM: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const LAND_MANA_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Ability,
+        fragments: &[StaticAbilityFragment::LandMana {
+            recipients: LandManaRecipients::YouControl,
+            production: ManaProduction::Choice {
+                mask: 31,
+                amount: 1,
+            },
+        }],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[(0, RoomDoor::Left)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
 const ANY_PERMANENT_REMOVAL: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::Single(TargetSpec::one(TargetRule::Object {
@@ -1523,9 +1547,22 @@ fn an_open_keyword_door_protects_other_controlled_permanents_in_live_and_project
     let foreign = put(&mut game, player.other(), "Forest", Zone::Battlefield);
     let removal = spawn(&mut game, player.other(), remove, Zone::Hand);
     let hexproof = |game: &Game, id| game.keywords(id).contains(Keywords::HEXPROOF);
+    let goal = FundingGoal {
+        actor: player,
+        required: [0; 6],
+        generic: 0,
+        reserve: None,
+        source: None,
+    };
     for id in [room, land, artifact, foreign] {
         assert!(!hexproof(&game, id));
     }
+    let closed = FundingState::from_game(&game, &goal);
+    assert!(
+        !CharacteristicQuery::in_world(&closed)
+            .keywords(land)
+            .contains(Keywords::HEXPROOF)
+    );
 
     unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
     settle_rooms(&mut game);
@@ -1546,13 +1583,6 @@ fn an_open_keyword_door_protects_other_controlled_permanents_in_live_and_project
     assert_eq!(targeting.object_view(room).zone, Zone::Graveyard);
     assert!(!hexproof(&targeting, land));
 
-    let goal = FundingGoal {
-        actor: player,
-        required: [0; 6],
-        generic: 0,
-        reserve: None,
-        source: None,
-    };
     let projected = FundingState::from_game(&game, &goal);
     let projected_keywords = CharacteristicQuery::in_world(&projected);
     assert!(
@@ -1585,6 +1615,49 @@ fn an_open_keyword_door_protects_other_controlled_permanents_in_live_and_project
     assert!(!hexproof(&game, room) && hexproof(&game, second));
     game.change_controller(game.object_ref(land), player.other());
     assert!(!hexproof(&game, land));
+}
+
+#[test]
+fn a_land_mana_door_must_be_unlocked_to_fund_a_spell_with_a_new_color() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &LAND_MANA_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Battlefield);
+    let exact = game.object_ref(room);
+    game.set_room_doors(exact, RIGHT_ONLY);
+    let land = put(&mut game, player, "Forest", Zone::Battlefield);
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    let production = [0, 0, 0, 1, 0, 0];
+    let grant = Action::TapGrantedMana {
+        card: land,
+        grantor: exact,
+        production,
+    };
+    let cast_shock = Action::AnnounceCast { card: shock };
+    game.state.players[player.index()].mana = [0; 6];
+    reject(&mut game, grant.clone());
+    reject(&mut game, cast_shock.clone());
+
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 1];
+    unlock_door(&mut game, room, RoomDoor::Left, BLUE_COST);
+    settle_rooms(&mut game);
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+    act(&mut game, cast_shock.clone());
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(player.other()),
+        },
+    );
+    act(&mut game, grant);
+    pay(&mut game);
+    settle_rooms(&mut game);
+    assert_eq!(game.state.players[player.other().index()].life, 18);
+    assert!(game.object_view(land).tapped);
 }
 
 #[test]
