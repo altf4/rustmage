@@ -1542,6 +1542,20 @@ impl Game {
         cast.stash_origin = false;
     }
 
+    pub(super) fn isolate_linked_paid_resolution_cast(&mut self, item: &mut SpellView) {
+        if matches!(
+            self.resolution_cast_instruction(),
+            Some(Instruction::CastOneOwnedLinkedPaid(_))
+        ) {
+            self.configure_paid_resolution_offer(item);
+            if let Some(links) = &mut self.state.linked_choices {
+                links
+                    .play_approvals
+                    .retain(|approval| approval.0 != item.id);
+            }
+        }
+    }
+
     pub(super) fn cast_during_resolution_configured(
         &mut self,
         player: Player,
@@ -1615,17 +1629,7 @@ impl Game {
         if method.is_flashback() {
             self.state.objects[object.card as usize].flashback = true;
         }
-        if matches!(
-            self.resolution_cast_instruction(),
-            Some(Instruction::CastOneOwnedLinkedPaid(_))
-        ) {
-            self.configure_paid_resolution_offer(&mut item);
-            if let Some(links) = &mut self.state.linked_choices {
-                links
-                    .play_approvals
-                    .retain(|approval| approval.0 != item.id);
-            }
-        }
+        self.isolate_linked_paid_resolution_cast(&mut item);
         self.remember_suspend_cast(object, item.id);
         configure(self, &mut item);
         if let Some(choice) = alternative {

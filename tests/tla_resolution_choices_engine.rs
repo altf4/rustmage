@@ -528,3 +528,51 @@ fn linked_paid_cast_requires_exact_owned_ally_and_charges_its_mana_cost() {
         mana - 3
     );
 }
+
+#[test]
+fn a_linked_paid_disguise_uses_its_own_origin_rules() {
+    let _rules = fixture_rules::activate(&[(named("Grizzly Bears"), &LINKED_OFFER)]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let leyline = put(&mut game, player, "Leyline of Transformation", Zone::Hand);
+    cast(&mut game, leyline, None);
+    pass_pair(&mut game);
+    act(
+        &mut game,
+        Action::ChooseEntryValue {
+            value: EntryChoiceValue::CreatureType(CreatureType::from_name("Ally").unwrap()),
+        },
+    );
+
+    let source = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let concealed = put(&mut game, player, "Bubble Smuggler", Zone::Graveyard);
+    choose(&mut game, |action| {
+        matches!(action, Action::Activate {
+            card, ability: 0, target: Some(Target::Card(chosen)), ..
+        } if *card == source && *chosen == concealed)
+    });
+    settle(&mut game);
+    let object = game.object_ref(concealed);
+    game.grant_exile_play_permission_with_expiry(
+        player,
+        object,
+        None,
+        ExilePlayExpiry::WhileExiled,
+    )
+    .unwrap()
+    .exile_on_graveyard = true;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    act(&mut game, Action::Attack { card: source });
+    act(&mut game, Action::FinishAttackers);
+    pass_pair(&mut game);
+
+    act(&mut game, Action::AnnounceDisguise { card: concealed });
+    finish_offer(&mut game);
+    assert!(game.has_subtype(concealed, "Ally"));
+    act(&mut game, Action::Pass);
+    let scatter = put(&mut game, player.other(), "Essence Scatter", Zone::Hand);
+    cast(&mut game, scatter, Some(Target::Spell(concealed)));
+    settle(&mut game);
+    assert_eq!(game.object_view(concealed).zone, Zone::Graveyard);
+}

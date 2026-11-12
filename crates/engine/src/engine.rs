@@ -8895,6 +8895,7 @@ impl Game {
                     if free.casts_remaining.is_some() || free.remaining_mana_value.is_some() {
                         free.pending_cast = Some(item.id);
                     }
+                    self.isolate_linked_paid_resolution_cast(&mut item);
                 }
                 self.open_payment_announcement(item, Counters::default(), None);
             }
