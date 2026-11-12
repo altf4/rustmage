@@ -3,10 +3,14 @@
   "catalogue_id": 2382,
   "oracle_id": "7627163a-1689-446f-b5aa-a6c56aefb532",
   "facts_sha256": "284b9242818c93f83ff833739e96b5c9ab1cd4f19798a74bcc20365e1a2dfc11",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "60b4ef9f549559bc08b21bc214d823fede9c37ae713d1399993d27bb5ede04a5"
   },
-  "physical_metadata_sha256": "d9579aa6e2e81cac45bb99cab07f1e272e5ff01df04127058800dcea61d80df0"
+  "physical_metadata_sha256": "d9579aa6e2e81cac45bb99cab07f1e272e5ff01df04127058800dcea61d80df0",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/k/Knife.java",
+  "java_sha256": "196dd682fe48400eb50796b8c99438b902b498858c87efd580bcc81a1c7b1278",
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

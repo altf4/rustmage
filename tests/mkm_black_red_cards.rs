@@ -15,6 +15,9 @@ mod disguise;
 #[path = "mkm_black_red_cards/black.rs"]
 mod black;
 
+#[path = "mkm_black_red_cards/red.rs"]
+mod red;
+
 use rustmage_core::{cards::*, engine::*};
 use support::{act, choose, pay};
 

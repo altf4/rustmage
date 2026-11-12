@@ -3,10 +3,14 @@
   "catalogue_id": 3427,
   "oracle_id": "f0ee45b5-697b-48f8-b1a6-cb3ae75e4a29",
   "facts_sha256": "d45db7becf00945102efbe1c4d1dc61a0d3eefcd778e08309b66c1b8a93ec5f9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "183caa9bcf9aea37407013f514709eb860a2f64acf0da8ceb7c53174d7feb518"
   },
-  "physical_metadata_sha256": "e0a73026b8e89a34764a23d94cd9f9c8d9def81b4d0652ed3c7af039c5495f35"
+  "physical_metadata_sha256": "e0a73026b8e89a34764a23d94cd9f9c8d9def81b4d0652ed3c7af039c5495f35",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RedHerring.java",
+  "java_sha256": "6a3e3c5748928c680583c3b243111bc5e25bf67b3ae7d2b0e110de2f6eb041f0",
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

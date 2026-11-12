@@ -3,10 +3,26 @@
   "catalogue_id": 3607,
   "oracle_id": "4ae7f959-9f44-4769-8bd3-49ca18928aba",
   "facts_sha256": "14890fc4aec2ae2408c3bd4fcb83b08c04d784f9f2bda49236090cea2533e219",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d735dcafd5db46af8611492ee3e5f49a2367644621981ba9c392c1e8bf4f5b13"
   },
-  "physical_metadata_sha256": "6b10df7807be338e9a7030bc0c8cec26c40f3ac549f508cc4930aeca2c511052"
+  "physical_metadata_sha256": "6b10df7807be338e9a7030bc0c8cec26c40f3ac549f508cc4930aeca2c511052",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RubblebeltBraggart.java",
+  "java_sha256": "4a17ac7be5f788e96241b33f4a410fe0d144ae907177ec02fabc3ebbb87a1e9f",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksTriggeredAbility.java",
+      "sha256": "b1c0703d44571516618d87d74855690f965709f078391ae7cdb7709ce9871cc3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/SuspectSourceEffect.java",
+      "sha256": "13b4850dc7d9252e93c7525fc71662fd350d3cf3833e1ddb2a395d47d6e7b628"
+    }
+  ]
 }

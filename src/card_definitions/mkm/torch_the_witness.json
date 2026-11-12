@@ -3,10 +3,14 @@
   "catalogue_id": 4639,
   "oracle_id": "51473069-68dc-4e87-b345-d7cbcfdeea74",
   "facts_sha256": "d66d3607d9ed26f73e388748e5b30dd9bce63bb426c1b320d4a4934d63c4e12a",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "2604f307c472f0a88504f27048c256da5c0ec3be2b338135c783fba8ce864a46"
   },
-  "physical_metadata_sha256": "7cf8757788791724cca3978ed9495e4da7253b3f1681826dad264632d843bdd9"
+  "physical_metadata_sha256": "7cf8757788791724cca3978ed9495e4da7253b3f1681826dad264632d843bdd9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TorchTheWitness.java",
+  "java_sha256": "1a0a34d123ebc5aee9d941235c9f5dc7df4a8173ebbbb575a8d054ffb5b5884b",
+  "rules_tests": "tests/mkm_black_red_cards.rs"
 }

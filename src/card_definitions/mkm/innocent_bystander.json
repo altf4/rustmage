@@ -3,10 +3,21 @@
   "catalogue_id": 2173,
   "oracle_id": "c293f1c0-93de-4a73-aaf6-4e9f01e557ec",
   "facts_sha256": "dd49f3e75796788a53bf5c509fb96071e6ff7210f2f5c72674d73234058f2d81",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "eea1c7e4e2c3478628a354283cfba32a0c25dacb5624780a47e32992293cccdd"
   },
-  "physical_metadata_sha256": "86ffbcc67f423b2aa64f4789d8d4c921f99744e2a6fbde1a7f3a872eda692ec9"
+  "physical_metadata_sha256": "86ffbcc67f423b2aa64f4789d8d4c921f99744e2a6fbde1a7f3a872eda692ec9",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InnocentBystander.java",
+  "java_sha256": "ba4a59b9b70264cda2f30c58bb2ea15dfb015cb75d799b0c5caff128751b10ca",
+  "rules_tests": "tests/mkm_black_red_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealtDamageToSourceTriggeredAbility.java",
+      "sha256": "97485da3564c3e9e3b6355947a03b4480cd40bd32fc00a0f3b4e6c8d5e166b79"
+    }
+  ]
 }
