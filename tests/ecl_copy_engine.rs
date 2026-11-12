@@ -794,7 +794,10 @@ fn target_count_counts_repeated_target_instances() {
                 Player::P0,
                 &observer,
                 &targets,
-                GrantedSubtypes::default(),
+                programs::SpellCastTraits {
+                    subtypes: GrantedSubtypes::default(),
+                    keywords: Keywords::NONE,
+                },
             ),
             count == 1
         );
