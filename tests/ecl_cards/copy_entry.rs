@@ -470,6 +470,7 @@ fn ecl_copy_entry_mirrorform_new_intrinsic_lords_apply_simultaneously_and_new_li
                 source: source_ref,
                 exiled,
                 ability_origin,
+                acquired_link_cohort: None,
                 exiled_turn: g.state.turn,
             });
         mirror(&mut g, p, source);

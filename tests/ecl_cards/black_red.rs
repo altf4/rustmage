@@ -5592,6 +5592,7 @@ fn remember_linked_exile_for(g: &mut Game, source: ObjectRef, selected: &[CardId
             source,
             exiled: g.object_ref(card),
             ability_origin: g.copy_ability_origin(source),
+            acquired_link_cohort: None,
             exiled_turn: g.state.turn,
         })
         .collect::<Vec<_>>();
