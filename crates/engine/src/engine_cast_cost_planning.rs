@@ -771,6 +771,12 @@ impl FundingState<'_> {
                                 (o.is_card() || o.is_token()) && p.controller == o.owner
                             }
                             Some(
+                                rule @ (ZoneReplacementRule::ExileOpponentGraveyardCards
+                                | ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked),
+                            ) => zone_replacements::opponent_graveyard_card_matches(
+                                rule, p.controller, o.owner, o.controller, o.zone, o.is_card(),
+                            ),
+                            Some(
                                 ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                                 | ZoneReplacementRule::ExileOpposingCreatureDeathPlain,
                             ) => {

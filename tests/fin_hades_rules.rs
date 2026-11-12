@@ -129,7 +129,7 @@ fn frozen_owner_scoped_replacement_competes_with_shuffle_and_restores() {
     assert!(g.observe(p).zone_replacement_choice.is_none());
     assert_eq!(
         g.observe(p.other()).zone_replacement_choice.unwrap().card,
-        g.object_view(shuffler).card
+        Some(g.object_view(shuffler).card)
     );
     assert_eq!(g.object_view(provider).zone, Zone::Battlefield);
     let saved = g.snapshot();

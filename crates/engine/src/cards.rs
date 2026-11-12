@@ -8022,6 +8022,10 @@ pub enum ZoneReplacementRule {
     ExileAllCardsAndTokens,
     /// Replace cards and tokens entering the replacement source's controller's graveyard.
     ExileControllerGraveyard,
+    /// Exile physical cards entering an opponent's graveyard from any zone.
+    ExileOpponentGraveyardCards,
+    /// Link the exile of an opponent-owned card with a different or absent former controller.
+    ExileUncontrolledOpponentGraveyardCardsLinked,
     ExileOpposingCreatureDeath {
         ability: u16,
     },

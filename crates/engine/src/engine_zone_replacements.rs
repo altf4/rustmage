@@ -11,6 +11,28 @@ pub(super) fn affected_player(before: &ObjectView) -> Player {
     }
 }
 
+/// CR 400.3 and 108.4: the graveyard belongs to the owner, while only
+/// spells and permanents have a distinct former controller.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+pub(super) fn opponent_graveyard_card_matches(
+    rule: ZoneReplacementRule,
+    provider: Player,
+    owner: Player,
+    former_controller: Player,
+    from: Zone,
+    is_card: bool,
+) -> bool {
+    is_card
+        && owner != provider
+        && match rule {
+            ZoneReplacementRule::ExileOpponentGraveyardCards => true,
+            ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked => {
+                !matches!(from, Zone::Battlefield | Zone::Stack) || former_controller != provider
+            }
+            _ => false,
+        }
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum ZoneReplacementKind {
@@ -28,7 +50,7 @@ pub enum ZoneReplacementKind {
         source: ObjectRef,
         ability: u16,
     },
-    /// Distinct from other exile replacements: this source receives the link and life gain.
+    /// Distinct from other exile replacements: this source receives the link.
     ExileLinked {
         source: ObjectRef,
     },
@@ -52,7 +74,8 @@ pub struct ZoneReplacementPickView {
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct ZoneReplacementChoiceView {
-    pub card: Card,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card: Option<Card>,
     pub owner: Player,
     pub from: Zone,
     pub choices: Vec<ZoneReplacementKind>,
@@ -157,7 +180,7 @@ pub(super) fn test_checkpoint(state: State, object: ObjectRef, owner: Player) ->
                 affected: owner,
                 public: false,
                 view: ZoneReplacementChoiceView {
-                    card: Card::Forest,
+                    card: Some(Card::Forest),
                     owner,
                     from: Zone::Hand,
                     choices: vec![ZoneReplacementKind::Prevent],
@@ -181,15 +204,14 @@ pub(super) struct FrozenRules {
     pub exile_spell: bool,
     pub discard_to_battlefield: bool,
     pub reflexive_exiles: Vec<(u16, ObjectView)>,
-    pub linked_death_exiles: Vec<LinkedDeathExile>,
+    pub linked_graveyard_exiles: Vec<LinkedGraveyardExile>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(super) struct LinkedDeathExile {
+pub(super) struct LinkedGraveyardExile {
     pub source: ObjectRef,
     pub ability_origin: Option<u64>,
-    pub controller: Player,
-    pub life: u8,
+    pub life_gain: Option<(Player, u8)>,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -204,7 +226,7 @@ pub(super) enum ZoneMoveCompletion {
     Rebound(Player),
     Plot,
     Adventure(Player),
-    LinkedDeathExile(LinkedDeathExile),
+    LinkedGraveyardExile(LinkedGraveyardExile),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -534,39 +556,72 @@ impl Game {
         let own = before.card.zone_replacement();
         let own_available =
             before.zone != Zone::Battlefield || self.printed_abilities_available(before.id);
-        let card_or_token =
-            !self.state.objects[before.id as usize].is_spell_copy() || before.is_token();
+        let object = &self.state.objects[before.id as usize];
+        let is_card = object.is_card();
+        let card_or_token = !object.is_spell_copy() || before.is_token();
         let spell = before.kinds & 12 != 0 && !before.is_token() && card_or_token;
+        let creature_departure = before.zone == Zone::Battlefield && before.is_creature();
+        let mut exile_from_providers = false;
         let mut reflexive_exiles = Vec::new();
-        let mut linked_death_exiles = Vec::new();
-        if before.zone == Zone::Battlefield && before.is_creature() {
-            for &id in &self.state.static_sources {
-                let source = &self.state.objects[id as usize];
-                let available = || {
-                    source.zone == Zone::Battlefield
-                        && source.controller != before.controller
-                        && self.printed_abilities_available(id)
-                };
-                match source.card.zone_replacement() {
-                    Some(ZoneReplacementRule::ExileOpposingCreatureDeath { ability })
-                        if available() =>
-                    {
-                        reflexive_exiles.push((ability, self.object_view(id)));
-                    }
-                    Some(ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked {
-                        life,
-                    }) if !before.is_token() && available() => {
-                        let reference = self.object_ref(id);
-                        linked_death_exiles.push(LinkedDeathExile {
-                            source: reference,
-                            ability_origin: self.copy_ability_origin(reference),
-                            controller: source.controller,
-                            life,
-                        });
-                    }
-                    _ => {}
-                }
+        let mut linked_graveyard_exiles = Vec::new();
+        for &id in &self.state.static_sources {
+            let source = &self.state.objects[id as usize];
+            let Some(rule) = source.card.zone_replacement() else {
+                continue;
+            };
+            if source.zone != Zone::Battlefield || !self.printed_abilities_available(id) {
+                continue;
             }
+            let opposing_creature = creature_departure && source.controller != before.controller;
+            let matches_opponent_card = || {
+                opponent_graveyard_card_matches(
+                    rule,
+                    source.controller,
+                    before.owner,
+                    before.controller,
+                    before.zone,
+                    is_card,
+                )
+            };
+            let life_gain = match rule {
+                ZoneReplacementRule::ExileOpposingCreatureDeath { ability }
+                    if opposing_creature =>
+                {
+                    reflexive_exiles.push((ability, self.object_view(id)));
+                    continue;
+                }
+                ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { life }
+                    if opposing_creature && !before.is_token() =>
+                {
+                    Some((source.controller, life))
+                }
+                ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked
+                    if matches_opponent_card() =>
+                {
+                    None
+                }
+                _ => {
+                    exile_from_providers |= match rule {
+                        ZoneReplacementRule::ExileAllCardsAndTokens => card_or_token,
+                        ZoneReplacementRule::ExileControllerGraveyard => {
+                            card_or_token
+                                && !before.card.is_emblem()
+                                && source.controller == before.owner
+                        }
+                        ZoneReplacementRule::ExileInstantSorceryCards => spell,
+                        ZoneReplacementRule::ExileOpposingCreatureDeathPlain => opposing_creature,
+                        ZoneReplacementRule::ExileOpponentGraveyardCards => matches_opponent_card(),
+                        _ => false,
+                    };
+                    continue;
+                }
+            };
+            let source = self.object_ref(id);
+            linked_graveyard_exiles.push(LinkedGraveyardExile {
+                source,
+                ability_origin: self.copy_ability_origin(source),
+                life_gain,
+            });
         }
         FrozenRules {
             dream: self.dream_resolution_mark(before.reference),
@@ -575,31 +630,12 @@ impl Game {
             resolution_face: None,
             prevent,
             reflexive_exiles,
-            linked_death_exiles,
+            linked_graveyard_exiles,
             shuffle_spell: false,
             shuffle_self: own_available && own == Some(ZoneReplacementRule::RevealShuffleSelf),
-            exile_spell: self.turn_exiles_graveyard_card(&self.state.objects[before.id as usize])
+            exile_spell: self.turn_exiles_graveyard_card(object)
                 || (before.zone == Zone::Stack && self.stack_graveyard_exile(before.reference))
-                || self.state.static_sources.iter().any(|&id| {
-                    self.on_battlefield(id)
-                        && self.printed_abilities_available(id)
-                        && match self.state.objects[id as usize].card.zone_replacement() {
-                            Some(ZoneReplacementRule::ExileAllCardsAndTokens) => card_or_token,
-                            Some(ZoneReplacementRule::ExileControllerGraveyard) => {
-                                card_or_token
-                                    && !before.card.is_emblem()
-                                    && self.state.objects[id as usize].controller == before.owner
-                            }
-                            Some(ZoneReplacementRule::ExileInstantSorceryCards) => spell,
-                            Some(ZoneReplacementRule::ExileOpposingCreatureDeathPlain) => {
-                                before.zone == Zone::Battlefield
-                                    && before.is_creature()
-                                    && self.state.objects[id as usize].controller
-                                        != before.controller
-                            }
-                            _ => false,
-                        }
-                }),
+                || exile_from_providers,
             discard_to_battlefield: before.zone == Zone::Hand
                 && own == Some(ZoneReplacementRule::OpponentDiscardToBattlefield)
                 && discard_cause.is_some_and(|cause| cause != before.owner),
@@ -624,7 +660,7 @@ impl Game {
                     || rules.shuffle_spell
                     || rules.discard_to_battlefield
                     || !rules.reflexive_exiles.is_empty()
-                    || !rules.linked_death_exiles.is_empty()
+                    || !rules.linked_graveyard_exiles.is_empty()
             })
             && {
                 let mut order = frozen
@@ -814,7 +850,7 @@ impl Game {
                 ability: *ability,
             });
         }
-        for replacement in &rules.linked_death_exiles {
+        for replacement in &rules.linked_graveyard_exiles {
             choices.push(ZoneReplacementKind::ExileLinked {
                 source: replacement.source,
             });
@@ -856,17 +892,25 @@ impl Game {
                     );
                     return Self::zone_plan(pick.effect, &rules, exile_on_stack_exit);
                 }
+                let affected = affected_player(before);
+                let can_view_card = match before.zone {
+                    Zone::Library => {
+                        self.visible_library_top(affected, before.owner) == Some(before.reference)
+                    }
+                    Zone::Exile => self.can_view_hideaway(affected, before.reference),
+                    _ => true,
+                };
                 let request = Request::Zone(ZoneRequest {
                     object: before.reference,
                     requested,
-                    affected: affected_player(before),
+                    affected,
                     public: match before.zone {
                         Zone::Battlefield | Zone::Stack | Zone::Graveyard | Zone::Command => true,
                         Zone::Exile => !self.exiled_face_down(before.reference),
                         _ => false,
                     },
                     view: ZoneReplacementChoiceView {
-                        card: before.card,
+                        card: can_view_card.then_some(before.card),
                         owner: before.owner,
                         from: before.zone,
                         choices,
@@ -902,9 +946,9 @@ impl Game {
                     rules.resolution_face.expect("resolving adventure").0,
                 )),
                 ZoneReplacementKind::ExileLinked { source } => {
-                    Some(ZoneMoveCompletion::LinkedDeathExile(
+                    Some(ZoneMoveCompletion::LinkedGraveyardExile(
                         *rules
-                            .linked_death_exiles
+                            .linked_graveyard_exiles
                             .iter()
                             .find(|replacement| replacement.source == source)
                             .expect("frozen linked replacement source"),

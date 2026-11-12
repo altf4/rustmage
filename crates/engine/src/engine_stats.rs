@@ -482,6 +482,8 @@ impl Game {
                     crate::cards::ZoneReplacementRule::ExileInstantSorceryCards
                         | crate::cards::ZoneReplacementRule::ExileAllCardsAndTokens
                         | crate::cards::ZoneReplacementRule::ExileControllerGraveyard
+                        | crate::cards::ZoneReplacementRule::ExileOpponentGraveyardCards
+                        | crate::cards::ZoneReplacementRule::ExileUncontrolledOpponentGraveyardCardsLinked
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeath { .. }
                         | crate::cards::ZoneReplacementRule::ExileOpposingCreatureDeathPlain
                         | crate::cards::ZoneReplacementRule::ExileOpposingNontokenCreatureDeathLinked { .. }
