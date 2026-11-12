@@ -265,6 +265,7 @@ impl Game {
         let cast = a.item.cast.expect("spell cast choices");
         if cast.method == CastMethod::Normal
             && a.source_mana_alternative().is_none()
+            && a.independent_additional_mana().is_none()
             && !cast.flash_surcharge
             && !self.spell_cost_option_available_for_definition(
                 a.item.controller,
@@ -657,6 +658,15 @@ impl Game {
                 ),
             )
             .is_some_and(|total| {
+                if a.independent_additional_mana().is_some() {
+                    let mut proposal = a.clone();
+                    proposal.cast_costs.get_or_insert_with(Default::default);
+                    return self.harmonize_proposal_fundable(
+                        &proposal,
+                        a.harmonizer.flatten(),
+                        total,
+                    );
+                }
                 if a.item.cast.is_some_and(|c| c.method.is_harmonize())
                     || a.has_ordered_origin_payment()
                     || a.has_ordered_life_cost()

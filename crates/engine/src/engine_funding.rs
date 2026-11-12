@@ -5759,6 +5759,16 @@ impl Game {
     }
 
     pub(super) fn announcement_cost_fundable(&self, a: &Announcement, cost: ManaCost) -> bool {
+        if a.independent_additional_mana().is_some()
+            && a.item
+                .cast
+                .is_some_and(|cast| cast.additional_cost_route.is_none())
+        {
+            // A total may be shared by two branches with different nonmana costs.
+            return a.cost_options().enumerate().any(|(index, amount)| {
+                amount == cost && self.announcement_cost_choice_fundable(a, index)
+            });
+        }
         if a.item.kind == StackKind::Spell
             && (a.sacrifice_discount_count().is_some()
                 || a.printed_additional_cost().is_some_and(|spec| {
@@ -5797,7 +5807,7 @@ impl Game {
         if !self.exact_x_targets_fundable(a, None, false) {
             return false;
         }
-        if a.source_mana_alternative().is_some() {
+        if a.source_mana_alternative().is_some() || a.independent_additional_mana().is_some() {
             return self.behold_announcement_fundable(a, cost);
         }
         if a.blight_x_cost() {

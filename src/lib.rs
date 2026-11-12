@@ -13,6 +13,7 @@ pub use catalogue::CATALOGUE_VERSION;
 use rustmage_core::cards;
 pub use rustmage_core::cards::{RetainedCopyActivation, RoomDoor};
 pub use rustmage_core::engine::ActivationTapPaymentView;
+pub use rustmage_core::engine::AdditionalCostRoute;
 pub use rustmage_core::engine::AuraPlayerAttachmentView;
 pub use rustmage_core::engine::ChosenCreatureLinkView;
 pub use rustmage_core::engine::IncarnationTriggerUse;

@@ -17,6 +17,16 @@ enum SpellAlternative {
     Evoke,
     Impending,
 }
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+struct AnnouncementCostChoice {
+    cost: ManaCost,
+    base: ManaCost,
+    activation_route: ActivationCostRoute,
+    activation_choice: Option<ActivationCostChoice>,
+    spell_alternative: SpellAlternative,
+    additional_cost_route: Option<AdditionalCostRoute>,
+}
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum LimitedCastPermission {
@@ -154,6 +164,10 @@ impl Announcement {
             .filter(|cast| cast.method.allows_printed_alternative())?;
         self.origin_alternative_cost
     }
+    pub(super) fn independent_additional_mana(&self) -> Option<ManaCost> {
+        self.item.cast?;
+        self.item.source?.card.explicit_additional_mana()
+    }
     pub(super) fn fixed_alternative_cost(&self) -> Option<ManaCost> {
         self.item.cast.and_then(|c| match c.method {
             CastMethod::Harmonize => self.item.source?.card.harmonize_cost(),
@@ -254,6 +268,7 @@ impl Announcement {
             }
             StackKind::Spell
                 if self.item.cast.is_some_and(|c| match c.method {
+                    _ if self.independent_additional_mana().is_some() => false,
                     _ if self.source_mana_alternative().is_some() => {
                         let base = self.source_mana_alternative().unwrap();
                         let card = self.item.source.expect("object-backed announcement").card;
@@ -316,7 +331,11 @@ impl Announcement {
                     .cast
                     .filter(|cast| cast.kicker == Some(true))
                     .and_then(|_| card.kicker_additional_cost())
-                    .or_else(|| card.additional_cost())
+                    .or_else(|| {
+                        (self.item.cast?.additional_cost_route != Some(AdditionalCostRoute::Mana))
+                            .then(|| card.additional_cost())
+                            .flatten()
+                    })
                     .and_then(|mut cost| {
                         if let EffectChoiceKind::OptionalBeholdType(amount) = cost.kind {
                             let kind = self.item.cast?.beheld_type?;
@@ -461,16 +480,7 @@ impl Announcement {
         }
     }
 
-    fn cost_route_options(
-        &self,
-    ) -> impl Iterator<
-        Item = (
-            ManaCost,
-            ActivationCostRoute,
-            Option<ActivationCostChoice>,
-            SpellAlternative,
-        ),
-    > + '_ {
+    fn cost_route_options(&self) -> impl Iterator<Item = AnnouncementCostChoice> + '_ {
         let source_mana_alternative = self.source_mana_alternative();
         let options = match self.item.kind {
             StackKind::Spell if source_mana_alternative.is_some() => {
@@ -642,14 +652,17 @@ impl Announcement {
         } else {
             crate::cards::mana_symbols::ManaOptions::Static(options)
         };
+        let independent_fee = self.independent_additional_mana();
         let fixed_alternative = self.fixed_alternative_cost();
-        let fee = fixed_alternative.and_then(|_| {
-            self.item
-                .source
-                .expect("object-backed announcement")
-                .card
-                .mana_additional_alternative()
-        });
+        let fee = fixed_alternative
+            .filter(|_| independent_fee.is_none())
+            .and_then(|_| {
+                self.item
+                    .source
+                    .expect("object-backed announcement")
+                    .card
+                    .mana_additional_alternative()
+            });
         let fee_bases = if self
             .item
             .cast
@@ -712,18 +725,13 @@ impl Announcement {
             )))
             .flat_map(move |(cost, route, alternative)| {
                 std::iter::once((cost, route, alternative)).chain(
-                    (self.item.kind == StackKind::Spell && self.fixed_alternative_cost().is_none())
+                    (mayhem && independent_fee.is_none() && fixed_alternative.is_none())
                         .then(|| {
-                            let card = self
-                                .item
+                            self.item
                                 .source
                                 .expect("announcement has object source")
-                                .card;
-                            if mayhem {
-                                card.mana_additional_alternative()
-                            } else {
-                                card.explicit_additional_mana()
-                            }
+                                .card
+                                .mana_additional_alternative()
                         })
                         .flatten()
                         .map(move |extra| (Card::add_mana_cost(cost, extra), route, alternative)),
@@ -810,10 +818,30 @@ impl Announcement {
                     )
                 })
             }))
-            .filter_map(|(cost, route, choice, alternative)| {
-                self.apply_cost_declarations(cost)
-                    .map(|cost| (cost, route, choice, alternative))
-            })
+            .flat_map(
+                move |(base, activation_route, activation_choice, spell_alternative)| {
+                    let nonmana = independent_fee.map(|_| AdditionalCostRoute::Nonmana);
+                    let fee = independent_fee.map(|fee| {
+                        (
+                            Card::add_mana_cost(base, fee),
+                            Some(AdditionalCostRoute::Mana),
+                        )
+                    });
+                    std::iter::once((base, nonmana)).chain(fee).filter_map(
+                        move |(cost, additional_cost_route)| {
+                            self.apply_cost_declarations(cost)
+                                .map(|cost| AnnouncementCostChoice {
+                                    cost,
+                                    base,
+                                    activation_route,
+                                    activation_choice,
+                                    spell_alternative,
+                                    additional_cost_route,
+                                })
+                        },
+                    )
+                },
+            )
     }
     pub(super) fn activation_discounts(&self) -> power_up::ActivationDiscounts {
         let reductions = self.activation_reductions.as_deref();
@@ -874,24 +902,39 @@ impl Announcement {
         )
     }
     pub(super) fn cost_options(&self) -> impl Iterator<Item = ManaCost> + '_ {
-        self.cost_route_options().map(|(cost, _, _, _)| cost)
+        self.cost_route_options().map(|choice| choice.cost)
+    }
+    pub(super) fn cast_base_cost_for_index(&self, index: usize) -> Option<ManaCost> {
+        self.cost_route_options()
+            .nth(index)
+            .map(|choice| choice.base)
+    }
+    pub(super) fn additional_cost_route_for_index(
+        &self,
+        index: usize,
+    ) -> Option<AdditionalCostRoute> {
+        self.independent_additional_mana()?;
+        self.cost_route_options().nth(index)?.additional_cost_route
     }
     pub(super) fn select_cost(&mut self, index: usize) {
-        let (cost, route, choice, alternative) =
-            self.cost_route_options().nth(index).expect("cost option");
+        let choice = self.cost_route_options().nth(index).expect("cost option");
         if let Some(cast) = &mut self.item.cast {
-            cast.evoked = alternative == SpellAlternative::Evoke;
-            cast.impending = alternative == SpellAlternative::Impending;
+            cast.evoked = choice.spell_alternative == SpellAlternative::Evoke;
+            cast.impending = choice.spell_alternative == SpellAlternative::Impending;
+            cast.additional_cost_route = choice.additional_cost_route;
         }
-        self.cost = Some(cost);
-        self.activation_cost_route = route;
-        self.activation_choice = choice.map(Box::new);
+        self.cost = Some(choice.cost);
+        self.activation_cost_route = choice.activation_route;
+        self.activation_choice = choice.activation_choice.map(Box::new);
     }
     pub(super) fn activation_route_for_index(&self, index: usize) -> ActivationCostRoute {
         if self.activation_order_costs().is_some() {
             self.activation_cost_route
         } else {
-            self.cost_route_options().nth(index).expect("cost option").1
+            self.cost_route_options()
+                .nth(index)
+                .expect("cost option")
+                .activation_route
         }
     }
     pub(super) fn impending_route_for_index(&self, index: usize) -> bool {
@@ -900,7 +943,7 @@ impl Announcement {
         }) && self
             .cost_route_options()
             .nth(index)
-            .is_some_and(|(_, _, _, alternative)| alternative == SpellAlternative::Impending)
+            .is_some_and(|choice| choice.spell_alternative == SpellAlternative::Impending)
     }
     pub(super) fn raw_activation_choice(&self) -> ActivationCostChoice {
         self.activation_choice
@@ -910,7 +953,7 @@ impl Announcement {
                 self.cost_route_options()
                     .next()
                     .expect("activation cost")
-                    .2
+                    .activation_choice
                     .expect("activation route")
             })
     }
@@ -3001,6 +3044,7 @@ impl Game {
                 exile_play_surcharge: 0,
                 evoked: false,
                 impending: false,
+                additional_cost_route: None,
                 beheld_type: None,
                 behold_type_declared: false,
                 behold_exiled: None,

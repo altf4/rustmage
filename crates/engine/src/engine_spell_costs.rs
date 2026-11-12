@@ -390,7 +390,8 @@ impl Game {
         flashback: bool,
     ) -> bool {
         let definition = self.state.objects[card as usize].card;
-        if self.cast_uses_target_life_costs(actor, definition)
+        if definition.explicit_additional_mana().is_some()
+            || self.cast_uses_target_life_costs(actor, definition)
             || (self.state.objects[card as usize].zone == Zone::Library
                 && definition.x_symbols() > 0)
         {
@@ -498,6 +499,7 @@ impl Game {
     }
     pub(super) fn offspring_choice_fundable(&self, a: &Announcement, pay: bool) -> bool {
         if a.source_mana_alternative().is_some()
+            || a.independent_additional_mana().is_some()
             || a.has_ordered_origin_payment()
             || a.has_ordered_life_cost()
         {

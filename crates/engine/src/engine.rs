@@ -1721,6 +1721,9 @@ pub struct CastInfo {
     /// A spell copy retains the alternative-cost decision of its original.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub impending: bool,
+    /// The chosen branch of an independent mandatory additional cost.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_cost_route: Option<AdditionalCostRoute>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub beheld_type: Option<crate::cards::CreatureType>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
@@ -3796,6 +3799,15 @@ pub enum ActivationCostRoute {
     DiscardCard,
 }
 
+/// The two branches of a mandatory additional object-or-mana payment.
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum AdditionalCostRoute {
+    Nonmana,
+    Mana,
+}
+
 /// Legal payment choices for the current spell or activation announcement.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -3804,6 +3816,8 @@ pub struct SpellCostChoiceView {
     pub cost: ManaCost,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub activation_route: Option<ActivationCostRoute>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_cost_route: Option<AdditionalCostRoute>,
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub impending: bool,
 }
@@ -6823,6 +6837,7 @@ impl Game {
                         return true;
                     }
                     if obj.card.behold_cast().is_some()
+                        || obj.card.explicit_additional_mana().is_some()
                         || obj.card.kicked_targets().is_some()
                         || obj.card.bargain_targets().is_some()
                         || self.cast_uses_target_life_costs(actor, obj.card)
@@ -6931,92 +6946,81 @@ impl Game {
                         .flatten();
                     let costs = costs.chain(impending_cost);
                     let reduction = if completable {
-                        let has_generic = costs
-                            .clone()
-                            .flat_map(|base| obj.card.additional_mana_options(base))
-                            .any(|cost| cost.generic != 0);
+                        let has_generic = costs.clone().any(|cost| cost.generic != 0);
                         self.direct_spell_reduction(actor, card, has_generic)
                     } else {
                         Default::default()
                     };
                     if completable {
-                        let can_fund = costs
-                            .into_iter()
-                            .flat_map(|base| obj.card.additional_mana_options(base))
-                            .any(|cost| {
-                                if !self.spell_cost_option_available(actor, card, cost) {
-                                    return false;
-                                }
-                                if obj.card.blight().is_some() {
-                                    return self.blight_initial_fundable(actor, card, cost);
-                                }
-                                if obj.card.teamwork().is_some() {
-                                    return self.teamwork_initial_fundable(actor, card, cost);
-                                }
-                                if obj.card.tiered_costs().is_some() {
-                                    return self.tiered_initial_fundable(actor, card, cost);
-                                }
-                                if target_cost {
-                                    return self.initial_target_cost_fundable(actor, card, cost);
-                                }
-                                if obj.card.collect_evidence_cost().is_some() {
-                                    return self.evidence_cast_fundable(actor, card, cost, false)
-                                        || self.evidence_cast_fundable(actor, card, cost, true);
-                                }
-                                if obj.card.has_bargain() {
-                                    return self.initial_bargain_fundable(actor, card, cost);
-                                }
-                                // Object-specific mana permissions cannot share the
-                                // printed-definition-only prefunding cache.
-                                if self.spell_generic_tax(
-                                    actor,
-                                    card,
-                                    self.effective_spell_card(card),
-                                ) != 0
-                                    || self.foreign_stash(actor, card)
-                                    || self.exile_cast_modifiers(actor, card).0
-                                    || convoke::potential(self, obj.card)
-                                    || improvise::potential(self, obj.card)
-                                    || delve::potential(self)
-                                    || obj.card.additional_cost().is_some()
+                        let can_fund = costs.into_iter().any(|cost| {
+                            if !self.spell_cost_option_available(actor, card, cost) {
+                                return false;
+                            }
+                            if obj.card.blight().is_some() {
+                                return self.blight_initial_fundable(actor, card, cost);
+                            }
+                            if obj.card.teamwork().is_some() {
+                                return self.teamwork_initial_fundable(actor, card, cost);
+                            }
+                            if obj.card.tiered_costs().is_some() {
+                                return self.tiered_initial_fundable(actor, card, cost);
+                            }
+                            if target_cost {
+                                return self.initial_target_cost_fundable(actor, card, cost);
+                            }
+                            if obj.card.collect_evidence_cost().is_some() {
+                                return self.evidence_cast_fundable(actor, card, cost, false)
+                                    || self.evidence_cast_fundable(actor, card, cost, true);
+                            }
+                            if obj.card.has_bargain() {
+                                return self.initial_bargain_fundable(actor, card, cost);
+                            }
+                            // Object-specific mana permissions cannot share the
+                            // printed-definition-only prefunding cache.
+                            if self.spell_generic_tax(actor, card, self.effective_spell_card(card))
+                                != 0
+                                || self.foreign_stash(actor, card)
+                                || self.exile_cast_modifiers(actor, card).0
+                                || convoke::potential(self, obj.card)
+                                || improvise::potential(self, obj.card)
+                                || delve::potential(self)
+                                || obj.card.additional_cost().is_some()
+                            {
+                                return self.spell_can_fund(actor, card, cost);
+                            }
+                            let ManaCost { colored, generic } = reduction.apply_to_printed(cost);
+                            let own_hand = obj.zone == Zone::Hand && obj.owner == actor;
+                            let cached = spell_funding_cache
+                                .iter()
+                                .flatten()
+                                .find(|(required, amount, definition, from_hand, _)| {
+                                    *required == colored
+                                        && *amount == generic
+                                        && *definition == obj.card
+                                        && *from_hand == own_hand
+                                })
+                                .map(|(_, _, _, _, result)| *result);
+                            if let Some(result) = cached {
+                                result
+                            } else {
+                                let result = self.can_fund_for(
+                                    FundingGoal {
+                                        reserve: None,
+                                        actor,
+                                        required: colored,
+                                        generic,
+                                        source: None,
+                                    },
+                                    self.spell_mana_purpose_for_card(actor, card, obj.card),
+                                );
+                                if let Some(slot) =
+                                    spell_funding_cache.iter_mut().find(|slot| slot.is_none())
                                 {
-                                    return self.spell_can_fund(actor, card, cost);
+                                    *slot = Some((colored, generic, obj.card, own_hand, result));
                                 }
-                                let ManaCost { colored, generic } =
-                                    reduction.apply_to_printed(cost);
-                                let own_hand = obj.zone == Zone::Hand && obj.owner == actor;
-                                let cached = spell_funding_cache
-                                    .iter()
-                                    .flatten()
-                                    .find(|(required, amount, definition, from_hand, _)| {
-                                        *required == colored
-                                            && *amount == generic
-                                            && *definition == obj.card
-                                            && *from_hand == own_hand
-                                    })
-                                    .map(|(_, _, _, _, result)| *result);
-                                if let Some(result) = cached {
-                                    result
-                                } else {
-                                    let result = self.can_fund_for(
-                                        FundingGoal {
-                                            reserve: None,
-                                            actor,
-                                            required: colored,
-                                            generic,
-                                            source: None,
-                                        },
-                                        self.spell_mana_purpose_for_card(actor, card, obj.card),
-                                    );
-                                    if let Some(slot) =
-                                        spell_funding_cache.iter_mut().find(|slot| slot.is_none())
-                                    {
-                                        *slot =
-                                            Some((colored, generic, obj.card, own_hand, result));
-                                    }
-                                    result
-                                }
-                            });
+                                result
+                            }
+                        });
                         if can_fund
                             && emit(if flashback {
                                 Action::AnnounceFlashback { card }
@@ -13340,6 +13344,7 @@ impl Game {
                         activation_route: (a.equip_zero_available
                             || a.has_equip_discard_alternative())
                         .then(|| a.activation_route_for_index(index)),
+                        additional_cost_route: a.additional_cost_route_for_index(index),
                         impending: a.impending_route_for_index(index),
                     })
                     .collect()

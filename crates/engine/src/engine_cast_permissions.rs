@@ -795,6 +795,7 @@ impl Game {
             return false;
         }
         if scalar_x
+            && definition.explicit_additional_mana().is_none()
             && !self.cast_uses_target_life_costs(actor, definition)
             && origin_life_cost.is_none()
             && warp.is_none()
@@ -903,6 +904,12 @@ impl Game {
             if kicker_changes_targets {
                 return self.kicker_choice_fundable(choice, false)
                     || self.kicker_choice_fundable(choice, true);
+            }
+            if choice.independent_additional_mana().is_some() {
+                return choice
+                    .cost_options()
+                    .enumerate()
+                    .any(|(index, _)| self.announcement_cost_choice_fundable(choice, index));
             }
             choice
                 .cost_options()

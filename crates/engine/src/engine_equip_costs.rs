@@ -147,6 +147,25 @@ impl Game {
         let Some(cost) = a.cost_options().nth(index) else {
             return false;
         };
+        if a.independent_additional_mana().is_some() {
+            let source = a.item.source.expect("object-backed spell");
+            let cast = a.item.cast.expect("spell cast choice");
+            if cast.method.allows_printed_alternative()
+                && a.source_mana_alternative().is_none()
+                && !self.spell_cost_option_available_for_definition(
+                    a.item.controller,
+                    source.id,
+                    a.cast_base_cost_for_index(index)
+                        .expect("mana base of indexed cost"),
+                    source.card,
+                )
+            {
+                return false;
+            }
+            let mut proposal = a.clone();
+            proposal.select_cost(index);
+            return self.announcement_cost_fundable(&proposal, cost);
+        }
         if matches!(a.item.kind, StackKind::ActivatedAbility { .. }) {
             let mut proposal = a.clone();
             proposal.select_cost(index);

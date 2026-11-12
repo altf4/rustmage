@@ -235,6 +235,16 @@ impl Game {
         if object.zone != Zone::Hand && !generic_exile {
             return false;
         }
+        if definition.explicit_additional_mana().is_some() {
+            return self.permitted_cast_available(
+                actor,
+                id,
+                CastMethod::Normal,
+                face,
+                sorcery,
+                false,
+            );
+        }
         if !sorcery
             && !definition.is_instant()
             && !definition.info().keywords.contains(Keywords::FLASH)

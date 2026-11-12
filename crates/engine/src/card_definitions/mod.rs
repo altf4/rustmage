@@ -563,7 +563,7 @@ pub struct CardExtras {
     pub evoke_costs: &'static [ManaCost],
     pub cost_alternative_guard: Option<StepGuard>,
     pub mana_alternative_replaces_additional: bool,
-    /// Independent additional mana route crossed with every printed hybrid base.
+    /// Mandatory alternative to the printed nonmana additional cost, independent of the spell's mana base.
     pub additional_mana_alternative: Option<ManaCost>,
     /// Legacy reminder-text activation replaced by rules-derived basic-land mana.
     pub legacy_subtype_mana_activation: Option<u16>,
