@@ -1086,6 +1086,10 @@ impl Game {
                         }
                     }
                     EntryCounterAmount::Fixed(n) => u64::from(n),
+                    EntryCounterAmount::ChosenX(kind) => {
+                        counters.add(kind, u64::from(x));
+                        continue;
+                    }
                     EntryCounterAmount::FixedCounters(amounts) => {
                         for &(kind, amount) in amounts {
                             counters.add(kind, amount);

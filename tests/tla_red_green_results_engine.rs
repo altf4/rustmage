@@ -19,6 +19,11 @@ const FIREPOWER: CardRules = CardRules {
     extras: &CardExtras {
         static_ability_groups: FIRE_GROUPS,
         replacement_effects: &[FIRE_BONUS],
+        x_symbols: 1,
+        entry_counter_rules: &[EntryCounterRule {
+            guard: StepGuard::Always,
+            amount: EntryCounterAmount::ChosenX(CounterKind::Fire),
+        }],
         ..CardExtras::EMPTY
     },
     ..CardRules::EMPTY
@@ -143,6 +148,26 @@ fn cast_firebending_lesson(game: &mut Game, card: CardId, target: CardId) {
         },
     );
     pay(game);
+}
+
+#[test]
+fn chosen_x_is_placed_in_the_named_counter_kind_and_can_be_replaced() {
+    let _rules = fixture_rules::activate(&[(named("Impact Tremors"), &FIREPOWER)]);
+    let p = Player::P1;
+    let mut game = scenario(p);
+    put(&mut game, p, "Doubling Season", Zone::Battlefield);
+    let card = put(&mut game, p, "Impact Tremors", Zone::Hand);
+    let mut noncast = game.clone();
+    noncast.move_object(card, Zone::Battlefield);
+    assert_eq!(noncast.counter_count(card, CounterKind::Fire), 0);
+
+    act(&mut game, Action::AnnounceCast { card });
+    act(&mut game, Action::ChooseX { value: 3 });
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(card).zone, Zone::Battlefield);
+    assert_eq!(game.counter_count(card, CounterKind::Fire), 6);
+    assert_eq!(game.counter_count(card, CounterKind::PlusOne), 0);
 }
 
 #[test]

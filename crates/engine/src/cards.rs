@@ -6443,6 +6443,8 @@ pub enum EntryCounterAmount {
     Fixed(u16),
     /// A mixed set of fixed counters placed as one entry event.
     FixedCounters(&'static [(CounterKind, u64)]),
+    /// Put the resolving spell's chosen X in this counter kind, or zero on an entry without a spell.
+    ChosenX(CounterKind),
     Stat(StatValue),
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
