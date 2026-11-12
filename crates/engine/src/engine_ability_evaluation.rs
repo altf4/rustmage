@@ -9,6 +9,30 @@ use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{AbilityLayer, StaticAbilityFragment};
 
+/// One live qualifier for actual, full-layer, and projected funding queries.
+pub(super) fn controlled_subtype_keywords<W: CharacteristicWorld + ?Sized>(
+    world: &W,
+    fragment: StaticAbilityFragment,
+    source: ObjectRef,
+    id: CardId,
+) -> Option<Keywords> {
+    let (kind, subtype, keywords) = match fragment {
+        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
+            (0, subtype, keywords)
+        }
+        StaticAbilityFragment::ControlledKindAndSubtypeKeywords {
+            kind,
+            subtype,
+            keywords,
+        } => (kind, subtype, keywords),
+        _ => return None,
+    };
+    (world.object(id).controller == world.object(source.card).controller
+        && (kind == 0 || world.kinds(id) & kind == kind)
+        && world.subtypes(id).has(world.definition(id), subtype))
+    .then_some(keywords)
+}
+
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct EvaluatedAbilityGroup {
     pub source: ObjectRef,
@@ -448,11 +472,9 @@ fn grant_fragment<W: CharacteristicWorld + ?Sized>(
             }
             keywords
         }
-        StaticAbilityFragment::ControlledSubtypeKeywords { subtype, keywords } => {
-            if !own || !world.subtypes(id).has(world.definition(id), subtype) {
-                return None;
-            }
-            keywords
+        StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
+            controlled_subtype_keywords(world, *fragment, source, id)?
         }
         StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype) => {
             if !own || id == source.card || !world.subtypes(id).has(world.definition(id), subtype) {
@@ -943,6 +965,7 @@ fn evaluate<W: CharacteristicWorld + ?Sized>(
                         | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                         | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                         | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                         | StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                         | StaticAbilityFragment::LiveKeywords(..)

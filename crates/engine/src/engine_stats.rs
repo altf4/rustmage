@@ -535,6 +535,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                             | crate::cards::StaticAbilityFragment::OpponentPlayerAttackerKeywords(..)
                             | crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | crate::cards::StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                             | crate::cards::StaticAbilityFragment::ControlledUntappedSubtypeKeywords { .. }
                             | crate::cards::StaticAbilityFragment::PlusOnePlacedKeywords { .. }

@@ -795,14 +795,16 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
                         {
                             keywords = keywords.union(grant)
                         }
-                        StaticAbilityFragment::ControlledSubtypeKeywords {
-                            subtype,
-                            keywords: grant,
-                        } if target.controller == object.controller
-                            && CharacteristicWorld::subtypes(self, id)
-                                .has(CharacteristicWorld::definition(self, id), subtype) =>
-                        {
-                            keywords = keywords.union(grant)
+                        StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
+                            if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
+                                self,
+                                *fragment,
+                                self.object_ref(source),
+                                id,
+                            ) {
+                                keywords = keywords.union(grant);
+                            }
                         }
                         StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
                             if target.controller == object.controller

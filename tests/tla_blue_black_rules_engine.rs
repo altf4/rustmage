@@ -504,3 +504,79 @@ fn a_mandatory_discard_queues_a_target_only_after_a_nonland_choice() {
         );
     }
 }
+
+#[test]
+fn a_kind_and_subtype_keyword_grant_excludes_kindred_until_animation() {
+    const NOBLE_CREATURES: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledKindAndSubtypeKeywords {
+                kind: 1,
+                subtype: "Noble",
+                keywords: Keywords::LIFELINK,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    const ALL_NOBLES: CardRules = CardRules {
+        effect: Effect::Creature(2, 2),
+        static_groups: &[StaticAbilityGroup {
+            line: 0,
+            first_layer: AbilityLayer::Ability,
+            fragments: &[StaticAbilityFragment::ControlledSubtypeKeywords {
+                subtype: "Noble",
+                keywords: Keywords::DEATHTOUCH,
+            }],
+        }],
+        ..CardRules::EMPTY
+    };
+    let _rules = fixture_rules::activate(&[
+        (Card::GrizzlyBears, &NOBLE_CREATURES),
+        (Card::GoblinPiker, &ALL_NOBLES),
+    ]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let provider = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+        put(&mut game, player, "Goblin Piker", Zone::Battlefield);
+        let artifact = put(&mut game, player, "Firdoch Core", Zone::Battlefield);
+        let noble = put(&mut game, player, "Azula, On the Hunt", Zone::Battlefield);
+        let foreign = put(
+            &mut game,
+            player.other(),
+            "Azula, On the Hunt",
+            Zone::Battlefield,
+        );
+        assert!(game.has_subtype(artifact, "Noble"));
+        assert!(game.keywords(artifact).contains(Keywords::DEATHTOUCH));
+        assert!(!game.keywords(artifact).contains(Keywords::LIFELINK));
+        assert!(game.keywords(noble).contains(Keywords::LIFELINK));
+        assert!(!game.keywords(foreign).contains(Keywords::LIFELINK));
+        let checkpoint = game.snapshot();
+        act(
+            &mut game,
+            Action::AnnounceActivate {
+                card: artifact,
+                ability: 1,
+                counter_payment: Counters::default(),
+            },
+        );
+        pay(&mut game);
+        settle(&mut game);
+        assert!(game.keywords(artifact).contains(Keywords::LIFELINK));
+        assert!(game.keywords(artifact).contains(Keywords::DEATHTOUCH));
+
+        let mut changed = game.clone();
+        changed.change_controller(changed.object_ref(provider), player.other());
+        assert!(!changed.keywords(artifact).contains(Keywords::LIFELINK));
+        assert!(changed.keywords(foreign).contains(Keywords::LIFELINK));
+        let removal = put(&mut game, player, "Unable to Scream", Zone::Hand);
+        cast(&mut game, removal, Some(Target::Card(provider)));
+        settle(&mut game);
+        assert!(!game.keywords(artifact).contains(Keywords::LIFELINK));
+        assert!(game.keywords(artifact).contains(Keywords::DEATHTOUCH));
+        game.restore(&checkpoint).unwrap();
+        assert!(!game.keywords(artifact).contains(Keywords::LIFELINK));
+    }
+}

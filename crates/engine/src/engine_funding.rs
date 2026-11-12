@@ -1316,6 +1316,7 @@ impl<'g> FundingState<'g> {
                                     StaticAbilityFragment::ControlledOtherTappedLegendaryCreatureKeywords { .. }
                                         | StaticAbilityFragment::ControlledActivationReduction { .. }
                                         | StaticAbilityFragment::ControlledCreatureKindBonus { .. }
+                                        | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. }
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledLandsAllBasicTypes
                                         | StaticAbilityFragment::ControlledNontokenArtifactsAreLands
@@ -1766,19 +1767,13 @@ impl<'g> FundingState<'g> {
                             {
                                 keywords = keywords.union(grant)
                             }
-                            crate::cards::StaticAbilityFragment::ControlledSubtypeKeywords {
-                                subtype,
-                                keywords: grant,
-                            } if target.object.controller == source.object.controller
-                                && ability_world::CharacteristicWorld::subtypes(
-                                    self, target.id,
-                                )
-                                .has(
-                                    ability_world::CharacteristicWorld::definition(self, target.id),
-                                    subtype,
-                                ) =>
-                            {
-                                keywords = keywords.union(grant)
+                            StaticAbilityFragment::ControlledSubtypeKeywords { .. }
+                            | StaticAbilityFragment::ControlledKindAndSubtypeKeywords { .. } => {
+                                if let Some(grant) = ability_evaluation::controlled_subtype_keywords(
+                                    self, *fragment, self.reference(source.id), target.id,
+                                ) {
+                                    keywords = keywords.union(grant);
+                                }
                             }
                             crate::cards::StaticAbilityFragment::GrantRiotToOtherControlledSubtype(subtype)
                                 if target.object.controller == source.object.controller
