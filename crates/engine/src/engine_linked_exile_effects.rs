@@ -120,9 +120,23 @@ impl Game {
         self.remember_linked_exile_events(item, &events);
         self.finish_zone_events(&events, &[]);
     }
-    pub(super) fn exile_controller_library_top_linked(&mut self, item: &SpellView, amount: u16) {
+    pub(super) fn exile_controller_library_top_linked(
+        &mut self,
+        item: &SpellView,
+        amount: u16,
+        face_down: bool,
+    ) {
         let ids = exile::top_library_cards(self, item.controller, u128::from(amount));
-        self.exile_objects_linked(item, &ids);
+        let events = self.move_objects_raw(&ids, Zone::Exile);
+        if face_down {
+            for event in &events {
+                if event.was_card && event.moved && event.destination == Zone::Exile {
+                    self.remember_face_down_exile(event.after, 0, None);
+                }
+            }
+        }
+        self.remember_linked_exile_events(item, &events);
+        self.finish_zone_events(&events, &[]);
     }
 
     pub(super) fn exile_grave_targets_linked(

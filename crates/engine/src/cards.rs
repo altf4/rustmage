@@ -2670,6 +2670,12 @@ pub enum Instruction {
         amount: AmountValue,
         next_turn: bool,
     },
+    /// Exile from the selected player's library and grant them ordinary paid plays.
+    ExileTopPlayForPlayer {
+        player: PlayerSet,
+        amount: AmountValue,
+        next_turn: bool,
+    },
     /// Exile that many cards from each indicated player's library, with no play permission.
     ExileTopLibrary {
         players: PlayerSet,
@@ -2715,6 +2721,8 @@ pub enum Instruction {
     ExileAllTargetsLinkedToSource,
     ExileTargetLibraryLinked(u16),
     ExileControllerLibraryTopLinked(u16),
+    /// The same exact linked cohort, with no player granted look or play access.
+    ExileControllerLibraryTopLinkedFaceDown(u16),
     GrantLinkedExilePlay,
     ChooseLinkedCreatureReturn,
     ChooseLinkedCreatureReturnWithCounters(u64),
@@ -3079,6 +3087,13 @@ pub enum Instruction {
         token: Card,
         amount: AmountValue,
         keywords: Keywords,
+    },
+    /// Grant keywords through cleanup and schedule a separate exact-token obligation.
+    CreateTemporaryTokensThenCleanup {
+        token: Card,
+        amount: AmountValue,
+        keywords: Keywords,
+        cleanup: crate::engine::temporary_tokens::TokenCleanup,
     },
     BecomeSourceLandUntilNextTurn,
     BecomeCopy(InPlaceCopySpec),

@@ -4707,8 +4707,13 @@ impl Game {
                 | Instruction::ExileAllTargetsLinkedToSource => {
                     self.exile_targets_linked(&item, false);
                 }
-                Instruction::ExileControllerLibraryTopLinked(amount) => {
-                    self.exile_controller_library_top_linked(&item, amount)
+                Instruction::ExileControllerLibraryTopLinked(amount)
+                | Instruction::ExileControllerLibraryTopLinkedFaceDown(amount) => {
+                    let face_down = matches!(
+                        instruction,
+                        Instruction::ExileControllerLibraryTopLinkedFaceDown(_)
+                    );
+                    self.exile_controller_library_top_linked(&item, amount, face_down);
                 }
                 Instruction::GrantLinkedExilePlay => self.grant_linked_exile_play(&item),
                 Instruction::ExileGraveyardCaptureMutantCopy => {
@@ -8325,7 +8330,17 @@ impl Game {
                     token,
                     amount,
                     keywords,
+                }
+                | Instruction::CreateTemporaryTokensThenCleanup {
+                    token,
+                    amount,
+                    keywords,
+                    ..
                 } => {
+                    let cleanup = match instruction {
+                        Instruction::CreateTemporaryTokensThenCleanup { cleanup, .. } => cleanup,
+                        _ => temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+                    };
                     self.stage_token_creation(
                         item.controller,
                         token,
@@ -8336,7 +8351,7 @@ impl Game {
                                 item: item.clone(),
                                 keywords,
                                 attack: temporary_tokens::TokenAttack::None,
-                                cleanup: temporary_tokens::TokenCleanup::NextEndStepSacrifice,
+                                cleanup,
                             },
                         )),
                     );
@@ -9874,6 +9889,16 @@ impl Game {
                 Instruction::ExileTopPlayScaled { amount, next_turn } => {
                     let count = self.item_amount(amount, &item);
                     self.exile_top_play(item.controller, count, next_turn);
+                }
+                Instruction::ExileTopPlayForPlayer {
+                    player,
+                    amount,
+                    next_turn,
+                } => {
+                    if let Some(player) = self.program_players(player, &item).next() {
+                        let count = self.item_amount(amount, &item);
+                        self.exile_top_play(player, count, next_turn);
+                    }
                 }
                 Instruction::ExileTopLibrary { players, amount }
                 | Instruction::ExileTopLibraryRemember { players, amount } => {

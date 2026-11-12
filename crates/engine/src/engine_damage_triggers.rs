@@ -686,6 +686,30 @@ impl Game {
             )
         }) {
             self.bind_trigger_damage_actor(recipient);
+        } else if program.iter().any(|instruction| {
+            matches!(
+                instruction,
+                Instruction::MayForPlayer {
+                    player: PlayerSet::EventObjectController,
+                    ..
+                } | Instruction::ExileTopPlayForPlayer {
+                    player: PlayerSet::EventObjectController,
+                    ..
+                }
+            )
+        }) {
+            let controller = self.state.objects[recipient.card as usize].controller;
+            self.state
+                .pending_triggers
+                .last_mut()
+                .unwrap()
+                .set_event_object(EventObjectView {
+                    object: recipient,
+                    facts: EventObjectFacts::Controller(controller),
+                    semantic_objects: None,
+                    conniver_creature: None,
+                    subtype_lki: None,
+                });
         }
         self.state
             .pending_triggers
