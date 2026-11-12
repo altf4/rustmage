@@ -96,6 +96,7 @@ fn commune_with_evil_takes_one_of_the_top_four_privately_and_bins_the_rest() {
     reject(&mut game, Action::SelectLibrary { card: outside });
     reject(&mut game, Action::FinishLibrarySelection);
     act(&mut game, Action::SelectLibrary { card: cards[0] });
+    act(&mut game, Action::FinishLibrarySelection);
     settle(&mut game);
     assert_eq!(game.state.players[PLAYER.index()].life, 23);
     assert_eq!(game.object_view(cards[0]).zone, Zone::Hand);
