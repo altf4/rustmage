@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "c63ed547817f29d3ff53abe5139e791ec013d4d8574d7e27238497ecafbc1acd",
+  "catalogue_version": "0ee0c9f9a4fac87deca9c3868dea1c3eeb38cc36782ded11886074947f069e0d",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4746,
-  "implemented_total": 4763,
+  "implemented_standard_cards": 4753,
+  "implemented_total": 4770,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 215,
-      "gated": 49
+      "complete": 222,
+      "gated": 42
     },
     "ecc": {
       "total": 7,
@@ -6268,8 +6268,8 @@
     {
       "name": "Clammy Prowler",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/clammy_prowler.rs",
       "set": "dsk"
     },
@@ -11868,8 +11868,8 @@
     {
       "name": "Fear of Abduction",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_abduction.rs",
       "set": "dsk"
     },
@@ -11940,8 +11940,8 @@
     {
       "name": "Fear of Isolation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_isolation.rs",
       "set": "dsk"
     },
@@ -21508,8 +21508,8 @@
     {
       "name": "Marina Vendrell's Grimoire",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/marina_vendrell_s_grimoire.rs",
       "set": "dsk"
     },
@@ -31116,8 +31116,8 @@
     {
       "name": "Silent Hallcreeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/silent_hallcreeper.rs",
       "set": "dsk"
     },
@@ -36012,8 +36012,8 @@
     {
       "name": "The Mindskinner",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_mindskinner.rs",
       "set": "dsk"
     },
@@ -36244,8 +36244,8 @@
     {
       "name": "The Tale of Tamiyo",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/the_tale_of_tamiyo.rs",
       "set": "dsk"
     },
