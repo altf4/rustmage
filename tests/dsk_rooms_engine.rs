@@ -153,6 +153,34 @@ const REDUCTION: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const OFF_TURN_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::UntapControlledCreaturesDuringOtherUntapSteps],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[(0, RoomDoor::Right)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const CANNOT_UNTAP: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::SelfUntap(UntapRestriction::All)],
+    }],
+    ..CardRules::EMPTY
+};
+
 fn card(name: &str) -> Card {
     Card::from_name(name).unwrap()
 }
@@ -320,6 +348,77 @@ fn graveyard_permanent_type_permission_allows_either_room_half_once() {
                     permanent_type: PermanentType::Creature,
                 })
         );
+    }
+}
+
+#[test]
+fn unlocking_an_off_turn_untap_door_adds_each_live_creature_to_one_untap_attempt() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &OFF_TURN_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (Card::GrizzlyBears, &CANNOT_UNTAP),
+    ]);
+    for player in [Player::P0, Player::P1] {
+        let opponent = player.other();
+        let mut game = scenario(player);
+        let rooms = [ROOM; 2].map(|card| spawn(&mut game, player, card, Zone::Battlefield));
+        let ordinary = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+        let own_step_only = put(&mut game, player, "Slumbering Cerberus", Zone::Battlefield);
+        let never = spawn(&mut game, player, Card::GrizzlyBears, Zone::Battlefield);
+        let infantry = put(
+            &mut game,
+            player,
+            "Thousand Moons Infantry",
+            Zone::Battlefield,
+        );
+        let animated_off_turn = put(&mut game, player, "Midnight Mangler", Zone::Battlefield);
+        let land = put(&mut game, player, "Forest", Zone::Battlefield);
+        let opposing_creature = put(&mut game, opponent, "Healer's Hawk", Zone::Battlefield);
+        for id in [
+            ordinary,
+            own_step_only,
+            never,
+            infantry,
+            animated_off_turn,
+            land,
+            opposing_creature,
+        ] {
+            game.state.objects[id as usize].tapped = true;
+        }
+        assert!(!game.object_view(animated_off_turn).is_creature());
+        game.add_counter(infantry, CounterKind::Stun, 2);
+        game.add_counter(never, CounterKind::Stun, 1);
+        let locked = game.clone();
+        let refs = rooms.map(|id| game.object_ref(id));
+        for object in refs {
+            act(&mut game, begin_unlock(object, RoomDoor::Right, RED_COST));
+            choose(&mut game, |action| {
+                matches!(action, Action::PayRoomUnlock { .. })
+            });
+            assert_eq!(game.object_view(object.card).room_doors, Some(RIGHT_ONLY));
+        }
+        let mut blanked = game.clone();
+        blanked.remove_abilities_exact(&refs, refs[0], player, AnimationDuration::Permanent);
+
+        for (mut branch, active_doors) in [(locked, false), (blanked, false), (game, true)] {
+            branch.state.step = Step::End;
+            act(&mut branch, Action::Pass);
+            act(&mut branch, Action::Pass);
+            assert_eq!(branch.state.active, opponent);
+            assert_eq!(branch.state.step, Step::Upkeep);
+            assert!(branch.object_view(animated_off_turn).is_creature());
+            for id in [ordinary, own_step_only, animated_off_turn] {
+                assert_eq!(branch.object_view(id).tapped, !active_doors);
+            }
+            assert!(!branch.object_view(opposing_creature).tapped);
+            for id in [land, never, infantry] {
+                assert!(branch.object_view(id).tapped);
+                if id != land {
+                    assert_eq!(branch.counter_count(id, CounterKind::Stun), 1);
+                }
+            }
+        }
     }
 }
 

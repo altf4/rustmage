@@ -435,6 +435,8 @@ pub enum StaticAbilityFragment {
     SelfUntap(UntapRestriction),
     /// Include this permanent in the turn-based action on another player's turn.
     UntapDuringOtherUntapSteps,
+    /// Include creatures this source's controller controls in other players' untap steps.
+    UntapControlledCreaturesDuringOtherUntapSteps,
     /// Uses exact-object +1/+1 placement history for the source's current controller.
     SourcePlusOnePlacedKeywords(Keywords),
     /// Source-only ability grant whose earlier-layer condition remains live.

@@ -423,6 +423,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::ConvokeCreatureSpells
                             | crate::cards::StaticAbilityFragment::SelfUntap(_)
                             | crate::cards::StaticAbilityFragment::UntapDuringOtherUntapSteps
+                            | crate::cards::StaticAbilityFragment::UntapControlledCreaturesDuringOtherUntapSteps
                             | crate::cards::StaticAbilityFragment::CounterProhibition(_)
                             | crate::cards::StaticAbilityFragment::PlayerCounterProhibition { .. }
                             | crate::cards::StaticAbilityFragment::LifeGainAdditional(_)
