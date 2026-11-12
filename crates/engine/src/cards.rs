@@ -5245,6 +5245,11 @@ pub enum Instruction {
     },
     /// Choose uniformly without replacement, then discard the batch.
     DiscardRandom(PlayerSet, u16),
+    /// Skip if this controller has used the ability this turn. At the start of
+    /// a trigger program, also suppress later triggers for that controller.
+    IfOptionalAbilityUnused {
+        skip: usize,
+    },
     /// Optional resolution choice; its accepted branch records an exact ability use.
     MayOncePerTurn {
         skip: usize,
