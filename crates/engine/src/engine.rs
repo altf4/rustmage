@@ -1158,6 +1158,7 @@ define_actions! {
     },
     AnnounceOmen { card: CardId },
     AnnounceRoom { card: CardId, door: RoomDoor, flash_surcharge: bool },
+    AnnounceSplit { card: CardId, half: crate::cards::SplitHalf, method: CastMethod, flash_surcharge: bool },
     BeginRoomUnlock { object: ObjectRef, door: RoomDoor, cost: ManaCost },
     PayRoomUnlock { payment: Mana },
     AbortRoomUnlock,
@@ -1655,13 +1656,17 @@ pub enum CastFace {
     Back,
     RoomLeft,
     RoomRight,
+    Split(crate::cards::SplitHalf),
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 impl CastFace {
     pub(super) fn choices(card: Card) -> impl Iterator<Item = Self> {
+        use crate::cards::SplitHalf;
         let faces: &[Self] = if card.room().is_some() {
             &[Self::RoomLeft, Self::RoomRight]
+        } else if card.split_faces().is_some() {
+            &[Self::Split(SplitHalf::Left), Self::Split(SplitHalf::Right)]
         } else {
             &[Self::Normal, Self::Adventure, Self::Omen, Self::Back]
         };
@@ -1670,12 +1675,13 @@ impl CastFace {
 
     pub(super) fn definition(self, card: Card) -> Option<Card> {
         match self {
-            Self::Normal => card.room().is_none().then_some(card),
+            Self::Normal => (card.room().is_none() && card.split_faces().is_none()).then_some(card),
             Self::Adventure => card.adventure_spell(),
             Self::Omen => card.omen_spell(),
             Self::Back => card.back_face(),
             Self::RoomLeft => Some(card.room()?.halves[RoomDoor::Left.index()]),
             Self::RoomRight => Some(card.room()?.halves[RoomDoor::Right.index()]),
+            Self::Split(half) => Some(card.split_faces()?[half.index()]),
         }
     }
 
@@ -4467,6 +4473,7 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.room_parent().is_some()
+                    || card.split_parent().is_some()
                     || card.face_parent().is_some()
                     || card.is_meld_face()
                     || !card.is_supported()
@@ -4546,6 +4553,7 @@ impl Game {
                     || card.is_emblem()
                     || card.inset_parent().is_some()
                     || card.room_parent().is_some()
+                    || card.split_parent().is_some()
                     || card.face_parent().is_some()
                     || card.is_meld_face()
                 {
@@ -4556,6 +4564,8 @@ impl Game {
                             "inset spell definitions cannot be submitted in decks"
                         } else if card.room_parent().is_some() {
                             "Room door definitions cannot be submitted in decks"
+                        } else if card.split_parent().is_some() {
+                            "split half definitions cannot be submitted in decks"
                         } else if card.is_emblem() {
                             "emblems cannot be submitted in decks"
                         } else {
@@ -6771,6 +6781,12 @@ impl Game {
                     if !front_allowed {
                         continue;
                     }
+                    if obj.card.split_faces().is_some() {
+                        if self.visit_split_casts(actor, card, sorcery, &mut emit) {
+                            return true;
+                        }
+                        continue;
+                    }
                     if obj.card.room().is_some() {
                         if self.visit_room_casts(actor, card, sorcery, &mut emit) {
                             return true;
@@ -8501,6 +8517,35 @@ impl Game {
                 let mut item = self.cast_item(actor, card, [0; 6]);
                 self.set_cast_face(&mut item, CastFace::Back);
                 self.open_payment_announcement(item, Counters::default(), None);
+            }
+            Action::AnnounceSplit {
+                card,
+                half,
+                method,
+                flash_surcharge,
+            } => {
+                let face = CastFace::Split(half);
+                if matches!(self.state.pending, Pending::ResolutionCasts { .. }) {
+                    self.cast_during_resolution_with_cost(
+                        actor,
+                        self.object_ref(card),
+                        face,
+                        Some(method),
+                    );
+                } else {
+                    let mut item = self.cast_item(actor, card, [0; 6]);
+                    self.set_cast_face(&mut item, face);
+                    let cast = item.cast.as_mut().unwrap();
+                    cast.method = method;
+                    cast.flash_surcharge = flash_surcharge;
+                    if method == CastMethod::GrantedZeroFlashback
+                        && item.source.expect("split spell source").card.x_symbols() > 0
+                    {
+                        item.x = Some(0);
+                    }
+                    self.state.objects[card as usize].flashback = method.is_flashback();
+                    self.open_payment_announcement(item, Counters::default(), None);
+                }
             }
             Action::AnnounceRoom {
                 card,
@@ -11222,6 +11267,7 @@ impl Game {
         } else if !obj.is_token() && !obj.is_spell_copy() {
             obj.card
                 .room_parent()
+                .or_else(|| obj.card.split_parent())
                 .unwrap_or_else(|| obj.card.front_face())
         } else {
             obj.card

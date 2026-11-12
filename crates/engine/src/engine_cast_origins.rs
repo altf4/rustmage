@@ -1311,8 +1311,14 @@ impl Game {
                     return true;
                 }
                 if paid_graveyard
-                    && face == CastFace::Normal
-                    && self.visit_granted_flashback_casts(player, object.card, true, false, emit)
+                    && self.visit_granted_flashback_face(
+                        player,
+                        object.card,
+                        face,
+                        true,
+                        false,
+                        emit,
+                    )
                 {
                     return true;
                 }

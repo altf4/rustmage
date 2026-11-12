@@ -429,7 +429,8 @@ pub fn smoke_index_from_observation(observation: &Observation, actions: &[Action
             | Action::AnnounceHarmonize { .. }
             | Action::AnnounceMayhem { .. }
             | Action::AnnounceGrantedMayhem { .. }
-            | Action::AnnounceRoom { .. } => 79,
+            | Action::AnnounceRoom { .. }
+            | Action::AnnounceSplit { .. } => 79,
             Action::AnnouncePlot { .. }
             | Action::AnnounceLibraryTopPlot { .. }
             | Action::BeginFaceUp { .. }

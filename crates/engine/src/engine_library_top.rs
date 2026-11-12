@@ -66,25 +66,15 @@ impl Game {
         };
         let top = &self.state.objects[card as usize];
         let physical = top.card;
-        let faces = [
-            (CastFace::Normal, Some(physical)),
-            (CastFace::Adventure, physical.adventure_spell()),
-            (CastFace::Omen, physical.omen_spell()),
-            (CastFace::Back, physical.back_face()),
-        ]
-        .map(|(face, definition)| {
-            (
-                face,
-                definition.filter(|definition| {
-                    CastFilter::InstantSorcery.matches(*definition)
-                        && !matches!(definition.effect(), Effect::Unsupported)
-                }),
-            )
-        });
-        if top.zone != Zone::Library
-            || top.owner != actor
-            || faces.iter().all(|(_, definition)| definition.is_none())
-        {
+        let faces = || {
+            CastFace::choices(physical).filter_map(|face| {
+                let definition = face.definition(physical)?;
+                (CastFilter::InstantSorcery.matches(definition)
+                    && !matches!(definition.effect(), Effect::Unsupported))
+                .then_some((face, definition))
+            })
+        };
+        if top.zone != Zone::Library || top.owner != actor || faces().next().is_none() {
             return false;
         }
         let mut evaluation = None;
@@ -122,10 +112,7 @@ impl Game {
                 {
                     continue;
                 }
-                for (face, definition) in faces {
-                    let Some(definition) = definition else {
-                        continue;
-                    };
+                for (face, definition) in faces() {
                     for method in [CastMethod::Normal, CastMethod::Free] {
                         let method_available = match method {
                             CastMethod::Normal => !definition.info().mana_cost.is_empty(),

@@ -438,6 +438,9 @@ pub struct CardExtras {
     pub solved_static_groups: &'static [u16],
     /// A Room half is a spell definition and has no physical deck identity.
     pub room_parent: Option<Card>,
+    /// Spell halves of a nonpermanent split card, using their actual definitions.
+    pub split_faces: Option<[Card; 2]>,
+    pub split_parent: Option<Card>,
     pub targets_up_to_x: bool,
     pub life_x_cost: bool,
     pub spell_cannot_be_copied: bool,
@@ -602,6 +605,8 @@ impl CardExtras {
         room: None,
         solved_static_groups: &[],
         room_parent: None,
+        split_faces: None,
+        split_parent: None,
         targets_up_to_x: false,
         life_x_cost: false,
         spell_cannot_be_copied: false,

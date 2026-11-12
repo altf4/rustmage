@@ -270,6 +270,24 @@ impl RoomDoor {
     }
 }
 
+/// A castable half of an ordinary split card (CR 709.3).
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SplitHalf {
+    Left,
+    Right,
+}
+
+#[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
+impl SplitHalf {
+    pub(crate) const fn index(self) -> usize {
+        match self {
+            Self::Left => 0,
+            Self::Right => 1,
+        }
+    }
+}
+
 /// The two spell definitions of one permanent split card. The root's printed
 /// trigger slots and static groups remain stable as its doors change.
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
@@ -8672,6 +8690,12 @@ impl Card {
     pub fn room(self) -> Option<&'static RoomSpec> {
         authored::rules(self).and_then(|rules| rules.extras.room)
     }
+    pub fn split_faces(self) -> Option<[Card; 2]> {
+        authored::rules(self).and_then(|rules| rules.extras.split_faces)
+    }
+    pub(crate) fn split_parent(self) -> Option<Card> {
+        authored::rules(self).and_then(|rules| rules.extras.split_parent)
+    }
     pub(crate) fn has_conditional_static_groups(self) -> bool {
         authored::rules(self).is_some_and(|rules| {
             let extras = rules.extras;
@@ -9594,8 +9618,10 @@ impl Card {
     pub fn fixed_mana_value(self) -> u64 {
         // The canonical equivalent takes every two-brid symbol's generic side;
         // a cheaper chosen payment never changes the printed mana value.
-        if let Some(room) = self.room() {
-            return room.halves.into_iter().map(Card::fixed_mana_value).sum();
+        if let Some(extras) = authored::rules(self).map(|rules| rules.extras)
+            && let Some(halves) = extras.room.map(|room| room.halves).or(extras.split_faces)
+        {
+            return halves.into_iter().map(Card::fixed_mana_value).sum();
         }
         let (colored, generic) = self.cost();
         u64::from(generic) + colored.into_iter().map(u64::from).sum::<u64>()
