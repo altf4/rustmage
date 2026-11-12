@@ -3,9 +3,17 @@
   "catalogue_id": 5710,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "ad0832f5342ecf80c0b35643e6c3b3dd8f9a602e82952557bb3946fd821e6934",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/BallisticBoulderToken.java",
-  "java_sha256": "c83136511299c390b65f4a2f01ea020f609b9c88d245eac3acc18b9fab5ae30c"
+  "java_sha256": "c83136511299c390b65f4a2f01ea020f609b9c88d245eac3acc18b9fab5ae30c",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    }
+  ],
+  "rules_tests": "tests/tla_token_cards.rs"
 }

@@ -3,9 +3,17 @@
   "catalogue_id": 5706,
   "oracle_id": null,
   "facts_sha256": null,
-  "complete": false,
+  "complete": true,
   "physical_metadata_sha256": "ebc3c6a109feb71656a3e8d4a028b385bc652d465406c939e7e4a987714c71cf",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage/src/main/java/mage/game/permanent/token/SoldierFirebendingToken.java",
-  "java_sha256": "1c3395fcd4d33a9d743e2e19c09ae7ee23c2a4d7ed7eb85468adee42c30be8b6"
+  "java_sha256": "1c3395fcd4d33a9d743e2e19c09ae7ee23c2a4d7ed7eb85468adee42c30be8b6",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FirebendingAbility.java",
+      "sha256": "886553199042c3caee285871191096e9e938f2ef1ffa96cb289bac8518502566"
+    }
+  ],
+  "rules_tests": "tests/tla_token_cards.rs"
 }
