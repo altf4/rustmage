@@ -3,10 +3,14 @@
   "catalogue_id": 3974,
   "oracle_id": "58f12f0d-e2c1-48f9-9e27-d1de8db743cb",
   "facts_sha256": "01fe54c81db48c2eb610e443bd323f98e49ea57c1dfafb8f0f642be13bfa72ee",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "e38355452048ef42eebb53a19a2bc6eac90e27388d188d0ac768d1a7d559eb2c"
   },
-  "physical_metadata_sha256": "82b1d2da4d01a2ff8aa456667855697435573a8c63aafe545f7c50770a2516f6"
+  "physical_metadata_sha256": "82b1d2da4d01a2ff8aa456667855697435573a8c63aafe545f7c50770a2516f6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SoulSearch.java",
+  "java_sha256": "e245d9c888ea213a27a1e9000b7e9d89420d4aabaf780bd9f2708da1d4ec3728",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

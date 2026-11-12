@@ -3,10 +3,14 @@
   "catalogue_id": 3355,
   "oracle_id": "d69cb63f-98cc-4699-a03d-4f1beeeb7065",
   "facts_sha256": "1ab01828480531d213130688ad98039031fcd965b8826e47c7ce3894a4bf7d77",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "67ea7fea279edcb65f146c2b8b597b8d491876b7f0f7250f18b7482d2a33d68f"
   },
-  "physical_metadata_sha256": "cb4343cbe081624cd0ed8e32eaa2a2cf745632358cef69cba22846ddaecf755b"
+  "physical_metadata_sha256": "cb4343cbe081624cd0ed8e32eaa2a2cf745632358cef69cba22846ddaecf755b",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/r/RakishScoundrel.java",
+  "java_sha256": "c5b0a4aac8b602a579fc1a211358757d0bb72a258992924388908f3423bb1f10",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

@@ -3,10 +3,14 @@
   "catalogue_id": 4629,
   "oracle_id": "2ef0961a-0543-4371-8c2a-333881b735e5",
   "facts_sha256": "87e6426a25c1b5c3866d473c4721a830d5fbb6f8cf04201b80c1069138294818",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "1543b91a3909b40333b5198c70f059e59683d6cb1889a58b2bd3bf13de55e0ab"
   },
-  "physical_metadata_sha256": "e3aa425947d6cb439ad06523695739bcf71bafc3d84bf59e103b858200ad7782"
+  "physical_metadata_sha256": "e3aa425947d6cb439ad06523695739bcf71bafc3d84bf59e103b858200ad7782",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TomikWielderOfLaw.java",
+  "java_sha256": "cf0ed3bdc1c36a6b529dad23ffc3d66a379c6bb75b77a2dc8f26a63124c29f17",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

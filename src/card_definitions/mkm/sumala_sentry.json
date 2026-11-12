@@ -3,10 +3,14 @@
   "catalogue_id": 4210,
   "oracle_id": "6b869c33-a77c-4eb7-9df9-9815d70f7444",
   "facts_sha256": "cf5178b5a601b6e2dbc060cb89b83dfa3fd33bad4469b7532260f5b2b94406fe",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "048f8672b9598c22969bf844f725b412f5df3170830dd40b3352ac4c6511a94e"
   },
-  "physical_metadata_sha256": "46b6a9dc48390fa8e6d66310f09fa530759bbb5a2f4ada2411cae88b9c2b06da"
+  "physical_metadata_sha256": "46b6a9dc48390fa8e6d66310f09fa530759bbb5a2f4ada2411cae88b9c2b06da",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/s/SumalaSentry.java",
+  "java_sha256": "7ef6eb7bc73b1f4996101704715bacf8b1c4e1753d876d28c2f5fb518fbd3ee1",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

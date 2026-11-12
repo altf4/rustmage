@@ -3,10 +3,14 @@
   "catalogue_id": 2708,
   "oracle_id": "23140c6f-c674-4d13-9b78-bce0ffcb981f",
   "facts_sha256": "84750959ecbe1be12715b980ffc4d0dbe57b4988ed839a059481044e43604585",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "d8b4f11766a1e65f33f62df6242492ccfc2e470e0aaaafbf61b8f91f29c6447c"
   },
-  "physical_metadata_sha256": "a33877a303c3266ca0acb0bb60406c4ff89a8163fd991f61c34fe43e0dd1f332"
+  "physical_metadata_sha256": "a33877a303c3266ca0acb0bb60406c4ff89a8163fd991f61c34fe43e0dd1f332",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/m/MelekReforgedResearcher.java",
+  "java_sha256": "f84d3e6b4d362809ad82bd406a5d0648b4f0927c3c1101d2b11d339459e8f178",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

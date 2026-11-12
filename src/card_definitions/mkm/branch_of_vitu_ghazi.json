@@ -3,10 +3,14 @@
   "catalogue_id": 526,
   "oracle_id": "7a30316b-dcd5-4a4b-b959-eecde7ca92e7",
   "facts_sha256": "63fc30c0bdcab9f2d3cd8ed44de5c7be27d103d1c5f6a13a4e0177cdccc09360",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "9f3f7b3911760ece0f037eb10162f1fcceffd2d63d500dd57b2cefb2c9c2e28a"
   },
-  "physical_metadata_sha256": "9b7925ea5f44d82463d8d1ff61f5dfd4ead88464d2689806d458f56b4b50d80c"
+  "physical_metadata_sha256": "9b7925ea5f44d82463d8d1ff61f5dfd4ead88464d2689806d458f56b4b50d80c",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BranchOfVituGhazi.java",
+  "java_sha256": "4506a9fccde0382471d3cd1363e1acdea9d832010688d1a1c3b96d8aa2615cd4",
+  "rules_tests": "tests/mkm_gold_artifacts_lands_cards.rs"
 }

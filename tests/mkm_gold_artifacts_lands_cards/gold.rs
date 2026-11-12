@@ -307,3 +307,417 @@ fn repulsive_mutation_counts_power_after_the_new_counters() {
     assert!(game.state.stack.is_empty());
     assert_eq!(game.state.players[player.index()].life, 20);
 }
+
+fn activate(game: &mut Game, source: CardId, index: u16) {
+    choose(game, |action| {
+        matches!(
+            action,
+            Action::Activate { card, ability, .. } | Action::AnnounceActivate { card, ability, .. }
+            if *card == source && *ability == index
+        )
+    });
+    if matches!(game.state.pending, Pending::PayCosts { .. }) {
+        pay(game);
+    }
+}
+
+#[test]
+fn rune_brand_juggler_suspects_then_requires_that_designation_as_a_cost() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let suspected = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let innocent = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let enemy = put(&mut game, player.other(), "Hill Giant", Zone::Battlefield);
+    let juggler = put(&mut game, player, "Rune-Brand Juggler", Zone::Hand);
+    cast(&mut game, juggler, None);
+    pass_pair(&mut game);
+    reject(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(enemy),
+        },
+    );
+    target(&mut game, Target::Card(suspected));
+    settle(&mut game);
+    assert!(game.is_suspected(suspected));
+
+    act(
+        &mut game,
+        Action::AnnounceActivate {
+            card: juggler,
+            ability: 0,
+            counter_payment: Counters::default(),
+        },
+    );
+    target(&mut game, Target::Card(enemy));
+    let illegal = exact_cost_object(&game, innocent);
+    reject(&mut game, illegal);
+    let cost = exact_cost_object(&game, suspected);
+    act(&mut game, cost);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(suspected).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(enemy).zone, Zone::Graveyard);
+    assert!(game.on_battlefield(innocent));
+}
+
+#[test]
+fn soul_search_reveals_the_hand_and_rewards_only_a_small_nonland() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let land = put(&mut game, opponent, "Forest", Zone::Hand);
+    let small = put(&mut game, opponent, "Shock", Zone::Hand);
+    let large = put(&mut game, opponent, "Grizzly Bears", Zone::Hand);
+    let search = put(&mut game, player, "Soul Search", Zone::Hand);
+    cast(&mut game, search, Some(Target::Player(opponent)));
+    pass_pair(&mut game);
+    let selection = |id| Action::ChooseHandCard {
+        object: Some(game.object_ref(id)),
+    };
+    let land = selection(land);
+    let small_action = selection(small);
+    let large_action = selection(large);
+    assert_eq!(game.observe(player).known_hand.len(), 3);
+    reject(&mut game, land);
+    reject(&mut game, Action::ChooseHandCard { object: None });
+    let spirit = Card::from_catalogue_id(5477);
+    let mut expensive = game.clone();
+    act(&mut expensive, large_action);
+    assert_eq!(expensive.object_view(large).zone, Zone::Exile);
+    assert_eq!(tokens(&expensive, player, spirit), 0);
+    act(&mut game, small_action);
+    assert_eq!(game.object_view(small).zone, Zone::Exile);
+    let id = game.controlled_token_ids(player).next().unwrap();
+    let token = game.object_view(id);
+    assert_eq!(token.card, spirit);
+    assert_eq!(token.card.colors(), 1 | 4);
+    assert_eq!((token.power, token.toughness), (1, 1));
+    assert!(token.keywords.contains(Keywords::FLYING));
+}
+
+#[test]
+fn teysa_checks_life_lost_at_resolution_and_triggers_for_the_first_clue_death() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let teysa = put(
+        &mut game,
+        player,
+        "Teysa, Opulent Oligarch",
+        Zone::Battlefield,
+    );
+    assert!(game.keywords(teysa).contains(Keywords::DEATHTOUCH));
+    game.begin_step(Step::End);
+    game.prepare_triggers();
+    let mut no_loss = game.clone();
+    settle(&mut no_loss);
+    assert_eq!(tokens(&no_loss, player, CLUE), 0);
+
+    let shock = put(&mut game, player, "Shock", Zone::Hand);
+    cast(&mut game, shock, Some(Target::Player(opponent)));
+    settle(&mut game);
+    assert_eq!(tokens(&game, player, CLUE), 1);
+    game.create_tokens(player, CLUE, 1, false);
+    assert!(!game.advance_entries());
+    let clues: Vec<_> = game.controlled_token_ids(player).collect();
+    for id in clues {
+        activate(&mut game, id, 0);
+        settle(&mut game);
+    }
+    assert_eq!(tokens(&game, player, Card::from_catalogue_id(5477)), 1);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+}
+
+#[test]
+fn tolsimir_creates_the_named_wolf_and_pairs_its_attack_with_a_blocker() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let tolsimir = put(&mut game, player, "Tolsimir, Midnight's Light", Zone::Hand);
+    cast(&mut game, tolsimir, None);
+    settle(&mut game);
+    assert!(game.keywords(tolsimir).contains(Keywords::LIFELINK));
+    let wolf = game.controlled_token_ids(player).next().unwrap();
+    let object = game.object_view(wolf);
+    assert_eq!(object.card.name(), "Voja Fenstalker");
+    assert!(object.card.is_legendary());
+    assert_eq!(object.card.colors(), 1 | 16);
+    assert!(object.has_subtype("Wolf"));
+    assert!(object.keywords.contains(Keywords::TRAMPLE));
+    assert_eq!((object.power, object.toughness), (5, 5));
+
+    for id in [wolf, tolsimir] {
+        game.state.objects[id as usize].summoning_sick = false;
+    }
+    let blocker = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let mut alone = game.clone();
+    combat_with_attackers(&mut alone, &[wolf]);
+    assert!(alone.state.stack.is_empty());
+
+    combat_with_attackers(&mut game, &[wolf, tolsimir]);
+    target(&mut game, Target::Card(blocker));
+    settle(&mut game);
+    until(&mut game, |g| g.state.pending == Pending::Blockers);
+    reject(&mut game, Action::FinishBlockers);
+    act(
+        &mut game,
+        Action::Block {
+            blocker,
+            attacker: wolf,
+        },
+    );
+    act(&mut game, Action::FinishBlockers);
+}
+
+#[test]
+fn treacherous_greed_pays_with_the_creature_that_actually_dealt_damage() {
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let dealer = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let idle = put(&mut game, player, "Bear Cub", Zone::Battlefield);
+    let greed = put(&mut game, player, "Treacherous Greed", Zone::Hand);
+    reject(&mut game, Action::AnnounceCast { card: greed });
+    combat_with_attackers(&mut game, &[dealer]);
+    until(&mut game, |g| g.state.step == Step::CombatDamage);
+    assert_eq!(game.state.players[opponent.index()].life, 18);
+    game.state.players[player.index()].mana = [8; 6];
+    act(&mut game, Action::AnnounceCast { card: greed });
+    let forbidden = exact_cost_object(&game, idle);
+    reject(&mut game, forbidden);
+    let sacrifice = exact_cost_object(&game, dealer);
+    act(&mut game, sacrifice);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(dealer).zone, Zone::Graveyard);
+    assert!(game.on_battlefield(idle));
+    assert_eq!(game.state.players[opponent.index()].life, 15);
+    assert_eq!(game.state.players[player.index()].life, 23);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
+}
+
+#[test]
+fn urgent_necropsy_collects_the_sum_of_the_selected_roles_and_destroys_once() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let creature = put(&mut game, opponent, "Gleaming Geardrake", Zone::Battlefield);
+    let four = put(&mut game, player, "Hill Giant", Zone::Graveyard);
+    let two = put(&mut game, player, "Grizzly Bears", Zone::Graveyard);
+    let spell = put(&mut game, player, "Urgent Necropsy", Zone::Hand);
+    let old = game.object_ref(creature);
+    act(&mut game, Action::AnnounceCast { card: spell });
+    for _ in 0..2 {
+        target(&mut game, Target::Card(creature));
+    }
+    for _ in 0..2 {
+        if !game.legal_actions().contains(&Action::FinishTargets) {
+            break;
+        }
+        act(&mut game, Action::FinishTargets);
+    }
+    act(&mut game, Action::BeginOrderedCosts);
+    let choice = game
+        .state
+        .announcing
+        .as_ref()
+        .unwrap()
+        .cast_costs
+        .as_ref()
+        .unwrap()
+        .clauses
+        .iter()
+        .position(|row| row.clause == CastCostClause::Additional)
+        .unwrap();
+    act(
+        &mut game,
+        Action::ChooseCastCost {
+            clause: choice.try_into().unwrap(),
+        },
+    );
+    let evidence = |g: &Game, id| Action::ChooseEvidence {
+        object: g.object_ref(id),
+    };
+    let small = evidence(&game, two);
+    let mut short = game.clone();
+    act(&mut short, small);
+    reject(&mut short, Action::FinishEvidence);
+    let full = evidence(&game, four);
+    act(&mut game, full);
+    act(&mut game, Action::FinishEvidence);
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(four).zone, Zone::Exile);
+    assert_eq!(game.object_view(two).zone, Zone::Graveyard);
+    assert_eq!(game.object_view(creature).zone, Zone::Graveyard);
+    assert_eq!(game.object_ref(creature).generation, old.generation + 1);
+}
+
+#[test]
+fn wispdrinker_uses_entry_power_and_freezes_the_activation_recipients() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let vampire = put(&mut game, player, "Wispdrinker Vampire", Zone::Battlefield);
+    assert!(game.keywords(vampire).contains(Keywords::FLYING));
+    let small = put(&mut game, player, "Grizzly Bears", Zone::Hand);
+    cast(&mut game, small, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].life, 21);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+
+    let large = put(&mut game, player, "Hill Giant", Zone::Hand);
+    cast(&mut game, large, None);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 19);
+
+    game.state.players[player.index()].mana = [8; 6];
+    activate(&mut game, vampire, 0);
+    settle(&mut game);
+    let granted = Keywords::DEATHTOUCH.union(Keywords::LIFELINK);
+    assert!(game.keywords(small).contains(granted));
+    assert!(game.keywords(vampire).contains(granted));
+    assert!(!game.keywords(large).intersects(granted));
+    let growth = put(&mut game, player, "Giant Growth", Zone::Hand);
+    cast(&mut game, growth, Some(Target::Card(small)));
+    settle(&mut game);
+    assert!(game.keywords(small).contains(granted));
+}
+
+#[test]
+fn melek_counts_actual_instant_and_sorcery_cards_and_reduces_only_the_first_cast() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    put(&mut game, player, "Shock", Zone::Graveyard);
+    put(&mut game, player, "Flotsam // Jetsam", Zone::Graveyard);
+    put(
+        &mut game,
+        player,
+        "Questing Druid // Seek the Beast",
+        Zone::Graveyard,
+    );
+    let melek = put(
+        &mut game,
+        player,
+        "Melek, Reforged Researcher",
+        Zone::Battlefield,
+    );
+    assert_eq!(
+        (game.stats(melek).power, game.stats(melek).toughness),
+        (4, 4)
+    );
+    let first = put(&mut game, player, "Quick Study", Zone::Hand);
+    let second = put(&mut game, player, "Quick Study", Zone::Hand);
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
+    cast(&mut game, first, None);
+    let receipt = game.state.stack.last().unwrap().cast.unwrap();
+    assert_eq!(receipt.payment, [0, 1, 0, 0, 0, 0]);
+    settle(&mut game);
+    assert_eq!(game.stats(melek).power, 6);
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
+    reject(&mut game, Action::AnnounceCast { card: second });
+
+    game.state.step = Step::End;
+    pass_pair(&mut game);
+    assert_eq!(game.state.active, player.other());
+    if game.actor() == Some(player.other()) {
+        act(&mut game, Action::Pass);
+    }
+    game.state.players[player.index()].mana = [0, 1, 0, 0, 0, 0];
+    cast(&mut game, second, None);
+    settle(&mut game);
+    assert_eq!(game.stats(melek).power, 8);
+}
+
+#[test]
+fn tomik_uses_planeswalker_affinity_and_counts_both_defended_destinations() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let walker = put(
+        &mut game,
+        player,
+        "Kaya, Spirits' Justice",
+        Zone::Battlefield,
+    );
+    game.set_counters(walker, Counters::of(CounterKind::Loyalty, 3));
+    let tomik = put(&mut game, player, "Tomik, Wielder of Law", Zone::Hand);
+    game.state.players[player.index()].mana = [1, 0, 1, 0, 0, 0];
+    cast(&mut game, tomik, None);
+    settle(&mut game);
+    assert!(
+        game.keywords(tomik)
+            .contains(Keywords::FLYING.union(Keywords::VIGILANCE))
+    );
+    assert_eq!(game.state.players[player.index()].mana, [0; 6]);
+
+    let first = put(&mut game, opponent, "Bear Cub", Zone::Battlefield);
+    let second = put(&mut game, opponent, "Grizzly Bears", Zone::Battlefield);
+    game.state.active = opponent;
+    game.state.priority = opponent;
+    game.state.step = Step::Attackers;
+    game.state.pending = Pending::Attackers;
+    let mut one = game.clone();
+    act(&mut one, Action::Attack { card: first });
+    act(&mut one, Action::FinishAttackers);
+    assert!(one.state.stack.is_empty());
+
+    act(&mut game, Action::Attack { card: first });
+    act(
+        &mut game,
+        Action::AttackPlaneswalker {
+            card: second,
+            defender: walker,
+        },
+    );
+    act(&mut game, Action::FinishAttackers);
+    settle(&mut game);
+    assert_eq!(game.state.players[opponent.index()].life, 17);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 1);
+}
+
+#[test]
+fn voja_counts_the_live_elves_and_wolves_and_has_ward_three() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let voja = put(
+        &mut game,
+        player,
+        "Voja, Jaws of the Conclave",
+        Zone::Battlefield,
+    );
+    assert!(
+        game.keywords(voja)
+            .contains(Keywords::VIGILANCE.union(Keywords::TRAMPLE))
+    );
+    let first = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    let second = put(&mut game, player, "Llanowar Elves", Zone::Battlefield);
+    game.create_tokens(player, Card::from_catalogue_id(5686), 1, false);
+    assert!(!game.advance_entries());
+    let wolf = game.controlled_token_ids(player).next().unwrap();
+
+    let mut ward = game.clone();
+    ward.state.priority = opponent;
+    let shock = put(&mut ward, opponent, "Shock", Zone::Hand);
+    cast(&mut ward, shock, Some(Target::Card(voja)));
+    pass_pair(&mut ward);
+    reject(
+        &mut ward,
+        Action::PayResolutionMana {
+            payment: [0, 0, 0, 0, 0, 2],
+        },
+    );
+    act(&mut ward, Action::DeclineResolutionMana);
+    assert_eq!(ward.object_view(shock).zone, Zone::Graveyard);
+    assert_eq!(ward.object_view(voja).damage, 0);
+
+    combat_with_attackers(&mut game, &[voja]);
+    settle(&mut game);
+    assert!(!game.object_view(voja).tapped);
+    for id in [voja, first, second, wolf] {
+        assert_eq!(game.counter_count(id, CounterKind::PlusOne), 2);
+    }
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 2);
+}
