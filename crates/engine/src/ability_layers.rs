@@ -628,6 +628,8 @@ pub enum StaticAbilityFragment {
     ControlledArtifactActivation(u16),
     /// In layer six, grant this indexed nonmana activation to controlled nontoken creatures.
     ControlledNontokenCreatureActivation(u16),
+    /// Grant the provider's activation template to its controller's face-down creatures.
+    ControlledFaceDownCreatureActivation(u16),
     KeywordGrant(u16, KeywordGrant),
     StaticRuleGrant(u16, KeywordGrant),
     ControlledCreatureCounterRule {

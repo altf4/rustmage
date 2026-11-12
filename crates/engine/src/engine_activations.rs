@@ -1269,6 +1269,7 @@ impl Game {
                         | crate::cards::StaticAbilityFragment::OtherCreaturesFood(index)
                         | crate::cards::StaticAbilityFragment::ControlledArtifactActivation(index)
                         | crate::cards::StaticAbilityFragment::ControlledNontokenCreatureActivation(index)
+                        | crate::cards::StaticAbilityFragment::ControlledFaceDownCreatureActivation(index)
                         | crate::cards::StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { ability: index, .. }
                         if *index == ability)
                     })

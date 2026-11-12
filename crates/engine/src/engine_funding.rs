@@ -1277,6 +1277,7 @@ impl<'g> FundingState<'g> {
                                         | StaticAbilityFragment::ControlledBasicLandManaMultiplier(_)
                                         | StaticAbilityFragment::ControlledArtifactActivation(_)
                                         | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
+                                        | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                                         | StaticAbilityFragment::OtherControlledSubtypeTapManaActivation { .. }
                                         | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)
                                 ))
@@ -5023,7 +5024,7 @@ impl<'g> FundingState<'g> {
             && self.contributors.as_ref().is_none_or(|c| c.payable(self))
             && self
                 .required_face_up
-                .is_none_or(|object| !manifest::face_up_prohibited(self, object))
+                .is_none_or(|object| !manifest::face_up_prohibited(self, object, goal.actor))
             && completion(self)
         {
             return true;
@@ -7130,7 +7131,7 @@ impl Game {
         };
         let mut state = FundingState::from_game(self, &goal);
         state.set_purpose(mana_lots::Purpose::face_up(self, request.object));
-        if !manifest::face_up_prohibited(self, request.object)
+        if !manifest::face_up_prohibited(self, request.object, request.controller)
             && visit_funding_payments(
                 mana_lots::available(state.mana, &state.lots, state.live_mana_purpose()),
                 goal.required,

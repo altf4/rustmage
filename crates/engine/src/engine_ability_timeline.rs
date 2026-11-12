@@ -118,6 +118,7 @@ impl Card {
                             | StaticAbilityFragment::OtherCreaturesFood(_)
                             | StaticAbilityFragment::ControlledArtifactActivation(_)
                             | StaticAbilityFragment::ControlledNontokenCreatureActivation(_)
+                            | StaticAbilityFragment::ControlledFaceDownCreatureActivation(_)
                             | StaticAbilityFragment::ControlledPlaneswalkerAttackLimit
                             | StaticAbilityFragment::ControlledSubtypeKeywords { .. }
                             | StaticAbilityFragment::GrantRiotToOtherControlledSubtype(_)

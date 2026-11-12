@@ -118,6 +118,7 @@ pub(super) fn program_grant_active<W: ability_world::CharacteristicWorld + ?Size
                         | F::OtherCreaturesFood(_)
                         | F::ControlledArtifactActivation(_)
                         | F::ControlledNontokenCreatureActivation(_)
+                        | F::ControlledFaceDownCreatureActivation(_)
                         | F::OtherControlledSubtypeTapManaActivation { .. }
                         | F::ControlledPlaneswalkerAttackLimit
                         | F::GrantInstantSorceryStorm { .. }

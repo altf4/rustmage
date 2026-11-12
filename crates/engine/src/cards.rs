@@ -3692,6 +3692,8 @@ pub enum Instruction {
     RevealFaceDownTargetAndMayTurnUp,
     /// Turn the exact face-down target up as an effect, without a special-action payment.
     TurnTargetFaceUp,
+    /// Attempt to turn the exact source face up. Exile it on failure and remember the actual result.
+    TurnSourceFaceUpOrExile,
     LookAtOpposingFaceDownCreaturesUntilEndOfTurn,
     /// Place counters on the exact permanent from this trigger's event.
     PutCountersOnEventPermanent {
@@ -9186,6 +9188,7 @@ impl Card {
                         | F::OtherCreaturesFood(ability)
                         | F::ControlledArtifactActivation(ability)
                         | F::ControlledNontokenCreatureActivation(ability)
+                        | F::ControlledFaceDownCreatureActivation(ability)
                         | F::OtherControlledSubtypeTapManaActivation { ability, .. }
                         | F::SourceMaxSpeedActivation(ability)
                         | F::SourceEntryModeActivation { ability, .. }

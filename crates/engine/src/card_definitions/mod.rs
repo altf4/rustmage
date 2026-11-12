@@ -226,7 +226,8 @@ impl CardRules {
                             "artifact grant needs a battlefield activation slot"
                         );
                     }
-                    StaticAbilityFragment::ControlledNontokenCreatureActivation(ability) => {
+                    StaticAbilityFragment::ControlledNontokenCreatureActivation(ability)
+                    | StaticAbilityFragment::ControlledFaceDownCreatureActivation(ability) => {
                         assert!(matches!(
                             self.static_groups[group].first_layer,
                             AbilityLayer::Ability
@@ -237,7 +238,7 @@ impl CardRules {
                                     self.activated[ability as usize].origin,
                                     ActivationOrigin::Battlefield
                                 ),
-                            "nontoken creature grant needs a battlefield activation slot"
+                            "creature activation grant needs a battlefield activation slot"
                         );
                     }
                     _ => {}

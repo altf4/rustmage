@@ -5693,7 +5693,7 @@ impl Game {
                             .is_some_and(|object| {
                                 self.reveal_face_down_permanent(object)
                                     .is_some_and(Card::is_creature)
-                                    && !manifest::face_up_prohibited(self, object)
+                                    && !manifest::face_up_prohibited(self, object, item.controller)
                             });
                     if can_turn {
                         self.state.pending = Pending::EffectOptional {
@@ -5708,6 +5708,20 @@ impl Game {
                     if let Some(object) = self.first_bound_face_down_permanent(&item) {
                         self.turn_manifest_face_up(object, item.controller);
                     }
+                }
+                Instruction::TurnSourceFaceUpOrExile => {
+                    let exiled = item.source.and_then(|source| {
+                        if !self.on_battlefield(source.id)
+                            || self.object_ref(source.id) != source.object
+                            || self.turn_manifest_face_up(source.object, item.controller)
+                        {
+                            return None;
+                        }
+                        let event = self.move_object(source.id, Zone::Exile);
+                        (event.moved && event.destination == Zone::Exile && event.was_card)
+                            .then_some(event.after)
+                    });
+                    self.state.resolving.as_mut().unwrap().milled = exiled.into_iter().collect();
                 }
                 Instruction::LookAtOpposingFaceDownCreaturesUntilEndOfTurn => {
                     self.state
