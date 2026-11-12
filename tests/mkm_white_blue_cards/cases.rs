@@ -135,7 +135,7 @@ fn auditor_keeps_the_look_private_and_observes_only_its_controllers_case_solves(
     pass_pair(&mut game);
     let private = game.observe(player).library_selection.unwrap();
     assert_eq!(private.remaining.len(), 6);
-    assert_eq!(private.candidates[0].id, looked[3]);
+    assert_eq!(private.candidates[0].card, looked[3]);
     assert_eq!(private.candidates.len(), 1);
     assert!(game.observe(opponent).library_selection.is_none());
     reject(&mut game, Action::SelectLibrary { card: outside });
