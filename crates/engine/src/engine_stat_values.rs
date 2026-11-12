@@ -823,20 +823,16 @@ impl Game {
                 .into_iter()
                 .map(|object| u128::from(self.object_mana_value(object.card)))
                 .sum(),
-            AmountValue::ControlledCreaturePowerCount { minimum } => {
-                let query = self.characteristic_query();
-                self.state
-                    .objects
-                    .iter()
-                    .enumerate()
-                    .filter(|(id, object)| {
-                        let id = *id as CardId;
-                        object.zone == Zone::Battlefield
-                            && object.controller == owner
-                            && ability_world::CharacteristicWorld::kinds(&query, id) & 1 != 0
-                            && query.stats(id).power >= i128::from(minimum)
-                    })
-                    .count() as u128
+            AmountValue::ControlledCreaturePowerCount { minimum } => self
+                .characteristic_query()
+                .controlled_creature_power_count(owner, None, i128::from(minimum)..)
+                as u128,
+            AmountValue::ControlledCreaturePowerAtMost { maximum, other } => {
+                self.characteristic_query().controlled_creature_power_count(
+                    owner,
+                    other.then_some(source),
+                    ..=i128::from(maximum),
+                ) as u128
             }
             AmountValue::EquippedCreaturesYouControl => self.equipped_creature_count(owner),
             AmountValue::TokensYouControl => self.controlled_token_ids(owner).count() as u128,

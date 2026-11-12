@@ -5,6 +5,7 @@ use super::ability_evaluation::AbilityEvaluation;
 use super::ability_world::CharacteristicWorld;
 use super::*;
 use crate::cards::{LiveStatValue, LiveStaticEffect, RoleKind, StaticAbilityFragment};
+use std::ops::RangeBounds;
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 pub(super) struct CharacteristicQuery<'a, W: CharacteristicWorld + ?Sized = Game> {
@@ -121,6 +122,25 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
             )
             && (filter.keyword == Keywords::NONE || self.keywords(id).contains(filter.keyword))
     }
+    pub(super) fn controlled_creature_power_count(
+        &self,
+        player: Player,
+        exclude: Option<ObjectRef>,
+        power: impl RangeBounds<i128>,
+    ) -> usize {
+        (0..self.state.objects.len())
+            .map(|id| id as CardId)
+            .filter(|&id| {
+                let object = self.object(id);
+                object.zone == Zone::Battlefield
+                    && object.controller == player
+                    && exclude.is_none_or(|source| self.object_ref(id) != source)
+                    && self.is_creature(id)
+                    && power.contains(&self.stats(id).power)
+            })
+            .count()
+    }
+
     pub(super) fn stats(&self, id: CardId) -> Stats {
         self.layered_stats(id).1
     }

@@ -489,12 +489,14 @@ pub enum TargetPredicate {
     /// The sole creature currently attacking, irrespective of its defender.
     AttackingAlone,
     AttackingOrBlocking,
+    Untapped,
     Damaged,
     DealtDamage,
     HasCounter(CounterKind),
     PowerAtLeast(i32),
     PowerAtMost(i32),
     ToughnessAtLeast(i32),
+    ToughnessAtMost(i32),
     PowerOrToughnessAtLeast(i32),
     Colors(u8),
     Keyword(Keywords),
@@ -5220,6 +5222,11 @@ pub enum AmountValue {
     ControlledCreaturePowerCount {
         minimum: u32,
     },
+    /// Controlled creatures with effective power at or below a signed bound.
+    ControlledCreaturePowerAtMost {
+        maximum: i32,
+        other: bool,
+    },
     /// Exact cards retained by a delayed step packet and still in exile.
     DelayedExiledCardCount,
     Sum(&'static [AmountValue]),
@@ -6639,6 +6646,7 @@ pub enum StepValue {
     Hand,
     Creatures,
     TappedCreatures,
+    ControlledCreaturePowerAtMost { maximum: i32, other: bool },
     Lands,
     GreatestCreaturePower,
     GreatestOtherCreaturePower,

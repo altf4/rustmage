@@ -654,26 +654,31 @@ impl FundingState<'_> {
                 minimum,
                 maximum,
             } => {
-                let creatures = self
-                    .resources
-                    .iter()
-                    .filter(|r| {
+                let creatures = || {
+                    self.resources.iter().filter(move |r| {
                         r.object.zone == Zone::Battlefield
                             && r.object.controller == player
                             && CharacteristicWorld::kinds(self, r.id) & 1 != 0
                     })
-                    .collect::<Vec<_>>();
+                };
                 let v = match value {
                     StepValue::Life => Some(self.life(player)),
                     StepValue::Hand => Some(count(Zone::Hand, player) as i128),
                     StepValue::SpellsCast => Some(i128::from(state.spells_cast_this_turn)),
-                    StepValue::Creatures => Some(creatures.len() as i128),
+                    StepValue::Creatures => Some(creatures().count() as i128),
                     StepValue::TappedCreatures => {
-                        Some(creatures.iter().filter(|r| r.object.tapped).count() as i128)
+                        Some(creatures().filter(|r| r.object.tapped).count() as i128)
                     }
+                    StepValue::ControlledCreaturePowerAtMost { maximum, other } => Some(
+                        characteristic_query::CharacteristicQuery::in_world(self)
+                            .controlled_creature_power_count(
+                                player,
+                                other.then_some(source),
+                                ..=i128::from(maximum),
+                            ) as i128,
+                    ),
                     StepValue::EnchantedCreatures => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .filter(|r| {
                                 self.attachment_sources().iter().any(|&id| {
                                     self.object(id).zone == Zone::Battlefield
@@ -693,24 +698,19 @@ impl FundingState<'_> {
                             })
                             .count() as i128,
                     ),
-                    StepValue::GreatestCreaturePower => {
-                        creatures.iter().map(|r| self.power(r.id)).max()
-                    }
-                    StepValue::GreatestOtherCreaturePower => creatures
-                        .iter()
+                    StepValue::GreatestCreaturePower => creatures().map(|r| self.power(r.id)).max(),
+                    StepValue::GreatestOtherCreaturePower => creatures()
                         .filter(|r| self.reference(r.id) != source)
                         .map(|r| self.power(r.id))
                         .max(),
                     StepValue::TotalCreaturePower => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .map(|r| self.power(r.id))
                             .try_fold(0i128, i128::checked_add)
                             .capacity("entry power exhausted"),
                     ),
                     StepValue::TotalCreatureToughness => Some(
-                        creatures
-                            .iter()
+                        creatures()
                             .map(|r| {
                                 characteristic_query::CharacteristicQuery::in_world(self)
                                     .stats(r.id)

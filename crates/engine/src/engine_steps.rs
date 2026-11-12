@@ -623,6 +623,14 @@ impl Game {
             StepValue::TappedCreatures => {
                 Some(creatures().filter(|(_, o)| o.tapped).count() as i128)
             }
+            StepValue::ControlledCreaturePowerAtMost { maximum, other } => Some(
+                characteristic_query::CharacteristicQuery::in_world(world)
+                    .controlled_creature_power_count(
+                        player,
+                        other.then_some(source),
+                        ..=i128::from(maximum),
+                    ) as i128,
+            ),
             StepValue::Lands => Some(
                 self.state
                     .objects

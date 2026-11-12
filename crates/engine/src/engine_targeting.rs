@@ -2513,6 +2513,7 @@ impl Game {
                         self.state.attackers.iter().any(|a| a.card == id)
                             || self.state.blocking.contains(&id)
                     }
+                    TargetPredicate::Untapped => object.zone == Zone::Battlefield && !object.tapped,
                     TargetPredicate::Damaged => object.damaged_this_turn,
                     TargetPredicate::DealtDamage => object.dealt_damage_this_turn,
                     TargetPredicate::HasCounter(kind) => world.counter_count(id, kind) > 0,
@@ -2524,6 +2525,9 @@ impl Game {
                     }
                     TargetPredicate::ToughnessAtLeast(n) => {
                         characteristics().stats(id).toughness >= i128::from(n)
+                    }
+                    TargetPredicate::ToughnessAtMost(n) => {
+                        characteristics().stats(id).toughness <= i128::from(n)
                     }
                     TargetPredicate::PowerOrToughnessAtLeast(n) => {
                         let stats = characteristics().stats(id);
