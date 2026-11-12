@@ -419,6 +419,7 @@ impl Game {
                             | crate::cards::StaticAbilityFragment::PlayerProtectionFromOpponents
                             | crate::cards::StaticAbilityFragment::ActivateControlledCreaturesAsHaste
                             | crate::cards::StaticAbilityFragment::CantLoseGameAndOpponentsCantWin
+                            | crate::cards::StaticAbilityFragment::CantLoseFromNonpositiveLife
                             | crate::cards::StaticAbilityFragment::ControlledSpellsUncounterable(_)
                             | crate::cards::StaticAbilityFragment::StackItemsCannotBeCountered
                             | crate::cards::StaticAbilityFragment::ControlledSpellsCasualty { .. }

@@ -384,6 +384,8 @@ pub enum StaticAbilityFragment {
     /// Real immutable trigger template, present only on the harnessed source.
     HarnessedTrigger(u16),
     CantLoseGameAndOpponentsCantWin,
+    /// The controller does not lose the state-based action for life at or below zero.
+    CantLoseFromNonpositiveLife,
     QualifiedHexproof(SourceCharacteristicFilter),
     ControlledSpellsUncounterable(u16),
     /// A rule restriction on explicit counters, independent of stack target legality.

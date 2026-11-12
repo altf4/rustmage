@@ -175,12 +175,7 @@ impl Game {
             pairs: Vec::new(),
             groups: Vec::new(),
             roles: Vec::new(),
-            lost: self.allowed_game_losses(
-                self.state
-                    .players
-                    .each_ref()
-                    .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
-            ),
+            lost: self.state_based_game_losses(),
         };
         // A batch observes one immutable battlefield. Reuse its layer evaluation
         // across creatures, but rebuild it after any batch changes the world.

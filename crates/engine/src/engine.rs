@@ -11718,15 +11718,7 @@ impl Game {
         // Losing temporary growth can expose lethal negative counters. Apply
         // SBAs before advancing the turn; CR514.3 gives an extra priority cycle.
         if !self.state.pending_triggers.is_empty()
-            || self
-                .allowed_game_losses(
-                    self.state
-                        .players
-                        .each_ref()
-                        .map(|p| p.life <= 0 || p.poison_counters >= 10 || p.attempted_empty_draw),
-                )
-                .into_iter()
-                .any(|lost| lost)
+            || self.state_based_game_losses().into_iter().any(|lost| lost)
             || (expired_controls
                 || expired_vehicles
                 || expired_animations

@@ -8,6 +8,80 @@ use rustmage_core::engine::funding::{FundingGoal, FundingState};
 use rustmage_core::engine::*;
 use support::*;
 
+#[test]
+fn a_live_nonpositive_life_rule_only_prevents_the_life_based_loss() {
+    const GROUPS: &[StaticAbilityGroup] = &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::CantLoseFromNonpositiveLife],
+    }];
+    const PROTECT: CardRules = CardRules {
+        effect: Effect::Permanent,
+        static_groups: GROUPS,
+        ..CardRules::EMPTY
+    };
+    const LIFE_LOSS: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::LoseLife(PlayerSet::Controller, 2)],
+        ),
+        ..CardRules::EMPTY
+    };
+    const GAME_LOSS: CardRules = CardRules {
+        effect: Effect::Spell(
+            TargetPlan::NONE,
+            &[Instruction::LoseGame(PlayerSet::Controller)],
+        ),
+        ..CardRules::EMPTY
+    };
+    let _scope = fixture_rules::activate(&[
+        (Card::from_name("Short Bow").unwrap(), &PROTECT),
+        (Card::from_name("Opt").unwrap(), &LIFE_LOSS),
+        (Card::from_name("Giant Growth").unwrap(), &GAME_LOSS),
+    ]);
+    for player in [Player::P0, Player::P1] {
+        let mut game = scenario(player);
+        let source = put(&mut game, player, "Short Bow", Zone::Battlefield);
+        game.state.players[player.index()].life = 1;
+        let spell = put(&mut game, player, "Opt", Zone::Hand);
+        cast(&mut game, spell, None);
+        settle(&mut game);
+        assert_eq!(game.state.players[player.index()].life, -1);
+        assert_eq!(game.outcome(), None);
+
+        let mut cleanup = game.clone();
+        let turn = cleanup.state.turn;
+        cleanup.begin_step(Step::End);
+        act(&mut cleanup, Action::Pass);
+        act(&mut cleanup, Action::Pass);
+        assert_eq!(cleanup.state.turn, turn + 1);
+        assert_eq!(cleanup.outcome(), None);
+
+        let mut poison = game.clone();
+        poison.state.players[player.index()].poison_counters = 10;
+        act(&mut poison, Action::Pass);
+        assert_eq!(poison.outcome(), Some(Outcome::Winner(player.other())));
+
+        let mut empty_draw = game.clone();
+        let amount = empty_draw.state.players[player.index()].library.len() as u128 + 1;
+        empty_draw.draw_many(player, amount);
+        act(&mut empty_draw, Action::Pass);
+        assert_eq!(empty_draw.outcome(), Some(Outcome::Winner(player.other())));
+
+        let mut explicit = game.clone();
+        let spell = put(&mut explicit, player, "Giant Growth", Zone::Hand);
+        cast(&mut explicit, spell, None);
+        settle(&mut explicit);
+        assert_eq!(explicit.outcome(), Some(Outcome::Winner(player.other())));
+
+        let spell = put(&mut game, player, "Disenchant", Zone::Hand);
+        cast(&mut game, spell, Some(Target::Card(source)));
+        settle(&mut game);
+        assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+        assert_eq!(game.outcome(), Some(Outcome::Winner(player.other())));
+    }
+}
+
 const REFLECT_DAMAGE: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     triggers: &[TriggeredAbility {
