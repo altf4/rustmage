@@ -67,11 +67,12 @@ fn niv_counts_distinct_pairs_once_for_damage_draw_and_life() {
         Zone::Battlefield,
     );
     assert!(game.keywords(niv).contains(Keywords::FLYING));
+    game.create_tokens(player, Card::from_catalogue_id(5329), 1, false);
+    assert!(!game.advance_entries());
     for name in [
         "Warleader's Call",
         "Warleader's Call",
         "Trostani, Three Whispers",
-        "Private Eye",
         "Riku of Many Paths",
     ] {
         put(&mut game, player, name, Zone::Battlefield);
@@ -278,13 +279,12 @@ fn repulsive_mutation_counts_power_after_the_new_counters() {
     game.state.priority = opponent;
     game.state.players[opponent.index()].mana = [0, 0, 0, 1, 0, 4];
     cast(&mut game, shock, Some(Target::Player(player)));
-    let pending_spell = game.state.stack.last().unwrap().id;
     act(&mut game, Action::Pass);
     let mutation = put(&mut game, player, "Repulsive Mutation", Zone::Hand);
     act(&mut game, Action::AnnounceCast { card: mutation });
     act(&mut game, Action::ChooseX { value: 2 });
     target(&mut game, Target::Card(recipient));
-    target(&mut game, Target::Stack(pending_spell));
+    target(&mut game, Target::Spell(shock));
     pay(&mut game);
     pass_pair(&mut game);
     assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 2);
