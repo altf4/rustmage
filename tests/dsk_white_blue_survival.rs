@@ -585,8 +585,8 @@ fn role_model_chooses_its_survival_counter_and_recreates_each_qualifying_death_s
     choose(&mut game, |action| {
         matches!(action, Action::PutTrigger { .. })
     });
-    select_target(&mut game, recipient);
-    select_target(&mut game, recipient);
+    act(&mut game, target(recipient));
+    act(&mut game, target(recipient));
     assert_eq!(game.state.stack.len(), 2);
     settle(&mut game);
     assert_eq!(game.counter_count(recipient, CounterKind::PlusOne), 1);

@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "abbaf27797e9c747b3fe8888b1e0b1ecd742ed320c1a9132547adb83df0fe2c5",
+  "catalogue_version": "eb86f77adeb12104e4a67e4f2958366f4a64c46a000b69bc0cbddb6c7864eb5e",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4737,
-  "implemented_total": 4754,
+  "implemented_standard_cards": 4743,
+  "implemented_total": 4760,
   "token_definitions": 208,
   "emblem_definitions": 12,
   "adventure_definitions": 74,
@@ -35,8 +35,8 @@
     },
     "dsk": {
       "total": 264,
-      "complete": 206,
-      "gated": 58
+      "complete": 212,
+      "gated": 52
     },
     "ecc": {
       "total": 7,
@@ -11876,8 +11876,8 @@
     {
       "name": "Fear of Being Hunted",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_being_hunted.rs",
       "set": "dsk"
     },
@@ -11956,8 +11956,8 @@
     {
       "name": "Fear of Missing Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/fear_of_missing_out.rs",
       "set": "dsk"
     },
@@ -15676,8 +15676,8 @@
     {
       "name": "Hand That Feeds",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/hand_that_feeds.rs",
       "set": "dsk"
     },
@@ -24580,8 +24580,8 @@
     {
       "name": "Osseous Sticktwister",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/osseous_sticktwister.rs",
       "set": "dsk"
     },
@@ -32732,8 +32732,8 @@
     {
       "name": "Splitskin Doll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/splitskin_doll.rs",
       "set": "dsk"
     },
@@ -39292,8 +39292,8 @@
     {
       "name": "Victor, Valgavoth's Seneschal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/dsk/victor_valgavoth_s_seneschal.rs",
       "set": "dsk"
     },

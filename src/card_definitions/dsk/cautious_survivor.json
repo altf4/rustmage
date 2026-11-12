@@ -8,5 +8,26 @@
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3ea4cd5e8f6a3a2ba410614de0c5fe16b4e31d10e3ccfe942b7ff1fa7f4842e7"
   },
-  "physical_metadata_sha256": "3c3a6e4a46753ba1d7ccd896f264f6470c8e23500d29a9a94dc55a43132ac827"
+  "physical_metadata_sha256": "3c3a6e4a46753ba1d7ccd896f264f6470c8e23500d29a9a94dc55a43132ac827",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CautiousSurvivor.java",
+  "java_sha256": "5aef481a0539aae920d8181af98681d33c25e14658256c06031e55a2c0243151",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/SurvivalAbility.java",
+      "sha256": "728a1c76c20d2e2340189dc71e9d620c4ec9311cbfae031f8e35a0ba596c6e05"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfSecondMainTriggeredAbility.java",
+      "sha256": "fb8861aeb5942bdb16cc2e9aa85b448d43e8a9680ef37d4f572af0d15979269e"
+    }
+  ],
+  "rules_tests": "tests/dsk_inherited_gold_cards.rs"
 }
