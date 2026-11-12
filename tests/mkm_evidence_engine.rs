@@ -109,7 +109,7 @@ const COLLECT_ZERO: CardRules = CardRules {
 };
 
 fn named(name: &str) -> Card {
-    Card::from_name(name).unwrap()
+    Card::from_name(name).unwrap_or_else(|| panic!("unknown fixture card {name}"))
 }
 fn choose_evidence(g: &Game, card: CardId) -> Action {
     Action::ChooseEvidence {
@@ -435,12 +435,7 @@ fn select_evidence(game: &mut Game, cards: &[CardId]) {
 }
 
 fn ten_mana_witness(game: &mut Game, player: Player) -> CardId {
-    spawn(
-        game,
-        player,
-        named("Kozilek, the Great Distortion"),
-        Zone::Graveyard,
-    )
+    spawn(game, player, named("Omniscience"), Zone::Graveyard)
 }
 
 #[test]
@@ -502,7 +497,7 @@ fn the_alternative_requires_independent_graveyard_and_exile_permissions_and_pays
         let fuel = [
             put(&mut game, player, "Hill Giant", Zone::Graveyard),
             put(&mut game, player, "Hill Giant", Zone::Graveyard),
-            put(&mut game, player, "Hill Giant", Zone::Graveyard),
+            put(&mut game, player, "Lightning Bolt", Zone::Graveyard),
         ];
         game.state.players[player.index()].mana = [0, 0, 0, 0, 0, 2];
         reject(&mut game, choice.clone());
@@ -551,12 +546,7 @@ fn the_printed_discard_can_fund_the_later_alternative_evidence_clause() {
     );
     let low = put(&mut game, player, "Grizzly Bears", Zone::Hand);
     reject(&mut game, choice.clone());
-    let discarded = spawn(
-        &mut game,
-        player,
-        named("Kozilek, the Great Distortion"),
-        Zone::Hand,
-    );
+    let discarded = spawn(&mut game, player, named("Omniscience"), Zone::Hand);
 
     act(&mut game, choice);
     act(&mut game, Action::BeginOrderedCosts);
