@@ -3,7 +3,7 @@
   "catalogue_id": 5634,
   "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
   "facts_sha256": "2d1829741dccb4bffeca43c156b76af641ac5bcf5ffc380c19d120d7506475c9",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "993b7b94-ed06-422d-9c7e-52a74ce9d045",
     "index": 1,
@@ -12,5 +12,28 @@
   "physical_metadata_sha256": "17ec31c918c414465a8fef5347ac75aaada2709ae0d27dc74b052d91e3998df7",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/d/DerelictAtticWidowsWalk.java",
-  "java_sha256": "3cf23e75f522331719b9537ede13916c779ac4111589f72fcf62238e662a14de"
+  "java_sha256": "3cf23e75f522331719b9537ede13916c779ac4111589f72fcf62238e662a14de",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksAloneControlledTriggeredAbility.java",
+      "sha256": "0e4f4629c0db74cd882e9f1774afb20468981ae2d2249669d00c5156753ac384"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostTargetEffect.java",
+      "sha256": "a5c11133fd9545d40641b3a8dad43238f557c33d1371f210bc8bb351697fffe9"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/GainAbilityTargetEffect.java",
+      "sha256": "b4f881a8509a7e1411bf930b060a66a5a8f23f1048fa902da8623848105f4dd1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

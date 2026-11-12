@@ -3,10 +3,31 @@
   "catalogue_id": 1039,
   "oracle_id": "712e3479-722c-40a1-9b61-d5bdde93042b",
   "facts_sha256": "f9448466eb33a52f7cee0ca303331c9b376b04cc3dff88503ae64fd3e0154654",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "aeb751ebf94e84f103c10e6171862a929d5eb7a5194a7ecb04020d483b1143bd"
   },
-  "physical_metadata_sha256": "5f5372c103f36fea998b0c6b1554bb600286806cdd72bd7dd269388250384e77"
+  "physical_metadata_sha256": "5f5372c103f36fea998b0c6b1554bb600286806cdd72bd7dd269388250384e77",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/d/DemonicCounsel.java",
+  "java_sha256": "2946256f5235ae2d8fa60f769473b840a00c8ef8a899c034c665f7be6f181d40",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/condition/common/DeliriumCondition.java",
+      "sha256": "b4b0d488a03b8dd97f2e37851d4e7538c673f2e3f31dedac026ad876d5edce04"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/decorator/ConditionalOneShotEffect.java",
+      "sha256": "f2c65781fd6b4afa9420ae66cad6d37dfa52e0bcfd6fb0ae6ad91ae6f3929c7c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/search/SearchLibraryPutInHandEffect.java",
+      "sha256": "d627ed22804c7861e4c4eba4a79711c429ab9a5ca2a975c26a0e174eca75a97a"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_overlords_eerie.rs"
 }

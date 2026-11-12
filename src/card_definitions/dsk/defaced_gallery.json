@@ -3,7 +3,7 @@
   "catalogue_id": 5652,
   "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
   "facts_sha256": "701a63ff1b0ad2b2b64cdade5838ebe106e0ae112b9aa753c0bfee9409d08b75",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "2af01e09-f233-4675-89cd-470816471c62",
     "index": 1,
@@ -12,5 +12,23 @@
   "physical_metadata_sha256": "765a498b4e36aca375037c4c10207e5bf4fb772fa7be7a80b58cb9443f4d9198",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/p/PaintersStudioDefacedGallery.java",
-  "java_sha256": "9523ce604f43cf90bbcfc4f15518f67d013abd5fb6511a875ac4652ec7e727e9"
+  "java_sha256": "9523ce604f43cf90bbcfc4f15518f67d013abd5fb6511a875ac4652ec7e727e9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/AttacksWithCreaturesTriggeredAbility.java",
+      "sha256": "212ab42119cb5bff2f1c81d103ec2103bddd9b4d754feb09acaf1b4c42691954"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostControlledEffect.java",
+      "sha256": "1bd579640c3b4a9c35e2160c6ec2ebf4624a096ff2cbd9566785c5da14577fbc"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

@@ -3,10 +3,26 @@
   "catalogue_id": 311,
   "oracle_id": "a511772c-3739-469d-a5a2-5827b7ce9b5c",
   "facts_sha256": "1b00e60f1c864b3f3919f63cb148e2437ecb2c46f1858f508a763412172263c2",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "4521f677e645324c4a3e7b05397d4bd773785809aa79c1b12808ec355bd2b74d"
   },
-  "physical_metadata_sha256": "7c88a8ee4fb6de0308610608d6b040cf13242386e12e38c0d4316c7eee92abd1"
+  "physical_metadata_sha256": "7c88a8ee4fb6de0308610608d6b040cf13242386e12e38c0d4316c7eee92abd1",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/b/BalemurkLeech.java",
+  "java_sha256": "9830ea4c11136c760015c089a4ceec467883acfc8d9ae489b11c5e99c68fee0a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_overlords_eerie.rs"
 }

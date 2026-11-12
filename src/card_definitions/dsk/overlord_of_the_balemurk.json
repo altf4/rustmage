@@ -3,10 +3,36 @@
   "catalogue_id": 3070,
   "oracle_id": "652e87af-7cf0-407f-9fb7-1a630fb8dd47",
   "facts_sha256": "b51b93a849081b613e0f8c23e7292b5e5f461bf3cb57f49b93ee7487fa454cb1",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "6f6212062a26073e8fa57c2a3fb3fdf387a18630d74fb49ed68f41b94a298d05"
   },
-  "physical_metadata_sha256": "3a5f31d3781b1f651497578939da44d817fe2274f2f6a3efa015fe957ec79255"
+  "physical_metadata_sha256": "3a5f31d3781b1f651497578939da44d817fe2274f2f6a3efa015fe957ec79255",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/o/OverlordOfTheBalemurk.java",
+  "java_sha256": "323011edaad6efd5a446098d407ba60676c7e7ab301e4a9c210f2beaeb4d1b42",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldOrAttacksSourceTriggeredAbility.java",
+      "sha256": "b5c87d096aa0a689c9915ee2c8c8f8b6eb0fcd2acd4ad8c0c8696c6204f27224"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/MillCardsControllerEffect.java",
+      "sha256": "bdd3021a353e7fd6e0f5c2b829c2d9483ee6b2fa684d7e74f5b18d457c9abc9c"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnCardChosenFromGraveyardEffect.java",
+      "sha256": "122060d69e08d3e4d36b3e78ed00c765eb1cc2d42ad202b21da7f99a76e5a015"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/ImpendingAbility.java",
+      "sha256": "4dba9114d939df02c12a0cf07e17d732369c4a7d978886742fe3fb404606b2b2"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_overlords_eerie.rs"
 }

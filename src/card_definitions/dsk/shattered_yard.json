@@ -3,7 +3,7 @@
   "catalogue_id": 5640,
   "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
   "facts_sha256": "14bf9a3184415518bcb78b886e8488ff0b031b3ef91ab202b061588a54ad239e",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "4122720b-cad9-4ebb-b458-be71411c21e3",
     "index": 1,
@@ -12,5 +12,23 @@
   "physical_metadata_sha256": "b7299f42016a5b1e615ce3c8a2fc2d30c2abab8d386aca655d5e291e2b4f512b",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/g/GlassworksShatteredYard.java",
-  "java_sha256": "68cc160bb2f692300793e537d444a26d6ab9efc8e171086d18e4a66c035b89ae"
+  "java_sha256": "68cc160bb2f692300793e537d444a26d6ab9efc8e171086d18e4a66c035b89ae",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DamagePlayersEffect.java",
+      "sha256": "ae765ca40d5968e18120a0ef35393677f0e96300ec0d174d3c070d0958410dfe"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfEndStepTriggeredAbility.java",
+      "sha256": "797e7d1a3285c709d5a007fb079940216b0d4a574d1dfb26787bb95c08a225de"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

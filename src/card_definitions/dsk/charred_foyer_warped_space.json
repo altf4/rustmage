@@ -3,10 +3,36 @@
   "catalogue_id": 728,
   "oracle_id": "9f50ec9f-78e6-403f-8f41-84d603fee0eb",
   "facts_sha256": "3ff5734f37daf29b2c58ab9af5497629c1a53f277994d0818e34a0da227c35bd",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "34368032cb2b43985cfce8490752c3dddb2c496108e7322eeceb8ac30fb47561"
   },
-  "physical_metadata_sha256": "ce9815dfe61f5d606db13bc8cf8fcd6736fad7d2a311fdd55f113330b6192972"
+  "physical_metadata_sha256": "ce9815dfe61f5d606db13bc8cf8fcd6736fad7d2a311fdd55f113330b6192972",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/c/CharredFoyerWarpedSpace.java",
+  "java_sha256": "512ff54060164a5479f94128a04a34145720ee5be38264447754c73f7d29e00a",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/costs/AlternativeCostSourceAbility.java",
+      "sha256": "b0a55dc753a0b65f6075dd417a1cf6237599541a1e79d99c85aff3ccc0e73f98"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ExileTopXMayPlayUntilEffect.java",
+      "sha256": "e270e72bca1be7a70a82daf5bad12b33eb41c8ed483af58249908ffb7a4890ae"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/triggers/BeginningOfUpkeepTriggeredAbility.java",
+      "sha256": "19d54f1b78cb52ba734fba0b70e19280b8b342d8bfa9a8e49aaeb96edccd8732"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

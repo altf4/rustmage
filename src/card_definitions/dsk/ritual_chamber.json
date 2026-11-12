@@ -3,7 +3,7 @@
   "catalogue_id": 5666,
   "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
   "facts_sha256": "7cb6ff1136187b89668bbdc696844ddd17d23b44518716ee78b5fb9e26edfec7",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "bd388ad9-a47b-4b0b-b94a-8e4343cd3de5",
     "index": 1,
@@ -12,5 +12,28 @@
   "physical_metadata_sha256": "1e9d88076ff562dea0de0f8a6b1e5f559f688f9c2a9400f2b70498a1ebf1a243",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/u/UnholyAnnexRitualChamber.java",
-  "java_sha256": "8d9eb1dde559fe76ce2bfea2110ed339d605ac1c939309e17b5a18c649169673"
+  "java_sha256": "8d9eb1dde559fe76ce2bfea2110ed339d605ac1c939309e17b5a18c649169673",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/CreateTokenEffect.java",
+      "sha256": "3e8f27f61963a5e18ee548f257aebd310e6fd141c1a5798beb9f8c53f838ece3"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/Demon66Token.java",
+      "sha256": "33b5ac500eff870658a503dbf9ae5c5fae5a8314d01d503c0ec66685302cda9a"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

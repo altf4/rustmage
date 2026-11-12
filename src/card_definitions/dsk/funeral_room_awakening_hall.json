@@ -3,10 +3,46 @@
   "catalogue_id": 1649,
   "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
   "facts_sha256": "203257b110e7f17a416febe0c065768f8270495a4f46ef3801b56d9cfa1c8968",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "3066ef98328cf5025dd94a6fcb7b0d199388e436cd50f019c1072cc806608476"
   },
-  "physical_metadata_sha256": "65fa4fb0ed4ec047d3ac73beb75d1ea7052238b57a2ec98962f59ae3ad9c5ed6"
+  "physical_metadata_sha256": "65fa4fb0ed4ec047d3ac73beb75d1ea7052238b57a2ec98962f59ae3ad9c5ed6",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/f/FuneralRoomAwakeningHall.java",
+  "java_sha256": "c0dc317b989fec389b7e6038e53a3d33a48533c57944bce566844290e467dce8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesCreatureTriggeredAbility.java",
+      "sha256": "62d53cb6be7c685032f9bf3a509c9217177b4ee44ccd9a294be1d8dca7d77b81"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/GainLifeEffect.java",
+      "sha256": "26f9a577e4c05bdc220b36536a5ec882a66ba7b0cee1acde0539e06590723029"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/LoseLifeOpponentsEffect.java",
+      "sha256": "0efbab18123aec32ac502d57e9a8d9571965d09f3f4e09c448a4ed4cf10aa0e1"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }

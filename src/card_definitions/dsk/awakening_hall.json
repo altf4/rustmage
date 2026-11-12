@@ -3,7 +3,7 @@
   "catalogue_id": 5638,
   "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
   "facts_sha256": "203257b110e7f17a416febe0c065768f8270495a4f46ef3801b56d9cfa1c8968",
-  "complete": false,
+  "complete": true,
   "oracle_face": {
     "oracle_id": "a39d541e-86c1-4595-a2e9-f107def5bbc6",
     "index": 1,
@@ -12,5 +12,23 @@
   "physical_metadata_sha256": "ba98f7e47958cee203e481e578cb06b9823b8d874f40029e007a1fa52d3669d6",
   "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
   "java_source": "Mage.Sets/src/mage/cards/f/FuneralRoomAwakeningHall.java",
-  "java_sha256": "c0dc317b989fec389b7e6038e53a3d33a48533c57944bce566844290e467dce8"
+  "java_sha256": "c0dc317b989fec389b7e6038e53a3d33a48533c57944bce566844290e467dce8",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/UnlockThisDoorTriggeredAbility.java",
+      "sha256": "e3aae9a3008313976094b2a7dfa139280737e2aaf6d8eea9fb43893b39c5528b"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/ReturnFromYourGraveyardToBattlefieldAllEffect.java",
+      "sha256": "444e837f098cf2687f903aea028d28b77d561a40b23b66085fbf03284becdde7"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_tests": "tests/dsk_black_red_rooms.rs"
 }
