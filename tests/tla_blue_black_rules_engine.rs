@@ -204,12 +204,12 @@ fn only_live_controlled_lesson_spells_deal_damage_with_lifelink() {
 
         let mut foreign = game.clone();
         foreign.change_controller(foreign.object_ref(grantor), active.other());
-        cast(&mut foreign, lesson, Some(Target::Card(target)));
+        cast_lesson(&mut foreign, lesson, target);
         assert!(!foreign.keywords(lesson).contains(Keywords::LIFELINK));
         settle(&mut foreign);
         assert_eq!(foreign.state.players[active.index()].life, life);
 
-        cast(&mut game, lesson, Some(Target::Card(target)));
+        cast_lesson(&mut game, lesson, target);
         assert!(game.keywords(lesson).contains(Keywords::LIFELINK));
         let mut departed = game.clone();
         departed.move_object(grantor, Zone::Exile);
@@ -220,6 +220,18 @@ fn only_live_controlled_lesson_spells_deal_damage_with_lifelink() {
         assert_eq!(game.state.players[active.index()].life, life + 2);
         assert_eq!(game.object_view(target).damage, 2);
     }
+}
+
+fn cast_lesson(game: &mut Game, lesson: CardId, target: CardId) {
+    act(game, Action::AnnounceCast { card: lesson });
+    act(game, Action::ChooseKicker { pay: false });
+    act(
+        game,
+        Action::ChooseTarget {
+            target: Target::Card(target),
+        },
+    );
+    pay(game);
 }
 
 #[test]
@@ -325,7 +337,18 @@ fn cast_with_optional_waterbend(game: &mut Game, spell: CardId, paid: bool) {
     act(game, Action::AnnounceCast { card: spell });
     act(game, Action::ChooseWaterbendCost { pay: paid });
     pay(game);
-    settle(game);
+    for _ in 0..24 {
+        if game.state.pending == Pending::Priority
+            && game.state.stack.is_empty()
+            && game.state.pending_triggers.is_empty()
+        {
+            return;
+        }
+        choose(game, |action| {
+            matches!(action, Action::Pass | Action::PutTrigger { .. })
+        });
+    }
+    panic!("death callback resolution did not finish");
 }
 
 #[test]
@@ -365,11 +388,13 @@ fn paid_waterbend_observes_each_actual_death_until_cleanup() {
         assert_eq!(game.state.players[active.index()].life, life + 3);
         let mut died_this_turn = game.clone();
         died_this_turn.move_object(survivor, Zone::Graveyard);
+        died_this_turn.give_priority();
         settle(&mut died_this_turn);
         assert_eq!(died_this_turn.state.players[active.index()].life, life + 4);
 
         game.finish_cleanup();
         game.move_object(survivor, Zone::Graveyard);
+        game.give_priority();
         settle(&mut game);
         assert_eq!(game.state.players[active.index()].life, life + 3);
     }
