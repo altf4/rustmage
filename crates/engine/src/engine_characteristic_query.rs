@@ -996,6 +996,20 @@ impl<'a, W: CharacteristicWorld + ?Sized> CharacteristicQuery<'a, W> {
         match value {
             LiveStatValue::Fixed(value) => value,
             LiveStatValue::ControllerLife => self.life(self.object(source.card).controller),
+            LiveStatValue::ControllerCreatureCount => self.stat_value(
+                StatValue::Count(CountFilter {
+                    zone: CountZone::Battlefield,
+                    relation: 0,
+                    kind: 1,
+                    exclude: 0,
+                    subtype: None,
+                    basic: false,
+                    other: false,
+                    cards_only: false,
+                }),
+                source,
+                self.object(source.card).controller,
+            ),
         }
     }
     pub(super) fn apply_live_base_stat_layers(

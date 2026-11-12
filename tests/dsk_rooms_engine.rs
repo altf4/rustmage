@@ -224,6 +224,58 @@ const DEPARTURE: CardRules = CardRules {
     ..CardRules::EMPTY
 };
 
+const CREATURE_COUNT_BASE: LiveStaticEffect = LiveStaticEffect {
+    recipients: LiveStatRecipients::Creatures {
+        relation: 0,
+        other: false,
+        enchanted_by_controller: false,
+    },
+    condition: None,
+    power: Some(LiveStatValue::ControllerCreatureCount),
+    toughness: Some(LiveStatValue::ControllerCreatureCount),
+    bonus_power: 0,
+    bonus_toughness: 0,
+    keywords: Keywords::NONE,
+    cannot_block_subtype: None,
+};
+
+const GALLERY_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 1,
+        first_layer: AbilityLayer::Base,
+        fragments: &[StaticAbilityFragment::LiveBase(0, CREATURE_COUNT_BASE)],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[(1, RoomDoor::Right)],
+        }),
+        live_static_effects: &[CREATURE_COUNT_BASE],
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+const GRAVEYARD_LAND_ROOM: CardRules = CardRules {
+    effect: Effect::Permanent,
+    static_groups: &[StaticAbilityGroup {
+        line: 0,
+        first_layer: AbilityLayer::Rule,
+        fragments: &[StaticAbilityFragment::PlayLandFromGraveyard],
+    }],
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[(0, RoomDoor::Left)],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
 const EACH_END: TriggerCondition = TriggerCondition::AtStep {
     step: TriggerStep::End,
     relation: CastRelation::Any,
@@ -708,9 +760,17 @@ fn stack_copy_enters_with_same_half_while_a_battlefield_copy_enters_locked() {
     let mut game = scenario(player);
     let room = spawn(&mut game, player, ROOM, Zone::Hand);
     let copier = put(&mut game, player, "Opt", Zone::Hand);
+    let second_copier = put(&mut game, player, "Opt", Zone::Hand);
     act(&mut game, room_cast(room, RoomDoor::Right));
     pay(&mut game);
     cast(&mut game, copier, Some(Target::Spell(room)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let stack_copy = game.state.stack.last().unwrap();
+    assert!(stack_copy.is_copy);
+    assert_eq!(stack_copy.cast.unwrap().face, CastFace::RoomRight);
+    let spell_copy_id = stack_copy.source.unwrap().id;
+    cast(&mut game, second_copier, Some(Target::Spell(spell_copy_id)));
     settle_rooms(&mut game);
     let rooms: Vec<_> = game
         .observe(player)
@@ -718,16 +778,22 @@ fn stack_copy_enters_with_same_half_while_a_battlefield_copy_enters_locked() {
         .into_iter()
         .filter(|object| object.zone == Zone::Battlefield && object.card == ROOM)
         .collect();
-    assert_eq!(rooms.len(), 2);
+    assert_eq!(rooms.len(), 3);
     assert!(
         rooms
             .iter()
             .all(|object| object.room_doors == Some(RIGHT_ONLY))
     );
-    assert!(rooms.iter().any(|object| object.is_token()));
-    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 4);
+    assert_eq!(rooms.iter().filter(|object| object.is_token()).count(), 2);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 6);
 
-    game.stage_copy_creation(player, CopyRecipe::new(ROOM), 1);
+    let spell_token = rooms
+        .iter()
+        .find(|object| object.id == spell_copy_id)
+        .unwrap();
+    let recipe = game.copiable_recipe(spell_token.reference);
+    assert_eq!(recipe.definition, ROOM);
+    game.stage_copy_creation(player, recipe, 1);
     game.advance_entries();
     game.give_priority();
     let rooms: Vec<_> = game
@@ -736,7 +802,7 @@ fn stack_copy_enters_with_same_half_while_a_battlefield_copy_enters_locked() {
         .into_iter()
         .filter(|object| object.zone == Zone::Battlefield && object.card == ROOM)
         .collect();
-    assert_eq!(rooms.len(), 3);
+    assert_eq!(rooms.len(), 4);
     let locked = rooms
         .iter()
         .find(|object| object.room_doors == Some(RoomDoors::default()))
@@ -746,7 +812,139 @@ fn stack_copy_enters_with_same_half_while_a_battlefield_copy_enters_locked() {
     assert_eq!(locked.colors, 0);
     assert_eq!(game.object_mana_value(locked.id), 0);
     assert!(locked.has_subtype("Room"));
-    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 4);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 6);
+    unlock_door(&mut game, locked.id, RoomDoor::Left, BLUE_COST);
+    settle_rooms(&mut game);
+    assert_eq!(game.object_view(locked.id).name, LEFT.name());
+    assert_eq!(game.object_view(locked.id).room_doors, Some(LEFT_ONLY));
+    assert_eq!(game.state.players[player.index()].life, 22);
+}
+
+#[test]
+fn gallery_counts_creatures_live_and_uses_the_rooms_entry_timestamp() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &GALLERY_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (card("Unsummon"), &TOGGLE),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let early = put(&mut game, player, "Grizzly Bears", Zone::Battlefield);
+    let late = put(&mut game, player, "Healer's Hawk", Zone::Battlefield);
+    let earlier_setter = put(&mut game, player, "Water Wings", Zone::Hand);
+    let later_setter = put(&mut game, player, "Water Wings", Zone::Hand);
+    let lock = put(&mut game, player, "Unsummon", Zone::Hand);
+    cast(&mut game, earlier_setter, Some(Target::Card(early)));
+    settle_rooms(&mut game);
+
+    let room = spawn(&mut game, player, ROOM, Zone::Hand);
+    act(&mut game, room_cast(room, RoomDoor::Left));
+    pay(&mut game);
+    settle_rooms(&mut game);
+    let object = game.object_ref(room);
+    let timestamp = |game: &Game| {
+        game.observe(player)
+            .live_static_sources
+            .iter()
+            .find(|source| source.source == object)
+            .unwrap()
+            .timestamp
+    };
+    let entry_time = timestamp(&game);
+    cast(&mut game, later_setter, Some(Target::Card(late)));
+    settle_rooms(&mut game);
+    game.add_counter(early, CounterKind::PlusOne, 1);
+    assert_eq!(stats(&game, early), (5, 5));
+    assert_eq!(stats(&game, late), (4, 4));
+
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    assert_eq!(timestamp(&game), entry_time);
+    assert_eq!(stats(&game, early), (3, 3));
+    assert_eq!(stats(&game, late), (4, 4));
+    cast(&mut game, lock, Some(Target::Card(room)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    act(
+        &mut game,
+        Action::ChooseRoomDoor {
+            object,
+            door: RoomDoor::Right,
+            change: RoomChange::Lock,
+        },
+    );
+    assert_eq!(stats(&game, early), (5, 5));
+    unlock_door(&mut game, room, RoomDoor::Right, RED_COST);
+    assert_eq!(timestamp(&game), entry_time);
+    assert_eq!(stats(&game, early), (3, 3));
+    assert_eq!(stats(&game, late), (4, 4));
+
+    game.stage_copy_creation(player, CopyRecipe::new(Card::GrizzlyBears), 1);
+    game.advance_entries();
+    let token = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| object.zone == Zone::Battlefield && object.is_token())
+        .unwrap()
+        .id;
+    assert_eq!(stats(&game, token), (3, 3));
+    assert_eq!(stats(&game, early), (4, 4));
+    game.state.objects[early as usize].damage = 3;
+    let departed = game.move_objects_raw(&[token], Zone::Exile);
+    game.finish_zone_events(&departed, &[]);
+    game.state_based_actions();
+    assert_eq!(game.object_view(early).zone, Zone::Graveyard);
+    assert_eq!(stats(&game, late), (4, 4));
+}
+
+#[test]
+fn a_copied_room_grants_graveyard_land_plays_after_unlocking_its_own_door() {
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &GRAVEYARD_LAND_ROOM),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+    ]);
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let room = spawn(&mut game, player, ROOM, Zone::Hand);
+    let land = put(&mut game, player, "Forest", Zone::Graveyard);
+    let another = put(&mut game, player, "Forest", Zone::Graveyard);
+    let foreign = put(&mut game, player.other(), "Forest", Zone::Graveyard);
+    let spell = put(&mut game, player, "Shock", Zone::Graveyard);
+    let play = Action::PlayLand { card: land };
+
+    act(&mut game, room_cast(room, RoomDoor::Right));
+    pay(&mut game);
+    settle_rooms(&mut game);
+    reject(&mut game, play.clone());
+    unlock_door(&mut game, room, RoomDoor::Left, BLUE_COST);
+    assert!(game.legal_actions().contains(&play));
+
+    let recipe = game.copiable_recipe(game.object_ref(room));
+    game.stage_copy_creation(player, recipe, 1);
+    game.advance_entries();
+    let token = game
+        .observe(player)
+        .objects
+        .into_iter()
+        .find(|object| object.zone == Zone::Battlefield && object.is_token())
+        .unwrap();
+    assert_eq!(token.room_doors, Some(RoomDoors::default()));
+    let departed = game.move_objects_raw(&[room], Zone::Exile);
+    game.finish_zone_events(&departed, &[]);
+    game.give_priority();
+    reject(&mut game, play.clone());
+    unlock_door(&mut game, token.id, RoomDoor::Left, BLUE_COST);
+
+    let mut combat = game.clone();
+    combat.state.step = Step::BeginCombat;
+    reject(&mut combat, play.clone());
+    reject(&mut game, Action::PlayLand { card: foreign });
+    reject(&mut game, Action::AnnounceCast { card: spell });
+    act(&mut game, play);
+    assert_eq!(game.object_view(land).zone, Zone::Battlefield);
+    reject(&mut game, Action::PlayLand { card: another });
 }
 
 #[test]

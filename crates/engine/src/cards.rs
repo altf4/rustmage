@@ -5203,6 +5203,7 @@ pub enum LiveStatRecipients {
 pub enum LiveStatValue {
     Fixed(i128),
     ControllerLife,
+    ControllerCreatureCount,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]

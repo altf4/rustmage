@@ -383,6 +383,7 @@ impl Game {
         let after = before.with(door, change == RoomChange::Unlock);
         assert_ne!(before, after, "a door changes designation once");
         let control_watch = self.freeze_control_watch();
+        // A printed ability uses this object's existing timestamp (CR613.7a, CR709.5).
         self.set_room_doors(object, after);
         self.refresh_controllers_after(Some(control_watch));
         if change == RoomChange::Unlock {

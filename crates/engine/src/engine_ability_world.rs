@@ -1191,6 +1191,7 @@ pub(super) trait CharacteristicWorld {
         }
         let evaluation = ability_evaluation::evaluate_if_needed(self);
         if evaluation.is_none()
+            && self.definition(id).room().is_none()
             && !matches!(
                 self.object(id).card.entry_choice(),
                 Some(EntryChoiceKind::NamedModes(_))
