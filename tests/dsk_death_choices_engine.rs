@@ -49,7 +49,7 @@ fn pass_pair(game: &mut Game) {
 #[test]
 fn mandatory_untargeted_return_chooses_either_graveyard_and_stages_the_new_controller() {
     let _rules = fixture_rules::activate(&[
-        (Card::Opt, &EITHER_GRAVEYARD),
+        (Card::from_name("Opt").unwrap(), &EITHER_GRAVEYARD),
         (Card::Divination, &OWN_GRAVEYARD),
     ]);
     let player = Player::P0;
