@@ -2,16 +2,41 @@
 mod support;
 
 use rustmage as _;
-use rustmage_core::cards::authored::{CardRules, one};
+use rustmage_core::cards::authored::{CardExtras, CardRules, one};
 use rustmage_core::cards::*;
 use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
 use rustmage_core::engine::*;
 use support::*;
 
 const PLAYER: Player = Player::P0;
+const WHITE: u8 = 1;
 const BLUE: u8 = 1 << 1;
+const BLACK: u8 = 1 << 2;
 const RED: u8 = 1 << 3;
 const SOURCE: &str = "Grizzly Bears";
+const ROOM: Card = Card::from_catalogue_id(176); // Anthem of Champions
+const LEFT: Card = Card::from_catalogue_id(1024); // Deeproot Pilgrimage, {1}{U}
+const RIGHT: Card = Card::from_catalogue_id(2072); // Hopeless Nightmare, {B}
+const ROOM_RULES: CardRules = CardRules {
+    effect: Effect::Permanent,
+    extras: &CardExtras {
+        room: Some(&RoomSpec {
+            halves: [LEFT, RIGHT],
+            triggers: &[],
+            static_groups: &[],
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+const ROOM_HALF: CardRules = CardRules {
+    effect: Effect::Permanent,
+    extras: &CardExtras {
+        room_parent: Some(ROOM),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
 const OWN_OTHER_CREATURE: TargetRule = TargetRule::Object {
     zone: TargetZone::Battlefield,
     kinds: 1,
@@ -85,6 +110,17 @@ fn token_views(game: &Game) -> Vec<ObjectView> {
         .into_iter()
         .filter(|object| object.zone == Zone::Battlefield && object.is_token())
         .collect()
+}
+
+fn unlock_door(game: &mut Game, object: ObjectRef, door: RoomDoor) {
+    choose(game, |action| {
+        matches!(action, Action::BeginRoomUnlock {
+            object: chosen, door: side, ..
+        } if *chosen == object && *side == door)
+    });
+    choose(game, |action| {
+        matches!(action, Action::PayRoomUnlock { .. })
+    });
 }
 
 #[test]
@@ -223,4 +259,135 @@ fn the_fixed_copiable_base_takes_precedence_over_a_printed_power_toughness_cda()
     assert_eq!(stats(&game, token.id), (1, 1));
     assert!(token.has_subtype("Rabbit") && token.has_subtype("Balloon"));
     assert_eq!(token.colors, 1 | RED);
+}
+
+#[test]
+fn a_balloon_room_combines_copiable_colors_with_its_own_unlocked_halves() {
+    let copy_spell = card("Think Twice");
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &ROOM_RULES),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (card(SOURCE), &CREATOR),
+        (copy_spell, &COPY),
+    ]);
+    let mut game = scenario(PLAYER);
+    let room = spawn(&mut game, PLAYER, ROOM, Zone::Hand);
+    act(
+        &mut game,
+        Action::AnnounceRoom {
+            card: room,
+            door: RoomDoor::Left,
+            flash_surcharge: false,
+        },
+    );
+    pay(&mut game);
+    settle(&mut game);
+    let puppet = put(&mut game, PLAYER, "Puppet Crafting", Zone::Hand);
+    cast(&mut game, puppet, Some(Target::Card(room)));
+    settle(&mut game);
+    assert_eq!(game.object_view(room).colors, BLUE);
+    assert_eq!(stats(&game, room), (5, 5));
+
+    let creator = put(&mut game, PLAYER, SOURCE, Zone::Battlefield);
+    create_balloon(&mut game, creator, room);
+    let balloon = token_views(&game).pop().unwrap();
+    assert_eq!(balloon.room_doors, Some(RoomDoors::default()));
+    assert_eq!(balloon.colors, RED);
+    assert!(balloon.has_subtype("Room") && balloon.has_subtype("Balloon"));
+    assert!(!balloon.has_subtype("Construct"));
+    unlock_door(&mut game, balloon.reference, RoomDoor::Left);
+    assert_eq!(game.object_view(balloon.id).colors, RED | BLUE);
+
+    // Color composition also holds after the only characteristic-layer Aura leaves.
+    game.move_object(puppet, Zone::Graveyard);
+    assert_eq!(game.object_view(room).kinds, 32);
+    assert_eq!(game.object_view(balloon.id).colors, RED | BLUE);
+    let spell = spawn(&mut game, PLAYER, copy_spell, Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(balloon.id)));
+    settle(&mut game);
+    let copy = token_views(&game)
+        .into_iter()
+        .find(|token| token.reference != balloon.reference)
+        .unwrap();
+    assert_eq!(copy.room_doors, Some(RoomDoors::default()));
+    assert_eq!(copy.colors, RED);
+    unlock_door(&mut game, copy.reference, RoomDoor::Right);
+    assert_eq!(game.object_view(copy.id).colors, RED | BLACK);
+
+    let mut recipe = game.copiable_recipe(balloon.reference);
+    recipe.color_override = Some(WHITE);
+    game.stage_copy_creation(PLAYER, recipe, 1);
+    game.advance_entries();
+    game.give_priority();
+    let recolored = token_views(&game)
+        .into_iter()
+        .find(|token| token.reference != balloon.reference && token.reference != copy.reference)
+        .unwrap();
+    assert_eq!(recolored.room_doors, Some(RoomDoors::default()));
+    assert_eq!(recolored.colors, WHITE | RED);
+    unlock_door(&mut game, recolored.reference, RoomDoor::Left);
+    assert_eq!(game.object_view(recolored.id).colors, WHITE | RED);
+}
+
+#[test]
+fn absorbing_man_keeps_his_copy_name_independently_of_the_doors_and_legend_rule() {
+    let copy_spell = card("Think Twice");
+    let _rules = fixture_rules::activate(&[
+        (ROOM, &ROOM_RULES),
+        (LEFT, &ROOM_HALF),
+        (RIGHT, &ROOM_HALF),
+        (copy_spell, &COPY),
+    ]);
+    let mut game = scenario(PLAYER);
+    let room = spawn(&mut game, PLAYER, ROOM, Zone::Battlefield);
+    let absorber = put(&mut game, PLAYER, "Absorbing Man", Zone::Battlefield);
+    let absorber_ref = game.object_ref(absorber);
+    game.begin_step(Step::Main1);
+    game.prepare_triggers();
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Card(room),
+        },
+    );
+    if game.legal_actions().contains(&Action::FinishTargets) {
+        act(&mut game, Action::FinishTargets);
+    }
+    settle(&mut game);
+    assert_eq!(game.object_view(room).name, "");
+    assert_eq!(
+        game.object_view(absorber).room_doors,
+        Some(RoomDoors::default())
+    );
+    assert_eq!(game.object_view(absorber).name, "Absorbing Man");
+    unlock_door(&mut game, absorber_ref, RoomDoor::Left);
+    assert_eq!(game.object_view(absorber).name, "Absorbing Man");
+    unlock_door(&mut game, absorber_ref, RoomDoor::Right);
+    assert_eq!(
+        game.object_view(absorber).room_doors,
+        Some(RoomDoors {
+            left: true,
+            right: true,
+        })
+    );
+    assert_eq!(game.object_view(absorber).name, "Absorbing Man");
+
+    let spell = spawn(&mut game, PLAYER, copy_spell, Zone::Hand);
+    cast(&mut game, spell, Some(Target::Card(absorber)));
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    assert_eq!(game.state.pending, Pending::Legend { player: PLAYER });
+    let token = token_views(&game).pop().unwrap();
+    assert_eq!(token.room_doors, Some(RoomDoors::default()));
+    assert_eq!(token.name, "Absorbing Man");
+    act(
+        &mut game,
+        Action::KeepLegend {
+            object: absorber_ref,
+        },
+    );
+    settle(&mut game);
+    assert!(game.on_battlefield(absorber));
+    assert!(!game.on_battlefield(token.id));
 }

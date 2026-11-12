@@ -209,11 +209,13 @@ impl CopyRecipe {
         self
     }
     pub(super) fn copiable_colors(self) -> u8 {
+        self.copiable_colors_with_printed(self.definition.colors())
+    }
+    pub(super) fn copiable_colors_with_printed(self, printed: u8) -> u8 {
         let base = if self.exceptions.embalm {
             1
         } else {
-            self.color_override
-                .unwrap_or_else(|| self.definition.colors())
+            self.color_override.unwrap_or(printed)
         };
         base | self.exceptions.add_colors
     }

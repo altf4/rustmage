@@ -177,8 +177,14 @@ pub(super) fn battlefield_name<W: CharacteristicWorld + ?Sized>(
     world: &W,
     id: CardId,
 ) -> Option<&'static str> {
-    let room = world.definition(id).room()?;
-    match doors(world, id)? {
+    let definition = world.definition(id);
+    let room = definition.room()?;
+    let doors = doors(world, id)?;
+    // A copy exception can name the whole permanent independently of its halves.
+    if let Some(name) = world.recipe(id).overrides.and_then(|value| value.name) {
+        return Some(name);
+    }
+    match doors {
         RoomDoors {
             left: false,
             right: false,
@@ -194,7 +200,7 @@ pub(super) fn battlefield_name<W: CharacteristicWorld + ?Sized>(
         RoomDoors {
             left: true,
             right: true,
-        } => Some(world.copiable_name(id)),
+        } => Some(definition.name()),
     }
 }
 
@@ -204,11 +210,12 @@ pub(super) fn battlefield_colors<W: CharacteristicWorld + ?Sized>(
     id: CardId,
 ) -> Option<u8> {
     let room = world.definition(id).room()?;
-    Some(
-        doors(world, id)?
-            .active_halves(room)
-            .fold(0, |mask, card| mask | card.colors()),
-    )
+    // CR709.5 hides locked mana costs. CR707.9b still applies copiable color
+    // replacements and additions to the colors supplied by the unlocked halves.
+    let printed = doors(world, id)?
+        .active_halves(room)
+        .fold(0, |mask, card| mask | card.colors());
+    Some(world.recipe(id).copiable_colors_with_printed(printed))
 }
 
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
