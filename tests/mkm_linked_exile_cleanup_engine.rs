@@ -286,7 +286,7 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     act(&mut game, Action::Pass);
     reject(&mut game, Action::PlayLand { card: land });
     game.state.players[beneficiary.index()].mana = [0, 0, 0, 4, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    reject(&mut game, Action::AnnounceExile { card: spell });
 
     let first_turn = game.state.turn;
     advance_until(&mut game, |g| {
@@ -297,7 +297,13 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     act(&mut plays, Action::PlayLand { card: land });
     assert_eq!(plays.object_view(land).zone, Zone::Battlefield);
     plays.state.players[beneficiary.index()].mana = [0, 3, 0, 0, 0, 0];
-    cast(&mut plays, spell, None);
+    act(&mut plays, Action::AnnounceExile { card: spell });
+    pay(&mut plays);
+    let cast = plays.state.stack.last().unwrap().cast.unwrap();
+    assert_eq!(cast.origin, Zone::Exile);
+    assert_eq!(cast.caster, beneficiary);
+    assert_eq!(cast.method, CastMethod::Normal);
+    assert_eq!(cast.payment, [0, 3, 0, 0, 0, 0]);
     settle(&mut plays);
     assert_eq!(plays.object_view(spell).zone, Zone::Graveyard);
     assert_eq!(plays.state.players[beneficiary.index()].mana[1], 0);
@@ -307,7 +313,7 @@ fn actual_damage_gives_its_recipient_controller_normal_plays_until_their_next_cl
     game.move_object(spell, Zone::Exile);
     assert_ne!(game.object_ref(spell), exact);
     game.state.players[beneficiary.index()].mana = [0, 3, 0, 0, 0, 0];
-    reject(&mut game, Action::AnnounceCast { card: spell });
+    reject(&mut game, Action::AnnounceExile { card: spell });
     advance_until(&mut game, |g| g.state.step == Step::End);
     let exact_land = game.object_ref(land);
     assert!(
@@ -369,7 +375,8 @@ fn haste_expires_at_cleanup_and_delayed_sacrifice_waits_for_the_creators_end_ste
     let player = Player::P0;
     let opponent = player.other();
     let mut game = scenario(player);
-    put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let source = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    let source_ref = game.object_ref(source);
     put(&mut game, player, "Doubling Season", Zone::Battlefield);
     game.begin_step(Step::BeginCombat);
     game.prepare_triggers();
@@ -379,6 +386,12 @@ fn haste_expires_at_cleanup_and_delayed_sacrifice_waits_for_the_creators_end_ste
         .filter(|&id| game.object_view(id).card == THOPTER)
         .collect();
     assert_eq!(tokens.len(), 2);
+    let token_refs: Vec<_> = tokens.iter().map(|&id| game.object_ref(id)).collect();
+    let delays = game.observe(player).delayed_sacrifices;
+    assert_eq!(delays.len(), 1);
+    assert_eq!(delays[0].tokens, token_refs);
+    assert_eq!(delays[0].source, source_ref);
+    assert!(delays[0].own_end_step);
     for &id in &tokens {
         assert!(
             game.keywords(id)
@@ -389,9 +402,21 @@ fn haste_expires_at_cleanup_and_delayed_sacrifice_waits_for_the_creators_end_ste
     let first_turn = game.state.turn;
     let mut normal = game.clone();
     advance_until(&mut normal, |g| g.state.step == Step::End);
+    assert_eq!(normal.state.stack.len(), 1);
     settle(&mut normal);
     assert!(tokens.iter().all(|&id| !normal.on_battlefield(id)));
 
+    game.add_characteristics_to(
+        &[source_ref],
+        CharacteristicAddition {
+            card_types: 16,
+            creature_types: &[],
+            colors: 0,
+            duration: AnimationDuration::Permanent,
+        },
+    );
+    game.move_object(source, Zone::Exile);
+    assert_ne!(game.object_ref(source), source_ref);
     let finish = put(&mut game, player, "Opt", Zone::Hand);
     cast(&mut game, finish, None);
     pass_pair(&mut game);
@@ -409,6 +434,16 @@ fn haste_expires_at_cleanup_and_delayed_sacrifice_waits_for_the_creators_end_ste
     advance_until(&mut game, |g| {
         g.state.turn == first_turn + 2 && g.state.step == Step::End
     });
+    assert_eq!(game.state.stack.len(), 1);
+    let delayed = &game.state.stack[0];
+    let departed = delayed.source.unwrap();
+    assert_eq!(departed.object, source_ref);
+    assert_eq!(departed.card, named("Hill Giant"));
+    assert_eq!(departed.facts.kinds & 17, 17);
+    assert_eq!(
+        delayed.delayed_sacrifice.as_ref().unwrap().tokens,
+        token_refs
+    );
     settle(&mut game);
     assert!(!game.on_battlefield(tokens[0]));
     assert!(game.on_battlefield(tokens[1]));
