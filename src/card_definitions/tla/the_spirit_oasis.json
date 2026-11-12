@@ -3,10 +3,41 @@
   "catalogue_id": 4502,
   "oracle_id": "b677a73c-f179-46bf-83ee-c2b05f9fca67",
   "facts_sha256": "d14848a894d3f459a9da96ee91a2111d82745483a267e533fcc4d03e509cd6af",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "01a57bd40d1b071725b099c6b8924f4812ccef2898e4e2f8a1f6bcd523a46e1e"
   },
-  "physical_metadata_sha256": "64219e2d1def64596a73f08149d6d8170cdbf4f9287c44a68665828543d2b332"
+  "physical_metadata_sha256": "64219e2d1def64596a73f08149d6d8170cdbf4f9287c44a68665828543d2b332",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/t/TheSpiritOasis.java",
+  "java_sha256": "473cc6e2751565cc538cebb7c4786c03f34023578e27342ba4c9ae38e9ece661",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldAllTriggeredAbility.java",
+      "sha256": "58a80c5bfc543a5a38b7871bc826525f8be40f848ab03eeb40a6c53d6df92de6"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/EntersBattlefieldTriggeredAbility.java",
+      "sha256": "fe0f61e31ac694f619d2cc03ac5296abd75a7be102b7257f4a322ad5127b285f"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/dynamicvalue/common/ShrinesYouControlCount.java",
+      "sha256": "9761d84aec6cc339d64b298a15a8393a04403ad1b7c8b5980bf575b7ed48e099"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/DrawCardSourceControllerEffect.java",
+      "sha256": "efa83a2226b5e0cfa705be5b96a271da2a1b4c5a43c6efd157dcf237adb235f2"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/filter/StaticFilters.java",
+      "sha256": "c37c0bf0ea99fe000c8262cedbb3375bd188ca48267e45eafd0eee2a34d3b105"
+    }
+  ],
+  "rules_tests": "tests/tla_cards_blue.rs"
 }

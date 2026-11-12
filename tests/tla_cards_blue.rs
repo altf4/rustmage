@@ -74,3 +74,43 @@ fn start_end_step(game: &mut Game, player: Player) {
     game.give_priority();
     game.prepare_triggers();
 }
+
+#[path = "tla_cards_blue/other_cards.rs"]
+mod other_cards;
+
+fn reach(game: &mut Game, condition: impl Fn(&Game) -> bool) {
+    for _ in 0..48 {
+        if condition(game) {
+            return;
+        }
+        choose(game, |action| {
+            matches!(
+                action,
+                Action::Pass
+                    | Action::PutTrigger { .. }
+                    | Action::FinishAttackers
+                    | Action::FinishBlockers
+            )
+        });
+    }
+    panic!("requested action checkpoint was not reached");
+}
+
+fn choose_pending_targets(game: &mut Game, card: Option<CardId>) {
+    reach(game, |g| matches!(g.state.pending, Pending::Targets { .. }));
+    if let Some(card) = card {
+        act(game, target(card));
+    }
+    finish_targets(game);
+}
+
+fn token(game: &Game, card: Card) -> CardId {
+    game.state
+        .objects
+        .iter()
+        .position(|o| o.zone == Zone::Battlefield && o.is_token() && o.card == card)
+        .unwrap() as CardId
+}
+
+#[path = "tla_cards_blue/inherited.rs"]
+mod inherited;
