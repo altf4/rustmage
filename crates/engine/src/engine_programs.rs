@@ -11084,7 +11084,7 @@ impl Game {
                         _ => 1,
                     };
                     let resolution = self.state.resolving.as_mut().unwrap();
-                    resolution.discards[item.controller.index()] = amount;
+                    resolution.discards[item.controller.index()] = usize::from(amount);
                     resolution.discard_after =
                         Some(discard_events::DiscardAfter::ReflexiveManaValue {
                             controller: item.controller,

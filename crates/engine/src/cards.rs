@@ -8330,6 +8330,7 @@ impl ActivationGuard {
             | Self::GraveyardSubtype(_)
             | Self::Always
             | Self::SourceSolved
+            | Self::RevealChosenSecretCreatureType
             | Self::SourceAttackedThisTurn
             | Self::CastInstantSorceryThisTurn
             | Self::ScriedOrSurveilledThisTurn
