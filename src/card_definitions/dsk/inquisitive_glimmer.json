@@ -3,10 +3,31 @@
   "catalogue_id": 2176,
   "oracle_id": "4abb227a-534e-4300-9009-065a10f10e8a",
   "facts_sha256": "1e72d9548be22a5f1d702720b720b8d3111c2b4ae555d98227445b8a4a7e33c1",
-  "complete": false,
-  "typed_lift": {
-    "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
-    "definition_sha256": "4685a6c82d66affa476d1c198469d1ad627b5a3e6891ad10187455fdc528cd3c"
-  },
-  "physical_metadata_sha256": "bb5600f7370cd4e2a515dfa896cb7966e86796b162223322a858897f5aa5905d"
+  "complete": true,
+  "physical_metadata_sha256": "bb5600f7370cd4e2a515dfa896cb7966e86796b162223322a858897f5aa5905d",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/i/InquisitiveGlimmer.java",
+  "java_sha256": "6cc1db533d1d4c053ab395d21d2925ca7a1ff08b51f4c9bdc357aad047872cf3",
+  "rules_tests": "tests/dsk_gold_deck_cards.rs",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/SpellsCostReductionControllerEffect.java",
+      "sha256": "47783fefecfbb22810317538f30e9e92302add21ebff508bc21f43683a85ad06"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/cost/AbilitiesCostReductionControllerEffect.java",
+      "sha256": "8803481d88a5ba4037041bffa88dea8caeabb3b09a7c4b434b67a2aa1bfb9f08"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/RoomUnlockAbility.java",
+      "sha256": "3f9bc61d4422af6cab250ba6132c071648148a573024af9ec9e28f39c1adf1e3"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Apply only one of the reductions to a given cost, after increases, preserving colored mana requirements."
+  }
 }
