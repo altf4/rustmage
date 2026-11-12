@@ -5914,6 +5914,8 @@ pub enum ReplacementSpec {
     PreventAllDamageToSelf,
     /// Prevent incoming damage and put that many +1/+1 counters on the recipient.
     PreventSelfDamageWithCounters,
+    /// Prevent damage from a controlled source to an opponent. Each opponent mills that many cards.
+    PreventControlledOpponentDamageAndMill,
     Counters {
         filter: ReplacementFilter,
         kind: Option<CounterKind>,

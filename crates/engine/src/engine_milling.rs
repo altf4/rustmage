@@ -112,6 +112,29 @@ impl Game {
         players: &[Player],
         maximum: impl Fn(&Self, Player) -> usize,
     ) -> Vec<ZoneChange> {
+        let events = self.move_milled_cards(players, maximum);
+        self.state.resolving.as_mut().unwrap().milled = events
+            .iter()
+            .filter(|event| event.moved)
+            .map(|event| event.after)
+            .collect();
+        self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Mill);
+        self.finish_zone_events(&events, &[]);
+        events
+    }
+
+    pub(super) fn mill_after_damage(&mut self, opponent: Player, amount: u128) {
+        let maximum = usize::try_from(amount).unwrap_or(usize::MAX);
+        let events = self.move_milled_cards(&[opponent], |_, _| maximum);
+        // The prevention effect owns this mill, including during combat.
+        self.finish_zone_events(&events, &[]);
+    }
+
+    fn move_milled_cards(
+        &mut self,
+        players: &[Player],
+        maximum: impl Fn(&Self, Player) -> usize,
+    ) -> Vec<ZoneChange> {
         let ids: Vec<_> = players
             .iter()
             .flat_map(|&player| {
@@ -125,15 +148,7 @@ impl Game {
                     .take(count)
             })
             .collect();
-        let events = self.move_objects_raw(&ids, Zone::Graveyard);
-        self.state.resolving.as_mut().unwrap().milled = events
-            .iter()
-            .filter(|event| event.moved)
-            .map(|event| event.after)
-            .collect();
-        self.capture_reflexive_zone_action(&events, roles::ReflexiveAction::Mill);
-        self.finish_zone_events(&events, &[]);
-        events
+        self.move_objects_raw(&ids, Zone::Graveyard)
     }
 
     fn replaced_mill_count(&self, player: Player, count: usize) -> usize {
