@@ -359,6 +359,7 @@ impl Game {
             world.subtypes(object.card),
             world.name(object.card),
             || world.legendary(object.card),
+            || world.suspected(object.card),
         )
     }
     #[allow(
@@ -375,6 +376,7 @@ impl Game {
         subtypes: GrantedSubtypes,
         name: &str,
         legendary: impl Fn() -> bool,
+        suspected: impl Fn() -> bool,
     ) -> bool {
         let spec = spec.in_zone(o.zone);
         if let EffectChoiceKind::SacrificeManaValue { value } = spec.kind
@@ -384,7 +386,7 @@ impl Game {
         }
         if !spec
             .kind
-            .cost_matches_any(o.card, kinds, subtypes, o.is_token(), legendary)
+            .cost_matches_any(o.card, kinds, subtypes, o.is_token(), legendary, suspected)
         {
             return false;
         }
@@ -1483,6 +1485,7 @@ impl Game {
             | EffectChoiceKind::CoverUpSearch { .. }
             | EffectChoiceKind::NamedSearch { .. }
             | EffectChoiceKind::CopyExiledTriggerCreature
+            | EffectChoiceKind::TransferSuspectToEventCreature
             | EffectChoiceKind::ExileGraveyardCreaturesReflexive { .. }
             | EffectChoiceKind::ExileGraveyardCards(_)
             | EffectChoiceKind::ExileGraveyardRange { .. }
@@ -1634,6 +1637,7 @@ impl Game {
                             i,
                             Instruction::IfSacrificedVehicle { .. }
                                 | Instruction::IfSacrificedOutlaw { .. }
+                                | Instruction::IfSacrificedSuspected { .. }
                         )
                     })
                 }) {

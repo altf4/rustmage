@@ -308,6 +308,12 @@ impl Game {
             return choice.selected[player.index()].is_empty()
                 && self.crafted_exiled_creature(choice.source, object);
         }
+        if choice.kind == EffectChoiceKind::TransferSuspectToEventCreature {
+            let item = &self.state.resolving.as_ref().unwrap().item;
+            return player == item.controller
+                && choice.selected[player.index()].is_empty()
+                && self.can_transfer_suspect(item, object);
+        }
         if choice.kind.payment_kind() == EffectChoiceKind::CopyExiledTriggerCreature {
             return o.zone == Zone::Exile
                 && o.is_card()
@@ -696,6 +702,7 @@ impl Game {
             self.granted_subtypes(object.card),
             o.is_token(),
             || ability_world::CharacteristicWorld::legendary(self, object.card),
+            || self.is_suspected(object.card),
         ) {
             return false;
         }
@@ -2472,6 +2479,12 @@ impl Game {
         if let EffectChoiceKind::DamageAmongTargetGroup { amount, .. } = choice.kind {
             if let Some(&target) = choice.selected.iter().flatten().next() {
                 self.damage_chosen_target(target, amount);
+            }
+            return false;
+        }
+        if choice.kind == EffectChoiceKind::TransferSuspectToEventCreature {
+            if let Some(&object) = choice.selected.iter().flatten().next() {
+                self.transfer_suspect(choice.source, object);
             }
             return false;
         }

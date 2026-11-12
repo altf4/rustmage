@@ -1267,6 +1267,7 @@ impl Game {
                     | TriggerCondition::ControlledSubtypeBecomesBlocked(_)
                     | TriggerCondition::ControlledCreatureBecomesBlocked
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledSuspectedCreaturesAttack
                     | TriggerCondition::CrewedVehicleAttacks
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledSubtypeAttacks { .. }
@@ -2954,6 +2955,20 @@ impl Game {
                     }
                 }
                 let condition = ability.condition.event();
+                if condition == TriggerCondition::ControlledSuspectedCreaturesAttack {
+                    let attackers: Vec<_> = declared
+                        .iter()
+                        .filter(|attack| self.is_suspected(attack.card))
+                        .map(|attack| self.object_ref(attack.card))
+                        .collect();
+                    if !attackers.is_empty() && self.queue_attack_trigger(&source, index) {
+                        self.state
+                            .pending_triggers
+                            .last_mut()
+                            .unwrap()
+                            .refer_objects(attackers);
+                    }
+                }
                 enum AttackRequirement {
                     Any,
                     Keyword(Keywords),
@@ -5814,6 +5829,15 @@ impl Game {
                     skip,
                 } => {
                     if !self.subject_condition(&item, subject, filter) {
+                        self.state.resolving.as_mut().unwrap().pc += skip;
+                    }
+                }
+                Instruction::IfSubjectSuspected { subject, skip } => {
+                    if !self
+                        .keyword_subjects(&item, subject)
+                        .into_iter()
+                        .any(|id| self.is_suspected(id))
+                    {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
                 }
@@ -8909,14 +8933,19 @@ impl Game {
                     }
                 }
                 Instruction::IfSacrificedVehicle { skip }
-                | Instruction::IfSacrificedOutlaw { skip } => {
-                    let matches = item.paid_additional_cost.as_ref().is_some_and(|paid| {
-                        if matches!(instruction, Instruction::IfSacrificedVehicle { .. }) {
-                            paid.sacrificed_vehicle
-                        } else {
-                            paid.sacrificed_outlaw
-                        }
-                    });
+                | Instruction::IfSacrificedOutlaw { skip }
+                | Instruction::IfSacrificedSuspected { skip } => {
+                    let matches =
+                        item.paid_additional_cost
+                            .as_ref()
+                            .is_some_and(|paid| match instruction {
+                                Instruction::IfSacrificedVehicle { .. } => paid.sacrificed_vehicle,
+                                Instruction::IfSacrificedOutlaw { .. } => paid.sacrificed_outlaw,
+                                Instruction::IfSacrificedSuspected { .. } => {
+                                    paid.sacrificed_suspected
+                                }
+                                _ => unreachable!("sacrifice condition"),
+                            });
                     if !matches {
                         self.state.resolving.as_mut().unwrap().pc += skip;
                     }
@@ -10403,6 +10432,15 @@ impl Game {
                         1,
                         false,
                         replacements::TokenCompletion::CounterOtherWizards,
+                    );
+                }
+                Instruction::CreateTokensThenSuspect { token, amount } => {
+                    self.stage_token_creation(
+                        item.controller,
+                        token,
+                        u128::from(amount),
+                        false,
+                        replacements::TokenCompletion::Suspect,
                     );
                 }
                 Instruction::CreateTokensAttackThisCombat { token, amount } => {
@@ -12747,7 +12785,12 @@ impl Game {
                         }
                     }
                 }
-                Instruction::Suspect { subject } => self.suspect_subject(&item, subject),
+                Instruction::Suspect { subject } => {
+                    self.set_suspected_subject(&item, subject, true)
+                }
+                Instruction::Unsuspect { subject } => {
+                    self.set_suspected_subject(&item, subject, false)
+                }
                 Instruction::UnsuspectCreatures { filter } => {
                     self.unsuspect_creatures(&item, filter)
                 }

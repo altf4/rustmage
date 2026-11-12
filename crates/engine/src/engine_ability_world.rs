@@ -1297,6 +1297,10 @@ pub(super) trait CharacteristicWorld {
             generation: self.object(id).generation,
         }
     }
+    fn suspected(&self, id: CardId) -> bool {
+        self.game().suspected_reference(self.reference(id))
+            && self.object(id).zone == Zone::Battlefield
+    }
     fn kinds(&self, id: CardId) -> u16 {
         characteristic_layers::kinds(self, id, self.object(id))
     }

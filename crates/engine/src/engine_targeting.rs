@@ -2575,6 +2575,7 @@ impl Game {
                     TargetPredicate::Blocking => self.state.blocking.contains(&id),
                     TargetPredicate::Nontoken => !object.is_token(),
                     TargetPredicate::NoAbilities => !self.object_has_rules_abilities(id),
+                    TargetPredicate::Suspected => world.suspected(id),
                     TargetPredicate::Equipped => world.equipped(id),
                     TargetPredicate::Enchanted => {
                         let recipient = world.reference(id);

@@ -173,6 +173,7 @@ impl Game {
                     | TriggerCondition::ControlledCreatureAttacksAlone
                     | TriggerCondition::ControlledCreatureAttacksOrBlocks
                     | TriggerCondition::ControlledCreatureAttacks
+                    | TriggerCondition::ControlledSuspectedCreaturesAttack
                     | TriggerCondition::ControlledSubtypeAttackDeclaration(_)
                     | TriggerCondition::ControlledSubtypeAttacks { .. }
                     | TriggerCondition::ControlledSubtypeAttacksAny(_)

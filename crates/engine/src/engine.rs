@@ -5978,6 +5978,7 @@ impl Game {
                             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
                             | EffectChoiceKind::ExileCardFromAnyGraveyardRemember
                             | EffectChoiceKind::RememberPermanents { .. }
+                            | EffectChoiceKind::TransferSuspectToEventCreature
                     ) {
                         Action::ChooseOptional { accept: false }
                     } else {
@@ -6007,6 +6008,7 @@ impl Game {
                             | EffectChoiceKind::ReturnCraftedCreatureAttacking
                             | EffectChoiceKind::DeployFromHandOrGraveyard { .. }
                             | EffectChoiceKind::RememberPermanents { .. }
+                            | EffectChoiceKind::TransferSuspectToEventCreature
                             | EffectChoiceKind::SaddleRider(_)
                             | EffectChoiceKind::ReturnAttachmentRecipient { .. }
                             | EffectChoiceKind::BlinkControlledCreatures
@@ -10293,6 +10295,17 @@ impl Game {
         &mut self,
         sacrifices: &[(Player, CardId)],
     ) -> Option<PaidAdditionalCostView> {
+        let suspected: Vec<_> = if self.state.suspected.is_some() {
+            sacrifices
+                .iter()
+                .filter_map(|&(_, id)| {
+                    let object = self.object_ref(id);
+                    self.suspected_reference(object).then_some(object)
+                })
+                .collect()
+        } else {
+            Vec::new()
+        };
         let events = self.sacrifice_cost_batch_events(sacrifices)?;
         Some(PaidAdditionalCostView {
             selected: sacrifices.len() as u64,
@@ -10305,6 +10318,9 @@ impl Game {
                 .iter()
                 .any(|event| event.sacrificed_by.is_some() && event.before.has_subtype("Vehicle")),
             discarded_kinds: None,
+            sacrificed_suspected: events.iter().any(|event| {
+                event.sacrificed_by.is_some() && suspected.contains(&event.before.reference)
+            }),
             sacrificed_outlaw: events.iter().any(|event| {
                 event.sacrificed_by.is_some()
                     && crate::cards::OUTLAW_SUBTYPES

@@ -394,6 +394,23 @@ impl Game {
                 i128::from(world.graveyard_departure_count(owner))
             }
             StatValue::FoodSacrificedThisTurn => i128::from(world.food_sacrificed(owner)),
+            StatValue::SourceSuspected => {
+                i128::from(world.reference(source.card) == source && world.suspected(source.card))
+            }
+            StatValue::ControlledSuspectedSubtype(subtype) => self
+                .state
+                .suspected
+                .iter()
+                .flat_map(|objects| objects.iter())
+                .filter(|object| {
+                    let id = object.card;
+                    let live = world.object(id);
+                    live.zone == Zone::Battlefield
+                        && live.generation == object.generation
+                        && live.controller == owner
+                        && subtypes(id).has(world.definition(id), subtype)
+                })
+                .count() as i128,
             StatValue::ArtifactSacrificedThisTurn => {
                 i128::from(world.zone_change_turn_history().artifact_sacrifices[owner.index()])
             }

@@ -691,6 +691,7 @@ fn reserve_obligations<W: CharacteristicWorld + ?Sized>(
                     world.subtypes(reference.card),
                     world.name(reference.card),
                     || world.legendary(reference.card),
+                    || world.suspected(reference.card),
                 )
         })
     })
@@ -1545,6 +1546,7 @@ impl<'g> FundingState<'g> {
                             ability_world::CharacteristicWorld::subtypes(self, r.card),
                             ability_world::CharacteristicWorld::name(self, r.card),
                             || ability_world::CharacteristicWorld::legendary(self, r.card),
+                            || ability_world::CharacteristicWorld::suspected(self, r.card),
                         )
                 })
             }))

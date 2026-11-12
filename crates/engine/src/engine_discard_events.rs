@@ -136,6 +136,7 @@ impl Game {
             total_mana_value: None,
             sacrificed_vehicle: false,
             sacrificed_outlaw: false,
+            sacrificed_suspected: false,
             discarded_kinds: self.discarded_card_kinds(&event),
         })
     }

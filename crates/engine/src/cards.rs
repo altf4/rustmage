@@ -538,6 +538,8 @@ pub enum TargetPredicate {
     AttackingOrBlocking,
     Untapped,
     FaceDown,
+    /// The exact battlefield object has the suspected designation.
+    Suspected,
     Damaged,
     DealtDamage,
     HasCounter(CounterKind),
@@ -1408,6 +1410,7 @@ pub enum CostMatch {
     Token,
     Subtype(&'static str),
     Legendary,
+    Suspected,
 }
 #[cfg_attr(feature = "test-support", rustmage_test_access::fixture)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
@@ -1582,6 +1585,8 @@ pub enum EffectChoiceKind {
     },
     /// Optionally choose a creature card captured by an exile-batch trigger.
     CopyExiledTriggerCreature,
+    /// Optionally suspect a creature named by the entry batch and clear this source's designation.
+    TransferSuspectToEventCreature,
     SacrificeDifferentNames(u16),
     SacrificePermanents(u32),
     /// Declare how many permanents to sacrifice. Each reduces the generic spell cost by one.
@@ -1890,6 +1895,7 @@ impl EffectChoiceKind {
         subtypes: GrantedSubtypes,
         token: bool,
         legendary: impl Fn() -> bool,
+        suspected: impl Fn() -> bool,
     ) -> bool {
         match self {
             Self::SacrificeCreaturesExceptSubtype(subtype) => {
@@ -1900,6 +1906,7 @@ impl EffectChoiceKind {
                 CostMatch::Token => token,
                 CostMatch::Subtype(name) => subtypes.has(card, name),
                 CostMatch::Legendary => legendary(),
+                CostMatch::Suspected => suspected(),
             }),
             _ => true,
         }
@@ -3082,6 +3089,13 @@ pub enum Instruction {
     },
     Suspect {
         subject: Subject,
+    },
+    Unsuspect {
+        subject: Subject,
+    },
+    IfSubjectSuspected {
+        subject: Subject,
+        skip: usize,
     },
     UnsuspectCreatures {
         filter: CreatureFilter,
@@ -4281,6 +4295,10 @@ pub enum Instruction {
     IfSacrificedOutlaw {
         skip: usize,
     },
+    /// Skip unless an actual sacrifice paid for this item while its object was suspected.
+    IfSacrificedSuspected {
+        skip: usize,
+    },
     /// Continue only if the actual card discarded to pay this spell's cost was nonland.
     IfPaidDiscardWasNonland {
         skip: usize,
@@ -5210,6 +5228,11 @@ pub enum Instruction {
     CreateTokenThenCounterOtherWizards {
         token: Card,
     },
+    /// Suspect every exact token that entered from the replacement-aware creation event.
+    CreateTokensThenSuspect {
+        token: Card,
+        amount: u16,
+    },
     /// Every creature must attack if able, preferring a player other than
     /// this effect's controller, until that controller's next turn.
     RequireAllAttacksUntilNextTurn,
@@ -5646,6 +5669,10 @@ pub enum StatValue {
     SourceHasNotDealtCombatDamage,
     /// No positive combat or noncombat damage in this exact incarnation.
     SourceHasNotDealtDamage,
+    /// The source's current battlefield incarnation is suspected.
+    SourceSuspected,
+    /// Suspected permanents controlled by this player with the effective subtype.
+    ControlledSuspectedSubtype(&'static str),
     /// Controlled creatures with at least one counter of any supported kind.
     CounterBearingCreatures,
     ControlledCreaturesWithCounter(CounterKind),
@@ -7642,6 +7669,8 @@ pub enum TriggerCondition {
     DelayedCreatureAttacksSubtypeAny(&'static [&'static str]),
     /// One event for each creature declared attacking by the source controller.
     ControlledCreatureAttacks,
+    /// Once per declaration containing at least one suspected attacker.
+    ControlledSuspectedCreaturesAttack,
     /// One event for each declared attacker with the live keyword.
     ControlledCreatureAttacksWithKeyword(Keywords),
     /// One event for each declared attacker carrying at least one counter of this kind.

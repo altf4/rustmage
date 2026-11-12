@@ -147,6 +147,8 @@ pub enum StaticAbilityFragment {
     AttachedFaceUpProhibited,
     /// During your turn, opposing permanents cannot be turned face up.
     OpponentFaceUpProhibitedOnOwnTurn,
+    /// The exact attached permanent cannot become suspected.
+    AttachedSuspectProhibited,
     /// This source's controller may look at opposing face-down creatures.
     LookAtOpponentFaceDownCreatures,
     /// Cards in graveyards cannot be exiled by any player.

@@ -17,6 +17,9 @@ pub struct PaidAdditionalCostView {
     /// An actual sacrificed object's effective subtypes included an outlaw type.
     #[serde(skip_serializing_if = "std::ops::Not::not")]
     pub sacrificed_outlaw: bool,
+    /// An actual sacrificed object held the suspected designation before it moved.
+    #[serde(skip_serializing_if = "std::ops::Not::not")]
+    pub sacrificed_suspected: bool,
     /// Effective card types at the actual discard, when its characteristics are defined.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub discarded_kinds: Option<u16>,
@@ -202,6 +205,7 @@ impl Game {
                         total_mana_value,
                         sacrificed_vehicle: false,
                         sacrificed_outlaw: false,
+                        sacrificed_suspected: false,
                         discarded_kinds: None,
                     };
                     self.stage_atomic_zone_cost(plans, checkpoint);
@@ -219,6 +223,7 @@ impl Game {
                         total_mana_value,
                         sacrificed_vehicle: false,
                         sacrificed_outlaw: false,
+                        sacrificed_suspected: false,
                         discarded_kinds: None,
                     };
                     self.finish_zone_events(&events, &[]);
