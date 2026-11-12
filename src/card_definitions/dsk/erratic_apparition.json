@@ -3,10 +3,39 @@
   "catalogue_id": 1362,
   "oracle_id": "23d5d43c-ec78-42dd-a53e-a1ee91c94b1d",
   "facts_sha256": "b659e3b8cf68b34af11480c5c46237a41d115909f289dc842b9e5bc49c004de9",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "332df4a6a82fc5719363ffac39019005d3ec4d9004d865d6bfd52fd2086418f6"
   },
-  "physical_metadata_sha256": "fb09826094c528d4efc1db2317312ca031b7a1a5cd637a95eac5d3e005086305"
+  "physical_metadata_sha256": "fb09826094c528d4efc1db2317312ca031b7a1a5cd637a95eac5d3e005086305",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/e/ErraticApparition.java",
+  "java_sha256": "43774c87105e7cbbc4978d17e75ef1e82251896ecaf78ab3399bbcc680d3e23d",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/continuous/BoostSourceEffect.java",
+      "sha256": "f70c5d44d10fe7ecc2e640530cdbf486b741ea8f559b5d5aad2c0324776ea950"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "The intrinsic keywords are flying and vigilance. Each Eerie event gives an independent temporary +1/+1 effect."
+  }
 }

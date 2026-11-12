@@ -1,16 +1,24 @@
-// Typed behavior lifted unchanged from the compiled catalogue. Edit this Rust directly.
 pub(in crate::cards) const RULES: CardRules = CardRules {
-    effect: Effect::Unsupported,
-    triggers: &[],
-    activated: &[],
-    enters: Counters {
-        plus_one: 0,
-        minus_one: 0,
-        stun: 0,
-        loyalty: 0,
-        lore: 0,
-    },
-    entry: EntryTapped::Never,
+    effect: Effect::Creature(3, 2),
     keywords: Keywords::VIGILANCE,
+    triggers: &[
+        TriggeredAbility {
+            condition: TriggerCondition::Eerie,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::PutCounters {
+                subject: Subject::Source,
+                kind: CounterKind::Possession,
+                amount: 1,
+            }],
+        },
+        TriggeredAbility {
+            condition: TriggerCondition::SelfDies,
+            targets: TargetPlan::NONE,
+            program: &[Instruction::CreateSizedToken {
+                token: Card::from_catalogue_id(5675),
+                size: AmountValue::SourceTotalCounters,
+            }],
+        },
+    ],
     ..CardRules::EMPTY
 };

@@ -3,10 +3,44 @@
   "catalogue_id": 4810,
   "oracle_id": "d2593334-ce0b-43e1-97ad-b00950bfae2b",
   "facts_sha256": "80aff0dd1e603003515e09890ef7b2f9652aff50f680ea1ff7414beef001bb71",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "323bc7f14af27a7ccb5d671d5b3d389f7663323690228e0a1a0863b537605a16"
   },
-  "physical_metadata_sha256": "d7fb2cddb492d69526d76f3089b68b0ad6497d55367cb75af9d1a4e0bc2e7b20"
+  "physical_metadata_sha256": "d7fb2cddb492d69526d76f3089b68b0ad6497d55367cb75af9d1a4e0bc2e7b20",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/u/UnwillingVessel.java",
+  "java_sha256": "8b25c38453c70c1353ab838bf44276044b86998b1e538ec7ce4f3b8ef909e3f9",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/abilityword/EerieAbility.java",
+      "sha256": "754dbce957af4fbe6b8fa062e8b785ef4c02b17c495a734db6a8cc6b2ff9e3bb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DiesSourceTriggeredAbility.java",
+      "sha256": "39eaaa8297dfd231ee21184c008414483807b12756f6f2503b1a2a65b37b9e52"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/effects/common/counter/AddCountersSourceEffect.java",
+      "sha256": "8424f9f855d38b7fa402b6c7ebd681ef7a95d867fc2d2126bfc7c450bd44dc53"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/VigilanceAbility.java",
+      "sha256": "b13667e57e722e4e7d363513465e99b399fd04b268ec6ec4039edc1142420a7a"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/game/permanent/token/SpiritBlueToken.java",
+      "sha256": "9d604d19461ac04d8f403fcce344db49a1fe7b979eb482385069a1ced9965679"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "Either Eerie event adds a possession counter. The death trigger counts every counter kind on the source's last battlefield incarnation and sets the blue flying Spirit token's copiable base accordingly."
+  }
 }

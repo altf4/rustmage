@@ -3,10 +3,39 @@
   "catalogue_id": 1735,
   "oracle_id": "ec86a45f-046c-4aab-9b82-422c6f39142e",
   "facts_sha256": "e535a1e42d167c5594c0dbb12987a65e02d5637d835655eb593b8e72646d4a73",
-  "complete": false,
+  "complete": true,
   "typed_lift": {
     "revision": "e287b66bab60272ac7c043510fc0051a87a6b68a",
     "definition_sha256": "ce6406aa9768fa9f86455d2a463cb8801df6d8f8142caeaec653ba40a9ece53c"
   },
-  "physical_metadata_sha256": "8c3b9f23b66699a7eed40afadba509269e3d3d527d12dd3280fab8f6709d7297"
+  "physical_metadata_sha256": "8c3b9f23b66699a7eed40afadba509269e3d3d527d12dd3280fab8f6709d7297",
+  "java_revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+  "java_source": "Mage.Sets/src/mage/cards/g/GhostlyKeybearer.java",
+  "java_sha256": "c013da06de3a91ffbc0911010b09ff929a7e9d5eeab25e7db8e45b24f76f150e",
+  "xmage_dependencies": [
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/common/DealsCombatDamageToAPlayerTriggeredAbility.java",
+      "sha256": "4826a26f14f7c32de8ceb0871e12f257bee129e617692a51866243e43865eb11"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/abilities/keyword/FlyingAbility.java",
+      "sha256": "09562a8c8f00bf210252fa0449f9e729404937cfabd5d3664527ddc6e10b8ecb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/target/TargetPermanent.java",
+      "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
+    },
+    {
+      "revision": "492369c7844b8d76479f0393ff9eb6b0b0cf30d7",
+      "path": "Mage/src/main/java/mage/cards/RoomCard.java",
+      "sha256": "2875166eb64fdf499dbd85aa6d3bf840daec5ca5576e24f085317b93c7042e67"
+    }
+  ],
+  "rules_authority": {
+    "url": "https://magic.wizards.com/en/news/feature/duskmourn-house-of-horror-release-notes",
+    "rules": "A combat hit on a player can target up to one Room you control. A fully unlocked Room is a legal target and offers no door choice. Choose a locked door of a legal target on resolution."
+  }
 }
