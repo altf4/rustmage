@@ -455,6 +455,7 @@ fn borrowed_and_acquired_programs_freeze_actual_recipient_quantities_not_donor_s
                     once_per_turn: false,
                     shared: false,
                     craft: false,
+                    chosen_cohort: None,
                 });
             Action::AnnounceBorrowedAbility {
                 card: source,

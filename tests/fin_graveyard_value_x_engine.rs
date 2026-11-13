@@ -230,6 +230,7 @@ fn a_borrowed_mana_x_template_uses_the_borrowers_funding_and_exact_saga() {
             once_per_turn: false,
             shared: false,
             craft: false,
+            chosen_cohort: None,
         });
     let action = Action::AnnounceBorrowedAbility {
         card: recipient,
