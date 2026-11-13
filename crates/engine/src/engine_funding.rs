@@ -4168,12 +4168,28 @@ impl<'g> FundingState<'g> {
     /// In a fixed world without a mana converter, only final-purpose-eligible
     /// production can fund this payment. Bound each source's alternative tap
     /// outputs once for quantity, and independently for each required color.
-    /// Dynamic sources, grants, entries and characteristic changes fall back to
+    /// Dynamic sources, entries and characteristic changes fall back to
     /// exact search. These bounds never remove mana lots or payment choices.
     fn fixed_mana_cannot_pay(&self, goal: &FundingGoal) -> bool {
-        use crate::cards::{ManaRestriction, StaticAbilityFragment};
+        use crate::cards::{ReplacementSpec, StaticAbilityFragment};
         let purpose = self.payment_purpose(goal);
         let convoke = self.convoke_available();
+        let tap_payment = self.activation_tap_payment;
+        let tap_mana_bounds = |recipe: ManaProduction| {
+            let (mask, amount) = match recipe {
+                ManaProduction::Fixed(mana) => {
+                    return Some((mana.map(u128::from), mana.into_iter().map(u128::from).sum()));
+                }
+                ManaProduction::Choice { mask, amount }
+                | ManaProduction::Combination { mask, amount } => (mask, amount),
+                _ => return None,
+            };
+            let amount = u128::from(amount);
+            Some((
+                std::array::from_fn(|color| if mask & (1 << color) != 0 { amount } else { 0 }),
+                if mask & 63 != 0 { amount } else { 0 },
+            ))
+        };
         let needs_web_return = self
             .cast_costs
             .as_deref()
@@ -4190,9 +4206,13 @@ impl<'g> FundingState<'g> {
             || self.required_face_up.is_some()
             || self.improvise_available()
             || self.delve_available()
-            || self.activation_tap_payment.is_some()
+            || (tap_payment.is_some() && (convoke || needs_web_return))
             || (convoke && self.cast_costs.is_some())
-            || !self.game.state.exile_links.is_empty()
+            || self.game.state.exile_links.iter().any(|link| {
+                tap_payment.is_none()
+                    || self.reference(link.source.card) != link.source
+                    || self.object(link.source.card).zone != Zone::Battlefield
+            })
             || self.game.state.borrowed_links.is_some()
             || self.game.state.graveyard_borrowing.is_some()
             || self.game.state.borrowed_slots.is_some()
@@ -4221,7 +4241,7 @@ impl<'g> FundingState<'g> {
                     || !r.ability_removal_sources.is_empty()
                     || !r.basic_land_types.is_empty()
                     || !r.creature_types.is_empty()
-                    || !r.animations.is_empty()
+                    || r.animations.iter().any(|row| row.while_source_tapped.is_some())
                     || !r.live_static.is_empty()
             })
         {
@@ -4252,6 +4272,8 @@ impl<'g> FundingState<'g> {
         let mut group_minimum = usize::MAX;
         let mut group_colors = [0u128; 6];
         let mut group_quantity = 0u128;
+        let mut tap_contributors = 0u64;
+        let mut tap_contributors_without_mana = 0u64;
         for (id, _) in self.game.state.objects.iter().enumerate() {
             let id = id as CardId;
             let object = self.object(id);
@@ -4272,8 +4294,8 @@ impl<'g> FundingState<'g> {
                     group.fragments.iter().any(|fragment| {
                         match fragment {
                             // These groups cannot add mana routes. The
-                            // admitted production recipes do not read stats,
-                            // and no land play or phase change can occur here.
+                            // admitted bounds do not depend on changing stats,
+                            // and this window has no land play or phase change.
                             StaticAbilityFragment::IntrinsicKeywords(_)
                             | StaticAbilityFragment::Changeling
                             | StaticAbilityFragment::AttachmentStats(_)
@@ -4289,48 +4311,25 @@ impl<'g> FundingState<'g> {
                             | StaticAbilityFragment::ControlledSubtypeCannotBeBlockedByKeyword {
                                 ..
                             }
+                            | StaticAbilityFragment::ControlledCreaturesWithPowerAtLeastMaxOneBlocker(_)
+                            | StaticAbilityFragment::AttachedUntap(_)
+                            | StaticAbilityFragment::CostReduction(..)
+                            | StaticAbilityFragment::Replacement(
+                                _,
+                                ReplacementSpec::ControlledDamageToOpponentPlusSourceCounters(_),
+                            )
                             | StaticAbilityFragment::ChosenBasicLandType => false,
-                            StaticAbilityFragment::AttachmentManaBonus(_) => {
+                            StaticAbilityFragment::AttachmentManaBonus(_)
+                            | StaticAbilityFragment::AttachmentSacrificeMana(_) => {
                                 !self.attached_to_opposing_permanent(id)
                             }
-                            StaticAbilityFragment::LandMana {
-                                production: ManaProduction::Tagged { quality, .. },
-                                ..
-                            }
-                            | StaticAbilityFragment::ControlledPermanentTapMana {
-                                production: ManaProduction::Tagged { quality, .. },
-                                ..
-                            }
-                            | StaticAbilityFragment::ControlledTokenTapMana {
-                                production: ManaProduction::Tagged { quality, .. },
-                                ..
-                            }
-                            | StaticAbilityFragment::ControlledSubtypeTapMana {
-                                production: ManaProduction::Tagged { quality, .. },
-                                ..
-                            }
-                            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana {
-                                production: ManaProduction::Tagged { quality, .. },
-                                ..
-                            }
-                            | StaticAbilityFragment::OtherControlledPermanentTapMana(
-                                ManaProduction::Tagged { quality, .. },
-                            ) => {
-                                needs_web_return
-                                    || !matches!(
-                                        quality.restriction,
-                                        ManaRestriction::CastFromExile
-                                            | ManaRestriction::CastFromNonhand
-                                            | ManaRestriction::ArtifactSpell
-                                            | ManaRestriction::InstantSorcery
-                                            | ManaRestriction::NoncreatureSpell
-                                            | ManaRestriction::PlaneswalkerSpell
-                                            | ManaRestriction::SpellSubtype(_)
-                                            | ManaRestriction::ChosenCreatureSpell
-                                    )
-                                    || mana_lots::Quality::capture(self, id, **quality)
-                                        .eligible(purpose)
-                            }
+                            StaticAbilityFragment::LandMana { .. }
+                            | StaticAbilityFragment::ControlledPermanentTapMana { .. }
+                            | StaticAbilityFragment::ControlledTokenTapMana { .. }
+                            | StaticAbilityFragment::ControlledSubtypeTapMana { .. }
+                            | StaticAbilityFragment::ControlledKindOrSubtypeTapMana { .. }
+                            | StaticAbilityFragment::OtherControlledPermanentTapMana(_)
+                            | StaticAbilityFragment::AttachmentMana(_) => false,
                             _ => true,
                         }
                     })
@@ -4348,15 +4347,18 @@ impl<'g> FundingState<'g> {
                     tap_quantity = 1;
                 }
                 for grant in ability_world::CharacteristicWorld::granted_mana(self, id) {
-                    if grant.subtype_derived {
-                        grant.production.visit(|mana| {
-                            for (amount, produced) in tap_colors.iter_mut().zip(mana) {
-                                *amount = (*amount).max(u128::from(produced));
-                            }
-                            tap_quantity = tap_quantity.max(mana.into_iter().map(u128::from).sum());
-                            false
-                        });
+                    if grant.sacrifice || web_creature {
+                        return false;
                     }
+                    // Count even restricted grants. The exact search applies
+                    // the recipient's tag and whether it can pay this goal.
+                    let Some((colors, quantity)) = tap_mana_bounds(grant.production.base()) else {
+                        return false;
+                    };
+                    for (bound, produced) in tap_colors.iter_mut().zip(colors) {
+                        *bound = (*bound).max(produced);
+                    }
+                    tap_quantity = tap_quantity.max(quantity);
                 }
             }
             if web_creature && tap_quantity > 0 {
@@ -4395,34 +4397,17 @@ impl<'g> FundingState<'g> {
                 // Neither a tap nor a reveal changes the colors or
                 // membership of controlled permanents in this fixed world.
                 let recipe = production.base();
-                let fixed = if recipe == ManaProduction::ColorsAmongControlledPermanents {
-                    recipe.in_world(self, id)
-                } else {
-                    recipe
+                let fixed = match recipe {
+                    ManaProduction::ColorsAmongControlledPermanents => recipe.in_world(self, id),
+                    ManaProduction::TapManaAtCreaturePowerThreshold { .. } => {
+                        self.production_upper(recipe)
+                    }
+                    _ => recipe,
                 };
                 // Compute maxima directly; do not enumerate a combinatorial
                 // production domain just to obtain a conservative upper bound.
-                let (colors, amount) = match fixed {
-                    ManaProduction::Fixed(mana) => (
-                        mana.map(u128::from),
-                        mana.into_iter().map(u128::from).sum::<u128>(),
-                    ),
-                    ManaProduction::Choice { mask, amount }
-                    | ManaProduction::Combination { mask, amount } => (
-                        std::array::from_fn(|color| {
-                            if mask & (1 << color) != 0 {
-                                u128::from(amount)
-                            } else {
-                                0
-                            }
-                        }),
-                        if mask & 63 != 0 {
-                            u128::from(amount)
-                        } else {
-                            0
-                        },
-                    ),
-                    _ => return false,
+                let Some((colors, amount)) = tap_mana_bounds(fixed) else {
+                    return false;
                 };
                 // The route audit above uses all printed templates. In
                 // this fixed world a removed printed ability cannot return.
@@ -4463,6 +4448,12 @@ impl<'g> FundingState<'g> {
                 }
                 tap_quantity = tap_quantity.max(amount);
             }
+            if tap_payment
+                .is_some_and(|payment| payment.eligible(self, goal.actor, self.reference(id)))
+            {
+                tap_contributors += 1;
+                tap_contributors_without_mana += u64::from(tap_quantity == 0);
+            }
             for (bound, amount) in upper.iter_mut().zip(tap_colors) {
                 *bound = bound.saturating_add(amount);
             }
@@ -4497,9 +4488,29 @@ impl<'g> FundingState<'g> {
                 .saturating_add(group_uses.saturating_mul(amount));
         }
         let adjusted = cast_origins::payment_goal(self, goal, purpose);
+        let mut contribution_upper = 0;
+        if let Some(payment) = tap_payment {
+            let used = self
+                .cast_costs
+                .as_ref()
+                .map_or(0, |context| context.tap_payment_used);
+            let cap = payment.cap().saturating_sub(used as u64);
+            // A producer that can also contribute still has only one tap.
+            // The quantity bound counts it once. The color bound can
+            // overestimate its generic contribution independently.
+            quantity = quantity.saturating_add(u128::from(tap_contributors_without_mana.min(cap)));
+            contribution_upper = tap_contributors.min(cap);
+        }
         let required = u128::from(adjusted.generic)
             + adjusted.required.into_iter().map(u128::from).sum::<u128>();
-        quantity < required || !payable(upper, adjusted.required, adjusted.generic)
+        quantity < required
+            || !payable(
+                upper,
+                adjusted.required,
+                adjusted
+                    .generic
+                    .saturating_sub(u32::try_from(contribution_upper).unwrap_or(u32::MAX)),
+            )
     }
     /// A flexible producer can contribute to several individual color bounds,
     /// but it cannot produce its full amount for all those colors at once.

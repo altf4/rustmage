@@ -121,7 +121,15 @@ impl ManaOutput {
             instance,
             controller,
             quality,
-            source_power: world.power(instance.source.card),
+            // Only recipes that can fall back to departed-source power need
+            // its announcement-time value. Fixed outputs and other dynamic
+            // recipes never read this field.
+            source_power: match recipe {
+                ManaProduction::SourcePower { .. }
+                | ManaProduction::TapSourcePowerChoice { .. }
+                | ManaProduction::SourcePowerSplit { .. } => world.power(instance.source.card),
+                _ => 0,
+            },
             deferred_cost: None,
             resume: None,
         }

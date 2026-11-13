@@ -107,6 +107,21 @@ const X_STATS_ACTIVATION: CardRules = CardRules {
     }],
     ..CardRules::EMPTY
 };
+const SACRIFICE_MANA: CardRules = CardRules {
+    effect: Effect::Land,
+    activated: &[ActivatedAbility {
+        guard: ActivationGuard::Always,
+        cost: ActivationCost {
+            sacrifice: true,
+            ..ActivationCost::ZERO
+        },
+        program: &[Instruction::AddMana(ManaProduction::Fixed([
+            0, 0, 0, 0, 0, 1,
+        ]))],
+        ..X_ACTIVATION.activated[0]
+    }],
+    ..CardRules::EMPTY
+};
 const RESOLUTION: CardRules = CardRules {
     effect: Effect::Spell(
         TargetPlan::NONE,
@@ -382,6 +397,169 @@ fn activation_x_enforces_the_printed_minimum_and_reserves_the_tap_symbol() {
     settle(&mut game);
     assert!(game.object_view(source).tapped);
     assert_eq!(game.state.players[actor.index()].cards_drawn_this_turn, 3);
+}
+
+#[test]
+fn large_waterbend_x_counts_each_mana_or_waterbend_tap_once_with_a_live_exile_link() {
+    let actor = Player::P0;
+    let mut game = scenario(actor);
+    game.state.players[actor.index()].mana = [0; 6];
+    let source = put(
+        &mut game,
+        actor,
+        "Katara, Water Tribe's Hope",
+        Zone::Battlefield,
+    );
+    let iceberg = put(&mut game, actor, "Aang's Iceberg", Zone::Battlefield);
+    let exiled = put(&mut game, actor, "Gilded Lotus", Zone::Exile);
+    put(&mut game, actor, "Gilded Lotus", Zone::Battlefield);
+    game.state.exile_links.push(ExileLink {
+        ability_origin: None,
+        source: game.object_ref(iceberg),
+        exiled: game.object_ref(exiled),
+        return_zone: Zone::Battlefield,
+    });
+    for i in 0..18 {
+        let name = if i % 2 == 0 {
+            "Island"
+        } else {
+            "North Pole Gates"
+        };
+        put(&mut game, actor, name, Zone::Battlefield);
+    }
+    for _ in 0..4 {
+        put(&mut game, actor, "Bear Cub", Zone::Battlefield);
+    }
+    let tapped = put(&mut game, actor, "Gilded Lotus", Zone::Battlefield);
+    game.state.objects[tapped as usize].tapped = true;
+    put(&mut game, actor.other(), "Gilded Lotus", Zone::Battlefield);
+
+    act(&mut game, activate(source));
+    assert_eq!(
+        game.x_choice().unwrap().intervals,
+        [XInterval {
+            minimum: 1,
+            maximum: 26
+        }]
+    );
+    assert!(game.observe(actor.other()).x_choice.is_none());
+    reject(&mut game, Action::ChooseX { value: 27 });
+    let choose_maximum = Action::ChooseX { value: 26 };
+    let checkpoint = game.snapshot();
+    let mut indexed = game.clone();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|action| *action == choose_maximum)
+        .unwrap();
+    indexed
+        .apply_index(actor, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, choose_maximum);
+    assert_eq!(game.snapshot(), indexed.snapshot());
+    indexed.restore(&checkpoint).unwrap();
+    assert_eq!(indexed.snapshot(), checkpoint);
+}
+
+#[test]
+fn waterbend_x_keeps_a_mana_sacrifice_that_returns_linked_contributors() {
+    let land = Card::from_name("North Pole Gates").unwrap();
+    let _rules = fixture_rules::activate(&[(land, &SACRIFICE_MANA)]);
+    let actor = Player::P1;
+    let mut game = scenario(actor);
+    game.state.players[actor.index()].mana = [0; 6];
+    let katara = put(
+        &mut game,
+        actor,
+        "Katara, Water Tribe's Hope",
+        Zone::Battlefield,
+    );
+    let source = spawn(&mut game, actor, land, Zone::Battlefield);
+    for _ in 0..2 {
+        let exiled = put(&mut game, actor, "Short Bow", Zone::Exile);
+        game.state.exile_links.push(ExileLink {
+            ability_origin: None,
+            source: game.object_ref(source),
+            exiled: game.object_ref(exiled),
+            return_zone: Zone::Battlefield,
+        });
+    }
+    act(&mut game, activate(katara));
+    assert_eq!(
+        game.x_choice().unwrap().intervals,
+        [XInterval {
+            minimum: 1,
+            maximum: 4
+        }]
+    );
+    reject(&mut game, Action::ChooseX { value: 5 });
+    act(&mut game, Action::ChooseX { value: 4 });
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, .. } if *card == source),
+    );
+    assert_eq!(game.object_view(source).zone, Zone::Graveyard);
+    choose(&mut game, |action| {
+        matches!(action, Action::ChooseEntryTimestamp { .. })
+    });
+    act(&mut game, Action::BeginWaterbend);
+    for _ in 0..3 {
+        choose(&mut game, |action| {
+            matches!(action, Action::ChooseWaterbender { .. })
+        });
+    }
+    pay(&mut game);
+    settle(&mut game);
+    assert_eq!(game.object_view(katara).power, 4);
+}
+
+#[test]
+fn scalar_x_counts_one_tap_per_land_with_flexible_grants_and_earthbending() {
+    let actor = Player::P0;
+    let mut game = scenario(actor);
+    let animated_land = put(&mut game, actor, "Forest", Zone::Battlefield);
+    let lesson = put(&mut game, actor, "Earthbending Lesson", Zone::Hand);
+    cast(&mut game, lesson, Some(Target::Card(animated_land)));
+    settle(&mut game);
+    game.state.players[actor.index()].mana = [0; 6];
+    let spell = put(&mut game, actor, "Fated Firepower", Zone::Hand);
+    put(&mut game, actor, "Fated Firepower", Zone::Battlefield);
+    let guide = put(&mut game, actor, "Great Divide Guide", Zone::Battlefield);
+    let audience = put(&mut game, actor, "Raucous Audience", Zone::Battlefield);
+    for i in 0..11 {
+        put(
+            &mut game,
+            actor,
+            if i < 3 { "Mountain" } else { "Forest" },
+            Zone::Battlefield,
+        );
+    }
+    act(&mut game, Action::AnnounceCast { card: spell });
+    assert_eq!(
+        game.x_choice().unwrap().intervals,
+        [XInterval {
+            minimum: 0,
+            maximum: 12
+        }]
+    );
+    reject(&mut game, Action::ChooseX { value: 13 });
+    act(&mut game, Action::ChooseX { value: 12 });
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, production: [0, 0, 0, 0, 2, 0], .. } if *card == audience),
+    );
+    assert!(game.object_view(audience).tapped);
+    let grantor = game.object_ref(guide);
+    act(
+        &mut game,
+        Action::TapGrantedMana {
+            card: guide,
+            grantor,
+            production: [0, 0, 0, 1, 0, 0],
+        },
+    );
+    assert!(game.object_view(guide).tapped);
+    assert!(game.object_view(animated_land).kinds & 1 != 0);
 }
 
 #[test]
