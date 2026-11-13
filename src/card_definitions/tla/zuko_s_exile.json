@@ -34,5 +34,5 @@
       "sha256": "1287b2516023fe0a65202c59b9c8cfde8144239d0fbaf8b2a8da636b55a4d2fb"
     }
   ],
-  "rules_tests": "tests/tla_cards_white_colorless/admitted.rs"
+  "rules_tests": "tests/tla_cards_white_colorless/combat.rs"
 }

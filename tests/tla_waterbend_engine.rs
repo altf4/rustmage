@@ -739,6 +739,146 @@ fn linked_waterbend_is_exclusive_and_combines_with_printed_additions() {
     assert_eq!(game.object_view(selected).zone, Zone::Graveyard);
 }
 
+const FOREIGN_ENTRY_COPY: CardRules = CardRules {
+    effect: Effect::Creature(2, 2),
+    extras: &CardExtras {
+        entry_copy: Some(EntryCopySpec {
+            filters: &[BattlefieldFilter {
+                kinds: 17,
+                relation: 0,
+                nonland: false,
+                tapped: None,
+                without: Keywords::NONE,
+                subtype: None,
+                max_mana: u32::MAX,
+            }],
+            optional: true,
+        }),
+        ..CardExtras::EMPTY
+    },
+    ..CardRules::EMPTY
+};
+
+#[test]
+fn linked_waterbend_rewinds_an_unpayable_foreign_mana_choice_to_exact_exile() {
+    use rustmage_core::engine::characteristic_layers::AnimationTypeMode;
+
+    let _rules = fixture_rules::activate(&[
+        (Card::from_name("Short Bow").unwrap(), &SACRIFICE_MANA),
+        (Card::GrizzlyBears, &FOREIGN_ENTRY_COPY),
+    ]);
+    let player = Player::P1;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let hama = put(&mut game, player, "Hama, the Bloodbender", Zone::Hand);
+    let spell = put(&mut game, opponent, "Quick Study", Zone::Graveyard);
+    cast(&mut game, hama, None);
+    for _ in 0..6 {
+        if matches!(game.state.pending, Pending::Targets { .. }) {
+            break;
+        }
+        act(&mut game, Action::Pass);
+    }
+    act(
+        &mut game,
+        Action::ChooseTarget {
+            target: Target::Player(opponent),
+        },
+    );
+    act(&mut game, Action::Pass);
+    act(&mut game, Action::Pass);
+    let object = game.object_ref(spell);
+    act(&mut game, Action::SelectResolutionExile { object });
+    settle(&mut game);
+    let exiled = game.object_ref(spell);
+
+    let sacrifice = put(&mut game, player, "Short Bow", Zone::Battlefield);
+    let contributor = put(&mut game, player, "Raucous Audience", Zone::Battlefield);
+    let power = put(&mut game, player, "Hill Giant", Zone::Battlefield);
+    game.state.objects[power as usize].tapped = true;
+    game.add_counter(power, CounterKind::PlusOne, 1);
+    // Only the Audience can fund two mana. Once blanked, it can still tap
+    // for Waterbend, but that contributes only one toward the cost.
+    game.state.objects[hama as usize].tapped = true;
+    let enchanted = put(&mut game, opponent, "Hill Giant", Zone::Battlefield);
+    let aura = put(&mut game, opponent, "Witness Protection", Zone::Battlefield);
+    let blueprint = game.object_ref(aura);
+    game.state.objects[aura as usize].attached_to = Some(game.object_ref(enchanted));
+    game.change_object_form(
+        blueprint,
+        AnimationSpec {
+            artifact: true,
+            creature_types: AnimationCreatureTypes::Unchanged,
+            base: None,
+            keywords: Keywords::NONE,
+            duration: AnimationDuration::EndOfTurn,
+        },
+        AnimationTypeMode::PreserveCardTypes,
+    );
+    let returning = put(&mut game, opponent, "Grizzly Bears", Zone::Exile);
+    let returned_card = game.object_ref(returning);
+    game.state.exile_links.push(ExileLink {
+        ability_origin: None,
+        source: game.object_ref(sacrifice),
+        exiled: returned_card,
+        return_zone: Zone::Battlefield,
+    });
+    game.state.players[player.index()].mana = [0; 6];
+
+    let cast = Action::AnnounceLinkedWaterbend {
+        object: exiled,
+        source: game.object_ref(hama),
+        face: CastFace::Normal,
+        flash_surcharge: false,
+    };
+    act(&mut game, cast.clone());
+    choose(
+        &mut game,
+        |action| matches!(action, Action::ActivateMana { card, ability: 0, .. } if *card == sacrifice),
+    );
+    assert_eq!(game.actor(), Some(opponent));
+    act(
+        &mut game,
+        Action::ChooseEntryCopy {
+            object: Some(blueprint),
+        },
+    );
+    let contribution = game.object_ref(contributor);
+    act(
+        &mut game,
+        Action::ChooseAuraAttachment {
+            object: contribution,
+        },
+    );
+    assert!(matches!(game.state.pending, Pending::ManaRollback { .. }));
+    let saved = game.snapshot();
+    for keep in [false, true] {
+        let action = Action::ChooseManaRollback { keep };
+        let mut raw = game.clone();
+        let mut indexed = game.clone();
+        indexed.restore(&saved).unwrap();
+        let index = indexed
+            .legal_actions()
+            .iter()
+            .position(|candidate| candidate == &action)
+            .unwrap();
+        act(&mut raw, action);
+        indexed
+            .apply_index(player, indexed.revision(), index)
+            .unwrap();
+        assert_eq!(raw.snapshot(), indexed.snapshot());
+        assert_eq!(raw.object_ref(spell), exiled);
+        assert_eq!(raw.object_view(spell).zone, Zone::Exile);
+        assert_eq!(raw.object_view(spell).owner, opponent);
+        assert_eq!(
+            raw.state.players[player.index()].turn_facts.bent_elements,
+            0
+        );
+        assert_eq!(raw.legal_actions().contains(&cast), !keep);
+        assert_eq!(raw.object_ref(returning) == returned_card, !keep);
+    }
+}
+
 #[test]
 fn zero_and_mana_only_waterbend_payments_trigger_once_and_copies_keep_the_receipt() {
     let variable = Card::from_name("Quick Study").unwrap();

@@ -324,6 +324,7 @@ impl Game {
             | Action::AnnounceCastWithManaAlternative { object, .. }
             | Action::AnnounceCastWithEvidenceAlternative { object, .. }
             | Action::AnnounceLinkedPaid { object, .. }
+            | Action::AnnounceLinkedWaterbend { object, .. }
             | Action::AnnounceGraveyardPaid { object, .. }
             | Action::AnnounceLibraryTop { object, .. }
             | Action::AnnounceSelfGraveyardWithCounter { object, .. }
