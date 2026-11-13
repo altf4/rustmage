@@ -64,67 +64,33 @@ step). Set `RUSTMAGE_XMAGE_SOURCE` to that checkout and run:
 python scripts/validate.py --release --python smoke
 ```
 
-## Standard set tracker
+## Standard
 
-**20 / 20 sets complete · 100%**
+**100% complete · 20 sets · 5,163 unique cards**
 
-`████████████████████`
-
-**5,163 / 5,163 unique Standard cards supported in this checkout · 100%**
-
-`████████████████████`
-
-Scope: the repository's frozen **2026-10-15 tabletop/MTGO Standard snapshot**
-([inventory](data/standard/xmage-inventory.json)), rather than live format legality.
-
-<!-- Refresh supported counts from this checkout's generated coverage report
-     and pinned set membership. Deduplicate the overall count by physical
-     identity. Reconcile set completion with its rules and game evidence and
-     published pull request. -->
-
-| Set | Code | Supported cards | Implementation status |
-| --- | --- | ---: | --- |
-| Foundations | FDN | 517/517 (100%) | ✅ Complete |
-| Lorwyn Eclipsed | ECL | 273/273 (100%) | ✅ Complete |
-| Teenage Mutant Ninja Turtles | TMT | 195/195 (100%) | ✅ Complete |
-| Aetherdrift | DFT | 276/276 (100%) | ✅ Complete |
-| Avatar: The Last Airbender | TLA | 286/286 (100%) | ✅ Complete |
-| Bloomburrow | BLB | 279/279 (100%) | ✅ Complete |
-| Duskmourn: House of Horror | DSK | 276/276 (100%) | ✅ Complete |
-| Edge of Eternities | EOE | 266/266 (100%) | ✅ Complete |
-| Final Fantasy | FIN | 312/312 (100%) | ✅ Complete |
-| Marvel Super Heroes | MSH | 281/281 (100%) | ✅ Complete |
-| Marvel's Spider-Man | SPM | 193/193 (100%) | ✅ Complete |
-| Murders at Karlov Manor | MKM | 279/279 (100%) | ✅ Complete |
-| Outlaws of Thunder Junction | OTJ | 276/276 (100%) | ✅ Complete |
-| Reality Fracture | FRA | 285/285 (100%) | ✅ Complete |
-| Secrets of Strixhaven | SOS | 271/271 (100%) | ✅ Complete |
-| Tarkir: Dragonstorm | TDM | 276/276 (100%) | ✅ Complete |
-| The Big Score | BIG | 30/30 (100%) | ✅ Complete |
-| The Hobbit | HOB | 193/193 (100%) | ✅ Complete |
-| The Lost Caverns of Ixalan | LCI | 291/291 (100%) | ✅ Complete |
-| Wilds of Eldraine | WOE | 281/281 (100%) | ✅ Complete |
+Frozen tabletop/MTGO snapshot as of **2026-10-15**.
+[Standard inventory](data/standard/xmage-inventory.json).
 
 ## Pioneer tracker
 
-**18 / 68 sets complete · 26%**
-
-`█████░░░░░░░░░░░░░░░`
-
-**4,802 / 15,079 unique Pioneer-legal cards implemented · 32%**
+**20 / 68 sets complete · 29%**
 
 `██████░░░░░░░░░░░░░░`
+
+**5,173 / 15,079 unique Pioneer-legal cards implemented · 34%**
+
+`███████░░░░░░░░░░░░░`
 
 Tabletop snapshot through **2026-10-15**.
 
 ## Modern tracker
 
-**14 / 113 sets complete · 12%**
-
-`██░░░░░░░░░░░░░░░░░░`
-
-**4,137 / 22,711 unique Modern-legal cards implemented · 18%**
+**20 / 113 sets complete · 18%**
 
 `████░░░░░░░░░░░░░░░░`
+
+**5,181 / 22,711 unique Modern-legal cards implemented · 23%**
+
+`█████░░░░░░░░░░░░░░░`
 
 Tabletop snapshot through **2026-10-15**.
