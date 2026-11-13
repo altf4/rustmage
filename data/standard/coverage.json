@@ -1,9 +1,9 @@
 {
   "schema": 1,
-  "catalogue_version": "29d20ea3b3e09d93c4d197b3c2fc5b1cb6d7c94894f0fe20161c0503ce9cc724",
+  "catalogue_version": "7916079c050169195617f1cdfbd344425f120adc4c7792ea72d06ef25f18c248",
   "standard_legal_cards": 5163,
-  "implemented_standard_cards": 4987,
-  "implemented_total": 5005,
+  "implemented_standard_cards": 5163,
+  "implemented_total": 5183,
   "token_definitions": 221,
   "emblem_definitions": 12,
   "adventure_definitions": 75,
@@ -151,8 +151,7 @@
     },
     "tla": {
       "total": 278,
-      "complete": 102,
-      "gated": 176
+      "complete": 278
     },
     "tle": {
       "total": 5,
@@ -351,8 +350,8 @@
     {
       "name": "Aang's Journey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/aang_s_journey.rs",
       "set": "tla"
     },
@@ -367,16 +366,16 @@
     {
       "name": "Aang, at the Crossroads // Aang, Destined Savior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/aang_at_the_crossroads_aang_destined_savior.rs",
       "set": "tla"
     },
     {
       "name": "Aang, the Last Airbender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/aang_the_last_airbender.rs",
       "set": "tla"
     },
@@ -1031,16 +1030,16 @@
     {
       "name": "Airbender's Reversal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/airbender_s_reversal.rs",
       "set": "tla"
     },
     {
       "name": "Airbending Lesson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/airbending_lesson.rs",
       "set": "tla"
     },
@@ -1263,8 +1262,8 @@
     {
       "name": "Allies at Last",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/allies_at_last.rs",
       "set": "tla"
     },
@@ -1671,8 +1670,8 @@
     {
       "name": "Appa, Loyal Sky Bison",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/appa_loyal_sky_bison.rs",
       "set": "tla"
     },
@@ -2383,16 +2382,16 @@
     {
       "name": "Avatar Aang // Aang, Master of Elements",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/avatar_aang_aang_master_of_elements.rs",
       "set": "tla"
     },
     {
       "name": "Avatar Destiny",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/avatar_destiny.rs",
       "set": "tla"
     },
@@ -2551,16 +2550,16 @@
     {
       "name": "Azula Always Lies",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/azula_always_lies.rs",
       "set": "tla"
     },
     {
       "name": "Azula, Cunning Usurper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/azula_cunning_usurper.rs",
       "set": "tla"
     },
@@ -2607,16 +2606,16 @@
     {
       "name": "Badgermole",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/badgermole.rs",
       "set": "tla"
     },
     {
       "name": "Badgermole Cub",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/badgermole_cub.rs",
       "set": "tla"
     },
@@ -3183,8 +3182,8 @@
     {
       "name": "Beifong's Bounty Hunters",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/beifong_s_bounty_hunters.rs",
       "set": "tla"
     },
@@ -3255,16 +3254,16 @@
     {
       "name": "Bender's Waterskin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/bender_s_waterskin.rs",
       "set": "tla"
     },
     {
       "name": "Benevolent River Spirit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/benevolent_river_spirit.rs",
       "set": "tla"
     },
@@ -3599,8 +3598,8 @@
     {
       "name": "Bitter Work",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/bitter_work.rs",
       "set": "tla"
     },
@@ -4047,8 +4046,8 @@
     {
       "name": "Boiling Rock Rioter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/boiling_rock_rioter.rs",
       "set": "tla"
     },
@@ -4199,8 +4198,8 @@
     {
       "name": "Boomerang Basics",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/boomerang_basics.rs",
       "set": "tla"
     },
@@ -4839,24 +4838,24 @@
     {
       "name": "Bumi Bash",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/bumi_bash.rs",
       "set": "tla"
     },
     {
       "name": "Bumi, King of Three Trials",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/bumi_king_of_three_trials.rs",
       "set": "tla"
     },
     {
       "name": "Bumi, Unleashed",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/bumi_unleashed.rs",
       "set": "tla"
     },
@@ -5023,8 +5022,8 @@
     {
       "name": "Buzzard-Wasp Colony",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/buzzard_wasp_colony.rs",
       "set": "tla"
     },
@@ -6631,8 +6630,8 @@
     {
       "name": "Combustion Man",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/combustion_man.rs",
       "set": "tla"
     },
@@ -6735,8 +6734,8 @@
     {
       "name": "Compassionate Healer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/compassionate_healer.rs",
       "set": "tla"
     },
@@ -7223,8 +7222,8 @@
     {
       "name": "Crashing Wave",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/crashing_wave.rs",
       "set": "tla"
     },
@@ -7279,8 +7278,8 @@
     {
       "name": "Crescent Island Temple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/crescent_island_temple.rs",
       "set": "tla"
     },
@@ -7383,8 +7382,8 @@
     {
       "name": "Cruel Administrator",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/cruel_administrator.rs",
       "set": "tla"
     },
@@ -7719,8 +7718,8 @@
     {
       "name": "Cycle of Renewal",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/cycle_of_renewal.rs",
       "set": "tla"
     },
@@ -7751,16 +7750,16 @@
     {
       "name": "Dai Li Agents",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/dai_li_agents.rs",
       "set": "tla"
     },
     {
       "name": "Dai Li Indoctrination",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/dai_li_indoctrination.rs",
       "set": "tla"
     },
@@ -8175,8 +8174,8 @@
     {
       "name": "Deadly Precision",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/deadly_precision.rs",
       "set": "tla"
     },
@@ -8615,8 +8614,8 @@
     {
       "name": "Deserter's Disciple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/deserter_s_disciple.rs",
       "set": "tla"
     },
@@ -8663,8 +8662,8 @@
     {
       "name": "Destined Confrontation",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/destined_confrontation.rs",
       "set": "tla"
     },
@@ -8791,8 +8790,8 @@
     {
       "name": "Diligent Zookeeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/diligent_zookeeper.rs",
       "set": "tla"
     },
@@ -9479,8 +9478,8 @@
     {
       "name": "Dragonfly Swarm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/dragonfly_swarm.rs",
       "set": "tla"
     },
@@ -10039,32 +10038,32 @@
     {
       "name": "Earth King's Lieutenant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_king_s_lieutenant.rs",
       "set": "tla"
     },
     {
       "name": "Earth Kingdom General",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_kingdom_general.rs",
       "set": "tla"
     },
     {
       "name": "Earth Kingdom Jailer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_kingdom_jailer.rs",
       "set": "tla"
     },
     {
       "name": "Earth Kingdom Protectors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_kingdom_protectors.rs",
       "set": "tla"
     },
@@ -10079,24 +10078,24 @@
     {
       "name": "Earth Rumble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_rumble.rs",
       "set": "tla"
     },
     {
       "name": "Earth Rumble Wrestlers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_rumble_wrestlers.rs",
       "set": "tla"
     },
     {
       "name": "Earth Village Ruffians",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earth_village_ruffians.rs",
       "set": "tla"
     },
@@ -10119,16 +10118,16 @@
     {
       "name": "Earthbending Lesson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earthbending_lesson.rs",
       "set": "tla"
     },
     {
       "name": "Earthen Ally",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/earthen_ally.rs",
       "set": "tla"
     },
@@ -10447,8 +10446,8 @@
     {
       "name": "Elemental Teachings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/elemental_teachings.rs",
       "set": "tla"
     },
@@ -10615,8 +10614,8 @@
     {
       "name": "Ember Island Production",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ember_island_production.rs",
       "set": "tla"
     },
@@ -10887,8 +10886,8 @@
     {
       "name": "Energybending",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/energybending.rs",
       "set": "tla"
     },
@@ -10935,8 +10934,8 @@
     {
       "name": "Enter the Avatar State",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/enter_the_avatar_state.rs",
       "set": "tla"
     },
@@ -11767,8 +11766,8 @@
     {
       "name": "Fatal Fissure",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fatal_fissure.rs",
       "set": "tla"
     },
@@ -11783,8 +11782,8 @@
     {
       "name": "Fated Firepower",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fated_firepower.rs",
       "set": "tla"
     },
@@ -12311,16 +12310,16 @@
     {
       "name": "Fire Lord Azula",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_lord_azula.rs",
       "set": "tla"
     },
     {
       "name": "Fire Lord Zuko",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_lord_zuko.rs",
       "set": "tla"
     },
@@ -12335,32 +12334,32 @@
     {
       "name": "Fire Nation Attacks",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_nation_attacks.rs",
       "set": "tla"
     },
     {
       "name": "Fire Nation Cadets",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_nation_cadets.rs",
       "set": "tla"
     },
     {
       "name": "Fire Nation Engineer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_nation_engineer.rs",
       "set": "tla"
     },
     {
       "name": "Fire Nation Palace",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_nation_palace.rs",
       "set": "tla"
     },
@@ -12383,8 +12382,8 @@
     {
       "name": "Fire Navy Trebuchet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/fire_navy_trebuchet.rs",
       "set": "tla"
     },
@@ -12407,8 +12406,8 @@
     {
       "name": "Firebender Ascension",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/firebender_ascension.rs",
       "set": "tla"
     },
@@ -12423,8 +12422,8 @@
     {
       "name": "Firebending Student",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/firebending_student.rs",
       "set": "tla"
     },
@@ -12631,8 +12630,8 @@
     {
       "name": "Flexible Waterbender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/flexible_waterbender.rs",
       "set": "tla"
     },
@@ -12703,8 +12702,8 @@
     {
       "name": "Flopsie, Bumi's Buddy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/flopsie_bumi_s_buddy.rs",
       "set": "tla"
     },
@@ -12799,24 +12798,24 @@
     {
       "name": "Foggy Swamp Spirit Keeper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/foggy_swamp_spirit_keeper.rs",
       "set": "tla"
     },
     {
       "name": "Foggy Swamp Vinebender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/foggy_swamp_vinebender.rs",
       "set": "tla"
     },
     {
       "name": "Foggy Swamp Visions",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/foggy_swamp_visions.rs",
       "set": "tla"
     },
@@ -13983,8 +13982,8 @@
     {
       "name": "Geyser Leaper",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/geyser_leaper.rs",
       "set": "tla"
     },
@@ -14095,8 +14094,8 @@
     {
       "name": "Giant Koi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/giant_koi.rs",
       "set": "tla"
     },
@@ -14407,8 +14406,8 @@
     {
       "name": "Glider Staff",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/glider_staff.rs",
       "set": "tla"
     },
@@ -14919,8 +14918,8 @@
     {
       "name": "Gran-Gran",
       "standard_legal": false,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/gran_gran.rs",
       "set": "tla"
     },
@@ -15071,8 +15070,8 @@
     {
       "name": "Great Divide Guide",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/great_divide_guide.rs",
       "set": "tla"
     },
@@ -15479,8 +15478,8 @@
     {
       "name": "Guru Pathik",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/guru_pathik.rs",
       "set": "tla"
     },
@@ -15591,8 +15590,8 @@
     {
       "name": "Hakoda, Selfless Commander",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/hakoda_selfless_commander.rs",
       "set": "tla"
     },
@@ -15647,8 +15646,8 @@
     {
       "name": "Hama, the Bloodbender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/hama_the_bloodbender.rs",
       "set": "tla"
     },
@@ -15839,8 +15838,8 @@
     {
       "name": "Haru, Hidden Talent",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/haru_hidden_talent.rs",
       "set": "tla"
     },
@@ -16039,8 +16038,8 @@
     {
       "name": "Heartless Act",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/heartless_act.rs",
       "set": "tla"
     },
@@ -16111,8 +16110,8 @@
     {
       "name": "Hei Bai, Spirit of Balance",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/hei_bai_spirit_of_balance.rs",
       "set": "tla"
     },
@@ -16279,8 +16278,8 @@
     {
       "name": "Hermitic Herbalist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/hermitic_herbalist.rs",
       "set": "tla"
     },
@@ -16623,8 +16622,8 @@
     {
       "name": "Hog-Monkey",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/hog_monkey.rs",
       "set": "tla"
     },
@@ -16695,8 +16694,8 @@
     {
       "name": "Honest Work",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/honest_work.rs",
       "set": "tla"
     },
@@ -16863,8 +16862,8 @@
     {
       "name": "How to Start a Riot",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/how_to_start_a_riot.rs",
       "set": "tla"
     },
@@ -17871,8 +17870,8 @@
     {
       "name": "Invasion Submersible",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/invasion_submersible.rs",
       "set": "tla"
     },
@@ -17951,24 +17950,24 @@
     {
       "name": "Iroh's Demonstration",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/iroh_s_demonstration.rs",
       "set": "tla"
     },
     {
       "name": "Iroh, Grand Lotus",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/iroh_grand_lotus.rs",
       "set": "tla"
     },
     {
       "name": "Iroh, Tea Master",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/iroh_tea_master.rs",
       "set": "tla"
     },
@@ -18255,8 +18254,8 @@
     {
       "name": "Jasmine Dragon Tea Shop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/jasmine_dragon_tea_shop.rs",
       "set": "tla"
     },
@@ -18327,8 +18326,8 @@
     {
       "name": "Jeong Jeong, the Deserter",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/jeong_jeong_the_deserter.rs",
       "set": "tla"
     },
@@ -18383,8 +18382,8 @@
     {
       "name": "Jet's Brainwashing",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/jet_s_brainwashing.rs",
       "set": "tla"
     },
@@ -18487,8 +18486,8 @@
     {
       "name": "Joo Dee, One of Many",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/joo_dee_one_of_many.rs",
       "set": "tla"
     },
@@ -18767,24 +18766,24 @@
     {
       "name": "Katara, Bending Prodigy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/katara_bending_prodigy.rs",
       "set": "tla"
     },
     {
       "name": "Katara, Water Tribe's Hope",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/katara_water_tribe_s_hope.rs",
       "set": "tla"
     },
     {
       "name": "Katara, the Fearless",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/katara_the_fearless.rs",
       "set": "tla"
     },
@@ -19311,8 +19310,8 @@
     {
       "name": "Koh, the Face Stealer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/koh_the_face_stealer.rs",
       "set": "tla"
     },
@@ -19615,16 +19614,16 @@
     {
       "name": "Kyoshi Battle Fan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/kyoshi_battle_fan.rs",
       "set": "tla"
     },
     {
       "name": "Kyoshi Island Plaza",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/kyoshi_island_plaza.rs",
       "set": "tla"
     },
@@ -20423,8 +20422,8 @@
     {
       "name": "Lo and Li, Twin Tutors",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/lo_and_li_twin_tutors.rs",
       "set": "tla"
     },
@@ -20679,8 +20678,8 @@
     {
       "name": "Lost Days",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/lost_days.rs",
       "set": "tla"
     },
@@ -21223,16 +21222,16 @@
     {
       "name": "Mai, Jaded Edge",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/mai_jaded_edge.rs",
       "set": "tla"
     },
     {
       "name": "Mai, Scornful Striker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/mai_scornful_striker.rs",
       "set": "tla"
     },
@@ -21615,8 +21614,8 @@
     {
       "name": "Master Pakku",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/master_pakku.rs",
       "set": "tla"
     },
@@ -22791,16 +22790,16 @@
     {
       "name": "Momo, Friendly Flier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/momo_friendly_flier.rs",
       "set": "tla"
     },
     {
       "name": "Momo, Playful Pet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/momo_playful_pet.rs",
       "set": "tla"
     },
@@ -23895,8 +23894,8 @@
     {
       "name": "North Pole Patrol",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/north_pole_patrol.rs",
       "set": "tla"
     },
@@ -23919,8 +23918,8 @@
     {
       "name": "Northern Air Temple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/northern_air_temple.rs",
       "set": "tla"
     },
@@ -24591,8 +24590,8 @@
     {
       "name": "Ostrich-Horse",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ostrich_horse.rs",
       "set": "tla"
     },
@@ -24847,16 +24846,16 @@
     {
       "name": "Ozai's Cruelty",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ozai_s_cruelty.rs",
       "set": "tla"
     },
     {
       "name": "Ozai, the Phoenix King",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ozai_the_phoenix_king.rs",
       "set": "tla"
     },
@@ -25063,8 +25062,8 @@
     {
       "name": "Path to Redemption",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/path_to_redemption.rs",
       "set": "tla"
     },
@@ -25375,8 +25374,8 @@
     {
       "name": "Phoenix Fleet Airship",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/phoenix_fleet_airship.rs",
       "set": "tla"
     },
@@ -25631,8 +25630,8 @@
     {
       "name": "Planetarium of Wan Shi Tong",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/planetarium_of_wan_shi_tong.rs",
       "set": "tla"
     },
@@ -25647,8 +25646,8 @@
     {
       "name": "Platypus-Bear",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/platypus_bear.rs",
       "set": "tla"
     },
@@ -25991,8 +25990,8 @@
     {
       "name": "Price of Freedom",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/price_of_freedom.rs",
       "set": "tla"
     },
@@ -26783,8 +26782,8 @@
     {
       "name": "Rabaroo Troop",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/rabaroo_troop.rs",
       "set": "tla"
     },
@@ -27119,8 +27118,8 @@
     {
       "name": "Ran and Shaw",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ran_and_shaw.rs",
       "set": "tla"
     },
@@ -27303,8 +27302,8 @@
     {
       "name": "Raucous Audience",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/raucous_audience.rs",
       "set": "tla"
     },
@@ -27335,8 +27334,8 @@
     {
       "name": "Raven Eagle",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/raven_eagle.rs",
       "set": "tla"
     },
@@ -27423,8 +27422,8 @@
     {
       "name": "Razor Rings",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/razor_rings.rs",
       "set": "tla"
     },
@@ -27479,8 +27478,8 @@
     {
       "name": "Realm of Koh",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/realm_of_koh.rs",
       "set": "tla"
     },
@@ -27527,8 +27526,8 @@
     {
       "name": "Rebellious Captives",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/rebellious_captives.rs",
       "set": "tla"
     },
@@ -27655,8 +27654,8 @@
     {
       "name": "Redirect Lightning",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/redirect_lightning.rs",
       "set": "tla"
     },
@@ -28719,8 +28718,8 @@
     {
       "name": "Rockalanche",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/rockalanche.rs",
       "set": "tla"
     },
@@ -29095,8 +29094,8 @@
     {
       "name": "Ruinous Waterbending",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ruinous_waterbending.rs",
       "set": "tla"
     },
@@ -29575,16 +29574,16 @@
     {
       "name": "Sandbender Scavengers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sandbender_scavengers.rs",
       "set": "tla"
     },
     {
       "name": "Sandbenders' Storm",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sandbenders_storm.rs",
       "set": "tla"
     },
@@ -30271,16 +30270,16 @@
     {
       "name": "Secret Tunnel",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/secret_tunnel.rs",
       "set": "tla"
     },
     {
       "name": "Secret of Bloodbending",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/secret_of_bloodbending.rs",
       "set": "tla"
     },
@@ -30367,8 +30366,8 @@
     {
       "name": "Seismic Sense",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/seismic_sense.rs",
       "set": "tla"
     },
@@ -30543,8 +30542,8 @@
     {
       "name": "Serpent of the Pass",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/serpent_of_the_pass.rs",
       "set": "tla"
     },
@@ -31799,32 +31798,32 @@
     {
       "name": "Sokka's Haiku",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sokka_s_haiku.rs",
       "set": "tla"
     },
     {
       "name": "Sokka, Bold Boomeranger",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sokka_bold_boomeranger.rs",
       "set": "tla"
     },
     {
       "name": "Sokka, Lateral Strategist",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sokka_lateral_strategist.rs",
       "set": "tla"
     },
     {
       "name": "Sokka, Tenacious Tactician",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sokka_tenacious_tactician.rs",
       "set": "tla"
     },
@@ -31839,8 +31838,8 @@
     {
       "name": "Sold Out",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sold_out.rs",
       "set": "tla"
     },
@@ -31871,8 +31870,8 @@
     {
       "name": "Solstice Revelations",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/solstice_revelations.rs",
       "set": "tla"
     },
@@ -32055,8 +32054,8 @@
     {
       "name": "South Pole Voyager",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/south_pole_voyager.rs",
       "set": "tla"
     },
@@ -32071,8 +32070,8 @@
     {
       "name": "Southern Air Temple",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/southern_air_temple.rs",
       "set": "tla"
     },
@@ -32095,8 +32094,8 @@
     {
       "name": "Sozin's Comet",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sozin_s_comet.rs",
       "set": "tla"
     },
@@ -32111,8 +32110,8 @@
     {
       "name": "Sparring Dummy",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/sparring_dummy.rs",
       "set": "tla"
     },
@@ -32631,8 +32630,8 @@
     {
       "name": "Spirit Water Revival",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/spirit_water_revival.rs",
       "set": "tla"
     },
@@ -33831,16 +33830,16 @@
     {
       "name": "Suki, Courageous Rescuer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/suki_courageous_rescuer.rs",
       "set": "tla"
     },
     {
       "name": "Suki, Kyoshi Warrior",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/suki_kyoshi_warrior.rs",
       "set": "tla"
     },
@@ -34983,8 +34982,8 @@
     {
       "name": "Team Avatar",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/team_avatar.rs",
       "set": "tla"
     },
@@ -35271,8 +35270,8 @@
     {
       "name": "Teo, Spirited Glider",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/teo_spirited_glider.rs",
       "set": "tla"
     },
@@ -35575,16 +35574,16 @@
     {
       "name": "The Boulder, Ready to Rumble",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_boulder_ready_to_rumble.rs",
       "set": "tla"
     },
     {
       "name": "The Cave of Two Lovers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_cave_of_two_lovers.rs",
       "set": "tla"
     },
@@ -35687,8 +35686,8 @@
     {
       "name": "The Earth King",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_earth_king.rs",
       "set": "tla"
     },
@@ -35767,8 +35766,8 @@
     {
       "name": "The Fire Nation Drill",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_fire_nation_drill.rs",
       "set": "tla"
     },
@@ -35855,8 +35854,8 @@
     {
       "name": "The Last Agni Kai",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_last_agni_kai.rs",
       "set": "tla"
     },
@@ -35887,32 +35886,32 @@
     {
       "name": "The Legend of Kuruk // Avatar Kuruk",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_legend_of_kuruk_avatar_kuruk.rs",
       "set": "tla"
     },
     {
       "name": "The Legend of Kyoshi // Avatar Kyoshi",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_legend_of_kyoshi_avatar_kyoshi.rs",
       "set": "tla"
     },
     {
       "name": "The Legend of Roku // Avatar Roku",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_legend_of_roku_avatar_roku.rs",
       "set": "tla"
     },
     {
       "name": "The Legend of Yangchen // Avatar Yangchen",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_legend_of_yangchen_avatar_yangchen.rs",
       "set": "tla"
     },
@@ -35975,8 +35974,8 @@
     {
       "name": "The Mechanist, Aerial Artisan",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_mechanist_aerial_artisan.rs",
       "set": "tla"
     },
@@ -36103,8 +36102,8 @@
     {
       "name": "The Rise of Sozin // Fire Lord Sozin",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_rise_of_sozin_fire_lord_sozin.rs",
       "set": "tla"
     },
@@ -36199,8 +36198,8 @@
     {
       "name": "The Spirit Oasis",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_spirit_oasis.rs",
       "set": "tla"
     },
@@ -36271,8 +36270,8 @@
     {
       "name": "The Unagi of Kyoshi Island",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_unagi_of_kyoshi_island.rs",
       "set": "tla"
     },
@@ -36295,8 +36294,8 @@
     {
       "name": "The Walls of Ba Sing Se",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/the_walls_of_ba_sing_se.rs",
       "set": "tla"
     },
@@ -37247,24 +37246,24 @@
     {
       "name": "Toph, Hardheaded Teacher",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/toph_hardheaded_teacher.rs",
       "set": "tla"
     },
     {
       "name": "Toph, the Blind Bandit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/toph_the_blind_bandit.rs",
       "set": "tla"
     },
     {
       "name": "Toph, the First Metalbender",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/toph_the_first_metalbender.rs",
       "set": "tla"
     },
@@ -37735,8 +37734,8 @@
     {
       "name": "Trusty Boomerang",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/trusty_boomerang.rs",
       "set": "tla"
     },
@@ -38039,16 +38038,16 @@
     {
       "name": "Ty Lee, Artful Acrobat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ty_lee_artful_acrobat.rs",
       "set": "tla"
     },
     {
       "name": "Ty Lee, Chi Blocker",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/ty_lee_chi_blocker.rs",
       "set": "tla"
     },
@@ -38495,8 +38494,8 @@
     {
       "name": "Unlucky Cabbage Merchant",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/unlucky_cabbage_merchant.rs",
       "set": "tla"
     },
@@ -39119,8 +39118,8 @@
     {
       "name": "Vengeful Villagers",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/vengeful_villagers.rs",
       "set": "tla"
     },
@@ -39855,8 +39854,8 @@
     {
       "name": "Walltop Sentries",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/walltop_sentries.rs",
       "set": "tla"
     },
@@ -39943,8 +39942,8 @@
     {
       "name": "War Balloon",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/war_balloon.rs",
       "set": "tla"
     },
@@ -40143,8 +40142,8 @@
     {
       "name": "Water Tribe Rallier",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/water_tribe_rallier.rs",
       "set": "tla"
     },
@@ -40159,24 +40158,24 @@
     {
       "name": "Waterbender Ascension",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/waterbender_ascension.rs",
       "set": "tla"
     },
     {
       "name": "Waterbending Lesson",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/waterbending_lesson.rs",
       "set": "tla"
     },
     {
       "name": "Waterbending Scroll",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/waterbending_scroll.rs",
       "set": "tla"
     },
@@ -40207,8 +40206,8 @@
     {
       "name": "Watery Grasp",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/watery_grasp.rs",
       "set": "tla"
     },
@@ -40527,8 +40526,8 @@
     {
       "name": "White Lotus Hideout",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/white_lotus_hideout.rs",
       "set": "tla"
     },
@@ -40543,8 +40542,8 @@
     {
       "name": "White Lotus Tile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/white_lotus_tile.rs",
       "set": "tla"
     },
@@ -41023,8 +41022,8 @@
     {
       "name": "Wolfbat",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/wolfbat.rs",
       "set": "tla"
     },
@@ -41343,8 +41342,8 @@
     {
       "name": "Yue, the Moon Spirit",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/yue_the_moon_spirit.rs",
       "set": "tla"
     },
@@ -41471,8 +41470,8 @@
     {
       "name": "Zhao, the Moon Slayer",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/zhao_the_moon_slayer.rs",
       "set": "tla"
     },
@@ -41591,16 +41590,16 @@
     {
       "name": "Zuko's Exile",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/zuko_s_exile.rs",
       "set": "tla"
     },
     {
       "name": "Zuko, Conflicted",
       "standard_legal": true,
-      "implemented": false,
-      "implementation": null,
+      "implemented": true,
+      "implementation": "typed_rust",
       "definition": "src/card_definitions/tla/zuko_conflicted.rs",
       "set": "tla"
     },

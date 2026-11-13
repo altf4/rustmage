@@ -1,7 +1,7 @@
 //! Standard games and ownership checks using only Avatar release identities.
 use rustmage::{
-    Action, Card, CastMethod, Config, DeckRules, Error, Game, Observation, Outcome, Player,
-    StackKind, policy,
+    Action, Card, CardId, CastMethod, Config, DeckRules, Error, Game, Observation, Outcome, Player,
+    StackKind, Step, policy,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -191,23 +191,44 @@ fn prove_owned_branch(game: &Game, view: &Observation, chosen: usize) -> bool {
     true
 }
 
-fn workload_index(view: &Observation) -> usize {
+fn workload_index(view: &Observation, activated: &BTreeSet<(u32, CardId)>) -> usize {
     let smoke = policy::smoke_index_from_observation(view, &view.actions);
     if matches!(view.actions[smoke], Action::PlayLand { .. }) {
         return smoke;
     }
-    view.actions
-        .iter()
-        .position(|action| {
-            matches!(
-                action,
-                Action::AnnounceForetell { .. }
-                    | Action::AnnounceForetold { .. }
-                    | Action::AnnounceAirbend { .. }
-                    | Action::AnnounceLinkedWaterbend { .. }
-            )
-        })
-        .unwrap_or(smoke)
+    if let Some(index) = view.actions.iter().position(|action| {
+        matches!(
+            action,
+            Action::AnnounceForetell { .. }
+                | Action::AnnounceForetold { .. }
+                | Action::AnnounceAirbend { .. }
+                | Action::AnnounceLinkedWaterbend { .. }
+        )
+    }) {
+        return index;
+    }
+    // Keep reusable mana sinks out of upkeep. A card-selection ability can
+    // spend spare resources after combat; combat tricks need a useful window.
+    if let Action::AnnounceActivate { card, .. } = view.actions[smoke]
+        && let Some(object) = view.objects.iter().find(|object| object.id == card)
+        && let Some(window) = match object.card.name() {
+            "Katara, Water Tribe's Hope" => Some(Step::Blockers),
+            "Waterbender Ascension" => Some(Step::BeginCombat),
+            "Water Tribe Rallier" => Some(Step::Main2),
+            _ => None,
+        }
+        && (view.active != view.viewer
+            || view.step != window
+            || !view.stack.is_empty()
+            || activated.contains(&(view.turn, card)))
+        && let Some(pass) = view
+            .actions
+            .iter()
+            .position(|action| *action == Action::Pass)
+    {
+        return pass;
+    }
+    smoke
 }
 
 #[test]
@@ -265,13 +286,17 @@ fn avatar_only_standard_games_finish_and_replay_with_all_four_bends() {
             let mut game = Game::new(config.clone()).unwrap();
             let mut journal = Vec::new();
             let mut branched = [false; 2];
+            let mut activated = BTreeSet::new();
             let started = Instant::now();
             while let Some(actor) = game.actor() {
                 assert!(journal.len() < 4096, "{label} exceeded its decision limit");
                 let view = game.observe(actor);
                 evidence::check_privacy(&view, actor);
-                let index = workload_index(&view);
+                let index = workload_index(&view, &activated);
                 let action = view.actions[index].clone();
+                if let Action::AnnounceActivate { card, .. } = action {
+                    activated.insert((view.turn, card));
+                }
                 assert_ne!(action, Action::Concede);
                 if !branched[actor.index()] && prove_owned_branch(&game, &view, index) {
                     branches[actor.index()] += 1;
