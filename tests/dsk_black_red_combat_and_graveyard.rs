@@ -294,7 +294,8 @@ fn waltz_of_rage_observes_own_creature_and_token_deaths_from_its_damage_and_late
     assert_eq!(game.observe(player).exile_permissions.len(), 2);
 
     let mut next_turn = game.clone();
-    next_turn.expire_next_turn_callbacks();
+    next_turn.finish_cleanup();
+    assert_eq!(next_turn.state.turn, game.state.turn + 1);
     next_turn.move_object(dealer, Zone::Graveyard);
     next_turn.prepare_triggers();
     assert!(next_turn.state.stack.is_empty());
