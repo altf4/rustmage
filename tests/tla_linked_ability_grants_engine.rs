@@ -400,6 +400,164 @@ fn acquired_activated_and_triggered_templates_share_their_own_links() {
     assert_eq!(game.object_view(victim).controller, player);
 }
 
+#[test]
+fn koh_can_play_only_cards_exiled_by_raphaels_acquired_trigger() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let koh = put(&mut game, player, "Koh, the Face Stealer", Zone::Hand);
+    let raphael = put(
+        &mut game,
+        player.other(),
+        "Raphael, Most Attitude",
+        Zone::Battlefield,
+    );
+    enter_and_exile(&mut game, koh, raphael);
+    begin_choose(&mut game, koh);
+    select(&mut game, raphael);
+    game.state.objects[koh as usize].summoning_sick = false;
+    let mut without_exile = game.clone();
+
+    let mut exiled_lands = Vec::new();
+    for land in ["Forest", "Island"] {
+        let land = put(&mut game, player, land, Zone::Library);
+        let creature = put(&mut game, player, "Bear Cub", Zone::Hand);
+        cast(&mut game, creature, None);
+        let accept = Action::ChooseOptional { accept: true };
+        wait_until(&mut game, |g| g.legal_actions().contains(&accept));
+        act(&mut game, accept);
+        settle(&mut game);
+        assert_eq!(game.object_view(land).zone, Zone::Exile);
+        exiled_lands.push(land);
+    }
+    for branch in [&mut without_exile, &mut game] {
+        branch.state.step = Step::Attackers;
+        branch.state.pending = Pending::Attackers;
+        act(branch, Action::Attack { card: koh });
+        act(branch, Action::FinishAttackers);
+        for _ in 0..32 {
+            if branch.state.step == Step::Main2 {
+                break;
+            }
+            choose(branch, |action| {
+                matches!(
+                    action,
+                    Action::Pass | Action::PutTrigger { .. } | Action::FinishBlockers
+                )
+            });
+        }
+        assert_eq!(branch.state.step, Step::Main2);
+        assert!(!branch.legal_actions().iter().any(|action| {
+            matches!(action, Action::Cast { card, .. } | Action::AnnounceExile { card }
+                if *card == raphael)
+        }));
+        assert!(branch.linked_exile_play(player, raphael).is_none());
+    }
+
+    let [land, other_land] = exiled_lands.as_slice() else {
+        unreachable!()
+    };
+    assert!(game.linked_exile_play(player, *other_land).is_some());
+    let play = Action::PlayLand { card: *land };
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    indexed.restore(&saved).unwrap();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|a| a == &play)
+        .unwrap();
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, play);
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    assert_eq!(game.object_view(*land).zone, Zone::Battlefield);
+    assert_eq!(game.object_view(*other_land).zone, Zone::Exile);
+    assert!(game.linked_exile_play(player, *other_land).is_none());
+}
+
+#[test]
+fn koh_cannot_announce_mimeoplasms_ability_without_a_target_from_its_linked_exile() {
+    let player = Player::P0;
+    let mut game = scenario(player);
+    let koh = put(&mut game, player, "Koh, the Face Stealer", Zone::Hand);
+    let mimeoplasm = put(
+        &mut game,
+        player.other(),
+        "Mimeoplasm, Revered One",
+        Zone::Battlefield,
+    );
+    game.add_counter(mimeoplasm, CounterKind::PlusOne, 3);
+    enter_and_exile(&mut game, koh, mimeoplasm);
+    begin_choose(&mut game, koh);
+    select(&mut game, mimeoplasm);
+    let action = borrowed_action(&game, koh, mimeoplasm);
+    assert!(!game.legal_actions().contains(&action));
+    reject(&mut game, action);
+}
+
+#[test]
+fn koh_keeps_zuko_modes_with_the_same_donor_and_resets_them_for_a_new_grant() {
+    let player = Player::P0;
+    let opponent = player.other();
+    let mut game = scenario(player);
+    let koh = put(&mut game, player, "Koh, the Face Stealer", Zone::Hand);
+    let first = put(&mut game, opponent, "Zuko, Conflicted", Zone::Battlefield);
+    enter_and_exile(&mut game, koh, first);
+    let second = put(&mut game, opponent, "Zuko, Conflicted", Zone::Battlefield);
+    let murder = put(&mut game, player, "Murder", Zone::Hand);
+    cast(&mut game, murder, Some(Target::Card(second)));
+    let accept = Action::ChooseOptional { accept: true };
+    wait_until(&mut game, |g| g.legal_actions().contains(&accept));
+    act(&mut game, accept);
+    settle(&mut game);
+
+    let choose_donor = |g: &mut Game, donor| {
+        begin_choose(g, koh);
+        select(g, donor);
+        g.object_view(koh).acquired_triggers.unwrap().cohort
+    };
+    let first_grant = choose_donor(&mut game, first);
+    let draw = Action::ChooseMode { mode: 0 };
+    let first_main = |g: &mut Game| {
+        g.begin_step(Step::Main1);
+        g.prepare_triggers();
+    };
+    first_main(&mut game);
+    act(&mut game, draw.clone());
+    settle(&mut game);
+
+    let mut same = game.clone();
+    assert_eq!(choose_donor(&mut same, first), first_grant);
+    first_main(&mut same);
+    reject(&mut same, draw.clone());
+
+    let second_grant = choose_donor(&mut game, second);
+    assert_ne!(second_grant, first_grant);
+    first_main(&mut game);
+    let saved = game.snapshot();
+    let mut indexed = game.clone();
+    indexed.restore(&saved).unwrap();
+    let index = indexed
+        .legal_actions()
+        .iter()
+        .position(|a| a == &draw)
+        .unwrap();
+    indexed
+        .apply_index(player, indexed.revision(), index)
+        .unwrap();
+    act(&mut game, draw.clone());
+    assert_eq!(indexed.snapshot(), game.snapshot());
+    settle(&mut game);
+
+    let renewed = choose_donor(&mut game, first);
+    assert_ne!(renewed, first_grant);
+    first_main(&mut game);
+    act(&mut game, draw);
+    settle(&mut game);
+    assert_eq!(game.state.players[player.index()].cards_drawn_this_turn, 3);
+}
+
 const CREATURE_MANA_DONOR: CardRules = CardRules {
     effect: Effect::Creature(2, 2),
     static_groups: &[StaticAbilityGroup {

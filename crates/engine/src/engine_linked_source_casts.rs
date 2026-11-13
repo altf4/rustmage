@@ -54,6 +54,7 @@ impl Game {
             .any(|link| {
                 link.source == source
                     && link.ability_origin == origin
+                    && link.acquired_link_cohort.is_none()
                     && link.exiled == self.object_ref(card)
                     && (!this_turn || link.exiled_turn == self.state.turn)
             })
@@ -73,6 +74,7 @@ impl Game {
         self.state.linked_choices.as_ref().is_some_and(|state| {
             state.links.iter().any(|link| {
                 link.exiled == exact
+                    && link.acquired_link_cohort.is_none()
                     && self
                         .live_linked_source(player, link.source)
                         .is_some_and(|(_, origin)| origin == link.ability_origin)

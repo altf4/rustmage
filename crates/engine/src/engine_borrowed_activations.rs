@@ -1026,70 +1026,31 @@ impl Game {
                             },
                         );
                     }
-                    if descriptor.inherited.is_some() {
-                        let packet = self.borrowed_activation_packet(actor, *descriptor);
-                        let targets_available = ability.declares_target_value_x()
-                            || ability.modes().map_or_else(
-                                || self.item_targets_available(&packet, self.target_spec(&packet)),
-                                |modes| {
-                                    modes.iter().enumerate().any(|(index, mode)| {
-                                        self.item_mode_eligible(&packet, index)
-                                            && self.modal_choice_unused(&packet, index)
-                                            && self.item_targets_available(&packet, mode.targets)
-                                    })
-                                },
-                            );
-                        return targets_available
-                            && self.initial_activation_packet_target_fundable(
-                                &packet,
-                                &counter_payment,
-                            )
-                            && emit(Action::AnnounceInheritedAbility {
-                                source: descriptor.source,
-                                slot: descriptor.slot,
-                                counter_payment,
-                            });
-                    }
-                    let fundable = self
-                        .activation_mana_costs(card, descriptor.definition, descriptor.ability, 0)
-                        .any(|cost| {
-                            self.initial_activation_target_fundable(
-                                FundingGoal {
-                                    actor,
-                                    required: cost.colored,
-                                    generic: cost.generic,
-                                    reserve: None,
-                                    source: Some((
-                                        descriptor.source,
-                                        descriptor.ability,
-                                        counter_payment.clone(),
-                                        descriptor.definition,
-                                        Some(descriptor.slot),
-                                    )),
-                                },
-                                ability.targets,
-                            )
-                        });
-                    let modes = ability.modes();
+                    let packet = self.borrowed_activation_packet(actor, *descriptor);
                     let targets_available = ability.declares_target_value_x()
-                        || modes.map_or_else(
-                            || self.targets_available(ability.targets, actor, descriptor.source),
+                        || ability.modes().map_or_else(
+                            || self.item_targets_available(&packet, self.target_spec(&packet)),
                             |modes| {
-                                let packet = self.borrowed_activation_packet(actor, *descriptor);
-                                modes.iter().enumerate().any(|(mode_index, mode)| {
-                                    self.modal_choice_unused(&packet, mode_index)
-                                        && self.targets_available(
-                                            mode.targets,
-                                            actor,
-                                            descriptor.source,
-                                        )
+                                modes.iter().enumerate().any(|(index, mode)| {
+                                    self.item_mode_eligible(&packet, index)
+                                        && self.modal_choice_unused(&packet, index)
+                                        && self.item_targets_available(&packet, mode.targets)
                                 })
                             },
                         );
-                    if !fundable || !targets_available {
+                    if !targets_available
+                        || !self
+                            .initial_activation_packet_target_fundable(&packet, &counter_payment)
+                    {
                         return false;
                     }
-                    emit(if descriptor.zone == Zone::Graveyard {
+                    emit(if descriptor.inherited.is_some() {
+                        Action::AnnounceInheritedAbility {
+                            source: descriptor.source,
+                            slot: descriptor.slot,
+                            counter_payment,
+                        }
+                    } else if descriptor.zone == Zone::Graveyard {
                         Action::AnnounceGraveyardBorrowedAbility {
                             card,
                             graveyard: descriptor.donor,
